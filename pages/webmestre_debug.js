@@ -38,7 +38,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_debug').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_debug').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
       }
     );
 
@@ -46,7 +46,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_phpCAS').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_phpCAS').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
       }
     );
 
@@ -59,31 +59,31 @@ $(document).ready
       function()
       {
         $('#bouton_debug').prop('disabled',true);
-        $('#ajax_debug').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_debug').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=modifier_debug'+'&'+$("form").serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_debug').prop('disabled',false);
-              $('#ajax_debug').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_debug').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               $('#bouton_debug').prop('disabled',false);
-              if(responseJSON['statut']==true)
+              if(responseHTML=='ok')
               {
-                $('#ajax_debug').removeAttr('class').addClass('valide').html('Choix enregistrés.');
+                $('#ajax_debug').removeAttr("class").addClass("valide").html('Choix enregistrés.');
                 initialiser_compteur();
               }
               else
               {
-                $('#ajax_debug').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_debug').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               return false;
             }
@@ -101,31 +101,31 @@ $(document).ready
       function()
       {
         $('#bouton_phpCAS').prop('disabled',true);
-        $('#ajax_phpCAS').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_phpCAS').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=modifier_phpCAS'+'&'+$('#form_phpCAS').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_phpCAS').prop('disabled',false);
-              $('#ajax_phpCAS').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_phpCAS').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               $('#bouton_phpCAS').prop('disabled',false);
-              if(responseJSON['statut']==true)
+              if(responseHTML=='ok')
               {
+                $('#ajax_phpCAS').removeAttr("class").addClass("valide").html('Choix enregistrés.');
                 initialiser_compteur();
-                $('#ajax_phpCAS').removeAttr('class').addClass('valide').html('Choix enregistrés.');
               }
               else
               {
-                $('#ajax_phpCAS').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_phpCAS').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               return false;
             }
@@ -164,31 +164,31 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+f_action+'&f_fichier='+f_fichier,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
-              {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
-              }
-              else if(f_action=='supprimer')
+              if( (f_action=='supprimer') && (responseHTML=='ok') )
               {
                 initialiser_compteur();
                 $('#'+f_fichier).remove();
                 $.fancybox.close();
               }
-              else if(f_action=='voir')
+              else if( (f_action=='voir') && (responseHTML.substring(0,4)=='<ul ') )
               {
                 initialiser_compteur();
                 // Mis dans le div bilan et pas balancé directement dans le fancybox sinon la mise en forme des liens nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
                 // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
-                $('#bilan').html(responseJSON['value']);
+                $('#bilan').html(responseHTML);
                 $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':300 } );
+              }
+              else
+              {
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               return false;
             }

@@ -45,9 +45,9 @@ if( ($action=='recherche_niveau_famille') && $famille_id )
   {
     $class = ($DB_ROW['niveau_actif']) ? 'ajouter_non' : 'ajouter' ;
     $title = ($DB_ROW['niveau_actif']) ? 'Niveau déjà choisi.' : 'Ajouter ce niveau.' ;
-    Json::add_str('<li>'.html($DB_ROW['niveau_nom'].' ('.$DB_ROW['niveau_ref'].')').'<q id="add_'.$DB_ROW['niveau_id'].'" class="'.$class.'" title="'.$title.'"></q></li>');
+    echo'<li>'.html($DB_ROW['niveau_nom'].' ('.$DB_ROW['niveau_ref'].')').'<q id="add_'.$DB_ROW['niveau_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
   }
-  Json::end( TRUE );
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ if( ($action=='recherche_niveau_famille') && $famille_id )
 if( ($action=='ajouter_partage') && $id )
 {
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($id,1);
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,12 +69,12 @@ if( ($action=='ajouter_perso') && $ref && $nom )
   // Vérifier que la référence de la matière est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_niveau_reference($ref) )
   {
-    Json::end( FALSE , 'Référence déjà utilisée !' );
+    exit('Erreur : référence déjà prise !');
   }
   // Insérer l'enregistrement
   $id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_niveau_specifique($ref,$nom);
   // Afficher le retour
-  Json::end( TRUE ,  array( 'id'=>$id , 'ref'=>html($ref) , 'nom'=>html($nom) ) );
+  exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,12 +86,12 @@ if( ($action=='modifier') && $id && $ref && $nom && ($id>ID_NIVEAU_PARTAGE_MAX) 
   // Vérifier que la référence du niveau est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_niveau_reference($ref,$id) )
   {
-    Json::end( FALSE , 'Référence déjà utilisée !' );
+    exit('Erreur : référence déjà prise !');
   }
   // Mettre à jour l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_specifique($id,$ref,$nom);
   // Afficher le retour
-  Json::end( TRUE ,  array( 'id'=>$id , 'ref'=>html($ref) , 'nom'=>html($nom) ) );
+  exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ if( ($action=='supprimer') && $id && $nom && ($id<=ID_NIVEAU_PARTAGE_MAX) )
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a retiré le niveau partagé "'.$nom.'" (n°'.$id.').'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  Json::end( TRUE ,  array( 'id'=>$id ) );
+  exit(']¤['.$id);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,12 +123,12 @@ if( ($action=='supprimer') && $id && $nom && ($id>ID_NIVEAU_PARTAGE_MAX) )
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé le niveau spécifique "'.$nom.'" (n°'.$id.') et donc les référentiels associés.'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  Json::end( TRUE ,  array( 'id'=>$id ) );
+  exit(']¤['.$id);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 ?>

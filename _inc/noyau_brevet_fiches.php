@@ -53,7 +53,7 @@ $tab_eleve_saisie   = array();  // [eleve_id][epreuve_code][prof_id] => array(pr
 $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , 'alpha' /*eleves_ordre*/ , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , TRUE /*with_brevet_serie*/ );
 if(!is_array($tab_eleve_infos))
 {
-  Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
+  exit('Aucun élève trouvé correspondant aux identifiants transmis !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ if(!is_array($tab_eleve_infos))
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 if(is_string($DB_TAB))
 {
-  Json::end( FALSE , $DB_TAB );
+  exit($DB_TAB);
 }
 foreach($DB_TAB as $DB_ROW)
 {
@@ -80,7 +80,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 }
 if( !count($tab_brevet_serie) || isset($tab_brevet_serie['X']) )
 {
-  Json::end( FALSE , 'Élève(s) trouvé(s) sans association avec une série de brevet !' );
+  exit('Élève(s) trouvé(s) sans association avec une série de brevet !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -347,13 +347,13 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       }
       elseif($epreuve_obligatoire)
       {
-        Json::end( FALSE , 'Absence de données concernant '.html($eleve_nom.' '.$eleve_prenom).' pour l\'épreuve '.html($epreuve_nom). '!' );
+        exit('Absence de données concernant '.html($eleve_nom.' '.$eleve_prenom).' pour l\'épreuve '.html($epreuve_nom). '!');
       }
     }
     // Fiche brevet - Total des points & Avis de synthèse
     if(!isset($tab_eleve_saisie[$eleve_id][CODE_BREVET_EPREUVE_TOTAL]))
     {
-      Json::end( FALSE , 'Absence de total des points concernant '.html($eleve_nom.' '.$eleve_prenom).' !' );
+      exit('Absence de total des points concernant '.html($eleve_nom.' '.$eleve_prenom).' !');
     }
     extract($tab_eleve_saisie[$eleve_id][CODE_BREVET_EPREUVE_TOTAL]); // $matieres_id $prof_id $prof_info $appreciation $note
     $moyenne_classe = $tab_eleve_saisie[0][CODE_BREVET_EPREUVE_TOTAL];
@@ -430,9 +430,10 @@ if($make_pdf)  { FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_n
 
 if( $make_graph && (count($tab_graph_data)) )
 {
+  $js_graph .= '<SCRIPT>';
   // Épreuves sur l'axe des abscisses
-  Json::add_row( 'script' , 'ChartOptions.title.text = null;' );
-  Json::add_row( 'script' , 'ChartOptions.xAxis.categories = ['.implode(',',$tab_graph_data['categories']).'];' );
+  $js_graph .= 'ChartOptions.title.text = null;';
+  $js_graph .= 'ChartOptions.xAxis.categories = ['.implode(',',$tab_graph_data['categories']).'];';
   // Séries de valeurs
   $tab_graph_series = array();
   if(isset($tab_graph_data['series_data_MoyClasse']))
@@ -443,7 +444,7 @@ if( $make_graph && (count($tab_graph_data)) )
   {
     $tab_graph_series['MoyEleve']  = '{ type: "line", name: "Moyenne élève", data: ['.implode(',',$tab_graph_data['series_data_MoyEleve']).'], marker: {symbol: "circle"}, color: "#139" }';
   }
-  Json::add_row( 'script' , 'ChartOptions.series = ['.implode(',',$tab_graph_series).'];' );
-  Json::add_row( 'script' , 'graphique = new Highcharts.Chart(ChartOptions);' );
+  $js_graph .= 'ChartOptions.series = ['.implode(',',$tab_graph_series).'];';
+  $js_graph .= 'graphique = new Highcharts.Chart(ChartOptions);';
 }
 ?>

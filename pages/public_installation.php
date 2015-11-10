@@ -34,18 +34,19 @@ $TITRE = "Procédure d'installation"; // Pas de traduction car pas de choix de l
   <li id="step2">Étape 2 - Remplissage de ces dossiers avec le contenu approprié</li>
   <li id="step3">Étape 3 - Choix du type d'installation</li>
   <li id="step4">Étape 4 - Informations concernant l'hébergement et le webmestre</li>
-  <li id="step5">Étape 5 - Création de dossiers additionnels (cas d'un seul établissement)</li>
-  <li id="step6">Étape 6 - Indication des paramètres de connexion MySQL</li>
-  <li id="step7">Étape 7 - Installation des tables de la base de données</li>
+  <li id="step5">Étape 5 - Indication des paramètres de connexion MySQL</li>
+  <li id="step6">Étape 6 - Installation des tables de la base de données</li>
 </ul>
 
 <hr />
 
-<form action="#" method="post" id="zone_consignes"><?php /* on prend un <form> pour avoir le style du <span class="tab"> */ ?>
+<form action="#" method="post" id="form_start">
   <h2>Bienvenue dans la procédure d'installation de <em>SACoche</em> !</h2>
   <p class="astuce"><em>SACoche</em> est une web-application distribuée gratuitement dans l’espoir qu’elle vous sera utile, mais sans aucune garantie, conformément à la <a target="_blank" href="https://www.gnu.org/licenses/agpl-3.0.html">licence libre GNU AGPL3</a>.</p>
   <p class="danger">Webmestre et administrateurs sont responsables de toute mauvaise manipulation ou négligence qui entraînerait des pertes de données.</p>
-  <p><span class="tab"></span><a href="#" class="step1">Passer à l'étape 1.</a><label id="ajax_msg">&nbsp;</label></p>
+  <p><span class="tab"><a href="#" class="step1">Passer à l'étape 1.</a><label id="ajax_msg">&nbsp;</label></span></p>
+</form>
+<form action="#" method="post" id="form_type_install">
 </form>
 <form action="#" method="post" id="form_info_heberg">
 </form>

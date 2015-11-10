@@ -42,21 +42,21 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_module='+module,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,17)!='<table class="p">')
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
-                $.fancybox( responseJSON['value'] , {'centerOnScroll':true} );
+                $.fancybox( responseHTML , {'centerOnScroll':true} );
               }
             }
           }

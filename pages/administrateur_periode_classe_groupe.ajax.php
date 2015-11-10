@@ -51,7 +51,7 @@ $tab_graphique = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_et_groupes_avec_niveaux();
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucune classe et aucun groupe ne sont enregistrés !' );
+  exit('Aucune classe et aucun groupe ne sont enregistrés !');
 }
 foreach($DB_TAB as $DB_ROW)
 {
@@ -62,7 +62,7 @@ foreach($DB_TAB as $DB_ROW)
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucune période n\'est enregistrée !' );
+  exit('Aucune période n\'est enregistrée !');
 }
 foreach($DB_TAB as $DB_ROW)
 {
@@ -81,7 +81,7 @@ if( ($action=='ajouter') && $date_debut && $date_fin )
   // Vérifier que le date de début est antérieure à la date de fin
   if($date_debut_mysql>$date_fin_mysql)
   {
-    Json::end( FALSE , 'La date de début est postérieure à la date de fin !' );
+    exit('Erreur : la date de début est postérieure à la date de fin !');
   }
   foreach($tab_select_periodes as $periode_id)
   {
@@ -122,6 +122,7 @@ elseif($action=='retirer')
 // 2/2 - On poursuit avec les requêtes suivantes (associations) et l'affichage.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+echo'<hr />'.NL;
 // Récupérer l'amplitude complète sur l'ensemble des périodes
 $DB_ROW = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_amplitude_periodes();
 $tout_debut     = ($DB_ROW['tout_debut'])     ? $DB_ROW['tout_debut']     : '2000-01-01' ;
@@ -177,14 +178,13 @@ foreach($tab_periode as $periode_id => $periode_nom)
   $tab_periode[$periode_id] = '<th>'.html($periode_nom).'</th>';
 }
 // Affichage du tableau résultant
-Json::add_str('<hr />'.NL);
-Json::add_str('<table>'.NL);
-Json::add_str(  '<thead>'.NL);
-Json::add_str(    '<tr><td class="nu"></td>'.implode('',$tab_periode).'<td class="graph_total">Étendue du '.convert_date_mysql_to_french($tout_debut).' au '.convert_date_mysql_to_french($toute_fin).'.</td></tr>'.NL);
-Json::add_str(  '</thead>'.NL);
-Json::add_str(  '<tbody>'.NL);
-Json::add_str(    '<tr>'.implode('</tr>'.NL.'<tr>',$tab_groupe).'</tr>'.NL);
-Json::add_str(  '</tbody>'.NL);
-Json::add_str('</table><p>&nbsp;</p>'.NL);
-Json::end( TRUE );
+echo'<table>'.NL;
+echo  '<thead>'.NL;
+echo    '<tr><td class="nu"></td>'.implode('',$tab_periode).'<td class="graph_total">Étendue du '.convert_date_mysql_to_french($tout_debut).' au '.convert_date_mysql_to_french($toute_fin).'.</td></tr>'.NL;
+echo  '</thead>'.NL;
+echo  '<tbody>'.NL;
+echo    '<tr>'.implode('</tr>'.NL.'<tr>',$tab_groupe).'</tr>'.NL;
+echo  '</tbody>'.NL;
+echo'</table><p>&nbsp;</p>'.NL;
+
 ?>

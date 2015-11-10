@@ -174,12 +174,12 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
     }
   }
   // Afficher le retour
-  Json::end( TRUE ,  array( 'devoir_id'=>$devoir_id , 'groupe_id'=>$groupe_id ) );
+  exit_json( TRUE ,  array( 'devoir_id'=>$devoir_id , 'groupe_id'=>$groupe_id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit_json( FALSE , 'Erreur avec les données transmises !' );
 ?>

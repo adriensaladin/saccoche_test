@@ -57,30 +57,30 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_enregistrer').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_enregistrer').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=Valider_CNIL',
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_enregistrer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==true)
+              if(responseHTML!='ok')
               {
-                $('#ajax_msg_enregistrer').removeAttr('class').addClass('valide').html("Compte activé.");
-                document.location.href = './index.php?page=compte_accueil';
+                $('#ajax_msg_enregistrer').removeAttr("class").addClass("alerte").html(responseHTML);
+                return false;
               }
               else
               {
-                $('#ajax_msg_enregistrer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-                return false;
+                $('#ajax_msg_enregistrer').removeAttr("class").addClass("valide").html("Compte activé.");
+                document.location.href = './index.php?page=compte_accueil';
               }
             }
           }

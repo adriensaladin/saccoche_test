@@ -36,18 +36,14 @@ $send_notification = (isset($_POST['f_send'])) ? Clean::texte($_POST['f_send']) 
 
 if( in_array( $send_notification , array('oui','non') ) )
 {
-  $result = FileSystem::fabriquer_fichier_hebergeur_info( array( 'COURRIEL_NOTIFICATION' => $send_notification ) );
-  if($result!==TRUE)
-  {
-    Json::end( FALSE , $result );
-  }
-  Json::end( TRUE );
+  FileSystem::fabriquer_fichier_hebergeur_info( array( 'COURRIEL_NOTIFICATION' => $send_notification ) );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

@@ -55,7 +55,7 @@ if( $nb_bases )
   }
   // Retour
   $max = $nb_bases + 1 ; // La dernière étape consistera à vider la session temporaire et à renvoyer les totaux
-  Json::end( TRUE , $max );
+  exit('ok-'.$max);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ if( $num && $max && ($num<$max) )
   $_SESSION['tmp']['infos']['niveau_alerte'][$num-1] = $niveau_alerte;
   $_SESSION['tmp']['infos']['messages'     ][$num-1] = '<tr class="'.$tab_couleurs[$niveau_alerte].'"><td>n°'.$base_id.' - '.html($structure_denomination).'</td><td>'.$messages.'</td></tr>';
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,13 +97,13 @@ if( $num && $max && ($num==$max) )
   $tbody = implode('',$_SESSION['tmp']['infos']['messages']);
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
   unset($_SESSION['tmp']);
-  Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
+  exit('ok-'.URL_DIR_EXPORT.$fichier_nom);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

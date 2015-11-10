@@ -188,7 +188,7 @@ $(document).ready
       $('#generer_base_id').val(base_id);
       // Afficher la zone associée après avoir chargé son contenu
       $('#titre_generer_mdp').html(denomination+' ['+uai+']');
-      $('#ajax_msg_generer_mdp').removeAttr('class').html('&nbsp;');
+      $('#ajax_msg_generer_mdp').removeAttr("class").html('&nbsp;');
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
       (
@@ -196,22 +196,22 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=lister_admin'+'&f_base_id='+base_id,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
+            $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
             return false;
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==false)
+            if(responseHTML.substring(0,7)!='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
             }
             else
             {
-              $('#f_admin_id').html('<option value="">&nbsp;</option>'+responseJSON['value']);
+              $('#f_admin_id').html('<option value="">&nbsp;</option>'+responseHTML);
               $.fancybox( { 'href':'#zone_generer_mdp' , onStart:function(){$('#zone_generer_mdp').css("display","block");} , onClosed:function(){$('#zone_generer_mdp').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
             }
           }
@@ -297,22 +297,22 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+action+'&f_base_id='+base_id,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,4)!='<img')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
-                objet.parent().html(responseJSON['value']);
+                objet.parent().html(responseHTML);
               }
               return false;
             }
@@ -360,25 +360,25 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      $('#ajax_supprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $('#ajax_supprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_listing_id='+listing_id,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $("button").prop('disabled',false);
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==false)
+            if(responseHTML!='<ok>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);
             }
             else
             {
@@ -389,7 +389,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_supprimer').removeAttr('class').addClass('valide').html('Demande réalisée !');
+              $('#ajax_supprimer').removeAttr("class").addClass("valide").html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }
@@ -406,10 +406,10 @@ $(document).ready
         $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_supprimer').removeAttr('class').addClass('erreur').html("Aucune structure cochée !");
+          $('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");
           return false;
         }
-        $('#ajax_supprimer').removeAttr('class').html('&nbsp;');
+        $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
         var id = $(this).attr('id');
         if(id=='bouton_supprimer')
         {
@@ -442,36 +442,36 @@ $(document).ready
       {
         if(!$('#f_admin_id option:selected').val())
         {
-          $('#ajax_msg_generer_mdp').removeAttr('class').addClass('erreur').html("Sélectionner un administrateur !");
+          $('#ajax_msg_generer_mdp').removeAttr("class").addClass("erreur").html("Sélectionner un administrateur !");
           return false;
         }
         $('#zone_generer_mdp button').prop('disabled',true);
-        $('#ajax_msg_generer_mdp').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        $('#zone_imprimer_retour').html("");
+        $('#ajax_msg_generer_mdp').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#zone_imprimer_retour').html("&nbsp;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=initialiser_mdp'+'&'+$("#zone_generer_mdp").serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_generer_mdp button').prop('disabled',false);
-              $('#ajax_msg_generer_mdp').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_generer_mdp').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#zone_generer_mdp button').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,4)!='<ok>')
               {
-                $('#ajax_msg_generer_mdp').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_generer_mdp').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $.fancybox( '<p>'+responseJSON['value']+'</p>' , {'centerOnScroll':true} );
+                $.fancybox( '<p>'+responseHTML+'</p>' , {'centerOnScroll':true} );
               }
             }
           }
@@ -527,7 +527,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_gestion",
@@ -590,13 +590,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -606,29 +606,29 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseJSON)
+    function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      if(responseJSON['statut']==false)
+      if(responseHTML.substring(0,1)!='<')
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html('Demande réalisée !');
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html('Demande réalisée !');
         switch (mode)
         {
           case 'ajouter':
-            $('#table_action tbody').prepend(responseJSON['value']);
+            $('#table_action tbody').prepend(responseHTML);
             break;
           case 'modifier':
-            $('#id_'+$('#f_base_id').val()).addClass("new").html(responseJSON['value']);
+            $('#id_'+$('#f_base_id').val()).addClass("new").html(responseHTML);
             break;
           case 'supprimer':
             $('#id_'+$('#f_base_id').val()).remove();

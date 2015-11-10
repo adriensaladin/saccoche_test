@@ -64,7 +64,7 @@ if($nb_modifs_eleves)
 }
 // Afficher le résultat
 $s = ($nb_modifs_eleves>1) ? 's' : '' ;
-Json::add_str('<p><label class="valide">Liens de responsabilités modifiés pour '.$nb_modifs_eleves.' élève'.$s.'</label></p>'.NL);
-Json::add_str('<ul class="puce p"><li><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
+echo'<p><label class="valide">Liens de responsabilités modifiés pour '.$nb_modifs_eleves.' élève'.$s.'</label></p>'.NL;
+echo'<ul class="puce p"><li><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 6.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
 
 ?>

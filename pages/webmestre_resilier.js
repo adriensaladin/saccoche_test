@@ -66,38 +66,33 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr('class').html("");
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
         $.prompt(prompt_etapes);
       }
     );
 
     function envoyer_demande_confirmee()
     {
-      $('#bouton_valider').prop('disabled',true);
-      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $("#bouton_valider").prop('disabled',true);
+      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#bouton_valider').prop('disabled',false);
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $("#bouton_valider").prop('disabled',false);
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==false)
+            if(responseHTML=='ok')
             {
-              $('#bouton_valider').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-            }
-            else
-            {
-              $('#ajax_msg').removeAttr('class').addClass('valide').html("Inscription supprimée !");
+              $('#ajax_msg').removeAttr("class").addClass("valide").html("Inscription supprimée !");
               $('div.jqibox').remove(); // Sinon il y a un conflit d'affichage avec le prompt précédent
               $.prompt(
                 "Toutes les données ont été effacées !<br />Déconnexion du compte webmestre...",
@@ -108,6 +103,11 @@ $(document).ready
                   }
                 }
               );
+            }
+            else
+            {
+              $("#bouton_valider").prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
             }
           }
         }

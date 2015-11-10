@@ -32,14 +32,13 @@ $admin_id = (isset($_POST['f_admin']))  ? Clean::entier($_POST['f_admin']) : 0;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier le mdp d'un administrateur et afficher les identifiants au webmestre
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 if($admin_id)
 {
   // Informations sur l'admin : nom / prénom / login.
   $DB_ROW = DB_STRUCTURE_WEBMESTRE::DB_recuperer_admin_identite($admin_id);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'Administrateur introuvable !' );
+    exit('Erreur : administrateur introuvable !');
   }
   $admin_nom    = $DB_ROW['user_nom'];
   $admin_prenom = $DB_ROW['user_prenom'];
@@ -48,19 +47,15 @@ if($admin_id)
   $admin_password = fabriquer_mdp();
   DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
   // On affiche le retour
-  Json::add_str('<ul class="puce">');
-  Json::add_str('<li>Le mot de passe administrateur de <em>'.html($admin_prenom.' '.$admin_nom).'</em> vient d\'être réinitialisé.</li>');
-  Json::add_str('<li>nom d\'utilisateur " <b>'.$admin_login.'</b> "</li>');
-  Json::add_str('<li>mot de passe " <b>'.$admin_password.'</b> "</li>');
-  Json::add_str('<li>Pour se connecter comme administrateur, utiliser l\'adresse <a href="'.URL_DIR_SACOCHE.'">'.URL_INSTALL_SACOCHE.'</a></li>');
-  Json::add_str('</ul>');
-  Json::end( TRUE );
+  echo'<ul class="puce">';
+  echo'<li>Le mot de passe administrateur de <em>'.html($admin_prenom.' '.$admin_nom).'</em> vient d\'être réinitialisé.</li>';
+  echo'<li>nom d\'utilisateur " <b>'.$admin_login.'</b> "</li>';
+  echo'<li>mot de passe " <b>'.$admin_password.'</b> "</li>';
+  echo'<li>Pour se connecter comme administrateur, utiliser l\'adresse <a href="'.URL_DIR_SACOCHE.'">'.URL_INSTALL_SACOCHE.'</a></li>';
+  echo'</ul>';
 }
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Json::end( FALSE , 'Erreur avec les données transmises !' );
-
+else
+{
+  echo'Erreur avec les données transmises !';
+}
 ?>

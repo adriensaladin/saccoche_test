@@ -48,8 +48,7 @@ $(document).ready
     ChartOptions = {
       chart: {
         renderTo: 'div_graphique_synthese',
-        type: 'column',
-        spacingTop: 5
+        type: 'column'
        },
       colors: 
         BACKGROUND_COLORS
@@ -101,20 +100,20 @@ $(document).ready
           type : 'GET',
           url : 'ajax.php?page=calque_voir_photo',
           data : 'user_id='+memo_eleve,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_photo').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_photo').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
-            if(responseJSON['statut']==true)
+            if(responseHTML.substring(0,5)=='<img ')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#cadre_photo').html('<div>'+responseJSON['value']+'</div><div style="margin-top:-20px"><button id="masquer_photo" type="button" class="annuler">Fermer</button></div>');
+              $('#cadre_photo').html('<div>'+responseHTML+'</div><div style="margin-top:-20px"><button id="masquer_photo" type="button" class="annuler">Fermer</button></div>');
             }
             else
             {
-              $('#ajax_photo').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_photo').removeAttr("class").addClass("alerte").html(responseHTML);
             }
           }
         }
@@ -175,16 +174,16 @@ $(document).ready
       {
         if(!$('#cadre_statut input[type=radio]:checked').length)
         {
-          $('#ajax_msg_gestion').removeAttr('class').addClass('erreur').html("Aucun statut coché !");
+          $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Aucun statut coché !");
           return false;
         }
         var listing_id = new Array(); $("#table_accueil input[type=checkbox]:checked").each(function(){listing_id.push($(this).attr('id'));});
         if(!listing_id.length)
         {
-          $('#ajax_msg_gestion').removeAttr('class').addClass('erreur').html("Aucune case du tableau cochée !");
+          $('#ajax_msg_gestion').removeAttr("class").addClass("erreur").html("Aucune case du tableau cochée !");
           return false;
         }
-        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("Envoi&hellip;"); // volontairement court
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("Envoi&hellip;"); // volontairement court
         $('#listing_ids').val(listing_id);
         $('#csrf').val(CSRF);
         var form = document.getElementById('cadre_statut');
@@ -252,28 +251,23 @@ $(document).ready
                 type : 'POST',
                 url : 'ajax.php?page='+PAGE,
                 data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-                dataType : 'json',
+                dataType : "html",
                 error : function(jqXHR, textStatus, errorThrown)
                 {
-                  var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+                  var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
                   $('#zone_action_eleve').html('<label class="alerte">'+message+' <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button></label>');
                   return false;
                 },
-                success : function(responseJSON)
+                success : function(responseHTML)
                 {
                   initialiser_compteur();
-                  if(responseJSON['statut']==false)
+                  if(responseHTML.substring(0,4)!='<h2>')
                   {
-                    $('#zone_action_eleve').html('<label class="alerte">'+responseJSON['value']+'</label> <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>');
+                    $('#zone_action_eleve').html('<label class="alerte">'+responseHTML+'</label> <button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>');
                   }
                   else
                   {
-                    $('#zone_action_eleve').html(responseJSON['html']);
-                    if( typeof(responseJSON['script']) !== 'undefined' )
-                    {
-                      // A priori on ne passe jamais là car ce n'est que poru les bulletins et on commence toujours par l'éppréciation sur la classe
-                      eval( responseJSON['script'] );
-                    }
+                    $('#zone_action_eleve').html(responseHTML);
                     memo_eleve       = $('#go_selection_eleve option:selected').val();
                     memo_eleve_first = $('#go_selection_eleve option:first').val();
                     memo_eleve_last  = $('#go_selection_eleve option:last').val();
@@ -322,7 +316,7 @@ $(document).ready
         name: 'userfile',
         data: { 'csrf':CSRF , 'f_section':'officiel_importer' , 'f_action':'uploader_saisie_csv' , 'f_bilan_type':'maj_plus_tard' , 'f_classe':'maj_plus_tard' , 'f_groupe':'maj_plus_tard' , 'f_periode':'maj_plus_tard' , 'f_objet':'maj_plus_tard' , 'f_mode':'maj_plus_tard' },
         autoSubmit: true,
-        responseType: 'json',
+        responseType: "html",
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -331,7 +325,7 @@ $(document).ready
 
     function changer_fichier(fichier_nom,fichier_extension)
     {
-      $('#msg_import').removeAttr('class').html('&nbsp;');
+      $('#msg_import').removeAttr("class").html('&nbsp;');
       uploader_csv['_settings']['data']['f_bilan_type'] = BILAN_TYPE;
       uploader_csv['_settings']['data']['f_classe']     = memo_classe;
       uploader_csv['_settings']['data']['f_groupe']     = memo_groupe;
@@ -345,49 +339,48 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#msg_import').removeAttr('class').addClass('erreur').html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
+        $('#msg_import').removeAttr("class").addClass("erreur").html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
         return false;
       }
       else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
-        $('#msg_import').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
+        $('#msg_import').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
         return false;
       }
       else
       {
         $('#zone_action_deport button').prop('disabled',true);
-        $('#msg_import').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#msg_import').removeAttr("class").addClass("loader").html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
-      if(responseJSON['statut']==false)
+      if(responseHTML.substring(0,16)!='saisie_deportee_')
       {
-        $('#msg_import').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#msg_import').removeAttr("class").addClass("alerte").html(responseHTML);
         $('#zone_action_deport button').prop('disabled',false);
       }
       else
       {
-        $('#f_import_info').val(responseJSON['value']);
-        // AJAX Upload ne permet pas de faire remonter du code en quantité alors on s'y prend en 2 fois...
+        $('#f_import_info').val(responseHTML);
+        // AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
         $.ajax
         (
           {
-            url : URL_IMPORT+responseJSON['value']+'_rapport.txt',
-            dataType : 'html', // Pas de JSON ici : on appelle un fichier texte !
+            url : URL_IMPORT+responseHTML+'_rapport.txt',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#msg_import').removeAttr('class').addClass('alerte').html('Échec de la connexion !');
+              $('#msg_import').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               $('#zone_action_deport button').prop('disabled',false);
               return false;
             },
             success : function(responseHTML)
             {
               initialiser_compteur();
-              $('#msg_import').removeAttr('class').html('&nbsp;');
+              $('#msg_import').removeAttr("class").html('&nbsp;');
               $('#table_import_analyse').html(responseHTML);
               $.fancybox( { 'href':'#zone_action_import' , onStart:function(){$('#zone_action_import').css("display","block");} , onClosed:function(){$('#zone_action_import').css("display","none");} , 'modal':true , 'minHeight':300 , 'centerOnScroll':true } );
               $('#zone_action_deport button').prop('disabled',false);
@@ -408,32 +401,33 @@ $(document).ready
       function()
       {
         $('#zone_action_import button').prop('disabled',true);
-        $('#ajax_msg_importer').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_importer').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_section='+'officiel_importer'+'&f_action='+'enregistrer_saisie_csv'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_import_info='+$('#f_import_info').val()+'&'+$('#form_hidden').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_importer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_importer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               $('#zone_action_import button').prop('disabled',false);
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==false)
+              var tab_infos = responseHTML.split(']¤[');
+              if( (tab_infos.length!=2) || (tab_infos[0]!='ok') )
               {
-                $('#ajax_msg_importer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_importer').removeAttr("class").addClass("alerte").html(tab_infos[0]);
                 $('#zone_action_import button').prop('disabled',false);
               }
               else
               {
                 $('#table_import_analyse').html('');
-                $('#ajax_msg_importer').removeAttr('class').addClass('valide').html(responseJSON['value']);
+                $('#ajax_msg_importer').removeAttr("class").addClass("valide").html(tab_infos[1]);
                 $('#fermer_zone_importer').prop('disabled',false);
               }
             }
@@ -455,9 +449,9 @@ $(document).ready
       '#fermer_zone_action_eleve',
       function()
       {
-        $('#zone_action_eleve').html("").hide(0);
+        $('#zone_action_eleve').html("&nbsp;").hide(0);
         $('#zone_action_deport').hide(0);
-        $('#msg_import').removeAttr('class').html('&nbsp;');
+        $('#msg_import').removeAttr("class").html('&nbsp;');
         $('#cadre_photo').hide(0);
         $('#cadre_statut , #table_accueil').show(0);
         return false;
@@ -478,11 +472,11 @@ $(document).ready
     (
       function()
       {
-        $('#zone_resultat_classe').html("");
+        $('#zone_resultat_classe').html("&nbsp;");
         var colspan = (memo_objet=='imprimer') ? 3 : 2 ;
         $('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
         $('#zone_action_classe , #zone_imprimer , #zone_voir_archive').hide(0);
-        $('#ajax_msg_imprimer , #ajax_msg_voir_archive').removeAttr('class').html("");
+        $('#ajax_msg_imprimer , #ajax_msg_voir_archive').removeAttr("class").html("");
         $('#cadre_statut , #table_accueil').show(0);
         return false;
       }
@@ -493,7 +487,7 @@ $(document).ready
       function()
       {
         $.fancybox.close();
-        $('#ajax_msg_importer').removeAttr('class').html('&nbsp;');
+        $('#ajax_msg_importer').removeAttr("class").html('&nbsp;');
         $('#zone_action_import button').prop('disabled',false);
         return false;
       }
@@ -512,27 +506,27 @@ $(document).ready
       memo_eleve = eleve_id;
       $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
       $('#zone_resultat_eleve').html('<label class="loader">En cours&hellip;</label>');
-      $('#msg_import').removeAttr('class').html('&nbsp;');
+      $('#msg_import').removeAttr("class").html('&nbsp;');
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'charger'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#zone_resultat_eleve').html('<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>');
+            $('#zone_resultat_eleve').html('<label class="alerte">Échec de la connexion !</label>');
             $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
             return false;
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
             $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-            if(responseJSON['statut']==false)
+            if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<h3>') )
             {
-              $('#zone_resultat_eleve').html('<label class="alerte">'+responseJSON['value']+'</label>');
+              $('#zone_resultat_eleve').html('<label class="alerte">'+responseHTML+'</label>');
             }
             else
             {
@@ -542,10 +536,15 @@ $(document).ready
               {
                 charger_photo_eleve();
               }
-              $('#zone_resultat_eleve').html(responseJSON['html']);
-              if( typeof(responseJSON['script']) !== 'undefined' )
+              var position_script = responseHTML.lastIndexOf('<SCRIPT>');
+              if(position_script==-1)
               {
-                eval( responseJSON['script'] );
+                $('#zone_resultat_eleve').html(responseHTML);
+              }
+              else
+              {
+                $('#zone_resultat_eleve').html( responseHTML.substring(0,position_script) );
+                eval( responseHTML.substring(position_script+8) );
               }
               if(memo_auto_next || memo_auto_prev)
               {
@@ -641,12 +640,12 @@ $(document).ready
       {
         if($('#f_mode').val()=='texte')
         {
-          $('#change_mode').removeAttr('class').addClass("texte").html('Interface détaillée');
+          $('#change_mode').removeAttr("class").addClass("texte").html('Interface détaillée');
           $('#f_mode').val('graphique');
         }
         else
         {
-          $('#change_mode').removeAttr('class').addClass("stats").html('Interface graphique');
+          $('#change_mode').removeAttr("class").addClass("stats").html('Interface graphique');
           $('#f_mode').val('texte');
         }
         var eleve_id = $('#go_selection_eleve option:selected').val();
@@ -664,7 +663,7 @@ $(document).ready
       '#saisir_deport',
       function()
       {
-        $('#msg_import').removeAttr('class').html("");
+        $('#msg_import').removeAttr("class").html("");
         $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
         $.ajax
         (
@@ -672,23 +671,23 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_section='+'officiel_importer'+'&f_action='+'generer_csv_vierge'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+              var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
               $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true} );
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,16)!='saisie_deportee_')
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
-                $('#export_file_saisie_deportee').attr("href", './force_download.php?fichier='+responseJSON['value'] );
+                $('#export_file_saisie_deportee').attr("href", './force_download.php?fichier='+responseHTML );
                 $.fancybox( { 'href':'#zone_action_deport' , onStart:function(){$('#zone_action_deport').css("display","block");} , onClosed:function(){$('#zone_action_deport').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
               }
             }
@@ -707,7 +706,7 @@ $(document).ready
       '#archiver_imprimer',
       function()
       {
-        $('#ajax_msg_archiver_imprimer').removeAttr('class').html("");
+        $('#ajax_msg_archiver_imprimer').removeAttr("class").html("");
         $.fancybox( { 'href':'#zone_archiver_imprimer' , onStart:function(){$('#zone_archiver_imprimer').css("display","block");} , onClosed:function(){$('#zone_archiver_imprimer').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
       }
     );
@@ -721,7 +720,7 @@ $(document).ready
       function()
       {
         $('#zone_archiver_imprimer button').prop('disabled',true);
-        $('#ajax_msg_archiver_imprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_archiver_imprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
         var f_action = $(this).attr('id');
         $.ajax
         (
@@ -729,23 +728,23 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+f_action+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_archiver_imprimer button').prop('disabled',false);
-              $('#ajax_msg_archiver_imprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_archiver_imprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#zone_archiver_imprimer button').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,3)!='<a ')
               {
-                $('#ajax_msg_archiver_imprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_archiver_imprimer').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#ajax_msg_archiver_imprimer').removeAttr('class').html(responseJSON['value']);
+                $('#ajax_msg_archiver_imprimer').removeAttr("class").html(responseHTML);
               }
             }
           }
@@ -773,23 +772,23 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+"1"+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+              var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
               $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true} );
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,3)!='ok;')
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
-                $.fancybox( '<h3>Test impression PDF finale</h3><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a target="_blank" href="'+responseJSON['value']+'"><span class="file file_pdf">Récupérer le test d\'impression du bilan officiel demandé.</span></a></li></ul></div>' , {'centerOnScroll':true} );
+                $.fancybox( '<h3>Test impression PDF finale</h3><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a target="_blank" href="'+responseHTML.substring(3)+'"><span class="file file_pdf">Récupérer le test d\'impression du bilan officiel demandé.</span></a></li></ul></div>' , {'centerOnScroll':true} );
               }
             }
           }
@@ -941,7 +940,7 @@ $(document).ready
         {
           if( !$.trim($('#f_appreciation').val()).length )
           {
-            $('#ajax_msg_'+memo_rubrique_type).removeAttr('class').addClass('erreur').html("Absence d'appréciation !");
+            $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Absence d'appréciation !");
             $('#f_appreciation').focus();
             return false;
           }
@@ -951,13 +950,13 @@ $(document).ready
           var note = parseFloat($('#f_moyenne').val(),10);
           if( isNaN(note) )
           {
-            $('#ajax_msg_'+memo_rubrique_type).removeAttr('class').addClass('erreur').html("Moyenne incorrecte !");
+            $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Moyenne incorrecte !");
             $('#f_moyenne').focus();
             return false;
           }
           if( (note<0) || ((note>40)&&(CONVERSION_SUR_20)) || ((note>200)&&(!CONVERSION_SUR_20)) ) // Le meilleur code de notation pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
           {
-            $('#ajax_msg_'+memo_rubrique_type).removeAttr('class').addClass('erreur').html("Valeur incorrecte !");
+            $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("erreur").html("Valeur incorrecte !");
             $('#f_moyenne').focus();
             return false;
           }
@@ -965,37 +964,37 @@ $(document).ready
         memo_auto_next = ($(this).attr('id')=='valider_'+memo_rubrique_type+'_suivant')   ? true : false ;
         memo_auto_prev = ($(this).attr('id')=='valider_'+memo_rubrique_type+'_precedent') ? true : false ;
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
-        $('#ajax_msg_'+memo_rubrique_type).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'enregistrer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_'+memo_rubrique_type).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
               {
-                $('#ajax_msg_'+memo_rubrique_type).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_'+memo_rubrique_type).removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
                 if(memo_rubrique_type=='appr')
                 {
-                  $('#ajax_msg_'+memo_rubrique_type).closest('td').html(responseJSON['value']);
+                  $('#ajax_msg_'+memo_rubrique_type).closest('td').html(responseHTML);
                 }
                 else if(memo_rubrique_type=='note')
                 {
-                  $('#ajax_msg_'+memo_rubrique_type).closest('tr').html(responseJSON['value']);
+                  $('#ajax_msg_'+memo_rubrique_type).closest('tr').html(responseHTML);
                 }
                 if(memo_auto_next) { $('#go_suivant_eleve').click(); }
                 if(memo_auto_prev) { $('#go_precedent_eleve').click(); }
@@ -1028,30 +1027,30 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'supprimer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
                 if(memo_rubrique_type=='appr')
                 {
-                  obj_bouton.closest('td').html(responseJSON['value']);
+                  obj_bouton.closest('td').html(responseHTML);
                 }
                 else if(memo_rubrique_type=='note')
                 {
-                  obj_bouton.closest('tr').html(responseJSON['value']);
+                  obj_bouton.closest('tr').html(responseHTML);
                 }
               }
             }
@@ -1082,24 +1081,24 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_note'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if( (responseHTML.substring(0,4)!='<div') && (responseHTML.substring(0,4)!='<td ') )
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
-                obj_bouton.closest('tr').html(responseJSON['value']);
+                obj_bouton.closest('tr').html(responseHTML);
               }
             }
           }
@@ -1118,41 +1117,41 @@ $(document).ready
         var listing_id = new Array(); $("#zone_chx_rubriques input[type=checkbox]:enabled:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_msg_recherche').removeAttr('class').addClass('erreur').html("Aucune rubrique cochée !");
+          $('#ajax_msg_recherche').removeAttr("class").addClass("erreur").html("Aucune rubrique cochée !");
           return false;
         }
         $('#f_listing_rubriques').val(listing_id);
         $('#zone_chx_rubriques button').prop('disabled',true);
-        $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(message);
+              var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+              $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(message);
               $('#zone_chx_rubriques button').prop('disabled',false);
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#zone_chx_rubriques button').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,14)!='<p class="ti">')
               {
-                $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
                 configurer_form_choix_classe();
                 masquer_element_navigation_choix_classe();
-                $('#ajax_msg_recherche').removeAttr('class').html('');
+                $('#ajax_msg_recherche').removeAttr("class").html('');
                 $('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
-                $('#zone_resultat_classe').html(responseJSON['value']);
+                $('#zone_resultat_classe').html(responseHTML);
                 $('#zone_chx_rubriques').hide(0);
                 $('#zone_action_classe').show(0);
               }
@@ -1168,28 +1167,28 @@ $(document).ready
 
     function imprimer(etape)
     {
-      $('#ajax_msg_imprimer').removeAttr('class').addClass('loader').html("En cours&hellip; Étape "+etape+"/4.");
+      $('#ajax_msg_imprimer').removeAttr("class").addClass("loader").html("En cours&hellip; Étape "+etape+"/4.");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : ( (etape==1) ? 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' : 'Erreur 500&hellip; Temps alloué insuffisant ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "max_execution_time".' ) ;
-            $('#ajax_msg_imprimer').removeAttr('class').addClass('alerte').html(message);
+            var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : ( (etape==1) ? 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' : 'Erreur 500&hellip; Temps alloué insuffisant ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "max_execution_time".' ) ;
+            $('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(message);
             $('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
             return false;
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==false)
+            if( ( (etape<4) && (responseHTML!='ok') ) || ( (etape==4) && (responseHTML.substring(0,4)!='<ul ') ) )
             {
               $('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
-              $('#ajax_msg_imprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(responseHTML);
             }
             else if(etape<4)
             {
@@ -1205,8 +1204,8 @@ $(document).ready
                 $('#id_'+tab_listing_id[key]).children('td:first').children('input').prop('checked',false);
                 $('#id_'+tab_listing_id[key]).children('td:last').html('Oui, le '+TODAY_FR);
               }
-              $('#ajax_msg_imprimer').removeAttr('class').html("");
-              $.fancybox( '<h3>Bilans PDF imprimés</h3>'+'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseJSON['value']+'</div>' , {'centerOnScroll':true} );
+              $('#ajax_msg_imprimer').removeAttr("class").html("");
+              $.fancybox( '<h3>Bilans PDF imprimés</h3>'+'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseHTML+'</div>' , {'centerOnScroll':true} );
             }
           }
         }
@@ -1220,7 +1219,7 @@ $(document).ready
         var listing_id = new Array(); $("#form_choix_eleves input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_msg_imprimer').removeAttr('class').addClass('erreur').html("Aucun élève coché !");
+          $('#ajax_msg_imprimer').removeAttr("class").addClass("erreur").html("Aucun élève coché !");
           return false;
         }
         $('#f_listing_eleves').val(listing_id);
@@ -1241,33 +1240,33 @@ $(document).ready
       $('#zone_'+memo_objet+' table tbody').html('<tr><td class="nu" colspan="'+colspan+'"></td></tr>');
       $('#zone_voir_archive table tbody').html('<tr><td class="nu" colspan="2"></td></tr>');
       $('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',true);
-      $('#ajax_msg_'+memo_objet).removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $('#ajax_msg_'+memo_objet).removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_'+memo_objet).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
             return false;
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==false)
+            if(responseHTML.substring(0,3)!='<tr')
             {
-              $('#ajax_msg_'+memo_objet).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_'+memo_objet).removeAttr("class").addClass("alerte").html(responseHTML);
               $('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
             }
             else
             {
               masquer_element_navigation_choix_classe();
-              $('#zone_'+memo_objet+' table tbody').html(responseJSON['value']);
-              $('#ajax_msg_'+memo_objet).removeAttr('class').html("");
+              $('#zone_'+memo_objet+' table tbody').html(responseHTML);
+              $('#ajax_msg_'+memo_objet).removeAttr("class").html("");
               $('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',false);
             }
           }
@@ -1350,25 +1349,25 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_page='+BILAN_TYPE+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#zone_resultat_classe').html('<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>');
+              $('#zone_resultat_classe').html('<label class="alerte">Échec de la connexion !</label>');
               $('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#form_choix_classe button , #form_choix_classe select').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,14)!='<p class="ti">')
               {
-                $('#zone_resultat_classe').html('<label class="alerte">'+responseJSON['value']+'</label>');
+                $('#zone_resultat_classe').html('<label class="alerte">'+responseHTML+'</label>');
               }
               else
               {
                 masquer_element_navigation_choix_classe();
-                $('#zone_resultat_classe').html(responseJSON['value']);
+                $('#zone_resultat_classe').html(responseHTML);
               }
             }
           }
@@ -1484,7 +1483,7 @@ $(document).ready
       function()
       {
         $('#section_corriger').html("");
-        $('#ajax_msg_signaler_corriger').removeAttr('class').html("");
+        $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
         $.fancybox.close();
         return false;
       }
@@ -1499,7 +1498,7 @@ $(document).ready
       function()
       {
         $('#zone_signaler_corriger button').prop('disabled',true);
-        $('#ajax_msg_signaler_corriger').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("loader").html("En cours&hellip;");
         var action  = $('#f_action').val();
         var prof_id = $('#f_destinataire_id').val();
         // Signaler la faute (signalement simple, ou signalement d'une correction)
@@ -1511,25 +1510,25 @@ $(document).ready
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
               data : 'csrf='+CSRF+'&'+$('#zone_signaler_corriger').serialize(),
-              dataType : 'json',
+              dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_msg_signaler_corriger').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
                 $('#zone_signaler_corriger button').prop('disabled',false);
                 return false;
               },
-              success : function(responseJSON)
+              success : function(responseHTML)
               {
                 initialiser_compteur();
                 $('#zone_signaler_corriger button').prop('disabled',false);
-                if(responseJSON['statut']==false)
+                if(responseHTML!='ok')
                 {
-                  $('#ajax_msg_signaler_corriger').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                  $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html(responseHTML);
                   return false;
                 }
                 else if(action=='signaler_faute')
                 {
-                  $('#ajax_msg_signaler_corriger').removeAttr('class').html("");
+                  $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
                   $('#annuler_signaler_corriger').click();
                   return false;
                 }
@@ -1546,26 +1545,26 @@ $(document).ready
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
               data : 'csrf='+CSRF+'&f_section='+'officiel_saisir'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
-              dataType : 'json',
+              dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_msg_signaler_corriger').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
                 $('#zone_signaler_corriger button').prop('disabled',false);
                 return false;
               },
-              success : function(responseJSON)
+              success : function(responseHTML)
               {
                 initialiser_compteur();
                 $('#zone_signaler_corriger button').prop('disabled',false);
-                if(responseJSON['statut']==false)
+                if(responseHTML.substring(0,4)!='<ok>')
                 {
-                  $('#ajax_msg_signaler_corriger').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                  $('#ajax_msg_signaler_corriger').removeAttr("class").addClass("alerte").html(responseHTML);
                   return false;
                 }
                 else
                 {
-                  $('#appr_'+memo_rubrique_id+'_'+prof_id).find('div.appreciation').html(responseJSON['value']);
-                  $('#ajax_msg_signaler_corriger').removeAttr('class').html("");
+                  $('#appr_'+memo_rubrique_id+'_'+prof_id).find('div.appreciation').html(responseHTML.substring(4));
+                  $('#ajax_msg_signaler_corriger').removeAttr("class").html("");
                   $('#annuler_signaler_corriger').click();
                 }
               }

@@ -44,12 +44,12 @@ if( ($action=='basculer') && $user_id )
   list( $_SESSION['USER_SWITCH_ID'] , $user_liste ) = DB_STRUCTURE_SWITCH::DB_recuperer_et_verifier_listing_comptes_associes( $_SESSION['USER_ID'] , $_SESSION['USER_SWITCH_ID'] );
   if(!$_SESSION['USER_SWITCH_ID'])
   {
-      Json::end( FALSE , 'Aucune liaison de compte vous concernant n\'a été trouvée !' );
+      exit_json( FALSE , 'Aucune liaison de compte vous concernant n\'a été trouvée !' );
   }
   $tab_user = explode(',',$user_liste);
   if( !in_array( $user_id , $tab_user ) )
   {
-    Json::end( FALSE , 'Le compte indiqué n\'est pas relié au votre !' );
+    exit_json( FALSE , 'Le compte indiqué n\'est pas relié au votre !' );
   }
   // C'est ok
   $auth_DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur( 'switch'  ,$user_id );
@@ -61,7 +61,7 @@ if( ($action=='basculer') && $user_id )
   $BASE = $_SESSION['BASE'];
   Session::close__open_new__init( FALSE /*memo_GET*/ );
   SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
-  Json::end( TRUE );
+  exit_json( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,29 +70,31 @@ if( ($action=='basculer') && $user_id )
 
 if( ($action=='ajouter') && ($login!='') && ($password!='') )
 {
+  // initialisation
+  $auth_resultat = 'Erreur avec les données transmises !';
   // Protection contre les attaques par force brute (laissé même pour cette page requiérant une authentification car la réponse en cas d'erreur de mdp y fait référence)
   if(!isset($_SESSION['FORCEBRUTE'][$PAGE]))
   {
-    Json::end( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
+    exit_json( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
   }
   else if( $_SERVER['REQUEST_TIME'] - $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] < $_SESSION['FORCEBRUTE'][$PAGE]['DELAI'] )
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Sécurité : patienter '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s avant une nouvelle tentative.' );
+    exit_json( FALSE , 'Sécurité : patienter '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s avant une nouvelle tentative.' );
   }
   // Pour un utilisateur d'établissement, y compris un administrateur
   if($login==$_SESSION['USER_LOGIN'])
   {
-    Json::end( FALSE , 'Saisir les identifiants d\'un <span class="u">autre compte</span>, pas celui en cours !' );
+    exit_json( FALSE , 'Saisir les identifiants d\'un <span class="u">autre compte</span>, pas celui en cours !' );
   }
-  list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_utilisateur( $_SESSION['BASE'] , $login , $password , 'normal' /*mode_connection*/ );
-  if($auth_SUCCESS===FALSE)
+  list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $_SESSION['BASE'] , $login , $password , 'normal' /*mode_connection*/ );
+  if($auth_resultat!='ok')
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['DELAI']++;
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , $auth_DATA );
+    exit_json( FALSE , $auth_resultat );
   }
-  $user_id = $auth_DATA['user_id'];
+  $user_id = $auth_DB_ROW['user_id'];
   // Par sécurité et pour actualiser une éventuelle liaison (dé)faite depuis un autre compte, on ne stocke en session que l'identifiant de la clef des associations
   // La méthode appelée ci-dessous effectue de multiples vérifications complémentaires
   list( $_SESSION['USER_SWITCH_ID'] , $user_liste ) = DB_STRUCTURE_SWITCH::DB_recuperer_et_verifier_listing_comptes_associes( $_SESSION['USER_ID'] , $_SESSION['USER_SWITCH_ID'] );
@@ -121,7 +123,7 @@ if( ($action=='ajouter') && ($login!='') && ($password!='') )
     }
     else
     {
-      Json::end( FALSE , 'Ce compte est déjà relié au votre !' );
+      exit_json( FALSE , 'Ce compte est déjà relié au votre !' );
     }
     $tab_user[] = $user_id_add;
     sort( $tab_user , SORT_NUMERIC );
@@ -129,7 +131,7 @@ if( ($action=='ajouter') && ($login!='') && ($password!='') )
     DB_STRUCTURE_SWITCH::DB_modifier_comptes_associes( $_SESSION['USER_SWITCH_ID'] , $user_liste );
   }
   // Afficher le retour
-  Json::end( TRUE );
+  exit_json( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,13 +145,13 @@ if( ($action=='supprimer') && $user_id )
   list( $_SESSION['USER_SWITCH_ID'] , $user_liste ) = DB_STRUCTURE_SWITCH::DB_recuperer_et_verifier_listing_comptes_associes( $_SESSION['USER_ID'] , $_SESSION['USER_SWITCH_ID'] );
   if(!$_SESSION['USER_SWITCH_ID'])
   {
-      Json::end( FALSE , 'Aucune liaison de compte vous concernant n\'a été trouvée !' );
+      exit_json( FALSE , 'Aucune liaison de compte vous concernant n\'a été trouvée !' );
   }
   $tab_user = explode(',',$user_liste);
   $user_key = array_search( $user_id , $tab_user );
   if( $user_key === FALSE )
   {
-    Json::end( FALSE , 'Le compte indiqué n\'est pas relié au votre !' );
+    exit_json( FALSE , 'Le compte indiqué n\'est pas relié au votre !' );
   }
   // Ok pour supprimer la liaison
   unset($tab_user[$user_key]);
@@ -166,13 +168,13 @@ if( ($action=='supprimer') && $user_id )
     DB_STRUCTURE_SWITCH::DB_modifier_comptes_associes( $_SESSION['USER_SWITCH_ID'] , $user_liste );
   }
   // Afficher le retour
-  Json::end( TRUE );
+  exit_json( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+// On ne devrait pas en arriver là !
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit_json( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

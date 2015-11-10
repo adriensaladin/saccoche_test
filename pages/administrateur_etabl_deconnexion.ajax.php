@@ -41,13 +41,13 @@ if( $url_deconnexion!==NULL )
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['DECONNEXION_ADRESSE_REDIRECTION'] = $url_deconnexion ;
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

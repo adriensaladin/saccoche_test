@@ -82,7 +82,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
     }
     if(!$is_enfant_legitime)
     {
-      Json::end( FALSE , 'Enfant non rattaché à votre compte parent !' );
+      exit('Enfant non rattaché à votre compte parent !');
     }
   }
 }
@@ -107,7 +107,7 @@ if(
     !$groupe_id || !$groupe_type || !$eleve_id || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$eleves_ordre || !$echelle
   )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('bilan_chronologique');
@@ -144,7 +144,7 @@ else
   $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'Le regroupement et la période ne sont pas reliés !' );
+    exit('La classe et la période ne sont pas reliées !');
   }
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
@@ -153,7 +153,7 @@ else
 }
 if($date_mysql_debut>$date_mysql_fin)
 {
-  Json::end( FALSE , 'La date de début est postérieure à la date de fin !' );
+  exit('La date de début est postérieure à la date de fin !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,7 +181,7 @@ if($objet=='selection')
 $item_nb = count($tab_item);
 if( !$item_nb && (in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve'))) ) // Dans le cas d'un professeur / directeur, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-  Json::end( FALSE , 'Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !' );
+  exit('Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !');
 }
 $tab_liste_item = array_keys($tab_item);
 $liste_item_id  = implode(',',$tab_liste_item);
@@ -329,7 +329,7 @@ if(count($tab_date))
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On fabrique les options js pour le graphique
+// On fabrique les options js pour le diagramme graphique
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // $tab_graph_series n'est pas rangé avec des matières classées comme paramétré par l'admin car on avait besoin de récupérer les scores dans l'ordre chnonologique
@@ -349,11 +349,11 @@ else
   $titre = $tab_objet[$objet].' - '.$matiere_nom.' - '.$tab_indicateur[$indicateur] ;
 }
 
-Json::add_row( 'titre' , $titre );
+$js_graph = '<H3>'.$titre.'<SCRIPT>';
 
 // Échelle sur l'axe des ordonnées
 $min_max = ($echelle=='fixe') ? 'min: 0, max: '.$max_value : 'minPadding: 0, maxPadding: 0' ;
-Json::add_row( 'script' , 'ChartOptions.yAxis = [ { '.$min_max.', title: null } , { '.$min_max.', title: null, opposite: true } ];' );
+$js_graph .= 'ChartOptions.yAxis = [ { '.$min_max.', title: null } , { '.$min_max.', title: null, opposite: true } ];';
 
 // Séries de valeurs
 $tab_graph_series = array();
@@ -374,13 +374,13 @@ if(count($tab_graph_data))
     }
   }
 }
-Json::add_row( 'script' , 'ChartOptions.series = ['.implode(',',$tab_graph_series).'];' );
-Json::add_row( 'script' , 'graphique = new Highcharts.Chart(ChartOptions);' );
+$js_graph .= 'ChartOptions.series = ['.implode(',',$tab_graph_series).'];';
+$js_graph .= 'graphique = new Highcharts.Chart(ChartOptions);';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( TRUE );
+exit($js_graph);
 
 ?>

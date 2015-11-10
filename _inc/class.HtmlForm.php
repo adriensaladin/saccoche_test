@@ -260,7 +260,7 @@ class HtmlForm
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl();
     if(is_string($DB_TAB))
     {
-      $affichage = $DB_TAB;
+      echo $DB_TAB;
     }
     else
     {
@@ -294,7 +294,7 @@ class HtmlForm
     $DB_TAB = ($only_profs) ? DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl() : DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl( 1 /*statut*/ );
     if(is_string($DB_TAB))
     {
-      $affichage = $DB_TAB;
+      echo $DB_TAB;
     }
     else
     {
@@ -343,7 +343,7 @@ class HtmlForm
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
     if(is_string($DB_TAB))
     {
-      $affichage = $DB_TAB;
+      echo $DB_TAB;
     }
     else
     {

@@ -45,7 +45,7 @@ if( ($action=='ajouter') && $denomination && $nom && $prenom && $courriel && $co
   list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
-    Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+    exit('Erreur avec le domaine "'.$mail_domaine.'" !');
   }
   // Verifier que la liste des connecteurs commence et se termine par une virgule (corriger sinon)
   $connecteurs = (mb_substr($connecteurs,0,1)==',') ? $connecteurs : ','.$connecteurs ;
@@ -59,23 +59,23 @@ if( ($action=='ajouter') && $denomination && $nom && $prenom && $courriel && $co
   $courriel_bilan = Sesamail::mail( $courriel , 'Création compte partenaire ENT' , $texte );
   if(!$courriel_bilan)
   {
-    Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+    exit('Erreur lors de l\'envoi du courriel !');
   }
   // Afficher le retour
-  Json::add_str('<tr id="id_'.$partenaire_id.'" class="new">');
-  Json::add_str(  '<td>'.$partenaire_id.'</td>');
-  Json::add_str(  '<td>'.html($denomination).'</td>');
-  Json::add_str(  '<td>'.html($nom).'</td>');
-  Json::add_str(  '<td>'.html($prenom).'</td>');
-  Json::add_str(  '<td>'.html($courriel).'</td>');
-  Json::add_str(  '<td>'.html($connecteurs).'</td>');
-  Json::add_str(  '<td class="nu">');
-  Json::add_str(    '<q class="modifier" title="Modifier ce partenaire."></q>');
-  Json::add_str(    '<q class="initialiser_mdp" title="Générer un nouveau mdp pour ce partenaire."></q>');
-  Json::add_str(    '<q class="supprimer" title="Retirer ce partenaire."></q>');
-  Json::add_str(  '</td>');
-  Json::add_str('</tr>');
-  Json::end( TRUE );
+  echo'<tr id="id_'.$partenaire_id.'" class="new">';
+  echo  '<td>'.$partenaire_id.'</td>';
+  echo  '<td>'.html($denomination).'</td>';
+  echo  '<td>'.html($nom).'</td>';
+  echo  '<td>'.html($prenom).'</td>';
+  echo  '<td>'.html($courriel).'</td>';
+  echo  '<td>'.html($connecteurs).'</td>';
+  echo  '<td class="nu">';
+  echo    '<q class="modifier" title="Modifier ce partenaire."></q>';
+  echo    '<q class="initialiser_mdp" title="Générer un nouveau mdp pour ce partenaire."></q>';
+  echo    '<q class="supprimer" title="Retirer ce partenaire."></q>';
+  echo  '</td>';
+  echo'</tr>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ if( ($action=='modifier') && $partenaire_id && $denomination && $nom && $prenom 
   list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
-    Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+    exit('Erreur avec le domaine "'.$mail_domaine.'" !');
   }
   // Verifier que la liste des connecteurs commence et se termine par une virgule (corriger sinon)
   $connecteurs = (mb_substr($connecteurs,0,1)==',') ? $connecteurs : ','.$connecteurs ;
@@ -96,18 +96,18 @@ if( ($action=='modifier') && $partenaire_id && $denomination && $nom && $prenom 
   // Mettre à jour l'enregistrement
   DB_WEBMESTRE_WEBMESTRE::DB_modifier_partenaire_conventionne( $partenaire_id , $denomination , $nom , $prenom , $courriel , $connecteurs );
   // Afficher le retour
-  Json::add_str('<td>'.$partenaire_id.'</td>');
-  Json::add_str('<td>'.html($denomination).'</td>');
-  Json::add_str('<td>'.html($nom).'</td>');
-  Json::add_str('<td>'.html($prenom).'</td>');
-  Json::add_str('<td>'.html($courriel).'</td>');
-  Json::add_str('<td>'.html($connecteurs).'</td>');
-  Json::add_str('<td class="nu">');
-  Json::add_str(  '<q class="modifier" title="Modifier ce partenaire."></q>');
-  Json::add_str(  '<q class="initialiser_mdp" title="Générer un nouveau mdp pour ce partenaire."></q>');
-  Json::add_str(  '<q class="supprimer" title="Retirer ce partenaire."></q>');
-  Json::add_str('</td>');
-  Json::end( TRUE );
+  echo'<td>'.$partenaire_id.'</td>';
+  echo'<td>'.html($denomination).'</td>';
+  echo'<td>'.html($nom).'</td>';
+  echo'<td>'.html($prenom).'</td>';
+  echo'<td>'.html($courriel).'</td>';
+  echo'<td>'.html($connecteurs).'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier ce partenaire."></q>';
+  echo  '<q class="initialiser_mdp" title="Générer un nouveau mdp pour ce partenaire."></q>';
+  echo  '<q class="supprimer" title="Retirer ce partenaire."></q>';
+  echo'</td>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,12 +125,13 @@ if( ($action=='initialiser_mdp') && $partenaire_id && $denomination && $nom && $
   $courriel_bilan = Sesamail::mail( $courriel , 'Modification mdp compte partenaire ENT' , $courriel_contenu );
   if(!$courriel_bilan)
   {
-    Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+    exit('Erreur lors de l\'envoi du courriel !');
   }
   // On affiche le retour
-  Json::add_str('Le mot de passe de<br />'.html($prenom.' '.$nom).',<br />partenaire conventionné<br />"'.html($denomination).'",<br />vient d\'être réinitialisé.<br /><br />');
-  Json::add_str('Les nouveaux identifiants<br />ont été envoyés<br />à son adresse de courriel<br />'.html($courriel).'.');
-  Json::end( TRUE );
+  echo'<ok>';
+  echo'Le mot de passe de<BR />'.html($prenom.' '.$nom).',<BR />partenaire conventionné<BR />"'.html($denomination).'",<BR />vient d\'être réinitialisé.<BR /><BR />';
+  echo'Les nouveaux identifiants<BR />ont été envoyés<BR />à son adresse de courriel<BR />'.html($courriel).'.';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,13 +143,13 @@ if( ($action=='supprimer') && $partenaire_id )
   // Supprimer l'enregistrement
   DB_WEBMESTRE_WEBMESTRE::DB_supprimer_partenaire_conventionne($partenaire_id);
   // Afficher le retour
-  Json::end( TRUE );
+  exit('<td>ok</td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+// On ne devrait pas en arriver là !
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

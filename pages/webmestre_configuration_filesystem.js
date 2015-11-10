@@ -39,7 +39,7 @@ $(document).ready
       function()
       {
         $('button').prop('disabled',true);
-        $('#ajax_umask').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_umask').removeAttr("class").addClass("loader").html("En cours&hellip;");
         var umask = $('#select_umask option:selected').val();
         $.ajax
         (
@@ -47,21 +47,17 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=choix_umask'+'&f_umask='+umask,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_umask').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_umask').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               $('button').prop('disabled',false);
-              if(responseJSON['statut']==false)
-              {
-                $('#ajax_umask').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-              }
-              else
+              if(responseHTML=='ok')
               {
                 var tab_chmod = new Array();
                 tab_chmod['000'] = '777 / 666';
@@ -69,8 +65,12 @@ $(document).ready
                 tab_chmod['022'] = '755 / 644';
                 tab_chmod['026'] = '751 / 640';
                 $(info_chmod).html(tab_chmod[umask]);
-                $('#ajax_umask').removeAttr('class').addClass('valide').html('Choix enregistré !');
+                $('#ajax_umask').removeAttr("class").addClass("valide").html('Choix enregistré !');
                 initialiser_compteur();
+              }
+              else
+              {
+                $('#ajax_umask').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               return false;
             }
@@ -88,32 +88,33 @@ $(document).ready
       function()
       {
         $('button').prop('disabled',true);
-        $('#ajax_chmod').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_chmod').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=appliquer_chmod',
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_chmod').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_chmod').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               $('button').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              var tab_infos = responseHTML.split(']¤[');
+              if( (tab_infos.length!=2) || (tab_infos[0]!='') )
               {
-                $('#ajax_chmod').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_chmod').removeAttr("class").addClass("alerte").html(tab_infos[0]);
                 return false;
               }
               else
               {
-                $('#ajax_chmod').removeAttr('class').addClass('valide').html('Procédure terminée !');
-                $.fancybox( { 'href':responseJSON['value'] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+                $('#ajax_chmod').removeAttr("class").addClass("valide").html('Procédure terminée !');
+                $.fancybox( { 'href':tab_infos[1] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
                 initialiser_compteur();
               }
             }
@@ -131,32 +132,33 @@ $(document).ready
       function()
       {
         $('button').prop('disabled',true);
-        $('#ajax_droit').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_droit').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=verif_droits',
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_droit').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_droit').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               $('button').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              var tab_infos = responseHTML.split(']¤[');
+              if( (tab_infos.length!=2) || (tab_infos[0]!='') )
               {
-                $('#ajax_droit').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_droit').removeAttr("class").addClass("alerte").html(tab_infos[0]);
                 return false;
               }
               else
               {
-                $('#ajax_droit').removeAttr('class').addClass('valide').html('Vérification terminée !');
-                $.fancybox( { 'href':responseJSON['value'] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+                $('#ajax_droit').removeAttr("class").addClass("valide").html('Vérification terminée !');
+                $.fancybox( { 'href':tab_infos[1] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
                 initialiser_compteur();
               }
             }

@@ -421,14 +421,14 @@ class PDF extends FPDF
  * Consulter  http://www.fpdf.org/fr/script/script33.php
 **/
 
-  function SetDash($black=NULL, $white=NULL)
-  {
-    if($black!==NULL)
-      $s=sprintf('[%.3F %.3F] 0 d',$black*$this->k,$white*$this->k);
-    else
-      $s='[] 0 d';
-    $this->_out($s);
-  }
+function SetDash($black=NULL, $white=NULL)
+{
+  if($black!==NULL)
+    $s=sprintf('[%.3F %.3F] 0 d',$black*$this->k,$white*$this->k);
+  else
+    $s='[] 0 d';
+  $this->_out($s);
+}
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Attributs de la classe (équivalents des "variables")
@@ -609,7 +609,7 @@ class PDF extends FPDF
 
   public function __set($nom,$valeur)
   {
-    $this->$nom = $valeur;
+      $this->$nom = $valeur;
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

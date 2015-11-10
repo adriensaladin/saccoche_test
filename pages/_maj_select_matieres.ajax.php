@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "f_matiere"
+// Mettre à jour l'élément de formulaire "f_eleve" et le renvoyer en HTML
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -36,10 +36,8 @@ $multiple = (empty($_POST['f_multiple'])) ? FALSE                              :
 
 if(!$groupe)
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
-
-// Autres valeurs à récupérer ou à définir.
 
 $select_nom   = ($multiple) ? 'f_matiere' : FALSE ;
 $option_first = ($multiple) ? FALSE       : ''    ;
@@ -47,6 +45,6 @@ $selection    = ($multiple) ? TRUE        : $matiere ;
 
 // Affichage du retour.
 
-Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe($groupe) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 
 ?>

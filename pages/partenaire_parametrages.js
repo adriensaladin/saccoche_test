@@ -48,33 +48,33 @@ $(document).ready
       function()
       {
         $("button").prop('disabled',true);
-        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=delete_logo',
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("button").prop('disabled',false);
-              $('#ajax_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_upload').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               $("button").prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,2)!='ok')
               {
-                $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
                 initialiser_compteur();
-                $('#ajax_upload').removeAttr('class').html('');
-                $('#image_logo').attr('src',responseJSON['value']);
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+                $('#ajax_upload').removeAttr("class").html('');
+                $('#image_logo').attr('src',responseHTML.substring(3,responseHTML.length));
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
               }
             }
           }
@@ -93,7 +93,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_action':'upload_logo'},
         autoSubmit: true,
-        responseType: 'json',
+        responseType: "html",
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -103,7 +103,7 @@ $(document).ready
     function changer_fichier(fichier_nom,fichier_extension)
     {
       $("button").prop('disabled',true);
-      $('#ajax_upload').removeAttr('class').html('&nbsp;');
+      $('#ajax_upload').removeAttr("class").html('&nbsp;');
       return true;
     }
 
@@ -112,36 +112,36 @@ $(document).ready
       if (fichier_nom==null || fichier_nom.length<5)
       {
         $("button").prop('disabled',false);
-        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ('.bmp.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
         $("button").prop('disabled',false);
-        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png).');
+        $('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png).');
         return false;
       }
       else
       {
-        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
-      $("button").prop('disabled',false);
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
-      if(responseJSON['statut']==false)
+      if(responseHTML.substring(0,2)!='ok')
       {
-        $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $("button").prop('disabled',false);
+        $('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_upload').removeAttr('class').html('&nbsp;');
-        $('#image_logo').attr('src',responseJSON['value']);
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+        $("button").prop('disabled',false);
+        $('#ajax_upload').removeAttr("class").html('&nbsp;');
+        $('#image_logo').attr('src',responseHTML.substring(3,responseHTML.length));
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
       }
     }
 
@@ -171,7 +171,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -180,7 +180,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -202,12 +202,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr('class').html("");
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         $("button").prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -216,22 +216,22 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $("button").prop('disabled',false);
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseJSON)
+    function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
       $("button").prop('disabled',false);
-      if(responseJSON['statut']==true)
+      if(responseHTML.substring(0,2)=='ok')
       {
-        $('#ajax_msg').removeAttr('class').addClass('valide').html("Données enregistrées !");
-        $('#resultat').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr("class").addClass("valide").html("Données enregistrées !");
+        $('#resultat').html(responseHTML.substring(3,responseHTML.length));
       }
       else
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
       }
     }
 

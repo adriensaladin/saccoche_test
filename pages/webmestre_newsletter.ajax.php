@@ -63,7 +63,7 @@ if( ($action=='envoyer') && $titre && $contenu && $nb_bases )
   }
   // Retour
   $max = 1 + floor($nb_bases/$pack) + 1 ; // La dernière étape consistera uniquement à vider la session temporaire
-  Json::end( TRUE , $max );
+  exit('ok-'.$max);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,15 +87,15 @@ if( ($action=='envoyer') && $num && $max && ($num<$max) )
     $courriel_bilan = Sesamail::mail( $contact_courriel , $_SESSION['tmp']['titre'] , $texte );
     if(!$courriel_bilan)
     {
-      Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+      exit('Erreur lors de l\'envoi du courriel !');
     }
   }
-  Json::end( TRUE );
+  exit('ok');
 }
 if( ($action=='envoyer') && $num && $max && ($num==$max) )
 {
   unset($_SESSION['tmp']);
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,13 +108,13 @@ if( ($action=='supprimer') && $nb_bases )
   {
     Webmestre::supprimer_multi_structure($base_id);
   }
-  Json::end( TRUE );
+  exit('<ok>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

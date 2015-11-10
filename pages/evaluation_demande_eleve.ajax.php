@@ -44,7 +44,7 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id && ($prof_i
   $nb_suppression = DB_STRUCTURE_DEMANDE::DB_supprimer_demande_precise_id($demande_id);
   if(!$nb_suppression)
   {
-    Json::end( FALSE , 'La demande transmise a déjà été supprimée !' );
+    exit('La demande transmise a déjà été supprimée !');
   }
   // Récupérer la référence et le nom de l'item
   $DB_ROW = DB_STRUCTURE_DEMANDE::DB_recuperer_item_infos($item_id);
@@ -87,7 +87,7 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id && ($prof_i
     }
   }
   // Affichage du retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,13 +110,13 @@ if( ($action=='actualiser_score') && $demande_id && $item_id && ($score>-2) )
     DB_STRUCTURE_DEMANDE::DB_modifier_demande_score( $demande_id , $score_new_bdd );
   }
   $score_retour = str_replace( '</td>' , ' <q class="actualiser" title="Actualiser le score (enregistré lors de la demande)."></q></td>' , Html::td_score( $score_new , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
-  Json::end( TRUE , $score_retour );
+  exit($score_retour);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

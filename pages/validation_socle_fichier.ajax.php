@@ -59,7 +59,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
   if(!count($tab_validations))
   {
     $positive = $only_positives ? 'positive ' : '' ;
-    Json::end( FALSE , 'Aucune validation '.$positive.'d\'élève trouvée !');
+    exit('Erreur : aucune validation '.$positive.'d\'élève trouvée !');
   }
   // Données élèves
   $tab_eleves     = array(); // [user_id] => array(nom,prenom,sconet_id) Ordonné par classe et alphabet.
@@ -68,7 +68,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
   if(empty($DB_TAB))
   {
     $identifiant = $only_sconet_id ? 'n\'ont pas d\'identifiant Sconet ou ' : '' ;
-    Json::end( FALSE , 'Les élèves trouvés '.$identifiant.'sont anciens !');
+    exit('Erreur : les élèves trouvés '.$identifiant.'sont anciens !');
   }
   foreach($DB_TAB as $DB_ROW)
   {
@@ -157,7 +157,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
     $xml = ServeurCommunautaire::signer_exportLPC( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $xml ); // fonction sur le modèle de envoyer_arborescence_XML()
     if(substr($xml,0,5)!='<?xml')
     {
-      Json::end( FALSE , html($xml) );
+      exit(html($xml));
     }
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $xml );
     $fichier_lien = './force_download.php?fichier='.$fichier_nom;
@@ -167,11 +167,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
     $xml.= '  </donnees>'."\r\n";
     $xml.= '</sacoche>'."\r\n";
     // L'export pour SACoche on peut le zipper (le gain est très significatif : facteur 40 à 50 !)
-    $result = FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_nom , 'import_validations.xml' , $xml );
-    if($result!==TRUE)
-    {
-      Json::end( FALSE , $result );
-    }
+    FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_nom , 'import_validations.xml' , $xml );
     $fichier_lien = URL_DIR_EXPORT.$fichier_nom;
   }
   // Afficher le retour
@@ -179,14 +175,14 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
   $sp = ($nb_piliers>1) ? 's' : '' ;
   $si = ($nb_items>1)   ? 's' : '' ;
   $in = $only_positives ? '' : '(in)-' ;
-  Json::add_str('<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>'.NL);
-  Json::add_str('<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>'.NL);
+  echo'<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>'.NL;
+  echo'<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>'.NL;
   if($action=='export_lpc')
   {
-    Json::add_str('<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>'.NL);
+    echo'<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>'.NL;
   }
-  Json::add_str('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>'.NL);
-  Json::end( TRUE );
+  echo'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>'.NL;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -195,21 +191,19 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
 
 if( in_array( $action , array('import_sacoche','import_compatible') ) )
 {
-  // Récupération du fichier
   // Si c'est un fichier zippé, on considère alors que c'est un zip devant venir de SACoche, et contenant import_validations.xml
   $fichier_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('xml','zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'import_validations.xml' /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
-  // On passe au contenu
   $fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
   $fichier_contenu = To::deleteBOM(To::utf8($fichier_contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $xml = @simplexml_load_string($fichier_contenu);
   if($xml===FALSE)
   {
-    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !');
+    exit('Erreur : le fichier transmis n\'est pas un XML valide !');
   }
   // On extrait les infos du XML
   $tab_eleve_fichier = array();
@@ -381,17 +375,12 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
       }
     }
   }
-  // Pour le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
-  $fichier_nom  = 'validations_'.$action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
-  $fichier_contenu = '';
-  // On complète et on enregistre le bilan
-  $fichier_contenu .= '<li><label class="valide">Fichier d\'import traité.</label></li>'.NL;
-  $fichier_contenu .= $lignes_modifier;
-  $fichier_contenu .= $lignes_inchanger;
-  $fichier_contenu .= $lignes_ignorer;
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $fichier_contenu );
-  // On affiche le retour
-  Json::end( TRUE , URL_DIR_IMPORT.$fichier_nom );
+  // Afficher le retour
+  echo'<li><label class="valide">Fichier d\'import traité.</label></li>'.NL;
+  echo $lignes_modifier;
+  echo $lignes_inchanger;
+  echo $lignes_ignorer;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -400,13 +389,13 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 
 if(empty($_POST))
 {
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

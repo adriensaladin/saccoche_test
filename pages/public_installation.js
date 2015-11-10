@@ -40,30 +40,32 @@ $(document).ready
       'a.step1',
       function()
       {
-        $("#step li").removeAttr('class');
+        $("#step li").removeAttr("class");
         $("#step1").addClass("on");
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_step=1',
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,6)!='<label')
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#zone_consignes').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").html('&nbsp;');
+                $('#form_start').html(responseHTML);
+                $('#form_type_install').html('');
                 $('#form_info_heberg').html('');
                 $('#form_param_mysql').html('');
               }
@@ -83,30 +85,32 @@ $(document).ready
       'a.step2',
       function()
       {
-        $("#step li").removeAttr('class');
+        $("#step li").removeAttr("class");
         $("#step2").addClass("on");
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_step=2',
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,6)!='<label')
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#zone_consignes').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").html('&nbsp;');
+                $('#form_start').html(responseHTML);
+                $('#form_type_install').html('');
                 $('#form_info_heberg').html('');
                 $('#form_param_mysql').html('');
               }
@@ -126,30 +130,32 @@ $(document).ready
       'a.step3',
       function()
       {
-        $("#step li").removeAttr('class');
+        $("#step li").removeAttr("class");
         $("#step3").addClass("on");
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_step=3',
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,9)!='<p><label')
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#zone_consignes').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").html('&nbsp;');
+                $('#form_start').html('');
+                $('#form_type_install').html(responseHTML);
                 $('#form_info_heberg').html('');
                 $('#form_param_mysql').html('');
                 $('#f_installation').focus();
@@ -171,31 +177,33 @@ $(document).ready
       function()
       {
         var f_installation = $(this).attr('id');
-        $("#step li").removeAttr('class');
+        $("#step li").removeAttr("class");
         $("#step4").addClass("on");
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_step=4'+'&f_installation='+f_installation,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,10)!='<fieldset>')
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#zone_consignes').html('');
-                $('#form_info_heberg').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").html('&nbsp;');
+                $('#form_start').html('');
+                $('#form_type_install').html('');
+                $('#form_info_heberg').html(responseHTML);
                 $('#form_param_mysql').html('');
                 $('#f_denomination').focus();
               }
@@ -254,7 +262,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -263,7 +271,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -285,12 +293,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_info_heberg_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr('class').html("");
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
       var readytogo = validation_info_heberg.form();
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -299,20 +307,21 @@ $(document).ready
     function retour_form_info_heberg_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_info_heberg_valide(responseJSON)
+    function retour_form_info_heberg_valide(responseHTML)
     {
       $('button').prop('disabled',false);
-      if(responseJSON['statut']==false)
+      if(responseHTML.substring(0,6)=='Erreur')
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        $('#zone_consignes').html(responseJSON['value']);
+        $('#form_start').html(responseHTML);
+        $('#form_type_install').html('');
         $('#form_info_heberg').html('');
         $('#form_param_mysql').html('');
       }
@@ -328,62 +337,27 @@ $(document).ready
       'a.step5',
       function()
       {
-        $("#step li").removeAttr('class');
+        $("#step li").removeAttr("class");
         $("#step5").addClass("on");
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_step=5',
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              $('#zone_consignes').html(responseJSON['value']);
+              $('#form_start').html('');
+              $('#form_type_install').html('');
               $('#form_info_heberg').html('');
-              $('#form_param_mysql').html();
-            }
-          }
-        );
-      }
-    );
-
-    // ********************
-    // * Étape 5 -> Étape 6
-    // ********************
-
-    $(document).on
-    (
-      'click',
-      'a.step6',
-      function()
-      {
-        $("#step li").removeAttr('class');
-        $("#step6").addClass("on");
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_step=6',
-            dataType : 'json',
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-              return false;
-            },
-            success : function(responseJSON)
-            {
-              $('#zone_consignes').html('');
-              $('#form_info_heberg').html('');
-              $('#form_param_mysql').html(responseJSON['value']);
+              $('#form_param_mysql').html(responseHTML);
               $('#f_host').focus();
             }
           }
@@ -392,7 +366,7 @@ $(document).ready
     );
 
     // ********************
-    // * Étape 6|61 -> Étape 61|62
+    // * Étape 5|51 -> Étape 51|52
     // ********************
 
     // Le formulaire qui va être analysé et traité en AJAX
@@ -421,7 +395,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -430,7 +404,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -452,12 +426,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_param_mysql_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr('class').html("");
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
       var readytogo = validation_param_mysql.form();
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -466,66 +440,69 @@ $(document).ready
     function retour_form_param_mysql_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_param_mysql_valide(responseJSON)
+    function retour_form_param_mysql_valide(responseHTML)
     {
       $('button').prop('disabled',false);
-      if(responseJSON=='') // En cas de port incorrect, le test de la connexion peut durer longtemps, et on récupère une chaine vide à la place de l'erreur, qui devrait être "Une tentative de connexion a échoué car le parti connecté n’a pas répondu convenablement au-delà d’une certaine durée ou une connexion établie a échoué car l’hôte de connexion n’a pas répondu."
+      if(responseHTML.substring(0,6)=='Erreur')
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html('Impossible de se connecter à  MySQL ["La tentative de connexion a échoué : MySQL n\'a pas répondu (port probablement incorrect)."] !');
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
       }
-      else if(responseJSON['statut']==false)
+      else if(responseHTML=='') // En cas de port incorrect, le test de la connexion peut durer longtemps, et on récupère une chaine vide à la place de l'erreur, qui devrait être "Une tentative de connexion a échoué car le parti connecté n’a pas répondu convenablement au-delà d’une certaine durée ou une connexion établie a échoué car l’hôte de connexion n’a pas répondu."
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html('Erreur : impossible de se connecter à  MySQL ["La tentative de connexion a échoué : MySQL n\'a pas répondu (port probablement incorrect)."] !');
       }
-      else if(responseJSON['value'].substring(0,10)=='<fieldset>')
+      else if(responseHTML.substring(0,10)=='<fieldset>')
       {
         // choix de la base (mono-structure)
-        $('#zone_consignes').html('');
+        $('#form_start').html('');
+        $('#form_type_install').html('');
         $('#form_info_heberg').html('');
-        $('#form_param_mysql').html(responseJSON['value']);
+        $('#form_param_mysql').html(responseHTML);
         $('#f_name').focus();
       }
       else
       {
         // paramètres mysql et base ok
-        $('#zone_consignes').html(responseJSON['value']);
+        $('#form_start').html(responseHTML);
+        $('#form_type_install').html('');
         $('#form_info_heberg').html('');
         $('#form_param_mysql').html('');
       }
     }
 
     // ********************
-    // * Étape 6|61|62|n -> Étape 7
+    // * Étape 5|51|52|n -> Étape 6
     // ********************
 
     $(document).on
     (
       'click',
-      'a.step7',
+      'a.step6',
       function()
       {
-        $("#step li").removeAttr('class');
-        $("#step7").addClass("on");
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $("#step li").removeAttr("class");
+        $("#step6").addClass("on");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_step=7',
-            dataType : 'json',
+            data : 'csrf='+CSRF+'&f_step=6',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              $('#zone_consignes').html(responseJSON['value']);
+              $('#form_start').html(responseHTML);
+              $('#form_type_install').html('');
               $('#form_info_heberg').html('');
               $('#form_param_mysql').html('');
             }

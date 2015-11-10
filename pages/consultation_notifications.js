@@ -55,7 +55,7 @@ $(document).ready
         var is_new    = objet_tr.hasClass('new');
         $('#report_date').html(date_fr);
         $('#textarea_notification').html( unescapeHtml(tab_notif_contenu[id]) );
-        $('#ajax_save').removeAttr('class').html("");
+        $('#ajax_save').removeAttr("class").html("&nbsp;");
         $.fancybox( { 'href':'#div_notification' , onStart:function(){$('#div_notification').css("display","block");} , onClosed:function(){$('#div_notification').css("display","none");} , 'minWidth':600 , 'centerOnScroll':true } );
         if(is_new)
         {
@@ -69,19 +69,19 @@ $(document).ready
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_save').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_save').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
               },
               success : function(responseJSON)
               {
                 initialiser_compteur();
                 if(responseJSON['statut']==true)
                 {
-                  objet_tr.removeAttr('class');
+                  objet_tr.removeAttr("class");
                   objet_tds.eq(1).html('consultée');
                 }
                 else
                 {
-                  $('#ajax_save').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                  $('#ajax_save').removeAttr("class").addClass("alerte").html(responseJSON['value']);
                 }
               }
             }

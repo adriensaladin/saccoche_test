@@ -72,14 +72,14 @@ if (DEBUG>3) afficher_infos_debug_FirePHP();
 // Arrêt s'il fallait seulement mettre la session à jour (la session d'un user connecté n'a pas été perdue si on arrive jusqu'ici)
 if($PAGE=='conserver_session_active')
 {
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // Arrêt s'il fallait seulement fermer la session
 if($PAGE=='fermer_session')
 {
   Session::close();
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // Traductions
@@ -156,7 +156,7 @@ if($PAGE=='maj_base_complementaire')
 {
   DB_STRUCTURE_MAJ_BASE::DB_maj_base_complement();
   $retour = ($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']) ? 'encore' : 'terminé' ;
-  Json::end( TRUE , $retour );
+  exit($retour);
 }
 
 // Chargement de la page concernée
@@ -167,6 +167,6 @@ if(is_file($filename_php))
 }
 else
 {
-  exit_error( 'Page manquante' /*titre*/ , 'La page "'.$filename_php.'" n\'a pas été trouvée.' /*contenu*/ );
+  echo'Page "'.$filename_php.'" manquante.';
 }
 ?>

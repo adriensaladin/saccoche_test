@@ -120,7 +120,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
     }
     if(!$is_enfant_legitime)
     {
-      Json::end( FALSE , 'Enfant non rattaché à votre compte parent !' );
+      exit('Enfant non rattaché à votre compte parent !');
     }
   }
 }
@@ -140,7 +140,7 @@ $tab_modele = array(
 
 if( !isset($tab_modele[$releve_modele]) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || ( ($releve_modele=='matiere') && ( !$matiere_id || !$matiere_nom ) ) || ( ($releve_modele=='professeur') && !$prof_id ) || ( ($releve_modele=='selection') && !count($tab_items) ) || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$eleves_ordre )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('releve_items');
@@ -162,70 +162,62 @@ $make_graph    = FALSE;
 require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_releve.php');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage du résultat
+// On retourne les résultats
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$retour = '';
 
 if($affichage_direct)
 {
-  $retour .= '<hr />'.NL;
-  $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  $retour .= '</ul>'.NL;
-  $retour .= $releve_HTML_individuel;
+  echo'<hr />'.NL;
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
+  echo $releve_HTML_individuel;
 }
 else
 {
   if($type_individuel)
   {
-    $retour .= '<h2>Relevé individuel</h2>'.NL;
-    $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo'<h2>Relevé individuel</h2>'.NL;
+    echo'<ul class="puce">'.NL;
+    echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     if($make_csv)
     {
-      $retour .= '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.csv"><span class="file file_txt">Exploitation tableur (format <em>csv</em>).</span></a></li>'.NL;
+      echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.csv"><span class="file file_txt">Exploitation tableur (format <em>csv</em>).</span></a></li>'.NL;
     }
-    $retour .= '</ul>'.NL;
+    echo'</ul>'.NL;
   }
   if($type_synthese)
   {
-    $retour .= '<h2>Synthèse collective</h2>'.NL;
-    $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
-    $retour .= '</ul>'.NL;
+    echo'<h2>Synthèse collective</h2>'.NL;
+    echo'<ul class="puce">'.NL;
+    echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo'</ul>'.NL;
   }
   if($type_bulletin)
   {
-    $retour .= '<h2>Moyenne sur 20 - Élément d\'appréciation</h2>'.NL;
-    $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
-    $retour .= '</ul>'.NL;
+    echo'<h2>Moyenne sur 20 - Élément d\'appréciation</h2>'.NL;
+    echo'<ul class="puce">'.NL;
+    echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo'</ul>'.NL;
     if($_SESSION['USER_PROFIL_TYPE']=='professeur')
     {
-      $retour .= '<h2>Bulletin SACoche</h2>'.NL;
-      $retour .= '<ul class="puce">'.NL;
-      $retour .= $bulletin_form;
-      $retour .= '</ul>'.NL;
-      $retour .= $bulletin_alerte;
-      $retour .= '<h2>Bulletin Gepi</h2>'.NL;
-      $retour .= '<ul class="puce">'.NL;
-      $retour .=   '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes (moyennes scores) et appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      $retour .=   '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note'             ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      $retour .=   '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_PA'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      $retour .=   '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_MS'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      $retour .= '</ul>'.NL;
+      echo'<h2>Bulletin SACoche</h2>'.NL;
+      echo'<ul class="puce">'.NL;
+      echo $bulletin_form;
+      echo'</ul>'.NL;
+      echo $bulletin_alerte;
+      echo'<h2>Bulletin Gepi</h2>'.NL;
+      echo'<ul class="puce">'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes (moyennes scores) et appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note'             ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_PA'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo  '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_MS'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      echo'</ul>'.NL;
     }
   }
 }
-
-Json::add_tab( array(
-  'direct' => $affichage_direct ,
-  'bilan'  => $retour ,
-) );
-Json::end( TRUE );
 
 ?>

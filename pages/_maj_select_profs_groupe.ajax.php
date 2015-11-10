@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "f_prof"
+// Mettre à jour l'élément de formulaire "f_prof" et le renvoyer en HTML
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -38,11 +38,11 @@ $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe') ;
 
 if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 // Affichage du retour.
 
-Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe($tab_types[$groupe_type],$groupe_id) , FALSE /*select_nom*/ , FALSE /*option_first*/ , $prof_id /*selection*/ , '' /*optgroup*/ , FALSE /*multiple*/ ) );
+exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe($tab_types[$groupe_type],$groupe_id) , FALSE /*select_nom*/ , FALSE /*option_first*/ , $prof_id /*selection*/ , '' /*optgroup*/ , FALSE /*multiple*/ ) );
 
 ?>

@@ -45,26 +45,26 @@ $fichier_memo = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'_extracti
 
 if( ( ($action=='import_siecle') || ($action=='import_sconet') ) && $periode_id )
 {
-  // Récupération du fichier
+  // Récupération du fichier (zip ou pas)
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'SIECLE_exportAbsence.xml' /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
   // Vérification du fichier
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   if($xml===FALSE)
   {
-    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
+    exit('Erreur : le fichier transmis n\'est pas un XML valide !');
   }
   $uai = (string)$xml->PARAMETRES->UAJ;
   if(!$uai)
   {
-    Json::end( FALSE , 'Le fichier transmis ne comporte pas de numéro UAI !' );
+    exit('Erreur : le fichier transmis ne comporte pas de numéro UAI !');
   }
   if($uai!=$_SESSION['WEBMESTRE_UAI'])
   {
-    Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
+    exit('Erreur : le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !');
   }
   $annee_scolaire     = (string)$xml->PARAMETRES->ANNEE_SCOLAIRE;
   $date_export        = (string)$xml->PARAMETRES->DATE_EXPORT;
@@ -73,7 +73,7 @@ if( ( ($action=='import_siecle') || ($action=='import_sconet') ) && $periode_id 
   $periode_date_fin   = (string)$xml->PERIODE->DATE_FIN;
   if( !$annee_scolaire || !$date_export || !$periode_libelle || !$periode_date_debut || !$periode_date_fin )
   {
-    Json::end( FALSE , 'Informations manquantes (année scolaire, période...) !' );
+    exit('Erreur : informations manquantes (année scolaire, période...) !');
   }
   // Récupération des données du fichier
   $tab_users_fichier = array();
@@ -96,18 +96,12 @@ if( ( ($action=='import_siecle') || ($action=='import_sconet') ) && $periode_id 
   $nb_eleves_trouves = count($tab_users_fichier,COUNT_NORMAL);
   if(!$nb_eleves_trouves)
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans le fichier !' );
+    exit('Erreur : aucun élève trouvé dans le fichier !');
   }
   // On enregistre
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_memo,serialize($tab_users_fichier));
   // On affiche la demande de confirmation
-  Json::add_tab( array(
-    'date_export' => html($date_export) ,
-    'libelle'     => html($periode_libelle) ,
-    'date_debut'  => html($periode_date_debut) ,
-    'date_fin'    => html($periode_date_fin) ,
-  ) );
-  Json::end( TRUE );
+  exit('ok'.']¤['.html($date_export).']¤['.html($periode_libelle).']¤['.html($periode_date_debut).']¤['.html($periode_date_fin));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +114,7 @@ if( ($action=='import_gepi') && $periode_id )
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , '' /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
   // Récupération des données du fichier
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
@@ -152,13 +146,12 @@ if( ($action=='import_gepi') && $periode_id )
   $nb_eleves_trouves = count($tab_users_fichier,COUNT_NORMAL);
   if(!$nb_eleves_trouves)
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans le fichier !' );
+    exit('Erreur : aucun élève trouvé dans le fichier !');
   }
   // On enregistre
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_memo,serialize($tab_users_fichier));
   // On affiche la demande de confirmation
-  Json::add_row( 'eleves_nb' , $nb_eleves_trouves );
-  Json::end( TRUE );
+  exit('ok'.']¤['.html($nb_eleves_trouves));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,17 +160,17 @@ if( ($action=='import_gepi') && $periode_id )
 
 if( ($action=='import_pronote') && $periode_id )
 {
-  // Récupération du fichier
+  // Récupération du fichier (zip ou pas)
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'SIECLE_exportAbsence.xml' /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
   // Vérification du fichier
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   if($xml===FALSE)
   {
-    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
+    exit('Erreur : le fichier transmis n\'est pas un XML valide !');
   }
   // Récupération des données du fichier
   $memo_date_debut = 9999;
@@ -263,18 +256,12 @@ if( ($action=='import_pronote') && $periode_id )
   $nb_eleves_trouves = count($tab_users_fichier,COUNT_NORMAL);
   if(!$nb_eleves_trouves)
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans le fichier !' );
+    exit('Erreur : aucun élève trouvé dans le fichier !');
   }
   // On enregistre
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_memo,serialize($tab_users_fichier));
   // On affiche la demande de confirmation
-  Json::add_tab( array(
-    'objet'      => $objet ,
-    'eleves_nb'  => $nb_eleves_trouves ,
-    'date_debut' => convert_date_mysql_to_french($memo_date_debut) ,
-    'date_fin'   => convert_date_mysql_to_french($memo_date_fin) ,
-  ) );
-  Json::end( TRUE );
+  exit('ok'.']¤['.$objet.']¤['.html($nb_eleves_trouves).']¤['.convert_date_mysql_to_french($memo_date_debut).']¤['.convert_date_mysql_to_french($memo_date_fin));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,13 +274,13 @@ if( in_array($action,array('traitement_import_sconet','traitement_import_siecle'
   // Récupération des données déjà extraites du fichier
   if(!is_file(CHEMIN_DOSSIER_IMPORT.$fichier_memo))
   {
-    Json::end( FALSE , 'Le fichier '.CHEMIN_DOSSIER_IMPORT.$fichier_memo.' transmis est introuvable !' );
+    exit('Erreur : le fichier '.CHEMIN_DOSSIER_IMPORT.$fichier_memo.' contenant les données à traiter est introuvable !');
   }
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_memo);
   $tab_users_fichier = @unserialize($contenu);
   if($tab_users_fichier===FALSE)
   {
-    Json::end( FALSE , 'Le fichier transmis est syntaxiquement incorrect !' );
+    exit('Erreur : le fichier contenant les données à traiter est syntaxiquement incorrect !');
   }
   // Récupération des données de la base
   $tab_users_base                   = array();
@@ -364,7 +351,7 @@ if( in_array($action,array('traitement_import_sconet','traitement_import_siecle'
     }
   }
   // affichage du retour
-  Json::end( TRUE , $lignes_ok.$lignes_ko );
+  exit($lignes_ok.$lignes_ko);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,7 +364,7 @@ if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $groupe_id , 'alpha' /*eleves_ordre*/ );
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
+    exit('Aucun élève trouvé dans ce regroupement !');
   }
   $tab_eleves = array();
   foreach($DB_TAB as $DB_ROW)
@@ -397,6 +384,7 @@ if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
     );
   }
   // affichage du tableau
+  $lignes = '';
   foreach($tab_eleves as $user_id => $user_nom_prenom)
   {
     if(isset($tab_assiduite[$user_id]))
@@ -410,9 +398,9 @@ if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
     {
       $nb_absence = $nb_absence_nj = $nb_retard = $nb_retard_nj = '' ;
     }
-    Json::add_str('<tr id="tr_'.$user_id.'"><td>'.html($user_nom_prenom).'</td><td><input type="text" size="3" maxlength="3" id="td1_'.$user_id.'" value="'.$nb_absence.'" /></td><td><input type="text" size="3" maxlength="3" id="td2_'.$user_id.'" value="'.$nb_absence_nj.'" /></td><td><input type="text" size="3" maxlength="3" id="td3_'.$user_id.'" value="'.$nb_retard.'" /></td><td><input type="text" size="3" maxlength="3" id="td4_'.$user_id.'" value="'.$nb_retard_nj.'" /></td></tr>');
+    $lignes .= '<tr id="tr_'.$user_id.'"><td>'.html($user_nom_prenom).'</td><td><input type="text" size="3" maxlength="3" id="td1_'.$user_id.'" value="'.$nb_absence.'" /></td><td><input type="text" size="3" maxlength="3" id="td2_'.$user_id.'" value="'.$nb_absence_nj.'" /></td><td><input type="text" size="3" maxlength="3" id="td3_'.$user_id.'" value="'.$nb_retard.'" /></td><td><input type="text" size="3" maxlength="3" id="td4_'.$user_id.'" value="'.$nb_retard_nj.'" /></td></tr>';
   }
-  Json::end( TRUE );
+  exit($lignes);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -433,7 +421,7 @@ if( ($action=='enregistrer_saisies') && $periode_id && $datas )
     $nb_retard_nj  = ($nb_retard_nj==='')  ? NULL : (int)$nb_retard_nj ;
     DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( 'manuel' /*mode*/ , $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj );
   }
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -442,13 +430,13 @@ if( ($action=='enregistrer_saisies') && $periode_id && $datas )
 
 if(empty($_POST))
 {
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

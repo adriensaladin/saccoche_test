@@ -45,11 +45,11 @@ if($action=='numeroter')
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
   // Afficher le retour
-  Json::add_str('<li>'.implode('</li>'.NL.'<li>',$tab_bilan).'</li>'.NL);
+  echo'<li>'.implode('</li>'.NL.'<li>',$tab_bilan).'</li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  Json::add_str('<li><label class="valide">Recherche et correction de numérotations anormales réalisée en '.$duree.'s.</label></li>'.NL);
-  Json::end( TRUE );
+  echo'<li><label class="valide">Recherche et correction de numérotations anormales réalisée en '.$duree.'s.</label></li>'.NL;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,11 +65,11 @@ if($action=='nettoyer')
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
   // Afficher le retour
-  Json::add_str('<li>'.implode('</li>'.NL.'<li>',$tab_bilan).'</li>'.NL);
+  echo'<li>'.implode('</li>'.NL.'<li>',$tab_bilan).'</li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  Json::add_str('<li><label class="valide">Recherche et suppression de données orphelines réalisée en '.$duree.'s.</label></li>'.NL);
-  Json::end( TRUE );
+  echo'<li><label class="valide">Recherche et suppression de données orphelines réalisée en '.$duree.'s.</label></li>'.NL;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -128,18 +128,18 @@ if($action=='purger')
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a exécuté la purge annuelle de la base (initialisation de début d\'année).'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  Json::add_str('<li><label class="valide">Évaluations et dépendances supprimées (saisies associées conservées).</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Bilans officiels supprimés.</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Bascules entres comptes inactifs ou supprimés retirées.</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Demandes d\'évaluations résiduelles supprimées.</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>'.NL);
+  echo'<li><label class="valide">Évaluations et dépendances supprimées (saisies associées conservées).</label></li>'.NL;
+  echo'<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>'.NL;
+  echo'<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>'.NL;
+  echo'<li><label class="valide">Bilans officiels supprimés.</label></li>'.NL;
+  echo'<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>'.NL;
+  echo'<li><label class="valide">Bascules entres comptes inactifs ou supprimés retirées.</label></li>'.NL;
+  echo'<li><label class="valide">Demandes d\'évaluations résiduelles supprimées.</label></li>'.NL;
+  echo'<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  Json::add_str('<li><label class="valide">Initialisation annuelle de la base réalisée en '.$duree.'s.</label></li>'.NL);
-  Json::end( TRUE );
+  echo'<li><label class="valide">Initialisation annuelle de la base réalisée en '.$duree.'s.</label></li>'.NL;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,12 +160,12 @@ if($action=='supprimer')
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé toutes les notes et les validations enregistrées.'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  Json::add_str('<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>'.NL);
+  echo'<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>'.NL;
+  echo'<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>'.NL;
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  Json::add_str('<li><label class="valide">Suppression des notes et des validations réalisée en '.$duree.'s.</label></li>'.NL);
-  Json::end( TRUE );
+  echo'<li><label class="valide">Suppression des notes et des validations réalisée en '.$duree.'s.</label></li>'.NL;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,14 +178,13 @@ if($action=='effacer')
   // Afficher le retour
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  Json::add_str('<li><label class="valide">Suppression des étiquettes nom &amp; prénom réalisée en '.$duree.'s.</label></li>'.NL);
-  Json::end( TRUE );
+  echo'<li><label class="valide">Suppression des étiquettes nom &amp; prénom réalisée en '.$duree.'s.</label></li>'.NL;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

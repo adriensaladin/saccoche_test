@@ -59,7 +59,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordre , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
-    Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
+    exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
   // Afficher la première ligne du tableau avec les étiquettes des élèves
   $tab_eleve_id = array(); // listing des ids des élèves mis à jour au cas où la récupération dans la base soit différente des ids transmis...
@@ -121,7 +121,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   }
   $affichage = str_replace($tab_bad,$tab_bon,$affichage);
   // Afficher le résultat
-  Json::end( TRUE , $affichage );
+  echo $affichage;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,13 +135,12 @@ elseif( ($action=='Enregistrer_validation') && ($delete_id) )
   list($rien,$eleve_id,$pilier_id) = explode('_',$string_infos);
   // Mettre à jour la base
   DB_STRUCTURE_SOCLE::DB_supprimer_validation('pilier',$eleve_id,$pilier_id);
-  Json::end( TRUE );
+  exit('OK');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
-
+exit('Erreur avec les données transmises !');
 ?>

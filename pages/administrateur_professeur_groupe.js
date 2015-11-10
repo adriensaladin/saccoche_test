@@ -61,7 +61,7 @@ $(document).ready
       'select, input',
       function()
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos choix !");
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos choix !");
       }
     );
 
@@ -76,7 +76,7 @@ $(document).ready
         var action = $(this).attr('id');
         if( !$("#f_prof input:checked").length || !$("#f_groupe input:checked").length )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez dans les deux listes !");
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
           return false;
         }
         // On récupère les id des profs et des groupes concernés
@@ -98,37 +98,37 @@ $(document).ready
         }
         if(!tab_modifs.length)
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Aucune nouveauté détectée !");
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Aucune nouveauté détectée !");
           return false;
         }
         // On envoie les changements
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+action+'&tab_modifs='+tab_modifs,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#form_select button').prop('disabled',false);
-              if(responseJSON['statut']==true)
+              if(responseHTML!='ok')
               {
-                $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
-                maj_tableaux(action,tab_modifs);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                maj_tableaux(action,tab_modifs);
               }
             }
           }

@@ -152,25 +152,22 @@ foreach($tab_base_parents_par_eleve as $eleve_id_base => $tab_base_eleve_infos)
   }
 }
 // On affiche
-$ligne_vide = '<tr><td colspan="3">Aucun</td></tr>'.NL;
-if(empty($lignes_modifier )) { $lignes_modifier  = $ligne_vide; }
-if(empty($lignes_conserver)) { $lignes_conserver = $ligne_vide; }
-Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des liens de responsabilité.</label></p>'.NL);
-Json::add_str('<table>'.NL);
+echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des liens de responsabilité.</label></p>'.NL;
+echo'<table>'.NL;
 // Cas [2]
-Json::add_str(  '<tbody>'.NL);
-Json::add_str(    '<tr><th colspan="3">Liens de responsabilité à modifier<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-Json::add_str(    $lignes_modifier);
-Json::add_str(  '</tbody>'.NL);
+echo    '<tbody>'.NL;
+echo      '<tr><th colspan="3">Liens de responsabilité à modifier<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="3">Aucun</td></tr>'.NL;
+echo    '</tbody>'.NL;
 // Cas [1]
 if($mode=='complet')
 {
-  Json::add_str(  '<tbody>'.NL);
-  Json::add_str(    '<tr><th colspan="3">Liens de responsabilité à conserver</th></tr>'.NL);
-  Json::add_str(    $lignes_conserver);
-  Json::add_str(  '</tbody>'.NL);
+  echo    '<tbody>'.NL;
+  echo      '<tr><th colspan="3">Liens de responsabilité à conserver</th></tr>'.NL;
+  echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="3">Aucun</td></tr>'.NL;
+  echo    '</tbody>'.NL;
 }
-Json::add_str('</table>'.NL);
-Json::add_str('<ul class="puce p"><li><a href="#step82" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
+echo'</table>'.NL;
+echo'<ul class="puce p"><li><a href="#step82" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
 
 ?>

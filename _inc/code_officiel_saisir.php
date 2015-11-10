@@ -72,7 +72,7 @@ $tab_types = array
 
 if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$periode_id || !$classe_id )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 // Avant ce n'était que pour les bulletins, maintenant c'est pour tous les bilans officiels
@@ -86,7 +86,7 @@ if(!$eleve_id)
 $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
 if(empty($DB_ROW))
 {
-  Json::end( FALSE , 'Association classe / période introuvable !' );
+  exit('Association classe / période introuvable !');
 }
 $date_debut  = $DB_ROW['jointure_date_debut'];
 $date_fin    = $DB_ROW['jointure_date_fin'];
@@ -96,11 +96,11 @@ $classe_nom  = $DB_ROW['groupe_nom'];
 
 if(!$BILAN_ETAT)
 {
-  Json::end( FALSE , 'Bilan introuvable !' );
+  exit('Bilan introuvable !');
 }
 if(!in_array($OBJET.$BILAN_ETAT,array('modifier2rubrique','modifier3mixte','tamponner3mixte','tamponner4synthese','voir2rubrique','voir3mixte','voir4synthese'))) //  'voir*' est transmis dans le cas d'une correction de faute
 {
-  Json::end( FALSE , 'Bilan interdit d\'accès pour cette action !' );
+  exit('Bilan interdit d\'accès pour cette action !');
 }
 
 // Si un personnel accède à la saisie de synthèse, il ne faut pas seulement récupérer les données qui concerne ses matières.
@@ -114,34 +114,34 @@ if($ACTION=='enregistrer_appr')
 {
   if( (!$appreciation) || (($BILAN_ETAT=='2rubrique')&&($rubrique_id==0)) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $rubrique_id , $_SESSION['USER_ID'] , $appreciation );
   $prof_info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   $ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
-  Json::end( TRUE , '<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>' );
+  exit('<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>');
 }
 
 if($ACTION=='corriger_faute')
 {
   if( (!$appreciation) || ($prof_id==0) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $rubrique_id , $prof_id , $appreciation );
-  Json::end( TRUE , html($appreciation) );
+  exit('<ok>'.html($appreciation));
 }
 
 if($ACTION=='enregistrer_note')
 {
   if( ($moyenne<0) || ($ACTION=='tamponner') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   list( $note , $appreciation ) = enregistrer_note( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , $moyenne );
   $note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $note : ($note*5).'&nbsp;%' ;
   $action = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button> <button type="button" class="supprimer">Supprimer sans recalculer</button>' ;
-  Json::end( TRUE , '<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).$action.'</span></td>' );
+  exit('<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).$action.'</span></td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ if($ACTION=='supprimer_appr')
 {
   if( ($BILAN_ETAT=='2rubrique') && ($rubrique_id==0) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   // élève ou classe
   $saisie_type        = ($eleve_id) ? 'eleve' : 'classe' ;
@@ -160,7 +160,7 @@ if($ACTION=='supprimer_appr')
   $texte_classe       = empty($is_appreciation_groupe) ? '' : ' sur la classe' ;
   DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $rubrique_id , $_SESSION['USER_ID'] , $saisie_type );
   $ACTION = ($rubrique_id!=0) ? '<button type="button" class="ajouter">Ajouter une appréciation'.$texte_classe.'.</button>' : '<button type="button" class="ajouter">Ajouter l\'appréciation générale'.$texte_classe.'.</button>' ;
-  Json::end( TRUE , '<div class="hc">'.$ACTION.'</div>' );
+  exit('<div class="hc">'.$ACTION.'</div>');
 }
 
 if($ACTION=='supprimer_note')
@@ -168,12 +168,12 @@ if($ACTION=='supprimer_note')
   // Il s'agit de la supprimer définitivement et de ne pas la recalculer : on insère une note vide
   if( ($ACTION=='tamponner') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   $note = NULL;
   $appreciation = 'Moyenne effacée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
-  Json::end( TRUE , '<td class="now moyenne">-</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button></span></td>' );
+  exit('<td class="now moyenne">-</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button></span></td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -184,16 +184,16 @@ if($ACTION=='recalculer_note')
 {
   if( ($ACTION=='tamponner') || ($BILAN_TYPE!='bulletin') || (!$rubrique_id) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   $note = calculer_et_enregistrer_moyenne_precise_bulletin( $periode_id , $classe_id , $eleve_id , $rubrique_id , $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] );
   if($note===FALSE)
   {
-    Json::end( FALSE , 'Absence de données permettant de calculer cette moyenne !' );
+    exit('Absence de données permettant de calculer cette moyenne !');
   }
   $note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $note : ($note*5).'&nbsp;%' ;
   $appreciation = 'Moyenne calculée / reportée / actualisée automatiquement.' ;
-  Json::end( TRUE , '<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer sans recalculer</button></span></td>' );
+  exit('<td class="now moyenne">'.$note.'</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer sans recalculer</button></span></td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,7 +209,7 @@ if($ACTION=='initialiser')
   $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
+    exit('Aucun élève trouvé dans ce regroupement !');
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
@@ -341,6 +341,7 @@ $make_html     = ( ($BILAN_TYPE=='bulletin') && ($OBJET=='tamponner') && ($mode=
 $make_pdf      = FALSE;
 $make_csv      = FALSE;
 $make_graph    = ( ($BILAN_TYPE=='bulletin') && ($OBJET=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
+$js_graph = '';
 $droit_corriger_appreciation = test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 
 if($BILAN_TYPE=='releve')
@@ -455,8 +456,6 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Json::add_row( 'script' , ...) a déjà eu lieu
-
 if( in_array($BILAN_TYPE,array('releve','bulletin')) && !count($tab_eval) && empty($is_appreciation_groupe) )
 {
   ${$nom_bilan_html} = '<div class="danger">Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !</div>' ;
@@ -464,15 +463,16 @@ if( in_array($BILAN_TYPE,array('releve','bulletin')) && !count($tab_eval) && emp
 
 if($ACTION=='initialiser')
 {
-  Json::add_row( 'html' , '<h2>'.$sous_titre.'</h2>' );
-  Json::add_row( 'html' , $form_choix_eleve );
-  Json::add_row( 'html' , '<form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">'.${$nom_bilan_html}.'</form>' );
+  exit(
+    '<h2>'.$sous_titre.'</h2>'.
+    $form_choix_eleve.
+    '<form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">'.${$nom_bilan_html}.'</form>'.
+    $js_graph
+  );
 }
 else
 {
-  Json::add_row( 'html' , ${$nom_bilan_html} );
+  exit(${$nom_bilan_html}.$js_graph);
 }
-
-Json::end( TRUE );
 
 ?>

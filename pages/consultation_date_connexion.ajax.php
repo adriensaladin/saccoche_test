@@ -35,7 +35,7 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' 
 
 if( (!$profil) || (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 $champs = ($profil!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS user_identite , user_connexion_date AS connexion_date' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS user_identite , parent.user_connexion_date AS connexion_date' ;
@@ -47,11 +47,11 @@ foreach($DB_TAB as $DB_ROW)
   $date_mysql  = ($DB_ROW['connexion_date']===NULL) ? '0' : substr($DB_ROW['connexion_date'],0,10) ;
   $date_affich = ($DB_ROW['connexion_date']===NULL) ? '' : convert_date_mysql_to_french($date_mysql) ;
   // Afficher une ligne du tableau
-  Json::add_str('<tr>');
-  Json::add_str(  '<td>'.html($DB_ROW['user_identite']).'</td>');
-  Json::add_str(  '<td>'.$date_affich.'</td>');
-  Json::add_str('</tr>');
+  echo'<tr>';
+  echo  '<td>'.html($DB_ROW['user_identite']).'</td>';
+  echo  '<td>'.$date_affich.'</td>';
+  echo'</tr>';
 }
-Json::end( TRUE );
+exit();
 
 ?>

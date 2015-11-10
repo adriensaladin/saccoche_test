@@ -50,7 +50,7 @@ switch($_SESSION['USER_PROFIL_TYPE'])
   case 'directeur'  : $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_et_groupes_avec_niveaux(); break;
   case 'professeur' : $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']); break;
   case 'parent'     : $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_classes_parent($_SESSION['USER_ID']); break;
-  case 'eleve'      : $DB_TAB = array( 0 => array( 'groupe_id' => $_SESSION['ELEVE_CLASSE_ID'] , 'groupe_nom' => $_SESSION['ELEVE_CLASSE_NOM'] ) );
+  case 'eleve'      : $DB_TAB = ($_SESSION['ELEVE_CLASSE_ID']) ? array( 0 => array( 'groupe_id' => $_SESSION['ELEVE_CLASSE_ID'] , 'groupe_nom' => $_SESSION['ELEVE_CLASSE_NOM'] ) ) : array() ;
 }
 if(!empty($DB_TAB))
 {
@@ -109,7 +109,7 @@ if(!empty($DB_TAB))
 }
 else
 {
-  echo'<p><label class="erreur">Aucune classe ni aucun groupe associé à votre compte !</label></p>'.NL;
+  echo'<p><label class="erreur">Aucune classe ni aucun groupe accessible à votre compte !</label></p>'.NL;
 }
 
 ?>

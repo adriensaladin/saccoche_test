@@ -122,7 +122,7 @@ class Webmestre
    * 
    * @param string $password_ancien
    * @param string $password_nouveau
-   * @return bool   TRUE si ok | FALSE si le mot de passe actuel est incorrect.
+   * @return string   'ok' | 'Le mot de passe actuel est incorrect !'
    */
   public static function modifier_mdp_webmestre($password_ancien,$password_nouveau)
   {
@@ -130,16 +130,12 @@ class Webmestre
     $password_ancien_crypte = crypter_mdp($password_ancien);
     if($password_ancien_crypte!=WEBMESTRE_PASSWORD_MD5)
     {
-      return FALSE;
+      return 'Le mot de passe actuel est incorrect !';
     }
     // Remplacer par le nouveau mot de passe
     $password_nouveau_crypte = crypter_mdp($password_nouveau);
-    $result = FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_PASSWORD_MD5'=>$password_nouveau_crypte) );
-    if($result!==TRUE)
-    {
-      Json::end( FALSE , $result );
-    }
-    return TRUE;
+    FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_PASSWORD_MD5'=>$password_nouveau_crypte) );
+    return 'ok';
   }
 
   /**

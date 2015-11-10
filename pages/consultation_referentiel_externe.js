@@ -46,31 +46,31 @@ $(document).ready
 
     var charger_formulaire_structures = function()
     {
-      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&action=Afficher_structures',
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus)+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion ! <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
             return false;
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==false)
+            if(responseHTML.substring(0,7)!='<option')
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
             }
             else
             {
               modification = false;
-              $('#ajax_msg').removeAttr('class').html('&nbsp;');
-              $('#f_structure').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr("class").html('&nbsp;');
+              $('#f_structure').html(responseHTML);
               $('#rechercher').prop('disabled',false);
             }
           }
@@ -94,21 +94,21 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page=_maj_select_matieres_famille',
           data : 'f_famille_matiere='+matiere_famille_id,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_matiere').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==true)
+            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#f_matiere').html(responseJSON['value']);
+              $('#f_matiere').html(responseHTML);
             }
-            else
+          else
             {
-              $('#ajax_maj_matiere').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html(responseHTML);
             }
           }
         }
@@ -127,7 +127,7 @@ $(document).ready
         else
         {
           $('#f_matiere').html('<option value="0">Toutes les matières</option>');
-          $('#ajax_maj_matiere').removeAttr('class').html("");
+          $('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
         }
       }
     );
@@ -144,21 +144,21 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page=_maj_select_niveaux_famille',
           data : 'f_famille_niveau='+niveau_famille_id,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_niveau').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj_niveau').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==true)
+            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#f_niveau').html(responseJSON['value']);
+              $('#f_niveau').html(responseHTML);
             }
-            else
+          else
             {
-              $('#ajax_maj_niveau').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_maj_niveau').removeAttr("class").addClass("alerte").html(responseHTML);
             }
           }
         }
@@ -177,7 +177,7 @@ $(document).ready
         else
         {
           $('#f_niveau').html('<option value="0">Tous les niveaux</option>');
-          $('#ajax_maj_niveau').removeAttr('class').html("");
+          $('#ajax_maj_niveau').removeAttr("class").html("&nbsp;");
         }
       }
     );
@@ -190,7 +190,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr('class').html("");
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
         $('#choisir_referentiel_communautaire').hide("fast");
       }
     );
@@ -208,36 +208,36 @@ $(document).ready
         var structure_id = $('#f_structure').val();
         if( (matiere_id==0) && (niveau_id==0) && (structure_id==0) )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Il faut préciser au moins un critère parmi matière / niveau / structure !");
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Il faut préciser au moins un critère parmi matière / niveau / structure !");
           return false;
         }
         $('#rechercher').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Lister_referentiels'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#rechercher').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               $('#rechercher').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,3)!='<tr')
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
                 initialiser_compteur();
-                $('#ajax_msg').removeAttr('class').html("");
-                $('#table_action tbody').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").html("&nbsp;");
+                $('#table_action tbody').html(responseHTML);
                 tableau_maj();
                 infobulle();
                 $('#choisir_referentiel_communautaire').show("fast");
@@ -268,21 +268,21 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Voir_referentiel'+'&referentiel_id='+referentiel_id,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,18)!='<ul class="ul_n1">')
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
-                $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer que si nécessaire !</p>'+'<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer_arbre" title="Imprimer le référentiel."></q>'+responseJSON['value']+'</li></ul>' , {'centerOnScroll':true} );
+                $.fancybox( '<p class="noprint">Afin de préserver l\'environnement, n\'imprimer que si nécessaire !</p>'+'<ul class="ul_m1"><li class="li_m1"><b>'+description+'</b><q class="imprimer_arbre" title="Imprimer le référentiel."></q>'+responseHTML+'</li></ul>' , {'centerOnScroll':true} );
               }
             }
           }

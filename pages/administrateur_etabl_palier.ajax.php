@@ -49,13 +49,13 @@ if($action=='Choix_paliers')
   $liste_paliers_actifs = implode(',',$tab_id);
   DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('liste_paliers_actifs'=>$liste_paliers_actifs) );
   $_SESSION['LISTE_PALIERS_ACTIFS'] = $liste_paliers_actifs;
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

@@ -77,7 +77,7 @@ function notifications_referentiel_edition($matiere_id,$notification_contenu)
 if( ($action=='lister_options') && in_array($granulosite,$tab_granulosite) )
 {
   $listing_id_matieres_autorisees = (isset($_POST['id_matieres'])) ? implode(',',Clean::map_entier(explode(',',$_POST['id_matieres']))) : '0' ;
-  Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_REFERENTIEL::DB_OPT_lister_elements_referentiels_prof( $_SESSION['USER_ID'] , $granulosite , $listing_id_matieres_autorisees ) , FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
+  exit( HtmlForm::afficher_select( DB_STRUCTURE_REFERENTIEL::DB_OPT_lister_elements_referentiels_prof( $_SESSION['USER_ID'] , $granulosite , $listing_id_matieres_autorisees ) , FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,46 +148,46 @@ if( ($action=='Voir') && $matiere_id )
   $images_item .= '<q class="n3_move" data-action="move" title="Déplacer cet item (et renuméroter)."></q>';
   $images_item .= '<q class="n3_fus"  data-action="fus"  title="Fusionner avec un autre item (et renuméroter)."></q>';
   $images_item .= '<q class="n3_del"  data-action="del"  title="Supprimer cet item (et renuméroter)."></q>';
-  Json::add_str('<ul class="ul_m1">'.NL);
+  echo'<ul class="ul_m1">'.NL;
   if(count($tab_niveau))
   {
     foreach($tab_niveau as $niveau_id => $niveau_nom)
     {
-      Json::add_str(  '<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau.NL);
-      Json::add_str(    '<ul class="ul_n1">'.NL);
+      echo  '<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau.NL;
+      echo    '<ul class="ul_n1">'.NL;
       if(isset($tab_domaine[$niveau_id]))
       {
         foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_nom)
         {
-          Json::add_str(      '<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.html($domaine_nom).'</span>'.$images_domaine.NL);
-          Json::add_str(        '<ul class="ul_n2">'.NL);
+          echo      '<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.html($domaine_nom).'</span>'.$images_domaine.NL;
+          echo        '<ul class="ul_n2">'.NL;
           if(isset($tab_theme[$niveau_id][$domaine_id]))
           {
             foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_nom)
             {
-              Json::add_str(          '<li class="li_n2" id="n2_'.$theme_id.'"><span>'.html($theme_nom).'</span>'.$images_theme.NL);
-              Json::add_str(            '<ul class="ul_n3">'.NL);
+              echo          '<li class="li_n2" id="n2_'.$theme_id.'"><span>'.html($theme_nom).'</span>'.$images_theme.NL;
+              echo            '<ul class="ul_n3">'.NL;
               if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
               {
                 foreach($tab_item[$niveau_id][$domaine_id][$theme_id] as $item_id => $item_nom)
                 {
-                  Json::add_str(              '<li class="li_n3" id="n3_'.$item_id.'"><b>'.$item_nom.'</b>'.$images_item.'</li>'.NL);
+                  echo              '<li class="li_n3" id="n3_'.$item_id.'"><b>'.$item_nom.'</b>'.$images_item.'</li>'.NL;
                 }
               }
-              Json::add_str(            '</ul>'.NL);
-              Json::add_str(          '</li>'.NL);
+              echo            '</ul>'.NL;
+              echo          '</li>'.NL;
             }
           }
-          Json::add_str(        '</ul>'.NL);
-          Json::add_str(      '</li>'.NL);
+          echo        '</ul>'.NL;
+          echo      '</li>'.NL;
         }
       }
-      Json::add_str(    '</ul>'.NL);
-      Json::add_str(  '</li>'.NL);
+      echo    '</ul>'.NL;
+      echo  '</li>'.NL;
     }
   }
-  Json::add_str('</ul>'.NL);
-  Json::end( TRUE );
+  echo'</ul>'.NL;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -211,7 +211,7 @@ if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matie
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a ajouté dans le référentiel ['.$matiere_nom.'] :'."\r\n".$tab_contexte[$contexte].' "'.$nom.'"'."\r\n";
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
   // Retour
-  Json::end( TRUE , $contexte.'_'.$element_id );
+  exit($contexte.'_'.$element_id);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -228,13 +228,13 @@ if( ($action=='edit') && isset($tab_contexte[$contexte]) && $matiere_id && $elem
   }
   if(!$test_modif)
   {
-    Json::end( FALSE , 'Contenu inchangé ou élément non trouvé !' );
+    exit('Contenu inchangé ou élément non trouvé !');
   }
   // Notifications (rendues visibles ultérieurement)
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a modifié dans le référentiel ['.$matiere_nom.'] :'."\r\n".$tab_contexte[$contexte].' "'.$nom.'"'."\r\n";
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +251,7 @@ if( ($action=='del') && isset($tab_contexte[$contexte]) && $matiere_id && $eleme
   }
   if(!$test_delete)
   {
-    Json::end( FALSE , 'Élément non trouvé !' );
+    exit('Élément non trouvé !');
   }
   if(count($tab_id)) // id des éléments suivants à renuméroter
   {
@@ -264,7 +264,7 @@ if( ($action=='del') && isset($tab_contexte[$contexte]) && $matiere_id && $eleme
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,7 +281,7 @@ if( ($action=='move') && isset($tab_contexte[$contexte]) && $matiere_id && $elem
   }
   if(!$test_move)
   {
-    Json::end( FALSE , 'Contenu inchangé ou élément non trouvé !' );
+    exit('Contenu inchangé ou élément non trouvé !');
   }
   if(count($tab_id)) // id des éléments suivants l'emplacement de départ à renuméroter
   {
@@ -295,7 +295,7 @@ if( ($action=='move') && isset($tab_contexte[$contexte]) && $matiere_id && $elem
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé dans le référentiel ['.$matiere_nom.'] :'."\r\n".$tab_contexte[$contexte].' "'.$nom.'"'."\r\n";
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -308,7 +308,7 @@ if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_n
   $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_item($element_id,FALSE /*with_notes*/);
   if(!$test_delete)
   {
-    Json::end( FALSE , 'Élément non trouvé !' );
+    exit('Élément non trouvé !');
   }
   if(count($tab_id)) // id des éléments suivants à renuméroter
   {
@@ -375,7 +375,7 @@ if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_n
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   // Retour
-  Json::end( TRUE , $lien_retour );
+  exit('ok]¤['.$lien_retour);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -405,57 +405,45 @@ if($action=='action_complementaire')
   $test4 = ( ($action_groupe=='deplacer_theme')       && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
   if( (!in_array($action_groupe,$tab_action_groupe)) || ( (!$test1) && (!$test2) && (!$test3) && (!$test4) ) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   // cas 1/4 : modifier_coefficient
   if($action_groupe=='modifier_coefficient')
   {
     $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'coef' , $modifier_coef );
-    if($test_modif)
-    {
-      Json::end( TRUE , 'Demande réalisée !' );
-    }
-    else
-    {
-      Json::end( FALSE , 'Contenu inchangé ou élément items non trouvés !' );
-    }
+    $message = ($test_modif) ? 'ok' : 'Contenu inchangé ou items non trouvés !';
+    exit($message);
   }
   // cas 2/4 : modifier_panier
   if($action_groupe=='modifier_panier')
   {
     $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'cart' , $modifier_cart );
-    if($test_modif)
-    {
-      Json::end( TRUE , 'Demande réalisée !' );
-    }
-    else
-    {
-      Json::end( FALSE , 'Contenu inchangé ou élément items non trouvés !' );
-    }
+    $message = ($test_modif) ? 'ok' : 'Contenu inchangé ou items non trouvés !';
+    exit($message);
   }
   // cas 3/4 : deplacer_domaine ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande... ; il pourra y avoir des domaine_ref identiques...
   if($action_groupe=='deplacer_domaine')
   {
     $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_domaine_ordre_max($matiere_id_final,$objet_id_final) + 1 ; // objet_id = niveau_id
     $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_domaine($objet_id_initial /*domaine_id*/,$objet_id_final /*niveau_id*/,$objet_ordre_final /*domaine_ordre*/,$matiere_id_final /*matiere_id*/);
-    if(!$test_move) { Json::end( FALSE , 'Contenu inchangé ou élément non trouvé !' ); }
+    if(!$test_move) { exit('Contenu inchangé ou élément non trouvé !'); }
     DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_domaines_suivants($matiere_id_initial /*matiere_id*/,$parent_id_initial /*niveau_id*/,$objet_ordre_initial /*ordre_id*/);
     // Notifications (rendues visibles ultérieurement)
     $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé un domaine vers un référentiel d\'une autre matière :'."\r\n".$groupe_nom_initial.' -> '.$groupe_nom_final."\r\n";
     notifications_referentiel_edition( $matiere_id_initial , $notification_contenu );
-    Json::end( TRUE , 'Demande réalisée !' );
+    exit('ok');
   }
   // cas 4/4 : deplacer_theme ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande...
   if($action_groupe=='deplacer_theme')
   {
     $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_theme_ordre_max($objet_id_final) + 1 ; // objet_id = domaine_id
     $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_theme($objet_id_initial /*theme_id*/,$objet_id_final /*domaine_id*/,$objet_ordre_final /*theme_ordre*/);
-    if(!$test_move) { Json::end( FALSE , 'Contenu inchangé ou élément non trouvé !' ); }
+    if(!$test_move) { exit('Contenu inchangé ou élément non trouvé !'); }
     DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_themes_suivants($parent_id_initial /*domaine_id*/,$objet_ordre_initial /*ordre_id*/);
     // Notifications (rendues visibles ultérieurement)
     $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé un thème vers un domaine d\'une autre matière :'."\r\n".$groupe_nom_initial.' -> '.$groupe_nom_final."\r\n";
     notifications_referentiel_edition( $matiere_id_initial , $notification_contenu );
-    Json::end( TRUE , 'Demande réalisée !' );
+    exit('ok');
   }
 }
 
@@ -463,6 +451,6 @@ if($action=='action_complementaire')
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

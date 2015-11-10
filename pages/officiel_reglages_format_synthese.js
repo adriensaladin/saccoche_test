@@ -43,12 +43,12 @@ $(document).ready
         switch (option_valeur)
         {
           case 'domaine':
-            $('#domaine_'+ids).removeAttr('class');
+            $('#domaine_'+ids).removeAttr("class");
             $('#theme_'+ids).addClass("hide");
             break;
           case 'theme':
             $('#domaine_'+ids).addClass("hide");
-            $('#theme_'+ids).removeAttr('class');
+            $('#theme_'+ids).removeAttr("class");
             break;
           case 'sans':
             $('#domaine_'+ids).addClass("hide");
@@ -56,7 +56,7 @@ $(document).ready
             break;
         }
         $('#bouton_'+ids).prop('disabled',false);
-        $('#label_'+ids).removeAttr('class').addClass('alerte').html("Modification non enregistrée !");
+        $('#label_'+ids).removeAttr("class").addClass("alerte").html("Modification non enregistrée !");
       }
     );
 
@@ -71,7 +71,7 @@ $(document).ready
         var ids = $(this).attr('id').substr(7);
         if( $('input[name=f_'+ids+']').is(':checked')!=true )  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
         {
-          $('#label_'+ids).removeAttr('class').addClass('erreur').html("Cocher une option !");
+          $('#label_'+ids).removeAttr("class").addClass("erreur").html("Cocher une option !");
           return false;
         }
         var f_methode = $('input[name=f_'+ids+']:checked').val();
@@ -79,31 +79,34 @@ $(document).ready
         var f_matiere = tab_infos[0];
         var f_niveau  = tab_infos[1];
         $('#bouton_'+ids).prop('disabled',true);
-        $('#label_'+ids).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        // $("#form_synthese button").prop('disabled',true);
+        $('#label_'+ids).removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_methode='+f_methode+'&f_matiere='+f_matiere+'&f_niveau='+f_niveau,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_'+ids).prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              // $("#form_synthese button").prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#bouton_'+ids).prop('disabled',false);
-              if(responseJSON['statut']==true)
+              // $("#form_synthese button").prop('disabled',false);
+              if(responseHTML!='ok')
               {
-                $('#label_'+ids).removeAttr('class').addClass('valide').html("Modification enregistrée !");
+                $('#label_'+ids).removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#label_'+ids).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#label_'+ids).removeAttr("class").addClass("valide").html("Modification enregistrée !");
               }
             }
           }

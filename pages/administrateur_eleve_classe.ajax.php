@@ -95,18 +95,16 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
     $TF[$niveau_id] .= '<td>'.$nb.' élève'.$s.'</td>';
   }
 }
-// Afficher le retour
-Json::add_str('<hr />'.NL);
+echo'<hr />'.NL;
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
   if(mb_strlen($TB[$niveau_id])>9)
   {
-    Json::add_str('<table class="affectation">'.NL);
-    Json::add_str(  '<thead><tr>'.$TH[$niveau_id].'</tr></thead>'.NL);
-    Json::add_str(  '<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>'.NL);
-    Json::add_str(  '<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>'.NL);
-    Json::add_str('</table>'.NL);
+    echo'<table class="affectation">'.NL;
+    echo  '<thead><tr>'.$TH[$niveau_id].'</tr></thead>'.NL;
+    echo  '<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>'.NL;
+    echo  '<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>'.NL;
+    echo'</table>'.NL;
   }
 }
-Json::end( TRUE );
 ?>

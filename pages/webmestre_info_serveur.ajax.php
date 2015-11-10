@@ -35,12 +35,12 @@ $module = (isset($_POST['f_module'])) ? Clean::texte($_POST['f_module']) : '';
 
 if(!$module)
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur')))
 {
-  Json::end( FALSE , 'Profil incompatible avec cette fonctionnalité !' );
+  exit('Profil incompatible avec cette fonctionnalité !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,16 +51,15 @@ $tab_modules = InfoServeur::array_phpinfo(INFO_MODULES);
 
 if(!isset($tab_modules[$module]))
 {
-  Json::end( FALSE , 'Informations sur le module "'.html($module).'" non trouvées dans le phpinfo() !' );
+  exit('Informations sur le module "'.html($module).'" non trouvées dans le phpinfo() !');
 }
 
-Json::add_str('<table class="p"><thead>'.NL.'<tr><th colspan="3">Informations sur le module &laquo;&nbsp;'.html($module).'&nbsp;&raquo;</th></tr>'.NL.'</thead><tbody>'.NL);
+echo'<table class="p"><thead>'.NL.'<tr><th colspan="3">Informations sur le module &laquo;&nbsp;'.html($module).'&nbsp;&raquo;</th></tr>'.NL.'</thead><tbody>'.NL;
 foreach($tab_modules[$module] as $parametre_nom => $parametre_val)
 {
   $colonnes = is_string($parametre_val) ? '<td colspan="2">'.chunk_split($parametre_val,128,'<br />') .'</td>' : '<td>local : '.html($parametre_val['local']).'</td><td>master : '.html($parametre_val['master']).'</td>' ;
-  Json::add_str('<tr><td>'.html($parametre_nom).'</td>'.$colonnes.'</tr>'.NL);
+  echo'<tr><td>'.html($parametre_nom).'</td>'.$colonnes.'</tr>'.NL;
 }
-Json::add_str('</tbody></table>'.NL);
-Json::end( TRUE );
+echo'</tbody></table>'.NL;
 
 ?>

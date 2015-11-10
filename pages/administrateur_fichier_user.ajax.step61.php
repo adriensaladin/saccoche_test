@@ -279,92 +279,79 @@ if(count($tab_base_affectation))
   }
 }
 // On affiche
-Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des affectations éventuelles.</label></p>'.NL);
+echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des affectations éventuelles.</label></p>'.NL;
 if( $lignes_classes_del || $lignes_principal_del || $lignes_groupes_del )
 {
-  Json::add_str('<p class="danger">Des suppressions sont proposées. Elles peuvent provenir d\'un fichier incomplet ou d\'ajouts manuels antérieurs dans SACoche. Décochez-les si besoin !</p>'.NL);
+  echo'<p class="danger">Des suppressions sont proposées. Elles peuvent provenir d\'un fichier incomplet ou d\'ajouts manuels antérieurs dans SACoche. Décochez-les si besoin !</p>'.NL;
 }
-$ligne_vide = '<tr><td colspan="3">Aucune</td></tr>'.NL;
-if(empty($lignes_classes_ras  )) { $lignes_classes_ras   = $ligne_vide; }
-if(empty($lignes_classes_add  )) { $lignes_classes_add   = $ligne_vide; }
-if(empty($lignes_classes_del  )) { $lignes_classes_del   = $ligne_vide; }
-if(empty($lignes_principal_ras)) { $lignes_principal_ras = $ligne_vide; }
-if(empty($lignes_principal_add)) { $lignes_principal_add = $ligne_vide; }
-if(empty($lignes_principal_del)) { $lignes_principal_del = $ligne_vide; }
-if(empty($lignes_matieres_ras )) { $lignes_matieres_ras  = $ligne_vide; }
-if(empty($lignes_matieres_add )) { $lignes_matieres_add  = $ligne_vide; }
-// if(empty($lignes_matieres_del )) { $lignes_matieres_del  = $ligne_vide; }
-if(empty($lignes_groupes_ras  )) { $lignes_groupes_ras   = $ligne_vide; }
-if(empty($lignes_groupes_add  )) { $lignes_groupes_add   = $ligne_vide; }
-if(empty($lignes_groupes_del  )) { $lignes_groupes_del   = $ligne_vide; }
-Json::add_str('<table>'.NL);
+echo'<table>'.NL;
 if($import_profil=='professeur')
 {
   if($mode=='complet')
   {
-    Json::add_str(  '<tbody>'.NL);
-    Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / classes à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-    Json::add_str(    $lignes_classes_ras);
-    Json::add_str(  '</tbody>'.NL);
+    echo    '<tbody>'.NL;
+    echo      '<tr><th colspan="3">Associations utilisateurs / classes à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+    echo($lignes_classes_ras) ? $lignes_classes_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+    echo    '</tbody>'.NL;
   }
-  Json::add_str(  '<tbody>'.NL);
-  Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / classes à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-  Json::add_str(    $lignes_classes_add);
-  Json::add_str(  '</tbody>'.NL);
-  Json::add_str(  '<tbody>'.NL);
-  Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / classes à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-  Json::add_str(    $lignes_classes_del);
-  Json::add_str(  '</tbody>'.NL);
+  echo    '<tbody>'.NL;
+  echo      '<tr><th colspan="3">Associations utilisateurs / classes à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+  echo($lignes_classes_add) ? $lignes_classes_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+  echo    '</tbody>'.NL;
+  echo    '<tbody>'.NL;
+  echo      '<tr><th colspan="3">Associations utilisateurs / classes à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+  echo($lignes_classes_del) ? $lignes_classes_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+  echo    '</tbody>'.NL;
   if($import_origine=='sconet')
   {
     if($mode=='complet')
     {
-      Json::add_str(  '<tbody>'.NL);
-      Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / p.principal à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-      Json::add_str(    $lignes_principal_ras);
-      Json::add_str(  '</tbody>'.NL);
+      echo    '<tbody>'.NL;
+      echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      echo($lignes_principal_ras) ? $lignes_principal_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      echo    '</tbody>'.NL;
     }
-    Json::add_str(  '<tbody>'.NL);
-    Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / p.principal à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-    Json::add_str(    $lignes_principal_add);
-    Json::add_str(  '</tbody>'.NL);
-    Json::add_str(  '<tbody>'.NL);
-    Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / p.principal à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-    Json::add_str(    $lignes_principal_del);
-    Json::add_str(  '</tbody>'.NL);
+    echo    '<tbody>'.NL;
+    echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+    echo($lignes_principal_add) ? $lignes_principal_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+    echo    '</tbody>'.NL;
+    echo    '<tbody>'.NL;
+    echo      '<tr><th colspan="3">Associations utilisateurs / p.principal à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+    echo($lignes_principal_del) ? $lignes_principal_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+    echo    '</tbody>'.NL;
     if($mode=='complet')
     {
-      Json::add_str(  '<tbody>'.NL);
-      Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / matières à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-      Json::add_str(    $lignes_matieres_ras);
-      Json::add_str(  '</tbody>'.NL);
+      echo    '<tbody>'.NL;
+      echo      '<tr><th colspan="3">Associations utilisateurs / matières à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+      echo($lignes_matieres_ras) ? $lignes_matieres_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+      echo    '</tbody>'.NL;
     }
-    Json::add_str(  '<tbody>'.NL);
-    Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / matières à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-    Json::add_str(    $lignes_matieres_add);
-    // Json::add_str(  '</tbody>'.NL);
-    // Json::add_str(  '<tbody>'.NL);
-    // Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / matières à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-    // Json::add_str(    $lignes_matieres_del);
-    Json::add_str(  '</tbody>'.NL);
+    echo    '<tbody>'.NL;
+    echo      '<tr><th colspan="3">Associations utilisateurs / matières à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+    echo($lignes_matieres_add) ? $lignes_matieres_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+    // echo    '</tbody>'.NL;
+    // echo    '<tbody>'.NL;
+    // echo      '<tr><th colspan="3">Associations utilisateurs / matières à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+    // echo($lignes_matieres_del) ? $lignes_matieres_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+    echo    '</tbody>'.NL;
   }
 }
 if($mode=='complet')
 {
-  Json::add_str(  '<tbody>');
-  Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / groupes à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-  Json::add_str(    $lignes_groupes_ras);
-  Json::add_str(  '</tbody>'.NL);
+  echo    '<tbody>';
+  echo      '<tr><th colspan="3">Associations utilisateurs / groupes à conserver.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+  echo($lignes_groupes_ras) ? $lignes_groupes_ras : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+  echo    '</tbody>'.NL;
 }
-Json::add_str(  '<tbody>'.NL);
-Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / groupes à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-Json::add_str(    $lignes_groupes_add);
-Json::add_str(  '</tbody>'.NL);
-Json::add_str(  '<tbody>'.NL);
-Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / groupes à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-Json::add_str(    $lignes_groupes_del);
-Json::add_str(  '</tbody>'.NL);
-Json::add_str('</table>'.NL);
-Json::add_str('<ul class="puce p"><li><a href="#step62" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
+echo    '<tbody>'.NL;
+echo      '<tr><th colspan="3">Associations utilisateurs / groupes à ajouter.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+echo($lignes_groupes_add) ? $lignes_groupes_add : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+echo    '</tbody>'.NL;
+echo    '<tbody>'.NL;
+echo      '<tr><th colspan="3">Associations utilisateurs / groupes à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+echo($lignes_groupes_del) ? $lignes_groupes_del : '<tr><td colspan="3">Aucune</td></tr>'.NL;
+echo    '</tbody>'.NL;
+echo'</table>'.NL;
+echo'<ul class="puce p"><li><a href="#step62" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
 
 ?>

@@ -51,16 +51,16 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_type='+type+'&f_etat='+etat,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Choix non mémorisé.'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nChoix non mémorisé.'+'</label>' , {'centerOnScroll':true} );
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
+              if(responseHTML!='ok')
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'<br />Choix non mémorisé.'+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
             }
           }

@@ -35,7 +35,7 @@ $user_id  = (isset($_POST['f_user']))     ? Clean::entier(  $_POST['f_user']    
 
 if( !$courriel ||  !$user_id || ( (HEBERGEUR_INSTALLATION=='multi-structures') && !$BASE ) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit_json( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,25 +47,25 @@ if($user_id==-1)
   // Protection contre les attaques par force brute des robots (piratage compte ou envoi intempestif de courriels)
   if(!isset($_SESSION['FORCEBRUTE'][$PAGE]))
   {
-    Json::end( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
+    exit_json( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
   }
   else if( $_SERVER['REQUEST_TIME'] - $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] < $_SESSION['FORCEBRUTE'][$PAGE]['DELAI'] )
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Sécurité : patienter '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s avant une nouvelle tentative.' );
+    exit_json( FALSE , 'Sécurité : patienter '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s avant une nouvelle tentative.' );
   }
   // On vérifie le captcha.
   if( $captcha != $_SESSION['FORCEBRUTE'][$PAGE]['CAPTCHA'] )
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['DELAI']++;
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Ordre incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
+    exit_json( FALSE , 'Ordre incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
   }
   // Vérifier le domaine du serveur mail même en mode mono-structure parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
   list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
-    Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+    exit_json( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
   }
   // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
   if(HEBERGEUR_INSTALLATION=='multi-structures')
@@ -78,22 +78,22 @@ if($user_id==-1)
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['DELAI']++;
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Adresse inconnue ! Autre tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
+    exit_json( FALSE , 'Adresse inconnue ! Autre tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
   }
   // On retourne les utilisateurs trouvés
   if(count($DB_TAB)==1)
   {
-    Json::add_str('<option value="'.$DB_TAB[0]['user_id'].'">'.html($DB_TAB[0]['user_nom'].' '.$DB_TAB[0]['user_prenom'].' ('.$DB_TAB[0]['user_profil_nom_court_singulier'].')').'</option>');
+    $options = '<option value="'.$DB_TAB[0]['user_id'].'">'.html($DB_TAB[0]['user_nom'].' '.$DB_TAB[0]['user_prenom'].' ('.$DB_TAB[0]['user_profil_nom_court_singulier'].')').'</option>';
   }
   else
   {
-    Json::add_str('<option value="">&nbsp;</option>');
+    $options = '<option value="">&nbsp;</option>';
     foreach($DB_TAB as $DB_ROW)
     {
-      Json::add_str('<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_profil_nom_court_singulier'].')').'</option>');
+      $options .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ('.$DB_ROW['user_profil_nom_court_singulier'].')').'</option>';
     }
   }
-  Json::end( TRUE );
+  exit_json( TRUE , $options );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,14 +113,14 @@ if($user_id)
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['DELAI']++;
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Utilisateur inconnu ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
+    exit_json( FALSE , 'Utilisateur inconnu ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
   }
   // On vérifie que l'adresse mail concorde
   if( $DB_ROW['user_email'] != $courriel )
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['DELAI']++;
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Adresse mail non concordante ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
+    exit_json( FALSE , 'Adresse mail non concordante ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
   }
   // On enregistre un ticket pour cette demande
   $user_pass_key = crypter_mdp($DB_ROW['user_id'].$DB_ROW['user_email'].$DB_ROW['user_password'].$DB_ROW['user_connexion_date']);
@@ -137,10 +137,10 @@ if($user_id)
   $courriel_bilan = Sesamail::mail( $DB_ROW['user_email'] , 'Demande de nouveaux identifiants' , $mail_contenu , $DB_ROW['user_email'] /*replyto*/ );
   if(!$courriel_bilan)
   {
-    Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+    exit_json( FALSE , 'Erreur lors de l\'envoi du courriel !' );
   }
   // OK !
-  Json::end( TRUE );
+  exit_json( TRUE );
 }
 
 ?>

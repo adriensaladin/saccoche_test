@@ -48,20 +48,20 @@ if( ($action=='chercher') && isset($tab_statut[$statut]) && $nom )
   $nb_reponses = count($DB_TAB) ;
   if($nb_reponses==0)
   {
-    Json::end( FALSE , 'Aucun élève trouvé !' );
+    exit('Aucun élève trouvé !');
   }
   else if($nb_reponses==1)
   {
-    Json::end( TRUE , '<option value="'.$DB_TAB[0]['user_id'].'">'.html($DB_TAB[0]['user_nom'].' '.$DB_TAB[0]['user_prenom'].' ['.$DB_TAB[0]['user_login'].']').'</option>' );
+    exit('<option value="'.$DB_TAB[0]['user_id'].'">'.html($DB_TAB[0]['user_nom'].' '.$DB_TAB[0]['user_prenom'].' ['.$DB_TAB[0]['user_login'].']').'</option>');
   }
   else
   {
-    Json::add_str('<option value=""></option>');
+    $options = '<option value=""></option>';
     foreach($DB_TAB as $DB_ROW)
     {
-      Json::add_str('<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_login'].']').'</option>');
+      $options .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_login'].']').'</option>';
     }
-    Json::end( TRUE );
+    exit($options);
   }
 }
 
@@ -78,11 +78,11 @@ if( ($action=='fusionner') && $id_actuel && $id_ancien )
   // Vérifier l'existence / le profil / le statut
   if( empty($DB_ROW[0]) || ($DB_ROW[0]['user_profil_type']!='eleve') || ($DB_ROW[0]['user_sortie_date']>TODAY_MYSQL) )
   {
-    Json::end( FALSE , 'Identifiant du compte désactivé incompatible !' );
+    exit('Erreur : identifiant du compte désactivé incompatible !');
   }
   if( empty($DB_ROW[1]) || ($DB_ROW[1]['user_profil_type']!='eleve') || ($DB_ROW[1]['user_sortie_date']<TODAY_MYSQL) )
   {
-    Json::end( FALSE , 'Identifiant du compte activé incompatible !' );
+    exit('Erreur : identifiant du compte activé incompatible !');
   }
   // On fusionne les données (sauf traitement de sacoche_user + sacoche_jointure_user_groupe + sacoche_jointure_parent_eleve + sacoche_jointure_message_destinataire)
   DB_STRUCTURE_ADMINISTRATEUR::DB_fusionner_donnees_comptes_eleves( $id_ancien , $id_actuel );
@@ -130,13 +130,13 @@ if( ($action=='fusionner') && $id_actuel && $id_ancien )
   SACocheLog::ajouter('Fusion des comptes élèves '.$DB_ROW[0]['user_nom'].' '.$DB_ROW[0]['user_prenom'].' ('.$DB_ROW[0]['user_id'].') et '.$DB_ROW[1]['user_nom'].' '.$DB_ROW[1]['user_prenom'].' ('.$DB_ROW[1]['user_id'].').');
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a fusionné les comptes élèves '.$DB_ROW[0]['user_nom'].' '.$DB_ROW[0]['user_prenom'].' ('.$DB_ROW[0]['user_id'].') et '.$DB_ROW[1]['user_nom'].' '.$DB_ROW[1]['user_prenom'].' ('.$DB_ROW[1]['user_id'].').'."\r\n";
   // Afficher le retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

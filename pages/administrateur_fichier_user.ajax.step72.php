@@ -63,8 +63,8 @@ foreach($tab_check as $check_infos)
   }
 }
 // Afficher le résultat
-Json::add_str('<p><label class="valide">Nouvelles adresses ajoutées : '.$nb_add.'</label></p>'.NL);
-Json::add_str('<p><label class="valide">Anciennes adresses modifiées : '.$nb_mod.'</label></p>'.NL);
-Json::add_str('<ul class="puce p"><li><a href="#step81" id="passer_etape_suivante">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
+echo'<p><label class="valide">Nouvelles adresses ajoutées : '.$nb_add.'</label></p>'.NL;
+echo'<p><label class="valide">Anciennes adresses modifiées : '.$nb_mod.'</label></p>'.NL;
+echo'<ul class="puce p"><li><a href="#step81" id="passer_etape_suivante">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
 
 ?>

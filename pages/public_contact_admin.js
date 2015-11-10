@@ -159,12 +159,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $(ajax_id).removeAttr('class').html("");
+      $(ajax_id).removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $(ajax_id).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $(ajax_id).removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -173,26 +173,18 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $(ajax_id).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $(ajax_id).removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_valide(responseJSON)
     {
       $('button').prop('disabled',false);
-      if(responseJSON['statut']==false)
-      {
-        $(ajax_id).removeAttr('class').addClass('alerte').html(responseJSON['value']);
-        if( responseJSON['value'].substring(0,15) == 'Ordre incorrect' )
-        {
-          $('#captcha_init').children('button').click();
-        }
-      }
-      else
+      if(responseJSON['statut']==true)
       {
         if( ajax_id == '#ajax_msg_envoyer' )
         {
-          $(ajax_id).removeAttr('class').addClass('valide').html("");
+          $(ajax_id).removeAttr("class").addClass("valide").html("");
           $('#report_courriel').html( $("#f_courriel").val() );
           $('#f_md5').val( responseJSON['value'] );
           $('#step1').hide();
@@ -202,11 +194,19 @@ $(document).ready
         }
         else if( ajax_id == '#ajax_msg_confirmer' )
         {
-          $(ajax_id).removeAttr('class').addClass('valide').html("");
+          $(ajax_id).removeAttr("class").addClass("valide").html("");
           $('#span_admin_nb').html( responseJSON['value'] );
           $('#f_md5').val('');
           $('#step2').hide();
           $('#step3').show();
+        }
+      }
+      else
+      {
+        $(ajax_id).removeAttr("class").addClass("alerte").html(responseJSON['value']);
+        if( responseJSON['value'].substring(0,15) == 'Ordre incorrect' )
+        {
+          $('#captcha_init').children('button').click();
         }
       }
     }

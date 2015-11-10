@@ -63,34 +63,34 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_profil='+profil+'&f_delai='+delai,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_valider_'+profil).prop('disabled',false);
-              $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Échec de la connexion !");
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#bouton_valider_'+profil).prop('disabled',false);
-              if(responseJSON['statut']==true)
+              if(responseHTML!='ok')
               {
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(responseHTML);
+              }
+              else
+              {
+                if(profil=='ALL')
+                {
+                  $('select option[value='+delai+']').prop('selected',true);
+                  $('label[id^=ajax_msg_]').removeAttr('class').html("&nbsp;");
+                }
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('valide').html("Valeur enregistrée !");
                 if( (profil=='ALL') || (profil=='ADM') )
                 {
                   DUREE_AUTORISEE = delai;
                 }
                 initialiser_compteur();
-                if(profil=='ALL')
-                {
-                  $('select option[value='+delai+']').prop('selected',true);
-                  $('label[id^=ajax_msg_]').removeAttr('class').html("");
-                }
-                $('#ajax_msg_'+profil).removeAttr('class').addClass('valide').html("Valeur enregistrée !");
-              }
-              else
-              {
-                $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

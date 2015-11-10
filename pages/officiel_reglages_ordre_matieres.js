@@ -40,7 +40,7 @@ $(document).ready
     {
       if(modification==false)
       {
-        $('#ajax_msg_ordre').removeAttr('class').addClass('alerte').html("Ordre non enregistré !");
+        $('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Ordre non enregistré !");
         modification = true;
         return false;
       }
@@ -58,7 +58,7 @@ $(document).ready
       {
         if(!modification)
         {
-          $('#ajax_msg_ordre').removeAttr('class').addClass('alerte').html("Aucune modification effectuée !");
+          $('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
         }
         else
         {
@@ -76,32 +76,32 @@ $(document).ready
             }
           );
           $('#form_ordonner button').prop('disabled',true);
-          $('#ajax_msg_ordre').removeAttr('class').addClass('loader').html("En cours&hellip;");
+          $('#ajax_msg_ordre').removeAttr("class").addClass("loader").html("En cours&hellip;");
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
               data : 'csrf='+CSRF+'&tab_id='+tab_id,
-              dataType : 'json',
+              dataType : "html",
               error : function(jqXHR, textStatus, errorThrown)
               {
                 $('#form_ordonner button').prop('disabled',false);
-                $('#ajax_msg_ordre').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
                 return false;
               },
-              success : function(responseJSON)
+              success : function(responseHTML)
               {
                 initialiser_compteur();
                 $('#form_ordonner button').prop('disabled',false);
-                if(responseJSON['statut']==true)
+                if(responseHTML!='ok')
                 {
-                  modification = false;
-                  $('#ajax_msg_ordre').removeAttr('class').addClass('valide').html("Ordre enregistré !");
+                  $('#ajax_msg_ordre').removeAttr("class").addClass("alerte").html(responseHTML);
                 }
                 else
                 {
-                  $('#ajax_msg_ordre').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                  modification = false;
+                  $('#ajax_msg_ordre').removeAttr("class").addClass("valide").html("Ordre enregistré !");
                 }
               }
             }

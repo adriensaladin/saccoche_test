@@ -45,7 +45,7 @@ if( ($action=='lister_profs') && $matiere_id )
   $DB_TAB = DB_STRUCTURE_DEMANDE::DB_recuperer_professeurs_eleve_matiere( $_SESSION['USER_ID'] , $_SESSION['ELEVE_CLASSE_ID'] , $matiere_id );
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Aucun de vos professeurs n\'étant rattaché à cette matière, personne ne pourrait traiter votre demande.' );
+    exit('Aucun de vos professeurs n\'étant rattaché à cette matière, personne ne pourrait traiter votre demande.');
   }
   else
   {
@@ -54,7 +54,7 @@ if( ($action=='lister_profs') && $matiere_id )
     {
       $options .= '<option value="'.$DB_ROW['user_id'].'">'.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).'</option>';
     }
-    Json::end( TRUE , $options );
+    exit($options);
   }
 }
 
@@ -70,10 +70,10 @@ if($action=='uploader_document')
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit($result);
   }
   // Retour
-  Json::end( TRUE , array( 'nom' => FileSystem::$file_saved_name , 'url' => URL_DIR_IMPORT.FileSystem::$file_saved_name ) );
+  exit('ok'.']¤['.FileSystem::$file_saved_name.']¤['.URL_DIR_IMPORT.FileSystem::$file_saved_name);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,14 +86,14 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   // Vérifier que cet item n'est pas déjà en attente d'évaluation pour cet élève
   if( DB_STRUCTURE_DEMANDE::DB_tester_demande_existante( $_SESSION['USER_ID'] , $matiere_id , $item_id ) )
   {
-    Json::end( FALSE , 'Cette demande est déjà enregistrée !' );
+    exit('<label class="erreur">Cette demande est déjà enregistrée !</label>');
   }
 
   // Vérifier que les demandes sont autorisées pour cette matière
   $nb_demandes_autorisees = DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id);
   if(!$nb_demandes_autorisees)
   {
-    Json::end( FALSE , 'Vous ne pouvez pas formuler de demandes pour les items cette matière.' );
+    exit('<label class="erreur">Vous ne pouvez pas formuler de demandes pour les items cette matière.</label>');
   }
 
   // Vérifier qu'il reste des demandes disponibles pour l'élève et la matière concernés
@@ -101,17 +101,15 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   $nb_demandes_possibles = max( 0 , $nb_demandes_autorisees - $nb_demandes_formulees ) ;
   if(!$nb_demandes_possibles)
   {
-    $reponse = ($nb_demandes_formulees>1)
-              ? 'Vous avez déjà formulé les '.$nb_demandes_formulees.' demandes autorisées pour cette matière. <a href="./index.php?page=evaluation&amp;section=demande_eleve">Veuillez en supprimer avant d\'en ajouter d\'autres !</a>'
-              : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=evaluation&amp;section=demande_eleve">Veuillez la supprimer avant d\'en demander une autre !</a>' ;
-    Json::end( FALSE , $reponse );
+    $reponse = ($nb_demandes_formulees>1) ? '<label class="erreur">Vous avez déjà formulé les '.$nb_demandes_formulees.' demandes autorisées pour cette matière.</label><br /><a href="./index.php?page=evaluation&amp;section=demande_eleve">Veuillez en supprimer avant d\'en ajouter d\'autres !</a>' : 'Vous avez déjà formulé la demande autorisée pour cette matière.<br /><a href="./index.php?page=evaluation&amp;section=demande_eleve">Veuillez la supprimer avant d\'en demander une autre !</a>' ;
+    exit($reponse);
   }
 
   // Vérifier que cet item n'est pas interdit à la sollitation ; récupérer au passage sa référence et son nom
   $DB_ROW = DB_STRUCTURE_DEMANDE::DB_recuperer_item_infos($item_id);
   if($DB_ROW['item_cart']==0)
   {
-    Json::end( FALSE , 'La demande de cet item est interdite !' );
+    exit('<label class="erreur">La demande de cet item est interdite !</label>');
   }
 
   // Indiquer, si renseigné, le document déjà uploadé temporairement
@@ -120,12 +118,12 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   {
     if(!is_file(CHEMIN_DOSSIER_IMPORT.$document_nom))
     {
-      Json::end( FALSE , 'Le document joint est introuvable !' );
+      exit('<label class="erreur">Le document joint est introuvable !</label>');
     }
     $fichier_nom = str_replace( 'demande_'.$_SESSION['BASE'].'_' , 'demande_' , $document_nom );
     if(!FileSystem::deplacer_fichier( CHEMIN_DOSSIER_IMPORT.$document_nom , CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS.$fichier_nom ))
     {
-      Json::end( FALSE , 'Impossible de déplacer le document joint !' );
+      exit('<label class="erreur">Impossible de déplacer le document joint !</label>');
     }
     $demande_doc = URL_DIR_DEVOIR.$_SESSION['BASE'].'/'.$fichier_nom;
   }
@@ -180,8 +178,9 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   $nb_demandes_formulees++;
   $nb_demandes_possibles--;
   $s = ($nb_demandes_possibles>1) ? 's' : '' ;
-  $demandes_restantes = ($nb_demandes_possibles==0) ? 'Vous ne pouvez plus formuler d\'autres demandes pour cette matière.' : 'Vous pouvez encore formuler '.$nb_demandes_possibles.' demande'.$s.' pour cette matière.' ;
-  Json::end( TRUE , '<label class="valide">Votre demande a été ajoutée.</label><br />'.$demandes_restantes );
+  echo'<label class="valide">Votre demande a été ajoutée.</label><br />';
+  echo($nb_demandes_possibles==0) ? 'Vous ne pouvez plus formuler d\'autres demandes pour cette matière.' : 'Vous pouvez encore formuler '.$nb_demandes_possibles.' demande'.$s.' pour cette matière.' ;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,14 +189,14 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
 
 if(empty($_POST))
 {
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 
 ?>

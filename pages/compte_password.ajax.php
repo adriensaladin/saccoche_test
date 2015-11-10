@@ -37,28 +37,24 @@ $password_nouveau = (isset($_POST['f_password1'])) ? Clean::password($_POST['f_p
 
 if( ($password_ancien!='') && ($password_nouveau!='') )
 {
-  // selon le profil...
   if($_SESSION['USER_PROFIL_TYPE']=='webmestre')
   {
-    $result_bool = Webmestre::modifier_mdp_webmestre( $password_ancien , $password_nouveau );
+    exit( Webmestre::modifier_mdp_webmestre( $password_ancien , $password_nouveau ) );
   }
   elseif($_SESSION['USER_PROFIL_TYPE']=='partenaire')
   {
-    $result_bool = DB_WEBMESTRE_PARTENAIRE::DB_modifier_mdp_partenaire( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) );
+    exit( DB_WEBMESTRE_PARTENAIRE::DB_modifier_mdp_partenaire( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
   }
   else
   {
-    $result_bool = DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) );
+    exit( DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) ) );
   }
-  // affichage du retour
-  $result_message = ($result_bool) ? 'Mot de passe modifié !' : 'Saisie incorrecte du mot de passe actuel !' ;
-  Json::end( $result_bool , $result_message );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+// On ne devrait pas en arriver là !
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

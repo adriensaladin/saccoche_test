@@ -61,7 +61,7 @@ $tab_types = array(
 
 if( (!isset($tab_types[$f_type])) || ($tab_types[$f_type]=='imposé') || ($f_etat==-1) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ if($f_type!='messages')
   }
   $_SESSION['USER_PARAM_ACCUEIL'] = implode( ',' , array_keys( array_filter($tab_types) ) );
   DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_param_accueil' , $_SESSION['USER_PARAM_ACCUEIL'] );
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,13 +87,13 @@ if($f_type!='messages')
 if(!empty($message_id))
 {
   DB_STRUCTURE_MESSAGE::DB_modifier_message_dests_cache( $message_id , $_SESSION['USER_ID'] , (bool)$f_etat );
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

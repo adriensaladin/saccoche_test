@@ -43,25 +43,18 @@ if( in_array($f_user,array('oui','non')) && in_array($f_mail,array('oui','non','
     list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide('username@'.$f_domaine);
     if(!$is_domaine_valide)
     {
-      Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+      exit('Erreur avec le domaine "'.$mail_domaine.'" !');
     }
     $f_mail = $f_domaine;
   }
-  $result = FileSystem::fabriquer_fichier_hebergeur_info( array(
-    'CONTACT_MODIFICATION_USER' => $f_user,
-    'CONTACT_MODIFICATION_MAIL' => $f_mail,
-  ) );
-  if($result!==TRUE)
-  {
-    Json::end( FALSE , $result );
-  }
-  Json::end( TRUE );
+  FileSystem::fabriquer_fichier_hebergeur_info( array('CONTACT_MODIFICATION_USER'=>$f_user,'CONTACT_MODIFICATION_MAIL'=>$f_mail) );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+// On ne devrait pas en arriver là !
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

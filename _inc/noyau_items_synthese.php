@@ -81,7 +81,7 @@ else
   $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'Le regroupement et la période ne sont pas reliés !' );
+    exit('La classe et la période ne sont pas reliées !');
   }
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
@@ -90,7 +90,7 @@ else
 }
 if($date_mysql_debut>$date_mysql_fin)
 {
-  Json::end( FALSE , 'La date de début est postérieure à la date de fin !' );
+  exit('La date de début est postérieure à la date de fin !');
 }
 
 $tab_precision_retroactif = array
@@ -144,7 +144,7 @@ else
 $item_nb = count($tab_item);
 if( !$item_nb && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-  Json::end( FALSE , 'Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !' );
+  exit('Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !');
 }
 $tab_liste_item = array_keys($tab_item);
 $liste_item = implode(',',$tab_liste_item);
@@ -169,7 +169,7 @@ elseif(empty($is_appreciation_groupe))
   $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
-    Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
+    exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
 }
 else
@@ -216,7 +216,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
 }
 if( !count($tab_eval) && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-  Json::end( FALSE , 'Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !' );
+  exit('Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -827,18 +827,19 @@ if($make_pdf)  { FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_n
 
 if( $make_graph && (count($tab_graph_data)) )
 {
+  $js_graph .= '<SCRIPT>';
   // Matières sur l'axe des abscisses
-  Json::add_row( 'script' , 'ChartOptions.title.text = null;' );
-  Json::add_row( 'script' , 'ChartOptions.xAxis.categories = ['.implode(',',$tab_graph_data['categories']).'];' );
+  $js_graph .= 'ChartOptions.title.text = null;';
+  $js_graph .= 'ChartOptions.xAxis.categories = ['.implode(',',$tab_graph_data['categories']).'];';
   // Second axe des ordonnés pour les moyennes
   if(!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
   {
-    Json::add_row( 'script' , 'delete ChartOptions.yAxis[1];' );
+    $js_graph .= 'delete ChartOptions.yAxis[1];';
   }
   else
   {
     $ymax = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? 20 : 100 ;
-    Json::add_row( 'script' , 'ChartOptions.yAxis[1] = { min: 0, max: '.$ymax.', title: { style: { color: "#333" } , text: "Moyennes" }, opposite: true };' );
+    $js_graph .= 'ChartOptions.yAxis[1] = { min: 0, max: '.$ymax.', title: { style: { color: "#333" } , text: "Moyennes" }, opposite: true };';
   }
   // Séries de valeurs
   $tab_graph_series = array();
@@ -854,8 +855,8 @@ if( $make_graph && (count($tab_graph_data)) )
   {
     $tab_graph_series['MoyEleve']  = '{ type: "line", name: "Moyenne élève", data: ['.implode(',',$tab_graph_data['series_data_MoyEleve']).'], marker: {symbol: "circle"}, color: "#139", yAxis: 1 }';
   }
-  Json::add_row( 'script' , 'ChartOptions.series = ['.implode(',',$tab_graph_series).'];' );
-  Json::add_row( 'script' , 'graphique = new Highcharts.Chart(ChartOptions);' );
+  $js_graph .= 'ChartOptions.series = ['.implode(',',$tab_graph_series).'];';
+  $js_graph .= 'graphique = new Highcharts.Chart(ChartOptions);';
 }
 
 ?>

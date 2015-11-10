@@ -68,7 +68,7 @@ if( ($action=='exporter') && $nb_bases )
   $max = $nb_bases + 1 ; // La dernière étape consiste à zipper les fichiers de sauvegarde et à faire le ménage.
   // Créer ou vider le dossier temporaire qui contiendra le zip des zip
   FileSystem::creer_ou_vider_dossier($dossier_temp_zip);
-  Json::end( TRUE , $max );
+  exit(']¤['.$max);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ if( ($action=='exporter') && $num && $max && ($num<$max) )
   // Zipper les fichiers de svg
   FileSystem::zipper_fichiers($dossier_temp_sql,$dossier_temp_zip,$fichier_nom);
   // Appel suivant
-  Json::end( TRUE );
+  exit(']¤['.'ok');
 }
 elseif( ($action=='exporter') && $num && $max && ($num==$max) )
 {
@@ -107,7 +107,7 @@ elseif( ($action=='exporter') && $num && $max && ($num==$max) )
   FileSystem::supprimer_dossier($dossier_temp_zip);
   // Game over
   unset($_SESSION['datetime'],$_SESSION['alea']);
-  Json::end( TRUE , array( 'csv' => URL_DIR_EXPORT.$fichier_csv_nom , 'zip' => URL_DIR_DUMP.$fichier_zip_nom ) );
+  exit(']¤['.'ok'.']¤['.URL_DIR_EXPORT.$fichier_csv_nom.']¤['.URL_DIR_DUMP.$fichier_zip_nom);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -116,11 +116,10 @@ elseif( ($action=='exporter') && $num && $max && ($num==$max) )
 
 if($action=='importer_csv')
 {
-  // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_csv_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
   // On récupère les zones géographiques pour vérifier que l'identifiant transmis est cohérent
   $tab_geo = array();
@@ -218,7 +217,7 @@ if($action=='importer_csv')
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
   if(!$nb_lignes_trouvees)
   {
-    Json::end( FALSE , 'Aucune ligne du fichier ne semble correcte !' );
+    exit('Erreur : aucune ligne du fichier ne semble correcte !');
   }
   $info_lignes_trouvees = ($nb_lignes_trouvees>1) ? $nb_lignes_trouvees.' lignes trouvées' : '1 ligne trouvée' ;
   foreach($tab_erreur as $key => $tab)
@@ -226,7 +225,7 @@ if($action=='importer_csv')
     if($tab['nb'])
     {
       $s = ($tab['nb']>1) ? 's' : '' ;
-      Json::end( FALSE , $info_lignes_trouvees.' mais '.$tab['nb'].' ligne'.$s.$tab['txt'] );
+      exit('Erreur : '.$info_lignes_trouvees.' mais '.$tab['nb'].' ligne'.$s.$tab['txt']);
     }
   }
   // Nettoyer des restes d'upload de zip éventuels
@@ -234,7 +233,7 @@ if($action=='importer_csv')
   {
     FileSystem::supprimer_fichier( CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom'] , TRUE /*verif_exist*/ );
   }
-  Json::end( TRUE , $info_lignes_trouvees );
+  exit(']¤['.$info_lignes_trouvees);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -245,19 +244,18 @@ if($action=='importer_zip')
 {
   if(!count($_SESSION['tab_info']))
   {
-    Json::end( FALSE , 'Erreur : données du fichier CSV non retrouvées !' );
+    exit('Erreur : données du fichier CSV perdues !');
   }
-  // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_zip_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
   // Dezipper dans le dossier dump (pas dans un sous-dossier "temporaire" sinon ce dossier n'est pas vidé si l'opération n'arrive pas à son terme).
   $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom , CHEMIN_DOSSIER_DUMP , TRUE /*use_ZipArchive*/ );
   if($code_erreur)
   {
-    Json::end( FALSE , '<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>' );
+    exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>');
   }
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom);
   // Vérifier le contenu : noms des fichiers
@@ -273,11 +271,11 @@ if($action=='importer_zip')
   if($nb_fichiers_introuvables)
   {
     $s = ($nb_fichiers_introuvables>1) ? 's' : '' ;
-    Json::end( FALSE , $nb_fichiers_introuvables.' fichier'.$s.' référencé'.$s.' dans le CSV non trouvé'.$s.' dans le ZIP !' );
+    exit('Erreur : '.$nb_fichiers_introuvables.' fichier'.$s.' référencé'.$s.' dans le CSV non trouvé'.$s.' dans le ZIP !');
   }
   // La dernière étape consiste seulement à faire le ménage.
   $max = count($_SESSION['tab_info']) + 1 ;
-  Json::end( TRUE , $max );
+  exit(']¤['.$max);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -288,7 +286,7 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 {
   if(!count($_SESSION['tab_info']))
   {
-    Json::end( FALSE , 'Données du fichier CSV non retrouvées !' );
+    exit('Erreur : données du fichier CSV perdues !');
   }
   // Récupérer la série d'infos
   extract($_SESSION['tab_info'][$num]); // import_id / geo_id / localisation / denomination / uai / contact_nom / contact_prenom / contact_courriel / date / fichier_nom
@@ -300,26 +298,26 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
   $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_DUMP.$fichier_nom , $dossier_temp_sql , TRUE /*use_ZipArchive*/ );
   if($code_erreur)
   {
-    Json::end( FALSE , '<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.html($fichier_nom).' impossible à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></td>'.'</tr>' );
+    exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : fichiers de '.html($fichier_nom).' impossible à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></td>'.'</tr>');
   }
   // Vérifier le contenu : noms des fichiers
   $fichier_taille_maximale = verifier_dossier_decompression_sauvegarde($dossier_temp_sql);
   if(!$fichier_taille_maximale)
   {
     FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : le contenu de '.html($fichier_nom).' ne semble pas être une sauvegarde de base !</label></td>'.'</tr>' );
+    exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : le contenu de '.html($fichier_nom).' ne semble pas être une sauvegarde de base !</label></td>'.'</tr>');
   }
   // Vérifier le contenu : taille des requêtes
   if( !verifier_taille_requetes($fichier_taille_maximale) )
   {
     FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></td>'.'</tr>' );
+    exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></td>'.'</tr>');
   }
   // Vérifier le contenu : version de la base compatible avec la version logicielle
   if( version_base_fichier_svg($dossier_temp_sql) > VERSION_BASE_STRUCTURE )
   {
     FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient une sauvegarde plus récente que celle supportée par cette installation ! Il faut mettre à jour SACoche.</label></td>'.'</tr>' );
+    exit(']¤['.'<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient une sauvegarde plus récente que celle supportée par cette installation ! Il faut mettre à jour SACoche.</label></td>'.'</tr>');
   }
   // Insérer l'enregistrement dans la base du webmestre
   // Créer le fichier de connexion de la base de données de la structure
@@ -340,7 +338,7 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
   FileSystem::supprimer_dossier($dossier_temp_sql);
   // Retour du succès, appel suivant
   $retour_cellules_oui = '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td>';
-  Json::end( TRUE , '<tr>'.$retour_cellules_oui.'<td class="label"><label class="valide">'.$texte_etape.' avec succès.</label></td>'.'</tr>' );
+  exit(']¤['.'<tr>'.$retour_cellules_oui.'<td class="label"><label class="valide">'.$texte_etape.' avec succès.</label></td>'.'</tr>');
 }
 elseif( ($action=='importer') && $num && $max && ($num==$max) )
 {
@@ -351,7 +349,7 @@ elseif( ($action=='importer') && $num && $max && ($num==$max) )
   }
   // Game over
   unset($_SESSION['datetime'],$_SESSION['alea'],$_SESSION['tab_info']);
-  Json::end( TRUE );
+  exit(']¤['.'ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -364,7 +362,7 @@ if( ($action=='supprimer') && $nb_bases )
   {
     Webmestre::supprimer_multi_structure($base_id);
   }
-  Json::end( TRUE );
+  exit('<ok>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -373,13 +371,12 @@ if( ($action=='supprimer') && $nb_bases )
 
 if(empty($_POST))
 {
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
-
+exit('Erreur avec les données transmises !');
 ?>

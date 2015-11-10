@@ -57,13 +57,13 @@ $(document).ready
     (
       function()
       {
-        $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         var url_deconnexion = $('#url_deconnexion').val();
         if( (url_deconnexion!='') && !testURL(url_deconnexion) )
         {
-          $('#bouton_valider').prop('disabled',false);
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Adresse incorrecte !");
+          $("#bouton_valider").prop('disabled',false);
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Adresse incorrecte !");
           $('#url_deconnexion').focus();
           return false;
         }
@@ -73,26 +73,26 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&url_deconnexion='+encodeURIComponent(url_deconnexion),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#bouton_valider').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $("#bouton_valider").prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              $('#bouton_valider').prop('disabled',false);
-              if(responseJSON['statut']==true)
+              $("#bouton_valider").prop('disabled',false);
+              if(responseHTML!='ok')
               {
-                $('#ajax_msg').removeAttr('class').addClass('valide').html("Valeur enregistrée !");
-                // Il faut aussi modifier la valeur de cette variable js au cas où on cliquerait directement sur le bouton de déconnexion sans avoir changé de page
-                DECONNEXION_REDIR = url_deconnexion;
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("valide").html("Valeur enregistrée !");
+                // Il faut aussi modifier la valeur de cette variable js au cas où on cliquerait directement sur le bouton de déconnexion sans avoir changé de page
+                DECONNEXION_REDIR = url_deconnexion;
               }
               return false;
             }

@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "f_eleve"
+// Mettre à jour l'élément de formulaire "f_eleve" et le renvoyer en HTML
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -35,10 +35,8 @@ $option_first = (empty($_POST['f_first']))   ? FALSE                            
 
 if(!$matiere)
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
-// Affichage du retour.
-
-Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_niveaux_matiere($matiere) , FALSE /*select_nom*/ , $option_first , FALSE /*selection*/ , '' /*optgroup*/ ) );
+exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_niveaux_matiere($matiere) , FALSE /*select_nom*/ , $option_first , FALSE /*selection*/ , '' /*optgroup*/ ) );
 ?>

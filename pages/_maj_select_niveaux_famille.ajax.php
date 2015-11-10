@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "f_niveau"
+// Mettre à jour l'élément de formulaire "f_niveau" et le renvoyer en HTML
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -34,11 +34,9 @@ $niveau_famille_id = (isset($_POST['f_famille_niveau'])) ? Clean::entier($_POST[
 
 if(!$niveau_famille_id)
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
-// Affichage du retour.
-
-Json::end( TRUE , HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_famille($niveau_famille_id) , FALSE /*select_nom*/ , 'niveaux_famille' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
+exit( HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_niveaux_famille($niveau_famille_id) , FALSE /*select_nom*/ , 'niveaux_famille' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
 
 ?>

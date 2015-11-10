@@ -205,7 +205,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_gestion",
@@ -277,13 +277,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
         $('#form_user button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -293,32 +293,32 @@ $(document).ready
     {
       please_wait = false;
       $('#form_user button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseJSON)
+    function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
       please_wait = false;
       $('#form_user button').prop('disabled',false);
-      if(responseJSON['statut']==false)
+      if(responseHTML.substring(0,2)!='<t')
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
         action = $('#f_action').val();
         switch (action)
         {
           case 'ajouter':
             $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
           case 'dupliquer':
-            $('#table_action tbody').append(responseJSON['value']);
+            $('#table_action tbody').append(responseHTML);
             break;
           case 'modifier':
-            $('#id_'+$('#f_id').val()).addClass("new").html(responseJSON['value']);
+            $('#id_'+$('#f_id').val()).addClass("new").html(responseHTML);
             break;
           case 'supprimer':
             $('#id_'+$('#f_id').val()).remove();

@@ -54,7 +54,7 @@ $(document).ready
     function cocher(classe_id,etat)
     {
       $('#groupe_'+classe_id).find('label input:enabled').prop('checked',etat);
-      $('#ajax_msg').removeAttr('class').html('');
+      $('#ajax_msg').removeAttr("class").html('');
       return false;
     }
 
@@ -68,7 +68,7 @@ $(document).ready
       'input',
       function()
       {
-        $('#ajax_msg').removeAttr('class').html('');
+        $('#ajax_msg').removeAttr("class").html('');
       }
     );
 
@@ -84,37 +84,37 @@ $(document).ready
         var f_eleve = new Array(); $("#table_accueil input:enabled:checked").each(function(){f_eleve.push($(this).val());});
         if(!f_eleve.length)
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez au moins un élève !");
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un élève !");
           return false;
         }
         $('#export_notanet').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html('En cours&hellip;');
+        $('#ajax_msg').removeAttr("class").addClass("loader").html('En cours&hellip;');
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_eleve='+f_eleve,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#export_notanet').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('#export_notanet').prop('disabled',false);
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,14)!='export_notanet')
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
                 return false;
               }
               else
               {
-                $('#ajax_msg').removeAttr('class').addClass('valide').html('Fichier généré.');
-                $('#lien_notanet').attr('href','./force_download.php?fichier='+responseJSON['value']);
+                $('#ajax_msg').removeAttr("class").addClass("valide").html('Fichier généré.');
+                $('#lien_notanet').attr('href','./force_download.php?fichier='+responseHTML);
                 $.fancybox( { 'href':'#ajax_info' , onStart:function(){$('#ajax_info').css("display","block");} , onClosed:function(){$('#ajax_info').css("display","none");} , 'minWidth':600 , 'centerOnScroll':true } );
               }
             }

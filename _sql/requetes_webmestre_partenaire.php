@@ -39,7 +39,7 @@ class DB_WEBMESTRE_PARTENAIRE extends DB
  * @param int    $partenaire_id
  * @param string $password_ancien_crypte
  * @param string $password_nouveau_crypte
- * @return bool   TRUE si ok | FALSE si le mot de passe actuel est incorrect.
+ * @return string   'ok' ou 'Le mot de passe actuel est incorrect !'
  */
 public static function DB_modifier_mdp_partenaire($partenaire_id,$password_ancien_crypte,$password_nouveau_crypte)
 {
@@ -54,7 +54,7 @@ public static function DB_modifier_mdp_partenaire($partenaire_id,$password_ancie
   $DB_ROW = DB::queryRow(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   if(empty($DB_ROW))
   {
-    return FALSE;
+    return 'Le mot de passe actuel est incorrect !';
   }
   // Remplacer par le nouveau mot de passe
   $DB_SQL = 'UPDATE sacoche_partenaire ';
@@ -65,7 +65,7 @@ public static function DB_modifier_mdp_partenaire($partenaire_id,$password_ancie
     ':password_crypte' => $password_nouveau_crypte,
   );
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
-  return TRUE;
+  return 'ok';
 }
 
 }

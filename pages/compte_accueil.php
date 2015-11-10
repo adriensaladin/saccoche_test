@@ -411,12 +411,12 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','eleve')))
   if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   {
     $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_compter_demandes_evaluation($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
-    $page = 'evaluation&amp;section=demande_professeur';
+    $page = 'evaluation_demande_professeur';
   }
   if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   {
     $DB_TAB = DB_STRUCTURE_ELEVE::DB_compter_demandes_evaluation($_SESSION['USER_ID']);
-    $page = 'evaluation&amp;section=demande_eleve';
+    $page = 'evaluation_demande_eleve';
   }
   if(!empty($DB_TAB))
   {

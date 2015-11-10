@@ -71,7 +71,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
     $structure_denomination = DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_Id($base_id);
     if($structure_denomination!==NULL)
     {
-      Json::end( FALSE , 'Identifiant déjà utilisé ('.html($structure_denomination).') !' );
+      exit('Erreur : identifiant déjà utilisé ('.html($structure_denomination).') !');
     }
   }
   // Vérifier que le n°UAI est disponible
@@ -79,14 +79,14 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   {
     if( DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
     {
-      Json::end( FALSE , 'Numéro UAI '.$uai.' déjà utilisé !' );
+      exit('Erreur : numéro UAI déjà utilisé !');
     }
   }
   // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
   list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($contact_courriel);
   if(!$is_domaine_valide)
   {
-    Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+    exit('Erreur avec le domaine "'.$mail_domaine.'" !');
   }
   // Insérer l'enregistrement dans la base du webmestre
   // Créer le fichier de connexion de la base de données de la structure
@@ -128,7 +128,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
     $courriel_bilan = Sesamail::mail( $contact_courriel , $courriel_titre , $courriel_contenu );
     if(!$courriel_bilan)
     {
-      Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+      exit('Erreur lors de l\'envoi du courriel !');
     }
   }
   if($courriel_copie)
@@ -137,25 +137,25 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
     $courriel_bilan = Sesamail::mail( WEBMESTRE_COURRIEL , $courriel_titre , $introduction.$courriel_contenu );
     if(!$courriel_bilan)
     {
-      Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+      exit('Erreur lors de l\'envoi du courriel !');
     }
   }
   // On affiche le retour
-  Json::add_str('<tr id="id_'.$base_id.'" class="new">');
-  Json::add_str(  '<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." /></a></td>');
-  Json::add_str(  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>');
-  Json::add_str(  '<td class="label">'.$base_id.'</td>');
-  Json::add_str(  '<td class="label"><i>'.sprintf($geo_ordre_format,$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'<br />'.html($localisation).'</td>');
-  Json::add_str(  '<td class="label">'.html($denomination).'<br />'.html($uai).'</td>');
-  Json::add_str(  '<td class="label"><span>'.html($contact_nom).'</span> <span>'.html($contact_prenom).'</span><div>'.html($contact_courriel).'</div></td>');
-  Json::add_str(  '<td class="label">'.$date_fr.'</td>');
-  Json::add_str(  '<td class="nu">');
-  Json::add_str(    '<q class="modifier" title="Modifier cet établissement."></q>');
-  Json::add_str(    '<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>');
-  Json::add_str(    '<q class="supprimer" title="Supprimer cet établissement."></q>');
-  Json::add_str(  '</td>');
-  Json::add_str('</tr>');
-  Json::end( TRUE );
+  echo'<tr id="id_'.$base_id.'" class="new">';
+  echo  '<td class="nu"><a href="#id_0"><img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." /></a></td>';
+  echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>';
+  echo  '<td class="label">'.$base_id.'</td>';
+  echo  '<td class="label"><i>'.sprintf($geo_ordre_format,$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'<br />'.html($localisation).'</td>';
+  echo  '<td class="label">'.html($denomination).'<br />'.html($uai).'</td>';
+  echo  '<td class="label"><span>'.html($contact_nom).'</span> <span>'.html($contact_prenom).'</span><div>'.html($contact_courriel).'</div></td>';
+  echo  '<td class="label">'.$date_fr.'</td>';
+  echo  '<td class="nu">';
+  echo    '<q class="modifier" title="Modifier cet établissement."></q>';
+  echo    '<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
+  echo    '<q class="supprimer" title="Supprimer cet établissement."></q>';
+  echo  '</td>';
+  echo'</tr>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,7 +169,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
   {
     if( DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai,$base_id) )
     {
-      Json::end( FALSE , 'Numéro UAI '.$uai.' déjà utilisé !' );
+      exit('Erreur : numéro UAI déjà utilisé !');
     }
   }
   // On met à jour l'enregistrement dans la base du webmestre
@@ -183,19 +183,19 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
   // On affiche le retour
   $img_acces = ($acces=='bloquer') ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
   $checked = ($check) ? ' checked' : '' ;
-  Json::add_str('<td class="nu"><a href="#id_0">'.$img_acces.'</a></td>');
-  Json::add_str('<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'"'.$checked.' /></td>');
-  Json::add_str('<td class="label">'.$base_id.'</td>');
-  Json::add_str('<td class="label"><i>'.sprintf($geo_ordre_format,$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'<br />'.html($localisation).'</td>');
-  Json::add_str('<td class="label">'.html($denomination).'<br />'.html($uai).'</td>');
-  Json::add_str('<td class="label"><span>'.html($contact_nom).'</span> <span>'.html($contact_prenom).'</span><div>'.html($contact_courriel).'</div></td>');
-  Json::add_str('<td class="label">'.$date_fr.'</td>');
-  Json::add_str('<td class="nu">');
-  Json::add_str(  '<q class="modifier" title="Modifier cet établissement."></q>');
-  Json::add_str(  '<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>');
-  Json::add_str(  '<q class="supprimer" title="Supprimer cet établissement."></q>');
-  Json::add_str('</td>');
-  Json::end( TRUE );
+  echo'<td class="nu"><a href="#id_0">'.$img_acces.'</a></td>';
+  echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'"'.$checked.' /></td>';
+  echo'<td class="label">'.$base_id.'</td>';
+  echo  '<td class="label"><i>'.sprintf($geo_ordre_format,$tab_geo[$geo_id]['ordre']).'</i>'.html($tab_geo[$geo_id]['nom']).'<br />'.html($localisation).'</td>';
+  echo  '<td class="label">'.html($denomination).'<br />'.html($uai).'</td>';
+  echo  '<td class="label"><span>'.html($contact_nom).'</span> <span>'.html($contact_prenom).'</span><div>'.html($contact_courriel).'</div></td>';
+  echo  '<td class="label">'.$date_fr.'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier cet établissement."></q>';
+  echo  '<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';
+  echo  '<q class="supprimer" title="Supprimer cet établissement."></q>';
+  echo'</td>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -205,7 +205,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 if( ($action=='lister_admin') && $base_id )
 {
   charger_parametres_mysql_supplementaires($base_id);
-  Json::end( TRUE , HtmlForm::afficher_select(DB_STRUCTURE_WEBMESTRE::DB_OPT_administrateurs_etabl() , FALSE /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/) );
+  exit( HtmlForm::afficher_select(DB_STRUCTURE_WEBMESTRE::DB_OPT_administrateurs_etabl() , FALSE /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,7 +219,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
   $DB_ROW = DB_WEBMESTRE_WEBMESTRE::DB_recuperer_structure_by_Id($base_id);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'Structure introuvable !' );
+    exit('Erreur : structure introuvable !');
   }
   $denomination     = $DB_ROW['structure_denomination'];
   $contact_nom      = $DB_ROW['structure_contact_nom'];
@@ -229,7 +229,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
   $DB_ROW = DB_STRUCTURE_WEBMESTRE::DB_recuperer_admin_identite($admin_id);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'Administrateur introuvable !' );
+    exit('Erreur : administrateur introuvable !');
   }
   $admin_nom    = $DB_ROW['user_nom'];
   $admin_prenom = $DB_ROW['user_prenom'];
@@ -243,7 +243,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
   $courriel_bilan = Sesamail::mail( $contact_courriel , $courriel_titre , $courriel_contenu );
   if(!$courriel_bilan)
   {
-    Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+    exit('Erreur lors de l\'envoi du courriel !');
   }
   if($courriel_copie)
   {
@@ -251,13 +251,14 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
     $courriel_bilan = Sesamail::mail( WEBMESTRE_COURRIEL , $courriel_titre , $introduction.$courriel_contenu );
     if(!$courriel_bilan)
     {
-      Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+      exit('Erreur lors de l\'envoi du courriel !');
     }
   }
   // On affiche le retour
-  Json::add_str('Le mot de passe de '.html($admin_prenom.' '.$admin_nom).',<br />administrateur de l\'établissement '.html($denomination).',<br />vient d\'être réinitialisé.<br /><br />');
-  Json::add_str('Les nouveaux identifiants ont été envoyés au contact '.html($contact_prenom).' '.html($contact_nom).',<br />à son adresse de courriel '.html($contact_courriel).'.');
-  Json::end( TRUE );
+  echo'<ok>';
+  echo'Le mot de passe de '.html($admin_prenom.' '.$admin_nom).',<BR />administrateur de l\'établissement '.html($denomination).',<BR />vient d\'être réinitialisé.<BR /><BR />';
+  echo'Les nouveaux identifiants ont été envoyés au contact '.html($contact_prenom).' '.html($contact_nom).',<BR />à son adresse de courriel '.html($contact_courriel).'.';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -267,7 +268,7 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 if( ($action=='supprimer') && $base_id )
 {
   Webmestre::supprimer_multi_structure($base_id);
-  Json::end( TRUE );
+  exit('<ok>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,7 +282,7 @@ if( ($action=='supprimer') && $listing_base_id )
   {
     Webmestre::supprimer_multi_structure($base_id);
   }
-  Json::end( TRUE );
+  exit('<ok>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,7 +292,7 @@ if( ($action=='supprimer') && $listing_base_id )
 if( ($action=='bloquer') && $base_id )
 {
   LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],$base_id,'Action ciblée ; contacter le webmestre pour obtenir des précisions.');
-  Json::end( TRUE , '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' );
+  exit('<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -301,13 +302,13 @@ if( ($action=='bloquer') && $base_id )
 if( ($action=='debloquer') && $base_id )
 {
   LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],$base_id);
-  Json::end( TRUE , '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' );
+  exit('<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

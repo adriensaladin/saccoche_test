@@ -39,7 +39,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_upload').removeAttr('class').html('&nbsp;');
+        $('#ajax_upload').removeAttr("class").html('&nbsp;');
         user_id    = $('#f_user option:selected').val();
         user_texte = $('#f_user option:selected').text();
         // maj du paramètre AjaxUpload (les paramètres n'étant pas directement modifiables...)
@@ -80,7 +80,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_'+form_partie[$(this).attr('id')]).removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_'+form_partie[$(this).attr('id')]).removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
       }
     );
 
@@ -112,41 +112,41 @@ $(document).ready
           var enveloppe_hauteur = parseInt($('#f_vertical_haut'    ).val(),10) + parseInt($('#f_vertical_milieu'  ).val(),10) + parseInt($('#f_vertical_bas'     ).val(),10) ;
           if( (enveloppe_largeur<215) || (enveloppe_largeur>235) )
           {
-            $('#ajax_msg_'+partie).removeAttr('class').addClass('erreur').html("Dimensions incorrectes : la longueur de l'enveloppe doit être comprise entre 21,5cm et 23,5cm.");
+            $('#ajax_msg_'+partie).removeAttr("class").addClass("erreur").html("Dimensions incorrectes : la longueur de l'enveloppe doit être comprise entre 21,5cm et 23,5cm.");
             return false;
           }
           if( (enveloppe_hauteur<105) || (enveloppe_hauteur>125) )
           {
-            $('#ajax_msg_'+partie).removeAttr('class').addClass('erreur').html("Dimensions incorrectes : la hauteur de l'enveloppe doit être comprise entre 10,5cm et 12,5cm.");
+            $('#ajax_msg_'+partie).removeAttr("class").addClass("erreur").html("Dimensions incorrectes : la hauteur de l'enveloppe doit être comprise entre 10,5cm et 12,5cm.");
             return false;
           }
         }
         $("button.parametre").prop('disabled',true);
-        $('#ajax_msg_'+partie).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_'+partie).removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+partie+'&'+$('#form_mise_en_page').serialize(),
-            responseType: 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("button.parametre").prop('disabled',false);
-              $('#ajax_msg_'+partie).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+partie).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $("button.parametre").prop('disabled',false);
-              if(responseJSON['statut']==true)
+              if(responseHTML!='ok')
               {
-                $('#ajax_msg_'+partie).removeAttr('class').addClass('valide').html("Données enregistrées !");
+                $('#ajax_msg_'+partie).removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#ajax_msg_'+partie).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_'+partie).removeAttr("class").addClass("valide").html("Données enregistrées !");
               }
               return false;
             }
@@ -167,7 +167,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_action':'upload_signature','f_user_id':user_id,'f_user_texte':user_texte},
         autoSubmit: true,
-        responseType: 'json',
+        responseType: "html",
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -177,7 +177,7 @@ $(document).ready
     function changer_fichier(fichier_nom,fichier_extension)
     {
       $("#f_upload").prop('disabled',true);
-      $('#ajax_upload').removeAttr('class').html('&nbsp;');
+      $('#ajax_upload').removeAttr("class").html('&nbsp;');
       return true;
     }
 
@@ -186,41 +186,41 @@ $(document).ready
       if (fichier_nom==null || fichier_nom.length<5)
       {
         $("#f_upload").prop('disabled',false);
-        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ('.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
         $("#f_upload").prop('disabled',false);
-        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (jpg jpeg gif png).');
+        $('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (jpg jpeg gif png).');
         return false;
       }
       else
       {
-        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
     {
-      $("#f_upload").prop('disabled',false);
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
-      if(responseJSON['statut']==false)
+      if(responseHTML.substring(0,4)!='<li ')
       {
-        $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $("#f_upload").prop('disabled',false);
+        $('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_upload').removeAttr('class').addClass('valide').html('Image ajoutée');
+        $("#f_upload").prop('disabled',false);
+        $('#ajax_upload').removeAttr("class").addClass("valide").html('Image ajoutée');
         if($('#sgn_'+user_id).length)
         {
-          $('#sgn_'+user_id).replaceWith(responseJSON['value']);
+          $('#sgn_'+user_id).replaceWith(responseHTML);
         }
         else
         {
-          $('#listing_signatures').prepend(responseJSON['value']);
+          $('#listing_signatures').prepend(responseHTML);
         }
         $('#sgn_none').remove();
       }
@@ -237,28 +237,28 @@ $(document).ready
       function()
       {
         var sgn_id = $(this).parent().attr('id').substr(4);
-        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=delete_signature'+'&f_user_id='+sgn_id,
-            responseType: 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_upload').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
+              if(responseHTML!='ok')
               {
-                $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $('#ajax_upload').removeAttr('class').html('');
+                $('#ajax_upload').removeAttr("class").html('');
                 $('#sgn_'+sgn_id).remove();
               }
             }

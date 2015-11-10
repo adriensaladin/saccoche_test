@@ -55,11 +55,11 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
   $nb_reponses = count($DB_TAB) ;
   if($nb_reponses==0)
   {
-    Json::end( FALSE , 'Aucun utilisateur trouvé selon ce critère.' );
+    exit('nada');
   }
   else if($nb_reponses>100)
   {
-    Json::end( FALSE , $nb_reponses.' réponses : restreignez votre recherche !' );
+    exit($nb_reponses.' réponses : restreignez votre recherche !');
   }
   else
   {
@@ -73,25 +73,25 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
       $date_mysql  = $DB_ROW['user_sortie_date'];
       $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($date_mysql) : '-' ;
       // Afficher une ligne du tableau
-      Json::add_str('<tr id="id_'.$DB_ROW['user_id'].'">');
-      Json::add_str(  '<td>'.html($DB_ROW['user_id_ent']).'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_id_gepi']).'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_sconet_id']).'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_sconet_elenoet']).'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_reference']).'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['user_profil_nom_long_singulier'])).'" /></td>'); // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-      Json::add_str(  '<td>'.Html::$tab_genre[$genre_key][$DB_ROW['user_genre']].'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_nom']).'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_prenom']).'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_login']).'</td>');
-      Json::add_str(  '<td>'.html($DB_ROW['user_email']).'</td>');
-      Json::add_str(  '<td>'.$date_affich.'</td>');
-      Json::add_str(  '<td class="nu">');
-      Json::add_str(    '<q class="modifier" title="Modifier cet utilisateur."></q>');
-      Json::add_str(  '</td>');
-      Json::add_str('</tr>'.NL);
+      echo'<tr id="id_'.$DB_ROW['user_id'].'">';
+      echo  '<td>'.html($DB_ROW['user_id_ent']).'</td>';
+      echo  '<td>'.html($DB_ROW['user_id_gepi']).'</td>';
+      echo  '<td>'.html($DB_ROW['user_sconet_id']).'</td>';
+      echo  '<td>'.html($DB_ROW['user_sconet_elenoet']).'</td>';
+      echo  '<td>'.html($DB_ROW['user_reference']).'</td>';
+      echo  '<td>'.html($DB_ROW['user_profil_sigle']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['user_profil_nom_long_singulier'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+      echo  '<td>'.Html::$tab_genre[$genre_key][$DB_ROW['user_genre']].'</td>';
+      echo  '<td>'.html($DB_ROW['user_nom']).'</td>';
+      echo  '<td>'.html($DB_ROW['user_prenom']).'</td>';
+      echo  '<td>'.html($DB_ROW['user_login']).'</td>';
+      echo  '<td>'.html($DB_ROW['user_email']).'</td>';
+      echo  '<td>'.$date_affich.'</td>';
+      echo  '<td class="nu">';
+      echo    '<q class="modifier" title="Modifier cet utilisateur."></q>';
+      echo  '</td>';
+      echo'</tr>'.NL;
     }
-    Json::end( TRUE );
+    exit();
   }
 }
 
@@ -105,14 +105,14 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   // Vérifier le profil
   if(!isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]))
   {
-    Json::end( FALSE , 'Profil incorrect !' );
+    exit('Erreur : profil incorrect !');
   }
   // Vérifier que l'identifiant ENT est disponible (parmi tous les utilisateurs de l'établissement)
   if($id_ent)
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_ent',$id_ent,$id) )
     {
-      Json::end( FALSE , 'Identifiant ENT déjà utilisé !' );
+      exit('Erreur : identifiant ENT déjà utilisé !');
     }
   }
   // Vérifier que l'identifiant GEPI est disponible (parmi tous les utilisateurs de l'établissement)
@@ -120,7 +120,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_gepi',$id_gepi,$id) )
     {
-      Json::end( FALSE , 'Identifiant Gepi déjà utilisé !' );
+      exit('Erreur : identifiant Gepi déjà utilisé !');
     }
   }
   // Vérifier que l'identifiant sconet est disponible (parmi les utilisateurs de même type de profil)
@@ -128,7 +128,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_id',$sconet_id,$id,$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
     {
-      Json::end( FALSE , 'Identifiant Sconet déjà utilisé !' );
+      exit('Erreur : identifiant Sconet déjà utilisé !');
     }
   }
   // Vérifier que le n° sconet est disponible (parmi les utilisateurs de même type de profil)
@@ -136,7 +136,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('sconet_elenoet',$sconet_num,$id,$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
     {
-      Json::end( FALSE , 'Numéro Sconet déjà utilisé !' );
+      exit('Erreur : numéro Sconet déjà utilisé !');
     }
   }
   // Vérifier que la référence est disponible (parmi les utilisateurs de même type de profil)
@@ -144,13 +144,13 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('reference',$reference,$id,$_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
     {
-      Json::end( FALSE , 'Référence déjà utilisée !' );
+      exit('Erreur : référence déjà utilisée !');
     }
   }
   // Vérifier que le login transmis est disponible (parmi tous les utilisateurs de l'établissement)
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login,$id) )
   {
-    Json::end( FALSE , 'Login déjà utilisé !' );
+    exit('Erreur : login déjà existant !');
   }
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if($courriel)
@@ -160,7 +160,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
       list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
       if(!$is_domaine_valide)
       {
-        Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
       }
     }
     $tab_donnees[':email_origine'] = 'admin';
@@ -208,28 +208,28 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   }
   // Afficher le retour
   $genre_key = ($profil=='ELV') ? 'enfant' : 'adulte' ;
-  Json::add_str('<td>'.html($id_ent).'</td>');
-  Json::add_str('<td>'.html($id_gepi).'</td>');
-  Json::add_str('<td>'.html($sconet_id).'</td>');
-  Json::add_str('<td>'.html($sconet_num).'</td>');
-  Json::add_str('<td>'.html($reference).'</td>');
-  Json::add_str('<td>'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>');
-  Json::add_str('<td>'.Html::$tab_genre[$genre_key][$genre].'</td>');
-  Json::add_str('<td>'.html($nom).'</td>');
-  Json::add_str('<td>'.html($prenom).'</td>');
-  Json::add_str('<td>'.html($login).'</td>');
-  Json::add_str('<td>'.html($courriel).'</td>');
-  Json::add_str('<td>'.$sortie_date.'</td>');
-  Json::add_str('<td class="nu">');
-  Json::add_str(  '<q class="modifier" title="Modifier cet utilisateur."></q>');
-  Json::add_str('</td>');
-  Json::end( TRUE );
+  echo'<td>'.html($id_ent).'</td>';
+  echo'<td>'.html($id_gepi).'</td>';
+  echo'<td>'.html($sconet_id).'</td>';
+  echo'<td>'.html($sconet_num).'</td>';
+  echo'<td>'.html($reference).'</td>';
+  echo'<td>'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>';
+  echo'<td>'.Html::$tab_genre[$genre_key][$genre].'</td>';
+  echo'<td>'.html($nom).'</td>';
+  echo'<td>'.html($prenom).'</td>';
+  echo'<td>'.html($login).'</td>';
+  echo'<td>'.html($courriel).'</td>';
+  echo'<td>'.$sortie_date.'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier cet utilisateur."></q>';
+  echo'</td>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

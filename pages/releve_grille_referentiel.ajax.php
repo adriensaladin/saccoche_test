@@ -89,7 +89,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
     }
     if(!$is_enfant_legitime)
     {
-      Json::end( FALSE , 'Enfant non rattaché à votre compte parent !' );
+      exit('Enfant non rattaché à votre compte parent !');
     }
   }
 }
@@ -120,7 +120,7 @@ $besoin_notes = ( !$type_generique && ( ($remplissage=='plein') || ($colonne_bil
 
 if( !$matiere_id || ( !$type_generique && (!$groupe_id || !$groupe_nom || !$groupe_type) ) || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || !count($tab_type) || !$eleves_ordre )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 // Enregistrer les préférences utilisateurs
@@ -163,7 +163,7 @@ if($besoin_notes)
     $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
     if(empty($DB_ROW))
     {
-      Json::end( FALSE , 'Le regroupement et la période ne sont pas reliés !' );
+      exit('La classe et la période ne sont pas reliées !');
     }
     $date_mysql_debut = $DB_ROW['jointure_date_debut'];
     $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
@@ -172,7 +172,7 @@ if($besoin_notes)
   }
   if($date_mysql_debut>$date_mysql_fin)
   {
-    Json::end( FALSE , 'La date de début est postérieure à la date de fin !' );
+    exit('La date de début est postérieure à la date de fin !');
   }
 
   $tab_precision_retroactif = array
@@ -234,7 +234,7 @@ if(!empty($DB_TAB))
 $item_nb = count($tab_liste_item);
 if(!$item_nb)
 {
-  Json::end( FALSE , 'Aucun item référencé pour cette matière et ce niveau !' );
+  exit('Aucun item référencé pour cette matière et ce niveau !');
 }
 $liste_item = implode(',',$tab_liste_item);
 
@@ -255,7 +255,7 @@ elseif(count($tab_eleve_id))
   $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
-    Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
+    exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
 }
 else
@@ -748,41 +748,33 @@ if($type_synthese)
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$retour = '';
-
 if($affichage_direct)
 {
-  $retour .= '<hr />'.NL;
-  $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  $retour .= '</ul>'.NL;
-  $retour .= $releve_HTML_individuel;
+  echo'<hr />'.NL;
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
+  echo $releve_HTML_individuel;
 }
 else
 {
   if($type_synthese)
   {
-    $retour .= '<h2>Synthèse collective</h2>'.NL;
-    $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
-    $retour .= '</ul>'.NL;
+    echo'<h2>Synthèse collective</h2>'.NL;
+    echo'<ul class="puce">'.NL;
+    echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo'</ul>'.NL;
   }
   if( $type_generique || $type_individuel )
   {
     $h2 = ($type_individuel) ? 'Relevé individuel' : 'Relevé générique' ;
-    $retour .= '<h2>'.$h2.'</h2>'.NL;
-    $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
-    $retour .= '</ul>'.NL;
+    echo'<h2>'.$h2.'</h2>'.NL;
+    echo'<ul class="puce">'.NL;
+    echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    echo  '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    echo'</ul>'.NL;
   }
 }
-
-Json::add_tab( array(
-  'direct' => $affichage_direct ,
-  'bilan'  => $retour ,
-) );
-Json::end( TRUE );
 
 ?>

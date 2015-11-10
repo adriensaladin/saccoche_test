@@ -153,7 +153,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
     // Vérifier que la date de début est antérieure à la date de fin
     if($date_debut_mysql>$date_fin_mysql)
     {
-      Json::end( FALSE , 'Date de début postérieure à la date de fin !' );
+      exit('Erreur : la date de début est postérieure à la date de fin !');
     }
   }
   // Restreindre la recherche à une période donnée, cas d'une période associée à une classe ou à un groupe
@@ -162,13 +162,14 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
     $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode( $aff_classe_id , $aff_periode );
     if(empty($DB_ROW))
     {
-      Json::end( FALSE , 'Cette classe et cette période ne sont pas reliées !' );
+      exit('Erreur : cette classe et cette période ne sont pas reliées !');
     }
     // Formater les dates
     $date_debut_mysql = $DB_ROW['jointure_date_debut'];
     $date_fin_mysql   = $DB_ROW['jointure_date_fin'];
   }
   // Lister les évaluations
+  $script = '';
   $classe_id = ($aff_classe_txt!='d2') ? $aff_classe_id : -1 ; // 'd2' est transmis si on veut toutes les classes / tous les groupes ; classe_id vaut 0 si selection d'élèves
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof( $_SESSION['USER_ID'] , $classe_id , $date_debut_mysql , $date_fin_mysql );
   if(!empty($DB_TAB))
@@ -233,12 +234,12 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
         }
         else
         {
-          Json::end( FALSE , 'Droit attribué sur le devoir n°'.$DB_ROW['devoir_id'].' non trouvé !' );
+          exit('Erreur : droit attribué sur le devoir n°'.$DB_ROW['devoir_id'].' non trouvé !');
         }
       }
       else
       {
-        Json::end( FALSE , 'Vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$DB_ROW['devoir_id'].' !' );
+        exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$DB_ROW['devoir_id'].' !');
       }
       $date_affich   = convert_date_mysql_to_french($DB_ROW['devoir_date']);
       $date_visible  = ($DB_ROW['devoir_date']==$DB_ROW['devoir_visible_date']) ? 'identique'  : convert_date_mysql_to_french($DB_ROW['devoir_visible_date']) ;
@@ -258,52 +259,44 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       $remplissage_lien1    = ($niveau_droit<4)  ? '' : '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">' ;
       $remplissage_lien2    = ($niveau_droit<4)  ? '' : '</a>' ;
       $remplissage_td_title = ($niveau_droit==4) ? '' : ' title="Clôture restreinte au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."' ;
-      $td_groupe_eleves     = ($type=='groupe') ? '<td class="'.$DB_ROW['devoir_eleves_ordre'].'">'.html($DB_ROW['groupe_nom']).'</td>' : '<td class="'.$DB_ROW['devoir_eleves_ordre'].'">'.$DB_ROW['users_nombre'].' élève'.$us.$eleves_bulle.'</td>' ;
-      $q_uploader_doc       = ($niveau_droit==4) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Upload restreint au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."></q>' ;
-      $q_modifier           = ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
-      $q_ordonner           = ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
-      $q_supprimer          = ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."></q>' ;
-      $q_saisir             = ($niveau_droit>=2) ? '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>' : '<q class="saisir_non" title="Action nécessitant le droit de saisie (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
       // Afficher une ligne du tableau
-      Json::add_row( 'html' , '<tr>' );
-      Json::add_row( 'html' ,   '<td>'.$date_affich.'</td>' );
-      Json::add_row( 'html' ,   '<td>'.$date_visible.'</td>' );
-      Json::add_row( 'html' ,   '<td>'.$date_autoeval.'</td>' );
-      Json::add_row( 'html' , $td_groupe_eleves );
-      Json::add_row( 'html' ,   '<td id="proprio_'.$DB_ROW['proprio_id'].'">'.$profs_nombre.$profs_bulle.'</td>' );
-      Json::add_row( 'html' ,   '<td>'.html($DB_ROW['devoir_info']).'</td>' );
-      Json::add_row( 'html' ,   '<td>'.$DB_ROW['items_nombre'].' item'.$cs.'</td>' );
-      Json::add_row( 'html' ,   '<td>'.$image_sujet.$image_corrige );
-      Json::add_row( 'html' , $q_uploader_doc );
-      Json::add_row( 'html' ,   '</td>' );
-      Json::add_row( 'html' ,   '<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>' );
-      Json::add_row( 'html' ,   '<td class="nu" id="devoir_'.$ref.'">' );
-      Json::add_row( 'html' , $q_modifier );
-      Json::add_row( 'html' , $q_ordonner );
-      Json::add_row( 'html' ,     '<q class="dupliquer" title="Dupliquer cette évaluation."></q>' );
-      Json::add_row( 'html' , $q_supprimer );
-      Json::add_row( 'html' ,     '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>' );
-      Json::add_row( 'html' , $q_saisir );
-      Json::add_row( 'html' ,     '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>' );
-      Json::add_row( 'html' ,     '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>' );
-      Json::add_row( 'html' ,   '</td>' );
-      Json::add_row( 'html' , '</tr>' );
-      Json::add_row( 'script' , 'tab_items["'.$ref.'"]="'.$DB_ROW['items_listing'].'";' );
-      Json::add_row( 'script' , 'tab_profs["'.$ref.'"]="'.$profs_liste.'";' );
-      Json::add_row( 'script' , 'tab_sujets["'.$ref.'"]="'.$DB_ROW['devoir_doc_sujet'].'";' );
-      Json::add_row( 'script' , 'tab_corriges["'.$ref.'"]="'.$DB_ROW['devoir_doc_corrige'].'";' );
-      if($type=='selection')
-      {
-        Json::add_row( 'script' , 'tab_eleves["'.$ref.'"]="'.$DB_ROW['users_listing'].'";' );
-      }
+      echo'<tr>';
+      echo  '<td>'.$date_affich.'</td>';
+      echo  '<td>'.$date_visible.'</td>';
+      echo  '<td>'.$date_autoeval.'</td>';
+      echo  ($type=='groupe') ? '<td class="'.$DB_ROW['devoir_eleves_ordre'].'">'.html($DB_ROW['groupe_nom']).'</td>' : '<td class="'.$DB_ROW['devoir_eleves_ordre'].'">'.$DB_ROW['users_nombre'].' élève'.$us.$eleves_bulle.'</td>' ;
+      echo  '<td id="proprio_'.$DB_ROW['proprio_id'].'">'.$profs_nombre.$profs_bulle.'</td>';
+      echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
+      echo  '<td>'.$DB_ROW['items_nombre'].' item'.$cs.'</td>';
+      echo  '<td>'.$image_sujet.$image_corrige;
+      echo  ($niveau_droit==4) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Upload restreint au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo  '</td>';
+      echo  '<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
+      echo  '<td class="nu" id="devoir_'.$ref.'">';
+      echo    ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    '<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
+      echo    ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
+      echo    ($niveau_droit>=2) ? '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>' : '<q class="saisir_non" title="Action nécessitant le droit de saisie (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
+      echo    '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
+      echo    '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
+      echo  '</td>';
+      echo'</tr>';
+      $script .= 'tab_items["'.$ref.'"]="'.$DB_ROW['items_listing'].'";';
+      $script .= 'tab_profs["'.$ref.'"]="'.$profs_liste.'";';
+      $script .= ($type=='selection') ? 'tab_eleves["'.$ref.'"]="'.$DB_ROW['users_listing'].'";' : '' ;
+      $script .= 'tab_sujets["'.$ref.'"]="'.$DB_ROW['devoir_doc_sujet'].'";';
+      $script .= 'tab_corriges["'.$ref.'"]="'.$DB_ROW['devoir_doc_corrige'].'";';
     }
   }
   else
   {
-    Json::add_row( 'html' , '<tr class="vide"><td class="nu probleme" colspan="9">Cliquer sur l\'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td><td class="nu"></td></tr>' );
-    Json::add_row( 'script' , '' );
+    echo'<tr class="vide"><td class="nu probleme" colspan="9">Cliquer sur l\'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter une évaluation.</td><td class="nu"></td></tr>';
   }
-  Json::end( TRUE );
+  
+  echo'<SCRIPT>'.$script;
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -324,26 +317,26 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $maxi_visible_stamp  = strtotime("+10 month");
   if( ($date_stamp<$mini_stamp) || ($date_stamp>$maxi_stamp) )
   {
-    Json::end( FALSE , 'Date devoir trop éloignée !' );
+    exit('Date devoir trop éloignée !');
   }
   if( ($date_visible_stamp<$mini_stamp) || ($date_visible_stamp>$maxi_visible_stamp) )
   {
-    Json::end( FALSE , 'Date visible trop éloignée !' );
+    exit('Date visible trop éloignée !');
   }
   if( ($date_autoeval!='00/00/0000') && ( ($date_autoeval_stamp<$mini_stamp) || ($date_autoeval_stamp>$maxi_visible_stamp) ) )
   {
-    Json::end( FALSE , 'Date fin auto-éval. trop éloignée !' );
+    exit('Date fin auto-éval. trop éloignée !');
   }
   if( ($date_autoeval!='00/00/0000') && ($date_autoeval_mysql<$date_visible_mysql) )
   {
-    Json::end( FALSE , 'Date fin auto-éval. avant date visible !' );
+    exit('Date fin auto-éval. avant date visible !');
   }
   // Récupérer l'effectif de la classe ou du groupe
   $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
   // Dans le cas d'une évaluation sur un regroupement, on vérifie qu'il n'est pas vide
   if(!$effectif_eleve)
   {
-    Json::end( FALSE , 'Regroupement sans élève !' );
+    exit('Regroupement sans élève !');
   }
   // Ordre des élèves
   if($groupe_type=='classe')
@@ -458,35 +451,32 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $remplissage_contenu  = '<span>'.$remplissage_nombre.'</span><i>terminé</i>';
   $remplissage_lien1    = '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">';
   $remplissage_lien2    = '</a>';
-  $td_groupe_eleves     = ($type=='groupe') ? '<td class="'.$eleves_ordre.'">{{GROUPE_NOM}}</td>' : '<td class="'.$eleves_ordre.'">'.$nb_eleves.' élève'.$us.$eleves_bulle.'</td>' ;
-  Json::add_row( 'html' , '<td>'.$date.'</td>' );
-  Json::add_row( 'html' , '<td>'.$date_visible.'</td>' );
-  Json::add_row( 'html' , '<td>'.$date_autoeval.'</td>' );
-  Json::add_row( 'html' , $td_groupe_eleves );
-  Json::add_row( 'html' , '<td id="proprio_'.$_SESSION['USER_ID'].'">'.$profs_nombre.$profs_bulle.'</td>' );
-  Json::add_row( 'html' , '<td>'.html($description).'</td>' );
-  Json::add_row( 'html' , '<td>'.$nb_items.' item'.$cs.'</td>' );
-  Json::add_row( 'html' , '<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>' );
-  Json::add_row( 'html' , '<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>' );
-  Json::add_row( 'html' , '<td class="nu" id="devoir_'.$ref.'">' );
-  Json::add_row( 'html' ,   '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' );
-  Json::add_row( 'html' ,   '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' );
-  Json::add_row( 'html' ,   '<q class="dupliquer" title="Dupliquer cette évaluation."></q>' );
-  Json::add_row( 'html' ,   '<q class="supprimer" title="Supprimer cette évaluation."></q>' );
-  Json::add_row( 'html' ,   '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>' );
-  Json::add_row( 'html' ,   '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>' );
-  Json::add_row( 'html' ,   '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>' );
-  Json::add_row( 'html' ,   '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>' );
-  Json::add_row( 'html' , '</td>' );
-  Json::add_row( 'script' , 'tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";' );
-  Json::add_row( 'script' , 'tab_profs["'.$ref.'"]="'.$profs_liste.'";' );
-  Json::add_row( 'script' , 'tab_sujets["'.$ref.'"]="'.$doc_sujet.'";' );
-  Json::add_row( 'script' , 'tab_corriges["'.$ref.'"]="'.$doc_corrige.'";' );
-  if($type=='selection')
-  {
-    Json::add_row( 'script' , 'tab_eleves["'.$ref.'"]="'.implode('_',$tab_eleves).'";' );
-  }
-  Json::end( TRUE );
+  echo'<td>'.$date.'</td>';
+  echo'<td>'.$date_visible.'</td>';
+  echo'<td>'.$date_autoeval.'</td>';
+  echo ($type=='groupe') ? '<td class="'.$eleves_ordre.'">{{GROUPE_NOM}}</td>' : '<td class="'.$eleves_ordre.'">'.$nb_eleves.' élève'.$us.$eleves_bulle.'</td>' ;
+  echo'<td id="proprio_'.$_SESSION['USER_ID'].'">'.$profs_nombre.$profs_bulle.'</td>';
+  echo'<td>'.html($description).'</td>';
+  echo'<td>'.$nb_items.' item'.$cs.'</td>';
+  echo'<td>'.$image_sujet.$image_corrige.'<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q></td>';
+  echo'<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
+  echo'<td class="nu" id="devoir_'.$ref.'">';
+  echo  '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>';
+  echo  '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>';
+  echo  '<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
+  echo  '<q class="supprimer" title="Supprimer cette évaluation."></q>';
+  echo  '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
+  echo  '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>';
+  echo  '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
+  echo  '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
+  echo'</td>';
+  echo'<SCRIPT>';
+  echo'tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";';
+  echo'tab_profs["'.$ref.'"]="'.$profs_liste.'";';
+  echo ($type=='selection') ? 'tab_eleves["'.$ref.'"]="'.implode('_',$tab_eleves).'";' : '' ;
+  echo'tab_sujets["'.$ref.'"]="'.$doc_sujet.'";';
+  echo'tab_corriges["'.$ref.'"]="'.$doc_corrige.'";';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -506,26 +496,26 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $maxi_stamp          = strtotime("+10 month");
   if( ($date_stamp<$mini_stamp) || ($date_stamp>$maxi_stamp) )
   {
-    Json::end( FALSE , 'Date devoir trop éloignée !' );
+    exit('Date devoir trop éloignée !');
   }
   if( ($date_visible_stamp<$mini_stamp) || ($date_visible_stamp>$maxi_stamp) )
   {
-    Json::end( FALSE , 'Date visible trop éloignée !' );
+    exit('Date visible trop éloignée !');
   }
   if( ($date_autoeval!='00/00/0000') && ( ($date_autoeval_stamp<$mini_stamp) || ($date_autoeval_stamp>$maxi_stamp) ) )
   {
-    Json::end( FALSE , 'Date fin auto-éval. trop éloignée !' );
+    exit('Date fin auto-éval. trop éloignée !');
   }
   if( ($date_autoeval!='00/00/0000') && ($date_autoeval_mysql<$date_visible_mysql) )
   {
-    Json::end( FALSE , 'Date fin auto-éval. avant date visible !' );
+    exit('Date fin auto-éval. avant date visible !');
   }
   // Récupérer l'effectif de la classe ou du groupe
   $effectif_eleve = ($type=='groupe') ? DB_STRUCTURE_PROFESSEUR::DB_lister_effectifs_groupes($groupe_id) : $nb_eleves ;
   // Dans le cas d'une évaluation sur un regroupement, on vérifie qu'il n'est pas vide
   if(!$effectif_eleve)
   {
-    Json::end( FALSE , 'Regroupement sans élève !' );
+    exit('Regroupement sans élève !');
   }
   // Tester les droits
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
@@ -545,15 +535,15 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     }
     elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
     {
-      Json::end( FALSE , 'Droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 2 au lieu de 3) !' ); // saisir
+      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 2 au lieu de 3) !'); // saisir
     }
     elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
     {
-      Json::end( FALSE , 'Droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 3) !' ); // voir
+      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 3) !'); // voir
     }
     else
     {
-      Json::end( FALSE , 'Droit attribué sur le devoir n°'.$devoir_id.' non trouvé !' );
+      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
     }
     $DB_ROW = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_identite( $devoir_id );
     $proprietaire_genre  = $DB_ROW['user_genre'];
@@ -562,7 +552,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   }
   else
   {
-    Json::end( FALSE , 'Vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
   }
   $proprietaire_identite = $proprietaire_nom.' '.$proprietaire_prenom;
   $proprietaire_archive  = afficher_identite_initiale($proprietaire_nom,FALSE,$proprietaire_prenom,TRUE,$proprietaire_genre);
@@ -678,41 +668,34 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $remplissage_lien1    = ($niveau_droit<4)  ? '' : '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">' ;
   $remplissage_lien2    = ($niveau_droit<4)  ? '' : '</a>' ;
   $remplissage_td_title = ($niveau_droit==4) ? '' : ' title="Clôture restreinte au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."' ;
-  $td_groupe_eleves     = ($type=='groupe') ? '<td class="'.$eleves_ordre.'">{{GROUPE_NOM}}</td>' : '<td class="'.$eleves_ordre.'">'.$nb_eleves.' élève'.$us.$eleves_bulle.'</td>' ;
-  $q_uploader_doc       = ($niveau_droit==4) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Upload restreint au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."></q>' ;
-  $q_modifier           = ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
-  $q_ordonner           = ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
-  $q_supprimer          = ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."></q>' ;
-  Json::add_row( 'html' , '<td>'.$date.'</td>' );
-  Json::add_row( 'html' , '<td>'.$date_visible.'</td>' );
-  Json::add_row( 'html' , '<td>'.$date_autoeval.'</td>' );
-  Json::add_row( 'html' , $td_groupe_eleves );
-  Json::add_row( 'html' , '<td id="proprio_'.$proprio_id.'">'.$profs_nombre.$profs_bulle.'</td>' );
-  Json::add_row( 'html' , '<td>'.html($description).'</td>' );
-  Json::add_row( 'html' , '<td>'.$nb_items.' item'.$cs.'</td>' );
-  Json::add_row( 'html' , '<td>'.$image_sujet.$image_corrige );
-  Json::add_row( 'html' , $q_uploader_doc );
-  Json::add_row( 'html' , '</td>' );
-  Json::add_row( 'html' , '<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>' );
-  Json::add_row( 'html' , '<td class="nu" id="devoir_'.$ref.'">' );
-  Json::add_row( 'html' , $q_modifier );
-  Json::add_row( 'html' , $q_ordonner );
-  Json::add_row( 'html' ,   '<q class="dupliquer" title="Dupliquer cette évaluation."></q>' );
-  Json::add_row( 'html' , $q_supprimer );
-  Json::add_row( 'html' ,   '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>' );
-  Json::add_row( 'html' ,   '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>' ); // niveau de droit à 3 ou 4 donc au moins à 2
-  Json::add_row( 'html' ,   '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>' );
-  Json::add_row( 'html' ,   '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>' );
-  Json::add_row( 'html' , '</td>' );
-  Json::add_row( 'script' , 'tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";' );
-  Json::add_row( 'script' , 'tab_profs["'.$ref.'"]="'.$profs_liste.'";' );
-  Json::add_row( 'script' , 'tab_sujets["'.$ref.'"]="'.$doc_sujet.'";' );
-  Json::add_row( 'script' , 'tab_corriges["'.$ref.'"]="'.$doc_corrige.'";' );
-  if($type=='selection')
-  {
-    Json::add_row( 'script' , 'tab_eleves["'.$ref.'"]="'.implode('_',$tab_eleves).'";' );
-  }
-  Json::end( TRUE );
+  echo'<td>'.$date.'</td>';
+  echo'<td>'.$date_visible.'</td>';
+  echo'<td>'.$date_autoeval.'</td>';
+  echo ($type=='groupe') ? '<td class="'.$eleves_ordre.'">{{GROUPE_NOM}}</td>' : '<td class="'.$eleves_ordre.'">'.$nb_eleves.' élève'.$us.$eleves_bulle.'</td>' ;
+  echo'<td id="proprio_'.$proprio_id.'">'.$profs_nombre.$profs_bulle.'</td>';
+  echo'<td>'.html($description).'</td>';
+  echo'<td>'.$nb_items.' item'.$cs.'</td>';
+  echo'<td>'.$image_sujet.$image_corrige;
+  echo ($niveau_droit==4) ? '<q class="uploader_doc" title="Ajouter / retirer un sujet ou une correction."></q>' : '<q class="uploader_doc_non" title="Upload restreint au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."></q>' ;
+  echo'</td>';
+  echo'<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>';
+  echo'<td class="nu" id="devoir_'.$ref.'">';
+  echo ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
+  echo ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
+  echo  '<q class="dupliquer" title="Dupliquer cette évaluation."></q>';
+  echo ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."></q>' ;
+  echo  '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>';
+  echo  '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>'; // niveau de droit à 3 ou 4 donc au moins à 2
+  echo  '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>';
+  echo  '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>';
+  echo'</td>';
+  echo'<SCRIPT>';
+  echo'tab_items["'.$ref.'"]="'.implode('_',$tab_items).'";';
+  echo'tab_profs["'.$ref.'"]="'.$profs_liste.'";';
+  echo ($type=='selection') ? 'tab_eleves["'.$ref.'"]="'.implode('_',$tab_eleves).'";' : '' ;
+  echo'tab_sujets["'.$ref.'"]="'.$doc_sujet.'";';
+  echo'tab_corriges["'.$ref.'"]="'.$doc_corrige.'";';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -725,7 +708,7 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
   if($proprio_id!=$_SESSION['USER_ID'])
   {
-    Json::end( FALSE , 'Vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
   }
   // On y va
   if($type=='selection')
@@ -742,7 +725,7 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref_edition , $devoir_id );
   // Afficher le retour
-  Json::end( TRUE );
+  exit('<td>ok</td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -756,16 +739,16 @@ if( ($action=='ordonner') && $devoir_id )
   $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
   if(empty($DB_TAB_COMP))
   {
-    Json::end( FALSE , 'Aucun item n\'est associé à cette évaluation !' );
+    exit('Aucun item n\'est associé à cette évaluation !');
   }
   foreach($DB_TAB_COMP as $DB_ROW)
   {
     $item_ref = $DB_ROW['item_ref'];
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-    Json::add_str('<li id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle.$texte_coef).'</b> - '.html($DB_ROW['item_nom']).'</li>');
+    echo'<li id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle.$texte_coef).'</b> - '.html($DB_ROW['item_nom']).'</li>';
   }
-   Json::end( TRUE );
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -777,11 +760,12 @@ if( ($action=='indiquer_eleves_deja') && $description && $date_debut )
 {
   $date_debut_mysql = convert_date_french_to_mysql($date_debut);
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_eleves_devoirs($_SESSION['USER_ID'],$description,$date_debut_mysql);
+  $tab_retour = array();
   foreach($DB_TAB as $DB_ROW)
   {
-    Json::add_row( NULL , $DB_ROW['user_id'].'_'.convert_date_mysql_to_french($DB_ROW['devoir_date']) );
+    $tab_retour[] = $DB_ROW['user_id'].'_'.convert_date_mysql_to_french($DB_ROW['devoir_date']);
   }
-  Json::end( TRUE );
+  exit( 'ok,'.implode(',',$tab_retour) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -802,12 +786,12 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
   $item_nb = count($DB_TAB_COMP);
   if(!$item_nb)
   {
-    Json::end( FALSE , 'Aucun item n\'est associé à cette évaluation !' );
+    exit('Aucun item n\'est associé à cette évaluation !');
   }
   $eleve_nb = count($DB_TAB_USER);
   if(!$eleve_nb)
   {
-    Json::end( FALSE , 'Aucun élève n\'est associé à cette évaluation !' );
+    exit('Aucun élève n\'est associé à cette évaluation !');
   }
   $check_largeur = ($_SESSION['BROWSER']['mobile']) ? ' checked' : '' ;
   $tab_affich  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
@@ -938,30 +922,29 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
     {
       switch($comp_id)
       {
-        case 'head'       : Json::add_str('<thead>');break;
-        case 'foot_texte' : Json::add_str('<tfoot>');break;
+        case 'head'       : echo'<thead>';break;
+        case 'foot_texte' : echo'<tfoot>';break;
         case 'foot_audio' : break;
       }
     }
-    $tr_open = ( ($comp_id=='foot_texte') || ($comp_id=='foot_audio') ) ? '<tr class="no_margin">' : '<tr>' ;
-    Json::add_str($tr_open);
+    echo ( ($comp_id=='foot_texte') || ($comp_id=='foot_audio') ) ? '<tr class="no_margin">' : '<tr>' ;
     foreach($tab_user as $user_id => $val)
     {
-      Json::add_str($val);
+      echo $val;
     }
-    Json::add_str('</tr>');
+    echo'</tr>';
     if(!is_int($comp_id))
     {
       switch($comp_id)
       {
-        case 'head'       : Json::add_str('</thead>');break;
+        case 'head'       : echo'</thead>';break;
         case 'foot_texte' : break;
-        case 'foot_audio' : Json::add_str('</tfoot><tbody class="'.$tbody_class.'">');break;
+        case 'foot_audio' : echo'</tfoot><tbody class="'.$tbody_class.'">';break;
       }
     }
   }
-  Json::add_str('</tbody>');
-  Json::end( TRUE );
+  echo'</tbody>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -989,16 +972,16 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
     }
     elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
     {
-      Json::end( FALSE , 'Droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 2) !' ); // voir
+      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 2) !'); // voir
     }
     else
     {
-      Json::end( FALSE , 'Droit attribué sur le devoir n°'.$devoir_id.' non trouvé !' );
+      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
     }
   }
   else
   {
-    Json::end( FALSE , 'Vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
   }
   // On y va
   $nb_saisies_possibles  = 0;
@@ -1062,7 +1045,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   // Il n'y a plus qu'à mettre à jour la base
   if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
   {
-    Json::end( FALSE , 'Aucune modification détectée !' );
+    exit('Aucune modification détectée !');
   }
   // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
   $date_mysql         = convert_date_french_to_mysql($date_fr);
@@ -1119,7 +1102,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   $remplissage_contenu  = ($fini=='oui') ? '<span>terminé</span><i>'.$remplissage_nombre.'</i>' : '<span>'.$remplissage_nombre.'</span><i>terminé</i>' ;
   $remplissage_lien1    = '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">';
   $remplissage_lien2    = '</a>';
-  Json::end( TRUE , '<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>' );
+  exit('<td class="'.$remplissage_class.$remplissage_class2.'">'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1141,12 +1124,12 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
   $item_nb = count($DB_TAB_COMP);
   if(!$item_nb)
   {
-    Json::end( FALSE , 'Aucun item n\'est associé à cette évaluation !' );
+    exit('Aucun item n\'est associé à cette évaluation !');
   }
   $eleve_nb = count($DB_TAB_USER);
   if(!$eleve_nb)
   {
-    Json::end( FALSE , 'Aucun élève n\'est associé à cette évaluation !' );
+    exit('Aucun élève n\'est associé à cette évaluation !');
   }
   // liste items
   foreach($DB_TAB_COMP as $DB_ROW)
@@ -1197,7 +1180,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
     $fichier_nom = 'tableau_'.$remplissage.'_'.$tab_couleurs[$couleur].'_'.$fnom_export.'.pdf';
     FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $tableau_PDF );
     // Affichage du lien
-    Json::end( TRUE , '<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_pdf">Tableau '.$remplissage.' (format <em>pdf</em>).</span></a>' );
+    exit('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_pdf">Tableau '.$remplissage.' (format <em>pdf</em>).</span></a>');
   }
   //
   // csv contenant un tableau de saisie vide ou plein
@@ -1267,7 +1250,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
     $fichier_nom = 'saisie_deportee_'.$remplissage.'_'.$fnom_export.'.csv';
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , To::csv($export_csv) );
     // Affichage du lien
-    Json::end( TRUE , '<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_txt">Fichier '.$remplissage.' (format <em>csv</em>).</span></a>' );
+    exit('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_txt">Fichier '.$remplissage.' (format <em>csv</em>).</span></a>');
   }
 }
 
@@ -1285,12 +1268,12 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
   $item_nb = count($DB_TAB_ITEM);
   if(!$item_nb)
   {
-    Json::end( FALSE , 'Aucun item n\'est associé à cette évaluation !' );
+    exit('Aucun item n\'est associé à cette évaluation !');
   }
   $eleve_nb = count($DB_TAB_USER);
   if(!$eleve_nb)
   {
-    Json::end( FALSE , 'Aucun élève n\'est associé à cette évaluation !' );
+    exit('Aucun élève n\'est associé à cette évaluation !');
   }
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_item_id = array(); // pas indispensable, mais plus lisible
@@ -1374,35 +1357,39 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
       $affichage_repartition_head .= ($note!='X') ? '<th>'.Html::note_image($note,'','',FALSE).'</th>' : '<th>Autre</th>' ;
     }
     // PARTIE 1 : assemblage / affichage du tableau avec la répartition quantitative
-    Json::add_row( 'quantitative' , '<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>' );
+    echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
     foreach($tab_item_id as $item_id=>$tab_infos_item)
     {
       $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" href="'.html($tab_infos_item[2]).'">' : '';
       $texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
-      Json::add_row( 'quantitative' , '<tr>' );
-      Json::add_row( 'quantitative' , '<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>' );
+      echo'<tr>';
+      echo'<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>';
       foreach($tab_repartition_quantitatif[$item_id] as $code=>$note_nb)
       {
-        Json::add_row( 'quantitative' , '<td style="font-size:'.round(75+100*$note_nb/$eleve_nb).'%">'.round(100*$note_nb/$eleve_nb).'%</td>' );
+        echo'<td style="font-size:'.round(75+100*$note_nb/$eleve_nb).'%">'.round(100*$note_nb/$eleve_nb).'%</td>';
       }
-      Json::add_row( 'quantitative' , '</tr>' );
+      echo'</tr>';
     }
-    Json::add_row( 'quantitative' , '</tbody>' );
+    echo'</tbody>';
+    // Séparateur
+    echo'<SEP>';
     // PARTIE 2 : assemblage / affichage du tableau avec la répartition nominative
-    Json::add_row( 'nominative' , '<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>' );
+    echo'<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>';
     foreach($tab_item_id as $item_id=>$tab_infos_item)
     {
       $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" href="'.html($tab_infos_item[2]).'">' : '';
       $texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
-      Json::add_row( 'nominative' , '<tr>' );
-      Json::add_row( 'nominative' , '<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>' );
+      echo'<tr>';
+      echo'<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>';
       foreach($tab_repartition_nominatif[$item_id] as $code=>$tab_eleves)
       {
-        Json::add_row( 'nominative' , '<td>'.implode('<br />',$tab_eleves).'</td>' );
+        echo'<td>'.implode('<br />',$tab_eleves).'</td>';
       }
-      Json::add_row( 'nominative' , '</tr>' );
+      echo'</tr>';
     }
-    Json::add_row( 'nominative' , '</tbody>' );
+    echo'</tbody>';
+    // Séparateur
+    echo'<SEP>';
     // PARTIE 3 : assemblage de la page HTML avec cases à cocher
     $affichage_HTML  = '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
     $affichage_HTML .= '<h1>Exploitation d\'une évaluation</h1>'.NL;
@@ -1430,9 +1417,9 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     $fichier_nom = 'evaluation_'.$devoir_id.'_'.fabriquer_fin_nom_fichier__date_et_alea();
     FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html' , $affichage_HTML );
     // Affichage de l'adresse
-    Json::add_row( 'href' , './releve_html.php?fichier='.$fichier_nom );
+    echo'./releve_html.php?fichier='.$fichier_nom;
     // Terminé !
-    Json::end( TRUE );
+    exit();
   }
   //
   // Sortie PDF
@@ -1479,7 +1466,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     $tab_couleurs = array( 'oui'=>'couleur' , 'non'=>'monochrome' );
     $fichier_nom = 'repartition_'.$repartition_type.'_'.$tab_couleurs[$couleur].'_'.$fnom_export.'.pdf';
     FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $tableau_PDF );
-    Json::end( TRUE , '<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_pdf">Répartition '.$repartition_type.' (format <em>pdf</em>).</span></a>' );
+    exit('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_pdf">Répartition '.$repartition_type.' (format <em>pdf</em>).</span></a>');
   }
 }
 
@@ -1504,24 +1491,24 @@ if( ($action=='enregistrer_ordre') && $devoir_id && count($tab_id) )
     }
     elseif( strpos( $search_liste, '_s'.$_SESSION['USER_ID'].'_' ) !== FALSE )
     {
-      Json::end( FALSE , 'Droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 2 au lieu de 3) !' ); // saisir
+      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 2 au lieu de 3) !'); // saisir
     }
     elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
     {
-      Json::end( FALSE , 'Droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 3) !' ); // voir
+      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 3) !'); // voir
     }
     else
     {
-      Json::end( FALSE , 'Droit attribué sur le devoir n°'.$devoir_id.' non trouvé !' );
+      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
     }
   }
   else
   {
-    Json::end( FALSE , 'Vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
   }
   // Mise à jour dans la base
   DB_STRUCTURE_PROFESSEUR::DB_modifier_ordre_item( $devoir_id , $tab_id );
-  Json::end( TRUE );
+  exit('<ok>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1541,11 +1528,11 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // Let's go
   if(empty($DB_TAB_COMP))
   {
-    Json::end( FALSE , 'Aucun item n\'est associé à cette évaluation !' );
+    exit('Aucun item n\'est associé à cette évaluation !');
   }
   if(empty($DB_TAB_USER))
   {
-    Json::end( FALSE , 'Aucun élève n\'est associé à cette évaluation !' );
+    exit('Aucun élève n\'est associé à cette évaluation !');
   }
   $tab_result  = array(); // tableau bi-dimensionnel [n°ligne=id_item][n°colonne=id_user]
   $tab_user_id = array(); // pas indispensable, mais plus lisible
@@ -1836,7 +1823,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // On archive le cartouche dans un fichier pdf
   FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.'cartouche_'.$fnom_export.'.pdf' , $cartouche_PDF );
   // Affichage
-  Json::end( TRUE , $cartouche_HTM );
+  exit($cartouche_HTM);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1845,14 +1832,12 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 
 if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
 {
-  // Récupération du fichier
   $fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
-  // On passe à son contenu
   $contenu_csv = file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   $contenu_csv = To::deleteBOM(To::utf8($contenu_csv)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = extraire_lignes($contenu_csv); // Extraire les lignes du fichier
@@ -1871,6 +1856,7 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
     }
   }
   // Parcourir les lignes suivantes et mémoriser les scores
+  $retour = '|';
   unset($tab_lignes[0]);
 
   $tab_codes = array();
@@ -1902,13 +1888,13 @@ if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
           $score = $tab_elements[$num_colonne];
           if(isset($tab_codes[$score]))
           {
-            Json::add_row( NULL , $eleve_id.'.'.$item_id.'.'.$tab_codes[$score] );
+            $retour .= $eleve_id.'.'.$item_id.'.'.$tab_codes[$score].'|';
           }
         }
       }
     }
   }
-  Json::end( TRUE );
+  exit($retour);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1921,12 +1907,12 @@ if( ($action=='referencer_document') && $devoir_id && in_array($doc_objet,array(
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
   if($proprio_id!=$_SESSION['USER_ID'])
   {
-    Json::end( FALSE , 'Vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
   }
   // Mise à jour dans la base
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document( $devoir_id , $doc_objet , $doc_url );
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1939,24 +1925,19 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
   if($proprio_id!=$_SESSION['USER_ID'])
   {
-    Json::end( FALSE , 'Vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
   }
   // Récupération du fichier
   $fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
   $result = FileSystem::recuperer_upload( $chemin_devoir /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit($result);
   }
   // Mise à jour dans la base
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document( $devoir_id , $doc_objet , $url_dossier_devoir.FileSystem::$file_saved_name );
   // Retour
-  Json::add_tab( array(
-    'ref'   => $ref ,
-    'objet' => $doc_objet ,
-    'url'   => $url_dossier_devoir.FileSystem::$file_saved_name ,
-  ) );
-  Json::end( TRUE );
+  exit('ok'.']¤['.$ref.']¤['.$doc_objet.']¤['.$url_dossier_devoir.FileSystem::$file_saved_name);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1969,7 +1950,7 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
   if($proprio_id!=$_SESSION['USER_ID'])
   {
-    Json::end( FALSE , 'Vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
   }
   // Suppression du fichier, uniquement si ce n'est pas un lien externe ou vers un devoir d'un autre établissement
   if(mb_strpos($doc_url,$url_dossier_devoir)===0)
@@ -1980,7 +1961,7 @@ if( ($action=='retirer_document') && $devoir_id && in_array($doc_objet,array('su
   // Mise à jour dans la base
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_document( $devoir_id , $doc_objet , '' );
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1993,12 +1974,12 @@ if( ($action=='maj_fini') && $devoir_id && in_array($fini,array('oui','non')) )
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
   if($proprio_id!=$_SESSION['USER_ID'])
   {
-    Json::end( FALSE , 'Vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !');
   }
   // Mise à jour dans la base
   DB_STRUCTURE_PROFESSEUR::DB_modifier_devoir_fini( $devoir_id , $fini );
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2010,7 +1991,7 @@ if( ($action=='recuperer_message') && $devoir_id && $eleve_id && in_array($msg_o
   $msg_url = DB_STRUCTURE_COMMENTAIRE::DB_recuperer_devoir_commentaire($devoir_id,$eleve_id,$msg_objet);
   if(empty($msg_url))
   {
-    Json::end( FALSE , 'Commentaire introuvable !' );
+    exit('Erreur : commentaire introuvable !');
   }
   // [audio] => On renvoie le lien
   if($msg_objet=='audio')
@@ -2039,11 +2020,7 @@ if( ($action=='recuperer_message') && $devoir_id && $eleve_id && in_array($msg_o
     }
   }
   // Retour
-  Json::add_tab( array(
-    'msg_url'  => $msg_url ,
-    'msg_data' => $msg_data ,
-  ) );
-  Json::end( TRUE );
+  exit('ok'.']¤['.$msg_url.']¤['.$msg_data);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2073,16 +2050,16 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
     }
     elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
     {
-      Json::end( FALSE , 'Droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 2) !' ); // voir
+      exit('Erreur : droit insuffisant attribué sur le devoir n°'.$devoir_id.' (niveau 1 au lieu de 2) !'); // voir
     }
     else
     {
-      Json::end( FALSE , 'Droit attribué sur le devoir n°'.$devoir_id.' non trouvé !' );
+      exit('Erreur : droit attribué sur le devoir n°'.$devoir_id.' non trouvé !');
     }
   }
   else
   {
-    Json::end( FALSE , 'Vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !' );
+    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !');
   }
   // Supprimer un éventuel fichier précédent
   if( $msg_url && (mb_strpos($msg_url,$url_dossier_devoir)===0) )
@@ -2152,7 +2129,7 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
   }
   // Retour
   $retour = ($msg_data) ? $url_dossier_devoir.$fichier_nom : 'supprimé' ;
-  Json::end( TRUE , $retour );
+  exit('ok'.']¤['.$retour);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2161,13 +2138,13 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
 
 if(empty($_POST))
 {
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+// On ne devrait pas en arriver là !
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

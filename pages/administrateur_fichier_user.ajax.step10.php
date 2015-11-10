@@ -61,22 +61,20 @@ if($import_origine=='sconet')
     $nom_fichier_extrait = 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml';
   }
 }
-// Récupération du fichier
 $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , $nom_fichier_extrait /*filename_in_zip*/ );
 if($result!==TRUE)
 {
-  Json::end( FALSE , $result );
+  exit('Erreur : '.$result);
 }
 // On affiche le bilan et les puces des étapes
-$msg_type_analyse = ($mode=='complet') ? '<p class="astuce">Affichage complet des analyses et des comptes-rendus.</p>' : '<p class="astuce">Analyse restreinte aux seules différences trouvées et comptes-rendus non détaillés.</p>'.NL;
-Json::add_str('<hr />'.NL);
-Json::add_str($msg_type_analyse);
-Json::add_str( afficher_etapes($import_origine,$import_profil) );
-Json::add_str('<hr />'.NL);
-Json::add_str('<fieldset>'.NL);
-Json::add_str(  '<div><label class="valide">Votre fichier a été correctement réceptionné.</label></div>'.NL);
-Json::add_str(  $alerte);
-Json::add_str(  '<ul class="puce p"><li><a href="#step20" id="passer_etape_suivante">Passer à l\'étape 2.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
-Json::add_str('</fieldset>'.NL);
+echo'<hr />'.NL;
+echo ($mode=='complet') ? '<p class="astuce">Affichage complet des analyses et des comptes-rendus.</p>' : '<p class="astuce">Analyse restreinte aux seules différences trouvées et comptes-rendus non détaillés.</p>'.NL;
+echo afficher_etapes($import_origine,$import_profil);
+echo'<hr />'.NL;
+echo'<fieldset>'.NL;
+echo  '<div><label class="valide">Votre fichier a été correctement réceptionné.</label></div>'.NL;
+echo  $alerte;
+echo  '<ul class="puce p"><li><a href="#step20" id="passer_etape_suivante">Passer à l\'étape 2.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
+echo'</fieldset>'.NL;
 
 ?>

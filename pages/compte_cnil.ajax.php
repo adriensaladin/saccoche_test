@@ -40,12 +40,12 @@ if($action=='Valider_CNIL')
 {
   DB_STRUCTURE_PUBLIC::DB_enregistrer_date_connexion($_SESSION['USER_ID']);
   unset($_SESSION['STOP_CNIL']);
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 ?>

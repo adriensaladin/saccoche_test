@@ -73,17 +73,6 @@ function escapeQuote(unsafe)
 }
 
 /**
- * Fonction strip_tags() en javascript pour retirer les balises HTML.
- *
- * @param unsafe
- * @return string
- */
-function strip_tags(txt)
-{
-  return txt.replace(/<(?:.|\s)*?>/gm,'' );
-}
-
-/**
  * Fonction replaceAll() pour remplacer une chaine par une autre à chaque occurence.
  * @see http://stackoverflow.com/questions/1144783/replacing-all-occurrences-of-a-string-in-javascript
  * @see http://javascript.developpez.com/sources/?page=tips#replaceall
@@ -170,7 +159,7 @@ function afficher_json_message_erreur(jqXHR, textStatus)
   {
     var pos_debut_json = jqXHR['responseText'].indexOf('{"');
     var chaine_anormale = (pos_debut_json>0) ? jqXHR['responseText'].substr(0,pos_debut_json) : jqXHR['responseText'] ;
-    return 'Anomalie rencontrée ! ' + strip_tags(chaine_anormale);
+    return 'Anomalie rencontrée ! ' + escapeHtml(chaine_anormale);
   }
   // Rien de retourné : probablement un souci de connexion au serveur
   else if( (textStatus=='error') && (typeof(jqXHR['responseText'])=='undefined') )
@@ -333,7 +322,7 @@ function memoriser_selection_matieres_items(selection_items_nom)
   var $ajax_msg = $('#ajax_msg_memo');
   if(!selection_items_nom)
   {
-    $ajax_msg.removeAttr('class').addClass('erreur').html("nom manquant");
+    $ajax_msg.removeAttr("class").addClass("erreur").html("nom manquant");
     $("#f_liste_items_nom").focus();
     return false;
   }
@@ -347,35 +336,35 @@ function memoriser_selection_matieres_items(selection_items_nom)
   );
   if(!compet_liste)
   {
-    $ajax_msg.removeAttr('class').addClass('erreur').html("Aucun item coché !");
+    $ajax_msg.removeAttr("class").addClass("erreur").html("Aucun item coché !");
     return false;
   }
   var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
-  $ajax_msg.removeAttr('class').addClass('loader').html("En cours&hellip;");
+  $ajax_msg.removeAttr("class").addClass("loader").html("En cours&hellip;");
   $.ajax
   (
     {
       type : 'POST',
       url : 'ajax.php?page=compte_selection_items',
       data : 'f_action='+'ajouter'+'&f_origine='+PAGE+'&f_compet_liste='+compet_liste+'&f_nom='+encodeURIComponent(selection_items_nom),
-      dataType : 'json',
+      dataType : "html",
       error : function(jqXHR, textStatus, errorThrown)
       {
-        $ajax_msg.removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+        $ajax_msg.removeAttr("class").addClass("alerte").html("Échec de la connexion !");
       },
-      success : function(responseJSON)
+      success : function(responseHTML)
       {
         initialiser_compteur();
-        if(responseJSON['statut']==false)
+        if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
         {
-          $ajax_msg.removeAttr('class').addClass('alerte').html(responseJSON['value']);
-          $("#f_liste_items_nom").focus();
+          $ajax_msg.removeAttr("class").addClass("valide").html("Sélection mémorisée.");
+          $("#f_selection_items option:disabled").remove();
+          $("#f_selection_items").append(responseHTML);
         }
         else
         {
-          $ajax_msg.removeAttr('class').addClass('valide').html("Sélection mémorisée.");
-          $("#f_selection_items option:disabled").remove();
-          $("#f_selection_items").append(responseJSON['value']);
+          $ajax_msg.removeAttr("class").addClass("alerte").html(responseHTML);
+          $("#f_liste_items_nom").focus();
         }
       }
     }
@@ -584,7 +573,7 @@ function afficher_textarea_reste(textarea_obj,textarea_maxi_length)
   var reste_nb    = textarea_maxi_length - textarea_longueur;
   var reste_str   = (reste_nb>1) ? ' caractères restants' : ' caractère restant' ;
   var reste_class = (reste_nb>9) ? 'valide' : 'alerte' ;
-  $('#'+textarea_obj.attr('id')+'_reste').html(reste_nb+reste_str).removeAttr('class').addClass(reste_class);
+  $('#'+textarea_obj.attr('id')+'_reste').html(reste_nb+reste_str).removeAttr("class").addClass(reste_class);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -662,7 +651,7 @@ function initialiser_compteur()
   var date = new Date();
   SetCookie('SACoche-compteur',date.getTime());
   DUREE_AFFICHEE = DUREE_AUTORISEE;
-  $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr('class').addClass("top clock_fixe");
+  $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("top clock_fixe");
 }
 
 /**
@@ -683,7 +672,7 @@ function tester_compteur()
     DUREE_AFFICHEE = Math.max(duree_restante,0);
     if(DUREE_AFFICHEE>5)
     {
-      $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr('class').addClass("top clock_fixe");
+      $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("top clock_fixe");
       if(DUREE_AFFICHEE%10==0)
       {
         // Fonction conserver_session_active() à appeler une fois toutes les 10min ; code placé ici pour éviter un appel après déconnection, et l'application inutile d'un 2nd compteur
@@ -696,7 +685,7 @@ function tester_compteur()
       {
         $('#audio_bip').get(0).play(); // Fonctionne sauf avec IE<9 et Safari sous Windows si Quicktime n'est pas installé.
       }
-      $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr('class').addClass("top clock_anim");
+      $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr("class").addClass("top clock_anim");
       if(DUREE_AFFICHEE==0)
       {
         fermer_session_en_ajax('inactivite');
@@ -719,24 +708,24 @@ function conserver_session_active()
       type : 'GET',
       url : 'ajax.php?page=conserver_session_active',
       data : '',
-      dataType : 'json',
+      dataType : "html",
       error : function(jqXHR, textStatus, errorThrown)
       {
         $('div.jqibox').remove(); // Sinon il y a un pb d'affichage lors d'appels successifs
         $.prompt(
-          afficher_json_message_erreur(jqXHR,textStatus)+'<br />Le travail en cours pourrait ne pas pouvoir être sauvegardé...',
+          "Échec lors de la connexion au serveur !<br />Le travail en cours pourrait ne pas pouvoir être sauvegardé...",
           {
             title  : 'Avertissement'
           }
         );
       },
-      success : function(responseJSON)
+      success : function(responseHTML)
       {
-        if(responseJSON['statut']==false)
+        if(responseHTML != 'ok')
         {
           $('div.jqibox').remove(); // Sinon il y a un pb d'affichage lors d'appels successifs
           $.prompt(
-            responseJSON['value'] ,
+            responseHTML ,
             {
               title: 'Anomalie'
             }
@@ -761,17 +750,15 @@ function fermer_session_en_ajax(motif)
       type : 'GET',
       url : 'ajax.php?page=fermer_session',
       data : '',
-      dataType : 'json',
+      dataType : "html",
       error : function(jqXHR, textStatus, errorThrown)
       {
-        // Pas de traitement particulier prévu...
         return false;
       },
-      success : function(responseJSON)
+      success : function(responseHTML)
       {
-        if(responseJSON['statut']==false)
+        if(responseHTML != 'ok')
         {
-          // Pas de traitement particulier prévu...
           return false;
         }
         if(motif=='redirection')
@@ -812,22 +799,16 @@ function maj_base_complementaire()
       type : 'GET',
       url : 'ajax.php?page=maj_base_complementaire',
       data : '',
-      dataType : 'json',
+      dataType : "html",
       error : function(jqXHR, textStatus, errorThrown)
       {
         // Pas de traitement particulier prévu...
-        return false;
       },
-      success : function(responseJSON)
+      success : function(responseHTML)
       {
-        if(responseJSON['value'] == 'encore')
+        if(responseHTML == 'encore')
         {
           maj_base_complementaire();
-        }
-        else
-        {
-          // Pas de traitement particulier prévu...
-          return false;
         }
       }
     }
@@ -1058,7 +1039,7 @@ $(document).ready
         var id   = $(this).attr('id').substring(3); // 'to_' + id
         var class_old = $(this).attr('class');
         var class_new = (class_old=='toggle_plus') ? 'toggle_moins' : 'toggle_plus' ;
-        $(this).removeAttr('class').addClass(class_new);
+        $(this).removeAttr("class").addClass(class_new);
         $('#'+id).toggle('fast');
         return false;
       }
@@ -1488,22 +1469,22 @@ $(document).ready
             type : 'GET',
             url : 'ajax.php?page=calque_date_calendrier',
             data : get_data,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_alerte_calque').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               leave_erreur = true;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==true)
+              if(responseHTML.substring(0,4)=='<h5>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                $calque.html(responseJSON['value']);
+                $calque.html(responseHTML);
                 leave_erreur = false;
               }
               else
               {
-                $('#ajax_alerte_calque').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_alerte_calque').removeAttr("class").addClass("alerte").html(responseHTML);
                 leave_erreur = true;
               }
             }
@@ -1559,20 +1540,12 @@ $(document).ready
           type : 'GET',
           url : 'ajax.php?page=calque_date_calendrier',
           data : 'm='+mois+'&a='+annee,
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
+          dataType : "html",
+          success : function(responseHTML)
           {
-            $('#calque').html('<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>');
-          },
-          success : function(responseJSON)
-          {
-            if(responseJSON['statut']==true)
+            if(responseHTML.substring(0,4)=='<h5>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#calque').html(responseJSON['value']);
-            }
-            else
-            {
-              $('#calque').html('<label class="alerte">'+responseJSON['value']+'</label>');
+              $('#calque').html(responseHTML);
             }
           }
         }
@@ -1633,23 +1606,23 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page=evaluation_demande_eleve_ajout',
             data : 'f_action=lister_profs'+'&'+'f_matiere_id='+matiere_id,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,7)!='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
                 var contenu = '<h2>Formuler une demande d\'évaluation</h2>'
                             + '<form action="#" method="post" id="form_demande_evaluation">'
                             + '<p class="b">'+item_nom+'</p>'
-                            + '<p><label class="tab">Destinaire(s) :</label><select name="f_prof_id">'+responseJSON['value']+'</select></p>'
+                            + '<p><label class="tab">Destinaire(s) :</label><select name="f_prof_id">'+responseHTML+'</select></p>'
                             + '<p><label class="tab">Message (facultatif) :</label><textarea id="zone_message" name="f_message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
                             + '<div><label class="tab">Document (facultatif) :</label><button id="bouton_upload_demande_document" type="button" class="fichier_import">Choisir un fichier.</button><label id="ajax_upload_demande_document">&nbsp;</label><input id="f_doc_nom" name="f_doc_nom" type="hidden" value="" /></div>'
                             + '<p><span class="tab"></span><input name="f_matiere_id" type="hidden" value="'+matiere_id+'" /><input name="f_item_id" type="hidden" value="'+item_id+'" /><input name="f_score" type="hidden" value="'+score+'" />'
@@ -1671,38 +1644,39 @@ $(document).ready
                   if (fichier_nom==null || fichier_nom.length<5)
                   {
                     $('#f_doc_nom').val('');
-                    $('#ajax_upload_demande_document').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+                    $('#ajax_upload_demande_document').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
                     return false;
                   }
                   else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
                   {
                     $('#f_doc_nom').val('');
-                    $('#ajax_upload_demande_document').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
+                    $('#ajax_upload_demande_document').removeAttr("class").addClass("erreur").html('Extension non autorisée.');
                     return false;
                   }
                   else
                   {
                     $('#f_doc_nom').val('');
                     $('#bouton_upload_demande_document').prop('disabled',true);
-                    $('#ajax_upload_demande_document').removeAttr('class').addClass('loader').html("En cours&hellip;");
+                    $('#ajax_upload_demande_document').removeAttr("class").addClass("loader").html("En cours&hellip;");
                     return true;
                   }
                 }
                 // Fonction à définir avant new AjaxUpload() sinon Firefox plante
-                function retourner_demande_document(fichier_nom,responseJSON)
+                function retourner_demande_document(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
                 {
                   fichier_extension = fichier_nom.split('.').pop();
-                  if(responseJSON['statut']==false)
+                  var tab_infos = responseHTML.split(']¤[');
+                  if(tab_infos[0]!='ok')
                   {
-                    $('#ajax_upload_demande_document').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                    $('#ajax_upload_demande_document').removeAttr("class").addClass("alerte").html(responseHTML);
                   }
                   else
                   {
                     initialiser_compteur();
-                    var doc_nom = responseJSON['nom'];
-                    var doc_url = responseJSON['url'];
+                    var doc_nom = tab_infos[1];
+                    var doc_url = tab_infos[2];
                     $('#f_doc_nom').val(doc_nom);
-                    $('#ajax_upload_demande_document').removeAttr('class').addClass('valide').html('<a href="'+doc_url+'" target="_blank">'+fichier_nom+'</a>');
+                    $('#ajax_upload_demande_document').removeAttr("class").addClass("valide").html('<a href="'+doc_url+'" target="_blank">'+fichier_nom+'</a>');
                   }
                   $('#bouton_upload_demande_document').prop('disabled',false);
                 }
@@ -1714,7 +1688,7 @@ $(document).ready
                     name: 'userfile',
                     data: {'f_action':'uploader_document'},
                     autoSubmit: true,
-                    responseType: 'json',
+                    responseType: "html",
                     onSubmit: verifier_demande_document,
                     onComplete: retourner_demande_document
                   }
@@ -1752,28 +1726,28 @@ $(document).ready
       function()
       {
         $('#form_demande_evaluation button').prop('disabled',true);
-        $('#ajax_msg_confirmer_demande').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_confirmer_demande').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page=evaluation_demande_eleve_ajout',
             data : 'f_action=confirmer_ajout'+'&'+$("#form_demande_evaluation").serialize(),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_confirmer_demande').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               $('#form_demande_evaluation button').prop('disabled',false);
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,6)!='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                $('#ajax_msg_confirmer_demande').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_confirmer_demande').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                $("#form_demande_evaluation").html( responseJSON['value'] + '<p><span class="tab"></span><button id="fermer_demande_evaluation" type="button" class="retourner">Fermer.</button></p>' );
+                $("#form_demande_evaluation").html( responseHTML + '<p><span class="tab"></span><button id="fermer_demande_evaluation" type="button" class="retourner">Fermer.</button></p>' );
                 if (typeof(DUREE_AUTORISEE)!=='undefined')
                 {
                   initialiser_compteur(); // Ne modifier l'état du compteur que si l'appel ne provient pas d'une page HTML de bilan

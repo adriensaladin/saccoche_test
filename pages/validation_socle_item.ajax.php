@@ -66,7 +66,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordre , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
-    Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
+    exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
   // Afficher la première ligne du tableau avec les étiquettes des élèves puis le nom du groupe et du palier
   $tab_eleve_id     = array(); // listing des ids des élèves mis à jour au cas où la récupération dans la base soit différente des ids transmis...
@@ -179,7 +179,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
     // Pour chaque item du socle...
     foreach($tab_entree_id as $socle_id)
     {
-      $tab_modif_cellule[$eleve_id][$socle_id] = array( 'html'=>'-' , 'class'=>' class="V2"' , 'title'=>'' , 'data_etat'=>'' );
+      $tab_modif_cellule[$eleve_id][$socle_id] = array( 'html'=>'-' , 'class'=>' class="v2"' , 'title'=>'' , 'data_etat'=>'' );
       $tab_score_socle_eleve[$socle_id][$eleve_id] = $tab_init_compet;
       // Pour chaque item associé à cet item du socle, ayant été évalué pour cet élève...
       if(isset($tab_eval[$eleve_id][$socle_id]))
@@ -223,7 +223,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   foreach($DB_TAB as $DB_ROW)
   {
     $etat = ($DB_ROW['validation_entree_etat']) ? 'Validé' : 'Invalidé' ;
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['class'] = ' class="V'.$DB_ROW['validation_entree_etat'].'"';
+    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['class'] = ' class="v'.$DB_ROW['validation_entree_etat'].'"';
     $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['title'] = ' title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_entree_date']).' par '.html($DB_ROW['validation_entree_info']).'"';
   }
   // - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -254,9 +254,9 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
       $tab_bon[] = 'U'.$eleve_id.'E'.$socle_id.'"'.$data_etat.$class.$title.'>'.$html.'</td>';
     }
   }
-  // $affichage = str_replace('class="V2"','class="V2" title="Cliquer pour valider ou invalider."',$affichage); // Retiré car embêtant si modifié ensuite.
-  // Retour
-  Json::end( TRUE , str_replace($tab_bad,$tab_bon,$affichage) );
+  $affichage = str_replace($tab_bad,$tab_bon,$affichage);
+  // $affichage = str_replace('class="v2"','class="v2" title="Cliquer pour valider ou invalider."',$affichage); // Retiré car embêtant si modifié ensuite.
+  exit($affichage);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -305,14 +305,18 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id &
   }
   // On calcule le pourcentage d'acquisition des items
   $tab_score_socle_eleve['%'] = ($tab_score_socle_eleve['nb']) ? calculer_pourcentage_acquisition_items( $tab_score_socle_eleve , $tab_score_socle_eleve['nb'] ) : FALSE ;
+  // Elaboration du bilan relatif au socle : mise en page, ligne de stats
   if($tab_score_socle_eleve['%']===FALSE)
   {
-    Json::end( FALSE , 'Aucun item évalué n\'est relié avec cette entrée du socle !' );
+    exit('Aucun item évalué n\'est relié avec cette entrée du socle !');
   }
-  // Retour
-  Json::add_row( 'stats' , '<span class="A'.determiner_etat_acquisition($tab_score_socle_eleve['%']).'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.afficher_nombre_acquisitions_par_etat($tab_score_socle_eleve).')&nbsp;</span>' );
-  Json::add_row( 'items' , implode('<br />',$tab_infos_socle_eleve) );
-  Json::end( TRUE );
+  echo'<span class="A'.determiner_etat_acquisition($tab_score_socle_eleve['%']).'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.afficher_nombre_acquisitions_par_etat($tab_score_socle_eleve).')&nbsp;</span>';
+  // Elaboration du bilan relatif au socle : mise en page, paragraphe des items
+  if( count($tab_infos_socle_eleve) )
+  {
+    echo'@'.implode('<br />',$tab_infos_socle_eleve);
+  }
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -337,7 +341,7 @@ if($action=='Enregistrer_validation')
   }
   if( (!count($tab_post)) || (count($tab_eleve_id)*count($tab_entree_id)!=count($tab_post)) )
   {
-    Json::end( FALSE , 'Erreur détectée avec les validations transmises !' );
+    exit('Erreur détectée avec les validations transmises !');
   }
   // On recupère le contenu de la base déjà enregistré pour le comparer
   $listing_eleve_id  = implode(',',$tab_eleve_id);
@@ -371,7 +375,7 @@ if($action=='Enregistrer_validation')
   // Il n'y a plus qu'à mettre à jour la base
   if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
   {
-    Json::end( FALSE , 'Aucune modification détectée !' );
+    exit('Aucune modification détectée !');
   }
   // L'information associée à la validation comporte le nom du validateur (c'est une information statique, conservée sur plusieurs années)
   $info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
@@ -390,13 +394,12 @@ if($action=='Enregistrer_validation')
     list($entree_id,$eleve_id) = explode('x',$key);
     DB_STRUCTURE_SOCLE::DB_supprimer_validation('entree',$eleve_id,$entree_id);
   }
-  Json::end( TRUE );
+  exit('OK');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
-
+exit('Erreur avec les données transmises !');
 ?>

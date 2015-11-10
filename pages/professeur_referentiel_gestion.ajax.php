@@ -63,7 +63,7 @@ function compter_items($DB_TAB)
 if( ($action=='modifier_nombre_demandes') && $matiere_id && ($nb_demandes!=-1) && ($nb_demandes<10) )
 {
   DB_STRUCTURE_REFERENTIEL::DB_modifier_matiere_nb_demandes($matiere_id,$nb_demandes);
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ if( ($action=='modifier_nombre_demandes') && $matiere_id && ($nb_demandes!=-1) &
 
 if($action=='afficher_structures_partage')
 {
-  Json::end( TRUE , ServeurCommunautaire::afficher_formulaire_structures_communautaires( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] ) );
+  exit( ServeurCommunautaire::afficher_formulaire_structures_communautaires( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -81,7 +81,7 @@ if($action=='afficher_structures_partage')
 
 if($action=='lister_referentiels_communautaires') // La vérification concernant le nombre de contraintes s'effectue après
 {
-  Json::end( TRUE , ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id ) );
+  exit( ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,7 +90,7 @@ if($action=='lister_referentiels_communautaires') // La vérification concernant
 
 if( ($action=='voir_referentiel_communautaire') && $referentiel_id )
 {
-  Json::end( TRUE , ServeurCommunautaire::afficher_contenu_referentiel( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id ) );
+  exit( ServeurCommunautaire::afficher_contenu_referentiel( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ if( ($action=='voir_referentiel_communautaire') && $referentiel_id )
 
 if(mb_substr_count($ids,'_')!=2)
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 list($prefixe,$matiere_id,$niveau_id) = explode('_',$ids);
@@ -114,7 +114,7 @@ $partageable = ( ( $matiere_id <= ID_MATIERE_PARTAGEE_MAX ) && ( $niveau_id <= I
 if( ($action=='voir_referentiel_etablissement') && $matiere_id && $niveau_id )
 {
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
-  Json::end( TRUE , HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , FALSE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_coef*/ , TRUE /*aff_cart*/ , 'image' /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ ) );
+  exit( HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , FALSE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_coef*/ , TRUE /*aff_cart*/ , 'image' /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +125,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
 {
   if( ($partage=='oui') && ( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) ) )
   {
-    Json::end( FALSE , 'Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.' );
+    exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
   }
   // Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage, sauf si passage non<->bof
   if($partage=='oui')
@@ -135,7 +135,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
     if($nb_item<5)
     {
       $s = ($nb_item>1) ? 's' : '' ;
-      Json::end( FALSE , 'Référentiel avec '.$nb_item.' item'.$s.' : son partage n\'apparaît pas pertinent.' );
+      exit('Référentiel avec '.$nb_item.' item'.$s.' : son partage n\'apparaît pas pertinent.');
     }
     $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
     $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
@@ -148,7 +148,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
   // Analyse de la réponse retournée par le serveur de partage
   if($reponse!='ok')
   {
-    Json::end( FALSE , $reponse );
+    exit($reponse);
   }
   // Tout s'est bien passé si on arrive jusque là...
   $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL,':information'=>$information) );
@@ -159,7 +159,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
     'bof' => '<img title="Référentiel dont le partage est sans intérêt (pas novateur)." alt="" src="./_img/etat/partage_non.gif" />',
     'hs'  => '<img title="Référentiel dont le partage est sans objet (matière ou niveau spécifique)." alt="" src="./_img/etat/partage_non.gif" />',
   );
-  Json::end( TRUE , str_replace('◄DATE►',Html::date_texte(TODAY_MYSQL),$tab_partage[$partage]) );
+  exit( str_replace('◄DATE►',Html::date_texte(TODAY_MYSQL),$tab_partage[$partage]) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,7 +170,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
 {
   if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
   {
-    Json::end( FALSE , 'Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.' );
+    exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
   }
   // Envoyer le référentiel vers le serveur de partage
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
@@ -178,19 +178,19 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
   if($nb_item<5)
   {
     $s = ($nb_item>1) ? 's' : '' ;
-    Json::end( FALSE , 'Référentiel avec '.$nb_item.' item'.$s.' : son partage n\'apparaît pas pertinent.' );
+    exit('Référentiel avec '.$nb_item.' item'.$s.' : son partage n\'apparaît pas pertinent.');
   }
   $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
   $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
   // Analyse de la réponse retournée par le serveur de partage
   if($reponse!='ok')
   {
-    Json::end( FALSE , $reponse );
+    exit($reponse);
   }
   // Tout s'est bien passé si on arrive jusque là...
   $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
-  Json::end( TRUE , '<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.Html::date_texte(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />' );
+  exit('<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.Html::date_texte(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +223,7 @@ if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id 
 {
   if( DB_STRUCTURE_REFERENTIEL::DB_tester_referentiel($matiere_id,$niveau_id) )
   {
-    Json::end( FALSE , 'Ce référentiel existe déjà ! Un autre administrateur de la même matière vient probablement de l\'importer... Actualisez cette page.' );
+    exit('Ce référentiel existe déjà ! Un autre administrateur de la même matière vient probablement de l\'importer... Actualisez cette page.');
   }
   if($referentiel_id==0)
   {
@@ -236,19 +236,19 @@ if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id 
     // C'est une demande de récupérer un référentiel provenant du serveur communautaire pour se le dupliquer
     if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
     {
-      Json::end( FALSE , 'Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.' );
+      exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
     }
     // Récupérer le référentiel
     $arbreXML = ServeurCommunautaire::recuperer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id );
     if(substr($arbreXML,0,6)=='Erreur')
     {
-      Json::end( FALSE , $arbreXML );
+      exit($arbreXML);
     }
     // L'analyser
     $test_XML_valide = ServeurCommunautaire::verifier_arborescence_XML($arbreXML);
-    if($test_XML_valide!==TRUE)
+    if($test_XML_valide!='ok')
     {
-      Json::end( FALSE , $test_XML_valide );
+      exit($test_XML_valide);
     }
     DB_STRUCTURE_REFERENTIEL::DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id);
     $partage = ($partageable) ? 'bof' : 'hs' ;
@@ -259,7 +259,7 @@ if( ($action=='ajouter_referentiel_etablissement') && $matiere_id && $niveau_id 
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' '.$action.' ['.$matiere_nom.'] ['.$niveau_nom.'].'."\r\n";
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -273,12 +273,12 @@ if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage && $matiere_
   {
     if( (!$_SESSION['SESAMATH_ID']) || (!$_SESSION['SESAMATH_KEY']) )
     {
-      Json::end( FALSE , 'Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.' );
+      exit('Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.');
     }
     $reponse = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , '' , $information );
     if($reponse!='ok')
     {
-      Json::end( FALSE , $reponse );
+      exit($reponse);
     }
   }
   DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id);
@@ -289,7 +289,7 @@ if( ($action=='supprimer') && $matiere_id && $niveau_id && $partage && $matiere_
   notifications_referentiel_edition( $matiere_id , $notification_contenu );
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   // Retour
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -300,7 +300,7 @@ if( ($action=='calculer') && $matiere_id && $niveau_id && $matiere_nom && $nivea
 {
   if( is_null($methode) || is_null($limite) || is_null($retroactif) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite,':calcul_retroactif'=>$retroactif) );
       if($retroactif=='non')    { $texte_retroactif = '(sur la période)';       }
@@ -336,13 +336,13 @@ if( ($action=='calculer') && $matiere_id && $niveau_id && $matiere_nom && $nivea
     notifications_referentiel_edition( $matiere_id , $notification_contenu );
   }
   // Retour
-  Json::end( TRUE , $retour );
+  exit('ok'.$retour);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On en devrait pas en arriver là
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

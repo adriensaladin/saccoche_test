@@ -39,18 +39,18 @@ $md5      = (isset($_POST['f_md5']))      ? Clean::login(   $_POST['f_md5']     
 
 if( !$nom || !$prenom || !$courriel || !$message || ( (HEBERGEUR_INSTALLATION=='multi-structures') && !$BASE ) || ( $code && !$md5 ) || ( $md5 && !$code ) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit_json( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // Protection contre les robots (pour éviter des envois intempestifs de courriels)
 if(!isset($_SESSION['TMP']['CAPTCHA']))
 {
-  Json::end( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
+  exit_json( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
 }
 else if( $_SERVER['REQUEST_TIME'] - $_SESSION['TMP']['CAPTCHA']['TIME'] < $_SESSION['TMP']['CAPTCHA']['DELAI'] )
 {
   $_SESSION['TMP']['CAPTCHA']['TIME'] = $_SERVER['REQUEST_TIME'];
-  Json::end( FALSE , 'Sécurité : patienter '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s avant une nouvelle tentative.' );
+  exit_json( FALSE , 'Sécurité : patienter '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s avant une nouvelle tentative.' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,13 +64,13 @@ if(!$code)
   {
     $_SESSION['TMP']['CAPTCHA']['DELAI']++;
     $_SESSION['TMP']['CAPTCHA']['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Ordre incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s.' );
+    exit_json( FALSE , 'Ordre incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s.' );
   }
   // Vérifier le domaine du serveur mail même en mode mono-structure parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
   list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
-    Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+    exit_json( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
   }
   // Le code envoyé est un nombre à 8 chiffres
   $code = mt_rand(10000000,99999999);
@@ -86,9 +86,9 @@ if(!$code)
   $courriel_bilan = Sesamail::mail( $courriel , 'Contact administrateurs - Code de confirmation' , $mail_contenu , $courriel /*replyto*/ );
   if(!$courriel_bilan)
   {
-    Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
+    exit_json( FALSE , 'Erreur lors de l\'envoi du courriel !' );
   }
-  Json::end( TRUE , $md5 );
+  exit_json( TRUE , $md5 );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ if($code)
   {
     $_SESSION['TMP']['CAPTCHA']['DELAI']++;
     $_SESSION['TMP']['CAPTCHA']['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Code incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s.' );
+    exit_json( FALSE , 'Code incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s.' );
   }
   // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
   if(HEBERGEUR_INSTALLATION=='multi-structures')
@@ -110,7 +110,7 @@ if($code)
     $result = charger_parametres_mysql_supplementaires($BASE,FALSE);
     if(!$result)
     {
-      Json::end( FALSE , 'Paramètres de connexion à la base de données non trouvés.' );
+      exit_json( FALSE , 'Paramètres de connexion à la base de données non trouvés.' );
     }
   }
   // Notification (qui a la particularité d'être envoyée de suite, et avec tous les admins en destinataires du mail)
@@ -120,7 +120,7 @@ if($code)
   if(!$destinataires_nb)
   {
     // Normalement impossible, l'abonnement des admins à ce type de de notification étant obligatoire
-    Json::end( FALSE , 'Aucun destinataire trouvé.' );
+    exit_json( FALSE , 'Aucun destinataire trouvé.' );
   }
   $tab_destinataires = array();
   $notification_contenu = 'Message de '.$prenom.' '.$nom.' ('.$courriel.') :'."\r\n\r\n".$message."\r\n";
@@ -146,7 +146,7 @@ if($code)
     $courriel_bilan = Sesamail::mail( $tab_destinataires , 'Notification - Contact externe' , $notification_contenu , $tab_destinataires );
   }
   $admin_txt = ($destinataires_nb>1) ? 'aux '.$destinataires_nb.' administrateurs' : 'à l\'administrateur' ;
-  Json::end( TRUE , $admin_txt );
+  exit_json( TRUE , $admin_txt );
 }
 
 ?>

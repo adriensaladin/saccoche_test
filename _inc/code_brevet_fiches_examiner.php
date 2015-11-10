@@ -43,7 +43,7 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
 if( !$classe_id || (!count($tab_rubrique)) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 // On vérifie que la fiche brevet est bien accessible en modification et on récupère les infos associées (nom de la classe, id des élèves concernés avec lesquels l'intersection est faite ultérieurement).
@@ -51,7 +51,7 @@ if( !$classe_id || (!count($tab_rubrique)) )
 $DB_ROW = DB_STRUCTURE_BREVET::DB_recuperer_brevet_classe_infos($classe_id);
 if(empty($DB_ROW))
 {
-  Json::end( FALSE , 'Classe sans élèves concernés !' );
+  exit('Classe sans élèves concernés !');
 }
 $BILAN_ETAT = $DB_ROW['fiche_brevet'];
 $classe_nom = $DB_ROW['groupe_nom'];
@@ -59,15 +59,15 @@ $tab_id_eleves_avec_notes = explode(',',$DB_ROW['listing_user_id']);
 
 if(!$BILAN_ETAT)
 {
-  Json::end( FALSE , 'Fiche brevet introuvable !' );
+  exit('Fiche brevet introuvable !');
 }
 if(!in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
 {
-  Json::end( FALSE , 'Fiche brevet interdite d\'accès pour cette action !' );
+  exit('Fiche brevet interdite d\'accès pour cette action !');
 }
 if(!$DB_ROW['listing_user_id'])
 {
-  Json::end( FALSE , 'Aucun élève concerné dans cette classe !' );
+  exit('Aucun élève concerné dans cette classe !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ if(!$DB_ROW['listing_user_id'])
 $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
+  exit('Aucun élève trouvé dans ce regroupement !');
 }
 $tab_eleve_id = array();
 foreach($DB_TAB as $DB_ROW)
@@ -89,7 +89,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if(empty($tab_eleve_id))
 {
-  Json::end( FALSE , 'Aucun élève concerné dans ce regroupement !' );
+  exit('Aucun élève concerné dans ce regroupement !');
 }
 $liste_eleve_id = implode(',',$tab_eleve_id);
 
@@ -101,7 +101,7 @@ $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id 
 
 if(!is_array($tab_eleve_infos))
 {
-  Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
+  exit('Aucun élève trouvé correspondant aux identifiants transmis !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +115,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 }
 if( !count($tab_brevet_serie) || isset($tab_brevet_serie['X']) )
 {
-  Json::end( FALSE , 'Élève(s) trouvé(s) sans association avec une série de brevet !' );
+  exit('Élève(s) trouvé(s) sans association avec une série de brevet !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +171,7 @@ foreach($DB_TAB as $DB_ROW)
 $nb_pb_rubriques = count($tab_resultat_examen);
 if(!$nb_pb_rubriques)
 {
-  Json::end( TRUE , '<p class="ti"><label class="valide">Aucune saisie manquante trouvée.</label></p>' );
+  exit('<p class="ti"><label class="valide">Aucune saisie manquante trouvée.</label></p>');
 }
 else
 {
@@ -217,14 +217,14 @@ else
   $nb_pb_saisies = count($tab_resultat_examen,COUNT_RECURSIVE) - $nb_pb_rubriques ;
   $sr = ($nb_pb_rubriques>1) ? 's' : '' ;
   $ss = ($nb_pb_saisies>1)   ? 's' : '' ;
-  Json::add_str('<p class="ti"><label class="danger">'.$nb_pb_saisies.' saisie'.$ss.' manquante'.$ss.' répartie'.$ss.' parmi '.$nb_pb_rubriques.' rubrique'.$sr.' !</label></p>');
+  echo'<p class="ti"><label class="danger">'.$nb_pb_saisies.' saisie'.$ss.' manquante'.$ss.' répartie'.$ss.' parmi '.$nb_pb_rubriques.' rubrique'.$sr.' !</label></p>';
   foreach($tab_resultat_examen as $rubrique_nom => $tab)
   {
     $rubrique_indication = isset($tab_rubrique_profs[$rubrique_nom]) ? $rubrique_nom.' '.$tab_rubrique_profs[$rubrique_nom] : $rubrique_nom ;
-    Json::add_str('<h3>'.html($rubrique_indication).'</h3>');
-    Json::add_str('<ul class="puce"><li>'.implode('</li><li>',$tab).'</li></ul>');
+    echo'<h3>'.html($rubrique_indication).'</h3>';
+    echo'<ul class="puce"><li>'.implode('</li><li>',$tab).'</li></ul>';
   }
-  Json::end( TRUE );
+  exit();
 }
 
 ?>

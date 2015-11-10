@@ -117,33 +117,29 @@ if(count($tab_groupes_fichier['ref']))
 $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 // On affiche
-Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label></p>'.NL);
+echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label></p>'.NL;
 // Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
 if($lignes_del)
 {
-  Json::add_str('<p class="danger">Des groupes non trouvés sont proposés à la suppression. Il se peut que les services / affectations manquent dans le fichier. Veuillez cochez ces suppressions pour les confirmer.</p>'.NL);
+  echo'<p class="danger">Des groupes non trouvés sont proposés à la suppression. Il se peut que les services / affectations manquent dans le fichier. Veuillez cochez ces suppressions pour les confirmer.</p>'.NL;
 }
-$ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
-if(empty($lignes_ras)) { $lignes_ras = $ligne_vide; }
-if(empty($lignes_add)) { $lignes_add = $ligne_vide; }
-if(empty($lignes_del)) { $lignes_del = $ligne_vide; }
-Json::add_str('<table>'.NL);
+echo'<table>'.NL;
 if($mode=='complet')
 {
-  Json::add_str(  '<tbody>'.NL);
-  Json::add_str(    '<tr><th colspan="2">Groupes actuels à conserver</th></tr>'.NL);
-  Json::add_str(    $lignes_ras);
-  Json::add_str(  '</tbody>'.NL);
+  echo  '<tbody>'.NL;
+  echo    '<tr><th colspan="2">Groupes actuels à conserver</th></tr>'.NL;
+  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  echo  '</tbody>'.NL;
 }
-Json::add_str(  '<tbody>'.NL);
-Json::add_str(    '<tr><th colspan="2">Groupes nouveaux à ajouter<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-Json::add_str(    $lignes_add);
-Json::add_str(  '</tbody>'.NL);
-Json::add_str(  '<tbody>'.NL);
-Json::add_str(    '<tr><th colspan="2">Groupes anciens à supprimer<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
-Json::add_str(    $lignes_del);
-Json::add_str(  '</tbody>'.NL);
-Json::add_str('</table>'.NL);
-Json::add_str('<ul class="puce p"><li><a href="#step42" id="envoyer_infos_regroupements">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
+echo  '<tbody>'.NL;
+echo    '<tr><th colspan="2">Groupes nouveaux à ajouter<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+echo($lignes_add) ? $lignes_add : '<tr><td colspan="2">Aucun</td></tr>'.NL;
+echo  '</tbody>'.NL;
+echo  '<tbody>'.NL;
+echo    '<tr><th colspan="2">Groupes anciens à supprimer<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
+echo($lignes_del) ? $lignes_del : '<tr><td colspan="2">Aucun</td></tr>'.NL;
+echo  '</tbody>'.NL;
+echo'</table>'.NL;
+echo'<ul class="puce p"><li><a href="#step42" id="envoyer_infos_regroupements">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
 
 ?>

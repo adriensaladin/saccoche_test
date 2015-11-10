@@ -80,14 +80,14 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
     }
     if(!$is_enfant_legitime)
     {
-      Json::end( FALSE , 'Enfant non rattaché à votre compte parent !' );
+      exit('Enfant non rattaché à votre compte parent !');
     }
   }
 }
 
 if( !$palier_id || !$palier_nom || ( $groupe_id && ( !$groupe_nom || !$groupe_type) ) || !count($tab_pilier_id) || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('releve_socle');
@@ -111,28 +111,20 @@ require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$retour = '';
-
 if($affichage_direct)
 {
-  $retour .= '<hr />'.NL;
-  $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  $retour .= '</ul>'.NL;
-  $retour .= $releve_HTML;
+  echo'<hr />'.NL;
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
+  echo $releve_HTML;
 }
 else
 {
-  $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
-  $retour .= '</ul>'.NL;
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo  '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
 }
-
-Json::add_tab( array(
-  'direct' => $affichage_direct ,
-  'bilan'  => $retour ,
-) );
-Json::end( TRUE );
 
 ?>

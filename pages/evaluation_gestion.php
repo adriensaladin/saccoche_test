@@ -265,6 +265,8 @@ $AUDIO_DUREE_MAX = min( 120 , FICHIER_TAILLE_MAX/4 );
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var TYPE           = "'.$TYPE.'";' );
+Layout::add( 'js_inline_before' , 'var input_date     = "'.TODAY_FR.'";' );
+Layout::add( 'js_inline_before' , 'var date_mysql     = "'.TODAY_MYSQL.'";' );
 Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' );
 Layout::add( 'js_inline_before' , 'var user_id        = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var reception_todo = '.$reception_todo.';' );

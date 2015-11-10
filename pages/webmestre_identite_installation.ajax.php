@@ -59,7 +59,7 @@ if($action=='select_logo')
     }
   }
   $options_logo = ($options_logo) ? '<option value="">&nbsp;</option>'.$options_logo : '<option value="" disabled>Aucun fichier image trouvé !</option>';
-  Json::end( TRUE , $options_logo );
+  exit($options_logo);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ if($action=='listing_logos')
     }
   }
   $li_logos = ($li_logos) ? $li_logos : '<li>Aucun fichier image trouvé !</li>';
-  Json::end( TRUE , $li_logos );
+  exit($li_logos);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,18 +88,17 @@ if($action=='listing_logos')
 
 if($action=='upload_logo')
 {
-  // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_LOGO /*fichier_chemin*/ , NULL /*fichier_nom*/ , $tab_ext_images /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
   // vérifier la conformité du fichier image, récupérer les infos le concernant
   $tab_infos = @getimagesize(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
   if($tab_infos==FALSE)
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
-    Json::end( FALSE , 'Le fichier image ne semble pas valide !' );
+    exit('Erreur : le fichier image ne semble pas valide !');
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
   $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
@@ -107,9 +106,9 @@ if($action=='upload_logo')
   if(!isset($tab_extension_types[$image_type]))
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_LOGO.FileSystem::$file_saved_name);
-    Json::end( FALSE , 'Le fichier transmis n\'est pas un fichier image !' );
+    exit('Erreur : le fichier transmis n\'est pas un fichier image !');
   }
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,13 +121,9 @@ if( ($action=='delete_logo') && $logo )
   // Si on supprime l'image actuellement utilisée, alors la retirer du fichier
   if($logo==HEBERGEUR_LOGO)
   {
-    $result = FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_LOGO'=>'') );
-    if($result!==TRUE)
-    {
-      Json::end( FALSE , $result );
-    }
+    FileSystem::fabriquer_fichier_hebergeur_info( array('HEBERGEUR_LOGO'=>'') );
   }
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,10 +138,10 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
     list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
     if(!$is_domaine_valide)
     {
-      Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+      exit('Erreur avec le domaine "'.$mail_domaine.'" !');
     }
   }
-  $result = FileSystem::fabriquer_fichier_hebergeur_info( array(
+  FileSystem::fabriquer_fichier_hebergeur_info( array(
     'HEBERGEUR_DENOMINATION'   => $denomination,
     'HEBERGEUR_UAI'            => $uai,
     'HEBERGEUR_ADRESSE_SITE'   => $adresse_site,
@@ -158,10 +153,6 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
     'WEBMESTRE_PRENOM'         => $prenom,
     'WEBMESTRE_COURRIEL'       => $courriel,
   ) );
-  if($result!==TRUE)
-  {
-    Json::end( FALSE , $result );
-  }
   if(HEBERGEUR_INSTALLATION=='mono-structure')
   {
     // Personnaliser certains paramètres de la structure (pour une installation de type multi-structures, ça se fait à la page de gestion des établissements)
@@ -173,7 +164,7 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
   // On modifie aussi la session
   $_SESSION['USER_NOM']    = $nom ;
   $_SESSION['USER_PRENOM'] = $prenom ;
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -182,13 +173,13 @@ if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 
 if(empty($_POST))
 {
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

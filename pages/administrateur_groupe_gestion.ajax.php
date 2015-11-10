@@ -37,58 +37,53 @@ $nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])     : '';
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter un nouveau groupe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 if( ($action=='ajouter') && $niveau && $ref && $nom )
 {
   // Vérifier que la référence du groupe est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_groupe_reference($ref) )
   {
-    Json::end( FALSE , 'Référence déjà utilisée !' );
+    exit('Erreur : référence de groupe déjà existant !');
   }
   // Insérer l'enregistrement
   $groupe_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_groupe_par_admin('groupe',$ref,$nom,$niveau);
   // Afficher le retour
-  Json::add_str('<tr id="id_'.$groupe_id.'" class="new">');
-  Json::add_str(  '<td>{{NIVEAU_NOM}}</td>');
-  Json::add_str(  '<td>'.html($ref).'</td>');
-  Json::add_str(  '<td>'.html($nom).'</td>');
-  Json::add_str(  '<td class="nu">');
-  Json::add_str(    '<q class="modifier" title="Modifier ce groupe."></q>');
-  Json::add_str(    '<q class="supprimer" title="Supprimer ce groupe."></q>');
-  Json::add_str(  '</td>');
-  Json::add_str('</tr>');
-  Json::end( TRUE );
+  echo'<tr id="id_'.$groupe_id.'" class="new">';
+  echo  '<td>{{NIVEAU_NOM}}</td>';
+  echo  '<td>'.html($ref).'</td>';
+  echo  '<td>'.html($nom).'</td>';
+  echo  '<td class="nu">';
+  echo    '<q class="modifier" title="Modifier ce groupe."></q>';
+  echo    '<q class="supprimer" title="Supprimer ce groupe."></q>';
+  echo  '</td>';
+  echo'</tr>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier un groupe existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='modifier') && $id && $niveau && $ref && $nom )
+else if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 {
   // Vérifier que la référence du groupe est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_groupe_reference($ref,$id) )
   {
-    Json::end( FALSE , 'Référence déjà utilisée !' );
+    exit('Erreur : référence de groupe déjà existant !');
   }
   // Mettre à jour l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_groupe_par_admin($id,$ref,$nom,$niveau);
   // Afficher le retour
-  Json::add_str('<td>{{NIVEAU_NOM}}</td>');
-  Json::add_str('<td>'.html($ref).'</td>');
-  Json::add_str('<td>'.html($nom).'</td>');
-  Json::add_str('<td class="nu">');
-  Json::add_str(  '<q class="modifier" title="Modifier ce groupe."></q>');
-  Json::add_str(  '<q class="supprimer" title="Supprimer ce groupe."></q>');
-  Json::add_str('</td>');
-  Json::end( TRUE );
+  echo'<td>{{NIVEAU_NOM}}</td>';
+  echo'<td>'.html($ref).'</td>';
+  echo'<td>'.html($nom).'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier ce groupe."></q>';
+  echo  '<q class="supprimer" title="Supprimer ce groupe."></q>';
+  echo'</td>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer un groupe existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='supprimer') && $id && $nom )
+else if( ($action=='supprimer') && $id && $nom )
 {
   // Effacer l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'groupe' , TRUE /*with_devoir*/ );
@@ -98,13 +93,11 @@ if( ($action=='supprimer') && $id && $nom )
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé le groupe "'.$nom.'" (n°'.$id.'), et donc les devoirs associés.'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  Json::end( TRUE );
+  echo'<td>ok</td>';
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Json::end( FALSE , 'Erreur avec les données transmises !' );
-
+else
+{
+  echo'Erreur avec les données transmises !';
+}
 ?>

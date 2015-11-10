@@ -41,45 +41,42 @@ $pays        = (isset($_POST['f_pays']))        ? Clean::pays($_POST['f_pays']) 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter une nouvelle adresse
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 if( ($action=='ajouter') && $user_id )
 {
   // Insérer l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_adresse_parent( $user_id , array($ligne1,$ligne2,$ligne3,$ligne4,$code_postal,$commune,$pays) );
   // Afficher le retour
-  Json::add_str('<td><span>'.html($ligne1).'</span> ; <span>'.html($ligne2).'</span> ; <span>'.html($ligne3).'</span> ; <span>'.html($ligne4).'</span></td>');
-  Json::add_str('<td>'.html($code_postal).'</td>');
-  Json::add_str('<td>'.html($commune).'</td>');
-  Json::add_str('<td>'.html($pays).'</td>');
-  Json::add_str('<td class="nu">');
-  Json::add_str(  '<q class="modifier" title="Modifier ce parent."></q>');
-  Json::add_str('</td>');
-  Json::end( TRUE );
+  echo'<td><span>'.html($ligne1).'</span> ; <span>'.html($ligne2).'</span> ; <span>'.html($ligne3).'</span> ; <span>'.html($ligne4).'</span></td>';
+  echo'<td>'.html($code_postal).'</td>';
+  echo'<td>'.html($commune).'</td>';
+  echo'<td>'.html($pays).'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier ce parent."></q>';
+  echo'</td>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier une adresse existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 if( ($action=='modifier') && $user_id )
 {
   // Insérer l'enregistrement
   $user_id = DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_adresse_parent( $user_id , array($ligne1,$ligne2,$ligne3,$ligne4,$code_postal,$commune,$pays) );
   // Afficher le retour
-  Json::add_str('<td><span>'.html($ligne1).'</span> ; <span>'.html($ligne2).'</span> ; <span>'.html($ligne3).'</span> ; <span>'.html($ligne4).'</span></td>');
-  Json::add_str('<td>'.html($code_postal).'</td>');
-  Json::add_str('<td>'.html($commune).'</td>');
-  Json::add_str('<td>'.html($pays).'</td>');
-  Json::add_str('<td class="nu">');
-  Json::add_str(  '<q class="modifier" title="Modifier ce parent."></q>');
-  Json::add_str('</td>');
-  Json::end( TRUE );
+  echo'<td><span>'.html($ligne1).'</span> ; <span>'.html($ligne2).'</span> ; <span>'.html($ligne3).'</span> ; <span>'.html($ligne4).'</span></td>';
+  echo'<td>'.html($code_postal).'</td>';
+  echo'<td>'.html($commune).'</td>';
+  echo'<td>'.html($pays).'</td>';
+  echo'<td class="nu">';
+  echo  '<q class="modifier" title="Modifier ce parent."></q>';
+  echo'</td>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Json::end( FALSE , 'Erreur avec les données transmises !' );
-
+else
+{
+  echo'Erreur avec les données transmises !';
+}
 ?>

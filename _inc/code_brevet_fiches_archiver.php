@@ -43,7 +43,7 @@ $annee_session_brevet = annee_session_brevet();
 
 if(!$classe_id)
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 // On vérifie que la fiche brevet est bien accessible en impression et on récupère les infos associées (nom de la classe, id des élèves concernés avec lesquels l'intersection est faite ultérieurement).
@@ -51,7 +51,7 @@ if(!$classe_id)
 $DB_ROW = DB_STRUCTURE_BREVET::DB_recuperer_brevet_classe_infos($classe_id);
 if(empty($DB_ROW))
 {
-  Json::end( FALSE , 'Classe sans élèves concernés !' );
+  exit('Classe sans élèves concernés !');
 }
 $BILAN_ETAT = $DB_ROW['fiche_brevet'];
 $classe_nom = $DB_ROW['groupe_nom'];
@@ -59,7 +59,7 @@ $tab_id_eleves_avec_notes = explode(',',$DB_ROW['listing_user_id']);
 
 if(!$BILAN_ETAT)
 {
-  Json::end( FALSE , 'Fiche brevet introuvable !' );
+  exit('Fiche brevet introuvable !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ if(!$BILAN_ETAT)
 $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
+  exit('Aucun élève trouvé dans ce regroupement !');
 }
 $tab_eleve_id = array();
 foreach($DB_TAB as $DB_ROW)
@@ -81,7 +81,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if(empty($tab_eleve_id))
 {
-  Json::end( FALSE , 'Aucun élève concerné dans ce regroupement !' );
+  exit('Aucun élève concerné dans ce regroupement !');
 }
 $liste_eleve_id = implode(',',$tab_eleve_id);
 $nb_eleves = count($tab_eleve_id);
@@ -94,7 +94,7 @@ $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id 
 
 if(!is_array($tab_eleve_infos))
 {
-  Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
+  exit($liste_eleve_id.'Aucun élève trouvé correspondant aux identifiants transmis !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 }
 if( !count($tab_brevet_serie) || isset($tab_brevet_serie['X']) )
 {
-  Json::end( FALSE , 'Élève(s) trouvé(s) sans association avec une série de brevet !' );
+  exit('Élève(s) trouvé(s) sans association avec une série de brevet !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,14 +321,13 @@ if($action=='imprimer_donnees_eleves_moyennes')
 
 $fichier_export = 'saisies_'.$bilan_type.'_'.$annee_session_brevet.'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
-Json::add_str('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>');
+echo'<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>';
 // Et le csv éventuel
 if($action=='imprimer_donnees_eleves_moyennes')
 {
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($archivage_tableau_CSV) );
-  Json::add_str('<br />'.NL);
-  Json::add_str('<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>');
+  echo'<br />'.NL.'<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>';
 }
-Json::end( TRUE );
+exit();
 
 ?>

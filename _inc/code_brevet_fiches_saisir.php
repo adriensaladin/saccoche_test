@@ -57,7 +57,7 @@ $tab_mode   = array('texte','graphique');
 
 if( (!in_array($ACTION,$tab_action)) || (!in_array($OBJET,$tab_objet)) || (!in_array($mode,$tab_mode)) || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 // On vérifie que la fiche brevet est bien accessible en modification et on récupère les infos associées (nom de la classe, id des élèves concernés avec lesquels l'intersection est faite ultérieurement).
@@ -65,7 +65,7 @@ if( (!in_array($ACTION,$tab_action)) || (!in_array($OBJET,$tab_objet)) || (!in_a
 $DB_ROW = DB_STRUCTURE_BREVET::DB_recuperer_brevet_classe_infos($classe_id);
 if(empty($DB_ROW))
 {
-  Json::end( FALSE , 'Classe sans élèves concernés !' );
+  exit('Classe sans élèves concernés !');
 }
 $BILAN_ETAT = $DB_ROW['fiche_brevet'];
 $classe_nom = $DB_ROW['groupe_nom'];
@@ -73,15 +73,15 @@ $tab_id_eleves_avec_notes = explode(',',$DB_ROW['listing_user_id']);
 
 if(!$BILAN_ETAT)
 {
-  Json::end( FALSE , 'Fiche brevet introuvable !' );
+  exit('Fiche brevet introuvable !');
 }
 if(!in_array($OBJET.$BILAN_ETAT,array('modifier2rubrique','modifier3mixte','tamponner3mixte','tamponner4synthese','voir2rubrique','voir3mixte','voir4synthese'))) //  'voir*' est transmis dans le cas d'une correction de faute
 {
-  Json::end( FALSE , 'Fiche brevet interdite d\'accès pour cette action !' );
+  exit('Fiche brevet interdite d\'accès pour cette action !');
 }
 if(!$DB_ROW['listing_user_id'])
 {
-  Json::end( FALSE , 'Aucun élève concerné dans cette classe !' );
+  exit('Aucun élève concerné dans cette classe !');
 }
 
 // Si un personnel accède à la saisie de synthèse, il ne faut pas seulement récupérer les données qui concerne ses matières.
@@ -95,25 +95,25 @@ if($ACTION=='enregistrer_appr')
 {
   if( (!$appreciation) || (($BILAN_ETAT=='2rubrique')&&($epreuve_id==CODE_BREVET_EPREUVE_TOTAL)) || (($avis_conseil!='F')&&($avis_conseil!='D')&&($epreuve_id==CODE_BREVET_EPREUVE_TOTAL)) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   $avis_et_appreciation = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? $appreciation : $avis_conseil.'|'.$appreciation ;
   DB_STRUCTURE_BREVET::DB_modifier_brevet_appreciation($serie_ref , $epreuve_id , $eleve_id , $_SESSION['USER_ID'] , $avis_et_appreciation);
   $prof_info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   $ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
   $txt_avis_conseil_classe = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? '' : ( ($avis_conseil=='F') ? '<div id="avis_conseil_classe" class="b">Avis favorable</div>' : '<div id="avis_conseil_classe" class="b">Doit faire ses preuves</div>' ) ;
-  Json::end( TRUE , '<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>'.$txt_avis_conseil_classe );
+  exit('<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>'.$txt_avis_conseil_classe);
 }
 
 if($ACTION=='corriger_faute')
 {
   if( (!$appreciation) || (!$prof_id) || (($avis_conseil!='F')&&($avis_conseil!='D')&&($epreuve_id==CODE_BREVET_EPREUVE_TOTAL)) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   $avis_et_appreciation = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? $appreciation : $avis_conseil.'|'.$appreciation ;
   DB_STRUCTURE_BREVET::DB_modifier_brevet_appreciation($serie_ref , $epreuve_id , $eleve_id , $prof_id , $avis_et_appreciation);
-  Json::end( TRUE , html($appreciation) );
+  exit('<ok>'.html($appreciation));
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -124,11 +124,11 @@ if($ACTION=='supprimer_appr')
 {
   if( ($BILAN_ETAT=='2rubrique') && ($epreuve_id==CODE_BREVET_EPREUVE_TOTAL) )
   {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
+    exit('Erreur avec les données transmises !');
   }
   DB_STRUCTURE_BREVET::DB_modifier_brevet_appreciation($serie_ref , $epreuve_id , $eleve_id , 0 /*prof_id*/ , '' /*appreciation*/ );
   $ACTION = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? '<button type="button" class="ajouter">Ajouter l\'appréciation.</button>' : '<button type="button" class="ajouter">Ajouter l\'avis de synthèse.</button>' ;
-  Json::end( TRUE , '<div class="hc">'.$ACTION.'</div>' );
+  exit('<div class="hc">'.$ACTION.'</div>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,7 @@ if($ACTION=='initialiser')
   $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
+    exit('Aucun élève trouvé dans ce regroupement !');
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
@@ -157,7 +157,7 @@ if($ACTION=='initialiser')
   }
   if(empty($tab_eleve_id))
   {
-    Json::end( FALSE , 'Aucun élève concerné dans ce regroupement !' );
+    exit('Aucun élève concerné dans ce regroupement !');
   }
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
   $form_choix_eleve .= ($OBJET=='tamponner') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
@@ -176,6 +176,7 @@ $make_action = $OBJET; // 'modifier' || 'tamponner' (et plus seulement 'saisir')
 $make_html   = ( ($OBJET=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
 $make_pdf    = FALSE;
 $make_graph  = ( ($OBJET=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
+$js_graph    = '';
 $droit_corriger_appreciation = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 
 $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
@@ -190,19 +191,13 @@ $nom_bilan_html = 'fiche_brevet_HTML';
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Json::add_row( 'script' , ...) a déjà eu lieu
-
 if($ACTION=='initialiser')
 {
-  Json::add_row( 'html' , '<h2>'.$sous_titre.'</h2>' );
-  Json::add_row( 'html' , $form_choix_eleve );
-  Json::add_row( 'html' , '<form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">'.${$nom_bilan_html}.'</form>' );
+  exit('<h2>'.$sous_titre.'</h2>'.$form_choix_eleve.'<form action="#" method="post" id="zone_resultat_eleve" onsubmit="return false">'.${$nom_bilan_html}.'</form>'.$js_graph);
 }
 else
 {
-  Json::add_row( 'html' , ${$nom_bilan_html} );
+  exit(${$nom_bilan_html}.$js_graph);
 }
-
-Json::end( TRUE );
 
 ?>

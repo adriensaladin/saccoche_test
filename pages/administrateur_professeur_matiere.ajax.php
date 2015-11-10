@@ -50,7 +50,7 @@ if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
       DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere( $prof_id , $matiere_id , $etat );
     }
   }
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,13 +61,13 @@ if( in_array($action,array('ajouter_coord','retirer_coord')) && ($matiere_id) &&
 {
   $etat = ($action=='ajouter_coord') ? TRUE : FALSE ;
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur( $prof_id , $matiere_id , $etat );
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

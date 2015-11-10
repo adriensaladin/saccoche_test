@@ -89,7 +89,7 @@ $(document).ready
     var ajouter_partage = function()
     {
       mode = 'ajouter_partage';
-      $('#ajax_msg_recherche').removeAttr('class').html("");
+      $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
       $('#zone_partage, #zone_perso, #form_move').hide();
       $('#zone_ajout_form').show();
       return false;
@@ -222,7 +222,7 @@ $(document).ready
       {
         mode = $(this).val();
         $("#f_recherche_resultat").html('<li></li>').hide();
-        $('#ajax_msg_recherche').removeAttr('class').html("");
+        $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
         if(mode=='famille')
         {
           $('#f_famille').find('option:first').prop('selected',true);
@@ -244,29 +244,29 @@ $(document).ready
 
     function maj_resultat_recherche(data_action,data_parametre)
     {
-      $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&'+data_action+'&'+data_parametre,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==true)
+            if(responseHTML.substring(0,3)=='<li')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#ajax_msg_recherche').removeAttr('class').html("");
-              $('#f_recherche_resultat').html(responseJSON['value']).show();
+              $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
+              $('#f_recherche_resultat').html(responseHTML).show();
             }
             else
             {
-              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(responseHTML);
             }
           }
         }
@@ -289,7 +289,7 @@ $(document).ready
         }
         else
         {
-          $('#ajax_msg_recherche').removeAttr('class').html("");
+          $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
         }
       }
     );
@@ -310,7 +310,7 @@ $(document).ready
         }
         else
         {
-          $('#ajax_msg_recherche').removeAttr('class').addClass("danger").html("Indiquer des mots clefs !");
+          $('#ajax_msg_recherche').removeAttr("class").addClass("danger").html("Indiquer des mots clefs !");
         }
       }
     );
@@ -326,25 +326,25 @@ $(document).ready
       function()
       {
         var matiere_id = $(this).attr('id').substr(4); // add_
-        $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=ajouter_partage'+'&f_id='+matiere_id,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==true)
+              if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                $('#ajax_msg_recherche').removeAttr('class').addClass('valide').html("Matière ajoutée.");
+                $('#ajax_msg_recherche').removeAttr("class").addClass("valide").html("Matière ajoutée.");
                 var texte = $('#add_'+matiere_id).parent().text();
                 var pos_separe  = (texte.indexOf('|')==-1) ? 0 : texte.lastIndexOf('|')+2 ;
                 var pos_par_ouv = texte.lastIndexOf('(');
@@ -353,14 +353,14 @@ $(document).ready
                 var matiere_ref = texte.substring(pos_par_ouv+1,pos_par_fer);
                 $('#zone_partage table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#zone_partage table.form tbody').append('<tr id="id_'+matiere_id+'"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer cette matière."></q></td></tr>');
-                $('#add_'+matiere_id).removeAttr('class').addClass("ajouter_non").attr('title',"Matière déjà choisie.");
+                $('#add_'+matiere_id).removeAttr("class").addClass("ajouter_non").attr('title',"Matière déjà choisie.");
                 tableau_maj_partage();
                 $('#f_matiere_avant').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
                 $('#f_matiere_apres').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
               }
               else
               {
-                $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(responseHTML);
               }
             }
           }
@@ -380,53 +380,53 @@ $(document).ready
         var matiere_id_apres = parseInt( $("#f_matiere_apres option:selected").val() ,10);
         if(!matiere_id_avant)
         {
-          $('#ajax_msg_move').removeAttr('class').addClass('erreur').html("Sélectionner une ancienne matière !");
+          $('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner une ancienne matière !");
           $("#f_matiere_avant").focus();
           return false;
         }
         if(!matiere_id_apres)
         {
-          $('#ajax_msg_move').removeAttr('class').addClass('erreur').html("Sélectionner une nouvelle matière !");
+          $('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner une nouvelle matière !");
           $("#f_matiere_apres").focus();
           return false;
         }
         if(matiere_id_avant==matiere_id_apres)
         {
-          $('#ajax_msg_move').removeAttr('class').addClass('erreur').html("Sélectionner des matières différentes !");
+          $('#ajax_msg_move').removeAttr("class").addClass("erreur").html("Sélectionner des matières différentes !");
           return false;
         }
         var matiere_nom_avant = $("#f_matiere_avant option:selected").text();
         var matiere_nom_apres = $("#f_matiere_apres option:selected").text();
         $('button').prop('disabled',true);
-        $('#ajax_msg_move').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_move').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=deplacer_referentiels'+'&f_id_avant='+matiere_id_avant+'&f_id_apres='+matiere_id_apres+'&f_nom_avant='+encodeURIComponent(matiere_nom_avant)+'&f_nom_apres='+encodeURIComponent(matiere_nom_apres),
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_msg_move').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_move').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
               $('button').prop('disabled',false);
-              if(responseJSON['statut']==true)
+              if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
                 $('#f_matiere_avant option[value='+matiere_id_avant+']').remove();
                 $('#f_matiere_apres option[value='+matiere_id_avant+']').remove();
                 $('#f_matiere_apres option[value=0]').prop('selected',true);
                 $('#id_'+matiere_id_avant).remove();
-                $('#ajax_msg_move').removeAttr('class').addClass('valide').html("Transfert effectué.");
+                $('#ajax_msg_move').removeAttr("class").addClass("valide").html("Transfert effectué.");
               }
               else
               {
-                $('#ajax_msg_move').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_move').removeAttr("class").addClass("alerte").html(responseHTML);
               }
             }
           }
@@ -466,7 +466,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -538,13 +538,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -554,28 +554,29 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseJSON)
+    function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      if(responseJSON['statut']==false)
+      var tab_infos = responseHTML.split(']¤[');
+      if(tab_infos[0]!='')
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter_perso':
-            var matiere_id  = responseJSON['id'];
-            var matiere_ref = responseJSON['ref'];
-            var matiere_nom = responseJSON['nom'];
+            var matiere_id  = tab_infos[1];
+            var matiere_ref = tab_infos[2];
+            var matiere_nom = tab_infos[3];
             new_tr = '<tr id="id_'+matiere_id+'" class="new"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="modifier" title="Modifier cette matière."></q><q class="supprimer" title="Supprimer cette matière."></q></td></tr>';
             $('#zone_perso table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
             $('#zone_perso table.form tbody').prepend(new_tr);
@@ -583,16 +584,16 @@ $(document).ready
             $('#f_matiere_apres').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
             break;
           case 'modifier':
-            var matiere_id  = responseJSON['id'];
-            var matiere_ref = responseJSON['ref'];
-            var matiere_nom = responseJSON['nom'];
+            var matiere_id  = tab_infos[1];
+            var matiere_ref = tab_infos[2];
+            var matiere_nom = tab_infos[3];
             new_td = '<td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="modifier" title="Modifier cette matière."></q><q class="supprimer" title="Supprimer cette matière."></q></td>';
             $('#id_'+matiere_id).addClass("new").html(new_td);
             $('#f_matiere_avant option[value='+matiere_id+']').replaceWith('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
             $('#f_matiere_apres option[value='+matiere_id+']').replaceWith('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
             break;
           case 'supprimer':
-            var matiere_id = responseJSON['id'];
+            var matiere_id = tab_infos[1];
             $('#id_'+matiere_id).remove();
             $('#f_matiere_avant option[value='+matiere_id+']').remove();
             $('#f_matiere_apres option[value='+matiere_id+']').remove();

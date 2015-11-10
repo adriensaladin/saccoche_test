@@ -88,7 +88,7 @@ $(document).ready
         }
         else
         {
-          $(this).next().hide(0).next().show(0).children('input').focus();
+          $(this).next().hide(0).next().show(0);
         }
       }
     );
@@ -297,7 +297,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_gestion",
@@ -336,13 +336,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -352,30 +352,30 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseJSON)
+    function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      if(responseJSON['statut']==false)
+      if(responseHTML.substring(0,2)!='<t')
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter':
             $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
-            $('#table_action tbody').prepend(responseJSON['value']);
+            $('#table_action tbody').prepend(responseHTML);
             break;
           case 'modifier':
-            $('#id_'+$('#f_id').val()).addClass("new").html(responseJSON['value']);
+            $('#id_'+$('#f_id').val()).addClass("new").html(responseHTML);
             break;
         }
         tableau_maj();
@@ -413,14 +413,14 @@ $(document).ready
         $("input[name=f_ids]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_msg_actions').removeAttr('class').addClass('erreur').html("Aucun utilisateur coché !");
+          $('#ajax_msg_actions').removeAttr("class").addClass("erreur").html("Aucun utilisateur coché !");
           return false;
         }
         // On demande confirmation pour la suppression
         f_action = $(this).attr('id');
         if(f_action=='supprimer')
         {
-          $('#ajax_msg_actions').removeAttr('class').html("");
+          $('#ajax_msg_actions').removeAttr("class").html("&nbsp;");
           $.prompt(prompt_etapes);
         }
         else
@@ -433,7 +433,7 @@ $(document).ready
 
     function envoyer_action_confirmee(f_action,listing_id)
     {
-      $('#ajax_msg_actions').removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $('#ajax_msg_actions').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $('#zone_actions button').prop('disabled',true);
       $.ajax
       (
@@ -441,41 +441,41 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action='+f_action+'&f_listing_id='+listing_id,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_actions').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_actions').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $('#zone_actions button').prop('disabled',false);
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            $('#zone_actions button').prop('disabled',false);
-            if(responseJSON['statut']==false)
+            tab_response = responseHTML.split(',');
+            if(tab_response[0]!='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#ajax_msg_actions').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_actions').removeAttr("class").addClass("alerte").html(responseHTML);
             }
             else
             {
-              $('#ajax_msg_actions').removeAttr('class').addClass('valide').html("Demande réalisée.");
-              var tab_ids = responseJSON['value'].split(',');
-              for ( i=0 ; i<tab_ids.length ; i++ )
+              $('#ajax_msg_actions').removeAttr("class").addClass("valide").html("Demande réalisée.");
+              for ( i=1 ; i<tab_response.length ; i++ )
               {
                 switch (f_action)
                 {
                   case 'retirer':
-                    $('#id_'+tab_ids[i]).children("td:last").prev().html(input_date);
+                    $('#id_'+tab_response[i]).children("td:last").prev().html(input_date);
                     break;
                   case 'reintegrer':
-                    $('#id_'+tab_ids[i]).children("td:last").prev().html('-');
+                    $('#id_'+tab_response[i]).children("td:last").prev().html('-');
                     break;
                   case 'supprimer':
-                    $('#id_'+tab_ids[i]).remove();
+                    $('#id_'+tab_response[i]).remove();
                     break;
                 }
               }
               tableau_maj();
             }
+            $('#zone_actions button').prop('disabled',false);
           }
         }
       );

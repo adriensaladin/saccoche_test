@@ -37,14 +37,14 @@ $eleve_id  = (isset($_POST['f_user']))   ? Clean::entier($_POST['f_user'])   : 0
 
 if( !in_array($action,array('proposer','enregistrer')) || !$serie_ref || !$classe_id || !$eleve_id )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 $DB_TAB_epreuves = DB_STRUCTURE_BREVET::DB_lister_brevet_epreuves($serie_ref);
 
 if(empty($DB_TAB_epreuves))
 {
-  Json::end( FALSE , 'Série inconnue !' );
+  exit('Erreur : série inconnue !');
 }
 
 // Récupérer les paramètres des épreuves
@@ -320,7 +320,7 @@ if($action=='proposer')
       $tab_td[4] = '<td class="hc '.$class.'">-</td>';
     }
     // Affichage de la ligne
-    Json::add_str('<tr>'.implode('',$tab_td).'</tr>');
+    echo'<tr>'.implode('',$tab_td).'</tr>';
   }
   // Ligne avec le total des points
   if(isset($tab_notes_enregistrees[CODE_BREVET_EPREUVE_TOTAL]))
@@ -331,8 +331,8 @@ if($action=='proposer')
   {
     $note = '-';
   }
-  Json::add_str('<tr><th colspan="2" class="nu"></th><th class="hc">Total des points</th><th class="hc">'.$note.'</th></tr>');
-  Json::end( TRUE );
+  echo'<tr><th colspan="2" class="nu"></th><th class="hc">Total des points</th><th class="hc">'.$note.'</th></tr>';
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -356,21 +356,21 @@ if($action=='enregistrer')
     $matieres_id = implode(',',$tab_matieres_id);
     if( !$matieres_id && $epreuve_obligatoire )
     {
-      Json::end( FALSE , 'Référentiel(s) manquant(s) ou incorrect(s) pour l\'épreuve "'.html($epreuve_nom).'" !' );
+      exit('Référentiel(s) manquant(s) ou incorrect(s) pour l\'épreuve "'.html($epreuve_nom).'" !');
     }
     // Note
     $note_transmise = (isset($_POST['note_'.$epreuve_code])) ? str_replace('v5','.5',$_POST['note_'.$epreuve_code]) : NULL ;
     if( ($note_transmise===NULL) || ( ($note_transmise==='') && $epreuve_obligatoire ) )
     {
-      Json::end( FALSE , 'Note manquante pour l\'épreuve "'.html($epreuve_nom).'" !' );
+      exit('Note manquante pour l\'épreuve "'.html($epreuve_nom).'" !');
     }
     if( is_numeric($note_transmise) && ( (ceilTo($note_transmise,0.5)!=$note_transmise) || ($note_transmise<0) || ($note_transmise>20) || (!$epreuve_note_chiffree) ) )
     {
-      Json::end( FALSE , 'Note '.html($note_transmise).' invalide pour l\'épreuve "'.html($epreuve_nom).'" !' );
+      exit('Note '.html($note_transmise).' invalide pour l\'épreuve "'.html($epreuve_nom).'" !');
     }
     if( !is_numeric($note_transmise) && ($note_transmise!='') && (strpos($epreuve_code_speciaux,$note_transmise)===FALSE) )
     {
-      Json::end( FALSE , 'Note '.html($note_transmise).' invalide pour l\'épreuve "'.html($epreuve_nom).'" !' );
+      exit('Note '.html($note_transmise).' invalide pour l\'épreuve "'.html($epreuve_nom).'" !');
     }
     // On garde la note et les matières
     if($note_transmise!=='')
@@ -393,6 +393,7 @@ if($action=='enregistrer')
   // S'occuper aussi du total des points
   $tab_epreuves_maj = array();
   $tab_epreuve[CODE_BREVET_EPREUVE_TOTAL] = array();
+  $tab_td = array();
   foreach($tab_epreuve as $epreuve_code => $tab_infos)
   {
     // Si note non transmise...
@@ -424,16 +425,16 @@ if($action=='enregistrer')
     if($epreuve_code==CODE_BREVET_EPREUVE_TOTAL)
     {
       $note = is_numeric($tab_notes_transmises[CODE_BREVET_EPREUVE_TOTAL]['note']) ? sprintf("%06.2f",$tab_notes_transmises[CODE_BREVET_EPREUVE_TOTAL]['note']) : $tab_notes_transmises[CODE_BREVET_EPREUVE_TOTAL]['note'] ;
-      Json::add_row( NULL , '<th class="hc">'.$note.'</th>' );
+      $tab_td[] = '<th class="hc">'.$note.'</th>';
     }
     elseif(isset($tab_notes_transmises[$epreuve_code]))
     {
       $note = is_numeric($tab_notes_transmises[$epreuve_code]['note']) ? sprintf("%05.2f",$tab_notes_transmises[$epreuve_code]['note']) : $tab_notes_transmises[$epreuve_code]['note'] ;
-      Json::add_row( NULL , '<td class="hc bv">'.$note.'</td>' );
+      $tab_td[] = '<td class="hc bv">'.$note.'</td>';
     }
     else
     {
-      Json::add_row( NULL , '<td class="hc">-</td>' );
+      $tab_td[] = '<td class="hc">-</td>';
     }
   }
   // (re)calculer les moyennes de classe concernées
@@ -476,7 +477,7 @@ if($action=='enregistrer')
     }
   }
   // game over
-  Json::end( TRUE );
+  exit(implode('¤',$tab_td));
 }
 
 ?>

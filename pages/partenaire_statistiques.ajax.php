@@ -55,7 +55,7 @@ if((!$num)||(!$max))
   }
   // Retour
   $max = count($DB_TAB) + 1 ; // La dernière étape consistera à vider la session temporaire et à renvoyer les totaux
-  Json::end( TRUE , $max );
+  exit('ok-'.$max);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,11 +86,11 @@ if( $num && $max && ($num<$max) )
       '<td>'.sprintf("%07u",$evaluation_use).'</i>'.number_format($evaluation_use,0,'',' ').'</td>'.
       '<td>'.sprintf("%07u",$validation_use).'</i>'.number_format($validation_use,0,'',' ').'</td>'.
       '</tr>';
-    Json::end( TRUE , $ligne_etabl );
+    exit('ok-'.$ligne_etabl);
   }
   else
   {
-    Json::end( TRUE );
+    exit('ok-');
   }
 }
 
@@ -108,13 +108,13 @@ if( $num && $max && ($num==$max) )
     '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['validation_use'],0,'',' ').'</th>'.
     '</tr>';
   unset($_SESSION['tmp']);
-  Json::end( TRUE , $ligne_total );
+  exit('ok-'.$ligne_total);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

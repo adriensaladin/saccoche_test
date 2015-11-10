@@ -71,7 +71,7 @@ $retroactif = (isset($_POST['f_retroactif'])) ? Clean::calcul_retroactif($_POST[
 // Vérification des données transmises
 if( $pb_note || $pb_acquis || is_null($methode) || is_null($limite) || is_null($retroactif) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,23 +152,23 @@ if($action=='calculer')
   foreach($tab_lignes as $cas => $ligne)
   {
     $nb_td_manquant = 14 - substr_count($ligne,'<td');
-    Json::add_str('<tr>');
+    echo'<tr>';
     if($nb_td_manquant>0)
     {
           if($cas>=$nb_lignes_3_devoirs) {$nb_td_manquant+=2;}
       elseif($cas>=$nb_lignes_2_devoirs) {$nb_td_manquant+=1;}
-      Json::add_str('<td colspan="'.$nb_td_manquant.'"></td>');
+      echo'<td colspan="'.$nb_td_manquant.'"></td>';
     }
-    Json::add_str($ligne);
-    Json::add_str('</tr>');
+    echo $ligne;
+    echo'</tr>';
   }
-  Json::end( TRUE );
+  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+// On ne devrait pas en arriver là !
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

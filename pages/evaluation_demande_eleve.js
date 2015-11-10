@@ -119,7 +119,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_gestion",
@@ -148,13 +148,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr('class').html("");
+      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -164,22 +164,22 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseJSON)
+    function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      if(responseJSON['statut']==false)
+      if(responseHTML!='ok')
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
         $('#ids_'+$('#f_demande_id').val()+'_'+$('#f_item_id').val()+'_'+$('#f_matiere_id').val()+'_'+$('#f_prof_id').val()).remove();
         $.fancybox.close();
         mode = false;
@@ -204,29 +204,29 @@ $(document).ready
         var item_id    = tab_ids[2];
         var score      = $(this).prev('i').html();
         score = (typeof(score)!=='undefined') ? parseInt(score,10) : -1 ;
-        obj_q.removeAttr('class');
+        obj_q.removeAttr("class");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+'actualiser_score'+'&f_demande_id='+demande_id+'&f_item_id='+item_id+'&score='+score,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
               obj_q.addClass("actualiser");
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==true)
+              if(responseHTML.substring(0,3)=='<td')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
               {
-                obj_td.replaceWith(responseJSON['value']);
+                obj_td.replaceWith(responseHTML);
               }
               else
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
                 obj_q.addClass("actualiser");
               }
             }

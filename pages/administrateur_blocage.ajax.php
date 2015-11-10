@@ -32,29 +32,21 @@ $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Bloquer l'application
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='bloquer')
-{
-  LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],$_SESSION['BASE'],$motif);
-  Json::end( TRUE , '<label class="erreur">Application fermée : '.html($motif).'</label>' );
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Débloquer l'application
+// Bloquer ou débloquer l'application
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='debloquer')
 {
   LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],$_SESSION['BASE']);
-  Json::end( TRUE , '<label class="valide">Application accessible.</label>' );
+  exit('<label class="valide">Application accessible.</label>');
 }
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Json::end( FALSE , 'Erreur avec les données transmises !' );
-
+elseif($action=='bloquer')
+{
+  LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],$_SESSION['BASE'],$motif);
+  exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
+}
+else
+{
+  echo'Erreur avec les données transmises !';
+}
 ?>

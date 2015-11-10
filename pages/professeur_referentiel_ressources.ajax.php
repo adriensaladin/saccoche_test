@@ -48,7 +48,7 @@ if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id && $matiere_ref )
   // $matiere_ref trasmis maintenant car pas possible lors du AjaxUpload (moment où on en a besoin) ; du coup on le garde au chaud
   $_SESSION['tmp']['matiere_ref'] = $matiere_ref;
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
-  Json::end( TRUE , HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , FALSE /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ , 'n3' /*aff_id_li*/ ) );
+  exit( HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , FALSE /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ , 'n3' /*aff_id_li*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ if( ($action=='Enregistrer_lien') && $item_id )
   {
     ServeurCommunautaire::fabriquer_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , '' , 'page_delete' , '' );
   }
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ if( ($action=='Enregistrer_lien') && $item_id )
 
 if( ($action=='Charger_ressources') && $item_id )
 {
-  Json::end( TRUE , ServeurCommunautaire::afficher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $item_lien , 'html' ) );
+  exit( ServeurCommunautaire::afficher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $item_lien , 'html' ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($ob
       $tab_elements[] = $ressource;
     }
   }
-  Json::end( TRUE , ServeurCommunautaire::fabriquer_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $item_nom , $objet , serialize($tab_elements) ) );
+  exit( ServeurCommunautaire::fabriquer_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $item_nom , $objet , serialize($tab_elements) ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ if( ($action=='Enregistrer_ressources') && $item_id && $item_nom && in_array($ob
 
 if( ($action=='Rechercher_liens_ressources') && $item_id && $findme )
 {
-  Json::end( TRUE , ServeurCommunautaire::rechercher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $findme ) );
+  exit( ServeurCommunautaire::rechercher_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $item_id , $findme ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ if( ($action=='Rechercher_liens_ressources') && $item_id && $findme )
 
 if($action=='Rechercher_documents')
 {
-  Json::end( TRUE , ServeurCommunautaire::rechercher_documents( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] ) );
+  exit( ServeurCommunautaire::rechercher_documents( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,20 +130,15 @@ Ca va qu'une limite de 500Ko est imposée...
 
 if($action=='Uploader_document')
 {
-  // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , 500 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit($result);
   }
   $fichier_nom = Clean::fichier(FileSystem::$file_upload_name);
-  // Transfert du fichier
   $reponse = ServeurCommunautaire::uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , $fichier_nom , file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name) );
-  // Suppression de l'enregistrement temporaire
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-  // Retour
-  $is_ok = (strpos($reponse,'http')===0) ? TRUE : FALSE ;
-  Json::end( $is_ok , $reponse );
+  exit($reponse);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,13 +147,13 @@ if($action=='Uploader_document')
 
 if(empty($_POST))
 {
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

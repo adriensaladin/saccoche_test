@@ -46,7 +46,7 @@ $(document).ready
       var profil = $("input[type=radio]:checked").val();
       if(typeof(profil)=='undefined')
       {
-        $('#ajax_msg').removeAttr('class').html("");
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
         $('#div_bilan').addClass("hide");
         return false
       }
@@ -54,7 +54,7 @@ $(document).ready
       var groupe_val = $("#f_groupe option:selected").val();
       if(!groupe_val)
       {
-        $('#ajax_msg').removeAttr('class').html("");
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
         $('#div_bilan').addClass("hide");
         return false
       }
@@ -70,7 +70,7 @@ $(document).ready
         groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
         groupe_id   = groupe_val;
       }
-      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $('#bilan tbody').html('');
       $.ajax
       (
@@ -78,25 +78,25 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_profil='+profil+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
-            if(responseJSON['statut']==false)
+            if( (responseHTML.substring(0,4)!='<tr>') && (responseHTML!='') )
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               $('#div_bilan').addClass("hide");
             }
             else
             {
-              $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
-              $('#bilan tbody').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
+              $('#bilan tbody').html(responseHTML);
               tableau_maj();
-              $('#div_bilan').removeAttr('class');
+              $('#div_bilan').removeAttr("class");
             }
           }
         }

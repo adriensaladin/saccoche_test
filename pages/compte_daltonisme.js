@@ -38,7 +38,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Penser à enregistrer le choix.");
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Penser à enregistrer le choix.");
       }
     );
 
@@ -72,7 +72,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : 'json',
+      dataType : "html",
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -94,12 +94,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr('class').html("");
+      $('#ajax_msg').removeAttr("class").html("&nbsp;");
       var readytogo = validation.form();
       if(readytogo)
       {
-        $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -107,22 +107,22 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
-      $('#bouton_valider').prop('disabled',false);
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $("#bouton_valider").prop('disabled',false);
+      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseJSON)
+    function retour_form_valide(responseHTML)
     {
       initialiser_compteur();
-      $('#bouton_valider').prop('disabled',false);
-      if(responseJSON['statut']==true)
+      $("#bouton_valider").prop('disabled',false);
+      if(responseHTML=='ok')
       {
-        $('#ajax_msg').removeAttr('class').addClass('valide').html("Choix mémorisé !");
+        $('#ajax_msg').removeAttr("class").addClass("valide").html("Choix mémorisé !");
       }
       else
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
       }
     }
 

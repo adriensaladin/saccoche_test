@@ -96,7 +96,7 @@ else
   $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'Le regroupement et la période ne sont pas reliés !' );
+    exit('La classe et la période ne sont pas reliées !');
   }
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
@@ -105,7 +105,7 @@ else
 }
 if($date_mysql_debut>$date_mysql_fin)
 {
-  Json::end( FALSE , 'La date de début est postérieure à la date de fin !' );
+  exit('La date de début est postérieure à la date de fin !');
 }
 
 $tab_precision_retroactif = array
@@ -207,7 +207,7 @@ else
 $item_nb = count($tab_item_infos);
 if( !$item_nb && !$make_officiel && !$make_brevet ) // Dans le cas d'un bilan officiel, ou d'une récupération pour une fiche brevet, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-  Json::end( FALSE , 'Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !' );
+  exit('Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !');
 }
 $liste_item = implode( ',' , array_keys($tab_item_infos) );
 
@@ -233,7 +233,7 @@ elseif(empty($is_appreciation_groupe))
   $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre , TRUE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
-    Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
+    exit('Aucun élève trouvé correspondant aux identifiants transmis !');
   }
 }
 else
@@ -282,7 +282,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
 }
 if( !count($tab_eval) && !$make_officiel && !$make_brevet ) // Dans le cas d'un bilan officiel, ou d'une récupération pour une fiche brevet, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-  Json::end( FALSE , 'Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !' );
+  exit('Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !');
 }
 $matiere_nb = count( $tab_matiere_item , COUNT_NORMAL ); // 1 si $matiere_id >= 0 précédemment, davantage uniquement si $matiere_id = -1
 

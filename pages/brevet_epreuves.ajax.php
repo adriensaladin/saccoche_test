@@ -34,14 +34,14 @@ $serie = (isset($_POST['f_serie'])) ? Clean::texte($_POST['f_serie']) : '' ;
 
 if(!$serie)
 {
-  Json::end( FALSE , 'Série non transmise !' );
+  exit('Erreur : série non transmise !');
 }
 
 $DB_TAB_epreuves = DB_STRUCTURE_BREVET::DB_lister_brevet_epreuves($serie);
 
 if(empty($DB_TAB_epreuves))
 {
-  Json::end( FALSE , 'Série inconnue !' );
+  exit('Erreur : série inconnue !');
 }
 
 // Test des paramètres des épreuves
@@ -56,7 +56,7 @@ foreach($DB_TAB_epreuves as $DB_ROW)
   $matieres = implode( ',' , array_filter( Clean::map_entier($tab_matieres) , 'positif' ) );
   if( ($recherche===NULL) || ($moyenne===NULL) || ( empty($matieres) && $DB_ROW['brevet_epreuve_obligatoire'] ) )
   {
-    Json::end( FALSE , 'Données manquante pour l\'épreuve "'.html($DB_ROW['brevet_epreuve_nom']).'" !' );
+    exit('Erreur : données manquante pour l\'épreuve "'.html($DB_ROW['brevet_epreuve_nom']).'" !');
   }
   $tab_choix_epreuve[$epreuve] = array( 'recherche'=>$recherche , 'moyenne'=>$moyenne , 'matieres'=>$matieres );
 }
@@ -66,6 +66,6 @@ foreach($tab_choix_epreuve as $epreuve=>$tab_choix)
 {
   DB_STRUCTURE_BREVET::DB_modifier_epreuve_choix( $serie , $epreuve , $tab_choix['recherche'] , $tab_choix['moyenne'] , $tab_choix['matieres'] );
 }
-Json::end( TRUE );
+exit('ok');
 
 ?>

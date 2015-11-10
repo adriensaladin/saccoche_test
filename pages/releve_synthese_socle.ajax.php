@@ -53,7 +53,7 @@ $liste_eleve   = implode(',',$tab_eleve_id);
 
 if( !$palier_id || !$palier_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve_id) || !count($tab_pilier_id) || !in_array($type,array('pourcentage','validation')) || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 
 Form::save_choix('releve_synthese_socle');
@@ -80,7 +80,7 @@ $tab_item_pilier  = array(); // id de l'item => id du pilier
 $DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_pilier($tab_pilier_id[0]) : DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_piliers(implode(',',$tab_pilier_id)) ;
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun item référencé pour cette partie du socle commun !' );
+  exit('Aucun item référencé pour cette partie du socle commun !');
 }
 $pilier_id  = 0;
 $socle_id   = 0;
@@ -351,33 +351,21 @@ $fichier = 'releve_socle_synthese_'.Clean::fichier(substr($palier_nom,0,strpos($
 // On enregistre les sorties HTML et PDF
 FileSystem::ecrire_fichier(    CHEMIN_DOSSIER_EXPORT.$fichier.'.html'  ,$releve_HTML );
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier.'.pdf'  , $releve_PDF  );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage du résultat
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$retour = '';
-
 if($affichage_direct)
 {
-  $retour .= '<hr />'.NL;
-  $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  $retour .= '</ul>'.NL;
-  $retour .= $releve_HTML;
+  echo'<hr />'.NL;
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
+  echo $releve_HTML;
 }
 else
 {
-  $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
-  $retour .= '</ul>'.NL;
+  echo'<ul class="puce">'.NL;
+  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  echo  '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
+  echo'</ul>'.NL;
 }
-
-Json::add_tab( array(
-  'direct' => $affichage_direct ,
-  'bilan'  => $retour ,
-) );
-Json::end( TRUE );
 
 ?>

@@ -188,13 +188,13 @@ if( isset($tab_variables[$objet]) )
     $tab_parametres['officiel_'.$variable_nom] = $variable_valeur;
   }
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

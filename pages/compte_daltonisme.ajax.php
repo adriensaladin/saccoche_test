@@ -42,13 +42,13 @@ if( in_array($daltonisme,array(0,1)) )
   SessionUser::memoriser_couleurs();
   SessionUser::adapter_daltonisme();
   SessionUser::actualiser_style();
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+// On ne devrait pas en arriver là !
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

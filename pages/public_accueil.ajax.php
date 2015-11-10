@@ -120,31 +120,19 @@ if($action=='tester_version')
   $version_last = recuperer_numero_derniere_version();
   if(!preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#', $version_last))
   {
-    Json::add_tab( array(
-      'class' => 'alerte' ,
-      'texte' => $version_last ,
-      'after' => '' ,
-    ) );
+    $tab_retour = array( 'class'=>'alerte' , 'texte'=>$version_last , 'after' => '' );
   }
   elseif($version_last==VERSION_PROG)
   {
-    Json::add_tab( array(
-      'class' => 'valide' ,
-      'texte' => 'Cette version est la dernière disponible.' ,
-      'after' => '' ,
-    ) );
+    $tab_retour = array( 'class'=>'valide' , 'texte'=>'Cette version est la dernière disponible.' , 'after' => '' );
   }
   else
   {
     // Compte approximativement le nombre de mois qui sépare ces 2 versions (sans s'occuper des jours).
     $class = ( (substr($version_last,0,4)-substr(VERSION_PROG,0,4))*12 - substr($version_last,5,2) + substr(VERSION_PROG,5,2) < 12 ) ? '' : ' class="probleme"' ;
-    Json::add_tab( array(
-      'class' => 'alerte' ,
-      'texte' => '<span'.$class.'>Dernière version disponible <em>'.$version_last.'</em>.</span>' ,
-      'after' => ' &rarr; <a target="_blank" href="'.SERVEUR_NEWS.'">Nouveautés.</a>' ,
-    ) );
+    $tab_retour = array( 'class'=>'alerte' , 'texte'=>'<span'.$class.'>Dernière version disponible <em>'.$version_last.'</em>.</span>' , 'after' => ' &rarr; <a target="_blank" href="'.SERVEUR_NEWS.'">Nouveautés.</a>' );
   }
-  Json::end( TRUE );
+  exit_json( TRUE , $tab_retour );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,14 +152,14 @@ if( ($action=='initialiser') && ( ($profil=='webmestre') || ($profil=='developpe
       DB_WEBMESTRE_MAJ_BASE::DB_maj_base($version_base_webmestre);
     }
   }
-  Json::end( TRUE , afficher_formulaire_identification($profil,'normal') );
+  exit_json( TRUE , afficher_formulaire_identification($profil,'normal') );
 }
 
 // Charger le formulaire pour un partenaire
 
 if( ($action=='initialiser') && ($profil=='partenaire') )
 {
-  Json::end( TRUE , afficher_formulaire_identification($profil,'normal') );
+  exit_json( TRUE , afficher_formulaire_identification($profil,'normal') );
 }
 
 // Charger le formulaire pour un établissement donné (installation mono-structure)
@@ -188,16 +176,16 @@ if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $p
   }
   if(isset($webmestre_denomination,$connexion_mode,$connexion_nom)==FALSE)
   {
-    Json::end( FALSE , 'Base de l\'établissement incomplète !' );
+    exit_json( FALSE , 'Base de l\'établissement incomplète !' );
   }
-  Json::end( TRUE , afficher_nom_etablissement($BASE=0,$webmestre_denomination) . afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
+  exit_json( TRUE , afficher_nom_etablissement($BASE=0,$webmestre_denomination) . afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
 }
 
 // Charger le formulaire de choix des établissements (installation multi-structures)
 
 if( ( ($action=='initialiser') && ($BASE==0) && (HEBERGEUR_INSTALLATION=='multi-structures') ) || ($action=='choisir') && $profil )
 {
-  Json::end( TRUE , afficher_formulaire_etablissement($BASE,$profil) );
+  exit_json( TRUE , afficher_formulaire_etablissement($BASE,$profil) );
 }
 
 // Charger le formulaire pour un établissement donné (installation multi-structures)
@@ -210,7 +198,7 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
   {
     // Sans doute un établissement supprimé, mais le cookie est encore là
     Cookie::effacer(COOKIE_STRUCTURE);
-    Json::end( FALSE , 'Établissement non trouvé dans la base d\'administration !' );
+    exit_json( FALSE , 'Établissement non trouvé dans la base d\'administration !' );
   }
   // Mettre à jour la base si nécessaire
   charger_parametres_mysql_supplementaires($BASE);
@@ -223,9 +211,9 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
   }
   if(isset($connexion_mode,$connexion_nom)==FALSE)
   {
-    Json::end( FALSE , 'Base de l\'établissement incomplète !' );
+    exit_json( FALSE , 'Base de l\'établissement incomplète !' );
   }
-  Json::end( TRUE , afficher_nom_etablissement($BASE,$structure_denomination) . afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
+  exit_json( TRUE , afficher_nom_etablissement($BASE,$structure_denomination) . afficher_formulaire_identification($profil,$connexion_mode,$connexion_nom) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -249,33 +237,32 @@ function adresse_redirection_apres_authentification()
 
 if($action=='identifier')
 {
+  // initialisation
+  $auth_resultat = 'Erreur avec les données transmises !';
   // Protection contre les attaques par force brute des robots (piratage compte ou envoi intempestif de courriels)
   if(!isset($_SESSION['FORCEBRUTE'][$PAGE]))
   {
-    Json::end( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
+    exit_json( FALSE , 'Session perdue ou absence de cookie : merci d\'actualiser la page.' );
   }
   else if( $_SERVER['REQUEST_TIME'] - $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] < $_SESSION['FORCEBRUTE'][$PAGE]['DELAI'] )
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , 'Sécurité : patienter '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s avant une nouvelle tentative.' );
+    exit_json( FALSE , 'Sécurité : patienter '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s avant une nouvelle tentative.' );
   }
-  // initialisation
-  $auth_SUCCESS = FALSE;
-  $auth_DATA = 'Erreur avec les données transmises !';
   // 1/4 Pour un utilisateur d'établissement, y compris un administrateur
   if( ($profil=='structure') && ($login!='') && ($password!='') )
   {
-    list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_utilisateur( $BASE , $login , $password , 'normal' /*mode_connection*/ );
-    if($auth_SUCCESS===TRUE)
+    list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_utilisateur( $BASE , $login , $password , 'normal' /*mode_connection*/ );
+    if($auth_resultat=='ok')
     {
-      SessionUser::initialiser_utilisateur( $BASE , $auth_DATA );
+      SessionUser::initialiser_utilisateur($BASE,$auth_DB_ROW);
     }
   }
   // 2/4 Pour le webmestre d'un serveur
   else if( ($profil=='webmestre') && ($login=='webmestre') && ($password!='') )
   {
-    list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_webmestre($password);
-    if($auth_SUCCESS===TRUE)
+    $auth_resultat = SessionUser::tester_authentification_webmestre($password);
+    if($auth_resultat=='ok')
     {
       SessionUser::initialiser_webmestre();
     }
@@ -283,8 +270,8 @@ if($action=='identifier')
   // 3/4 Pour un développeur
   else if( ($profil=='developpeur') && ($login=='developpeur') && ($password!='') )
   {
-    list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_developpeur($password);
-    if($auth_SUCCESS===TRUE)
+    $auth_resultat = SessionUser::tester_authentification_developpeur($password);
+    if($auth_resultat=='ok')
     {
       SessionUser::initialiser_developpeur();
     }
@@ -292,22 +279,22 @@ if($action=='identifier')
   // 4/4 Pour un partenaire conventionné (serveur Sésamath uniquement)
   else if( ($profil=='partenaire') && ($partenaire!=0) && ($password!='') && IS_HEBERGEMENT_SESAMATH && (HEBERGEUR_INSTALLATION=='multi-structures') )
   {
-    list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_partenaire($partenaire,$password);
-    if($auth_SUCCESS===TRUE)
+    list($auth_resultat,$auth_DB_ROW) = SessionUser::tester_authentification_partenaire($partenaire,$password);
+    if($auth_resultat=='ok')
     {
-      SessionUser::initialiser_partenaire( $auth_DATA );
+      SessionUser::initialiser_partenaire($auth_DB_ROW);
     }
   }
   // Conclusion & Retour
-  if($auth_SUCCESS===TRUE)
+  if($auth_resultat=='ok')
   {
-    Json::end( TRUE , adresse_redirection_apres_authentification() );
+    exit_json( TRUE , adresse_redirection_apres_authentification() );
   }
   else
   {
     $_SESSION['FORCEBRUTE'][$PAGE]['DELAI']++;
     $_SESSION['FORCEBRUTE'][$PAGE]['TIME'] = $_SERVER['REQUEST_TIME'];
-    Json::end( FALSE , $auth_DATA );
+    exit_json( FALSE , $auth_resultat );
   }
 }
 
@@ -315,5 +302,5 @@ if($action=='identifier')
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit_json( FALSE , 'Erreur avec les données transmises !' );
 ?>

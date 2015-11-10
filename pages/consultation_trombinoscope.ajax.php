@@ -40,13 +40,13 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' 
 
 if( (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[$groupe_type])) )
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  exit('Erreur avec les données transmises !');
 }
 // On récupère les élèves
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ ) ;
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement.' );
+  exit('Aucun élève trouvé dans ce regroupement.');
 }
 $tab_vignettes = array();
 $img_height = PHOTO_DIMENSION_MAXI;
@@ -91,6 +91,6 @@ foreach($tab_vignettes as $user_id => $tab)
 // Enregistrement du PDF
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fnom_pdf , $trombinoscope_PDF );
 // Affichage du HTML
-Json::end( TRUE , $trombinoscope_HTML );
+exit($trombinoscope_HTML);
 
 ?>

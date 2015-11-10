@@ -69,7 +69,6 @@ if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 if($SECTION=='langue')
 {
-  // Car on peut y arriver via "page=administrateur_eleve_langue" ou "page=validation_socle&section=langue"
   $PAGE = 'administrateur_eleve';
 }
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';

@@ -63,7 +63,7 @@ if($action=='modifier_debug')
   {
     FileSystem::supprimer_fichier( CHEMIN_FICHIER_DEBUG_CONFIG , TRUE /*verif_exist*/ );
   }
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,12 +76,12 @@ if( ($action=='modifier_phpCAS') && ($chemin_logs) )
   // Vérifier chemin valide
   if(!is_dir($chemin_logs))
   {
-    Json::end( FALSE , 'Chemin invalide (le dossier n\'existe pas) !' );
+    exit('Chemin invalide (le dossier n\'existe pas) !');
   }
   // Tester droits en écriture
   if( !FileSystem::ecrire_fichier_si_possible( $chemin_logs.'debugcas_test_ecriture.txt' , 'ok' ) )
   {
-    Json::end( FALSE , 'Droits en écriture dans le dossier insuffisants !' );
+    exit('Droits en écriture dans le dossier insuffisants !');
   }
   FileSystem::supprimer_fichier($chemin_logs.'debugcas_test_ecriture.txt');
   // Nettoyer la liste des établissements transmise
@@ -93,15 +93,11 @@ if( ($action=='modifier_phpCAS') && ($chemin_logs) )
     $etabl_id_listing = count($tab_etabl_id) ? ','.implode(',',$tab_etabl_id).',' : '' ;
   }
   // ok
-  $result = FileSystem::fabriquer_fichier_hebergeur_info( array(
+  FileSystem::fabriquer_fichier_hebergeur_info( array(
     'PHPCAS_LOGS_CHEMIN'        => $chemin_logs,
     'PHPCAS_LOGS_ETABL_LISTING' => $etabl_id_listing,
   ) );
-  if($result!==TRUE)
-  {
-    Json::end( FALSE , $result );
-  }
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,7 +107,7 @@ if( ($action=='modifier_phpCAS') && ($chemin_logs) )
 if( ($action=='supprimer') && $fichier_logs )
 {
   FileSystem::supprimer_fichier( PHPCAS_LOGS_CHEMIN.$fichier_logs.'.txt' , TRUE /*verif_exist*/ );
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,19 +116,14 @@ if( ($action=='supprimer') && $fichier_logs )
 
 if( ($action=='voir') && $fichier_logs )
 {
-  // Compression du fichier
-  $result = FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(PHPCAS_LOGS_CHEMIN.$fichier_logs.'.txt') );
-  if($result!==TRUE)
-  {
-    Json::end( FALSE , $result );
-  }
-  Json::end( TRUE , '<ul class="puce"><li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>' );
+  FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(PHPCAS_LOGS_CHEMIN.$fichier_logs.'.txt') );
+  exit('<ul class="puce"><li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

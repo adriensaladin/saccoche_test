@@ -151,11 +151,7 @@ if(!defined('PHPCAS_LOGS_ETABL_LISTING'))
 // Application patch si besoin
 if(count($tab_constantes_modifiees))
 {
-  $result = FileSystem::fabriquer_fichier_hebergeur_info($tab_constantes_modifiees);
-  if($result!==TRUE)
-  {
-    exit_error( 'Constante manquante' /*titre*/ , $result /*contenu*/ );
-  }
+  FileSystem::fabriquer_fichier_hebergeur_info($tab_constantes_modifiees);
 }
 
 ?>

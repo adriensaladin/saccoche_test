@@ -48,21 +48,21 @@ $(document).ready
         var titre = $("#f_titre").val();
         if( !titre )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Titre manquant !");
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Titre manquant !");
           $("#f_titre").focus();
           return false;
         }
         var contenu = $("#f_contenu").val();
         if( !contenu )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Contenu manquant !");
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Contenu manquant !");
           $("#f_contenu").focus();
           return false;
         }
         // grouper le select multiple
         if( $("#f_base input:checked").length==0 )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez au moins un établissement !");
+          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un établissement !");
           return false;
         }
         else
@@ -71,33 +71,33 @@ $(document).ready
           var f_listing_id = new Array(); $("#f_base input:checked").each(function(){f_listing_id.push($(this).val());});
         }
         // on envoie
-        $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $("#bouton_valider").prop('disabled',true);
+        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=envoyer'+'&f_titre='+encodeURIComponent(titre)+'&f_contenu='+encodeURIComponent(contenu)+'&f_base='+f_listing_id,
-            dataType : 'json',
+            dataType : "html",
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#bouton_valider').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $("#bouton_valider").prop('disabled',false);
+              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
               return false;
             },
-            success : function(responseJSON)
+            success : function(responseHTML)
             {
               initialiser_compteur();
-              if(responseJSON['statut']==false)
+              if(responseHTML.substring(0,2)!='ok')
               {
-                $('#bouton_valider').prop('disabled',false);
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $("#bouton_valider").prop('disabled',false);
+                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
               else
               {
-                var max = responseJSON['value'];
-                $('#ajax_msg1').removeAttr('class').addClass('loader').html('Lettre d\'information en cours d\'envoi : étape 1 sur ' + max + '...');
+                var max = responseHTML.substring(3,responseHTML.length);
+                $('#ajax_msg1').removeAttr("class").addClass("loader").html('Lettre d\'information en cours d\'envoi : étape 1 sur ' + max + '...');
                 $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
                 $('#ajax_num').html(1);
                 $('#ajax_max').html(max);
@@ -126,34 +126,34 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=envoyer'+'&num='+num+'&max='+max,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg1').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg1').removeAttr("class").addClass("alerte").html('Échec lors de la connexion au serveur !');
             $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
-            if(responseJSON['statut']==false)
-            {
-              $('#ajax_msg1').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-              $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
-            }
-            else
+            if(responseHTML=='ok')
             {
               num++;
               if(num > max)  // Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
               {
-                $('#ajax_msg1').removeAttr('class').addClass('valide').html('Envoi de la lettre d\'informations terminée.');
+                $('#ajax_msg1').removeAttr("class").addClass("valide").html('Envoi de la lettre d\'informations terminée.');
                 $('#ajax_msg2').html('<a id="a_retour" href="#">Retour au formulaire.</a>');
               }
               else
               {
                 $('#ajax_num').html(num);
-                $('#ajax_msg1').removeAttr('class').addClass('loader').html('Lettre d\'information en cours d\'envoi : étape ' + num + ' sur ' + max + '...');
+                $('#ajax_msg1').removeAttr("class").addClass("loader").html('Lettre d\'information en cours d\'envoi : étape ' + num + ' sur ' + max + '...');
                 $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
                 envoyer();
               }
+            }
+            else
+            {
+              $('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
             }
           }
         }
@@ -168,7 +168,7 @@ $(document).ready
       {
         num = $('#ajax_num').html();
         max = $('#ajax_max').html();
-        $('#ajax_msg1').removeAttr('class').addClass('loader').html('Lettre d\'information en cours d\'envoi : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg1').removeAttr("class").addClass("loader").html('Lettre d\'information en cours d\'envoi : étape ' + num + ' sur ' + max + '...');
         $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
         envoyer();
       }
@@ -180,8 +180,8 @@ $(document).ready
       '#a_retour',
       function()
       {
-        $('#ajax_msg').removeAttr('class').html("");
-        $('#bouton_valider').prop('disabled',false);
+        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $("#bouton_valider").prop('disabled',false);
         $('#ajax_info').hide('fast');
         $('#newsletter').show('fast');
       }
@@ -226,26 +226,26 @@ $(document).ready
     var supprimer_structures_selectionnees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      $('#ajax_supprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $('#ajax_supprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_base='+listing_id,
-          dataType : 'json',
+          dataType : "html",
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
             $("button").prop('disabled',false);
           },
-          success : function(responseJSON)
+          success : function(responseHTML)
           {
             initialiser_compteur();
             $("button").prop('disabled',false);
-            if(responseJSON['statut']==false)
+            if(responseHTML!='<ok>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
             {
-              $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);
             }
             else
             {
@@ -256,7 +256,7 @@ $(document).ready
                   $(this).parent().remove();
                 }
               );
-              $('#ajax_supprimer').removeAttr('class').html('&nbsp;');
+              $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
             }
           }
         }
@@ -272,10 +272,10 @@ $(document).ready
         $("#f_base input:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_supprimer').removeAttr('class').addClass('erreur').html("Aucune structure sélectionnée !");
+          $('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure sélectionnée !");
           return false;
         }
-        $('#ajax_supprimer').removeAttr('class').html('&nbsp;');
+        $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
         var id = $(this).attr('id');
         if(id=='bouton_supprimer')
         {

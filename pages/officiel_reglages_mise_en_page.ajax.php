@@ -60,7 +60,7 @@ if($action=='coordonnees')
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] = implode(',',$tab_coordonnees) ;
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ if( ($action=='responsables') && $infos_responsables && $nombre_exemplaires )
   // On modifie aussi la session
   $_SESSION['OFFICIEL']['INFOS_RESPONSABLES'] = $infos_responsables ;
   $_SESSION['OFFICIEL']['NOMBRE_EXEMPLAIRES'] = $nombre_exemplaires ;
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,7 @@ if( ($action=='positionnement') && $infos_responsables && $horizontal_gauche && 
     $_SESSION['ENVELOPPE']['VERTICAL_MILIEU']   = $vertical_milieu ;
     $_SESSION['ENVELOPPE']['VERTICAL_BAS']      = $vertical_bas ;
   }
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ if($action=='archive')
   // On modifie aussi la session
   $_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE']      = $archive_ajout_message_copie ;
   $_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'] = $archive_retrait_tampon_signature ;
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ if( ($action=='signature') && $tampon_signature )
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['OFFICIEL']['TAMPON_SIGNATURE'] = $tampon_signature ;
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,19 +153,18 @@ if( ($action=='signature') && $tampon_signature )
 
 if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 {
-  // Récupération du fichier
   $fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('gif','jpg','jpeg','png') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    Json::end( FALSE , $result );
+    exit('Erreur : '.$result);
   }
   // vérifier la conformité du fichier image, récupérer les infos le concernant
   $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   if($tab_infos==FALSE)
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    Json::end( FALSE , 'Le fichier image ne semble pas valide !' );
+    exit('Erreur : le fichier image ne semble pas valide !');
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
   $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
@@ -173,7 +172,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
   if(!isset($tab_extension_types[$image_type]))
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-   Json::end( FALSE , 'Le fichier n\'est pas un fichier image (type '.$image_type.') !' );
+    exit('Erreur : le fichier transmis n\'est pas un fichier image (type '.$image_type.') !');
   }
   $image_format = $tab_extension_types[$image_type];
   // stocker l'image dans la base
@@ -181,7 +180,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
   // Générer la balise html et afficher le retour
   list($width,$height) = Image::dimensions_affichage( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
   $user_texte = ($user_id) ? 'Signature '.$user_texte : $user_texte ;
-  Json::end( TRUE , '<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>' );
+  exit('<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -191,7 +190,7 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 if( ($action=='delete_signature') && ($user_id>=0) )
 {
   DB_STRUCTURE_IMAGE::DB_supprimer_image( $user_id , 'signature' );
-  Json::end( TRUE );
+  exit('ok');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,13 +199,13 @@ if( ($action=='delete_signature') && ($user_id>=0) )
 
 if(empty($_POST))
 {
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
+  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+exit('Erreur avec les données transmises !');
 
 ?>

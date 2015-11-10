@@ -40,7 +40,7 @@ if( ($action=='courriel') && ($courriel!==NULL) )
   // Vérifier que l'utilisateur a les droits de la modifier / retirer
   if( ($_SESSION['USER_EMAIL_ORIGINE']=='admin') && ($_SESSION['USER_PROFIL_TYPE']!=='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']) )
   {
-    exit_json( FALSE , 'Erreur : droit insuffisant, contactez un administrateur !' );
+    Json::end( FALSE , 'Erreur : droit insuffisant, contactez un administrateur !' );
   }
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if($courriel)
@@ -50,7 +50,7 @@ if( ($action=='courriel') && ($courriel!==NULL) )
       list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
       if(!$is_domaine_valide)
       {
-        exit_json( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
+        Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
       }
     }
     $email_origine = 'user';
@@ -102,7 +102,7 @@ if( ($action=='courriel') && ($courriel!==NULL) )
   {
     $info_envoi_notifications = '<label class="valide">Votre adresse étant renseignée, vous pouvez opter pour des envois par courriel.</label>' ;
   }
-  exit_json( TRUE ,  array( 'info_adresse'=>$info_origine.'<br />'.$info_edition , 'info_abonnement_mail'=>$info_envoi_notifications ) );
+  Json::end( TRUE ,  array( 'info_adresse'=>$info_origine.'<br />'.$info_edition , 'info_abonnement_mail'=>$info_envoi_notifications ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,11 +122,11 @@ if($action=='enregistrer_abonnements')
     $DB_ROW['jointure_mode'] = isset($DB_JOIN[$DB_ROW['abonnement_ref']]) ? $DB_JOIN[$DB_ROW['abonnement_ref']]['jointure_mode'] : 'non' ;
     if( !isset($_POST[$DB_ROW['abonnement_ref']]) || !in_array($_POST[$DB_ROW['abonnement_ref']],$tab_choix) )
     {
-      exit_json( FALSE , 'Donnée transmise manquante ou incorrecte !' );
+      Json::end( FALSE , 'Donnée transmise manquante ou incorrecte !' );
     }
     if( ( $DB_ROW['abonnement_obligatoire'] && ($_POST[$DB_ROW['abonnement_ref']]=='non') ) || ( $DB_ROW['abonnement_courriel_only'] && ($_POST[$DB_ROW['abonnement_ref']]=='accueil') ) )
     {
-      exit_json( FALSE , 'Donnée transmise interdite !' );
+      Json::end( FALSE , 'Donnée transmise interdite !' );
     }
     if( $DB_ROW['jointure_mode'] != $_POST[$DB_ROW['abonnement_ref']] )
     {
@@ -166,13 +166,13 @@ if($action=='enregistrer_abonnements')
     }
   }
   // Afficher le retour
-  exit_json( TRUE );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit_json( FALSE , 'Erreur avec les données transmises !' );
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

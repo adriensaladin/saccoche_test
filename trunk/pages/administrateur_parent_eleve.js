@@ -53,22 +53,22 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
           data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1',
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==true)
             {
-              $('#ajax_msg').removeAttr("class").addClass("valide").html("");
-              $('#select_eleve').html(responseHTML).show();
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("");
+              $('#select_eleve').html(responseJSON['value']).show();
             }
             else
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -83,12 +83,12 @@ $(document).ready
         // type = $("#f_groupe option:selected").parent().attr('label');
         groupe_type = groupe_val.substring(0,1);
         groupe_id   = groupe_val.substring(1);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type);
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
       }
     }
     $("#f_groupe").change
@@ -109,36 +109,36 @@ $(document).ready
       {
         $("#fieldset_parents").html('');
         $("#p_valider").hide();
-        $('#ajax_msg2').removeAttr("class").html("&nbsp;").parent().hide();
+        $('#ajax_msg2').removeAttr('class').html("").parent().hide();
         eleve_id = $("#select_eleve").val();
         if(!eleve_id)
         {
-          $('#ajax_msg').removeAttr("class").html("&nbsp;");
+          $('#ajax_msg').removeAttr('class').html("");
           return false;
         }
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=afficher_parents'+'&f_eleve_id='+eleve_id,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<table')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg').removeAttr("class").html("");
-                $('#fieldset_parents').html(responseHTML).show();
+                $('#ajax_msg').removeAttr('class').html("");
+                $('#fieldset_parents').html(responseJSON['value']).show();
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -165,7 +165,7 @@ $(document).ready
         table_next.find('th.vu').html(titre_prev);
         para_clic.before(table_next);
         para_clic.after(table_prev);
-        $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
+        $('#ajax_msg2').removeAttr('class').addClass('alerte').html("Modification(s) non enregistrée(s) !").parent().show();
       }
     );
 
@@ -180,7 +180,7 @@ $(document).ready
       function()
       {
         $(this).parent().html('<q class="ajouter" title="Ajouter un responsable."></q>').prev('td').html('---').parent().parent().parent().removeAttr('id');
-        $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
+        $('#ajax_msg2').removeAttr('class').addClass('alerte').html("Modification(s) non enregistrée(s) !").parent().show();
       }
     );
 
@@ -219,17 +219,17 @@ $(document).ready
         var parent_login = tab_parent[1].substring(0,tab_parent[1].length-1);
         if(!parent_id)
         {
-          $('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Aucun responsable choisi !");
+          $('#ajax_msg_select').removeAttr('class').addClass('alerte').html("Aucun responsable choisi !");
           return false;
         }
         if($('#parent_'+parent_id).length)
         {
-          $('#ajax_msg_select').removeAttr("class").addClass("alerte").html("Ce responsable est déjà associé à l'élève !");
+          $('#ajax_msg_select').removeAttr('class').addClass('alerte').html("Ce responsable est déjà associé à l'élève !");
           return false;
         }
         $(this).parent().html('<em>'+parent_nom+'</em><span class="ml">['+parent_login+']</span><hr /><div class="astuce">Penser à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
         afficher_masquer_images_action('show');
-        $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Modification(s) non enregistrée(s) !").parent().show();
+        $('#ajax_msg2').removeAttr('class').addClass('alerte').html("Modification(s) non enregistrée(s) !").parent().show();
       }
     );
 
@@ -269,34 +269,34 @@ $(document).ready
         // Zy va : envoi ajax
         $('button').prop('disabled',true);
         afficher_masquer_images_action('hide');
-        $('#ajax_msg2').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg2').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=enregistrer_parents'+'&f_eleve_id='+eleve_id+'&f_parents_id='+tab_parents_id,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
               afficher_masquer_images_action('show');
-              $('#ajax_msg2').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg2').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<table')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==true)
               {
                 $('button').prop('disabled',false);
-                $('#ajax_msg2').removeAttr("class").html("").parent().hide();
-                $('#fieldset_parents').html(responseHTML).show();
+                $('#ajax_msg2').removeAttr('class').html("").parent().hide();
+                $('#fieldset_parents').html(responseJSON['value']).show();
               }
               else
               {
                 $('button').prop('disabled',false);
                 afficher_masquer_images_action('show');
-                $('#ajax_msg2').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg2').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

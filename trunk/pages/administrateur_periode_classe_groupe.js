@@ -46,7 +46,7 @@ $(document).ready
       'select, input',
       function()
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -74,19 +74,19 @@ $(document).ready
         memo_action = $(this).attr('id');
         if( $("#select_periodes input:checked").length==0 || $("#select_classes_groupes input:checked").length==0 )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez dans les deux listes !");
           return false;
         }
         if(memo_action=='ajouter')
         {
           if( !test_dateITA( $("#f_date_debut").val() ) )
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Date de début au format JJ/MM/AAAA incorrecte !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Date de début au format JJ/MM/AAAA incorrecte !");
             return false;
           }
           if( !test_dateITA( $("#f_date_fin").val() ) )
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Date de fin au format JJ/MM/AAAA incorrecte !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Date de fin au format JJ/MM/AAAA incorrecte !");
             return false;
           }
         }
@@ -134,32 +134,32 @@ $(document).ready
     function envoyer_action_confirmee()
     {
       $('button').prop('disabled',true);
-      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE+'&action='+memo_action,
           data : 'csrf='+CSRF+'&'+$("#form_select").serialize(),
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('button').prop('disabled',false);
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
             $('button').prop('disabled',false);
-            if(responseHTML.substring(0,6)!='<hr />')
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-              $('#bilan').html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+              $('#bilan').html(responseJSON['value']);
             }
           }
         }
@@ -168,30 +168,30 @@ $(document).ready
 
     // Initialisation : charger au chargement l'affichage du bilan
 
-    $('#ajax_msg').addClass("loader").html("En cours&hellip;");
+    $('#ajax_msg').addClass('loader').html("En cours&hellip;");
     $.ajax
     (
       {
         type : 'POST',
         url : 'ajax.php?page='+PAGE+'&action=initialiser',
         data : 'csrf='+CSRF,
-        dataType : "html",
+        dataType : 'json',
         error : function(jqXHR, textStatus, errorThrown)
         {
-          $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           return false;
         },
-        success : function(responseHTML)
+        success : function(responseJSON)
         {
           initialiser_compteur();
-          if(responseHTML.substring(0,6)!='<hr />')
+          if(responseJSON['statut']==false)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
           }
           else
           {
-            $('#ajax_msg').removeAttr("class").html("&nbsp;");
-            $('#bilan').html(responseHTML);
+            $('#ajax_msg').removeAttr('class').html("");
+            $('#bilan').html(responseJSON['value']);
           }
         }
       }

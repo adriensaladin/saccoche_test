@@ -38,14 +38,14 @@ if($action=='bloquer')
 {
   ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],'0',$motif);
-  exit('<label class="erreur">Application fermée : '.html($motif).'</label>');
+  Json::end( TRUE , '<label class="erreur">Application fermée : '.html($motif).'</label>' );
 }
 
 if($action=='debloquer')
 {
   ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
-  exit('<label class="valide">Application accessible.</label>');
+  Json::end( TRUE , '<label class="valide">Application accessible.</label>' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,7 +113,7 @@ if($action=='verif_dir_etabl')
   // Enregistrement du rapport
   $fichier_nom = 'rapport_verif_dir_etabl_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody_pb.$tbody_ok );
-  exit(']¤['.URL_DIR_EXPORT.$fichier_nom);
+  Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,19 +131,19 @@ if($action=='maj_etape1')
 {
   if(IS_HEBERGEMENT_SESAMATH)
   {
-    exit(']¤['.'pb'.']¤['.'La mise à jour de SACoche sur le serveur Sésamath doit s\'effectuer en déployant le SVN !');
+    Json::end( FALSE , 'La mise à jour de SACoche sur le serveur Sésamath doit s\'effectuer en déployant le SVN !' );
   }
   if(is_file(CHEMIN_FICHIER_WS_LCS))
   {
-    exit(']¤['.'pb'.']¤['.'La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS !');
+    Json::end( FALSE , 'La mise à jour du module LCS-SACoche doit s\'effectuer via le LCS !' );
   }
   $contenu_zip = cURL::get_contents( SERVEUR_TELECHARGEMENT ,FALSE /*tab_post*/ , 90 /*timeout*/ );
   if(substr($contenu_zip,0,6)=='Erreur')
   {
-    exit(']¤['.'pb'.']¤['.$contenu_zip);
+    Json::end( FALSE , $contenu_zip );
   }
   FileSystem::ecrire_fichier($fichier_import,$contenu_zip);
-  exit(']¤['.'ok'.']¤['."Décompression de l'archive&hellip;");
+  Json::end( TRUE , 'Décompression de l\'archive&hellip;' );
 }
 
 //
@@ -159,9 +159,9 @@ if($action=='maj_etape2')
   $code_erreur = FileSystem::unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
   if($code_erreur)
   {
-    exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !');
+    Json::end( FALSE , 'Fichiers impossibles à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
-  exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
+  Json::end( TRUE , 'Analyse des fichiers et recensement des dossiers&hellip;' );
 }
 
 //
@@ -172,7 +172,7 @@ if($action=='maj_etape3')
   $_SESSION['tmp'] = array();
   FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , FALSE /*with_first_dir*/ );
   FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE /*with_first_dir*/ );
-  exit(']¤['.'ok'.']¤['."Analyse et répercussion des modifications&hellip;");
+  Json::end( TRUE , 'Analyse et répercussion des modifications&hellip;' );
 }
 
 //
@@ -201,7 +201,7 @@ if($action=='maj_etape4')
       {
         ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
         LockAcces::debloquer_application('automate','0');
-        exit(']¤['.'pb'.']¤['."Dossier ".$dossier." non créé ou inaccessible en écriture !");
+        Json::end( FALSE , 'Dossier "'.$dossier.'" non créé ou inaccessible en écriture !' );
       }
     }
     elseif(!isset($tab['apres'])) // (forcément)
@@ -227,7 +227,7 @@ if($action=='maj_etape4')
         {
           ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
           LockAcces::debloquer_application('automate','0');
-          exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
+          Json::end( FALSE , 'Erreur lors de l\'écriture du fichier "'.$fichier.'" !' );
         }
         $tbody .= '<tr><td class="b">Fichier modifié</td><td>'.$fichier.'</td></tr>';
       }
@@ -239,7 +239,7 @@ if($action=='maj_etape4')
       {
         ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
         LockAcces::debloquer_application('automate','0');
-        exit(']¤['.'pb'.']¤['."Erreur lors de l'écriture du fichier ".$fichier." !");
+        Json::end( FALSE , 'Erreur lors de l\'écriture du fichier "'.$fichier.'" !' );
       }
       $tbody .= '<tr><td class="v">Fichier ajouté</td><td>'.$fichier.'</td></tr>';
     }
@@ -256,7 +256,7 @@ if($action=='maj_etape4')
   // Enregistrement du rapport
   $_SESSION['tmp']['rapport_filename'] = 'rapport_maj_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $_SESSION['tmp']['rapport_filename'] , $thead , $tbody );
-  exit(']¤['.'ok'.']¤['.'Rapport des modifications apportées et nettoyage&hellip;');
+  Json::end( TRUE , 'Rapport des modifications apportées et nettoyage&hellip;' );
 }
 
 //
@@ -267,7 +267,7 @@ if($action=='maj_etape5')
   FileSystem::supprimer_dossier($dossier_dezip);
   $fichier_chemin = URL_DIR_EXPORT.$_SESSION['tmp']['rapport_filename'];
   unset($_SESSION['tmp']);
-  exit(']¤['.'ok'.']¤['.VERSION_PROG.'_#_'.$fichier_chemin);
+  Json::end( TRUE , array( 'version' => VERSION_PROG , 'fichier' => $fichier_chemin ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,10 +289,10 @@ if($action=='verif_file_appli_etape1')
   $contenu_zip = cURL::get_contents( SERVEUR_TELECHARGEMENT , $tab_post , 60 /*timeout*/ );
   if(substr($contenu_zip,0,6)=='Erreur')
   {
-    exit(']¤['.'pb'.']¤['.$contenu_zip);
+    Json::end( FALSE , $contenu_zip );
   }
   FileSystem::ecrire_fichier($fichier_import,$contenu_zip);
-  exit(']¤['.'ok'.']¤['."Décompression de l'archive&hellip;");
+  Json::end( TRUE , 'Décompression de l\'archive&hellip;' );
 }
 
 //
@@ -308,9 +308,9 @@ if($action=='verif_file_appli_etape2')
   $code_erreur = FileSystem::unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
   if($code_erreur)
   {
-    exit(']¤['.'pb'.']¤['.'Fichiers impossibles à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !');
+    Json::end( FALSE , 'Fichiers impossibles à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
-  exit(']¤['.'ok'.']¤['."Analyse des fichiers et recensement des dossiers&hellip;");
+  Json::end( TRUE , 'Analyse des fichiers et recensement des dossiers&hellip;' );
 }
 
 //
@@ -321,7 +321,7 @@ if($action=='verif_file_appli_etape3')
   $_SESSION['tmp'] = array();
   FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , FALSE /*with_first_dir*/ );
   FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE /*with_first_dir*/ , FALSE );
-  exit(']¤['.'ok'.']¤['."Comparaison des données&hellip;");
+  Json::end( TRUE , 'Comparaison des données&hellip;' );
 }
 
 //
@@ -382,7 +382,7 @@ if($action=='verif_file_appli_etape4')
   // Enregistrement du rapport
   $_SESSION['tmp']['rapport_filename'] = 'rapport_verif_file_appli_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $_SESSION['tmp']['rapport_filename'] , $thead , $tbody_pb.$tbody_ok );
-  exit(']¤['.'ok'.']¤['.'Rapport des différences trouvées et nettoyage&hellip;');
+  Json::end( TRUE , 'Rapport des différences trouvées et nettoyage&hellip;' );
 }
 
 //
@@ -393,7 +393,7 @@ if($action=='verif_file_appli_etape5')
   FileSystem::supprimer_dossier($dossier_dezip);
   $fichier_chemin = URL_DIR_EXPORT.$_SESSION['tmp']['rapport_filename'];
   unset($_SESSION['tmp']);
-  exit(']¤['.'ok'.']¤['.$fichier_chemin);
+  Json::end( TRUE , $fichier_chemin );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -412,7 +412,7 @@ if( ($action=='maj_bases_etabl') && $step )
       'base_id' => array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() ),
       'rapport' => array(),
     );
-    exit('continuer');
+    Json::end( TRUE , 'continuer' );
   }
   // n. Étape suivante
   elseif(!empty($_SESSION['tmp']['base_id']))
@@ -428,7 +428,7 @@ if( ($action=='maj_bases_etabl') && $step )
     if($_SESSION['tmp']['rapport'][$base_id] == VERSION_BASE_STRUCTURE)
     {
       array_shift($_SESSION['tmp']['base_id']);
-      exit('continuer');
+      Json::end( TRUE , 'continuer' );
     }
     // on lance la maj "classique"
     if($version_base != VERSION_BASE_STRUCTURE)
@@ -450,12 +450,12 @@ if( ($action=='maj_bases_etabl') && $step )
       // Débloquer l'application
       LockAcces::debloquer_application('automate',$base_id);
       array_shift($_SESSION['tmp']['base_id']);
-      exit('continuer');
+      Json::end( TRUE , 'continuer' );
     }
     elseif($maj_classique)
     {
       // on fera la maj complémentaire au prochain coup
-      exit('continuer');
+      Json::end( TRUE , 'continuer' );
     }
     else
     {
@@ -466,7 +466,7 @@ if( ($action=='maj_bases_etabl') && $step )
         LockAcces::debloquer_application('automate',$base_id);
         array_shift($_SESSION['tmp']['base_id']);
       }
-      exit('continuer');
+      Json::end( TRUE , 'continuer' );
     }
   }
   // n. Dernière étape
@@ -485,7 +485,7 @@ if( ($action=='maj_bases_etabl') && $step )
     $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
     // retour
     unset($_SESSION['tmp']);
-    exit('ok_'.$fichier_chemin);
+    Json::end( TRUE , $fichier_chemin );
   }
 }
 
@@ -493,6 +493,6 @@ if( ($action=='maj_bases_etabl') && $step )
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

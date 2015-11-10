@@ -53,7 +53,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_ent',$id_ent) )
     {
-      exit('Erreur : identifiant ENT déjà utilisé !');
+      Json::end( FALSE , 'Identifiant ENT déjà utilisé !' );
     }
   }
   // Vérifier que l'identifiant GEPI est disponible (parmi tous les utilisateurs de l'établissement)
@@ -61,7 +61,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_gepi',$id_gepi) )
     {
-      exit('Erreur : identifiant Gepi déjà utilisé !');
+      Json::end( FALSE , 'Identifiant Gepi déjà utilisé !' );
     }
   }
   if($box_login)
@@ -79,7 +79,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
     // Vérifier que le login transmis est disponible (parmi tous les utilisateurs de l'établissement)
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login) )
     {
-      exit('Erreur : login déjà existant !');
+      Json::end( FALSE , 'Login déjà utilisé !' );
     }
   }
   if($box_password)
@@ -92,7 +92,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
     // Vérifier que le mdp transmis est d'une longueur compatible
     if(mb_strlen($password)<$_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'][$profil])
     {
-      exit('Erreur : mot de passe trop court pour ce profil !');
+      Json::end( FALSE , 'Mot de passe trop court pour ce profil !' );
     }
   }
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
@@ -103,7 +103,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
       list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
       if(!$is_domaine_valide)
       {
-        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+        Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
       }
     }
   }
@@ -113,21 +113,21 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
   DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'contact_externe' , 'accueil' );
   // Afficher le retour
-  echo'<tr id="id_'.$user_id.'" class="new">';
-  echo  '<td>'.html($id_ent).'</td>';
-  echo  '<td>'.html($id_gepi).'</td>';
-  echo  '<td>'.Html::$tab_genre['adulte'][$genre].'</td>';
-  echo  '<td>'.html($nom).'</td>';
-  echo  '<td>'.html($prenom).'</td>';
-  echo  '<td class="new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le login !" /></td>';
-  echo  '<td class="new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>';
-  echo  '<td>'.html($courriel).'</td>';
-  echo  '<td class="nu">';
-  echo    '<q class="modifier" title="Modifier cet administrateur."></q>';
-  echo    '<q class="supprimer" title="Retirer cet administrateur."></q>';
-  echo  '</td>';
-  echo'</tr>';
-  exit();
+  Json::add_str('<tr id="id_'.$user_id.'" class="new">');
+  Json::add_str(  '<td>'.html($id_ent).'</td>');
+  Json::add_str(  '<td>'.html($id_gepi).'</td>');
+  Json::add_str(  '<td>'.Html::$tab_genre['adulte'][$genre].'</td>');
+  Json::add_str(  '<td>'.html($nom).'</td>');
+  Json::add_str(  '<td>'.html($prenom).'</td>');
+  Json::add_str(  '<td class="new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le login !" /></td>');
+  Json::add_str(  '<td class="new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>');
+  Json::add_str(  '<td>'.html($courriel).'</td>');
+  Json::add_str(  '<td class="nu">');
+  Json::add_str(    '<q class="modifier" title="Modifier cet administrateur."></q>');
+  Json::add_str(    '<q class="supprimer" title="Retirer cet administrateur."></q>');
+  Json::add_str(  '</td>');
+  Json::add_str('</tr>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,7 +142,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_ent',$id_ent,$id) )
     {
-      exit('Erreur : identifiant ENT déjà utilisé !');
+      Json::end( FALSE , 'Identifiant ENT déjà utilisé !' );
     }
   }
   // Vérifier que l'identifiant GEPI est disponible (parmi tous les utilisateurs de l'établissement)
@@ -150,7 +150,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('id_gepi',$id_gepi,$id) )
     {
-      exit('Erreur : identifiant Gepi déjà utilisé !');
+      Json::end( FALSE , 'Identifiant Gepi déjà utilisé !' );
     }
   }
   // Vérifier que le login transmis est disponible (parmi tous les utilisateurs de l'établissement)
@@ -158,7 +158,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
   {
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login,$id) )
     {
-      exit('Erreur : login déjà existant !');
+      Json::end( FALSE , 'Login déjà utilisé !' );
     }
     $tab_donnees[':login'] = $login;
   }
@@ -170,7 +170,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
       list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
       if(!$is_domaine_valide)
       {
-        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+        Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
       }
     }
     $tab_donnees[':email_origine'] = 'admin';
@@ -207,19 +207,19 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
     $_SESSION['USER_ID_GEPI']       = $id_gepi ;
   }
   // Afficher le retour
-  echo'<td>'.html($id_ent).'</td>';
-  echo'<td>'.html($id_gepi).'</td>';
-  echo'<td>'.Html::$tab_genre['adulte'][$genre].'</td>';
-  echo'<td>'.html($nom).'</td>';
-  echo'<td>'.html($prenom).'</td>';
-  echo'<td>'.html($login).'</td>';
-  echo ($box_password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>' ;
-  echo'<td>'.html($courriel).'</td>';
-  echo'<td class="nu">';
-  echo  '<q class="modifier" title="Modifier ce administrateur."></q>';
-  echo  ($id!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>' ;
-  echo'</td>';
-  exit();
+  Json::add_str('<td>'.html($id_ent).'</td>');
+  Json::add_str('<td>'.html($id_gepi).'</td>');
+  Json::add_str('<td>'.Html::$tab_genre['adulte'][$genre].'</td>');
+  Json::add_str('<td>'.html($nom).'</td>');
+  Json::add_str('<td>'.html($prenom).'</td>');
+  Json::add_str('<td>'.html($login).'</td>');
+  Json::add_str( ($box_password) ? '<td class="i">champ crypté</td>' : '<td class="new">'.$password.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>');
+  Json::add_str('<td>'.html($courriel).'</td>');
+  Json::add_str('<td class="nu">');
+  Json::add_str(  '<q class="modifier" title="Modifier ce administrateur."></q>');
+  Json::add_str(  ($id!=$_SESSION['USER_ID']) ? '<q class="supprimer" title="Retirer cet administrateur."></q>' : '<q class="supprimer_non" title="Un administrateur ne peut pas supprimer son propre compte."></q>');
+  Json::add_str('</td>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -230,7 +230,7 @@ if( ($action=='supprimer') && $id && $nom && $prenom )
 {
   if($id==$_SESSION['USER_ID'])
   {
-    exit('Erreur : un administrateur ne peut pas supprimer son propre compte !');
+    Json::end( FALSE , 'Un administrateur ne peut pas supprimer son propre compte !' );
   }
   // Supprimer l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $id , $profil );
@@ -240,13 +240,13 @@ if( ($action=='supprimer') && $id && $nom && $prenom )
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé l\'utilisateur '.$nom.' '.$prenom.' ('.$profil.' '.$id.').'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  exit('<td>ok</td>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

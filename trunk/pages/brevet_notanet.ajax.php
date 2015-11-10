@@ -33,7 +33,7 @@ $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
 if( !count($tab_eleve) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 $listing_eleve_id   = implode(',',$tab_eleve);
@@ -44,7 +44,7 @@ $tab_eleves = array(); // [user_id] => array(nom,prenom,sconet_id) Ordonné par 
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_eleves_cibles_actuels_avec_INE($listing_eleve_id);
 if(empty($DB_TAB))
 {
-  exit('Erreur : les élèves trouvés n\'ont pas d\'Identifiant National Élève (INE) ou sont anciens !');
+  Json::end( FALSE , 'Les élèves trouvés n\'ont pas d\'Identifiant National Élève (INE) ou sont anciens !' );
 }
 foreach($DB_TAB as $DB_ROW)
 {
@@ -95,6 +95,8 @@ foreach($tab_eleves as $eleve_id => $user_reference)
 $fichier_nom = 'export_notanet'.'_'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
 FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , To::csv($csv_contenu) );
 
-exit($fichier_nom);
+// Retour
+
+Json::end( TRUE , $fichier_nom );
 
 ?>

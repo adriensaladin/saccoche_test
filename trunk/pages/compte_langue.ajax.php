@@ -43,7 +43,7 @@ if($langue)
   }
   elseif(!is_dir(LOCALE_DIR.DS.$langue))
   {
-    exit('Erreur : dossier de langue "'.$langue.'" non trouvé !');
+    Json::end( FALSE , 'Dossier de langue "'.$langue.'" non trouvé !');
   }
   // C'est ok...
   DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_langue' , $langue );
@@ -53,13 +53,13 @@ if($langue)
   Lang::setlocale( LC_MESSAGES, Lang::get_locale_used() );
   SessionUser::memoriser_menu();
   // Retour
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

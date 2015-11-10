@@ -176,7 +176,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_gestion",
@@ -205,13 +205,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_gestion').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -221,30 +221,30 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      if(responseHTML.substring(0,2)!='<t')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         $('#temp_td').html(td_resp); // Pour ne pas perdre l'objet avec l'infobulle, on est obligé de le copier ailleurs avant le html qui suit.
         switch (mode)
         {
           case 'ajouter':
-            $('#id_A'+id).addClass("new").attr('id','id_M'+id).html('<td>'+nom_prenom+'</td>'+responseHTML).prepend( td_resp );
+            $('#id_A'+id).addClass("new").attr('id','id_M'+id).html('<td>'+nom_prenom+'</td>'+responseJSON['value']).prepend( td_resp );
             break;
           case 'modifier':
-            $('#id_M'+id).addClass("new").html('<td>'+nom_prenom+'</td>'+responseHTML).prepend( td_resp );
+            $('#id_M'+id).addClass("new").html('<td>'+nom_prenom+'</td>'+responseJSON['value']).prepend( td_resp );
             break;
         }
         $.fancybox.close();

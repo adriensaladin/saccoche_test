@@ -28,5 +28,5 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 Webmestre::supprimer_mono_structure();
-exit('ok');
+Json::end( TRUE );
 ?>

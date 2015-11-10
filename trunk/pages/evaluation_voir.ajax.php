@@ -52,14 +52,13 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
   // Vérifier que la date de début est antérieure à la date de fin
   if($date_debut_mysql>$date_fin_mysql)
   {
-    exit('Erreur : la date de début est postérieure à la date de fin !');
+    Json::end( FALSE , 'La date de début est postérieure à la date de fin !' );
   }
   // Lister les évaluations
-  $script = '';
   $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve( $eleve_id , $date_debut_mysql , $date_fin_mysql , $_SESSION['USER_PROFIL_TYPE'] );
   if(empty($DB_TAB))
   {
-    exit('Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' !');
+    Json::end( FALSE , 'Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' !' );
   }
   // Récupérer le nb de saisies déjà effectuées par évaluation (ça posait trop de problème dans la requête précédente : saisies comptées plusieurs fois, évaluations sans saisies non retournées...)
   $tab_devoir_id = array();
@@ -84,34 +83,34 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     $q_texte       = ($DB_ROW['jointure_texte'])     ? '<q class="texte_consulter" title="Commentaire écrit disponible."></q>' : '<q class="texte_consulter_non" title="Pas de commentaire écrit."></q>' ;
     $q_audio       = ($DB_ROW['jointure_audio'])     ? '<q class="audio_ecouter" title="Commentaire audio disponible."></q>'   : '<q class="audio_ecouter_non" title="Pas de commentaire audio."></q>' ;
     // Afficher une ligne du tableau
-    echo'<tr>';
-    echo  '<td>'.html($date_affich).'</td>';
-    echo  '<td>'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).'</td>';
-    echo  '<td>'.html($DB_ROW['devoir_info']).'</td>';
-    echo  '<td>'.$image_sujet.$image_corrige.'</td>';
-    echo  '<td class="hc '.$remplissage_class.'">'.$remplissage_nombre.'</td>';
-    echo  '<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">';
-    echo    '<q class="voir" title="Voir les items et les notes (si saisies)."></q>';
-    echo    $q_texte;
-    echo    $q_audio;
+    Json::add_row( 'html' , '<tr>' );
+    Json::add_row( 'html' ,   '<td>'.html($date_affich).'</td>' );
+    Json::add_row( 'html' ,   '<td>'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).'</td>' );
+    Json::add_row( 'html' ,   '<td>'.html($DB_ROW['devoir_info']).'</td>' );
+    Json::add_row( 'html' ,   '<td>'.$image_sujet.$image_corrige.'</td>' );
+    Json::add_row( 'html' ,   '<td class="hc '.$remplissage_class.'">'.$remplissage_nombre.'</td>' );
+    Json::add_row( 'html' ,   '<td class="nu" id="devoir_'.$DB_ROW['devoir_id'].'">' );
+    Json::add_row( 'html' ,     '<q class="voir" title="Voir les items et les notes (si saisies)."></q>' );
+    Json::add_row( 'html' ,     $q_texte );
+    Json::add_row( 'html' ,     $q_audio );
     if($DB_ROW['devoir_autoeval_date']===NULL)
     {
-      echo'<q class="saisir_non" title="Devoir sans auto-évaluation."></q>';
+      Json::add_row( 'html' , '<q class="saisir_non" title="Devoir sans auto-évaluation."></q>' );
     }
     elseif($DB_ROW['devoir_autoeval_date']<TODAY_MYSQL)
     {
-      echo'<q class="saisir_non" title="Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>';
+      Json::add_row( 'html' , '<q class="saisir_non" title="Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>' );
     }
     else
     {
-      echo'<q class="saisir" title="Auto-évaluation possible jusqu\'au '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>';
-      $script .=  'tab_dates['.$DB_ROW['devoir_id'].']="'.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'";';
+      Json::add_row( 'html' , '<q class="saisir" title="Auto-évaluation possible jusqu\'au '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>' );
+      Json::add_row( 'script' , 'tab_dates['.$DB_ROW['devoir_id'].']="'.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'";' );
     }
-    echo  '</td>';
-    echo'</tr>';
+    Json::add_row( 'html' ,   '</td>' );
+    Json::add_row( 'html' , '</tr>' );
   }
-  echo'<SCRIPT>'.$script;
-  exit();
+  Json::add_row( 'script' , '' ); // définir la variable où il n'y aurait rien
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,7 +124,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   // Normalement, un devoir est toujours lié à au moins un item... sauf si l'item a été supprimé dans le référentiel !
   if(empty($DB_TAB_COMP))
   {
-    exit('Ce devoir n\'est associé à aucun item !');
+    Json::end( FALSE , 'Ce devoir n\'est associé à aucun item !' );
   }
   $tab_liste_item = array_keys($DB_TAB_COMP);
   $liste_item_id = implode(',',$tab_liste_item);
@@ -211,8 +210,14 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
       $commentaire_audio = '<h3>Commentaire audio</h3><audio id="audio_lecture" controls="" src="'.$msg_url.'" class="eleve"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>';
     }
   }
-  // retour des infos
-  exit('ok'.']¤['.$affichage.']¤['.$legende.']¤['.$commentaire_texte.']¤['.$commentaire_audio);
+  // Retour
+  Json::add_tab( array(
+    'lignes'  => $affichage ,
+    'legende' => $legende ,
+    'texte'   => $commentaire_texte ,
+    'audio'   => $commentaire_audio ,
+  ) );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +231,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   // Normalement, un devoir est toujours lié à au moins un item... sauf si l'item a été supprimé dans le référentiel !
   if(empty($DB_TAB_COMP))
   {
-    exit('Ce devoir n\'est associé à aucun item !');
+    Json::end( FALSE , 'Ce devoir n\'est associé à aucun item !' );
   }
   // Pas de demandes d'évaluations formulées depuis ce formulaire, pas de score affiché non plus
   $tab_liste_item = array_keys($DB_TAB_COMP);
@@ -285,7 +290,13 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
     $lignes .= '<tr>'.$boutons.'<td>'.html($item_ref).'<br />'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.'</td></tr>';
   }
   // Retour
-  exit('ok'.']¤['.$lignes.']¤['.$msg_audio_autre.']¤['.$msg_texte_url.']¤['.$msg_texte_data);
+  Json::add_tab( array(
+    'lignes'      => $lignes ,
+    'audio_autre' => $msg_audio_autre ,
+    'texte_url'   => $msg_texte_url ,
+    'texte_data'  => $msg_texte_data ,
+  ) );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,15 +309,15 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   $DB_ROW = DB_STRUCTURE_ELEVE::DB_recuperer_devoir_infos($devoir_id);
   if(empty($DB_ROW))
   {
-    exit('Devoir introuvable !');
+    Json::end( FALSE , 'Devoir introuvable !' );
   }
   if($DB_ROW['devoir_autoeval_date']===NULL)
   {
-    exit('Devoir sans auto-évaluation !');
+    Json::end( FALSE , 'Devoir sans auto-évaluation !' );
   }
   if($DB_ROW['devoir_autoeval_date']<TODAY_MYSQL)
   {
-    exit('Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).' !');
+    Json::end( FALSE , 'Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).' !' );
   }
   $devoir_proprio_id  = $DB_ROW['proprio_id'];
   $devoir_date_mysql  = $DB_ROW['devoir_date'];
@@ -326,7 +337,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   }
   if(!count($tab_post))
   {
-    exit('Aucune saisie récupérée !');
+    Json::end( FALSE , 'Aucune saisie récupérée !' );
   }
   // On recupère le contenu de la base déjà enregistré pour le comparer ; on remplit au fur et à mesure $tab_nouveau_modifier / $tab_nouveau_supprimer
   // $tab_demande_supprimer sert à supprimer des demandes d'élèves dont on met une note.
@@ -438,13 +449,13 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
     }
   }
   // Terminé
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

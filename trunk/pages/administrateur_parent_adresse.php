@@ -79,9 +79,9 @@ elseif($levenshtein) // (forcément)
         $adresse_parent1 = $DB_TAB_parents[1]['adresse_ligne1'].$DB_TAB_parents[1]['adresse_ligne2'].$DB_TAB_parents[1]['adresse_ligne3'].$DB_TAB_parents[1]['adresse_ligne4'].$DB_TAB_parents[1]['adresse_postal_code'].$DB_TAB_parents[1]['adresse_postal_libelle'].$DB_TAB_parents[1]['adresse_pays_nom'];
         if($adresse_parent0!=$adresse_parent1)
         {
-          // Voir levenshtein() voir http://fr.php.net/levenshtein
+          // Pour levenshtein() voir http://fr.php.net/levenshtein (requiert arguments < 256 caractères)
           // Autre méthode dénichée mais non essayée : http://tonyarchambeau.com/blog/400-php-coefficient-de-dice/
-          if( levenshtein($adresse_parent0,$adresse_parent1) < 10 )
+          if( levenshtein( substr($adresse_parent0,0,255) , substr($adresse_parent1,0,255) ) < 10 )
           {
             $parent_id0 = $DB_TAB_parents[0]['parent_id'];
             $parent_id1 = $DB_TAB_parents[1]['parent_id'];

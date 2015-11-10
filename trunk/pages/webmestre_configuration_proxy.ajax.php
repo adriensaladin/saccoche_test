@@ -45,14 +45,14 @@ if($action=='tester')
 {
   $requete_reponse = cURL::get_contents(SERVEUR_VERSION);
   $affichage = (preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#',$requete_reponse)) ? '<label class="valide">Échange réussi avec le serveur '.SERVEUR_PROJET.'</label>' : '<label class="erreur">Échec de l\'échange avec le serveur '.SERVEUR_PROJET.' &rarr; '.$requete_reponse.'</label>' ;
-  exit('<h2>Résultat du test</h2>'.$affichage);
+  Json::end( TRUE , '<h2>Résultat du test</h2>'.$affichage );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Enregistrer des nouveaux réglages
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-FileSystem::fabriquer_fichier_hebergeur_info( array(
+$result = FileSystem::fabriquer_fichier_hebergeur_info( array(
   'SERVEUR_PROXY_USED'        => $proxy_used,
   'SERVEUR_PROXY_NAME'        => $proxy_name,
   'SERVEUR_PROXY_PORT'        => $proxy_port,
@@ -62,6 +62,10 @@ FileSystem::fabriquer_fichier_hebergeur_info( array(
   'SERVEUR_PROXY_AUTH_USER'   => $proxy_auth_user,
   'SERVEUR_PROXY_AUTH_PASS'   => $proxy_auth_pass,
 ) );
-exit('ok');
+if($result!==TRUE)
+{
+  Json::end( FALSE , $result );
+}
+Json::end( TRUE );
 
 ?>

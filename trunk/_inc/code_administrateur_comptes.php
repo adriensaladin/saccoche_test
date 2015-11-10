@@ -37,7 +37,7 @@ $nb_user = count($tab_user_id);
 
 if( !$nb_user )
 {
-  exit('Aucun compte récupéré !');
+  Json::end( FALSE , 'Aucun compte récupéré !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ if( !$nb_user )
 if($action=='retirer')
 {
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,FALSE);
-  exit('ok,'.implode(',',$tab_user_id));
+  Json::end( TRUE , implode(',',$tab_user_id) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ if($action=='retirer')
 if($action=='reintegrer')
 {
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_users_statut($tab_user_id,TRUE);
-  exit('ok,'.implode(',',$tab_user_id));
+  Json::end( TRUE , implode(',',$tab_user_id) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,14 +88,20 @@ if($action=='supprimer')
     DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   }
   // Retour
-  $retour = (count($tab_user_id)) ? 'ok,'.implode(',',$tab_user_id) : 'Aucun compte coché n\'est supprimable ! Il faut d\'abord les retirer pour leur affecter une date de sortie...' ;
-  exit($retour);
+  if(count($tab_user_id))
+  {
+    Json::end( TRUE , implode(',',$tab_user_id) );
+  }
+  else
+  {
+    Json::end( FALSE , 'Aucun compte coché n\'est supprimable ! Il faut d\'abord les retirer pour leur affecter une date de sortie.' );
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "select_directeurs" et le renvoyer en HTML
+// Mettre à jour l'élément de formulaire "select_directeurs"
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -39,5 +39,7 @@ $select_nom   = ($multiple) ? 'f_user'   : FALSE ;
 $option_first = ($multiple) ? FALSE      : ''    ;
 $selection    = ($multiple) ? $selection : FALSE ;
 
-exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_directeurs_etabl() , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+// Affichage du retour.
+
+Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_directeurs_etabl() , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 ?>

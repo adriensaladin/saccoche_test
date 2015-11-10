@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "f_devoir" et le renvoyer en HTML
+// Mettre à jour l'élément de formulaire "f_devoir"
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -37,14 +37,18 @@ $tab_types = array('groupe','select');
 
 if( ( (!$groupe_id) && ($eval_type=='groupe') ) || (!in_array($eval_type,$tab_types)) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
+
 // Lister les dernières évaluations d'une classe ou d'un groupe ou d'un groupe de besoin
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoirs_prof_groupe_sans_infos_last($_SESSION['USER_ID'],$groupe_id,$eval_type);
+
 if(empty($DB_TAB))
 {
-  exit('<option value="" disabled>Aucun devoir n\'a été trouvé pour ce groupe d\'élèves !</option>');
+  Json::end( TRUE , '<option value="" disabled>Aucun devoir n\'a été trouvé pour ce groupe d\'élèves !</option>' );
 }
+
+// Affichage du retour.
 foreach($DB_TAB as $key => $DB_ROW)
 {
   // Le code js a besoin qu'une option soit sélectionnée
@@ -52,7 +56,9 @@ foreach($DB_TAB as $key => $DB_ROW)
   // Formater la date et la référence de l'évaluation
   $date_affich         = convert_date_mysql_to_french($DB_ROW['devoir_date']);
   $date_visible_affich = convert_date_mysql_to_french($DB_ROW['devoir_visible_date']);
-  echo'<option value="'.$DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'].'"'.$selected.'>'.$date_affich.' || '.$date_visible_affich.' || '.html($DB_ROW['devoir_info']).'</option>';
+  $option_val = $DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'];
+  $option_txt = $date_affich.' || '.$date_visible_affich.' || '.html($DB_ROW['devoir_info']);
+  Json::add_str('<option value="'.$option_val.'"'.$selected.'>'.$option_txt.'</option>');
 }
-exit();
+Json::end( TRUE );
 ?>

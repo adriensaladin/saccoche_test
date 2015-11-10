@@ -44,7 +44,7 @@ $(document).ready
         // Puis afficher ce qu'il faut
       if( id_periode_import && f_action )
       {
-        $('#ajax_msg_'+f_action).removeAttr("class").html('&nbsp;');
+        $('#ajax_msg_'+f_action).removeAttr('class').html('&nbsp;');
         $('#puce_'+f_action).show(0);
       }
     }
@@ -117,7 +117,7 @@ $(document).ready
         // Afficher la zone de choix des périodes
         if(id_groupe)
         {
-          $('#f_periode').removeAttr("class");
+          $('#f_periode').removeAttr('class');
         }
         else
         {
@@ -142,7 +142,7 @@ $(document).ready
           name: 'userfile',
           data: {'csrf':CSRF,'f_action':'import_sconet','f_periode':'maj_plus_tard'},
           autoSubmit: true,
-          responseType: "html",
+          responseType: 'json',
           onChange: changer_fichier,
           onSubmit: verifier_fichier,
           onComplete: retourner_fichier
@@ -155,7 +155,7 @@ $(document).ready
           name: 'userfile',
           data: {'csrf':CSRF,'f_action':'import_siecle','f_periode':'maj_plus_tard'},
           autoSubmit: true,
-          responseType: "html",
+          responseType: 'json',
           onChange: changer_fichier,
           onSubmit: verifier_fichier,
           onComplete: retourner_fichier
@@ -168,7 +168,7 @@ $(document).ready
           name: 'userfile',
           data: {'csrf':CSRF,'f_action':'import_gepi','f_periode':'maj_plus_tard'},
           autoSubmit: true,
-          responseType: "html",
+          responseType: 'json',
           onChange: changer_fichier,
           onSubmit: verifier_fichier,
           onComplete: retourner_fichier
@@ -181,7 +181,7 @@ $(document).ready
           name: 'userfile',
           data: {'csrf':CSRF,'f_action':'import_pronote','f_periode':'maj_plus_tard'},
           autoSubmit: true,
-          responseType: "html",
+          responseType: 'json',
           onChange: changer_fichier,
           onSubmit: verifier_fichier,
           onComplete: retourner_fichier
@@ -191,7 +191,7 @@ $(document).ready
 
     function changer_fichier(fichier_nom,fichier_extension)
     {
-      $('#ajax_msg_'+f_action).removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_'+f_action).removeAttr('class').html("");
       return true;
     }
 
@@ -199,74 +199,74 @@ $(document).ready
     {
       if (!id_periode_import)
       {
-        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html("Choisir d'abord la période concernée.");
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html("Choisir d'abord la période concernée.");
         return false;
       }
       else if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ( (f_action=='import_sconet') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
       {
-        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
         return false;
       }
       else if ( (f_action=='import_siecle') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
       {
-        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
         return false;
       }
       else if ( (f_action=='import_gepi') && ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
       {
-        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
         return false;
       }
       else if ( (f_action=='import_pronote') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
       {
-        $('#ajax_msg_'+f_action).removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
         return false;
       }
       else
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg_'+f_action).removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier(fichier_nom,responseJSON)
     {
       $('button').prop('disabled',false);
-      var tab_infos = responseHTML.split(']¤[');
-      if(tab_infos[0]!='ok')
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_'+f_action).removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote').hide(0);
         if( (f_action=='import_sconet') || (f_action=='import_siecle') )
         {
-          $('#sconet_date_export').html(tab_infos[1]);
-          $('#sconet_libelle'    ).html(tab_infos[2]);
-          $('#sconet_date_debut' ).html(tab_infos[3]);
-          $('#sconet_date_fin'   ).html(tab_infos[4]);
+          $('#sconet_date_export').html(responseJSON['date_export']);
+          $('#sconet_libelle'    ).html(responseJSON['libelle']);
+          $('#sconet_date_debut' ).html(responseJSON['date_debut']);
+          $('#sconet_date_fin'   ).html(responseJSON['date_fin']);
         }
         else if(f_action=='import_gepi')
         {
-          $('#gepi_eleves_nb').html(tab_infos[1]);
+          $('#gepi_eleves_nb').html(responseJSON['eleves_nb']);
         }
         else if(f_action=='import_pronote')
         {
-          $('#pronote_objet'     ).html(tab_infos[1]);
-          $('#pronote_eleves_nb' ).html(tab_infos[2]);
-          $('#pronote_date_debut').html(tab_infos[3]);
-          $('#pronote_date_fin'  ).html(tab_infos[4]);
+          $('#pronote_objet'     ).html(responseJSON['objet']);
+          $('#pronote_eleves_nb' ).html(responseJSON['eleves_nb']);
+          $('#pronote_date_debut').html(responseJSON['date_debut']);
+          $('#pronote_date_fin'  ).html(responseJSON['date_fin']);
         }
         $('#periode_import').html($('#f_periode_import option:selected').text());
-        $('#ajax_msg_'+f_action).removeAttr("class").html('');
-        $('#ajax_msg_confirm').removeAttr("class").html('');
+        $('#ajax_msg_'+f_action).removeAttr('class').html('');
+        $('#ajax_msg_confirm').removeAttr('class').html('');
         $('#comfirm_'+f_action).show(0);
         $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
         initialiser_compteur();
@@ -282,32 +282,32 @@ $(document).ready
       function()
       {
         $('#zone_confirmer button').prop('disabled',true);
-        $('#ajax_msg_confirm').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_confirm').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+'traitement_'+f_action+'&f_periode='+id_periode_import,
-            dataType : "html",
+            responseType: 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_confirmer button').prop('disabled',false);
-              $('#ajax_msg_confirm').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_confirm').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               $('#zone_confirmer button').prop('disabled',false);
-              if(responseHTML.substring(0,4)!='<tr>')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_confirm').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_confirm').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
                 $('#zone_saisir h2').html('Résultat du traitement');
                 $('#titre_saisir').html('');
-                $('#table_saisir tbody').html(responseHTML);
+                $('#table_saisir tbody').html(responseJSON['value']);
                 $('#zone_saisir form').hide(0);
                 $.fancybox( { 'href':'#zone_saisir' , onStart:function(){$('#zone_saisir').css("display","block");} , onClosed:function(){$('#zone_saisir').css("display","none");} , 'minWidth':600 , 'centerOnScroll':true } );
                 initialiser_compteur();
@@ -342,7 +342,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -351,10 +351,9 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      responseType: 'json',
       clearForm : false,
       resetForm : false,
-      target : "#ajax_msg",
       beforeSubmit : test_form_avant_envoi,
       error : retour_form_erreur,
       success : retour_form_valide
@@ -373,12 +372,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_manuel').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_manuel').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg_manuel').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_manuel').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -387,24 +386,25 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg_manuel').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_manuel').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       $('button').prop('disabled',false);
-      if(responseHTML.substring(0,4)!='<tr ')
+      log('info',responseJSON['statut']);
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_manuel').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_manuel').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_manuel').removeAttr("class").html('');
+        $('#ajax_msg_manuel').removeAttr('class').html('');
         $('#zone_saisir h2').html('Saisie des absences et retards');
         $('#titre_saisir').html($('#f_periode option:selected').text()+' | '+$('#f_groupe option:selected').text());
-        $('#table_saisir tbody').html(responseHTML);
-        $('#ajax_msg_saisir').removeAttr("class").html('&nbsp;');
+        $('#table_saisir tbody').html(responseJSON['value']);
+        $('#ajax_msg_saisir').removeAttr('class').html('&nbsp;');
         $('#zone_saisir form').show(0);
         $.fancybox( { 'href':'#zone_saisir' , onStart:function(){$('#zone_saisir').css("display","block");} , onClosed:function(){$('#zone_saisir').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
         initialiser_compteur();
@@ -421,8 +421,8 @@ $(document).ready
       'input[type=text]',
       function()
       {
-        $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html('Penser à enregistrer les modifications !');
-        $('#fermer_zone_saisir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+        $('#ajax_msg_saisir').removeAttr('class').addClass('alerte').html('Penser à enregistrer les modifications !');
+        $('#fermer_zone_saisir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
         return false;
       }
     );
@@ -464,7 +464,7 @@ $(document).ready
             tab_infos.push( user_id + '.' + $('#td1_'+user_id).val() + '.' + $('#td2_'+user_id).val() + '.' + $('#td3_'+user_id).val() + '.' + $('#td4_'+user_id).val() );
           }
         );
-        $('#ajax_msg_saisir').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_saisir').removeAttr('class').addClass('loader').html("En cours&hellip;");
         // Les envoyer en ajax
         $.ajax
         (
@@ -472,25 +472,25 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=enregistrer_saisies'+'&f_periode='+$('#f_periode option:selected').val()+'&f_data='+tab_infos.join('_'),
-            dataType : "html",
+            responseType: 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_saisir button').prop('disabled',false);
-              $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_saisir').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#zone_saisir button').prop('disabled',false);
-              if(responseHTML!='ok')
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_saisir').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_saisir').removeAttr('class').addClass('valide').html("Saisies enregistrées !");
+                $('#fermer_zone_saisir').removeAttr('class').addClass("retourner").html('Retour');
               }
               else
               {
-                $('#ajax_msg_saisir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
-                $('#fermer_zone_saisir').removeAttr("class").addClass("retourner").html('Retour');
+                $('#ajax_msg_saisir').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

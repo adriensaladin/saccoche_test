@@ -39,13 +39,13 @@ $niveau_id  = (isset($_POST['f_niveau']))  ? Clean::entier($_POST['f_niveau'])  
 if( $methode && $matiere_id && $niveau_id )
 {
   DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':mode_synthese'=>$methode) );
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

@@ -205,7 +205,7 @@ $(document).ready
       }
       var groupe_val = (TYPE=='groupe') ? $('#f_aff_classe option:selected').val() : '' ;
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*ref*/ , input_date /*date_fr*/ , 'identique' /*date_visible*/ , 'sans objet' /*date_autoeval*/ , groupe_val , '' /*groupe_nom*/ , reception_users_texte /*eleve_nombre*/ , reception_users_liste /*eleve_liste*/ , '' /*eleves_ordre*/ , 'non' /*prof_nombre*/ , '' /*prof_liste*/ , '' /*description*/ , reception_items_texte /*compet_nombre*/ , reception_items_liste /*compet_liste*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ , '' /*fini*/ , user_id /*proprio_id*/ );
+      afficher_form_gestion( mode , '' /*ref*/ , '' /*date_fr*/ , 'identique' /*date_visible*/ , 'sans objet' /*date_autoeval*/ , groupe_val , '' /*groupe_nom*/ , reception_users_texte /*eleve_nombre*/ , reception_users_liste /*eleve_liste*/ , '' /*eleves_ordre*/ , 'non' /*prof_nombre*/ , '' /*prof_liste*/ , '' /*description*/ , reception_items_texte /*compet_nombre*/ , reception_items_liste /*compet_liste*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ , '' /*fini*/ , user_id /*proprio_id*/ );
     };
 
     /**
@@ -284,8 +284,8 @@ $(document).ready
       $('#imprimer_description').val(unescapeHtml(description));
       // Afficher la zone associée
       $('#titre_imprimer').html(groupe+' | '+date_fr+' | '+description);
-      $('#ajax_msg_imprimer').removeAttr("class").html("&nbsp;");
-      $('#zone_imprimer_retour').html("&nbsp;");
+      $('#ajax_msg_imprimer').removeAttr('class').html("");
+      $('#zone_imprimer_retour').html("");
       $.fancybox( { 'href':'#zone_imprimer' , onStart:function(){$('#zone_imprimer').css("display","block");} , onClosed:function(){$('#zone_imprimer').css("display","none");} , 'modal':true , 'minWidth':800 , 'centerOnScroll':true } );
     };
 
@@ -363,19 +363,19 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_eleves_ordre='+eleves_ordre+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+            $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
 
-            if(responseHTML.substring(0,7)!='<thead>')
+            if(responseJSON['statut']==false)
             {
-              $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
             }
             else
             {
@@ -384,8 +384,8 @@ $(document).ready
               // Masquer le tableau ; Afficher la zone associée et remplir son contenu
               $('#form_prechoix , #table_action').hide('fast');
               $('#titre_saisir_voir').html(groupe+' | '+date_fr+' | '+description);
-              $('#ajax_msg_saisir_voir').removeAttr("class").html('&nbsp;');
-              $table_saisir_voir.html(responseHTML);
+              $('#ajax_msg_saisir_voir').removeAttr('class').html('&nbsp;');
+              $table_saisir_voir.html(responseJSON['value']);
               $table_saisir_voir.find('tbody tr th img').css('display','none'); // .hide(0) s'avère bcp plus lent dans FF et pose pb si bcp élèves / items ...
               if(mode=='saisir')
               {
@@ -454,7 +454,7 @@ $(document).ready
       // Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
       $('#zone_eleve q.date_calendrier').show();
       $('#zone_eleve li.li_m1 span.gradient_pourcent').html('');
-      $('#msg_indiquer_eleves_deja').removeAttr("class").html('');
+      $('#msg_indiquer_eleves_deja').removeAttr('class').html('');
       cocher_eleves( $('#f_eleve_liste').val() );
       if(mode=='modifier') {$('#alerte_eleves').show();}
       else                 {$('#alerte_eleves').hide();}
@@ -480,7 +480,7 @@ $(document).ready
       $('#ordre_ref').val(ref);
       // Afficher la zone associée après avoir chargé son contenu
       $('#titre_ordonner').html(groupe+' | '+date_fr+' | '+description);
-      $('#ajax_msg_ordonner').removeAttr("class").html('&nbsp;');
+      $('#ajax_msg_ordonner').removeAttr('class').html('&nbsp;');
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
       (
@@ -488,23 +488,23 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+            $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,4)!='<li ')
+            if(responseJSON['statut']==false)
             {
-              $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
             }
             else
             {
               modification = false;
-              $('#sortable_v').html(responseHTML).sortable( { cursor:'ns-resize' , update:function(event,ui){modif_ordre();} } );
+              $('#sortable_v').html(responseJSON['value']).sortable( { cursor:'ns-resize' , update:function(event,ui){modif_ordre();} } );
               // Afficher la zone
               $.fancybox( { 'href':'#zone_ordonner' , onStart:function(){$('#zone_ordonner').css("display","block");} , onClosed:function(){$('#zone_ordonner').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
             }
@@ -516,9 +516,9 @@ $(document).ready
     {
       if(modification==false)
       {
-        $('#fermer_zone_ordonner').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+        $('#fermer_zone_ordonner').removeAttr('class').addClass("annuler").html('Annuler / Retour');
         modification = true;
-        $('#ajax_msg_ordonner').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_ordonner').removeAttr('class').html("");
       }
     }
 
@@ -549,29 +549,28 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+            $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            var tab_response = responseHTML.split('<SEP>');
-            if( tab_response.length!=3 )
+            if(responseJSON['statut']==false)
             {
-              $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
             }
             else
             {
               // Afficher la zone
-              $('#table_voir_repart_quantitative').html(tab_response[0]);
+              $('#table_voir_repart_quantitative').html(responseJSON['quantitative']);
               $('#table_voir_repart_quantitative tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
-              $('#table_voir_repart_nominative').html(tab_response[1]);
+              $('#table_voir_repart_nominative').html(responseJSON['nominative']);
               $('#table_voir_repart_nominative tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
-              $('#lien_repart_nominative').attr('href',tab_response[2]);
-              $('#ajax_msg_archiver_repart').removeAttr("class").html("");
+              $('#lien_repart_nominative').attr('href',responseJSON['href']);
+              $('#ajax_msg_archiver_repart').removeAttr('class').html("");
               $.fancybox( { 'href':'#zone_voir_repart' , onStart:function(){$('#zone_voir_repart').css("display","block");} , onClosed:function(){$('#zone_voir_repart').css("display","none");} , 'centerOnScroll':true } );
             }
           }
@@ -609,7 +608,7 @@ $(document).ready
       var img_corrige   = (tab_corriges[ref]) ? '<a href="'+tab_corriges[ref]+'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
       // Renseigner les champs dynamique affichés
       $('#titre_upload').html(groupe+' | '+date_fr+' | '+description);
-      $('#ajax_document_upload').removeAttr("class").html("");
+      $('#ajax_document_upload').removeAttr('class').html("");
       $('#span_sujet').html(img_sujet);
       $('#span_corrige').html(img_corrige);
       activer_boutons_upload(ref);
@@ -764,7 +763,7 @@ $(document).ready
         }
         else
         {
-          $(this).next().hide(0).next().show(0);
+          $(this).next().hide(0).next().show(0).children('input').focus();
         }
       }
     );
@@ -779,13 +778,11 @@ $(document).ready
       {
         if($(this).is(':checked'))
         {
-          $('#f_date_autoeval').val('00/00/0000');
-          $(this).next().show(0).next().hide(0);
+          $(this).next().show(0).next().hide(0).children('input').val('00/00/0000');
         }
         else
         {
-          $(this).next().hide(0).next().show(0);
-          $('#f_date_autoeval').val(input_autoeval);
+          $(this).next().hide(0).next().show(0).children('input').focus().val(input_autoeval);
         }
       }
     );
@@ -1038,33 +1035,33 @@ $(document).ready
       function()
       {
         $('#zone_imprimer button').prop('disabled',true);
-        $('#ajax_msg_imprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
-        $('#zone_imprimer_retour').html("&nbsp;");
+        $('#ajax_msg_imprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#zone_imprimer_retour').html("");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=imprimer_cartouche'+'&'+$("#zone_imprimer").serialize(),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_imprimer button').prop('disabled',false);
-              $('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_imprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#zone_imprimer button').prop('disabled',false);
-              if(responseHTML.substring(0,6)!='<hr />')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_imprimer').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_imprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg_imprimer').removeAttr("class").addClass("valide").html("Cartouches générés !");
-                $('#zone_imprimer_retour').html(responseHTML);
+                $('#ajax_msg_imprimer').removeAttr('class').addClass('valide').html("Cartouches générés !");
+                $('#zone_imprimer_retour').html(responseJSON['value']);
               }
             }
           }
@@ -1081,31 +1078,31 @@ $(document).ready
       function()
       {
         $('#archiver_repart').prop('disabled',true);
-        $('#ajax_msg_archiver_repart').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_archiver_repart').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=archiver_repart'+'&'+$("#zone_archiver_repart").serialize(),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#archiver_repart').prop('disabled',false);
-              $('#ajax_msg_archiver_repart').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_archiver_repart').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#archiver_repart').prop('disabled',false);
-              if(responseHTML.substring(0,3)!='<a ')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_archiver_repart').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_archiver_repart').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg_archiver_repart').removeAttr("class").html(responseHTML);
+                $('#ajax_msg_archiver_repart').removeAttr('class').html(responseJSON['value']);
               }
             }
           }
@@ -1121,7 +1118,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_deport_archivage').removeAttr("class").html('');
+        $('#ajax_msg_deport_archivage').removeAttr('class').html('');
         if(mode=='saisir')
         {
           $('#zone_deport_archivage').find('li.saisir').show();
@@ -1147,31 +1144,31 @@ $(document).ready
       function()
       {
         $('#zone_deport_archivage button').prop('disabled',true);
-        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+$(this).attr('id')+'&'+$("#zone_deport_archivage").serialize(),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_deport_archivage button').prop('disabled',false);
-              $('#ajax_msg_deport_archivage').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#zone_deport_archivage button').prop('disabled',false);
-              if(responseHTML.substring(0,3)!='<a ')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_deport_archivage').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg_deport_archivage').removeAttr("class").html(responseHTML);
+                $('#ajax_msg_deport_archivage').removeAttr('class').html(responseJSON['value']);
               }
             }
           }
@@ -1190,54 +1187,56 @@ $(document).ready
       {
         if(!$('#f_description').val())
         {
-          $('#msg_indiquer_eleves_deja').removeAttr("class").addClass("erreur").html('évaluation sans nom');
+          $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('erreur').html('évaluation sans nom');
           return false;
         }
         var f_date_debut = $('#f_date_deja').val();
         if(!f_date_debut)
         {
-          $('#msg_indiquer_eleves_deja').removeAttr("class").addClass("erreur").html('date manquante');
+          $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('erreur').html('date manquante');
           return false;
         }
         if(!test_dateITA(f_date_debut))
         {
-          $('#msg_indiquer_eleves_deja').removeAttr("class").addClass("erreur").html('date JJ/MM/AAAA incorrecte');
+          $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('erreur').html('date JJ/MM/AAAA incorrecte');
           return false;
         }
         $('button').prop('disabled',true);
-        $('#msg_indiquer_eleves_deja').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=indiquer_eleves_deja'+'&f_description='+encodeURIComponent($('#f_description').val())+'&f_date_debut='+encodeURIComponent(f_date_debut),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#msg_indiquer_eleves_deja').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('button').prop('disabled',false);
-              if(responseHTML.substring(0,3)!='ok,')
+              if(responseJSON['statut']==false)
               {
-                $('#msg_indiquer_eleves_deja').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
                 // On récupère les associations élèves -> dates
                 var tab_dates   = new Array();
                 var tab_groupes = new Array();
-                var tab_infos = responseHTML.substring(3).split(',');
                 var memo_groupe_id = 0;
-                for(i in tab_infos)
+                for(i in responseJSON['value'])
                 {
-                  var tab = tab_infos[i].split('_');
-                  tab_dates[tab[0]] = tab[1];
+                  if(i!='statut')
+                  {
+                    var tab = responseJSON[i].split('_');
+                    tab_dates[tab[0]] = tab[1];
+                  }
                 }
                 // Passer en revue les lignes élève
                 $("#zone_eleve input[type=checkbox]").each
@@ -1278,7 +1277,7 @@ $(document).ready
                   }
                   $('#groupe_'+groupe_id).css('color',couleur).html('<span class="gradient_outer"><span class="gradient_inner" style="width:'+pourcentage+'px"></span></span>'+pourcentage+'%');
                 }
-                $('#msg_indiquer_eleves_deja').removeAttr("class").addClass("valide").html("Affichage actualisé.");
+                $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('valide').html("Affichage actualisé.");
               }
             }
           }
@@ -1354,7 +1353,7 @@ $(document).ready
         );
         if(mode=='saisir')
         {
-          $table_saisir_voir.find('tbody').removeAttr("class").addClass(condense);
+          $table_saisir_voir.find('tbody').removeAttr('class').addClass(condense);
         }
         if(mode=='voir')
         {
@@ -1496,7 +1495,7 @@ $(document).ready
         {
           // pour une seule case
           var cellule_obj = $('#C'+colonne+'L'+ligne);
-          cellule_obj.val(note).removeAttr("class").addClass(style);
+          cellule_obj.val(note).removeAttr('class').addClass(style);
           cellule_obj.parent().css("background-color","#F6D");
           if(memo_direction=='down')
           {
@@ -1516,7 +1515,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).removeAttr("class").addClass(style);
+                $(this).val(note).removeAttr('class').addClass(style);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1531,7 +1530,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).removeAttr("class").addClass(style);
+                $(this).val(note).removeAttr('class').addClass(style);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1547,7 +1546,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).removeAttr("class").addClass(style);
+                $(this).val(note).removeAttr('class').addClass(style);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1556,11 +1555,11 @@ $(document).ready
         }
         if(modification==false)
         {
-          $('#fermer_zone_saisir_voir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
-          $('#kbd_27').removeAttr("class").addClass("img annuler");
+          $('#fermer_zone_saisir_voir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+          $('#kbd_27').removeAttr('class').addClass("img annuler");
           modification = true;
         }
-        $('#ajax_msg_saisir_voir').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_saisir_voir').removeAttr('class').html("");
         focus_cellule_suivante_en_evitant_sortie_tableau();
         endroit_report_note = 'cellule';
       }
@@ -1622,7 +1621,7 @@ $(document).ready
           // Test si un précédent td n'a pas été remis en place (js a du mal à suivre le mouseleave sinon)
           if(memo_input_id)
           {
-            $("td#td_"+memo_input_id).removeAttr("class").addClass("td_clavier").children("div").remove();
+            $("td#td_"+memo_input_id).removeAttr('class').addClass("td_clavier").children("div").remove();
             $("input#"+memo_input_id).show();
             memo_input_id = false;
           }
@@ -1634,7 +1633,7 @@ $(document).ready
             ligne   = parseInt(memo_input_id.substring(memo_input_id.indexOf('L')+1),10);
             var valeur = $(this).children("input").val();
             $(this).children("input").hide();
-            $(this).removeAttr("class").addClass("td_souris").append( $("#td_souris_container").html() ).find("img[alt="+valeur+"]").addClass("on");
+            $(this).removeAttr('class').addClass("td_souris").append( $("#td_souris_container").html() ).find("img[alt="+valeur+"]").addClass("on");
           }
         }
       }
@@ -1651,7 +1650,7 @@ $(document).ready
         {
           if(memo_input_id)
           {
-            $("td#td_"+memo_input_id).removeAttr("class").addClass("td_clavier").children("div").remove();
+            $("td#td_"+memo_input_id).removeAttr('class').addClass("td_clavier").children("div").remove();
             $("input#"+memo_input_id).show();
             memo_input_id = false;
           }
@@ -1672,8 +1671,8 @@ $(document).ready
         if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
         {
           // pour une seule case
-          $("input#"+memo_input_id).val(note).removeAttr("class").addClass(style);
-          $(this).parent().children("img").removeAttr("class");
+          $("input#"+memo_input_id).val(note).removeAttr('class').addClass(style);
+          $(this).parent().children("img").removeAttr('class');
           $(this).addClass("on").parent().parent().css("background-color","#F6D");
         }
         else
@@ -1687,7 +1686,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).removeAttr("class").addClass(style);
+                  $(this).val(note).removeAttr('class').addClass(style);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1702,7 +1701,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).removeAttr("class").addClass(style);
+                  $(this).val(note).removeAttr('class').addClass(style);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1717,7 +1716,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).removeAttr("class").addClass(style);
+                  $(this).val(note).removeAttr('class').addClass(style);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1726,11 +1725,11 @@ $(document).ready
         }
         if(modification==false)
         {
-          $('#fermer_zone_saisir_voir').removeAttr("class").addClass("annuler").html('Annuler / Retour');
-          $('#kbd_27').removeAttr("class").addClass("img annuler");
+          $('#fermer_zone_saisir_voir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+          $('#kbd_27').removeAttr('class').addClass("img annuler");
           modification = true;
         }
-        $('#ajax_msg_saisir_voir').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_saisir_voir').removeAttr('class').html("");
       }
     );
 
@@ -1744,7 +1743,7 @@ $(document).ready
       {
         if(modification==false)
         {
-          $('#ajax_msg_ordonner').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
+          $('#ajax_msg_ordonner').removeAttr('class').addClass('alerte').html("Aucune modification effectuée !");
         }
         else
         {
@@ -1762,7 +1761,7 @@ $(document).ready
             }
           );
           $('#zone_ordonner button').prop('disabled',true);
-          $('#ajax_msg_ordonner').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          $('#ajax_msg_ordonner').removeAttr('class').addClass('loader').html("En cours&hellip;");
           var ref = $('#ordre_ref').val();
           $.ajax
           (
@@ -1770,27 +1769,27 @@ $(document).ready
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
               data : 'csrf='+CSRF+'&f_action=enregistrer_ordre'+'&f_ref='+ref+'&f_prof_liste='+tab_profs[ref]+'&tab_id='+tab_id,
-              dataType : "html",
+              dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
                 $('#zone_ordonner button').prop('disabled',false);
-                $('#ajax_msg_ordonner').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+                $('#ajax_msg_ordonner').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
-              success : function(responseHTML)
+              success : function(responseJSON)
               {
                 initialiser_compteur();
                 $('#zone_ordonner button').prop('disabled',false);
-                if(responseHTML!='<ok>')
+                if(responseJSON['statut']==false)
                 {
-                  $('#ajax_msg_ordonner').removeAttr("class").addClass("alerte").html(responseHTML);
+                  $('#ajax_msg_ordonner').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
                   modification = false;
                   $('#devoir_'+ref).parent().addClass("new");
-                  $('#ajax_msg_ordonner').removeAttr("class").addClass("valide").html("Ordre enregistré !");
-                  $('#fermer_zone_ordonner').removeAttr("class").addClass("retourner").html('Retour');
+                  $('#ajax_msg_ordonner').removeAttr('class').addClass('valide').html("Ordre enregistré !");
+                  $('#fermer_zone_ordonner').removeAttr('class').addClass("retourner").html('Retour');
                 }
               }
             }
@@ -1809,12 +1808,12 @@ $(document).ready
       {
         if(modification==false)
         {
-          $('#ajax_msg_saisir_voir').removeAttr("class").addClass("alerte").html("Aucune modification effectuée !");
+          $('#ajax_msg_saisir_voir').removeAttr('class').addClass('alerte').html("Aucune modification effectuée !");
         }
         else
         {
           $('button').prop('disabled',true);
-          $('#ajax_msg_saisir_voir').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          $('#ajax_msg_saisir_voir').removeAttr('class').addClass('loader').html("En cours&hellip;");
           // Grouper les saisies dans une variable unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
           var f_notes = new Array();
           $table_saisir_voir.find("tbody input").each
@@ -1836,30 +1835,30 @@ $(document).ready
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
               data : 'csrf='+CSRF+'&f_action=enregistrer_saisie'+'&f_ref='+ref+'&f_date_fr='+$("#saisir_voir_date_fr").val()+'&f_date_visible='+$("#saisir_voir_date_visible").val()+'&f_eleves_ordre='+$("#saisir_voir_eleves_ordre").val()+'&f_fini='+$("#saisir_voir_fini").val()+'&f_prof_liste='+tab_profs[ref]+'&f_notes='+f_notes+'&f_description='+encodeURIComponent($("#saisir_voir_description").val()),
-              dataType : "html",
+              dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
                 $('button').prop('disabled',false);
-                $('#ajax_msg_saisir_voir').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+                $('#ajax_msg_saisir_voir').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
-              success : function(responseHTML)
+              success : function(responseJSON)
               {
                 modification = false; // Mis ici pour le cas "aucune modification détectée"
                 initialiser_compteur();
                 $('button').prop('disabled',false);
-                if(responseHTML.substring(0,4)!='<td ')
+                if(responseJSON['statut']==false)
                 {
-                  $('#ajax_msg_saisir_voir').removeAttr("class").addClass("alerte").html(responseHTML);
+                  $('#ajax_msg_saisir_voir').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
                   $('#devoir_'+ref).parent().addClass("new");
-                  $('#ajax_msg_saisir_voir').removeAttr("class").addClass("valide").html("Saisies enregistrées !");
-                  $('#fermer_zone_saisir_voir').removeAttr("class").addClass("retourner").html('Retour');
-                  $('#kbd_27').removeAttr("class").addClass("img retourner");
+                  $('#ajax_msg_saisir_voir').removeAttr('class').addClass('valide').html("Saisies enregistrées !");
+                  $('#fermer_zone_saisir_voir').removeAttr('class').addClass("retourner").html('Retour');
+                  $('#kbd_27').removeAttr('class').addClass("img retourner");
                   colorer_cellules();
-                  $("#devoir_"+$("#saisir_voir_ref").val()).prev().replaceWith(responseHTML);
+                  $("#devoir_"+$("#saisir_voir_ref").val()).prev().replaceWith(responseJSON['value']);
                 }
               }
             }
@@ -1924,7 +1923,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_gestion",
@@ -1968,13 +1967,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_gestion').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -1984,29 +1983,28 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      if(responseHTML.substring(0,2)!='<t')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter':
             $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
           case 'dupliquer':
-            var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-            var new_tds = responseHTML.substring(0,position_script);
+            var new_tds = responseJSON['html'];
             if(TYPE=='groupe')
             {
               var groupe_id = $("#f_groupe option:selected").val();
@@ -2014,18 +2012,17 @@ $(document).ready
             }
             var new_tr = '<tr class="new">'+new_tds+'</tr>';
             $('#table_action tbody').prepend(new_tr);
-            eval( responseHTML.substring(position_script+8) );
+            eval( responseJSON['script'] );
             break;
           case 'modifier':
-            var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-            var new_tds = responseHTML.substring(0,position_script);
+            var new_tds = responseJSON['html'];
             if(TYPE=='groupe')
             {
               var groupe_id = $("#f_groupe option:selected").val();
               var new_tds = new_tds.replace('>{{GROUPE_NOM}}<','>'+tab_groupe[groupe_id]+'<'); // on ne prend pas '<td>' en entier car il y a un attribut class
             }
             $('#devoir_'+$('#f_ref').val()).parent().addClass("new").html(new_tds);
-            eval( responseHTML.substring(position_script+8) );
+            eval( responseJSON['script'] );
             break;
           case 'supprimer':
             $('#devoir_'+$('#f_ref').val()).parent().remove();
@@ -2049,7 +2046,7 @@ $(document).ready
         name: 'userfile',
         data : {'csrf':CSRF},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -2058,7 +2055,7 @@ $(document).ready
 
     function changer_fichier(fichier_nom,fichier_extension)
     {
-      $('#ajax_msg_deport_archivage').removeAttr("class").html('&nbsp;');
+      $('#ajax_msg_deport_archivage').removeAttr('class').html('&nbsp;');
       return true;
     }
 
@@ -2066,41 +2063,40 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("erreur").html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('erreur').html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
         return false;
       }
       else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
-        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
         return false;
       }
       else
       {
         $('#zone_deport_archivage button').prop('disabled',true);
-        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier(fichier_nom,responseJSON)
     {
       $('#zone_deport_archivage button').prop('disabled',false);
-      if(responseHTML.substring(0,1)!='|')
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
         var nb_notes_remontees = 0;
         var nb_notes_reportees = 0;
-        if(responseHTML.length>2)
+        for(i in responseJSON['value'])
         {
-          responseHTML = responseHTML.substring(1);
-          tab_resultat = responseHTML.split('|');
-          for (i=0 ; i<tab_resultat.length ; i++)
+          if(i!='statut')
           {
-            tab_valeur = tab_resultat[i].split('.');
+            tab_valeur = responseJSON[i].split('.');
             if(tab_valeur.length==3)
             {
               nb_notes_remontees++;
@@ -2113,14 +2109,14 @@ $(document).ready
                 nb_notes_reportees++;
                 switch (score)
                 {
-                  case 'A': champ.val('AB').removeAttr("class").addClass('AB'); break;
-                  case 'D': champ.val('DI').removeAttr("class").addClass('DI'); break;
-                  case 'N': champ.val('NN').removeAttr("class").addClass('NN'); break;
-                  case 'E': champ.val('NE').removeAttr("class").addClass('NE'); break;
-                  case 'F': champ.val('NF').removeAttr("class").addClass('NF'); break;
-                  case 'R': champ.val('NR').removeAttr("class").addClass('NR'); break;
-                  case 'P': champ.val('PA').removeAttr("class").addClass('PA'); break;
-                  default : champ.val(score).removeAttr("class").addClass('N'+score); break;
+                  case 'A': champ.val('AB').removeAttr('class').addClass('AB'); break;
+                  case 'D': champ.val('DI').removeAttr('class').addClass('DI'); break;
+                  case 'N': champ.val('NN').removeAttr('class').addClass('NN'); break;
+                  case 'E': champ.val('NE').removeAttr('class').addClass('NE'); break;
+                  case 'F': champ.val('NF').removeAttr('class').addClass('NF'); break;
+                  case 'R': champ.val('NR').removeAttr('class').addClass('NR'); break;
+                  case 'P': champ.val('PA').removeAttr('class').addClass('PA'); break;
+                  default : champ.val(score).removeAttr('class').addClass('N'+score); break;
                 }
                 champ.parent().css("background-color","#F6D");
               }
@@ -2130,7 +2126,7 @@ $(document).ready
         }
         var s_remontees = (nb_notes_remontees>1) ? 's' : '' ;
         var s_reportees = (nb_notes_remontees>1) ? 's' : '' ;
-        $('#ajax_msg_deport_archivage').removeAttr("class").addClass("valide").html(nb_notes_remontees+" saisie"+s_remontees+" trouvée"+s_remontees+" dans le fichier ; "+nb_notes_reportees+" note"+s_reportees+" reportée"+s_reportees+" dans le tableau.<br />N'oubliez pas d'enregistrer !");
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('valide').html(nb_notes_remontees+" saisie"+s_remontees+" trouvée"+s_remontees+" dans le fichier ; "+nb_notes_reportees+" note"+s_reportees+" reportée"+s_reportees+" dans le tableau.<br />N'oubliez pas d'enregistrer !");
       }
     }
 
@@ -2146,7 +2142,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_action':'uploader_document','f_doc_objet':'sujet','f_ref':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onSubmit: verifier_fichier_document,
         onComplete: retourner_fichier_document
       }
@@ -2160,7 +2156,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_action':'uploader_document','f_doc_objet':'corrige','f_ref':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onSubmit: verifier_fichier_document,
         onComplete: retourner_fichier_document
       }
@@ -2170,39 +2166,38 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_document_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
         return false;
       }
       else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
       {
-        $('#ajax_document_upload').removeAttr("class").addClass("erreur").html('Extension non autorisée.');
+        $('#ajax_document_upload').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
         activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
         return false;
       }
       else
       {
         $('#zone_upload button').prop('disabled',true);
-        $('#ajax_document_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier_document(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier_document(fichier_nom,responseJSON)
     {
       fichier_extension = fichier_nom.split('.').pop();
-      var tab_infos = responseHTML.split(']¤[');
-      if(tab_infos[0]!='ok')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_document_upload').removeAttr("class").addClass("valide").html("Document enregistré.");
-        var ref   = tab_infos[1];
-        var objet = tab_infos[2];
-        var url   = tab_infos[3];
+        $('#ajax_document_upload').removeAttr('class').addClass('valide').html("Document enregistré.");
+        var ref   = responseJSON['ref'];
+        var objet = responseJSON['objet'];
+        var url   = responseJSON['url'];
         if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = url; }
         else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
         var lien        = '<a href="'+url+'" target="_blank" class="no_puce"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
@@ -2231,7 +2226,7 @@ $(document).ready
       function()
       {
         $('#zone_upload button').prop('disabled',true);
-        $('#ajax_document_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
         var objet = $(this).attr('id').substring(17);
         var ref   = uploader_sujet['_settings']['data']['f_ref'];
         var url   = (objet=='sujet') ? tab_sujets[ref] : tab_corriges[ref] ;
@@ -2241,23 +2236,23 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=retirer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+encodeURIComponent(url),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               activer_boutons_upload(ref);
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML!='ok')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_document_upload').removeAttr("class").addClass("valide").html("Document retiré.");
+                $('#ajax_document_upload').removeAttr('class').addClass('valide').html("Document retiré.");
                 if(objet=='sujet') { var alt='sujet';   var numero=0; tab_sujets[ref] = ''; }
                 else               { var alt='corrigé'; var numero=1; tab_corriges[ref] = ''; }
                 var lien        = '<img alt="'+alt+'" src="./_img/document/'+objet+'_non.png" />';
@@ -2285,43 +2280,43 @@ $(document).ready
         var url   = $('#f_adresse_'+objet).val();
         if(url == '')
         {
-          $('#ajax_document_upload').removeAttr("class").addClass("erreur").html("Adresse manquante !");
+          $('#ajax_document_upload').removeAttr('class').addClass('erreur').html("Adresse manquante !");
           $('#f_adresse_'+objet).focus();
           return false;
         }
         else if(!testURL(url))
         {
-          $('#ajax_document_upload').removeAttr("class").addClass("erreur").html("Adresse incorrecte !");
+          $('#ajax_document_upload').removeAttr('class').addClass('erreur').html("Adresse incorrecte !");
           $('#f_adresse_'+objet).focus();
           return false;
         }
         else
         {
           $('#zone_upload button').prop('disabled',true);
-          $('#ajax_document_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
               data : 'csrf='+CSRF+'&f_action=referencer_document'+'&f_doc_objet='+objet+'&f_ref='+ref+'&f_doc_url='+encodeURIComponent(url),
-              dataType : "html",
+              dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 activer_boutons_upload(ref);
                 return false;
               },
-              success : function(responseHTML)
+              success : function(responseJSON)
               {
                 initialiser_compteur();
-                if(responseHTML!='ok')
+                if(responseJSON['statut']==false)
                 {
-                  $('#ajax_document_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+                  $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
-                  $('#ajax_document_upload').removeAttr("class").addClass("valide").html("Document référencé.");
+                  $('#ajax_document_upload').removeAttr('class').addClass('valide').html("Document référencé.");
                   if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = url; }
                   else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
                   var lien        = '<a href="'+url+'" target="_blank" class="no_puce"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
@@ -2358,18 +2353,18 @@ $(document).ready
             type : 'POST',
             url  : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=maj_fini'+'&f_fini='+fini+'&f_ref='+ref,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !\nVeuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML!='ok')
+              if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
@@ -2415,7 +2410,7 @@ $(document).ready
       recorder = new Recorder(input);
       log('log',"Enregistreur initialisé.");
       $('#record_start').show();
-      $('#ajax_msg_enregistrer_audio').removeAttr("class").html("");
+      $('#ajax_msg_enregistrer_audio').removeAttr('class').html("");
     }
 
     function initAudioContext()
@@ -2430,14 +2425,14 @@ $(document).ready
         if(navigator.getUserMedia)
         {
           log('log',"Environnement navigator.getUserMedia disponible.");
-          $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("alerte").html("Veuillez autoriser l'utilisation du microphone (voir en haut de la fenêtre)&hellip;");
+          $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('alerte').html("Veuillez autoriser l'utilisation du microphone (voir en haut de la fenêtre)&hellip;");
           navigator.getUserMedia(
             {audio: true},
             startUserMedia,
             function(e)
             {
               log('error',"Pas d'entrée audio en direct : " + e);
-              $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("erreur").html("Utilisation du microphone rejetée&hellip; Veuillez l'autoriser puis recharger la page.");
+              $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('erreur').html("Utilisation du microphone rejetée&hellip; Veuillez l'autoriser puis recharger la page.");
               $('#record_start').hide();
             }
           );
@@ -2445,11 +2440,11 @@ $(document).ready
         else
         {
           log('warn',"Environnement navigator.getUserMedia manquant !");
-          $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("erreur").html("Ce navigateur ne gère pas l'enregistrement audio !");
+          $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('erreur').html("Ce navigateur ne gère pas l'enregistrement audio !");
         }
       } catch (e) {
         log('error',"Ce navigateur ne gère pas l'enregistrement audio !");
-        $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("erreur").html("Ce navigateur ne gère pas l'enregistrement audio !");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('erreur').html("Ce navigateur ne gère pas l'enregistrement audio !");
         $('#record_start').hide();
       }
     };
@@ -2629,7 +2624,7 @@ $(document).ready
       audio_duree_restante--;
       if(audio_duree_restante>0)
       {
-        $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("valide").html("Enregistrement en cours&hellip; Encore "+audio_duree_restante+"s maximum.");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('valide').html("Enregistrement en cours&hellip; Encore "+audio_duree_restante+"s maximum.");
       }
       else
       {
@@ -2746,23 +2741,22 @@ $(document).ready
                 type : 'POST',
                 url : 'ajax.php?page='+PAGE,
                 data : 'csrf='+CSRF+'&f_action='+'recuperer_message'+'&f_ref='+$('#saisir_voir_ref').val()+'&f_eleve_id='+user_id+'&f_msg_objet='+msg_objet,
-                dataType : "html",
+                dataType : 'json',
                 error : function(jqXHR, textStatus, errorThrown)
                 {
-                  $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+                  $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
                   return false;
                 },
-                success : function(responseHTML)
+                success : function(responseJSON)
                 {
                   initialiser_compteur();
-                  var tab_response = responseHTML.split(']¤[');
-                  if(tab_response[0]!='ok')
+                  if(responseJSON['statut']==false)
                   {
-                    $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                    $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
                   }
                   else
                   {
-                    afficher_zone_enregistrer( msg_objet , tab_response[1] /*msg_url*/ , tab_response[2] /*msg_data*/ );
+                    afficher_zone_enregistrer( msg_objet , responseJSON['msg_url'] , responseJSON['msg_data'] );
                   }
                 }
               }
@@ -2783,33 +2777,30 @@ $(document).ready
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
               data : 'csrf='+CSRF+'&f_action='+'recuperer_message'+'&f_ref='+$('#saisir_voir_ref').val()+'&f_eleve_id='+user_id+'&f_msg_objet='+msg_objet,
-              dataType : "html",
+              dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
                 return false;
               },
-              success : function(responseHTML)
+              success : function(responseJSON)
               {
                 initialiser_compteur();
-                var tab_response = responseHTML.split(']¤[');
-                if(tab_response[0]!='ok')
+                if(responseJSON['statut']==false)
                 {
-                  $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                  $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
                 }
                 else
                 {
-                  var msg_url  = tab_response[1];
-                  var msg_data = tab_response[2];
                   if(msg_objet=='texte')
                   {
-                    $('#f_voir_texte').val(msg_data);
+                    $('#f_voir_texte').val(responseJSON['msg_data']);
                     $('#report_texte').show();
                     $('#report_audio').hide();
                   }
                   else
                   {
-                    $('#f_ecouter_audio').attr('src',msg_data);
+                    $('#f_ecouter_audio').attr('src',responseJSON['msg_data']);
                     $('#report_audio').show();
                     $('#report_texte').hide();
                   }
@@ -2848,7 +2839,7 @@ $(document).ready
     function fermer_zone_enregistrer_texte()
     {
       $('#titre_enregistrer_texte').html("");
-      $('#ajax_msg_enregistrer_texte').removeAttr("class").html("");
+      $('#ajax_msg_enregistrer_texte').removeAttr('class').html("");
       $.fancybox.close();
     }
 
@@ -2866,40 +2857,39 @@ $(document).ready
       {
         var ref = $('#enregistrer_texte_ref').val();
         $('#zone_enregistrer_texte button').prop('disabled',true);
-        $('#ajax_msg_enregistrer_texte').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_enregistrer_texte').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=enregistrer_texte'+'&f_prof_liste='+tab_profs[ref]+'&f_date_visible='+$("#saisir_voir_date_visible").val()+'&f_description='+encodeURIComponent($("#saisir_voir_description").val())+'&'+$("#zone_enregistrer_texte").serialize(),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_enregistrer_texte button').prop('disabled',false);
-              $('#ajax_msg_enregistrer_texte').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_enregistrer_texte').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#zone_enregistrer_texte button').prop('disabled',false);
-              var tab_response = responseHTML.split(']¤[');
-              if(tab_response[0]!='ok')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_enregistrer_texte').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_enregistrer_texte').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg_enregistrer_texte').removeAttr("class").addClass("valide").html("Commentaire enregistré !");
+                $('#ajax_msg_enregistrer_texte').removeAttr('class').addClass('valide').html("Commentaire enregistré !");
                 var eleve_id = $('#enregistrer_texte_eleve_id').val();
-                if(tab_response[1]=='supprimé')
+                if(responseJSON['value']=='supprimé')
                 {
-                  $('#texte_'+eleve_id).removeAttr("class").children('q').attr('title',"Saisir un commentaire écrit.");
+                  $('#texte_'+eleve_id).removeAttr('class').children('q').attr('title',"Saisir un commentaire écrit.");
                 }
                 else
                 {
-                  $('#enregistrer_texte_msg_url').val(tab_response[1]);
+                  $('#enregistrer_texte_msg_url').val(responseJSON['value']);
                   $('#texte_'+eleve_id).addClass('off').children('q').attr('title',"Modifier le commentaire écrit.");
                 }
                 fermer_zone_enregistrer_texte();
@@ -2923,10 +2913,10 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=enregistrer_audio'+'&f_prof_liste='+tab_profs[ref]+'&f_date_visible='+$("#saisir_voir_date_visible").val()+'&f_description='+encodeURIComponent($("#saisir_voir_description").val())+'&'+$("#zone_enregistrer_audio").serialize(),
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#fermer_enregistrer_audio').prop('disabled',false);
             if(is_audio)
             {
@@ -2940,14 +2930,13 @@ $(document).ready
             }
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
             $('#fermer_enregistrer_audio').prop('disabled',false);
-            var tab_response = responseHTML.split(']¤[');
-            if(tab_response[0]!='ok')
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               if(is_audio)
               {
                 $('#audio_enregistrer_stop').prop('disabled',false);
@@ -2962,17 +2951,17 @@ $(document).ready
             else
             {
               var eleve_id = $('#enregistrer_audio_eleve_id').val();
-             if(tab_response[1]=='supprimé')
+             if(responseJSON['value']=='supprimé')
               {
-                $('#audio_'+eleve_id).removeAttr("class").children('q').attr('title',"Enregistrer un commentaire audio.");
-                $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("valide").html("Commentaire supprimé !");
+                $('#audio_'+eleve_id).removeAttr('class').children('q').attr('title',"Enregistrer un commentaire audio.");
+                $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('valide').html("Commentaire supprimé !");
                 $('#record_start').show();
               }
               else
               {
-                $('#enregistrer_audio_msg_url').val(tab_response[1]);
+                $('#enregistrer_audio_msg_url').val(responseJSON['value']);
                 $('#audio_'+eleve_id).addClass('off').children('q').attr('title',"Modifier le commentaire audio.");
-                $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("valide").html("Commentaire enregistré !");
+                $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('valide').html("Commentaire enregistré !");
                 $('#audio_enregistrer_stop').prop('disabled',false);
                 $('#record_stop').hide();
                 $('#record_start , #record_play, #record_delete').show();
@@ -2993,7 +2982,7 @@ $(document).ready
       {
         $('#enregistrer_audio_msg_data').val('');
         $('#record_start , #record_play, #record_delete').hide();
-        $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("loader").html("Suppression en cours&hellip;");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('loader').html("Suppression en cours&hellip;");
         valider_enregistrer_audio(false);
       }
     );
@@ -3029,7 +3018,7 @@ $(document).ready
       {
         audio_compteur_stop();
         $('#audio_enregistrer_stop').prop('disabled',true);
-        $('#ajax_msg_enregistrer_audio').removeAttr("class").addClass("loader").html("Traitement en cours&hellip;");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('loader').html("Traitement en cours&hellip;");
         // Go
         recorder && recorder.stop();
         log('log','Enregistrement arrêté.');
@@ -3065,7 +3054,7 @@ $(document).ready
       function()
       {
         $('#titre_enregistrer_audio').html("");
-        $('#ajax_msg_enregistrer_audio').removeAttr("class").html("");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').html("");
         $.fancybox.close();
       }
     );
@@ -3208,7 +3197,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_prechoix",
@@ -3230,11 +3219,11 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_prechoix(formData, jqForm, options)
     {
-      $('#ajax_msg_prechoix').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_prechoix').removeAttr('class').html("");
       var readytogo = validation_prechoix.form();
       if(readytogo)
       {
-        $('#ajax_msg_prechoix').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_prechoix').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -3242,23 +3231,22 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_prechoix(jqXHR, textStatus, errorThrown)
     {
-      $('#ajax_msg_prechoix').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_prechoix').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide_prechoix(responseHTML)
+    function retour_form_valide_prechoix(responseJSON)
     {
       initialiser_compteur();
-      if(responseHTML.substring(0,3)!='<tr')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_prechoix').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_prechoix').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_prechoix').removeAttr("class").addClass("valide").html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr("class").html("").show();});
-        var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-        $('#table_action tbody').html( responseHTML.substring(0,position_script) );
-        eval( responseHTML.substring(position_script+8) );
+        $('#ajax_msg_prechoix').removeAttr('class').addClass('valide').html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr('class').html("").show();});
+        $('#table_action tbody').html( responseJSON['html'] );
+        eval( responseJSON['script'] );
         tableau_maj();
         if( reception_todo )
         {

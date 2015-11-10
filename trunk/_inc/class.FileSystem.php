@@ -220,15 +220,18 @@ class FileSystem
    * Tester l'existence d'un dossier, le créer, tester son accès en écriture.
    * 
    * @param     string   $dossier
-   * @staticvar string   $affichage   Facultatif, n'est utilisé que lors de la procédure d'installation.
+   * @bool      string   $add_json   Facultatif, n'est utilisé que lors de la procédure d'installation.
    * @return bool
    */
-  public static function creer_dossier($dossier,&$affichage='')
+  public static function creer_dossier( $dossier , $add_json=FALSE )
   {
     // Le dossier existe-t-il déjà ?
     if(is_dir($dossier))
     {
-      $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; déjà en place.</label><br />'.NL;
+      if($add_json)
+      {
+        Json::add_str('<label class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; déjà en place.</label><br />'.NL);
+      }
       return TRUE;
     }
     @umask(FileSystem::systeme_umask());
@@ -236,19 +239,31 @@ class FileSystem
     // Le dossier a-t-il bien été créé ?
     if(!$test)
     {
-      $affichage .= '<label for="rien" class="erreur">Échec lors de la création du dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'.NL;
+      if($add_json)
+      {
+        Json::add_str('<label class="erreur">Échec lors de la création du dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; : veuillez le créer manuellement.</label><br />'.NL);
+      }
       return FALSE;
     }
-    $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; créé.</label><br />'.NL;
+    if($add_json)
+    {
+      Json::add_str('<label class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; créé.</label><br />'.NL);
+    }
     // Le dossier est-il accessible en écriture ?
     $test = is_writable($dossier);
     if(!$test)
     {
-      $affichage .= '<label for="rien" class="erreur">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; inaccessible en écriture : veuillez en changer les droits manuellement.</label><br />'.NL;
+      if($add_json)
+      {
+        Json::add_str('<label class="erreur">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; inaccessible en écriture : veuillez en changer les droits manuellement.</label><br />'.NL);
+      }
       return FALSE;
     }
     // Si on arrive là, c'est bon...
-    $affichage .= '<label for="rien" class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; accessible en écriture.</label><br />'.NL;
+    if($add_json)
+    {
+      Json::add_str('<label class="valide">Dossier &laquo;&nbsp;<b>'.FileSystem::fin_chemin($dossier).'</b>&nbsp;&raquo; accessible en écriture.</label><br />'.NL);
+    }
     return TRUE;
   }
 
@@ -366,13 +381,13 @@ class FileSystem
    * @param int      facultatif ; si constante FILE_APPEND envoyée, alors ajoute en fin de fichier au lieu d'écraser le contenu
    * @return TRUE    par compatibilité avec ecrire_fichier_si_possible()
    */
-  public static function ecrire_fichier($fichier_chemin,$fichier_contenu,$file_append=0)
+  public static function ecrire_fichier( $fichier_chemin , $fichier_contenu , $file_append=0 )
   {
     @umask(FileSystem::systeme_umask());
     $test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu,$file_append);
     if($test_ecriture===FALSE)
     {
-      exit('Erreur : problème lors de l\'écriture du fichier '.FileSystem::fin_chemin($fichier_chemin).' !');
+      exit('Problème lors de l\'écriture du fichier '.FileSystem::fin_chemin($fichier_chemin).' !');
     }
     return TRUE;
   }
@@ -424,8 +439,8 @@ class FileSystem
   /**
    * Fabriquer ou mettre à jour le fichier de configuration de l'hébergement (gestion par le webmestre)
    * 
-   * @param array $tab_constantes_modifiees => $constante_valeur des paramètres à modifier (sinon, on prend les constantes déjà définies)
-   * @return void
+   * @param array          $tab_constantes_modifiees => $constante_valeur des paramètres à modifier (sinon, on prend les constantes déjà définies)
+   * @return TRUE|string   TRUE ou un message d'erreur
    */
   public static function fabriquer_fichier_hebergeur_info($tab_constantes_modifiees)
   {
@@ -479,7 +494,7 @@ class FileSystem
         // le fichier existe mais il n'est pas lu (problème du système de fichier ?), 
         // du coup on tente de le réécrire avec des constantes vides (puisque non récupérées),
         // ce qui pose un gros souci (fichier de configuration de l'hébergement corrompu).
-        exit_error( 'Constante manquante' /*titre*/ , 'Pour la mise à jour du fichier de configuration de l\'hébergement, la constante "'.$constante_nom.'" s\'avère manquer.<br />Par sécurité, arrêt de l\'application.' /*contenu*/ );
+        return 'Constante "'.$constante_nom.'" manquante pour la mise à jour du fichier de configuration.';
       }
       $espaces = str_repeat(' ',$longueur_constante_maxi-strlen($constante_nom));
       $quote = '\'';
@@ -488,6 +503,7 @@ class FileSystem
     }
     $fichier_contenu.= '?>'.NL;
     FileSystem::ecrire_fichier(CHEMIN_FICHIER_CONFIG_INSTALL,$fichier_contenu);
+    return TRUE;
   }
 
   /**
@@ -715,7 +731,7 @@ class FileSystem
    * @param string   $chemin_fichier_zip   chemin et nom de l'archive zip à créer
    * @param string   $fichier_nom          nom du fichier dans l'archive zip
    * @param string   $fichier_contenu      contenu à zipper
-   * @return void
+   * @return TRUE|string                   TRUE ou un message d'erreur
    */
   public static function zip( $chemin_fichier_zip , $fichier_nom , $fichier_contenu )
   {
@@ -723,10 +739,11 @@ class FileSystem
     $result_open = $zip->open($chemin_fichier_zip, ZIPARCHIVE::CREATE);
     if($result_open!==TRUE)
     {
-      exit('Problème de création de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !');
+      return 'Problème de création de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !';
     }
     $zip->addFromString($fichier_nom,$fichier_contenu);
     $zip->close();
+    return TRUE;
   }
 
   /**
@@ -737,7 +754,7 @@ class FileSystem
    * @param string   $chemin_fichier_zip   chemin et nom de l'archive zip
    * @param string   $fichier_nom_archive  nom du fichier à rechercher dans l'archive zip
    * @param string   $chemin_nom_final     chemin du fichier une fois extrait
-   * @return void
+   * @return TRUE|string                   TRUE ou un message d'erreur
    */
   public static function unzip_one($chemin_fichier_zip,$fichier_nom_archive,$chemin_nom_final)
   {
@@ -745,17 +762,18 @@ class FileSystem
     $result_open = $zip->open($chemin_fichier_zip);
     if($result_open!==TRUE)
     {
-      exit('Problème d\'ouverture de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !');
+      return 'Problème d\'ouverture de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !';
     }
     if($zip->extractTo(CHEMIN_DOSSIER_IMPORT,$fichier_nom_archive)!==TRUE)
     {
-      exit('Fichier '.$fichier_nom_archive.' non trouvé dans l\'archive ZIP !');
+      return 'Fichier '.$fichier_nom_archive.' non trouvé dans l\'archive ZIP !';
     }
     $zip->close();
     if(!rename(CHEMIN_DOSSIER_IMPORT.$fichier_nom_archive , $chemin_nom_final))
     {
-      exit('Le fichier extrait n\'a pas pu être enregistré sur le serveur.');
+      return 'Le fichier extrait n\'a pas pu être enregistré sur le serveur.';
     }
+    return TRUE;
   }
 
   /**
@@ -885,8 +903,11 @@ class FileSystem
       {
         return 'Le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.';
       }
-      // Remarque : la ligne suivante peut balancer un exit sans se poser de questions
-      FileSystem::unzip_one( $fichier_tmp_chemin , $filename_in_zip , $fichier_final_chemin.$fichier_final_nom );
+      $result = FileSystem::unzip_one( $fichier_tmp_chemin , $filename_in_zip , $fichier_final_chemin.$fichier_final_nom );
+      if($result!==TRUE)
+      {
+        return( $result );
+      }
     }
     // C'est bon :)
     FileSystem::$file_upload_name = $fichier_tmp_nom;

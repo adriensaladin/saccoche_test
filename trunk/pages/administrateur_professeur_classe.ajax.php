@@ -50,7 +50,7 @@ if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
       DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $prof_id , 'professeur' , $classe_id , 'classe' , $etat );
     }
   }
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,13 +61,13 @@ if( in_array($action,array('ajouter_pp','retirer_pp')) && ($classe_id) && ($prof
 {
   $etat = ($action=='ajouter_pp') ? TRUE : FALSE ;
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal( $prof_id , $classe_id , $etat );
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

@@ -681,7 +681,7 @@ public static function DB_modifier_user_parametre($user_id,$champ_nom,$champ_val
  * @param int    $user_id
  * @param string $password_ancien_crypte
  * @param string $password_nouveau_crypte
- * @return string   'ok' ou 'Le mot de passe actuel est incorrect !'
+ * @return bool   TRUE si ok | FALSE si le mot de passe actuel est incorrect.
  */
 public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_crypte,$password_nouveau_crypte)
 {
@@ -696,7 +696,7 @@ public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_cry
   $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   if(empty($DB_ROW))
   {
-    return 'Le mot de passe actuel est incorrect !';
+    return FALSE;
   }
   // Remplacer par le nouveau mot de passe
   $DB_SQL = 'UPDATE sacoche_user ';
@@ -707,7 +707,7 @@ public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_cry
     ':password_crypte' => $password_nouveau_crypte,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return 'ok';
+  return TRUE;
 }
 
 /**

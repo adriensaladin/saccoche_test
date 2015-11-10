@@ -40,7 +40,7 @@ $groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_grou
 
 if( (!isset($tab_types[$BILAN_TYPE])) || (!$periode_id) || (!$classe_id) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // On vérifie que le bilan est bien accessible et on récupère les infos associées
@@ -48,7 +48,7 @@ if( (!isset($tab_types[$BILAN_TYPE])) || (!$periode_id) || (!$classe_id) )
 $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
 if(empty($DB_ROW))
 {
-  exit('Association classe / période introuvable !');
+  Json::end( FALSE , 'Association classe / période introuvable !' );
 }
 $date_debut  = $DB_ROW['jointure_date_debut'];
 $date_fin    = $DB_ROW['jointure_date_fin'];
@@ -57,7 +57,7 @@ $periode_nom = $DB_ROW['periode_nom'];
 $classe_nom  = $DB_ROW['groupe_nom'];
 if(!$BILAN_ETAT)
 {
-  exit('Bilan introuvable !');
+  Json::end( FALSE , 'Bilan introuvable !' );
 }
 
 // Récupérer la liste des élèves (on pourrait se faire transmettre les ids par l'envoi ajax, mais on a aussi besoin des noms-prénoms).
@@ -66,7 +66,7 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
 if(empty($DB_TAB))
 {
-  exit('Aucun élève trouvé dans ce regroupement !');
+  Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
 }
 $tab_eleve_id    = array( 0 => array( 'eleve_nom' => $classe_nom ,  'eleve_prenom' => '' ) );
 $tab_saisie_init = array( 0 => array( 'note'=>NULL , 'appreciation'=>'' ) );
@@ -331,7 +331,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
 {
   if(!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
   {
-    exit('Les bulletins sont configurés sans notes !');
+    Json::end( FALSE , 'Les bulletins sont configurés sans notes !' );
   }
   // Rechercher les notes enregistrées pour les élèves
   $tab_saisie = array();  // [eleve_id][rubrique_id] => array(note,appreciation);
@@ -547,13 +547,13 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
 
 $fichier_export = 'saisies_'.$BILAN_TYPE.'_'.Clean::fichier($periode_nom).'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
-echo'<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>';
+Json::add_str('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>');
 // Et le csv éventuel
 if($action=='imprimer_donnees_eleves_moyennes')
 {
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($archivage_tableau_CSV) );
-  echo'<br />'.NL.'<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>';
+  Json::add_str('<br />'.NL.'<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>');
 }
-exit();
+Json::end( TRUE );
 
 ?>

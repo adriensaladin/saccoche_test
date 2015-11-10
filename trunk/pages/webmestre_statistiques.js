@@ -53,7 +53,7 @@ $(document).ready
         // grouper le select multiple
         if( $("#f_base input:checked").length==0 )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un établissement !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez au moins un établissement !");
           return false;
         }
         else
@@ -62,33 +62,33 @@ $(document).ready
           var f_listing_id = new Array(); $("#f_base input:checked").each(function(){f_listing_id.push($(this).val());});
         }
         // on envoie
-        $("#bouton_valider").prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#bouton_valider').prop('disabled',true);
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=calculer'+'&f_listing_id='+f_listing_id,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $("#bouton_valider").prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#bouton_valider').prop('disabled',false);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,2)!='ok')
+              if(responseJSON['statut']==false)
               {
-                $("#bouton_valider").prop('disabled',false);
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#bouton_valider').prop('disabled',false);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                var max = responseHTML.substring(3,responseHTML.length);
-                $('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape 1 sur ' + max + '...');
+                var max = responseJSON['value'];
+                $('#ajax_msg1').removeAttr('class').addClass('loader').html('Structures à l\'étude : étape 1 sur ' + max + '...');
                 $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
                 $('#ajax_num').html(1);
                 $('#ajax_max').html(max);
@@ -119,43 +119,43 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=calculer'+'&num='+num+'&max='+max,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg1').removeAttr("class").addClass("alerte").html('Échec lors de la connexion au serveur !');
+            $('#ajax_msg1').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,2)=='ok')
+            if(responseJSON['statut']==false)
             {
-              var ligne = responseHTML.substring(3,responseHTML.length);
+              $('#ajax_msg1').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
+            }
+            else
+            {
+              var ligne = responseJSON['value'];
               num++;
               if(num > max)  // Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
               {
                 $('#table_action tfoot').append(ligne);
-                $('#ajax_msg1').removeAttr("class").addClass("valide").html('Calcul des statistiques terminé.');
+                $('#ajax_msg1').removeAttr('class').addClass('valide').html('Calcul des statistiques terminé.');
                 $('#ajax_msg2').html('');
                 tableau_maj();
                 $('#structures').show('fast');
                 $('#ajax_info').hide('fast');
-                $("#bouton_valider").prop('disabled',false);
-                $('#ajax_msg').removeAttr("class").html("&nbsp;");
+                $('#bouton_valider').prop('disabled',false);
+                $('#ajax_msg').removeAttr('class').html("");
               }
               else
               {
                 $('#table_action tbody').append(ligne);
                 $('#ajax_num').html(num);
-                $('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
+                $('#ajax_msg1').removeAttr('class').addClass('loader').html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
                 $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
                 calculer();
               }
-            }
-            else
-            {
-              $('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
-              $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
             }
           }
         }
@@ -170,7 +170,7 @@ $(document).ready
       {
         num = $('#ajax_num').html();
         max = $('#ajax_max').html();
-        $('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg1').removeAttr('class').addClass('loader').html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
         $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
         calculer();
       }
@@ -239,25 +239,25 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      $('#ajax_supprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_supprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_listing_id='+listing_id,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $("button").prop('disabled',false);
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML!='<ok>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
@@ -269,7 +269,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_supprimer').removeAttr("class").addClass("valide").html('Demande réalisée !');
+              $('#ajax_supprimer').removeAttr('class').addClass('valide').html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }
@@ -286,10 +286,10 @@ $(document).ready
         $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");
+          $('#ajax_supprimer').removeAttr('class').addClass('erreur').html("Aucune structure cochée !");
           return false;
         }
-        $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+        $('#ajax_supprimer').removeAttr('class').html('&nbsp;');
         var id = $(this).attr('id');
         if(id=='bouton_supprimer')
         {

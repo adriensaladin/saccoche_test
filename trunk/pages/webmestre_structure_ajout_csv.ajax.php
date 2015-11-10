@@ -44,10 +44,11 @@ $fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier__date_et_alea(
 
 if($action=='importer_csv')
 {
+  // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_csv_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
   // On récupère les zones géographiques pour vérifier que l'identifiant transmis est cohérent
   $tab_geo = array();
@@ -89,7 +90,16 @@ if($action=='importer_csv')
       $contact_nom      = Clean::nom($contact_nom);
       $contact_prenom   = Clean::prenom($contact_prenom);
       $contact_courriel = Clean::courriel($contact_courriel);
-      $_SESSION['tab_info'][$nb_lignes_trouvees] = array( 'import_id'=>$import_id , 'geo_id'=>$geo_id , 'localisation'=>$localisation , 'denomination'=>$denomination , 'uai'=>$uai , 'contact_nom'=>$contact_nom , 'contact_prenom'=>$contact_prenom , 'contact_courriel'=>$contact_courriel );
+      $_SESSION['tab_info'][$nb_lignes_trouvees] = array(
+        'import_id'        => $import_id ,
+        'geo_id'           => $geo_id ,
+        'localisation'     => $localisation ,
+        'denomination'     => $denomination ,
+        'uai'              => $uai ,
+        'contact_nom'      => $contact_nom ,
+        'contact_prenom'   => $contact_prenom ,
+        'contact_courriel' => $contact_courriel ,
+      );
       // Vérifier la présence des informations
       if( !$geo_id || !$localisation || !$denomination || !$contact_nom || !$contact_prenom || !$contact_courriel )
       {
@@ -134,7 +144,7 @@ if($action=='importer_csv')
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
   if(!$nb_lignes_trouvees)
   {
-    exit('Erreur : aucune ligne du fichier ne semble correcte !');
+    Json::end( FALSE , 'Aucune ligne du fichier ne semble correcte !' );
   }
   $info_lignes_trouvees = ($nb_lignes_trouvees>1) ? $nb_lignes_trouvees.' lignes trouvées' : '1 ligne trouvée' ;
   foreach($tab_erreur as $key => $tab)
@@ -142,10 +152,10 @@ if($action=='importer_csv')
     if($tab['nb'])
     {
       $s = ($tab['nb']>1) ? 's' : '' ;
-      exit('Erreur : '.$info_lignes_trouvees.' mais '.$tab['nb'].' ligne'.$s.$tab['txt']);
+      Json::end( FALSE , $info_lignes_trouvees.' mais '.$tab['nb'].' ligne'.$s.$tab['txt'] );
     }
   }
-  exit(']¤['.$info_lignes_trouvees);
+  Json::end( TRUE , $info_lignes_trouvees );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -156,7 +166,7 @@ if( ($action=='ajouter') && $num && $max )
 {
   if(!count($_SESSION['tab_info']))
   {
-    exit('Erreur : données du fichier CSV perdues !');
+    Json::end( FALSE , 'Données du fichier CSV non retrouvées !' );
   }
   require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
   // Récupérer la série d'infos
@@ -202,16 +212,18 @@ if( ($action=='ajouter') && $num && $max )
     $courriel_bilan = Sesamail::mail( $contact_courriel , $courriel_titre , $courriel_contenu );
     if(!$courriel_bilan)
     {
-      exit('Erreur lors de l\'envoi du courriel !');
+      Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
     }
   }
   if($courriel_copie)
   {
-    $introduction = '================================================================================'."\r\n".'Copie pour information du courriel adressé à '.$contact_courriel."\r\n".'================================================================================'."\r\n\r\n";
+    $introduction = '================================================================================'."\r\n"
+                  . 'Copie pour information du courriel adressé à '.$contact_courriel."\r\n"
+                  . '================================================================================'."\r\n\r\n";
     $courriel_bilan = Sesamail::mail( WEBMESTRE_COURRIEL , $courriel_titre , $introduction.$courriel_contenu );
     if(!$courriel_bilan)
     {
-      exit('Erreur lors de l\'envoi du courriel !');
+      Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
     }
   }
   // Mini-ménage si dernier appel
@@ -220,7 +232,13 @@ if( ($action=='ajouter') && $num && $max )
     unset($_SESSION['tab_info']);
   }
   // Retour de l'affichage, appel suivant
-  exit(']¤['.'<tr><td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td><td class="label">'.$base_id.'</td><td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td><td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td></tr>');
+  Json::add_str('<tr>');
+  Json::add_str(  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>');
+  Json::add_str(  '<td class="label">'.$base_id.'</td>');
+  Json::add_str(  '<td class="label">'.html($localisation.' | '.$denomination.' ['.$uai.']').'</td>');
+  Json::add_str(  '<td class="label">'.html($contact_nom.' '.$contact_prenom.' ('.$contact_courriel.')').'</td>');
+  Json::add_str('</tr>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,7 +251,7 @@ if( ($action=='supprimer') && $nb_bases )
   {
     Webmestre::supprimer_multi_structure($base_id);
   }
-  exit('<ok>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -242,13 +260,13 @@ if( ($action=='supprimer') && $nb_bases )
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

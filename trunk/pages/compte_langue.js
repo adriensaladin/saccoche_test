@@ -38,7 +38,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -64,7 +64,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -73,7 +73,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -95,12 +95,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
-        $("#bouton_valider").prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#bouton_valider').prop('disabled',true);
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -108,23 +108,23 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
-      $("#bouton_valider").prop('disabled',false);
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#bouton_valider').prop('disabled',false);
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
-      $("#bouton_valider").prop('disabled',false);
-      if(responseHTML=='ok')
+      $('#bouton_valider').prop('disabled',false);
+      if(responseJSON['statut']==true)
       {
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Langue enregistrée !");
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Langue enregistrée !");
         document.location.href = './index.php?page=compte_langue';
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 

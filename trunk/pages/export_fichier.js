@@ -34,7 +34,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
       }
     );
 
@@ -49,7 +49,7 @@ $(document).ready
         if( (type=='listing_matiere') || (type=='item_matiere_usage') || (type=='arbre_matiere') ) {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
         if( (type=='arbre_socle') || (type=='jointure_socle_matiere') )                            {requis='palier';  $('#div_palier' ).slideDown();} else {$('#div_palier' ).slideUp();}
         if(type=='')                                                                               {requis='';        $('#p_submit'   ).hide(0);    } else {$('#p_submit'   ).show(0);  }
-        $('#bilan').html("&nbsp;");
+        $('#bilan').html("");
       }
     );
 
@@ -81,7 +81,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element){element.after(error);}
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -90,7 +90,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -147,12 +147,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         $("#bouton_exporter").prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#bilan').html('');
       }
       return readytogo;
@@ -162,22 +162,22 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $("#bouton_exporter").prop('disabled',false);
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       $("#bouton_exporter").prop('disabled',false);
-      if(responseHTML.substring(0,17)!='<ul class="puce">')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").html('');
-        $.fancybox( responseHTML , {'centerOnScroll':true} );
+        $('#ajax_msg').removeAttr('class').html('');
+        $.fancybox( responseJSON['value'] , {'centerOnScroll':true} );
       }
     }
 

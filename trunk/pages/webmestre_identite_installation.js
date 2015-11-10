@@ -36,29 +36,29 @@ $(document).ready
 
     function chargement_select_logo()
     {
-      $('#ajax_logo').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_logo').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=select_logo',
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_logo').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_logo').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
-            if(responseHTML.substring(0,16)!='<option value=""')
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_logo').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_logo').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_logo').removeAttr("class").html('');
-              $("#f_logo").html(responseHTML);
+              $('#ajax_logo').removeAttr('class').html('');
+              $("#f_logo").html(responseJSON['value']);
             }
           }
         }
@@ -72,29 +72,29 @@ $(document).ready
 
     function chargement_ul_logo()
     {
-      $('#ajax_listing').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_listing').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=listing_logos',
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_listing').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_listing').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
-            if(responseHTML.substring(0,4)!='<li>')
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_listing').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_listing').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_listing').removeAttr("class").html('');
-              $("#listing_logos").html(responseHTML);
+              $('#ajax_listing').removeAttr('class').html('');
+              $("#listing_logos").html(responseJSON['value']);
             }
           }
         }
@@ -114,28 +114,28 @@ $(document).ready
       {
         memo_li = $(this).parent();
         logo = $(this).prev().attr('alt');
-        $('#ajax_listing').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_listing').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=delete_logo'+'&f_logo='+logo,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_listing').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_listing').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
-              if(responseHTML!='ok')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_listing').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_listing').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_listing').removeAttr("class").html('');
+                $('#ajax_listing').removeAttr('class').html('');
                 memo_li.remove();
                 chargement_select_logo();
               }
@@ -156,7 +156,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_action':'upload_logo'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -166,7 +166,7 @@ $(document).ready
     function changer_fichier(fichier_nom,fichier_extension)
     {
       $("button").prop('disabled',true);
-      $('#ajax_upload').removeAttr("class").html('&nbsp;');
+      $('#ajax_upload').removeAttr('class').html('&nbsp;');
       return true;
     }
 
@@ -175,34 +175,34 @@ $(document).ready
       if (fichier_nom==null || fichier_nom.length<5)
       {
         $("button").prop('disabled',false);
-        $('#ajax_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ('.bmp.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
         $("button").prop('disabled',false);
-        $('#ajax_upload').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png).');
+        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (bmp gif jpg jpeg png).');
         return false;
       }
       else
       {
-        $('#ajax_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier(fichier_nom,responseJSON)
     {
-      if(responseHTML!='ok')
-      {
         $("button").prop('disabled',false);
-        $('#ajax_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      if(responseJSON['statut']==false)
+      {
+        $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $("button").prop('disabled',false);
-        $('#ajax_upload').removeAttr("class").html('&nbsp;');
+        $('#ajax_upload').removeAttr('class').html('&nbsp;');
         chargement_select_logo();
         chargement_ul_logo();
       }
@@ -292,7 +292,7 @@ $(document).ready
           else if(element.attr("size")==9){ element.next().after(error); }
           else { element.after(error); }
         }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -301,7 +301,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -323,12 +323,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         $("button").prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -337,21 +337,21 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $("button").prop('disabled',false);
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       $("button").prop('disabled',false);
-      if(responseHTML=='ok')
+      if(responseJSON['statut']==true)
       {
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Données enregistrées !");
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Données enregistrées !");
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 

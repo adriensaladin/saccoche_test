@@ -57,15 +57,15 @@ if(count($tab_id))
   }
   if(!$nb_modifs)
   {
-    exit('Aucune modification effectuée !');
+    Json::end( FALSE , 'Aucune modification effectuée !' );
   }
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

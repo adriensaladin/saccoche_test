@@ -41,11 +41,11 @@ if($profil && $login && $mdp && ($birth!=-1))
 {
   if( ($profil!='ALL') && !isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
   {
-    exit('Profil incorrect !');
+    Json::end( FALSE , 'Profil incorrect !' );
   }
   if( ($mdp<4) || ($mdp>8) )
   {
-    exit('Longueur du mot de passe incorrecte !');
+    Json::end( FALSE , 'Longueur du mot de passe incorrecte !' );
   }
   $test_profil_1 = (preg_match("#^p+[._-]?n+$#", $login)) ? TRUE : FALSE ; // prénom puis nom
   $test_profil_2 = (preg_match("#^n+[._-]?p+$#", $login)) ? TRUE : FALSE ; // nom puis prénom
@@ -53,7 +53,7 @@ if($profil && $login && $mdp && ($birth!=-1))
   $test_profil_4 = (preg_match("#^n+$#", $login)) ? TRUE : FALSE ; // nom seul
   if( !$test_profil_1 && !$test_profil_2 && !$test_profil_3 && !$test_profil_4 )
   {
-    exit('Modèle de nom d\'utilisateur incorrect !');
+    Json::end( FALSE , 'Modèle de nom d\'utilisateur incorrect !' );
   }
   // Mettre à jour les paramètres dans la base
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre( $profil , 'user_profil_login_modele'    , $login );
@@ -77,13 +77,13 @@ if($profil && $login && $mdp && ($birth!=-1))
   {
     $_SESSION['TAB_PROFILS_ADMIN']['MDP_DATE_NAISSANCE'][$profil] = $birth;
   }
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

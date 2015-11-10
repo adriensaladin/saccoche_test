@@ -91,7 +91,7 @@ $tab_objet_profils['droit_fiche_brevet_voir_archive']      = $tab_profils_possib
 
 if(!isset($tab_objet_profils[$f_objet]))
 {
-  exit('Droit inconnu !');
+  Json::end( FALSE , 'Droit inconnu !' );
 }
 
 $tab_profils_transmis  = ($f_profils) ? explode(',',$f_profils) : array() ;
@@ -99,7 +99,7 @@ $tab_profils_possibles = $tab_objet_profils[$f_objet];
 $tab_profils_inconnus  = array_diff($tab_profils_transmis,$tab_profils_possibles);
 if(count($tab_profils_inconnus))
 {
-  exit('Profils incohérents !');
+  Json::end( FALSE , 'Profils incohérents !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,6 +109,6 @@ if(count($tab_profils_inconnus))
 DB_STRUCTURE_COMMUN::DB_modifier_parametres( array($f_objet=>$f_profils) );
 // ne pas oublier de mettre aussi à jour la session
 $_SESSION[strtoupper($f_objet)] = $f_profils;
-exit('ok');
+Json::end( TRUE );
 
 ?>

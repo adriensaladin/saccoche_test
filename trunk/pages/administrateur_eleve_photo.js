@@ -41,7 +41,7 @@ $(document).ready
       var groupe_val = $("#f_groupe option:selected").val();
       if(!groupe_val)
       {
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
         return false
       }
       // Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
@@ -56,29 +56,29 @@ $(document).ready
         groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
         groupe_id   = groupe_val;
       }
-      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE+'&f_action=afficher',
           data : 'csrf='+CSRF+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,5)!='<div ')
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-              $('#liste_eleves').html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+              $('#liste_eleves').html(responseJSON['value']);
               // Mise en place des AjaxUpload
               $("#liste_eleves q.ajouter").each
               (
@@ -95,7 +95,7 @@ $(document).ready
                       name: 'userfile',
                       data: {'csrf':CSRF,'f_user_id':user_id},
                       autoSubmit: true,
-                      responseType: "html",
+                      responseType: 'json',
                       onChange: changer_fichier,
                       onSubmit: verifier_fichier,
                       onComplete: retourner_fichier
@@ -129,7 +129,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_masque':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier_zip,
         onSubmit: verifier_fichier_zip,
         onComplete: retourner_fichier_zip
@@ -139,7 +139,7 @@ $(document).ready
     function changer_fichier_zip(fichier_nom,fichier_extension)
     {
       $("button").prop('disabled',true);
-      $('#ajax_msg_zip').removeAttr("class").html('');
+      $('#ajax_msg_zip').removeAttr('class').html('');
       var masque = $("#f_masque").val();
       // Curieusement, besoin d'échapper l'échappement... (en PHP un échappement simple suffit)
       var reg_filename  = new RegExp("\\[(sconet_id|sconet_num|reference|nom|prenom|login|ent_id)\\]","g");
@@ -147,7 +147,7 @@ $(document).ready
       if( (!reg_filename.test(masque)) || (!reg_extension.test(masque)) )
       {
         $("button").prop('disabled',false);
-        $('#ajax_msg_zip').removeAttr("class").addClass("erreur").html('Indiquer correctement la forme des noms des fichiers contenus dans l\'archive.');
+        $('#ajax_msg_zip').removeAttr('class').addClass('erreur').html('Indiquer correctement la forme des noms des fichiers contenus dans l\'archive.');
         $('#f_masque').focus();
         return false;
       }
@@ -160,37 +160,36 @@ $(document).ready
       if (fichier_nom==null || fichier_nom.length<5)
       {
         $("button").prop('disabled',false);
-        $('#ajax_msg_zip').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_msg_zip').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if(fichier_extension.toLowerCase()!='zip')
       {
         $("button").prop('disabled',false);
-        $('#ajax_msg_zip').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
+        $('#ajax_msg_zip').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
         return false;
       }
       else
       {
-        $('#ajax_msg_zip').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_zip').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier_zip(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier_zip(fichier_nom,responseJSON)
     {
       $("button").prop('disabled',false);
-      var tab_infos = responseHTML.split(']¤[');
-      if( (tab_infos.length!=2) || (tab_infos[0]!='') )
+      if(responseJSON['statut']==true)
       {
-        $('#ajax_msg_zip').removeAttr("class").addClass("alerte").html(tab_infos[0]);
-        return false;
+        $('#ajax_msg_zip').removeAttr('class').addClass('valide').html('Demande traitée !');
+        $.fancybox( { 'href':responseJSON['value'] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+        initialiser_compteur();
+        maj_affichage();
       }
       else
       {
-        $('#ajax_msg_zip').removeAttr("class").addClass("valide").html('Demande traitée !');
-        $.fancybox( { 'href':tab_infos[1] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-        initialiser_compteur();
-        maj_affichage();
+        $('#ajax_msg_zip').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        return false;
       }
     }
 
@@ -201,7 +200,7 @@ $(document).ready
     function changer_fichier(fichier_nom,fichier_extension)
     {
       afficher_masquer_images_action('hide');
-      $('#ajax_msg').removeAttr("class").html('&nbsp;');
+      $('#ajax_msg').removeAttr('class').html('&nbsp;');
       return true;
     }
 
@@ -210,41 +209,40 @@ $(document).ready
       if (fichier_nom==null || fichier_nom.length<5)
       {
         afficher_masquer_images_action('show');
-        $('#ajax_msg').removeAttr("class").addClass("erreur").html('Chemin indiqué incorrect.');
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Chemin indiqué incorrect.');
         return false;
       }
       else if ('.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
         afficher_masquer_images_action('show');
-        $('#ajax_msg').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (gif jpg jpeg png).');
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (gif jpg jpeg png).');
         return false;
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier(fichier_nom,responseJSON)
     {
-      var tab_infos = responseHTML.split(']¤[');
-      if(tab_infos[0]!='ok')
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      if(responseJSON['statut']==false)
       {
-        afficher_masquer_images_action('show');
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        var user_id    = tab_infos[1];
-        var img_width  = tab_infos[2];
-        var img_height = tab_infos[3];
-        var img_src    = tab_infos[4];
-        $('#ajax_msg').removeAttr("class").html('&nbsp;');
+        var user_id    = responseJSON['user_id'];
+        var img_width  = responseJSON['img_width'];
+        var img_height = responseJSON['img_height'];
+        var img_src    = responseJSON['img_src'];
+        $('#ajax_msg').removeAttr('class').html('&nbsp;');
         $('#q_'+user_id).parent().html('<img width="'+img_width+'" height="'+img_height+'" src="'+img_src+'" alt="" /><q class="supprimer" title="Supprimer cette photo (aucune confirmation ne sera demandée)."></q>');
-        afficher_masquer_images_action('show');
       }
+      afficher_masquer_images_action('show');
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,29 +258,29 @@ $(document).ready
         var memo_div = $(this).parent();
         var user_id = memo_div.parent().attr('id').substring(4); // "div_" + id
         afficher_masquer_images_action('hide');
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE+'&f_action=supprimer_photo',
             data : 'csrf='+CSRF+'&f_user_id='+user_id,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               afficher_masquer_images_action('show');
-              if(responseHTML!='ok')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").html('');
+                $('#ajax_msg').removeAttr('class').html('');
                 memo_div.html('<q id="q_'+user_id+'" class="ajouter" title="Ajouter une photo."></q><img width="1" height="1" src="./_img/auto.gif" />');
                 new AjaxUpload
                 ('#q_'+user_id,
@@ -291,7 +289,7 @@ $(document).ready
                     name: 'userfile',
                     data: {'csrf':CSRF,'f_user_id':user_id},
                     autoSubmit: true,
-                    responseType: "html",
+                    responseType: 'json',
                     onChange: changer_fichier,
                     onSubmit: verifier_fichier,
                     onComplete: retourner_fichier

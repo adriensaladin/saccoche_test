@@ -54,9 +54,9 @@ if( ($action=='recherche_matiere_famille') && $famille_id )
   {
     $class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
     $title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-    echo'<li>'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>';
+    Json::add_str('<li>'.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>');
   }
-  exit();
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,7 +69,7 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
   if(!empty($DB_TAB))
   {
     // Le "score" retourné par MySQL via MATCH() AGAINST() ne reflète pas la pertinence d'une chaîne complète.
-    // Du coup on repasse derrière avec levenshtein() de PHP.
+    // Du coup on repasse derrière avec levenshtein() de PHP (requiert arguments < 256 caractères).
     $motclef_longueur = mb_strlen($motclef);
     $tab_li = array();
     foreach($DB_TAB as $DB_ROW)
@@ -81,13 +81,12 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
       $tab_li['<li>['.$score_retenu.'%] <i>'.html($DB_ROW['matiere_famille_nom']).'</i> || '.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>'] = $score_retenu ;
     }
     arsort($tab_li);
-    echo implode('',array_keys($tab_li));
+    Json::end( TRUE , implode('',array_keys($tab_li) ) );
   }
   else
   {
-    echo'<li class="i">Recherche infructueuse...</li>';
+    Json::end( TRUE , '<li class="i">Recherche infructueuse...</li>' );
   }
-  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +96,7 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
 if( ($action=='ajouter_partage') && $id )
 {
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_partagee($id,1);
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,12 +108,12 @@ if( ($action=='ajouter_perso') && $ref && $nom )
   // Vérifier que la référence de la matière est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref) )
   {
-    exit('Erreur : référence déjà prise !');
+    Json::end( FALSE , 'Référence déjà utilisée !' );
   }
   // Insérer l'enregistrement
   $id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_matiere_specifique($ref,$nom);
   // Afficher le retour
-  exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
+  Json::end( TRUE ,  array( 'id'=>$id , 'ref'=>html($ref) , 'nom'=>html($nom) ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -126,12 +125,12 @@ if( ($action=='modifier') && $id && $ref && $nom && ($id>ID_MATIERE_PARTAGEE_MAX
   // Vérifier que la référence de la matière est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_matiere_reference($ref,$id) )
   {
-    exit('Erreur : référence déjà prise !');
+    Json::end( FALSE , 'Référence déjà utilisée !' );
   }
   // Mettre à jour l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_matiere_specifique($id,$ref,$nom);
   // Afficher le retour
-  exit(']¤['.$id.']¤['.html($ref).']¤['.html($nom));
+  Json::end( TRUE ,  array( 'id'=>$id , 'ref'=>html($ref) , 'nom'=>html($nom) ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -147,7 +146,7 @@ if( ($action=='supprimer') && $id && $nom && ($id<=ID_MATIERE_PARTAGEE_MAX) )
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a retiré la matière partagée "'.$nom.'" (n°'.$id.').'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  exit(']¤['.$id);
+  Json::end( TRUE ,  array( 'id'=>$id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -163,7 +162,7 @@ if( ($action=='supprimer') && $id && $nom && ($id>ID_MATIERE_PARTAGEE_MAX) )
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé la matière spécifique "'.$nom.'" (n°'.$id.') et donc les référentiels associés.'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  exit(']¤['.$id);
+  Json::end( TRUE ,  array( 'id'=>$id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -177,7 +176,7 @@ if( ($action=='deplacer_referentiels') && $id_avant && $id_apres && ($id_avant!=
   $is_ok = DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
   if(!$is_ok)
   {
-    exit('Erreur : la nouvelle matière contient déjà des données !');
+    Json::end( FALSE , 'Erreur : la nouvelle matière contient déjà des données !' );
   }
   // Retirer l'ancienne matière partagée || Supprimer l'ancienne matière spécifique existante
   if($id_avant>ID_MATIERE_PARTAGEE_MAX)
@@ -195,12 +194,12 @@ if( ($action=='deplacer_referentiels') && $id_avant && $id_apres && ($id_avant!=
   // Notifications (rendues visibles ultérieurement)
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé des référentiels de "'.$nom_avant.'" ('.$id_avant.') vers "'.$nom_apres.'" ('.$id_apres.'), '.$log_fin.'.'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 ?>

@@ -95,14 +95,14 @@ if($nb_asso_groupes)
 // Afficher le résultat
 if($import_profil=='professeur')
 {
-  echo'<p><label class="valide">Modifications associations utilisateurs / classes effectuées : '.$nb_asso_classes.'</label></p>'.NL;
+  Json::add_str('<p><label class="valide">Modifications associations utilisateurs / classes effectuées : '.$nb_asso_classes.'</label></p>'.NL);
   if($import_origine=='sconet')
   {
-    echo'<p><label class="valide">Modifications associations utilisateurs / p.principal effectuées : '.$nb_asso_pps.'</label></p>'.NL;
-    echo'<p><label class="valide">Modifications associations utilisateurs / matières effectuées : '.$nb_asso_matieres.'</label></p>'.NL;
+    Json::add_str('<p><label class="valide">Modifications associations utilisateurs / p.principal effectuées : '.$nb_asso_pps.'</label></p>'.NL);
+    Json::add_str('<p><label class="valide">Modifications associations utilisateurs / matières effectuées : '.$nb_asso_matieres.'</label></p>'.NL);
   }
 }
-echo'<p><label class="valide">Modifications associations utilisateurs / groupes effectuées : '.$nb_asso_groupes.'</label></p>'.NL;
-echo'<ul class="puce p"><li><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
+Json::add_str('<p><label class="valide">Modifications associations utilisateurs / groupes effectuées : '.$nb_asso_groupes.'</label></p>'.NL);
+Json::add_str('<ul class="puce p"><li><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 7.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
 
 ?>

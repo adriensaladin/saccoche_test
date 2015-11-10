@@ -59,7 +59,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordre , FALSE /*with_gepi*/ , TRUE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
-    exit('Aucun élève trouvé correspondant aux identifiants transmis !');
+    Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
   }
   // Afficher la première ligne du tableau avec les étiquettes des élèves
   $tab_eleve_id = array(); // listing des ids des élèves mis à jour au cas où la récupération dans la base soit différente des ids transmis...
@@ -105,7 +105,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
       foreach($tab_eleve_id as $eleve_id)
       {
         $affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'"></td>'; // class/title + data-etat + contenu seront ajoutés ensuite 
-        $tab_modif_cellule[$eleve_id][$pilier_id] = array( 'html_v1'=>'0' , 'html_v0'=>'0' , 'class'=>' class="v2"' , 'title'=>'' , 'data_etat'=>'' );
+        $tab_modif_cellule[$eleve_id][$pilier_id] = array( 'html_v1'=>'0' , 'html_v0'=>'0' , 'class'=>' class="V2"' , 'title'=>'' , 'data_etat'=>'' );
       }
       $affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves."></th>';
       $affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['rubrique_nom']).'</div></th>';
@@ -123,7 +123,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   {
     $title_etat = ($DB_ROW['validation_pilier_etat']) ? 'Validé' : 'Invalidé' ;
     $data_etat  = ($DB_ROW['validation_pilier_etat']) ? ' data-etat="lock"' : '' ;
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['class'] = ' class="v'.$DB_ROW['validation_pilier_etat'].'"';
+    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['class'] = ' class="V'.$DB_ROW['validation_pilier_etat'].'"';
     $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['title'] = ' title="'.$title_etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'"';
     $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['data_etat']  = $data_etat;
   }
@@ -132,7 +132,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_nombre_validations_eleves_items( $listing_eleve_id , $listing_pilier_id );
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['html_v'.$DB_ROW['validation_entree_etat']] = $DB_ROW['nombre'];
+    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['html_V'.$DB_ROW['validation_entree_etat']] = $DB_ROW['nombre'];
   }
 
   // Afficher le résultat après adaptation des cellules "centrales".
@@ -142,15 +142,14 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
   {
     foreach($tab_pilier_id as $pilier_id)
     {
-      extract($tab_modif_cellule[$eleve_id][$pilier_id]);  // $data_etat $class $title $html_v1 $html_v0
-      $html = ($tab_modif_cellule[$eleve_id][$pilier_id]['data_etat']) ? '' : ( ($html_v1 || $html_v0) ? $html_v1.'<br />'.$html_v0 : '-' ) ;
+      extract($tab_modif_cellule[$eleve_id][$pilier_id]);  // $data_etat $class $title $html_V1 $html_V0
+      $html = ($tab_modif_cellule[$eleve_id][$pilier_id]['data_etat']) ? '' : ( ($html_V1 || $html_V0) ? $html_V1.'<br />'.$html_V0 : '-' ) ;
       $tab_bad[] = 'U'.$eleve_id.'C'.$pilier_id.'"></td>';
       $tab_bon[] = 'U'.$eleve_id.'C'.$pilier_id.'"'.$data_etat.$class.$title.'>'.$html.'</td>';
     }
   }
-  $affichage = str_replace($tab_bad,$tab_bon,$affichage);
-  // Afficher le résultat
-  exit($affichage);
+  // Retour
+  Json::end( TRUE , str_replace($tab_bad,$tab_bon,$affichage) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +163,7 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id )
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($eleve_id,$listing_entree_id='',$domaine_id=0,$pilier_id,$palier_id=0);
   if(empty($DB_TAB))
   {
-    exit('Aucune validation d\'item n\'est renseignée pour cette compétence !');
+    Json::end( FALSE , 'Aucune validation d\'item n\'est renseignée pour cette compétence !' );
   }
   foreach($DB_TAB as $DB_ROW)
   {
@@ -189,19 +188,18 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id )
     {
       $entree_id = $DB_ROW['entree_id'];
       $etat = (isset($tab_item[$DB_ROW['entree_id']])) ? $tab_item[$DB_ROW['entree_id']] : 2 ;
-      $affichage_socle .= '<div class="n3"><tt class="v'.$etat.'">'.$tab_texte_items[$etat].'</tt>'.html($DB_ROW['entree_nom']).'</div>';
+      $affichage_socle .= '<div class="n3"><tt class="V'.$etat.'">'.$tab_texte_items[$etat].'</tt>'.html($DB_ROW['entree_nom']).'</div>';
       $tab_validation_socle[$etat]++;
     }
   }
-  // Ligne de stats
+  // Retour
   foreach($tab_validation_socle as $etat => $nb)
   {
     $s = ($nb>1) ? 's' : '' ;
-    echo'<span class="v'.$etat.'">'.$nb.' '.$tab_texte_stats[$etat].$s.'</span>';
+    Json::add_row( 'stats' , '<span class="V'.$etat.'">'.$nb.' '.$tab_texte_stats[$etat].$s.'</span>' );
   }
-  // Paragraphe des items
-  echo'@'.$affichage_socle;
-  exit();
+  Json::add_row( 'items' , $affichage_socle );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -226,7 +224,7 @@ if($action=='Enregistrer_validation')
   }
   if( (!count($tab_post)) || (count($tab_eleve_id)*count($tab_pilier_id)!=count($tab_post)) )
   {
-    exit('Erreur détectée avec les validations transmises !');
+    Json::end( FALSE , 'Erreur détectée avec les validations transmises !' );
   }
   // On recupère le contenu de la base déjà enregistré pour le comparer
   $listing_eleve_id  = implode(',',$tab_eleve_id);
@@ -264,7 +262,7 @@ if($action=='Enregistrer_validation')
   // Il n'y a plus qu'à mettre à jour la base
   if( !count($tab_nouveau_ajouter) && !count($tab_nouveau_modifier) && !count($tab_nouveau_supprimer) )
   {
-    exit('Aucune modification détectée !');
+    Json::end( FALSE , 'Aucune modification détectée !' );
   }
   // L'information associée à la validation comporte le nom du validateur (c'est une information statique, conservée sur plusieurs années)
   $info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
@@ -283,12 +281,13 @@ if($action=='Enregistrer_validation')
     list($pilier_id,$eleve_id) = explode('x',$key);
     DB_STRUCTURE_SOCLE::DB_supprimer_validation('pilier',$eleve_id,$pilier_id);
   }
-  exit('OK');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
+
 ?>

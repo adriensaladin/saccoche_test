@@ -60,8 +60,8 @@ $(document).ready
         if(objet=='matiere_items_bilanMS')     {$('#div_matiere_items_bilanMS').show();coef_requis = true;}   else {$('#div_matiere_items_bilanMS').hide();coef_requis = false;}
         if(objet=='socle_item_pourcentage')    {$('#div_socle_item_pourcentage').show();mode_requis = true;}  else {$('#div_socle_item_pourcentage').hide();mode_requis = false;}
         // initialisation
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
-        $('#bilan').html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
+        $('#bilan').html("");
       }
     );
 
@@ -255,7 +255,7 @@ $(document).ready
           else if(element.attr("type")=="radio")    {element.parent().next().after(error);}
           else if(element.attr("type")=="checkbox") {element.parent().parent().next().after(error);}
         }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -264,7 +264,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -304,12 +304,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#bilan').html('');
       }
       return readytogo;
@@ -319,22 +319,22 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       $('button').prop('disabled',false);
-      if(responseHTML.substring(0,6)=='<hr />')
+      if(responseJSON['statut']==true)
       {
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
-        $('#bilan').html(responseHTML);
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Résultat ci-dessous.");
+        $('#bilan').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 

@@ -70,13 +70,13 @@ if( ($action=='afficher_parents') && $eleve_id )
   {
     $tab_parents[$resp_legal_num] = str_replace( '$TITRE$' , 'Resp légal '.$resp_legal_num , $affichage );
   }
-  exit(implode('<div class="ti"><q class="echanger" title="Échanger ces responsables."></q></div>',$tab_parents));
+  Json::end( TRUE , implode('<div class="ti"><q class="echanger" title="Échanger ces responsables."></q></div>',$tab_parents) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

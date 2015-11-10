@@ -36,14 +36,18 @@ $duree_conservation = (isset($_POST['f_duree_conservation'])) ? Clean::entier($_
 
 if( $taille_max && $duree_conservation )
 {
-  FileSystem::fabriquer_fichier_hebergeur_info( array('FICHIER_TAILLE_MAX'=>$taille_max,'FICHIER_DUREE_CONSERVATION'=>$duree_conservation) );
-  exit('ok');
+  $result = FileSystem::fabriquer_fichier_hebergeur_info( array('FICHIER_TAILLE_MAX'=>$taille_max,'FICHIER_DUREE_CONSERVATION'=>$duree_conservation) );
+  if($result!==TRUE)
+  {
+    Json::end( FALSE , $result );
+  }
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

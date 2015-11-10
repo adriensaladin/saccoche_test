@@ -61,7 +61,7 @@ $tab_types = array
 
 if( (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id || (!count($tab_rubrique_id)) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // On vérifie que le bilan est bien accessible en modification et on récupère les infos associées
@@ -69,7 +69,7 @@ if( (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id || (!count(
 $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
 if(empty($DB_ROW))
 {
-  exit('Association classe / période introuvable !');
+  Json::end( FALSE , 'Association classe / période introuvable !' );
 }
 $date_debut  = $DB_ROW['jointure_date_debut'];
 $date_fin    = $DB_ROW['jointure_date_fin'];
@@ -78,11 +78,11 @@ $periode_nom = $DB_ROW['periode_nom'];
 $classe_nom  = $DB_ROW['groupe_nom'];
 if(!$BILAN_ETAT)
 {
-  exit('Bilan introuvable !');
+  Json::end( FALSE , 'Bilan introuvable !' );
 }
 if(!in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
 {
-  exit('Bilan interdit d\'accès pour cette action !');
+  Json::end( FALSE , 'Bilan interdit d\'accès pour cette action !' );
 }
 
 // Lister les élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
@@ -90,7 +90,7 @@ if(!in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')))
 $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
 if(empty($DB_TAB))
 {
-  exit('Aucun élève trouvé dans ce regroupement !');
+  Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
 }
 $tab_eleve_id = array();
 foreach($DB_TAB as $DB_ROW)
@@ -238,7 +238,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 $nb_pb_rubriques = count($tab_resultat_examen);
 if(!$nb_pb_rubriques)
 {
-  exit('<p class="ti"><label class="valide">Aucune saisie manquante trouvée.</label></p>');
+  Json::end( TRUE , '<p class="ti"><label class="valide">Aucune saisie manquante trouvée.</label></p>' );
 }
 else
 {
@@ -281,14 +281,14 @@ else
   $nb_pb_saisies = count($tab_resultat_examen,COUNT_RECURSIVE) - $nb_pb_rubriques ;
   $sr = ($nb_pb_rubriques>1) ? 's' : '' ;
   $ss = ($nb_pb_saisies>1)   ? 's' : '' ;
-  echo'<p class="ti"><label class="danger">'.$nb_pb_saisies.' saisie'.$ss.' manquante'.$ss.' répartie'.$ss.' parmi '.$nb_pb_rubriques.' rubrique'.$sr.' !</label></p>';
+  Json::add_str('<p class="ti"><label class="danger">'.$nb_pb_saisies.' saisie'.$ss.' manquante'.$ss.' répartie'.$ss.' parmi '.$nb_pb_rubriques.' rubrique'.$sr.' !</label></p>');
   foreach($tab_resultat_examen as $rubrique_nom => $tab)
   {
     $rubrique_indication = isset($tab_rubrique_profs[$rubrique_nom]) ? $rubrique_nom.' '.$tab_rubrique_profs[$rubrique_nom] : $rubrique_nom ;
-    echo'<h3>'.html($rubrique_indication).'</h3>';
-    echo'<ul class="puce"><li>'.implode('</li><li>',$tab).'</li></ul>';
+    Json::add_str('<h3>'.html($rubrique_indication).'</h3>');
+    Json::add_str('<ul class="puce"><li>'.implode('</li><li>',$tab).'</li></ul>');
   }
-  exit();
+  Json::end( TRUE );
 }
 
 ?>

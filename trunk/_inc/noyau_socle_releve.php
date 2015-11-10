@@ -81,7 +81,7 @@ if( ($make_html) || ($make_pdf) )
 $DB_TAB = ($memo_demande=='pilier') ? DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_pilier($tab_pilier_id[0]) : DB_STRUCTURE_SOCLE::DB_recuperer_arborescence_piliers(implode(',',$tab_pilier_id)) ;
 if(empty($DB_TAB))
 {
-  exit('Aucun item référencé pour cette partie du socle commun !');
+  Json::end( FALSE , 'Aucun item référencé pour cette partie du socle commun !' );
 }
 $pilier_id  = 0;
 $section_id = 0;

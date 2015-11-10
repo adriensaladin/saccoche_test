@@ -44,10 +44,14 @@ if($action=='choix_umask')
   );
   if(!isset($tab_chmod[$umask]))
   {
-    exit('Valeur transmise inattendue ('.$umask.') !');
+    Json::end( FALSE , 'Valeur transmise inattendue ('.$umask.') !' );
   }
-  FileSystem::fabriquer_fichier_hebergeur_info( array('SYSTEME_UMASK'=>$umask) );
-  exit('ok');
+  $result = FileSystem::fabriquer_fichier_hebergeur_info( array('SYSTEME_UMASK'=>$umask) );
+  if($result!==TRUE)
+  {
+    Json::end( FALSE , $result );
+  }
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -82,7 +86,7 @@ if($action=='appliquer_chmod')
   // Enregistrement du rapport
   $fichier_nom = 'rapport_chmod_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
-  exit(']¤['.URL_DIR_EXPORT.$fichier_nom);
+  Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,13 +119,13 @@ if($action=='verif_droits')
   // Enregistrement du rapport
   $fichier_nom = 'rapport_droits_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
-  exit(']¤['.URL_DIR_EXPORT.$fichier_nom);
+  Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

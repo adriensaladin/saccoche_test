@@ -195,7 +195,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -226,12 +226,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_gestion').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -240,7 +240,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -251,12 +251,12 @@ $(document).ready
       if(responseJSON['statut']==true)
       {
         var msg = (mode=='ajouter') ? 'Liaison réussie' : 'Retrait réussi' ;
-        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html(msg+" ; actualisation en cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html(msg+" ; actualisation en cours&hellip;");
         document.location.reload();
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 

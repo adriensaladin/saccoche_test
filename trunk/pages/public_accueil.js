@@ -55,7 +55,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -67,7 +67,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -83,7 +83,7 @@ $(document).ready
       function()
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -94,7 +94,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -107,7 +107,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -123,7 +123,7 @@ $(document).ready
       function()
       {
         $('#f_changer').hide();
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -134,7 +134,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#f_changer').show();
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -147,7 +147,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -213,7 +213,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_version').addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_version').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -268,7 +268,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -307,12 +307,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -321,7 +321,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -330,12 +330,12 @@ $(document).ready
       $('button').prop('disabled',false);
       if(responseJSON['statut']==true)
       {
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Identification réussie !");
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Identification réussie !");
         document.location.href = responseJSON['value'];
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseJSON['value']);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 

@@ -38,7 +38,7 @@ $tab_profils_anormaux = array_diff( $tab_profils_actifs , $tab_profils );
 
 if( count( $tab_profils_anormaux ) )
 {
-  exit('Erreur avec les profils transmis !');
+  Json::end( FALSE , 'Erreur avec les profils transmis !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,13 +56,13 @@ if($action=='choix_profils')
   {
     DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre($profil_sigle,'user_profil_actif',0);
   }
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

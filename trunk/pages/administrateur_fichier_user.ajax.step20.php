@@ -34,7 +34,7 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 
 if(!is_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest))
 {
-  exit('Erreur : le fichier récupéré et enregistré n\'a pas été retrouvé !');
+  Json::end( FALSE , 'Le fichier récupéré et enregistré n\'a pas été retrouvé !' );
 }
 
 // Pour récupérer les données des utilisateurs ; on prend comme indice $sconet_id ou $reference suivant le mode d'import
@@ -89,21 +89,21 @@ if( ($import_origine=='sconet') && ($import_profil=='professeur') )
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   if($xml===FALSE)
   {
-    exit('Erreur : le fichier transmis n\'est pas un XML valide !');
+    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
   }
   $editeur_prive_edt = (string)$xml->PARAMETRES->APPLICATION_SOURCE;
   if($editeur_prive_edt)
   {
-    exit('Erreur : le fichier transmis est issu d\'un éditeur privé d\'emploi du temps, pas de STS !');
+    Json::end( FALSE , 'Le fichier transmis est issu d\'un éditeur privé d\'emploi du temps, pas de STS !' );
   }
   $uai = @(string)$xml->PARAMETRES->UAJ->attributes()->CODE;
   if(!$uai)
   {
-    exit('Erreur : le contenu du fichier transmis ne correspond pas à ce qui est attendu !');
+    Json::end( FALSE , 'Le contenu du fichier transmis ne correspond pas à ce qui est attendu !' );
   }
   if($uai!=$_SESSION['WEBMESTRE_UAI'])
   {
-    exit('Erreur : le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !');
+    Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
   }
   /*
    * Les matières des profs peuvent être récupérées de 2 façons :
@@ -337,12 +337,12 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   if($xml===FALSE)
   {
-    exit('Erreur : le fichier transmis n\'est pas un XML valide !');
+    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
   }
   $uai = $xml->PARAMETRES->UAJ;
   if($uai===FALSE)
   {
-    exit('Erreur : le fichier transmis n\'est pas correct (erreur de numéro UAI) !');
+    Json::end( FALSE , 'Le fichier transmis n\'est pas correct (erreur de numéro UAI) !' );
   }
   // tableau temporaire qui sera effacé, servant à retenir le niveau de l'élève en attendant de connaître sa classe.
   $tab_users_fichier['niveau'] = array();
@@ -441,16 +441,16 @@ if( ($import_origine=='sconet') && ($import_profil=='parent') )
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   if($xml===FALSE)
   {
-    exit('Erreur : le fichier transmis n\'est pas un XML valide !');
+    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
   }
   $uai = (string)$xml->PARAMETRES->UAJ;
   if(!$uai)
   {
-    exit('Erreur : le fichier transmis ne comporte pas de numéro UAI !');
+    Json::end( FALSE , 'Le fichier transmis ne comporte pas de numéro UAI !' );
   }
   if($uai!=$_SESSION['WEBMESTRE_UAI'])
   {
-    exit('Erreur : le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !');
+    Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
   }
   //
   // On recense les adresses dans un tableau temporaire.
@@ -852,7 +852,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
   }
   if(array_sum($tab_numero_colonne)<0)
   {
-    exit('Erreur : un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !');
+    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   /*
@@ -970,7 +970,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
   $nb_enfants_maxi = min( count($tab_numero_colonne['enfant_nom']) , count($tab_numero_colonne['enfant_prenom']) );
   if( (array_sum($tab_numero_colonne)<0) || ($nb_enfants_maxi==0) )
   {
-    exit('Erreur : un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !');
+    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   $numero_max = max( $numero_max , $tab_numero_colonne['enfant_nom'][0] , $tab_numero_colonne['enfant_prenom'][0] );
   unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -1079,7 +1079,7 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
   }
   if(array_sum($tab_numero_colonne)<0)
   {
-    exit('Erreur : un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !');
+    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   //
@@ -1202,7 +1202,7 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
   }
   if(array_sum($tab_numero_colonne)<0)
   {
-    exit('Erreur : un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !');
+    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   // On récupère les élèves pour vérifier que ceux trouvé dans le fichier des parents sont bien dasn la base.
@@ -1437,16 +1437,16 @@ if(count($tab_users_fichier['profil_sigle']))
   foreach ($tab_profil_nombre as $profil=>$nombre)
   {
     $s = ($nombre>1) ? 's' : '' ;
-    echo'<p><label class="valide">'.$nombre.' '.$tab_profils_libelles[$profil][min(2,$nombre)].' trouvé'.$s.'.</label></p>'.NL;
+    Json::add_str('<p><label class="valide">'.$nombre.' '.$tab_profils_libelles[$profil][min(2,$nombre)].' trouvé'.$s.'.</label></p>'.NL);
   }
 }
 else if($import_profil=='parent')
 {
-  exit('<p><label class="alerte">Aucun parent trouvé ayant un enfant dans l\'établissement : importer d\'abord les élèves !</label></p>');
+  Json::end( FALSE , 'Aucun parent trouvé ayant un enfant dans l\'établissement : importer d\'abord les élèves !' );
 }
 else
 {
-  exit('<p><label class="alerte">Aucun utilisateur trouvé !</label></p>');
+  Json::end( FALSE , 'Aucun utilisateur trouvé !' );
 }
 
 // On affiche le bilan des classes trouvées
@@ -1456,11 +1456,11 @@ else
   if($nombre)
   {
     $s = ($nombre>1) ? 's' : '' ;
-    echo'<p><label class="valide">'.$nombre.' classe'.$s.' trouvée'.$s.'.</label></p>'.NL;
+    Json::add_str('<p><label class="valide">'.$nombre.' classe'.$s.' trouvée'.$s.'.</label></p>'.NL);
   }
   else
   {
-    echo'<p><label class="alerte">Aucune classe trouvée !</label></p>'.NL;
+    Json::add_str('<p><label class="alerte">Aucune classe trouvée !</label></p>'.NL);
   }
 }
 
@@ -1471,11 +1471,11 @@ if( ($import_profil!='parent') && ($import_origine!='base_eleves') && ($import_o
   if($nombre)
   {
     $s = ($nombre>1) ? 's' : '' ;
-    echo'<p><label class="valide">'.$nombre.' groupe'.$s.' trouvé'.$s.'.</label></p>'.NL;
+    Json::add_str('<p><label class="valide">'.$nombre.' groupe'.$s.' trouvé'.$s.'.</label></p>'.NL);
   }
   else
   {
-    echo'<p><label class="alerte">Aucun groupe trouvé !</label></p>'.NL;
+    Json::add_str('<p><label class="alerte">Aucun groupe trouvé !</label></p>'.NL);
   }
 }
 
@@ -1485,26 +1485,26 @@ if($import_profil=='parent')
   if($nb_adresses)
   {
     $s = ($nb_adresses>1) ? 's' : '' ;
-    echo'<p><label class="valide">'.$nb_adresses.' adresse'.$s.' trouvée'.$s.'.</label></p>'.NL;
+    Json::add_str('<p><label class="valide">'.$nb_adresses.' adresse'.$s.' trouvée'.$s.'.</label></p>'.NL);
   }
   else
   {
-    echo'<p><label class="alerte">Aucune adresse trouvée !</label></p>'.NL;
+    Json::add_str('<p><label class="alerte">Aucune adresse trouvée !</label></p>'.NL);
   }
   if($nb_lien_responsabilite)
   {
     $s = ($nb_lien_responsabilite>1) ? 's' : '' ;
-    echo'<p><label class="valide">'.$nb_lien_responsabilite.' lien'.$s.' de responsabilité'.$s.' trouvé'.$s.'.</label></p>'.NL;
+    Json::add_str('<p><label class="valide">'.$nb_lien_responsabilite.' lien'.$s.' de responsabilité'.$s.' trouvé'.$s.'.</label></p>'.NL);
   }
   else
   {
-    echo'<p><label class="alerte">Aucun lien de responsabilité trouvé !</label></p>'.NL;
+    Json::add_str('<p><label class="alerte">Aucun lien de responsabilité trouvé !</label></p>'.NL);
   }
 }
 
 // Fin de l'extraction
 $STEP = ($import_profil=='parent') ? '5' : '3' ;
-echo'<ul class="puce p"><li><a href="#step'.$STEP.'1" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
+Json::add_str('<ul class="puce p"><li><a href="#step'.$STEP.'1" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
 
 // Notifications (rendues visibles ultérieurement)
 $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' importe un fichier d\'utilisateurs type '.$import_origine.' / '.$import_profil.'.'."\r\n";

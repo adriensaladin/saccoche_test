@@ -251,7 +251,7 @@ class Session
     $UA_new = Session::get_UserAgent();
     if($UA_old != $UA_new)
     {
-      $UA_old = ( levenshtein($UA_old,$UA_new)<12 ) ? $UA_old : 'Chaîne non dévoilée par sécurité.' ;
+      $UA_old = ( levenshtein( substr($UA_old,0,255) , substr($UA_new,0,255) ) < 12 ) ? $UA_old : 'Chaîne non dévoilée par sécurité.' ;
       return array( 'navigateur différent' , $UA_old , $UA_new );
     }
     // OK

@@ -118,7 +118,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
                                 : DB_STRUCTURE_PROFESSEUR::DB_OPT_lister_eleves_professeur( $_SESSION['USER_ID'] , $_SESSION['USER_JOIN_GROUPES'] ) ;
   if(!is_array($DB_TAB))
   {
-    exit($DB_TAB);  // Aucun élève trouvé. | Aucun élève ne vous est affecté.
+    Json::end( FALSE , $DB_TAB );  // Aucun élève trouvé. | Aucun élève ne vous est affecté.
   }
   $tab_eleves  = array();
   $tab_autres  = array();
@@ -142,7 +142,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
   $DB_TAB = DB_STRUCTURE_DEMANDE::DB_lister_demandes_prof( $_SESSION['USER_ID'] , $matiere_id , $listing_user_id );
   if(empty($DB_TAB))
   {
-    exit('Aucune demande n\'a été formulée selon les critères indiqués !');
+    Json::end( FALSE , 'Aucune demande n\'a été formulée selon les critères indiqués !' );
   }
   foreach($DB_TAB as $DB_ROW)
   {
@@ -190,7 +190,13 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom_export.'.csv' , To::csv($fichier_csv) );
   // Inclure dans le retour la liste des élèves sans demandes et le tableau des commentaires
   $chaine_autres = ( $selection_matiere && $selection_groupe ) ? implode('<br />',$tab_autres) : 'sur choix d\'une matière et d\'un regroupement' ;
-  exit('ok'.'<¤>'.'./force_download.php?fichier='.$fnom_export.'.csv'.'<¤>'.$messages_html.'<¤>'.'<td>'.$chaine_autres.'</td>'.'<¤>'.str_replace($tab_bad,$tab_bon,$retour));
+  Json::add_tab( array(
+    'file' => './force_download.php?fichier='.$fnom_export.'.csv' ,
+    'msg'  => $messages_html ,
+    'td'   => '<td>'.$chaine_autres.'</td>' ,
+    'tr'   => str_replace($tab_bad,$tab_bon,$retour) ,
+  ) );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,7 +276,12 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   }
   // Retour
   $groupe_type_initiale = ($qui=='select') ? 'E' : $groupe_type{0} ;
-  exit('ok'.'¤'.$devoir_id.'¤'.$groupe_type_initiale.'¤'.$groupe_id);
+  Json::add_tab( array(
+    'devoir_id'   => $devoir_id ,
+    'groupe_type' => $groupe_type_initiale ,
+    'groupe_id'   => $groupe_id ,
+  ) );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -335,7 +346,12 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   }
   // Retour
   $groupe_type_initiale = ($qui=='select') ? 'E' : $groupe_type{0} ;
-  exit('ok'.'¤'.$devoir_id.'¤'.$groupe_type_initiale.'¤'.$devoir_groupe_id);
+  Json::add_tab( array(
+    'devoir_id'   => $devoir_id ,
+    'groupe_type' => $groupe_type_initiale ,
+    'groupe_id'   => $devoir_groupe_id ,
+  ) );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -348,7 +364,7 @@ if( ( ($action=='changer_prof') || ($action=='changer_eleve') ) && $nb_demandes 
   $statut = substr($action,8);
   DB_STRUCTURE_DEMANDE::DB_modifier_demandes_statut($listing_demande_id,$statut,$message);
   // Retour
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -398,7 +414,7 @@ if( ($action=='retirer') && $nb_demandes )
     }
   }
   // Retour
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -421,13 +437,13 @@ if( ($action=='actualiser_score') && ($nb_demandes==1) && ($nb_users==1) && ($nb
     DB_STRUCTURE_DEMANDE::DB_modifier_demande_score( $tab_demande_id[0] , $score_new_bdd );
   }
   $score_retour = str_replace( $tab_td_score_bad , $tab_td_score_bon , Html::td_score( $score_new , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
-  exit($score_retour);
+  Json::end( TRUE , $score_retour );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

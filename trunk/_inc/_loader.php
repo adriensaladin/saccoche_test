@@ -429,6 +429,7 @@ function SACoche_autoload($class_name)
     'Image'                       => '_inc'.DS.'class.Image.php' ,
     'InfoServeur'                 => '_inc'.DS.'class.InfoServeur.php' ,
     'JSMin'                       => '_inc'.DS.'class.JavaScriptMinified.php' ,
+    'Json'                        => '_inc'.DS.'class.Json.php' ,
     'JavaScriptPacker'            => '_inc'.DS.'class.JavaScriptPacker.php' ,
     'Layout'                      => '_inc'.DS.'class.Layout.php' ,
     'LockAcces'                   => '_inc'.DS.'class.LockAcces.php' ,
@@ -667,8 +668,12 @@ define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');    // URL 
 
 // test si c'est l'hébergement Sésamath qui est utilisé
 $is_hebergement_sesamath = (mb_strpos(URL_BASE,SERVEUR_PROJET)!==FALSE) ? TRUE : FALSE ;
-define('IS_HEBERGEMENT_SESAMATH',$is_hebergement_sesamath);
-// define('IS_HEBERGEMENT_SESAMATH',TRUE);
+define('IS_HEBERGEMENT_SESAMATH', $is_hebergement_sesamath);
+// define('IS_HEBERGEMENT_SESAMATH', TRUE);
+
+// Pour forcer la minification des js et css y compris sur un serveur local
+define('FORCE_MINIFY', FALSE);
+// define('FORCE_MINIFY' , TRUE);
 
 // indiquer si une convention Établissement-ENT est requise et à compter de quand
 define('CONVENTION_ENT_REQUISE'         ,TRUE);
@@ -851,10 +856,15 @@ function html($text)
  */
 function exit_error( $titre , $contenu , $lien='accueil' )
 {
-  header('Content-Type: text/html; charset='.CHARSET);
+  // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd.
+  // C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
+  if(isset($_COOKIE[COOKIE_MEMOGET]))
+  {
+    Cookie::effacer(COOKIE_MEMOGET);
+  }
   if( in_array( SACoche , array('ajax','appel_externe') ) )
   {
-    echo str_replace('<br />',' ',$contenu);
+    Json::end( FALSE , str_replace('<br />',' ',$contenu) );
   }
   else
   {
@@ -871,6 +881,7 @@ function exit_error( $titre , $contenu , $lien='accueil' )
     {
       $chemin = './';
     }
+    header('Content-Type: text/html; charset='.CHARSET);
     echo'<!DOCTYPE html>'.NL;
     echo'<html lang="fr">'.NL;
     echo  '<head>'.NL;
@@ -888,14 +899,8 @@ function exit_error( $titre , $contenu , $lien='accueil' )
     echo    '</div>'.NL;
     echo  '</body>'.NL;
     echo'</html>'.NL;
+    exit();
   }
-  // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd.
-  // C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
-  if(isset($_COOKIE[COOKIE_MEMOGET]))
-  {
-    Cookie::effacer(COOKIE_MEMOGET);
-  }
-  exit();
 }
 
 /*
@@ -914,27 +919,6 @@ function exit_redirection($adresse)
   header('Status: 307 Temporary Redirect', TRUE, 307);
   header('Location: '.$adresse);
   exit();
-}
-
-/**
- * Retour d'un tableau au format JSON avec comme clefs "statut" (boolean) et "value" (chaine) ou un tableau de clefs transmis
- *
- * @param bool         $statut
- * @param string|array $value   (facultatif)
- * @return void
- */
-function exit_json( $statut , $value=NULL )
-{
-  $tab_statut = array( 'statut' => $statut ) ;
-  $tab_valeur = is_array($value) ? $value : array( 'value' => $value ) ;
-  $json_retour = json_encode( array_merge($tab_statut,$tab_valeur) );
-  // Normalement, le serveur Sésamath ne gzip pas les "petites" réponses (<512 ou 1024 octets).
-  // Mais c'est basé sur le Content-Length, donc s'il n'y en a pas, il gzip toujours.
-  // Du coup, quand PHP renvoie du json, c'est mieux d'indiquer Content-Length.
-  // Ça ne devrait pas changer grand chose, mais ça ne peut pas faire de mal.
-  header('Content-Type: application/json; charset='.CHARSET);
-  header('Content-Length: '.strlen($json_retour));
-  exit($json_retour);
 }
 
 ?>

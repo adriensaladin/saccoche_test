@@ -76,7 +76,7 @@ $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' 
 
 if( (!$critere_valide) || (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[$groupe_type])) || (!in_array($mode,array('auto','manuel'))) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +97,7 @@ $tab_eleve = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil
 $eleve_nb = count($tab_eleve);
 if(!$eleve_nb)
 {
-  exit('Aucun élève trouvé dans le regroupement indiqué !');
+  Json::end( FALSE , 'Aucun élève trouvé dans le regroupement indiqué !' );
 }
 $tab_eleve_id = array();
 $tab_eleve_langue = array();
@@ -361,18 +361,19 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage des données
+// Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $nb_resultats = count($tab_tr);
 $checkbox = ($affichage_checkbox && $nb_resultats) ? '<td class="nu"><q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></td>' : '' ;
-$releve_html  = '<hr />'.NL;
-$releve_html .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
-$releve_html .= '<table class="bilan"><thead>'.NL.'<tr>'.$checkbox.'<th>Élève</th><th>État</th></tr>'.NL.'</thead><tbody>'.NL;
-$releve_html .= ($nb_resultats) ? implode(NL,$tab_tr).NL : '<tr><td colspan="2">aucun résultat</td></tr>'.NL ;
-$releve_html .= '</tbody></table>'.NL;
-$releve_html .= ($affichage_checkbox && $nb_resultats) ? HtmlForm::afficher_synthese_exploitation('eleves') : '' ;
-$releve_html .= ($affichage_checkbox) ? '</form>' : '' ;
-exit($releve_html);
+$retour  = '<hr />'.NL;
+$retour .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
+$retour .= '<table class="bilan"><thead>'.NL.'<tr>'.$checkbox.'<th>Élève</th><th>État</th></tr>'.NL.'</thead><tbody>'.NL;
+$retour .= ($nb_resultats) ? implode(NL,$tab_tr).NL : '<tr><td colspan="2">aucun résultat</td></tr>'.NL ;
+$retour .= '</tbody></table>'.NL;
+$retour .= ($affichage_checkbox && $nb_resultats) ? HtmlForm::afficher_synthese_exploitation('eleves') : '' ;
+$retour .= ($affichage_checkbox) ? '</form>' : '' ;
+
+Json::end( TRUE , $retour );
 
 ?>

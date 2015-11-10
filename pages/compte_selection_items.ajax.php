@@ -68,7 +68,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($selection_id))) && $select
   // Vérifier que le nom de la sélection d'items est disponible (parmi tous ceux des personnels de l'établissement, à cause du partage)
   if( $proprio = DB_STRUCTURE_SELECTION_ITEM::DB_tester_nom( $selection_nom ) )
   {
-    exit('Erreur : nom déjà utilisé (par '.html($proprio).') !');
+    Json::end( FALSE , 'Nom déjà utilisé (par '.html($proprio).') !' );
   }
   // Insérer l'enregistrement ; y associe automatiquement le prof, en propriétaire de la sélection
   $selection_id2 = DB_STRUCTURE_SELECTION_ITEM::DB_ajouter( $_SESSION['USER_ID'] , $selection_nom );
@@ -85,25 +85,24 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($selection_id))) && $select
     $items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
     $profs_nombre = ($nb_profs) ? ($nb_profs+1).' collègues' : 'non' ;
     $profs_bulle  = ($nb_profs && ($nb_profs<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
-    echo'<tr id="id_'.$selection_id2.'" class="new">';
-    echo  '<td>'.html($selection_nom).'</td>';
-    echo  '<td>'.$items_texte.'</td>';
-    echo  '<td id="proprio_'.$_SESSION['USER_ID'].'">'.$profs_nombre.$profs_bulle.'</td>';
-    echo  '<td class="nu">';
-    echo    '<q class="modifier" title="Modifier cette sélection d\'items."></q>';
-    echo    '<q class="dupliquer" title="Dupliquer cette sélection d\'items."></q>';
-    echo    '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>';
-    echo  '</td>';
-    echo'</tr>';
-    echo'<SCRIPT>';
-    echo'tab_items["'.$selection_id2.'"]="'.implode('_',$tab_items).'";';
-    echo'tab_profs["'.$selection_id2.'"]="'.$profs_liste.'";';
+    Json::add_row( 'html' , '<tr id="id_'.$selection_id2.'" class="new">' );
+    Json::add_row( 'html' ,   '<td>'.html($selection_nom).'</td>' );
+    Json::add_row( 'html' ,   '<td>'.$items_texte.'</td>' );
+    Json::add_row( 'html' ,   '<td id="proprio_'.$_SESSION['USER_ID'].'">'.$profs_nombre.$profs_bulle.'</td>' );
+    Json::add_row( 'html' ,   '<td class="nu">' );
+    Json::add_row( 'html' ,     '<q class="modifier" title="Modifier cette sélection d\'items."></q>' );
+    Json::add_row( 'html' ,     '<q class="dupliquer" title="Dupliquer cette sélection d\'items."></q>' );
+    Json::add_row( 'html' ,     '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>' );
+    Json::add_row( 'html' ,   '</td>' );
+    Json::add_row( 'html' , '</tr>' );
+    Json::add_row( 'script' , 'tab_items["'.$selection_id2.'"]="'.implode('_',$tab_items).'";' );
+    Json::add_row( 'script' , 'tab_profs["'.$selection_id2.'"]="'.$profs_liste.'";' );
+    Json::end( TRUE );
   }
   else
   {
-    echo'<option value="'.implode('_',$tab_items).'">'.html($selection_nom).'</option>';
+    Json::end( TRUE , '<option value="'.implode('_',$tab_items).'">'.html($selection_nom).'</option>' );
   }
-  exit();
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +114,7 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
   // Vérifier que le nom de la sélection d'items est disponible (parmi tous ceux des personnels de l'établissement, à cause du partage)
   if( $proprio = DB_STRUCTURE_SELECTION_ITEM::DB_tester_nom( $selection_nom , $selection_id ) )
   {
-    exit('Erreur : nom déjà utilisé (par '.html($proprio).') !');
+    Json::end( FALSE , 'Nom déjà utilisé (par '.html($proprio).') !' );
   }
   // Tester les droits
   $proprio_id = DB_STRUCTURE_SELECTION_ITEM::DB_recuperer_prorietaire_id( $selection_id );
@@ -135,11 +134,11 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
     }
     elseif( strpos( $search_liste, '_v'.$_SESSION['USER_ID'].'_' ) !== FALSE )
     {
-      exit('Erreur : droit insuffisant attribué sur la sélection n°'.$selection_id.' (niveau 1 au lieu de 3) !'); // voir
+      Json::end( FALSE , 'Droit insuffisant attribué sur la sélection n°'.$selection_id.' (niveau 1 au lieu de 3) !' ); // voir
     }
     else
     {
-      exit('Erreur : droit attribué sur la sélection n°'.$selection_id.' non trouvé !');
+      Json::end( FALSE , 'Droit attribué sur la sélection n°'.$selection_id.' non trouvé !' );
     }
     $DB_ROW = DB_STRUCTURE_SELECTION_ITEM::DB_recuperer_prorietaire_identite( $selection_id );
     $proprietaire_genre  = $DB_ROW['user_genre'];
@@ -148,7 +147,7 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
   }
   else
   {
-    exit('Erreur : vous n\'êtes ni propriétaire ni bénéficiaire de droits sur la sélection n°'.$selection_id.' !');
+    Json::end( FALSE , 'Vous n\'êtes ni propriétaire ni bénéficiaire de droits sur la sélection n°'.$selection_id.' !' );
   }
   $proprietaire_identite = $proprietaire_nom.' '.$proprietaire_prenom;
   // Mettre à jour l'enregistrement
@@ -173,18 +172,19 @@ if( ($action=='modifier') && $selection_id && $selection_nom && $nb_items )
   $items_texte  = ($nb_items>1) ? $nb_items.' items' : '1 item' ;
   $profs_nombre = ($nb_profs) ? ($nb_profs+1).' collègues' : 'non' ;
   $profs_bulle  = ($nb_profs && ($nb_profs<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
-  echo'<td>'.html($selection_nom).'</td>';
-  echo'<td>'.$items_texte.'</td>';
-  echo'<td id="proprio_'.$proprio_id.'">'.$profs_nombre.$profs_bulle.'</td>';
-  echo'<td class="nu">';
-  echo ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette sélection d\'items."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
-  echo '<q class="dupliquer" title="Dupliquer cette sélection d\'items."></q>';
-  echo ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de la sélection ('.html($proprietaire_identite).')."></q>' ;
-  echo'</td>';
-  echo'<SCRIPT>';
-  echo'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";';
-  echo'tab_profs["'.$selection_id.'"]="'.$profs_liste.'";';
-  exit();
+  $q_modifier   = ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette sélection d\'items."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
+  $q_supprimer  = ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette sélection d\'items."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de la sélection ('.html($proprietaire_identite).')."></q>' ;
+  Json::add_row( 'html' , '<td>'.html($selection_nom).'</td>' );
+  Json::add_row( 'html' , '<td>'.$items_texte.'</td>' );
+  Json::add_row( 'html' , '<td id="proprio_'.$proprio_id.'">'.$profs_nombre.$profs_bulle.'</td>' );
+  Json::add_row( 'html' , '<td class="nu">' );
+  Json::add_row( 'html' ,   $q_modifier );
+  Json::add_row( 'html' ,   '<q class="dupliquer" title="Dupliquer cette sélection d\'items."></q>' );
+  Json::add_row( 'html' ,   $q_supprimer );
+  Json::add_row( 'html' , '</td>' );
+  Json::add_row( 'script' , 'tab_items["'.$selection_id.'"]="'.implode('_',$tab_items).'";' );
+  Json::add_row( 'script' , 'tab_profs["'.$selection_id.'"]="'.$profs_liste.'";' );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,18 +197,18 @@ if( ($action=='supprimer') && $selection_id )
   $proprio_id = DB_STRUCTURE_SELECTION_ITEM::DB_recuperer_prorietaire_id( $selection_id );
   if($proprio_id!=$_SESSION['USER_ID'])
   {
-    exit('Erreur : vous n\'êtes pas propriétaire de la sélection n°'.$selection_id.' !');
+    Json::end( FALSE , 'Vous n\'êtes pas propriétaire de la sélection n°'.$selection_id.' !' );
   }
   // Effacer l'enregistrement
   DB_STRUCTURE_SELECTION_ITEM::DB_supprimer( $selection_id );
   // Afficher le retour
-  exit('<td>ok</td>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

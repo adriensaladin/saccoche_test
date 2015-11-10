@@ -49,8 +49,8 @@ $(document).ready
       'select, input',
       function()
       {
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
-        $('#bilan').html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
+        $('#bilan').html("");
       }
     );
 
@@ -169,32 +169,32 @@ $(document).ready
       var matiere_val = $("#f_matiere").val();
       if(!matiere_val)
       {
-        $('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
+        $('#ajax_maj_matiere').removeAttr('class').html("");
         return false;
       }
-      $('#ajax_maj_matiere').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_maj_matiere').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_niveaux',
           data : 'f_matiere='+matiere_val,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_maj_matiere').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==true)
             {
-              $('#ajax_maj_matiere').removeAttr("class").html("&nbsp;");
-              $('#f_niveau').html(responseHTML).show();
+              $('#ajax_maj_matiere').removeAttr('class').html("");
+              $('#f_niveau').html(responseJSON['value']).show();
             }
-          else
+            else
             {
-              $('#ajax_maj_matiere').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_maj_matiere').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -298,12 +298,12 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
           data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre='+eleves_ordre+'&f_statut=1'+'&f_multiple='+is_multiple+'&f_selection=1',
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_groupe').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_maj_groupe').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
             if(groupe_type=='Classes')
@@ -314,14 +314,14 @@ $(document).ready
             {
               $("#bloc_ordre").show();
             }
-            if( ( is_multiple && (responseHTML.substring(0,6)=='<label') ) || ( !is_multiple && (responseHTML.substring(0,7)=='<option') ) ) // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==true)
             {
-              $('#ajax_maj_groupe').removeAttr("class").html("&nbsp;");
-              $('#f_eleve').html(responseHTML).parent().show();
+              $('#ajax_maj_groupe').removeAttr('class').html("");
+              $('#f_eleve').html(responseJSON['value']).parent().show();
             }
-          else
+            else
             {
-              $('#ajax_maj_groupe').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_maj_groupe').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -337,13 +337,13 @@ $(document).ready
         {
           groupe_type  = $("#f_groupe option:selected").parent().attr('label');
           eleves_ordre = $("#f_eleves_ordre option:selected").val();
-          $('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          $('#ajax_maj_groupe').removeAttr('class').addClass('loader').html("En cours&hellip;");
           maj_eleve(groupe_id,groupe_type,eleves_ordre);
         }
         else
         {
           $("#bloc_ordre").hide();
-          $('#ajax_maj_groupe').removeAttr("class").html("&nbsp;");
+          $('#ajax_maj_groupe').removeAttr('class').html("");
         }
       }
     );
@@ -356,7 +356,7 @@ $(document).ready
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
         $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
-        $('#ajax_maj_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_maj_groupe').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }
     );
@@ -378,26 +378,26 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page=_maj_select_matieres_prof',
             data : 'f_matiere='+matiere_id+'&f_action='+modifier_action+'&f_multiple=0',
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              $('button').prop('disabled',false);
+              if(responseJSON['statut']==true)
               {
                 modifier_action = (modifier_action=='ajouter') ? 'retirer' : 'ajouter' ;
-                $('#modifier_matiere').removeAttr("class").addClass("form_"+modifier_action);
-                $('#f_matiere').html(responseHTML);
+                $('#modifier_matiere').removeAttr('class').addClass("form_"+modifier_action);
+                $('#f_matiere').html(responseJSON['value']);
                 var matiere_val = $("#f_matiere").val();
                 if(!matiere_val)
                 {
                   $("#f_niveau").html('<option value="">&nbsp;</option>').hide();
                 }
               }
-              $('button').prop('disabled',false);
             }
           }
         );
@@ -489,7 +489,7 @@ $(document).ready
           }
           else {element.after(error);}
         }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -498,7 +498,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -525,13 +525,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#bilan').html("&nbsp;");
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#bilan').html("");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -540,31 +540,31 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('#bouton_valider').prop('disabled',false);
-      var message = (jqXHR.status!=500) ? 'Échec de la connexion !' : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-      $('#ajax_msg').removeAttr("class").addClass("alerte").html(message);
+      var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(message);
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       $('#bouton_valider').prop('disabled',false);
-      if(responseHTML.substring(0,6)=='<hr />')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Résultat ci-dessous.");
-        $('#bilan').html(responseHTML);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
-      else if(responseHTML.substring(0,4)=='<h2>')
+      else if(responseJSON['direct']==true)
       {
-        $('#ajax_msg').removeAttr("class").html('');
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Résultat ci-dessous.");
+        $('#bilan').html(responseJSON['bilan']);
+      }
+      else if(responseJSON['direct']==false)
+      {
+        $('#ajax_msg').removeAttr('class').html('');
         // Mis dans le div bilan et pas balancé directement dans le fancybox sinon la mise en forme des liens nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
         // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
-        $('#bilan').html('<p class="noprint">Afin de préserver l\'environnement, n\'imprimer que si nécessaire !</p>'+responseHTML);
+        $('#bilan').html('<p class="noprint">Afin de préserver l\'environnement, n\'imprimer que si nécessaire !</p>'+responseJSON['bilan']);
         $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
-      }
-      else
-      {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
       }
     }
 

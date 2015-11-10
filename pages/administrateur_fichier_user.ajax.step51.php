@@ -277,53 +277,60 @@ FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$
 $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 // On affiche
-echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label></p>'.NL;
+Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label></p>'.NL);
 if( $lignes_ajouter && $lignes_retirer )
 {
-  echo'<p class="danger">Si des utilisateurs sont à la fois proposés pour être retirés et ajoutés, alors allez modifier leurs noms/prénoms puis reprenez l\'import au début.</p>'.NL;
+  Json::add_str('<p class="danger">Si des utilisateurs sont à la fois proposés pour être retirés et ajoutés, alors allez modifier leurs noms/prénoms puis reprenez l\'import au début.</p>'.NL);
 }
-echo'<table>'.NL;
+$ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+if(empty($lignes_ajouter  )) { $lignes_ajouter   = $ligne_vide; }
+if(empty($lignes_retirer  )) { $lignes_retirer   = $ligne_vide; }
+if(empty($lignes_modifier )) { $lignes_modifier  = $ligne_vide; }
+if(empty($lignes_conserver)) { $lignes_conserver = $ligne_vide; }
+if(empty($lignes_inchanger)) { $lignes_inchanger = $ligne_vide; }
+if(empty($lignes_ignorer  )) { $lignes_ignorer   = $ligne_vide; }
+Json::add_str('<table>'.NL);
 // Cas [2]
-echo  '<tbody>'.NL;
-echo    '<tr><th colspan="2">Utilisateurs à ajouter (absents de la base, nouveaux dans le fichier).<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-echo($lignes_ajouter) ? $lignes_ajouter : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-echo  '</tbody>'.NL;
+Json::add_str(  '<tbody>'.NL);
+Json::add_str(    '<tr><th colspan="2">Utilisateurs à ajouter (absents de la base, nouveaux dans le fichier).<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
+Json::add_str(    $lignes_ajouter);
+Json::add_str(  '</tbody>'.NL);
 // Cas [3] et [7]
 $texte = ($import_profil=='eleve') ? ' ou sans classe affectée' : ( ($import_profil=='parent') ? ' ou sans enfant actuel' : '' ) ;
-echo  '<tbody>'.NL;
-echo    '<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte.')<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-echo($lignes_retirer) ? $lignes_retirer : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-echo  '</tbody>'.NL;
+Json::add_str(  '<tbody>'.NL);
+Json::add_str(    '<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte.')<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
+Json::add_str(    $lignes_retirer);
+Json::add_str(  '</tbody>'.NL);
 // Cas [5]
-echo  '<tbody>'.NL;
-echo    '<tr><th colspan="2">Utilisateurs à modifier (ou à réintégrer)<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-echo  '</tbody>'.NL;
+Json::add_str(  '<tbody>'.NL);
+Json::add_str(    '<tr><th colspan="2">Utilisateurs à modifier (ou à réintégrer)<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
+Json::add_str(    $lignes_modifier);
+Json::add_str(  '</tbody>'.NL);
 // Cas [6]
 if($mode=='complet')
 {
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs à conserver (actuels)</th></tr>'.NL;
-  echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Utilisateurs à conserver (actuels)</th></tr>'.NL);
+  Json::add_str(    $lignes_conserver);
+  Json::add_str(  '</tbody>'.NL);
 }
 // Cas [4] et [8]
 if($mode=='complet')
 {
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs inchangés (anciens)</th></tr>'.NL;
-  echo($lignes_inchanger) ? $lignes_inchanger : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Utilisateurs inchangés (anciens)</th></tr>'.NL);
+  Json::add_str(    $lignes_inchanger);
+  Json::add_str(  '</tbody>'.NL);
 }
 // Cas [1]
 if($import_profil=='eleve')
 {
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs ignorés (sans classe affectée).</th></tr>'.NL;
-  echo($lignes_ignorer) ? $lignes_ignorer : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Utilisateurs ignorés (sans classe affectée).</th></tr>'.NL);
+  Json::add_str(    $lignes_ignorer);
+  Json::add_str(  '</tbody>'.NL);
 }
-echo'</table>'.NL;
-echo'<ul class="puce p"><li><a href="#step52" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
+Json::add_str('</table>'.NL);
+Json::add_str('<ul class="puce p"><li><a href="#step52" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
 
 ?>

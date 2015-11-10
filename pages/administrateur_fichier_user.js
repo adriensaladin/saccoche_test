@@ -41,7 +41,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr("class").html('&nbsp;');
+        $('#ajax_msg').removeAttr('class').html('&nbsp;');
         // Masquer tout
         $('#span_mode , #fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base_eleves_eleves , #fieldset_base_eleves_parents , #fieldset_factos_eleves , #fieldset_factos_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
         // Puis afficher ce qu'il faut
@@ -100,7 +100,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_eleves_oui','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_sconet,
         onComplete: retourner_fichier
@@ -113,7 +113,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_parents_oui','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_sconet,
         onComplete: retourner_fichier
@@ -126,7 +126,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_professeurs_directeurs_oui','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_sconet,
         onComplete: retourner_fichier
@@ -139,7 +139,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'base_eleves_eleves','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_tableur,
         onComplete: retourner_fichier
@@ -152,7 +152,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'base_eleves_parents','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_tableur,
         onComplete: retourner_fichier
@@ -165,7 +165,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'factos_eleves','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_tableur,
         onComplete: retourner_fichier
@@ -178,7 +178,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'factos_parents','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_tableur,
         onComplete: retourner_fichier
@@ -191,7 +191,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_professeurs_directeurs','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_tableur,
         onComplete: retourner_fichier
@@ -204,7 +204,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_eleves','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_tableur,
         onComplete: retourner_fichier
@@ -217,7 +217,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_parents','f_mode':'maj_plus_tard'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier_tableur,
         onComplete: retourner_fichier
@@ -239,8 +239,8 @@ $(document).ready
       uploader_tableur_eleves[                '_settings']['data']['f_mode'] = f_mode;
       uploader_tableur_parents[               '_settings']['data']['f_mode'] = f_mode;
       // suite normale
-      $('#ajax_msg').removeAttr("class").html('&nbsp;');
-      $('#ajax_retour').html("&nbsp;");
+      $('#ajax_msg').removeAttr('class').html('&nbsp;');
+      $('#ajax_retour').html("");
       return true;
     }
 
@@ -248,18 +248,18 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_msg').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
-        $('#ajax_msg').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
         return false;
       }
       else
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
@@ -268,28 +268,29 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_msg').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
-        $('#ajax_msg').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
         return false;
       }
       else
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier(fichier_nom,responseJSON)
     {
       $('button').prop('disabled',false);
-      if(responseHTML.substring(0,3)!='<hr') // <hr /> transformé en <hr> ...
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
@@ -297,7 +298,7 @@ $(document).ready
         var texte1 = $('#f_choix_principal option:selected').parent('optgroup').attr('label');
         var texte2 = $('#f_choix_principal option:selected').text();
         $('#form_choix').hide();
-        $('#form_bilan').html('<p><input name="report_objet" readonly size="80" value="'+texte1.substring(0,texte1.indexOf('(')-1)+' &rarr; '+texte2.substring(0,texte2.indexOf('(')-1)+'" class="b" /> <button id="bouton_annuler" class="retourner">Annuler / Retour</button></p>'+responseHTML);
+        $('#form_bilan').html('<p><input name="report_objet" readonly size="80" value="'+texte1.substring(0,texte1.indexOf('(')-1)+' &rarr; '+texte2.substring(0,texte2.indexOf('(')-1)+'" class="b" /> <button id="bouton_annuler" class="retourner">Annuler / Retour</button></p>'+responseJSON['value']);
         $("#step1").addClass("on");
       }
     }
@@ -322,33 +323,33 @@ $(document).ready
         var hash = extract_hash( $(this).attr('href') );
         var li_step = hash.substring(4,5); // 'step' + numero
         var f_step  = hash.substring(4); // 'step' + numero
-        $("#step li").removeAttr("class");
+        $("#step li").removeAttr('class');
         $('#form_bilan fieldset table').remove();
         $("#step"+li_step).addClass("on");
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&f_mode='+f_mode,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,15)!='<p><label class')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").html('&nbsp;');
-                $('#form_bilan fieldset').html(responseHTML);
+                $('#ajax_msg').removeAttr('class').html('&nbsp;');
+                $('#form_bilan fieldset').html(responseJSON['value']);
               }
             }
           }
@@ -387,7 +388,7 @@ $(document).ready
         if(nb_pb)
         {
           var s = (nb_pb>1) ? 's' : '';
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html(nb_pb+' ligne'+s+' de formulaire à compléter.');
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html(nb_pb+' ligne'+s+' de formulaire à compléter.');
           return false;
         }
         else
@@ -419,30 +420,30 @@ $(document).ready
             }
           );
           $('#form_bilan fieldset table').hide(0);
-          $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+          $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
           $.ajax
           (
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
               data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&f_mode='+f_mode+'&f_del='+f_del+'&f_add='+f_add,
-              dataType : "html",
+              dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
-              success : function(responseHTML)
+              success : function(responseJSON)
               {
                 initialiser_compteur();
-                if(responseHTML.substring(0,25)!='<p><label class="valide">')
+                if(responseJSON['statut']==false)
                 {
-                  $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                  $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
-                  $('#ajax_msg').removeAttr("class").html('&nbsp;');
-                  $('#form_bilan fieldset').html(responseHTML);
+                  $('#ajax_msg').removeAttr('class').html('&nbsp;');
+                  $('#form_bilan fieldset').html(responseJSON['value']);
                 }
               }
             }
@@ -475,30 +476,30 @@ $(document).ready
           }
         );
         $('#form_bilan fieldset table').hide(0);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_step='+f_step+'&f_action='+f_action+'&f_mode='+f_mode+'&f_check='+f_check,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,25)!='<p><label class="valide">')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").html('&nbsp;');
-                $('#form_bilan fieldset').html(responseHTML);
+                $('#ajax_msg').removeAttr('class').html('&nbsp;');
+                $('#form_bilan fieldset').html(responseJSON['value']);
               }
             }
           }
@@ -517,30 +518,30 @@ $(document).ready
       function()
       {
         $('#form_bilan fieldset table').remove();
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_step=53'+'&f_action='+f_action+'&f_mode='+f_mode+'&'+$("#form_bilan").serialize(),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,25)!='<p><label class="alerte">')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").html('&nbsp;');
-                $('#form_bilan fieldset').html(responseHTML);
+                $('#ajax_msg').removeAttr('class').html('&nbsp;');
+                $('#form_bilan fieldset').html(responseJSON['value']);
               }
             }
           }

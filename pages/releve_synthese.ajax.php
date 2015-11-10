@@ -82,7 +82,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='parent')
   }
   if(!$is_enfant_legitime)
   {
-    exit('Enfant non rattaché à votre compte parent !');
+    Json::end( FALSE , 'Enfant non rattaché à votre compte parent !' );
   }
 }
 
@@ -95,7 +95,7 @@ $tab_modele = array(
 
 if( !isset($tab_modele[$synthese_modele]) || ( ($synthese_modele=='matiere') && ( !$matiere_id || !$matiere_nom || !$mode_synthese ) ) || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 Form::save_choix('releve_synthese');
@@ -116,23 +116,31 @@ $make_graph    = FALSE;
 require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_synthese.php');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On retourne les résultats
+// Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$retour = '';
 
 if($affichage_direct)
 {
-  echo'<hr />'.NL;
-  echo'<ul class="puce">'.NL;
-  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  echo'</ul>'.NL;
-  echo $releve_HTML;
+  $retour .= '<hr />'.NL;
+  $retour .= '<ul class="puce">'.NL;
+  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  $retour .= '</ul>'.NL;
+  $retour .= $releve_HTML;
 }
 else
 {
-  echo'<ul class="puce">'.NL;
-  echo  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  echo  '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
-  echo'</ul>'.NL;
+  $retour .= '<ul class="puce">'.NL;
+  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
+  $retour .= '</ul>'.NL;
 }
+
+Json::add_tab( array(
+  'direct' => $affichage_direct ,
+  'bilan'  => $retour ,
+) );
+Json::end( TRUE );
 
 ?>

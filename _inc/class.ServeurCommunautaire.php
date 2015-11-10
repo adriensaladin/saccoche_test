@@ -50,8 +50,8 @@ class ServeurCommunautaire
    * J'en ai fait la fonction ci-dessous "analyser_XML($fichier)".
    * La classe "MyDOMDocument" est dans autochargée (elle se trouve ici : _inc/class.domdocument.php).
    * 
-   * @param string    $fichier_adresse
-   * @return string   'ok' ou un message d'erreur
+   * @param string         $fichier_adresse
+   * @return TRUE|string   TRUE ou un message d'erreur
    */
   private static function analyser_XML($fichier_adresse)
   {
@@ -77,7 +77,7 @@ class ServeurCommunautaire
       return 'Erreur DTD : '.end($xml->errors);
     }
     // Tout est ok
-    return 'ok';
+    return TRUE;
   }
 
   /**
@@ -224,8 +224,8 @@ class ServeurCommunautaire
   /**
    * Vérifier qu'une arborescence XML d'un référentiel est syntaxiquement valide.
    * 
-   * @param string    $arbreXML
-   * @return string   "ok" ou "Erreur..."
+   * @param string         $arbreXML
+   * @return TRUE|string   TRUE ou un message d'erreur
    */
   public static function verifier_arborescence_XML($arbreXML)
   {
@@ -248,7 +248,7 @@ class ServeurCommunautaire
    * 
    * @param int       $sesamath_id
    * @param string    $sesamath_key
-   * @return string   'ok' ou un message d'erreur
+   * @return string   "ok" ou un message d'erreur
    */
   public static function Sesamath_enregistrer_structure($sesamath_id,$sesamath_key)
   {

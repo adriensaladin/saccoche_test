@@ -41,17 +41,18 @@ $tab_ext_images = array('bmp','gif','jpg','jpeg','png');
 
 if($action=='upload_logo')
 {
+  // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , $tab_ext_images /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
   // vérifier la conformité du fichier image, récupérer les infos le concernant
   $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   if($tab_infos==FALSE)
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier image ne semble pas valide !');
+    Json::end( FALSE , 'Le fichier image ne semble pas valide !' );
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
   $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
@@ -59,19 +60,19 @@ if($action=='upload_logo')
   if(!isset($tab_extension_types[$image_type]))
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier transmis n\'est pas un fichier image !');
+    Json::end( FALSE , 'Le fichier transmis n\'est pas un fichier image !');
   }
   // vérifier les dimensions
   if( ($image_largeur>400) || ($image_hauteur>200) )
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier transmis a des dimensions trop grandes ('.$image_largeur.' sur '.$image_hauteur.', maximum autorisé 400 sur 200).');
+    Json::end( FALSE , 'Le fichier transmis a des dimensions trop grandes ('.$image_largeur.' sur '.$image_hauteur.', maximum autorisé 400 sur 200).');
   }
   // On ne met pas encore à jour le logo : on place pour l'instant l'adresse de l'image en session (comme marqueur) en attendant confirmation.
   $_SESSION['tmp']['partenaire_logo_new_filename'] = FileSystem::$file_saved_name;
   $_SESSION['tmp']['partenaire_logo_new_file_ext'] = $tab_extension_types[$image_type];
   // Retour
-  exit('ok-'.URL_DIR_IMPORT.FileSystem::$file_saved_name);
+  Json::end( TRUE , URL_DIR_IMPORT.FileSystem::$file_saved_name );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,7 +84,7 @@ if($action=='delete_logo')
   // On ne supprime pas encore le logo : on place pour l'instant l'adresse de l'image vide en session (comme marqueur) en attendant confirmation.
   $_SESSION['tmp']['partenaire_logo_new_filename'] = '';
   // Retour
-  exit('ok-'.URL_DIR_IMG.'auto.gif');
+  Json::end( TRUE , URL_DIR_IMG.'auto.gif' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +121,9 @@ if($action=='enregistrer')
   $partenaire_logo_url = ($_SESSION['tmp']['partenaire_logo_actuel_filename']) ? URL_DIR_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] : URL_DIR_IMG.'auto.gif' ;
   $partenaire_lien_ouvrant = ($adresse_web) ? '<a href="'.html($adresse_web).'" target="_blank">' : '' ;
   $partenaire_lien_fermant = ($adresse_web) ? '</a>' : '' ;
-  exit('ok-'.$partenaire_lien_ouvrant.'<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span><span id="partenaire_message">'.nl2br(html($message)).'</span>'.$partenaire_lien_fermant.'<hr id="partenaire_hr" />');
+  $partenaire_logo    = '<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span>';
+  $partenaire_message = '<span id="partenaire_message">'.nl2br(html($message)).'</span>';
+  Json::end( TRUE , $partenaire_lien_ouvrant.$partenaire_logo.$partenaire_message.$partenaire_lien_fermant.'<hr id="partenaire_hr" />' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,13 +132,13 @@ if($action=='enregistrer')
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

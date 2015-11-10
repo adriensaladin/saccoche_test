@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "f_matiere" et le renvoyer en HTML
+// Mettre à jour l'élément de formulaire "f_matiere"
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -34,9 +34,11 @@ $matiere_famille_id = (isset($_POST['f_famille_matiere'])) ? Clean::entier($_POS
 
 if(!$matiere_famille_id)
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
-exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_famille($matiere_famille_id) , FALSE /*select_nom*/ , 'matieres_famille' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
+// Affichage du retour.
+
+Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_matieres_famille($matiere_famille_id) , FALSE /*select_nom*/ , 'matieres_famille' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
 
 ?>

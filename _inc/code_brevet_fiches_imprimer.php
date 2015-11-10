@@ -53,7 +53,7 @@ $annee_session_brevet = annee_session_brevet();
 
 if( (!in_array($ACTION,$tab_action)) || (!in_array($OBJET,$tab_objet)) || !$classe_id || ( (!$liste_eleve_id)&&($ACTION!='initialiser') ) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // On vérifie que la fiche brevet est bien accessible en impression et on récupère les infos associées (nom de la classe, id des élèves concernés avec lesquels l'intersection est faite ultérieurement).
@@ -61,7 +61,7 @@ if( (!in_array($ACTION,$tab_action)) || (!in_array($OBJET,$tab_objet)) || !$clas
 $DB_ROW = DB_STRUCTURE_BREVET::DB_recuperer_brevet_classe_infos($classe_id);
 if(empty($DB_ROW))
 {
-  exit('Classe sans élèves concernés !');
+  Json::end( FALSE , 'Classe sans élèves concernés !' );
 }
 $BILAN_ETAT = $DB_ROW['fiche_brevet'];
 $classe_nom = $DB_ROW['groupe_nom'];
@@ -69,20 +69,20 @@ $tab_id_eleves_avec_notes = explode(',',$DB_ROW['listing_user_id']);
 
 if(!$BILAN_ETAT)
 {
-  exit('Fiche brevet introuvable !');
+  Json::end( FALSE , 'Fiche brevet introuvable !' );
 }
 if( ($BILAN_ETAT!='5complet') && empty($is_test_impression) )
 {
-  exit('Fiche brevet interdite d\'accès pour cette action !');
+  Json::end( FALSE , 'Fiche brevet interdite d\'accès pour cette action !' );
 }
 if(!$DB_ROW['listing_user_id'])
 {
-  exit('Aucun élève concerné dans cette classe !');
+  Json::end( FALSE , 'Aucun élève concerné dans cette classe !' );
 }
 
 if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
-  exit('Droits insuffisants pour cette action !');
+  Json::end( FALSE , 'Droits insuffisants pour cette action !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -94,7 +94,7 @@ if($ACTION=='initialiser')
   $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
   if(empty($DB_TAB))
   {
-    exit('Aucun élève trouvé dans ce regroupement !');
+    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
   }
   $tab_eleve_id = array();
   foreach($DB_TAB as $DB_ROW)
@@ -107,7 +107,7 @@ if($ACTION=='initialiser')
   }
   if(empty($tab_eleve_id))
   {
-    exit('Aucun élève concerné dans ce regroupement !');
+    Json::end( FALSE , 'Aucun élève concerné dans ce regroupement !' );
   }
   $liste_eleve_id = implode(',',$tab_eleve_id);
 
@@ -120,11 +120,11 @@ if($ACTION=='initialiser')
     {
       $checked    = (isset($DB_TAB[$eleve_id])) ? '' : ' checked' ;
       $archive_td = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']) : 'Non' ;
-      echo'<tr id="id_'.$eleve_id.'">';
-      echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$eleve_id.'"'.$checked.' /></td>';
-      echo'<td class="label">'.$tab_eleve_td[$eleve_id].'</td>';
-      echo'<td class="label hc">'.$archive_td.'</td>';
-      echo'</tr>';
+      Json::add_str('<tr id="id_'.$eleve_id.'">');
+      Json::add_str(  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$eleve_id.'"'.$checked.' /></td>');
+      Json::add_str(  '<td class="label">'.$tab_eleve_td[$eleve_id].'</td>');
+      Json::add_str(  '<td class="label hc">'.$archive_td.'</td>');
+      Json::add_str('</tr>');
     }
     elseif($OBJET=='voir_archive')
     {
@@ -141,13 +141,13 @@ if($ACTION=='initialiser')
       {
         $archive_td = 'Oui, mais archive non présente sur ce serveur' ;
       }
-      echo'<tr>';
-      echo'<td>'.$tab_eleve_td[$eleve_id].'</td>';
-      echo'<td class="hc">'.$archive_td.'</td>';
-      echo'</tr>';
+      Json::add_str('<tr>');
+      Json::add_str(  '<td>'.$tab_eleve_td[$eleve_id].'</td>');
+      Json::add_str(  '<td class="hc">'.$archive_td.'</td>');
+      Json::add_str('</tr>');
     }
   }
-  exit();
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -166,7 +166,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
     $releve_pdf = new PDFMerger;
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_numero ) -> merge( 'file' , $fichier_extraction_chemin );
   }
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +192,7 @@ if( ($ACTION=='imprimer') && ($etape==3) )
   FileSystem::supprimer_dossier($chemin_temp_pdf);
   $_SESSION['tmp']['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
   unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,12 +206,12 @@ if( ($ACTION=='imprimer') && ($etape==4) )
   {
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' );
   }
-  echo'<ul class="puce">';
-  echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des fiches brevet en un seul document.</span></a></li>';
-  echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les fiches brevet dans des documents individuels.</span></a></li>';
-  echo'</ul>';
+  Json::add_str('<ul class="puce">');
+  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des fiches brevet en un seul document.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les fiches brevet dans des documents individuels.</span></a></li>');
+  Json::add_str('</ul>');
   unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
-  exit();
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ if( ($ACTION=='imprimer') && ($etape==4) )
 
 if( ($ACTION!='imprimer') || ($etape!=1) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // Bloc des coordonnées de l'établissement
@@ -279,15 +279,15 @@ if(empty($is_test_impression))
 {
   if(!count($tab_pages_decoupe_pdf))
   {
-    exit('Erreur : aucune donnée trouvée pour le ou les élèves concernés !');
+    Json::end( FALSE , 'Aucune donnée trouvée pour le ou les élèves concernés !' );
   }
   $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
   $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
-  exit('ok');
+  Json::end( TRUE );
 }
 else
 {
-  exit('ok;'.URL_DIR_EXPORT.$fichier_nom.'.pdf');
+  Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom.'.pdf' );
 }
 
 ?>

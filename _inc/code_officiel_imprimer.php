@@ -65,7 +65,7 @@ $tab_types = array
 
 if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || !$periode_id || !$classe_id || ( (!$liste_eleve_id)&&($ACTION!='initialiser') ) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // On vérifie que le bilan est bien accessible en impression et on récupère les infos associées
@@ -73,7 +73,7 @@ if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!i
 $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
 if(empty($DB_ROW))
 {
-  exit('Association classe / période introuvable !');
+  Json::end( FALSE , 'Association classe / période introuvable !' );
 }
 $date_debut  = $DB_ROW['jointure_date_debut'];
 $date_fin    = $DB_ROW['jointure_date_fin'];
@@ -82,15 +82,15 @@ $periode_nom = $DB_ROW['periode_nom'];
 $classe_nom  = $DB_ROW['groupe_nom'];
 if(!$BILAN_ETAT)
 {
-  exit('Bilan introuvable !');
+  Json::end( FALSE , 'Bilan introuvable !' );
 }
 if( ($BILAN_ETAT!='5complet') && empty($is_test_impression) )
 {
-  exit('Bilan interdit d\'accès pour cette action !');
+  Json::end( FALSE , 'Bilan interdit d\'accès pour cette action !' );
 }
 if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
-  exit('Droits insuffisants pour cette action !');
+  Json::end( FALSE , 'Droits insuffisants pour cette action !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +102,7 @@ if($ACTION=='initialiser')
   $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
   if(empty($DB_TAB))
   {
-    exit('Aucun élève trouvé dans ce regroupement !');
+    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
   }
   $tab_eleve_id = array();
   $tab_eleve_td = array();
@@ -140,11 +140,11 @@ if($ACTION=='initialiser')
     {
       $checked            = (isset($DB_TAB[$eleve_id])) ? '' : ' checked' ;
       $td_date_generation = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_generation']) : 'Non' ;
-      echo'<tr id="id_'.$eleve_id.'">';
-      echo'<td class="nu"><input type="checkbox" name="f_ids" value="'.$eleve_id.'"'.$checked.' /></td>';
-      echo'<td class="label">'.$tab_eleve_td[$eleve_id].'</td>';
-      echo'<td class="label hc">'.$td_date_generation.'</td>';
-      echo'</tr>';
+      Json::add_str('<tr id="id_'.$eleve_id.'">');
+      Json::add_str(  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$eleve_id.'"'.$checked.' /></td>');
+      Json::add_str(  '<td class="label">'.$tab_eleve_td[$eleve_id].'</td>');
+      Json::add_str(  '<td class="label hc">'.$td_date_generation.'</td>');
+      Json::add_str('</tr>');
     }
     elseif($OBJET=='voir_archive')
     {
@@ -167,15 +167,15 @@ if($ACTION=='initialiser')
         $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  ? convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
         $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) ? convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
       }
-      echo'<tr>';
-      echo'<td>'.$tab_eleve_td[$eleve_id].'</td>';
-      echo'<td class="hc">'.$td_date_generation.'</td>';
-      echo'<td class="hc">'.$td_date_consult_eleve.'</td>';
-      echo'<td class="hc">'.$td_date_consult_parent.'</td>';
-      echo'</tr>';
+      Json::add_str('<tr>');
+      Json::add_str(  '<td>'.$tab_eleve_td[$eleve_id].'</td>');
+      Json::add_str(  '<td class="hc">'.$td_date_generation.'</td>');
+      Json::add_str(  '<td class="hc">'.$td_date_consult_eleve.'</td>');
+      Json::add_str(  '<td class="hc">'.$td_date_consult_parent.'</td>');
+      Json::add_str('</tr>');
     }
   }
-  exit();
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +236,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
     }
   }
   // Retour
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,7 +268,8 @@ if( ($ACTION=='imprimer') && ($etape==3) )
   $_SESSION['tmp']['pages_non_anonymes']     = implode(',',$tab_pages_non_anonymes);
   $_SESSION['tmp']['pages_nombre_par_bilan'] = implode(' ; ',$tab_pages_nombre_par_bilan);
   unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);
-  exit('ok');
+  // Retour
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,13 +283,13 @@ if( ($ACTION=='imprimer') && ($etape==4) )
   {
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' );
   }
-  echo'<ul class="puce">';
-  echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>';
-  echo'<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>';
-  echo'</ul>';
-  echo'<p class="astuce"><b>[x]</b> Nombre de pages par bilan (y prêter attention avant de lancer une impression recto-verso en série) :<br />'.$_SESSION['tmp']['pages_nombre_par_bilan'].'</p>';
+  Json::add_str('<ul class="puce">');
+  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>');
+  Json::add_str('</ul>');
+  Json::add_str('<p class="astuce"><b>[x]</b> Nombre de pages par bilan (y prêter attention avant de lancer une impression recto-verso en série) :<br />'.$_SESSION['tmp']['pages_nombre_par_bilan'].'</p>');
   unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] , $_SESSION['tmp']['pages_nombre_par_bilan'] );
-  exit();
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -297,7 +298,7 @@ if( ($ACTION=='imprimer') && ($etape==4) )
 
 if( ($ACTION!='imprimer') || ($etape!=1) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné
@@ -613,15 +614,15 @@ if(empty($is_test_impression))
   if(!count($tab_pages_decoupe_pdf))
   {
     $indication_pariode = in_array($BILAN_TYPE,array('releve','bulletin')) ? ' sur la période '.$date_debut.' ~ '.$date_fin : '' ; // Pour le socle, on ne passe normalement pas par ici, mais bon, ceinture + bretelles ;)
-    exit('Erreur : aucune donnée trouvée pour le ou les élèves concernés'.$indication_pariode.' !');
+    Json::end( FALSE , 'Aucune donnée trouvée pour le ou les élèves concernés'.$indication_pariode.' !' );
   }
   $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
   $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
-  exit('ok');
+  Json::end( TRUE );
 }
 else
 {
-  exit('ok;'.URL_DIR_EXPORT.$fichier_nom.'.pdf');
+  Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom.'.pdf' );
 }
 
 ?>

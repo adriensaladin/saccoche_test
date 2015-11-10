@@ -100,25 +100,25 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Voir'+'&matiere='+matiere_id,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
               $('label[for='+id+']').remove();
               afficher_masquer_images_action('show');
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,16)!='<ul class="ul_m1')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
                 $('#zone_choix_referentiel').hide();
                 initialiser_action_groupe();
-                $('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter :<q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des matières</button></p>'+'<h2>'+matiere_nom+'</h2>'+responseHTML);
+                $('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter :<q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des matières</button></p>'+'<h2>'+matiere_nom+'</h2>'+responseJSON['value']);
                 // Récupérer le contenu des title des ressources avant que le tooltip ne les enlève
                 $('#zone_elaboration_referentiel li.li_n3').each
                 (
@@ -148,7 +148,7 @@ $(document).ready
       '#fermer_zone_elaboration_referentiel',
       function()
       {
-        $('#zone_elaboration_referentiel').html("&nbsp;");
+        $('#zone_elaboration_referentiel').html("");
         afficher_masquer_images_action('show'); // au cas où on serait en train d'éditer qq chose
         $('#zone_choix_referentiel').show('fast');
         return false;
@@ -501,13 +501,13 @@ $(document).ready
           ref = $('#f_ref').val();
           if(ref=='')
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Référence manquante !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Référence manquante !");
             $('#f_ref').focus();
             return false;
           }
           if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(ref)==-1)
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("La référence doit être une lettre ou un chiffre !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("La référence doit être une lettre ou un chiffre !");
             $('#f_ref').focus();
             return false;
           }
@@ -520,7 +520,7 @@ $(document).ready
         nom = entity_convert($('#f_nom').val());
         if(nom=='')
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Nom manquant !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Nom manquant !");
           $('#f_nom').focus();
           return false;
         }
@@ -532,13 +532,13 @@ $(document).ready
           socle = $('#f_socle').val();
           if( (isNaN(coef)) || (coef<0) || (coef>20) )
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Le coefficient doit être un nombre entier entre 0 et 20 !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Le coefficient doit être un nombre entier entre 0 et 20 !");
             $('#f_coef').focus();
             return false;
           }
           if(isNaN(cart))  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Cocher si l'élève peut ou non demander une évaluation !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Cocher si l'élève peut ou non demander une évaluation !");
             return false;
           }
         }
@@ -567,22 +567,26 @@ $(document).ready
           tab_id.push(li.attr('id').substring(3));
         }
         // Envoi des infos en ajax pour le traitement de la demande
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=add'+'&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,2)==contexte)  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==false)
+              {
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              }
+              else
               {
                 switch(contexte)
                 {
@@ -605,18 +609,14 @@ $(document).ready
                     lien_title  = 'Absence de ressource.';
                     lien_texte  = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
                     texte = '<b>' + coef_texte + cart_texte + socle_texte + lien_texte + escapeHtml(nom) + '</b>' + images[contexte.charAt(1)];
-                    element_id = responseHTML.substring(3);
+                    element_id = responseJSON['value'];
                     tab_ressources[element_id] = '';
                     break;
                   default :
                     texte = '???';
                 }
-                $('#ajax_msg').parent().attr('id',responseHTML).html(texte);
+                $('#ajax_msg').parent().attr('id',responseJSON['value']).html(texte);
                 afficher_masquer_images_action('show');
-              }
-              else
-              {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
             }
           }
@@ -642,13 +642,13 @@ $(document).ready
           ref = $('#f_ref').val();
           if(ref=='')
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Référence manquante !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Référence manquante !");
             $('#f_ref').focus();
             return false;
           }
           if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(ref)==-1)
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("La référence doit être une lettre ou un chiffre !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("La référence doit être une lettre ou un chiffre !");
             $('#f_ref').focus();
             return false;
           }
@@ -661,7 +661,7 @@ $(document).ready
         nom = entity_convert($('#f_nom').val());
         if(nom=='')
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Nom manquant !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Nom manquant !");
           $('#f_nom').focus();
           return false;
         }
@@ -673,13 +673,13 @@ $(document).ready
           socle = $('#f_socle').val();
           if( (isNaN(coef)) || (coef<0) || (coef>20) )
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Le coefficient doit être un nombre entier entre 0 et 20 !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Le coefficient doit être un nombre entier entre 0 et 20 !");
             $('#f_coef').focus();
             return false;
           }
           if(isNaN(cart))  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
           {
-            $('#ajax_msg').removeAttr("class").addClass("erreur").html("Cocher si l'élève peut ou non demander une évaluation !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Cocher si l'élève peut ou non demander une évaluation !");
             return false;
           }
         }
@@ -692,22 +692,26 @@ $(document).ready
         // On récupère l'id de l'élément concerné (domaine ou theme ou item)
         element_id = $(this).parent().parent().attr('id').substring(3);
         // Envoi des infos en ajax pour le traitement de la demande
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=edit'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==false)
+              {
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              }
+              else
               {
                 texte = (contexte=='n1') ? ref + ' - ' + escapeHtml(nom) : escapeHtml(nom) ;
                 if(contexte=='n3')
@@ -731,10 +735,6 @@ $(document).ready
                 }
                 $('#ajax_msg').parent().remove();
                 afficher_masquer_images_action('show');
-              }
-              else
-              {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
             }
           }
@@ -811,29 +811,29 @@ $(document).ready
         tab_id.push(li.attr('id').substring(3));
       }
       // Envoi des infos en ajax pour le traitement de la demande
-      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&action=del'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom),
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==true)
             {
               $('#ajax_msg').parent().parent().remove();
               afficher_masquer_images_action('show');
             }
             else
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -871,29 +871,28 @@ $(document).ready
         element2_id  = li_id_arrivee.substring(3);
         element2_nom = $(this).parent().children('b').text();
         // Envoi des infos en ajax pour le traitement de la demande
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=fus'+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom)+'&nom2='+encodeURIComponent(element2_nom),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              var tab_infos = responseHTML.split(']¤[');
-              if( (tab_infos.length!=2) || (tab_infos[0]!='ok') )
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                var lien = tab_infos[1];
+                var lien = responseJSON['value'];
                 var lien_image  = (lien) ? 'oui' : 'non' ;
                 var lien_title  = (lien) ? lien : 'Absence de ressource.' ;
                 $('#n3_'+element2_id).children('b').find('img').eq(3).attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
@@ -989,22 +988,26 @@ $(document).ready
           );
         }
         // Envoi des infos en ajax pour le traitement de la demande
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=move'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id2='+tab_id2+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==false)
+              {
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              }
+              else
               {
                 if(contexte2==contexte)  // Si on demande à l'insérer après un élément de même niveau
                 {
@@ -1018,10 +1021,6 @@ $(document).ready
                 $('#ajax_msg').remove();
                 $('q[data-action=move2]').remove();
                 afficher_masquer_images_action('show');
-              }
-              else
-              {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
               }
             }
           }
@@ -1142,29 +1141,29 @@ $(document).ready
     {
       var id_matieres = (matiere_id_a_eviter) ? listing_id_matieres_autorisees.replace(','+matiere_id_a_eviter+',',',') : listing_id_matieres_autorisees ;
       id_matieres = id_matieres.substring(1,id_matieres.length-1);
-      $('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_msg_groupe').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&action=lister_options'+'&granulosite='+granulosite+'&id_matieres='+id_matieres,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg_groupe').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,7)=='<option')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==true)
             {
               $('#ajax_msg_groupe').removeAttr('class').html('');
-              $('#'+select_id).html(responseHTML).show(0);
+              $('#'+select_id).html(responseJSON['value']).show(0);
             }
             else
             {
-              $('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg_groupe').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -1317,24 +1316,28 @@ $(document).ready
       {
         var groupe_nom_initial = $('#select_action_groupe_deplacer_id_initial option:selected').text();
         var groupe_nom_final   = $('#select_action_groupe_deplacer_id_final option:selected').text();
-        $('#ajax_msg_groupe').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_groupe').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=action_complementaire'+'&'+$('#zone_choix_referentiel').serialize()+'&groupe_nom_initial='+encodeURIComponent(groupe_nom_initial)+'&groupe_nom_final='+encodeURIComponent(groupe_nom_final),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_groupe').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_groupe').removeAttr("class").addClass("valide").html("Demande réalisée !");
+                $('#ajax_msg_groupe').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              }
+              else
+              {
+                $('#ajax_msg_groupe').removeAttr('class').addClass('valide').html(responseJSON['value']);
                 var action_groupe = $('#select_action_groupe_choix option:selected').val();
                 if( (action_groupe=='deplacer_domaine') || (action_groupe=='deplacer_theme') )
                 {
@@ -1347,10 +1350,6 @@ $(document).ready
                   var granulosite         = (action_groupe=='deplacer_domaine') ? 'referentiel'    : 'domaine' ;
                   lister_options_select( granulosite , 'select_action_groupe_deplacer_id_final' , matiere_id_a_eviter );
                 }
-              }
-              else
-              {
-                $('#ajax_msg_groupe').removeAttr("class").addClass("alerte").html(responseHTML);
               }
             }
           }

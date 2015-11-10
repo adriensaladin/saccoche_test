@@ -40,13 +40,13 @@ class SessionUser
    * Tester si mdp du webmestre transmis convient.
    * 
    * @param string    $password
-   * @return string   'ok' ou un message d'erreur
+   * @return array(bool,string)   (TRUE,'') ou (FALSE,message_d_erreur)
    */
   public static function tester_authentification_webmestre($password)
   {
     global $PAGE;
     $password_crypte = crypter_mdp($password);
-    return ($password_crypte==WEBMESTRE_PASSWORD_MD5) ? 'ok' : 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' ;
+    return ($password_crypte==WEBMESTRE_PASSWORD_MD5) ? array( TRUE , '' ) : array( FALSE , 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' ) ;
   }
 
   /**
@@ -54,11 +54,12 @@ class SessionUser
    * On réutilise des éléments de la connexion webmestre.
    * 
    * @param string    $password
-   * @return string   'ok' ou un message d'erreur
+   * @return array(bool,string)   (TRUE,'') ou (FALSE,message_d_erreur)
    */
   public static function tester_authentification_developpeur($password)
   {
-    return ServeurCommunautaire::tester_auth_devel( crypter_mdp($password) );
+    $result = ServeurCommunautaire::tester_auth_devel( crypter_mdp($password) );
+    return ($result=='ok') ? array( TRUE , '' ) : array( FALSE , $result ) ;
   }
 
   /**
@@ -66,7 +67,7 @@ class SessionUser
    * 
    * @param int       $partenaire_id
    * @param string    $password
-   * @return array(string,array)   ('ok',$DB_ROW) ou (message_d_erreur,tableau_vide)
+   * @return array(bool,array|string)   (TRUE,$DB_ROW) ou (FALSE,message_d_erreur)
    */
   public static function tester_authentification_partenaire($partenaire_id,$password)
   {
@@ -75,18 +76,18 @@ class SessionUser
     // Si id non trouvé...
     if(empty($DB_ROW))
     {
-      return array( 'Partenaire introuvable !' , array() );
+      return array( FALSE , 'Partenaire introuvable !' );
     }
     // Si mdp incorrect...
     if($DB_ROW['partenaire_password']!=crypter_mdp($password))
     {
       global $PAGE;
-      return array( 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' , array() );
+      return array( FALSE , 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
     }
     // Enregistrement d'un cookie sur le poste client servant à retenir le partenariat sélectionné si identification avec succès
     Cookie::definir( COOKIE_PARTENAIRE , $DB_ROW['partenaire_id'] , 31536000 /* 60*60*24*365 = 1 an */ );
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
-    return array( 'ok' , $DB_ROW );
+    return array( TRUE , $DB_ROW );
   }
 
   /**
@@ -102,7 +103,7 @@ class SessionUser
    * @param string    $mode_connection 'normal' | 'cas' | 'shibboleth' | 'siecle' | 'vecteur_parent' | 'gepi' | 'ldap' (?)
    * @param string    $parent_nom      facultatif, seulement pour $mode_connection = 'vecteur_parent'
    * @param string    $parent_prenom   facultatif, seulement pour $mode_connection = 'vecteur_parent'
-   * @return array(string,array)   ('ok',$DB_ROW) ou (message_d_erreur,tableau_vide)
+   * @return array(bool,array|string)   (TRUE,$DB_ROW) ou (FALSE,message_d_erreur)
    */
   public static function tester_authentification_utilisateur($BASE,$login,$password,$mode_connection,$parent_nom='',$parent_prenom='')
   {
@@ -126,7 +127,7 @@ class SessionUser
         case 'vecteur_parent' : $message = 'Identification réussie mais compte parent introuvable dans SACoche !<br />Le compte SACoche d\'un responsable légal dont le nom est "' .$parent_nom.'", le prénom est "' .$parent_prenom.'", et ayant la charge d\'un enfant dont l\'identifiant Sconet est "' .$login.'", n\'a pas été trouvé.'; break;
         case 'gepi'           : $message = 'Identification réussie mais login GEPI "'            .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Gepi] la valeur "'.$login.'".'; break;
       }
-      return array($message,array());
+      return array( FALSE , $message );
     }
     // Blocage éventuel par le webmestre ou un administrateur ou l'automate
     LockAcces::stopper_si_blocage( $BASE , $DB_ROW['user_profil_sigle'] );
@@ -134,12 +135,12 @@ class SessionUser
     if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
     {
       global $PAGE;
-      return array( 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' , array() );
+      return array( FALSE , 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
     }
     // Si compte desactivé...
     if($DB_ROW['user_sortie_date']<=TODAY_MYSQL)
     {
-      return array( 'Identification réussie mais ce compte est desactivé !' , array() );
+      return array( FALSE , 'Identification réussie mais ce compte est desactivé !' );
     }
     // Mémoriser la date de la (dernière) connexion (pour les autres cas, sera enregistré lors de la confirmation de la prise en compte des infos CNIL).
     if( ($DB_ROW['user_connexion_date']!==NULL) || in_array($DB_ROW['user_profil_type'],array('webmestre','administrateur')) )
@@ -151,7 +152,7 @@ class SessionUser
     // Enregistrement d'un cookie sur le poste client servant à retenir le dernier mode de connexion utilisé si identification avec succès
     Cookie::definir( COOKIE_AUTHMODE , $mode_connection );
     // Si on arrive ici c'est que l'identification s'est bien effectuée !
-    return array( 'ok' , $DB_ROW );
+    return array( TRUE , $DB_ROW );
   }
 
   /**

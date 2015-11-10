@@ -86,38 +86,38 @@ $(document).ready
         var nom    = $('#nom_'+statut).val();
         if( !nom )
         {
-          $('#ajax_msg_'+statut).removeAttr("class").addClass("erreur").html("Entrer un nom !");
+          $('#ajax_msg_'+statut).removeAttr('class').addClass('erreur').html("Entrer un nom !");
           return false;
         }
         $('#bouton_chercher_'+statut).prop('disabled',true);
-        $('#ajax_msg_'+statut).removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_'+statut).removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+'chercher'+'&f_statut='+statut+'&f_nom='+encodeURIComponent(nom),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_'+statut).removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg_'+statut).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               $('#bouton_chercher_'+statut).prop('disabled',false);
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,7)!='<option')
+              $('#bouton_chercher_'+statut).prop('disabled',false);
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_'+statut).removeAttr("class").addClass("alerte").html(responseHTML);
-                $('#id_'+statut).hide(0);
+                $('#ajax_msg_'+statut).removeAttr('class').addClass('valide').html("");
+                $('#id_'+statut).html(responseJSON['value']).show(0);
+                change_etat_bouton_selection();
               }
               else
               {
-                $('#ajax_msg_'+statut).removeAttr("class").addClass("valide").html("");
-                $('#id_'+statut).html(responseHTML).show(0);
-                change_etat_bouton_selection();
+                $('#ajax_msg_'+statut).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#id_'+statut).hide(0);
               }
-              $('#bouton_chercher_'+statut).prop('disabled',false);
             }
           }
         );
@@ -136,41 +136,41 @@ $(document).ready
         var id_ancien = $('#id_ancien option:selected').val();
         if( !id_actuel || !id_ancien )
         {
-          $('#ajax_msg_selection').removeAttr("class").addClass("erreur").html("Sélectionner 2 élèves !");
+          $('#ajax_msg_selection').removeAttr('class').addClass('erreur').html("Sélectionner 2 élèves !");
           return false;
         }
         $('#bouton_selectionner').prop('disabled',true);
-        $('#ajax_msg_selection').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_selection').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+'fusionner'+'&f_id_actuel='+id_actuel+'&f_id_ancien='+id_ancien,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_selection').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg_selection').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               $('#bouton_selectionner').prop('disabled',false);
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML!='ok')
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_selection').removeAttr("class").addClass("alerte").html(responseHTML);
-                $('#bouton_selectionner').prop('disabled',false);
+                $('#ajax_msg_selection').removeAttr('class').addClass('valide').html("Comptes fusionnés.");
+                $('#nom_actuel').val("");
+                $('#nom_ancien').val("");
+                $('#id_actuel').html('<option value=""></option>').hide(0);;
+                $('#id_ancien').html('<option value=""></option>').hide(0);;
+                $('#ajax_msg_actuel').removeAttr('class').html("");
+                $('#ajax_msg_ancien').removeAttr('class').html("");
+                $('#bouton_selectionner').prop('disabled',true);
               }
               else
               {
-                $('#ajax_msg_selection').removeAttr("class").addClass("valide").html("Comptes fusionnés.");
-                $('#nom_actuel').val("");
-                $('#nom_ancien').val("");
-                $('#id_actuel').html('<option value=""></option>');
-                $('#id_ancien').html('<option value=""></option>');
-                $('#ajax_msg_actuel').removeAttr("class").html("");
-                $('#ajax_msg_ancien').removeAttr("class").html("");
-                $('#bouton_selectionner').prop('disabled',true);
+                $('#ajax_msg_selection').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#bouton_selectionner').prop('disabled',false);
               }
             }
           }

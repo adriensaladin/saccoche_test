@@ -53,7 +53,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_courriel').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+        $('#ajax_msg_courriel').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -61,7 +61,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_abonnements').removeAttr("class").addClass("alerte").html("Enregistrer pour confirmer.");
+        $('#ajax_msg_abonnements').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -87,7 +87,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr("class").addClass("valide");} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -118,12 +118,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_courriel').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_courriel').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
-        $("#bouton_valider").prop('disabled',true);
-        $('#ajax_msg_courriel').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#bouton_valider').prop('disabled',true);
+        $('#ajax_msg_courriel').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -131,24 +131,24 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
-      $("#bouton_valider").prop('disabled',false);
-      $('#ajax_msg_courriel').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#bouton_valider').prop('disabled',false);
+      $('#ajax_msg_courriel').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
-      $("#bouton_valider").prop('disabled',false);
+      $('#bouton_valider').prop('disabled',false);
       if(responseJSON['statut']==true)
       {
         $('#info_adresse').html(responseJSON['info_adresse']);
         $('#info_abonnement_mail').html(responseJSON['info_abonnement_mail']);
-        $('#ajax_msg_courriel').removeAttr("class").addClass("valide").html("Choix enregistré !");
+        $('#ajax_msg_courriel').removeAttr('class').addClass('valide').html("Choix enregistré !");
       }
       else
       {
-        $('#ajax_msg_courriel').removeAttr("class").addClass("alerte").html(responseJSON['value']);
+        $('#ajax_msg_courriel').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 
@@ -160,7 +160,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_abonnements').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_abonnements').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -170,18 +170,18 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_abonnements').removeAttr("class").addClass("alerte").html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_abonnements').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
               initialiser_compteur();
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_abonnements').removeAttr("class").addClass("valide").html("Choix enregistrés !");
+                $('#ajax_msg_abonnements').removeAttr('class').addClass('valide').html("Choix enregistrés !");
               }
               else
               {
-                $('#ajax_msg_abonnements').removeAttr("class").addClass("alerte").html(responseJSON['value']);
+                $('#ajax_msg_abonnements').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

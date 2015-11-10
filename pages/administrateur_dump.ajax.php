@@ -54,7 +54,6 @@ if( ($action=='sauvegarder') && $etape )
   $texte_etape = sauvegarder_tables_base_etablissement($dossier_temp,$etape);
   if(strpos($texte_etape,'terminée'))
   {
-    $class = "valide";
     // Débloquer l'application
     LockAcces::debloquer_application('automate',$_SESSION['BASE']);
     // Zipper les fichiers de svg
@@ -62,21 +61,24 @@ if( ($action=='sauvegarder') && $etape )
     FileSystem::zipper_fichiers($dossier_temp,CHEMIN_DOSSIER_DUMP,$fichier_zip_nom);
     // Supprimer le dossier temporaire
     FileSystem::supprimer_dossier($dossier_temp);
+    // Pour le retour
+    Json::add_row( 'class' , 'valide' );
+    Json::add_row( 'href' , URL_DIR_DUMP.$fichier_zip_nom );
   }
   else
   {
-    $class = "loader";
     $top_arrivee = microtime(TRUE);
     $duree = number_format($top_arrivee - $top_depart,2,',','');
     $texte_etape .= ' en '.$duree.'s';
+    // Pour le retour
+    Json::add_row( 'class' , 'loader' );
   }
   // Afficher le retour
-  echo'<li><label class="'.$class.'">'.$texte_etape.'.</label></li>';
+  Json::add_row( 'texte' , $texte_etape.'.' );
   if(strpos($texte_etape,'terminée'))
   {
-    echo'<li><a target="_blank" href="'.URL_DIR_DUMP.$fichier_zip_nom.'"><span class="file file_zip">Récupérer le fichier de sauvegarde au format ZIP.</span></a></li>';
   }
-  exit();
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,11 +87,12 @@ if( ($action=='sauvegarder') && $etape )
 
 if($action=='uploader')
 {
+  // Récupération du fichier
   $fichier_upload_nom = 'dump_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_upload_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('<li><label class="alerte">Erreur : '.$result.'</label></li>');
+    Json::end( FALSE , $result );
   }
   // Créer ou vider le dossier temporaire
   FileSystem::creer_ou_vider_dossier($dossier_temp);
@@ -98,7 +101,7 @@ if($action=='uploader')
   if($code_erreur)
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    exit('<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>');
+    Json::end( FALSE , '<li><label class="alerte">Cette archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>' );
   }
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
   // Vérifier le contenu : noms des fichiers
@@ -106,23 +109,22 @@ if($action=='uploader')
   if(!$fichier_taille_maximale)
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    exit('<li><label class="alerte">Erreur : votre archive ZIP ne semble pas contenir les fichiers d\'une sauvegarde de la base effectuée par SACoche !</label></li>');
+    Json::end( FALSE , '<li><label class="alerte">Cette archive ZIP ne semble pas contenir les fichiers d\'une sauvegarde de la base effectuée par SACoche !</label></li>' );
   }
   // Vérifier le contenu : taille des requêtes
   if( !verifier_taille_requetes($fichier_taille_maximale) )
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    exit('<li><label class="alerte">Erreur : votre archive ZIP contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></li>');
+    Json::end( FALSE , '<li><label class="alerte">Cette archive ZIP contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></li>' );
   }
   // Vérifier le contenu : version de la base compatible avec la version logicielle
   if( version_base_fichier_svg($dossier_temp) > VERSION_BASE_STRUCTURE )
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    exit('<li><label class="alerte">Erreur : votre archive ZIP contient une sauvegarde plus récente que celle supportée par cette installation ! Le webmestre doit préalablement mettre à jour le programme...</label></li>');
+    Json::end( FALSE , '<li><label class="alerte">Cette archive ZIP contient une sauvegarde plus récente que celle supportée par cette installation ! Le webmestre doit préalablement mettre à jour le programme...</label></li>' );
   }
   // Afficher le retour
-  echo'<li><label class="valide">Contenu du fichier récupéré avec succès.</label></li>';
-  exit();
+  Json::end( TRUE , '<li><label class="valide">Contenu du fichier récupéré avec succès.</label></li>' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,22 +145,24 @@ if( ($action=='restaurer') && $etape )
   $texte_etape = restaurer_tables_base_etablissement($dossier_temp,$etape);
   if(strpos($texte_etape,'terminée'))
   {
-    $class = "valide";
     // Débloquer l'application
     LockAcces::debloquer_application('automate',$_SESSION['BASE']);
     // Supprimer le dossier temporaire
     FileSystem::supprimer_dossier($dossier_temp);
+    // Pour le retour
+    Json::add_row( 'class' , 'valide' );
   }
   else
   {
-    $class = "loader";
     $top_arrivee = microtime(TRUE);
     $duree = number_format($top_arrivee - $top_depart,2,',','');
     $texte_etape .= ' en '.$duree.'s';
+    // Pour le retour
+    Json::add_row( 'class' , 'loader' );
   }
   // Afficher le retour
-  echo'<li><label class="'.$class.'">'.$texte_etape.'.</label></li>';
-  exit();
+  Json::add_row( 'texte' , $texte_etape.'.' );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -167,13 +171,13 @@ if( ($action=='restaurer') && $etape )
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

@@ -67,7 +67,7 @@ $tab_types = array
 
 if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || !$periode_id || !$classe_id )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // On vérifie que le bilan est bien accessible en modification et on récupère les infos associées
@@ -75,7 +75,7 @@ if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!i
 $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,$BILAN_TYPE);
 if(empty($DB_ROW))
 {
-  exit('Association classe / période introuvable !');
+  Json::end( FALSE , 'Association classe / période introuvable !' );
 }
 $date_debut  = $DB_ROW['jointure_date_debut'];
 $date_fin    = $DB_ROW['jointure_date_fin'];
@@ -85,11 +85,11 @@ $classe_nom  = $DB_ROW['groupe_nom'];
 
 if(!$BILAN_ETAT)
 {
-  exit('Bilan introuvable !');
+  Json::end( FALSE , 'Bilan introuvable !' );
 }
 if(!in_array($OBJET.$BILAN_ETAT,array('modifier2rubrique','modifier3mixte','tamponner3mixte','tamponner4synthese')))
 {
-  exit('Bilan interdit d\'accès pour cette action !');
+  Json::end( FALSE , 'Bilan interdit d\'accès pour cette action !' );
 }
 
 
@@ -100,7 +100,7 @@ if($ACTION!='enregistrer_saisie_csv')
   $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
   if(empty($DB_ROW))
   {
-    exit('La classe et la période ne sont pas reliées !');
+    Json::end( FALSE , 'La classe et la période ne sont pas reliées !' );
   }
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
@@ -124,7 +124,7 @@ if($ACTION!='enregistrer_saisie_csv')
   $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
   if(empty($DB_TAB))
   {
-    exit('Aucun élève trouvé dans ce regroupement !');
+    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
   }
   $csv_lignes_eleves = ($BILAN_TYPE=='bulletin') ? array( 0 => 'groupe_'.$groupe_id.$separateur.'"Classe / Groupe"'.$separateur ) : array() ;
   $tab_eleve_id      = ($BILAN_TYPE=='bulletin') ? array( 0 => 'Classe / Groupe' )                                                : array() ;
@@ -163,7 +163,7 @@ if($ACTION=='generer_csv_vierge')
   }
   $fnom_export = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.Clean::fichier($BILAN_TYPE).'_'.Clean::fichier($periode_nom).'_'.Clean::fichier($groupe_nom).'_'.$BILAN_ETAT.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.csv';
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom_export , To::csv($export_csv) );
-  exit($fnom_export);
+  Json::end( TRUE , $fnom_export );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,18 +172,20 @@ if($ACTION=='generer_csv_vierge')
 
 if($ACTION=='uploader_saisie_csv')
 {
+  // Récupération du fichier
   $fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.Clean::fichier($BILAN_TYPE).'_'.$periode_id.'_'.$groupe_id.'_'.$BILAN_ETAT.'_'.fabriquer_fin_nom_fichier__date_et_alea();
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom.'.<EXT>' /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
+  // On passe au contenu
   $contenu_csv = file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   $contenu_csv = To::deleteBOM(To::utf8($contenu_csv)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = extraire_lignes($contenu_csv); // Extraire les lignes du fichier
   if(count($tab_lignes)<4)
   {
-    exit('Erreur : absence de données suffisantes (fichier comportant moins de 4 lignes) !');
+    Json::end( FALSE , 'Absence de données suffisantes (fichier comportant moins de 4 lignes) !' );
   }
   $separateur = extraire_separateur_csv($tab_lignes[2]); // Déterminer la nature du séparateur
   // Données de la ligne d'en-tête
@@ -193,28 +195,28 @@ if($ACTION=='uploader_saisie_csv')
   $tab_references = explode('_',$string_references);
   if(count($tab_references)!=5)
   {
-    exit('Erreur : ligne d\'en-tête invalide !');
+    Json::end( FALSE , 'Ligne d\'en-tête invalide !' );
   }
   list($csv_bilan_type,$csv_bilan_etat,$csv_user_id,$csv_periode_id,$csv_groupe_id) = $tab_references;
   if($csv_bilan_type!=$BILAN_TYPE)
   {
-    exit('Erreur : type de bilan non concordant ('.$csv_bilan_type.' reçu / '.$BILAN_TYPE.' attendu) !');
+    Json::end( FALSE , 'Type de bilan non concordant ('.$csv_bilan_type.' reçu / '.$BILAN_TYPE.' attendu) !' );
   }
   if($csv_bilan_etat!=$BILAN_ETAT)
   {
-    exit('Erreur : étape du bilan non concordante ('.$csv_bilan_etat.' reçu / '.$BILAN_ETAT.' attendu) !');
+    Json::end( FALSE , 'Étape du bilan non concordante ('.$csv_bilan_etat.' reçu / '.$BILAN_ETAT.' attendu) !' );
   }
   if($csv_user_id!=$_SESSION['USER_ID'])
   {
-    exit('Erreur : fichier d\'import d\'un autre utilisateur !');
+    Json::end( FALSE , 'Fichier transmis d\'un autre utilisateur !' );
   }
   if($csv_periode_id!=$periode_id)
   {
-    exit('Erreur : fichier d\'import d\'une autre période !');
+    Json::end( FALSE , 'Fichier transmis d\'une autre période !' );
   }
   if($csv_groupe_id!=$groupe_id)
   {
-    exit('Erreur : fichier d\'import d\'un autre regroupement d\'élèves !');
+    Json::end( FALSE , 'Fichier transmis d\'un autre regroupement d\'élèves !' );
   }
   // On y va
   $rubrique_id = NULL;
@@ -276,7 +278,7 @@ if($ACTION=='uploader_saisie_csv')
   }
   if(!count($tab_donnees_csv))
   {
-    exit('Erreur : aucune saisie trouvée dans le fichier transmis !');
+    Json::end( FALSE , 'Aucune saisie trouvée dans le fichier transmis !' );
   }
   // On compare avec ce qui est enregistré dans la base pour distinguer s'il s'agit d'UPDATE, d'INSERT, ou si cela n'a pas changé.
   // Cette partie de code est inspirée de [code_officiel_archiver.php]
@@ -362,13 +364,13 @@ if($ACTION=='uploader_saisie_csv')
   }
   if(!$nb_modifs)
   {
-    exit('Erreur : aucune différence trouvée avec ce qui est déjà enregistré !');
+    Json::end( FALSE , 'Aucune différence trouvée avec ce qui est déjà enregistré !' );
   }
   // On enregistre
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_nom.'_'.session_id().'.txt',serialize($tab_donnees_csv));
   // On affiche le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_nom.'_rapport.txt','<thead><tr><th colspan="3">'.html($titre).'</th></tr></thead><tbody>'.$list_tr.'</tbody>');
-  exit($fichier_nom);
+  Json::end( TRUE , $fichier_nom );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -379,48 +381,48 @@ if($ACTION=='enregistrer_saisie_csv')
 {
   if(!$import_info)
   {
-    exit('Erreur : valeur pour récupérer les informations manquante !');
+    Json::end( FALSE , 'Valeur pour récupérer les informations manquante !' );
   }
   $tab_infos = explode('_',$import_info);
   if(count($tab_infos)!=11)
   {
-    exit('Erreur : valeur pour récupérer les informations mal formée !');
+    Json::end( FALSE , 'Valeur pour récupérer les informations mal formée !' );
   }
   list( $del , $del , $info_base , $info_user , $info_bilan , $info_periode , $info_groupe , $info_etat , $del , $del , $del ) = $tab_infos;
   if($info_base!=$_SESSION['BASE'])
   {
-    exit('Erreur : fichier d\'import d\'un autre établissement !');
+    Json::end( FALSE , 'Fichier transmis d\'un autre établissement !' );
   }
   if($info_user!=$_SESSION['USER_ID'])
   {
-    exit('Erreur : fichier d\'import d\'un autre utilisateur !');
+    Json::end( FALSE , 'Fichier transmis d\'un autre utilisateur !' );
   }
   if($info_bilan!=$BILAN_TYPE)
   {
-    exit('Erreur : type de bilan non concordant ('.$info_bilan.' reçu / '.$BILAN_TYPE.' attendu) !');
+    Json::end( FALSE , 'Type de bilan non concordant ('.$info_bilan.' reçu / '.$BILAN_TYPE.' attendu) !' );
   }
   if($info_etat!=$BILAN_ETAT)
   {
-    exit('Erreur : étape du bilan non concordante ('.$info_etat.' reçu / '.$BILAN_ETAT.' attendu) !');
+    Json::end( FALSE , 'Étape du bilan non concordante ('.$info_etat.' reçu / '.$BILAN_ETAT.' attendu) !' );
   }
   if($info_periode!=$periode_id)
   {
-    exit('Erreur : fichier d\'import d\'une autre période !');
+    Json::end( FALSE , 'Fichier transmis d\'une autre période !' );
   }
   if($info_groupe!=$groupe_id)
   {
-    exit('Erreur : fichier d\'import d\'un autre regroupement d\'élèves !');
+    Json::end( FALSE , 'Fichier transmis d\'un autre regroupement d\'élèves !' );
   }
   $fichier_chemin = CHEMIN_DOSSIER_IMPORT.$import_info.'_'.session_id().'.txt';
   if(!is_file($fichier_chemin))
   {
-    exit('Erreur : le fichier contenant les données à traiter est introuvable !');
+    Json::end( FALSE , 'Le fichier transmis est introuvable !' );
   }
   $contenu = file_get_contents($fichier_chemin);
   $tab_donnees_csv = @unserialize($contenu);
   if($tab_donnees_csv===FALSE)
   {
-    exit('Erreur : le fichier contenant les données à traiter est syntaxiquement incorrect !');
+    Json::end( FALSE , 'Le fichier transmis est syntaxiquement incorrect !' );
   }
   $nb_modifs = 0;
   foreach($tab_donnees_csv as $rubrique_id => $tab_eleves)
@@ -447,11 +449,11 @@ if($ACTION=='enregistrer_saisie_csv')
   }
   if(!$nb_modifs)
   {
-    exit('Erreur : aucune donnée trouvée à enregistrer !');
+    Json::end( FALSE , 'Aucune donnée trouvée à enregistrer !' );
   }
   FileSystem::supprimer_fichier( $fichier_chemin , FALSE /*verif_exist*/ );
   $s = ($nb_modifs>1) ? 's' : '' ;
-  exit('ok'.']¤['.$nb_modifs.' donnée'.$s.' enregistrée'.$s.'.');
+  Json::end( TRUE , $nb_modifs.' donnée'.$s.' enregistrée'.$s.'.' );
 }
 
 ?>

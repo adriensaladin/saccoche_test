@@ -41,7 +41,7 @@ $periode_id  = (count($tab_periode_eleves))  ? $tab_periode_eleves[0]           
 
 if( (!$periode_id) || (!$rubrique_id) || (count($tab_periode_eleves)<2) || (!count($tab_eleves_moyennes)) || ($_SESSION['USER_PROFIL_TYPE']!='professeur') || (!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // On passe en revue les données
@@ -69,9 +69,11 @@ foreach($tab_eleves_moyennes as $eleve_moyenne)
 
 if(!$nb_reports)
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
-$s = ($nb_reports>1) ? 's' : '' ;
-exit('Note'.$s.' reportée'.$s.' pour '.$nb_reports.' élève'.$s.'.');
-
+else
+{
+  $s = ($nb_reports>1) ? 's' : '' ;
+  Json::end( TRUE , 'Note'.$s.' reportée'.$s.' pour '.$nb_reports.' élève'.$s.'.' );
+}
 ?>

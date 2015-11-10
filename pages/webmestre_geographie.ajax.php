@@ -35,67 +35,75 @@ $nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])    : '';
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter une nouvelle zone / Dupliquer une pédiode existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( (($action=='ajouter')||($action=='dupliquer')) && $ordre )
 {
   // Vérifier que le nom de la zone est disponible
   if( DB_WEBMESTRE_WEBMESTRE::DB_tester_zone_nom($nom) )
   {
-    exit('Erreur : nom de zone déjà existant !');
+    Json::end( FALSE , 'Nom de zone déjà existant !' );
   }
   // Insérer l'enregistrement
   $geo_id = DB_WEBMESTRE_WEBMESTRE::DB_ajouter_zone($ordre,$nom);
   // Afficher le retour
-  echo'<tr id="id_'.$geo_id.'" class="new">';
-  echo  '<td>'.$geo_id.'</td>';
-  echo  '<td>'.$ordre.'</td>';
-  echo  '<td>'.html($nom).'</td>';
-  echo  '<td class="nu">';
-  echo    '<q class="modifier" title="Modifier cette zone."></q>';
-  echo    '<q class="dupliquer" title="Dupliquer cette zone."></q>';
-  echo    '<q class="supprimer" title="Supprimer cette zone."></q>';
-  echo  '</td>';
-  echo'</tr>';
+  Json::add_str('<tr id="id_'.$geo_id.'" class="new">');
+  Json::add_str(  '<td>'.$geo_id.'</td>');
+  Json::add_str(  '<td>'.$ordre.'</td>');
+  Json::add_str(  '<td>'.html($nom).'</td>');
+  Json::add_str(  '<td class="nu">');
+  Json::add_str(    '<q class="modifier" title="Modifier cette zone."></q>');
+  Json::add_str(    '<q class="dupliquer" title="Dupliquer cette zone."></q>');
+  Json::add_str(    '<q class="supprimer" title="Supprimer cette zone."></q>');
+  Json::add_str(  '</td>');
+  Json::add_str('</tr>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier une zone existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if( ($action=='modifier') && $id && $ordre && $nom )
+
+if( ($action=='modifier') && $id && $ordre && $nom )
 {
   // Vérifier que le nom de la zone est disponible
   if( DB_WEBMESTRE_WEBMESTRE::DB_tester_zone_nom($nom,$id) )
   {
-    exit('Erreur : nom de zone déjà existant !');
+    Json::end( FALSE , 'Nom de zone déjà existant !' );
   }
   // Mettre à jour l'enregistrement
   DB_WEBMESTRE_WEBMESTRE::DB_modifier_zone($id,$ordre,$nom);
   // Afficher le retour
-  echo'<td>'.$id.'</td>';
-  echo'<td>'.$ordre.'</td>';
-  echo'<td>'.html($nom).'</td>';
-  echo'<td class="nu">';
-  echo  '<q class="modifier" title="Modifier cette zone."></q>';
-  echo  '<q class="dupliquer" title="Dupliquer cette zone."></q>';
   // La zone d'id 1 ne peut être supprimée, c'est la zone par défaut.
-  echo ($id!=1) ? '<q class="supprimer" title="Supprimer cette zone."></q>' : '<q class="supprimer_non" title="La zone par défaut ne peut pas être supprimée."></q>' ;
-  echo'</td>';
+  $q_supprimer = ($id!=1) ? '<q class="supprimer" title="Supprimer cette zone."></q>' : '<q class="supprimer_non" title="La zone par défaut ne peut pas être supprimée."></q>' ;
+  Json::add_str('<td>'.$id.'</td>');
+  Json::add_str('<td>'.$ordre.'</td>');
+  Json::add_str('<td>'.html($nom).'</td>');
+  Json::add_str('<td class="nu">');
+  Json::add_str(  '<q class="modifier" title="Modifier cette zone."></q>');
+  Json::add_str(  '<q class="dupliquer" title="Dupliquer cette zone."></q>');
+  Json::add_str($q_supprimer);
+  Json::add_str('</td>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer une zone existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if( ($action=='supprimer') && ($id>1) && $nom )
+
+if( ($action=='supprimer') && ($id>1) && $nom )
 {
   // Effacer l'enregistrement
   DB_WEBMESTRE_WEBMESTRE::DB_supprimer_zone($id);
   // Log de l'action
   SACocheLog::ajouter('Suppression de la zone géographique "'.$nom.'" (n°'.$id.').');
   // Afficher le retour
-  echo'<td>ok</td>';
+  Json::end( TRUE );
 }
 
-else
-{
-  echo'Erreur avec les données transmises !';
-}
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Json::end( FALSE , 'Erreur avec les données transmises !' );
+
 ?>

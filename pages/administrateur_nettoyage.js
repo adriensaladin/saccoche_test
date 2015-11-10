@@ -148,32 +148,32 @@ $(document).ready
     function envoyer_action_confirmee()
     {
       $("button").prop('disabled',true);
-      $("label").removeAttr("class").html('');
-      $('#ajax_msg_'+memo_action).addClass("loader").html("En cours&hellip;");
+      $("label").removeAttr('class').html('');
+      $('#ajax_msg_'+memo_action).addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action='+memo_action,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
             $("button").prop('disabled',false);
-            $('#ajax_msg_'+memo_action).removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg_'+memo_action).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             $("button").prop('disabled',false);
-            if(responseHTML.substring(0,4)!='<li>')
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_'+memo_action).removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg_'+memo_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg_'+memo_action).removeAttr("class").html('');
-              $.fancybox( '<ul class="puce">'+responseHTML+'</ul>' , {'centerOnScroll':true} );
+              $('#ajax_msg_'+memo_action).removeAttr('class').html('');
+              $.fancybox( '<ul class="puce">'+responseJSON['value']+'</ul>' , {'centerOnScroll':true} );
               initialiser_compteur();
             }
           }

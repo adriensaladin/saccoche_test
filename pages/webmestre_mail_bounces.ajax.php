@@ -45,12 +45,16 @@ if($action=='EnregistrerBounce')
       list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($bounce);
       if(!$is_domaine_valide)
       {
-        exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+        Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
       }
     }
   }
-  FileSystem::fabriquer_fichier_hebergeur_info( array( 'HEBERGEUR_MAILBOX_BOUNCE' => $bounce ) );
-  exit('ok');
+  $result = FileSystem::fabriquer_fichier_hebergeur_info( array( 'HEBERGEUR_MAILBOX_BOUNCE' => $bounce ) );
+  if($result!==TRUE)
+  {
+    Json::end( FALSE , $result );
+  }
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,27 +66,27 @@ if( ($action=='TestEnvoiCourriel') && $courriel )
   list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
-    exit('Erreur avec le domaine "'.$mail_domaine.'" ou serveur extérieur injoignable !');
+    Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" ou serveur extérieur injoignable !' );
   }
   // Test d'envoi d'un courriel d'inscription
   $courriel_bilan = Sesamail::mail( $courriel , 'Test d\'envoi d\'un courriel d\'inscription' , 'Avec par défaut les coordonnées du webmestre en Reply-To.' );
   if(!$courriel_bilan)
   {
-    exit('Erreur lors de l\'envoi du courriel de test n°1 !');
+    Json::end( FALSE , 'Erreur lors de l\'envoi du courriel de test n°1 !' );
   }
   // Test d'envoi d'un courriel de notification
   $courriel_bilan = Sesamail::mail( $courriel , 'Test d\'envoi d\'une notification' , 'Avec soi-même en Reply-To.' , $courriel /*replyto*/ );
   if(!$courriel_bilan)
   {
-    exit('Erreur lors de l\'envoi du courriel de test n°2 !');
+    Json::end( FALSE , 'Erreur lors de l\'envoi du courriel de test n°2 !' );
   }
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

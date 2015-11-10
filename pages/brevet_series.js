@@ -40,7 +40,7 @@ $(document).ready
       'select, input',
       function()
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -54,22 +54,22 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eleves',
           data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==true)
             {
-              $('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
-              $('#f_eleve').html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Affichage actualisé !");
+              $('#f_eleve').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -92,12 +92,12 @@ $(document).ready
           groupe_type = groupe_val.substring(0,1);
           groupe_id   = groupe_val.substring(1);
         }
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type);
       }
       else
       {
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
       }
     }
     $("#select_groupe").change
@@ -117,11 +117,11 @@ $(document).ready
         var f_serie = $('#f_serie option:selected').val();
         if( !$("#f_eleve input:checked").length || !f_serie )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez dans les deux listes !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez dans les deux listes !");
           return false;
         }
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
         var tab_eleve = new Array();
         $("#f_eleve input:checked").each
@@ -137,25 +137,25 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE+'&action=associer',
             data : 'csrf='+CSRF+'&f_serie='+f_serie+'&f_eleve='+tab_eleve,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#form_select button').prop('disabled',false);
-              if(responseHTML.substring(0,6)!='<hr />')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-                $('#bilan').html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+                $('#bilan').html(responseJSON['value']);
               }
             }
           }
@@ -165,30 +165,30 @@ $(document).ready
 
     // Initialisation : charger au chargement l'affichage du bilan
 
-    $('#ajax_msg').addClass("loader").html("En cours&hellip;");
+    $('#ajax_msg').addClass('loader').html("En cours&hellip;");
     $.ajax
     (
       {
         type : 'POST',
         url : 'ajax.php?page='+PAGE+'&action=initialiser',
         data : 'csrf='+CSRF,
-        dataType : "html",
+        dataType : 'json',
         error : function(jqXHR, textStatus, errorThrown)
         {
-          $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+          $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           return false;
         },
-        success : function(responseHTML)
+        success : function(responseJSON)
         {
           initialiser_compteur();
-          if(responseHTML.substring(0,6)!='<hr />')
+          if(responseJSON['statut']==false)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
           }
           else
           {
-            $('#ajax_msg').removeAttr("class").html("&nbsp;");
-            $('#bilan').html(responseHTML);
+            $('#ajax_msg').removeAttr('class').html("");
+            $('#bilan').html(responseJSON['value']);
           }
         }
       }

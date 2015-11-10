@@ -95,7 +95,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   {
     if($profil!='eleves')
     {
-      exit('Fonctionnalité disponible uniquement pour les élèves !');
+      Json::end( FALSE , 'Fonctionnalité disponible uniquement pour les élèves !' );
     }
     $tab_password = array();
     // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le mdp)
@@ -113,7 +113,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
     }
     if(!count($tab_password))
     {
-      exit('Les mots de passe de ces élèves ne sont pas dans la base !');
+      Json::end( FALSE , 'Les mots de passe de ces élèves ne sont pas dans la base !' );
     }
   }
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -153,15 +153,15 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Affichage du résultat
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  echo'<ul class="puce">'.NL;
-  echo  '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>'.NL;
-  echo  '<li><a target="_blank" href="./force_download.php?auth&amp;fichier='.$fnom.'.csv"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL;
+  Json::add_str('<ul class="puce">'.NL);
+  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>'.NL);
+  Json::add_str(  '<li><a target="_blank" href="./force_download.php?auth&amp;fichier='.$fnom.'.csv"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL);
   if($action=='generer_mdp')
   {
-    echo'<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL;
+    Json::add_str('<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL);
   }
-  echo'</ul>'.NL;
-  exit();
+  Json::add_str('</ul>'.NL);
+  Json::end( TRUE );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,8 @@ if($action=='user_export')
   // On archive dans un fichier tableur (csv tabulé)
   $fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($fcontenu_csv) );
-  exit('<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer le fichier exporté de la base SACoche (format <em>csv</em>).</span></a></li></ul>');
+  // Retour
+  Json::end( TRUE , '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer le fichier exporté de la base SACoche (format <em>csv</em>).</span></a></li></ul>' );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,11 +193,12 @@ if($action=='user_export')
 
 if($action=='import_loginmdp')
 {
+  // Récupération du fichier
   $fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
   // Pour récupérer les données des utilisateurs
   $tab_users_fichier           = array();
@@ -365,8 +367,11 @@ if($action=='import_loginmdp')
       }
     }
   }
+  // Pour le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
+  $fichier_nom  = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+  $fichier_contenu = '';
   // On archive les nouveaux identifiants dans un fichier pdf (classe fpdf + script étiquettes)
-  echo'<ul class="puce">'.NL;
+  $fichier_contenu .= '<ul class="puce">'.NL;
   if(count($fcontenu_pdf_tab))
   {
     $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
@@ -382,25 +387,31 @@ if($action=='import_loginmdp')
       $pdf -> Add_Label(To::pdf($text));
     }
     FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf' , $pdf );
-    echo'<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL;
-    echo'<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL;
+    $fichier_contenu .=   '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL;
+    $fichier_contenu .=   '<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL;
   }
-  // On affiche le bilan
-  echo'<li><b>Résultat de l\'analyse et des opérations effectuées :</b></li>'.NL;
-  echo'</ul>'.NL;
-  echo'<table>'.NL;
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="3">Utilisateurs trouvés dans le fichier dont les identifiants ont été modifiés.</th></tr>'.NL;
-  echo($lignes_mod) ? $lignes_mod : '<tr><td colspan="3">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="3">Utilisateurs trouvés dans le fichier dont les identifiants n\'ont pas pu être modifiés.</th></tr>'.NL;
-  echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="3">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="3">Utilisateurs trouvés dans le fichier dont les identifiants sont inchangés.</th></tr>'.NL;
-  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="3">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
-  exit();
+  // On complète et on enregistre le bilan
+  $ligne_vide = '<tr><td colspan="3">Aucun</td></tr>'.NL;
+  if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
+  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
+  $fichier_contenu .=   '<li><b>Résultat de l\'analyse et des opérations effectuées :</b></li>'.NL;
+  $fichier_contenu .= '</ul>'.NL;
+  $fichier_contenu .= '<table class="p">'.NL;
+  $fichier_contenu .=   '<tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants ont été modifiés.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_mod;
+  $fichier_contenu .=   '</tbody><tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants n\'ont pas pu être modifiés.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_pb;
+  $fichier_contenu .=   '</tbody><tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants sont inchangés.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_ras;
+  $fichier_contenu .=   '</tbody>'.NL;
+  $fichier_contenu .= '</table>'.NL;
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $fichier_contenu );
+  // On affiche le retour
+  Json::end( TRUE , URL_DIR_IMPORT.$fichier_nom );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -409,16 +420,22 @@ if($action=='import_loginmdp')
 
 if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($action=='import_gepi_eleves') )
 {
+  // Récupération du fichier
   $fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
-  $tab_fnom_attendu = array( 'import_gepi_profs'=>array('base_professeur_gepi.csv','base_cpe_gepi.csv') , 'import_gepi_parents'=>array('base_responsable_gepi.csv') , 'import_gepi_eleves'=>array('base_eleve_gepi.csv') );
+  // Vérification du nom du fichier obtenu.
+  $tab_fnom_attendu = array(
+    'import_gepi_profs'   => array('base_professeur_gepi.csv','base_cpe_gepi.csv') ,
+    'import_gepi_parents' => array('base_responsable_gepi.csv') ,
+    'import_gepi_eleves'  => array('base_eleve_gepi.csv')
+  );
   if(!in_array(FileSystem::$file_upload_name,$tab_fnom_attendu[$action]))
   {
-    exit('Erreur : le nom du fichier n\'est pas "'.$tab_fnom_attendu[$action][0].'" !');
+    Json::end( FALSE , 'Le nom du fichier n\'est pas "'.$tab_fnom_attendu[$action][0].'" !' );
   }
   // Pour récupérer les données des utilisateurs
   $tab_users_fichier               = array();
@@ -538,21 +555,30 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
       }
     }
   }
-  // On affiche le bilan
-  echo'<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
-  echo'<table>'.NL;
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs trouvés dans le fichier dont l\'identifiant Gepi a été modifié.</th></tr>'.NL;
-  echo($lignes_mod) ? $lignes_mod : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs trouvés dans le fichier dont l\'identifiant Gepi n\'a pas pu être modifié.</th></tr>'.NL;
-  echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs trouvés dans le fichier dont l\'identifiant Gepi est inchangé.</th></tr>'.NL;
-  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
-  exit();
+  // Pour le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
+  $fichier_nom  = 'identifiants_'.$action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+  $fichier_contenu = '';
+  // On complète et on enregistre le bilan
+  $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
+  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
+  $fichier_contenu .= '<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
+  $fichier_contenu .= '<table>'.NL;
+  $fichier_contenu .=   '<tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi a été modifié.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_mod;
+  $fichier_contenu .=   '</tbody><tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi n\'a pas pu être modifié.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_pb;
+  $fichier_contenu .=   '</tbody><tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi est inchangé.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_ras;
+  $fichier_contenu .=   '</tbody>'.NL;
+  $fichier_contenu .= '</table>'.NL;
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $fichier_contenu );
+  // On affiche le retour
+  Json::end( TRUE , URL_DIR_IMPORT.$fichier_nom );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -561,11 +587,12 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
 
 if($action=='import_ent')
 {
-  $fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+  // Récupération du fichier
+  $fichier_nom  = 'identifiants_'.$action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
   // Récupérer les infos sur le CSV associé à l'ENT
   require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
@@ -601,7 +628,7 @@ if($action=='import_ent')
     }
     if(array_sum($tab_numero_colonne)<0)
     {
-      exit('Erreur : les champs nécessaires n\'ont pas pu être repérés !');
+      Json::end( FALSE , 'Les champs nécessaires n\'ont pas pu être repérés !' );
     }
     $tab_infos_csv['csv_nom'   ] = $tab_numero_colonne['csv_nom'   ];
     $tab_infos_csv['csv_prenom'] = $tab_numero_colonne['csv_prenom'];
@@ -748,21 +775,30 @@ if($action=='import_ent')
       }
     }
   }
-  // On affiche le bilan
-  echo'<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
-  echo'<table>'.NL;
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs trouvés dans le fichier dont l\'identifiant ENT a été modifié.</th></tr>'.NL;
-  echo($lignes_mod) ? $lignes_mod : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs trouvés dans le fichier dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL;
-  echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs trouvés dans le fichier dont l\'identifiant ENT est inchangé.</th></tr>'.NL;
-  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
-  exit();
+  // Pour le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
+  $fichier_nom  = 'identifiants_'.$action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+  $fichier_contenu = '';
+  // On complète et on enregistre le bilan
+  $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
+  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
+  $fichier_contenu .= '<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
+  $fichier_contenu .= '<table>'.NL;
+  $fichier_contenu .=   '<tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT a été modifié.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_mod;
+  $fichier_contenu .=   '</tbody><tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_pb;
+  $fichier_contenu .=   '</tbody><tbody>'.NL;
+  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT est inchangé.</th></tr>'.NL;
+  $fichier_contenu .=     $lignes_ras;
+  $fichier_contenu .=   '</tbody>'.NL;
+  $fichier_contenu .= '</table>'.NL;
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $fichier_contenu );
+  // On affiche le retour
+  Json::end( TRUE , URL_DIR_IMPORT.$fichier_nom );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -776,7 +812,7 @@ if( ($action=='COPY_id_gepi_TO_id_ent') || ($action=='COPY_login_TO_id_ent') || 
 {
   list($champ_depart,$champ_arrive) = explode('_TO_',substr($action,5));
   DB_STRUCTURE_ADMINISTRATEUR::DB_recopier_identifiants($champ_depart,$champ_arrive);
-  exit('ok');
+  Json::end( TRUE );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -787,11 +823,11 @@ if($action=='COPY_id_lcs_TO_id_ent')
 {
   if(IS_HEBERGEMENT_SESAMATH)
   {
-    exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
+    Json::end( FALSE , 'Cette fonctionnalité est sans objet sur le serveur Sésamath !' );
   }
   if(!is_file(CHEMIN_FICHIER_WS_LCS))
   {
-    exit('Erreur : le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LCS).'" n\'a pas été trouvé !');
+    Json::end( FALSE , 'Le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LCS).'" n\'a pas été trouvé !' );
   }
   require(CHEMIN_FICHIER_WS_LCS); // Charge la fonction "recuperer_infos_user_LCS()"
   // On récupère le contenu de la base, on va passer les users en revue un par un
@@ -858,23 +894,28 @@ if($action=='COPY_id_lcs_TO_id_ent')
     }
   }
   // On affiche le bilan
-  echo'<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
-  echo'<table>'.NL;
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans le LCS dont l\'identifiant ENT a été modifié.</th></tr>'.NL;
-  echo($lignes_modif) ? $lignes_modif : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL;
-  echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans le LCS dont l\'identifiant ENT est inchangé.</th></tr>'.NL;
-  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche non récupérés dans le LCS.</th></tr>'.NL;
-  echo($lignes_inconnu) ? $lignes_inconnu : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
-  exit();
+  $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
+  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
+  if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
+  Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
+  Json::add_str('<table>'.NL);
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans le LCS dont l\'identifiant ENT a été modifié.</th></tr>'.NL);
+  Json::add_str($lignes_modif);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
+  Json::add_str($lignes_pb);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans le LCS dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
+  Json::add_str($lignes_ras);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche non récupérés dans le LCS.</th></tr>'.NL);
+  Json::add_str($lignes_inconnu);
+  Json::add_str(  '</tbody>'.NL);
+  Json::add_str('</table>'.NL);
+  Json::end( TRUE );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -885,15 +926,15 @@ if( ($action=='COPY_id_argos_profs_TO_id_ent') || ($action=='COPY_id_argos_eleve
 {
   if(IS_HEBERGEMENT_SESAMATH)
   {
-    exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
+    Json::end( FALSE , 'Cette fonctionnalité est sans objet sur le serveur Sésamath !' );
   }
   if(!in_array( substr($_SESSION['WEBMESTRE_UAI'],0,3) , array('024','033','040','047','064') ))
   {
-    exit('Erreur : cette fonctionnalité est réservée aux établissements de l\'académie de Bordeaux (et votre numéro UAI n\'y correspond pas) !');
+    Json::end( FALSE , 'Cette fonctionnalité est réservée aux établissements de l\'académie de Bordeaux (et votre numéro UAI n\'y correspond pas) !' );
   }
   if(!is_file(CHEMIN_FICHIER_WS_ARGOS))
   {
-    exit('Erreur : le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ARGOS).'" n\'a pas été trouvé !');
+    Json::end( FALSE , 'Le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_ARGOS).'" n\'a pas été trouvé !' );
   }
   require(CHEMIN_FICHIER_WS_ARGOS); // Charge la fonction "recuperer_infos_LDAP()"
   $qui = substr($action,14,-10); // profs | eleves | parents
@@ -916,20 +957,20 @@ if( ($action=='COPY_id_entlibre_essonne_TO_id_ent') || ($action=='COPY_id_entlib
   // Vérif hébergement
   if( IS_HEBERGEMENT_SESAMATH && ($action=='COPY_id_entlibre_essonne_TO_id_ent') )
   {
-    exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
+    Json::end( FALSE , 'Cette fonctionnalité est sans objet sur le serveur Sésamath !' );
   }
   if( !IS_HEBERGEMENT_SESAMATH && ($action!='COPY_id_entlibre_essonne_TO_id_ent') )
   {
-    exit('Erreur : cette fonctionnalité est sans objet sur un autre serveur que Sésamath !');
+    Json::end( FALSE , 'Cette fonctionnalité est sans objet sur un autre serveur que Sésamath !' );
   }
   // Vérif UAI
   if( ($action=='COPY_id_entlibre_essonne_TO_id_ent') && (substr($_SESSION['WEBMESTRE_UAI'],0,3)!='091') )
   {
-    exit('Erreur : cette fonctionnalité est réservée aux établissements du département de l\'Essonne (et votre numéro UAI n\'y correspond pas) !');
+    Json::end( FALSE , 'Cette fonctionnalité est réservée aux établissements du département de l\'Essonne (et votre numéro UAI n\'y correspond pas) !' );
   }
   if( ($action=='COPY_id_entlibre_picardie_TO_id_ent') && !in_array( substr($_SESSION['WEBMESTRE_UAI'],0,3) , array('002','060','080') ) )
   {
-    exit('Erreur : cette fonctionnalité est réservée aux lycées de Picardie (et votre numéro UAI n\'y correspond pas) !');
+    Json::end( FALSE , 'Cette fonctionnalité est réservée aux lycées de Picardie (et votre numéro UAI n\'y correspond pas) !' );
   }
   // Vérif fichier
   $tab_fichier_ws = array(
@@ -940,7 +981,7 @@ if( ($action=='COPY_id_entlibre_essonne_TO_id_ent') || ($action=='COPY_id_entlib
   $CHEMIN_FICHIER_WS = $tab_fichier_ws[$action];
   if(!is_file($CHEMIN_FICHIER_WS))
   {
-    exit('Erreur : le fichier "'.FileSystem::fin_chemin($CHEMIN_FICHIER_WS).'" n\'a pas été trouvé !');
+    Json::end( FALSE , 'Le fichier "'.FileSystem::fin_chemin($CHEMIN_FICHIER_WS).'" n\'a pas été trouvé !' );
   }
   require($CHEMIN_FICHIER_WS); // Charge la fonction "EntLibre_RecupId()"
   // Appelle le serveur et retourne un tableau [ ['nom'][i] , ['prenom'][i] , ['id_ent'][i] ]
@@ -1029,26 +1070,32 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
     }
   }
   // On affiche le bilan
-  echo'<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
-  echo'<table>'.NL;
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans l\'ENT dont l\'identifiant ENT a été modifié.</th></tr>'.NL;
-  echo($lignes_modif) ? $lignes_modif : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans l\'ENT dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL;
-  echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans l\'ENT dont l\'identifiant ENT est inchangé.</th></tr>'.NL;
-  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche non trouvé dans l\'ENT.</th></tr>'.NL;
-  echo($lignes_inconnu) ? $lignes_inconnu : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de l\'ENT non trouvés dans SACoche.</th></tr>'.NL;
-  echo($lignes_reste) ? $lignes_reste : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
-  exit();
+  $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
+  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
+  if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
+  if(empty($lignes_reste  )) { $lignes_reste   = $ligne_vide; }
+  Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
+  Json::add_str('<table>'.NL);
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT a été modifié.</th></tr>'.NL);
+  Json::add_str($lignes_modif);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
+  Json::add_str($lignes_pb);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
+  Json::add_str($lignes_ras);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche non trouvé dans l\'ENT.</th></tr>'.NL);
+  Json::add_str($lignes_inconnu);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes de l\'ENT non trouvés dans SACoche.</th></tr>'.NL);
+  Json::add_str($lignes_reste);
+  Json::add_str(  '</tbody>'.NL);
+  Json::add_str('</table>'.NL);
+  Json::end( TRUE );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1059,15 +1106,15 @@ if($action=='COPY_id_laclasse_TO_id_ent')
 {
   if(IS_HEBERGEMENT_SESAMATH)
   {
-    exit('Erreur : cette fonctionnalité est sans objet sur le serveur Sésamath !');
+    Json::end( FALSE , 'Cette fonctionnalité est sans objet sur le serveur Sésamath !' );
   }
   if(substr($_SESSION['WEBMESTRE_UAI'],0,3)!='069')
   {
-    exit('Erreur : cette fonctionnalité est réservée aux établissements du département du Rhône (et votre numéro UAI n\'y correspond pas) !');
+    Json::end( FALSE , 'Cette fonctionnalité est réservée aux établissements du département du Rhône (et votre numéro UAI n\'y correspond pas) !' );
   }
   if(!is_file(CHEMIN_FICHIER_WS_LACLASSE))
   {
-    exit('Erreur : le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LACLASSE).'" n\'a pas été trouvé !');
+    Json::end( FALSE , 'Le fichier "'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_LACLASSE).'" n\'a pas été trouvé !' );
   }
   require(CHEMIN_FICHIER_WS_LACLASSE); // Charge la fonction "recuperer_infos_Laclasse()"
   // Appelle l'annuaire ENT Laclasse.com et retourne un tableau [ ['profil'][i] , ['id_ent'][i]  , ['nom'][i] , ['prenom'][i] , ['id_sconet'][i] ]
@@ -1185,26 +1232,32 @@ if($action=='COPY_id_laclasse_TO_id_ent')
     }
   }
   // On affiche le bilan
-  echo'<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
-  echo'<table>'.NL;
-  echo  '<tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans l\'ENT dont l\'identifiant ENT a été modifié.</th></tr>'.NL;
-  echo($lignes_modif) ? $lignes_modif : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans l\'ENT dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL;
-  echo($lignes_pb) ? $lignes_pb : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche trouvés dans l\'ENT dont l\'identifiant ENT est inchangé.</th></tr>'.NL;
-  echo($lignes_ras) ? $lignes_ras : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de SACoche non trouvé dans l\'ENT.</th></tr>'.NL;
-  echo($lignes_inconnu) ? $lignes_inconnu : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody><tbody>'.NL;
-  echo    '<tr><th colspan="2">Utilisateurs de l\'ENT non trouvés dans SACoche.</th></tr>'.NL;
-  echo($lignes_reste) ? $lignes_reste : '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
-  exit();
+  $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
+  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
+  if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
+  if(empty($lignes_reste  )) { $lignes_reste   = $ligne_vide; }
+  Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
+  Json::add_str('<table>'.NL);
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT a été modifié.</th></tr>'.NL);
+  Json::add_str($lignes_modif);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
+  Json::add_str($lignes_pb);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
+  Json::add_str($lignes_ras);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes SACoche non trouvé dans l\'ENT.</th></tr>'.NL);
+  Json::add_str($lignes_inconnu);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes de l\'ENT non trouvés dans SACoche.</th></tr>'.NL);
+  Json::add_str($lignes_reste);
+  Json::add_str(  '</tbody>'.NL);
+  Json::add_str('</table>'.NL);
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1213,13 +1266,13 @@ if($action=='COPY_id_laclasse_TO_id_ent')
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

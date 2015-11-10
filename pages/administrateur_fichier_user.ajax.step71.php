@@ -39,13 +39,13 @@ $tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt';
 if(!is_file($fnom))
 {
-  exit('Erreur : le fichier contenant les utilisateurs est introuvable !');
+  Json::end( FALSE , 'Le fichier contenant les utilisateurs est introuvable !' );
 }
 $contenu = file_get_contents($fnom);
 $tab_users_fichier = @unserialize($contenu);
 if($tab_users_fichier===FALSE)
 {
-  exit('Erreur : le fichier contenant les utilisateurs est syntaxiquement incorrect !');
+  Json::end( FALSE , 'Le fichier contenant les utilisateurs est syntaxiquement incorrect !' );
 }
 // On récupère le contenu de la base pour comparer : $tab_base_adresse[user_id]=array()
 $tab_base_adresse = array();
@@ -104,28 +104,33 @@ foreach($tab_i_fichier_TO_id_base as $i_fichier => $id_base)
     }
   }
 }
+
 // On affiche
-echo'<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des adresses.</label></p>'.NL;
-echo'<table>'.NL;
+$ligne_vide = '<tr><td colspan="3">Aucune</td></tr>'.NL;
+if(empty($lignes_ajouter  )) { $lignes_ajouter   = $ligne_vide; }
+if(empty($lignes_modifier )) { $lignes_modifier  = $ligne_vide; }
+if(empty($lignes_conserver)) { $lignes_conserver = $ligne_vide; }
+Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des adresses.</label></p>'.NL);
+Json::add_str('<table>'.NL);
 // Cas [1]
-echo    '<tbody>'.NL;
-echo      '<tr><th colspan="3">Adresses à ajouter<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-echo($lignes_ajouter) ? $lignes_ajouter : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-echo    '</tbody>'.NL;
+Json::add_str(  '<tbody>'.NL);
+Json::add_str(    '<tr><th colspan="3">Adresses à ajouter<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
+Json::add_str(    $lignes_ajouter);
+Json::add_str(  '</tbody>'.NL);
 // Cas [2b]
-echo    '<tbody>'.NL;
-echo      '<tr><th colspan="3">Adresses à modifier<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL;
-echo($lignes_modifier) ? $lignes_modifier : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-echo    '</tbody>'.NL;
+Json::add_str(  '<tbody>'.NL);
+Json::add_str(    '<tr><th colspan="3">Adresses à modifier<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
+Json::add_str(    $lignes_modifier);
+Json::add_str(  '</tbody>'.NL);
 // Cas [2a]
 if($mode=='complet')
 {
-  echo    '<tbody>'.NL;
-  echo      '<tr><th colspan="3">Adresses à conserver</th></tr>'.NL;
-  echo($lignes_conserver) ? $lignes_conserver : '<tr><td colspan="3">Aucune</td></tr>'.NL;
-  echo    '</tbody>'.NL;
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="3">Adresses à conserver</th></tr>'.NL);
+  Json::add_str(    $lignes_conserver);
+  Json::add_str(  '</tbody>'.NL);
 }
-echo'</table>'.NL;
-echo'<ul class="puce p"><li><a href="#step72" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
+Json::add_str('</table>'.NL);
+Json::add_str('<ul class="puce p"><li><a href="#step72" id="envoyer_infos_utilisateurs">Valider et afficher le bilan obtenu.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
 
 ?>

@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "select_professeurs" et le renvoyer en HTML
+// Mettre à jour l'élément de formulaire "select_professeurs"
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -39,5 +39,7 @@ $multiple  = (empty($_POST['f_multiple']))  ? FALSE                             
 $select_nom   = ($multiple) ? 'f_user' : FALSE ;
 $option_first = ($multiple) ? FALSE    : ''    ;
 
-exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut) , $select_nom , $option_first , $selection , 'profs_directeurs' /*optgroup*/ , $multiple ) );
+// Affichage du retour.
+
+Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_professeurs_directeurs_etabl($statut) , $select_nom , $option_first , $selection , 'profs_directeurs' /*optgroup*/ , $multiple ) );
 ?>

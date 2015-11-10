@@ -82,7 +82,7 @@ $(document).ready
         var birth = ( (profil=='ELV') && ($('#f_birth_'+profil).is(':checked')) ) ? 1 : 0 ;
         if( test_format_login(login)==false )
         {
-          $('#ajax_msg_'+profil).removeAttr('class').addClass("erreur").html("Modèle de nom d'utilisateur incorrect !");
+          $('#ajax_msg_'+profil).removeAttr('class').addClass('erreur').html("Modèle de nom d'utilisateur incorrect !");
           return false;
         }
         $('#bouton_valider_'+profil).prop('disabled',true);
@@ -93,31 +93,31 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_profil='+profil+'&f_login='+login+'&f_mdp='+mdp+'&f_birth='+birth,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_valider_'+profil).prop('disabled',false);
-              $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Échec de la connexion !");
+              $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#bouton_valider_'+profil).prop('disabled',false);
-              if(responseHTML!='ok')
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(responseHTML);
-              }
-              else
-              {
+                initialiser_compteur();
                 if(profil=='ALL')
                 {
                   $('input[type=text]').val(login);
                   $('select option[value='+mdp+']').prop('selected',true);
-                  $('label[id^=ajax_msg_]').removeAttr('class').html("&nbsp;");
+                  $('label[id^=ajax_msg_]').removeAttr('class').html("");
                 }
                 $('#ajax_msg_'+profil).removeAttr('class').addClass('valide').html("Valeurs enregistrées !");
-                initialiser_compteur();
+              }
+              else
+              {
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

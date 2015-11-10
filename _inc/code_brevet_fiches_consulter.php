@@ -38,7 +38,6 @@ $classe_id = (isset($_POST['f_classe'])) ? Clean::entier($_POST['f_classe']) : 0
 $groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0;
 $eleve_id  = (isset($_POST['f_user']))   ? Clean::entier($_POST['f_user'])   : 0;
 // Autres chaines spécifiques...
-
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
 $tab_action = array('initialiser','charger');
@@ -47,7 +46,7 @@ $tab_action = array('initialiser','charger');
 
 if( (!in_array($ACTION,$tab_action)) || !$classe_id || ( (!$eleve_id)&&($ACTION!='initialiser') ) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // On vérifie que la fiche brevet est bien accessible en modification et on récupère les infos associées (nom de la classe, id des élèves concernés avec lesquels l'intersection est faite ultérieurement).
@@ -55,7 +54,7 @@ if( (!in_array($ACTION,$tab_action)) || !$classe_id || ( (!$eleve_id)&&($ACTION!
 $DB_ROW = DB_STRUCTURE_BREVET::DB_recuperer_brevet_classe_infos($classe_id);
 if(empty($DB_ROW))
 {
-  exit('Classe sans élèves concernés !');
+  Json::end( FALSE , 'Classe sans élèves concernés !' );
 }
 $BILAN_ETAT = $DB_ROW['fiche_brevet'];
 $classe_nom = $DB_ROW['groupe_nom'];
@@ -63,15 +62,15 @@ $tab_id_eleves_avec_notes = explode(',',$DB_ROW['listing_user_id']);
 
 if(!$BILAN_ETAT)
 {
-  exit('Fiche brevet introuvable !');
+  Json::end( FALSE , 'Fiche brevet introuvable !' );
 }
 if(in_array($BILAN_ETAT,array('0absence','1vide')))
 {
-  exit('Fiche brevet interdite d\'accès pour cette action !');
+  Json::end( FALSE , 'Fiche brevet interdite d\'accès pour cette action !' );
 }
 if(!$DB_ROW['listing_user_id'])
 {
-  exit('Aucun élève concerné dans cette classe !');
+  Json::end( FALSE , 'Aucun élève concerné dans cette classe !' );
 }
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
@@ -91,7 +90,7 @@ if($ACTION=='initialiser')
   $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ ) : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id) ;
   if(empty($DB_TAB))
   {
-    exit('Aucun élève trouvé dans ce regroupement !');
+    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
@@ -105,7 +104,7 @@ if($ACTION=='initialiser')
   }
   if(empty($tab_eleve_id))
   {
-    exit('Aucun élève concerné dans ce regroupement !');
+    Json::end( FALSE , 'Aucun élève concerné dans ce regroupement !' );
   }
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
   $form_choix_eleve .= ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ;
@@ -122,7 +121,6 @@ $make_action = 'consulter';
 $make_html   = ($mode=='graphique') ? FALSE : TRUE ;
 $make_pdf    = FALSE;
 $make_graph  = ($mode=='graphique') ? TRUE : FALSE ;
-$js_graph    = '';
 $droit_corriger_appreciation = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 
 $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
@@ -137,13 +135,19 @@ $nom_bilan_html = 'fiche_brevet_HTML';
 // Affichage du résultat
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Json::add_row( 'script' , ...) a déjà eu lieu
+
 if($ACTION=='initialiser')
 {
-  exit('<h2>Consulter le contenu</h2>'.$form_choix_eleve.'<div id="zone_resultat_eleve">'.${$nom_bilan_html}.'</div>'.$js_graph);
+  Json::add_row( 'html' , '<h2>Consulter le contenu</h2>' );
+  Json::add_row( 'html' , $form_choix_eleve );
+  Json::add_row( 'html' , '<div id="zone_resultat_eleve">'.${$nom_bilan_html}.'</div>' );
 }
 else
 {
-  exit(${$nom_bilan_html}.$js_graph);
+  Json::add_row( 'html' , ${$nom_bilan_html} );
 }
+
+Json::end( TRUE );
 
 ?>

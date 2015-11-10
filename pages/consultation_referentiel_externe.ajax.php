@@ -40,7 +40,7 @@ $referentiel_id = (isset($_POST['referentiel_id'])) ? Clean::entier($_POST['refe
 
 if($action=='Afficher_structures') // La vérification concernant le nombre de contraintes s'effectue après
 {
-  exit( ServeurCommunautaire::afficher_formulaire_structures_communautaires( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] ) );
+  Json::end( TRUE , ServeurCommunautaire::afficher_formulaire_structures_communautaires( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ if($action=='Afficher_structures') // La vérification concernant le nombre de c
 
 if($action=='Lister_referentiels') // La vérification concernant le nombre de contraintes s'effectue après
 {
-  exit( ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id ) );
+  Json::end( TRUE , ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,13 +58,13 @@ if($action=='Lister_referentiels') // La vérification concernant le nombre de c
 
 if( ($action=='Voir_referentiel') && $referentiel_id )
 {
-  exit( ServeurCommunautaire::afficher_contenu_referentiel( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id ) );
+ Json::end( TRUE , ServeurCommunautaire::afficher_contenu_referentiel( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $referentiel_id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On en devrait pas en arriver là
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

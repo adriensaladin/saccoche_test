@@ -32,7 +32,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 $user_id = (isset($_GET['user_id'])) ? (int)$_GET['user_id'] : -1 ;
 if($user_id==-1)
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // On récupère la photo
@@ -41,6 +41,6 @@ $DB_ROW = ($user_id) ? DB_STRUCTURE_IMAGE::DB_recuperer_image( $user_id , 'photo
 $image = (!empty($DB_ROW)) ? '<img width="'.$DB_ROW['image_largeur'].'" height="'.$DB_ROW['image_hauteur'].'" src="data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$DB_ROW['image_contenu'].'" alt="" />' : '<img width="'.(PHOTO_DIMENSION_MAXI*2/3).'" height="'.PHOTO_DIMENSION_MAXI.'" src="./_img/trombinoscope_vide.png" alt="" title="absence de photo" />' ;
 
 // On affiche le résultat
-exit($image);
+Json::end( TRUE , $image );
 
 ?>

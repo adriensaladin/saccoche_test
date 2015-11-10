@@ -40,7 +40,7 @@ $(document).ready
       'select, input',
       function()
       {
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
       }
     );
 
@@ -54,8 +54,8 @@ $(document).ready
       {
         // Masquer tout
         $('fieldset[id^=fieldset]').hide(0);
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
-        $('#ajax_retour').html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
+        $('#ajax_retour').html("");
         // Puis afficher ce qu'il faut
         var objet = $(this).val();
         if(objet=='new_loginmdp')
@@ -79,8 +79,8 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr("class").html("&nbsp;");
-        $('#ajax_retour').html("&nbsp;");
+        $('#ajax_msg').removeAttr('class').html("");
+        $('#ajax_retour').html("");
         maj_eleve_birth();
         maj_f_user();
       }
@@ -120,7 +120,7 @@ $(document).ready
       }
       groupe_type = groupe_val.substring(0,1);
       groupe_id   = groupe_val.substring(1);
-      $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $('#bilan tbody').html('');
       $.ajax
       (
@@ -128,24 +128,24 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page=_maj_select_'+profil,
           data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1'+'&f_nom=f_user',
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==true)
             {
-              $('#ajax_msg').removeAttr("class").addClass("valide").html("Affichage actualisé !");
-              $('#f_user').html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Affichage actualisé !");
+              $('#f_user').html(responseJSON['value']);
               $('#div_users').show();
               $('#fieldset_new_loginmdp button').prop('disabled',false);
             }
             else
             {
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -161,33 +161,33 @@ $(document).ready
       function()
       {
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action='+'user_export',
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,3)!='<ul')
+              if(responseJSON['statut']==true)
               {
                 $('#form_select button').prop('disabled',false);
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+                $('#ajax_retour').html(responseJSON['value']);
               }
               else
               {
                 $('#form_select button').prop('disabled',false);
-                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-                $('#ajax_retour').html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -207,16 +207,16 @@ $(document).ready
         var profil = $('#f_profil option:selected').val();
         if( !profil )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez déjà un profil utilisateur !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez déjà un profil utilisateur !");
           return false;
         }
         if( !$("#f_user input:checked").length )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un utilisateur !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez au moins un utilisateur !");
           return false;
         }
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
         var tab_user = new Array();
         $("#f_user input:checked").each
@@ -232,25 +232,25 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action='+action+'&f_profil='+profil+'&f_user='+tab_user,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#form_select button').prop('disabled',false);
-              if(responseHTML.substring(0,3)!='<ul')
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('valide').html('Demande réalisée.');
+                $('#ajax_retour').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").addClass("valide").html('Demande réalisée.');
-                $('#ajax_retour').html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -272,7 +272,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'action':'import_loginmdp'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -285,7 +285,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'action':'import_ent'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -298,7 +298,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'action':'import_gepi_profs'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -311,7 +311,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'action':'import_gepi_parents'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -324,7 +324,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'action':'import_gepi_eleves'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier,
         onSubmit: verifier_fichier,
         onComplete: retourner_fichier
@@ -333,8 +333,8 @@ $(document).ready
 
     function changer_fichier(fichier_nom,fichier_extension)
     {
-      $('#ajax_msg').removeAttr("class").html('&nbsp;');
-      $('#ajax_retour').html("&nbsp;");
+      $('#ajax_msg').removeAttr('class').html('&nbsp;');
+      $('#ajax_retour').html("");
       return true;
     }
 
@@ -342,34 +342,53 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_msg').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
-        $('#ajax_msg').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
         return false;
       }
       else
       {
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier(fichier_nom,responseJSON)
     {
-      $('#form_select button').prop('disabled',false);
-      if( (responseHTML.substring(0,3)!='<ul') && (responseHTML.substring(0,3)!='<UL') )
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#form_select button').prop('disabled',false);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        initialiser_compteur();
-        $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-        $('#ajax_retour').html(responseHTML);
+        // AJAX Upload ne permet pas de faire remonter du code en quantité alors on s'y prend en 2 fois...
+        $.ajax
+        (
+          {
+            url : responseJSON['value'],
+            dataType : 'html', // Pas de JSON ici : on appelle un fichier texte !
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#form_select button').prop('disabled',false);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html('Échec de la connexion !');
+              return false;
+            },
+            success : function(responseHTML)
+            {
+              initialiser_compteur();
+              $('#form_select button').prop('disabled',false);
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+              $('#ajax_retour').html(responseHTML);
+            }
+          }
+        );
       }
     }
 
@@ -384,36 +403,35 @@ $(document).ready
         var action = $(this).attr('id');
         $('#ajax_retour').html('&nbsp;');
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action='+action,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#form_select button').prop('disabled',false);
-              if(responseHTML=='ok')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-              }
-              else if(responseHTML.substring(0,3)=='<ul') // pour le webservice argos ou lcs ou laclasse
-              {
-                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande réalisée !");
-                $('#ajax_retour').html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+                if(responseJSON['value']) // pour les appels de webservices qui retournent un bilan
+                {
+                  $('#ajax_retour').html(responseJSON['value']);
+                }
               }
             }
           }

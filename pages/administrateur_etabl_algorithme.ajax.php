@@ -71,7 +71,7 @@ $retroactif = (isset($_POST['f_retroactif'])) ? Clean::calcul_retroactif($_POST[
 // Vérification des données transmises
 if( $pb_note || $pb_acquis || is_null($methode) || is_null($limite) || is_null($retroactif) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,13 +80,12 @@ if( $pb_note || $pb_acquis || is_null($methode) || is_null($limite) || is_null($
 
 if($action=='enregistrer')
 {
-  $retour_js = '';
   // Valeur d'un code (sur 100)
   foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
   {
     DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_parametre_note_valeur( $note_id , $note_valeur[$note_id] );
     $_SESSION['NOTE'][$note_id]['VALEUR'] = $note_valeur[$note_id];
-    $retour_js .= 'tab_valeur["N'.$note_id.'"] = '.$note_valeur[$note_id].';';
+    Json::add_str('tab_valeur["N'.$note_id.'"] = '.$note_valeur[$note_id].';');
   }
   // Seuils d'acquisition (de 0 à 100)
   foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
@@ -94,8 +93,8 @@ if($action=='enregistrer')
     DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_parametre_acquis_seuils( $acquis_id , $acquis_seuil[$acquis_id]['SEUIL_MIN'] , $acquis_seuil[$acquis_id]['SEUIL_MAX'] );
     $_SESSION['ACQUIS'][$acquis_id]['SEUIL_MIN'] = $acquis_seuil[$acquis_id]['SEUIL_MIN'];
     $_SESSION['ACQUIS'][$acquis_id]['SEUIL_MAX'] = $acquis_seuil[$acquis_id]['SEUIL_MAX'];
-    $retour_js .= 'tab_seuil["A'.$acquis_id.'min"] = '.$acquis_seuil[$acquis_id]['SEUIL_MIN'].';';
-    $retour_js .= 'tab_seuil["A'.$acquis_id.'max"] = '.$acquis_seuil[$acquis_id]['SEUIL_MAX'].';';
+    Json::add_str('tab_seuil["A'.$acquis_id.'min"] = '.$acquis_seuil[$acquis_id]['SEUIL_MIN'].';');
+    Json::add_str('tab_seuil["A'.$acquis_id.'max"] = '.$acquis_seuil[$acquis_id]['SEUIL_MAX'].';');
   }
   // Méthode de calcul
   $tab_param = array(
@@ -107,10 +106,10 @@ if($action=='enregistrer')
   $_SESSION['CALCUL_METHODE']    = $methode;
   $_SESSION['CALCUL_LIMITE']     = $limite;
   $_SESSION['CALCUL_RETROACTIF'] = $retroactif;
-  $retour_js .= 'tab_select["f_methode"] = "'.$methode.'";';
-  $retour_js .= 'tab_select["f_limite"] = "'.$limite.'";';
-  $retour_js .= 'tab_select["f_retroactif"] = "'.$retroactif.'";';
-  exit('<SCRIPT>'.$retour_js);
+  Json::add_str('tab_select["f_methode"] = "'.$methode.'";');
+  Json::add_str('tab_select["f_limite"] = "'.$limite.'";');
+  Json::add_str('tab_select["f_retroactif"] = "'.$retroactif.'";');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,29 +184,30 @@ if($action=='calculer')
     }
   }
 
+  // Afficher le retour
   // Cette fin serait à adapter en cas de modification de $nb_devoirs_total...
   $nb_lignes_3_devoirs = pow($_SESSION['NOMBRE_CODES_NOTATION'],3);
   $nb_lignes_2_devoirs = pow($_SESSION['NOMBRE_CODES_NOTATION'],2);
   foreach($tab_lignes as $cas => $ligne)
   {
     $nb_td_manquant = 14 - substr_count($ligne,'<td');
-    echo'<tr>';
+    Json::add_str('<tr>');
     if($nb_td_manquant>0)
     {
           if($cas>=$nb_lignes_3_devoirs) {$nb_td_manquant+=2;}
       elseif($cas>=$nb_lignes_2_devoirs) {$nb_td_manquant+=1;}
-      echo'<td colspan="'.$nb_td_manquant.'"></td>';
+      Json::add_str('<td colspan="'.$nb_td_manquant.'"></td>');
     }
-    echo $ligne;
-    echo'</tr>';
+    Json::add_str($ligne);
+    Json::add_str('</tr>');
   }
-  exit();
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

@@ -50,7 +50,7 @@ $(document).ready
         name: 'userfile',
         data: {'csrf':CSRF,'f_action':'importer_csv'},
         autoSubmit: true,
-        responseType: "html",
+        responseType: 'json',
         onChange: changer_fichier_csv,
         onSubmit: verifier_fichier_csv,
         onComplete: retourner_fichier_csv
@@ -59,7 +59,7 @@ $(document).ready
 
     function changer_fichier_csv(fichier_nom,fichier_extension)
     {
-      $('#ajax_msg_csv').removeAttr("class").html('&nbsp;');
+      $('#ajax_msg_csv').removeAttr('class').html('&nbsp;');
       return true;
     }
 
@@ -67,40 +67,39 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_msg_csv').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_msg_csv').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
       {
-        $('#ajax_msg_csv').removeAttr("class").addClass("erreur").html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+        $('#ajax_msg_csv').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
         return false;
       }
       else
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg_csv').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_csv').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier_csv(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier_csv(fichier_nom,responseJSON)
     {
       $('button').prop('disabled',false);
-      var tab_infos = responseHTML.split(']¤[');
-      if( (tab_infos.length!=2) || (tab_infos[0]!='') )
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_csv').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_csv').removeAttr('class').addClass('alerte').html(responseJSON['value']);
         $('#div_import , #div_info_import , #structures').hide('fast');
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_msg_csv').removeAttr("class").addClass("valide").html("Fichier bien reçu ; "+tab_infos[1]+".");
+        $('#ajax_msg_csv').removeAttr('class').addClass('valide').html("Fichier bien reçu ; "+responseJSON['value']+".");
         $('#div_info_import , #structures').hide('fast');
-        $('#ajax_msg_import').removeAttr("class").html('&nbsp;');
+        $('#ajax_msg_import').removeAttr('class').html('&nbsp;');
         $('#div_import').show('fast');
         $('#ajax_import_num').html(1);
-        $('#ajax_import_max').html(parseInt(tab_infos[1]),10);
+        $('#ajax_import_max').html(parseInt(responseJSON['value']),10);
       }
     }
 
@@ -146,7 +145,7 @@ $(document).ready
       $("button").prop('disabled',true);
       var num = $('#ajax_import_num').html();
       var max = $('#ajax_import_max').html();
-      $('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
+      $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
       $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
       $('#div_info_import').show('fast');
       $('#structures').hide('fast').children('#table_action').children('tbody').html('');
@@ -168,25 +167,29 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=ajouter'+'&num='+num+'&max='+max+'&f_courriel_envoi='+courriel_envoi+'&f_courriel_copie='+courriel_copie,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_import').removeAttr("class").addClass("alerte").html('Échec lors de la connexion au serveur !');
+            $('#ajax_msg_import').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            var tab_infos = responseHTML.split(']¤[');
-            if( (tab_infos.length==2) && (tab_infos[0]=='') )
+            if(responseJSON['statut']==false)
+            {
+              $('#ajax_msg_import').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
+            }
+            else
             {
               num++;
-              $('#structures tbody').append(tab_infos[1]);
+              $('#structures tbody').append(responseJSON['value']);
               if(num > max)  // Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
               {
-                $('#ajax_msg_import').removeAttr("class").addClass("valide").html('');
+                $('#ajax_msg_import').removeAttr('class').addClass('valide').html('');
                 $('#puce_info_import').html('<li>Import terminé !</li>');
-                $('#ajax_msg_csv , #ajax_msg_import').removeAttr("class").html('&nbsp;');
+                $('#ajax_msg_csv , #ajax_msg_import').removeAttr('class').html('&nbsp;');
                 $('#div_import').hide('fast');
                 $('#structures').show('fast');
                 $("button").prop('disabled',false);
@@ -194,15 +197,10 @@ $(document).ready
               else
               {
                 $('#ajax_import_num').html(num);
-                $('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
+                $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
                 $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
                 importer();
               }
-            }
-            else
-            {
-              $('#ajax_msg_import').removeAttr("class").addClass("alerte").html(tab_infos[0]);
-              $('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
             }
           }
         }
@@ -217,7 +215,7 @@ $(document).ready
       {
         num = $('#ajax_import_num').html();
         max = $('#ajax_import_max').html();
-        $('#ajax_msg_import').removeAttr("class").addClass("loader").html('Import en cours : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
         $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
         importer();
       }
@@ -277,25 +275,25 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      $('#ajax_supprimer').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_supprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=supprimer'+'&f_listing_id='+listing_id,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_supprimer').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $("button").prop('disabled',false);
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML!='<ok>')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_supprimer').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
@@ -307,7 +305,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+              $('#ajax_supprimer').removeAttr('class').html('&nbsp;');
               $("button").prop('disabled',false);
             }
           }
@@ -324,10 +322,10 @@ $(document).ready
         $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_supprimer').removeAttr("class").addClass("erreur").html("Aucune structure cochée !");
+          $('#ajax_supprimer').removeAttr('class').addClass('erreur').html("Aucune structure cochée !");
           return false;
         }
-        $('#ajax_supprimer').removeAttr("class").html('&nbsp;');
+        $('#ajax_supprimer').removeAttr('class').html('&nbsp;');
         var id = $(this).attr('id');
         if(id=='bouton_supprimer')
         {

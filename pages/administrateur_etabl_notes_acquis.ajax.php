@@ -45,7 +45,7 @@ if( ($action=='save_notes') && isset($_POST['notes_actif']) && isset($_POST['not
   $nombre_codes_notation = count($tab_notes_actif);
   if( ( $nombre_codes_notation < 2 ) || ( count($tab_notes_ordre) != 6 ) )
   {
-    exit('Erreur avec les données transmises !');
+    Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
   // On récupère les données, on vérifie leur présence, mais on ne revérifie pas toutes les conditions (valeurs distinctes ou croissantes, etc.).
   $TAB_NOTE = array();
@@ -63,11 +63,11 @@ if( ($action=='save_notes') && isset($_POST['notes_actif']) && isset($_POST['not
     {
       if( is_null($TAB_NOTE[$note_id]['VALEUR']) || !$TAB_NOTE[$note_id]['IMAGE'] || !$TAB_NOTE[$note_id]['SIGLE'] || !$TAB_NOTE[$note_id]['LEGENDE'] || !$TAB_NOTE[$note_id]['CLAVIER'] )
       {
-        exit('Erreur avec les données transmises !');
+        Json::end( FALSE , 'Erreur avec les données transmises !' );
       }
       if( !preg_match("/^[0-9a-z_-]+$/i", $TAB_NOTE[$note_id]['IMAGE']) || !is_file(FileSystem::chemin_fichier_symbole($TAB_NOTE[$note_id]['IMAGE'])) )
       {
-        exit('Erreur avec les données transmises !');
+        Json::end( FALSE , 'Erreur avec les données transmises !' );
       }
     }
   }
@@ -87,7 +87,7 @@ if( ($action=='save_notes') && isset($_POST['notes_actif']) && isset($_POST['not
   SessionUser::memoriser_couleurs();
   SessionUser::adapter_daltonisme();
   SessionUser::actualiser_style();
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +104,7 @@ if( ($action=='save_acquis') && isset($_POST['acquis_actif']) && isset($_POST['a
   $nombre_etats_acquisition = count($tab_acquis_actif);
   if( ( $nombre_etats_acquisition < 2 ) || ( count($tab_acquis_ordre) != 6 ) )
   {
-    exit('Erreur avec les données transmises !');
+    Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
   // On récupère les données, on vérifie leur présence, mais on ne revérifie pas toutes les conditions (valeurs distinctes ou croissantes, etc.).
   $TAB_ACQUIS = array();
@@ -124,12 +124,12 @@ if( ($action=='save_acquis') && isset($_POST['acquis_actif']) && isset($_POST['a
     {
       if( is_null($TAB_ACQUIS[$acquis_id]['SEUIL_MIN']) || is_null($TAB_ACQUIS[$acquis_id]['SEUIL_MAX']) || is_null($TAB_ACQUIS[$acquis_id]['VALEUR']) || !$TAB_ACQUIS[$acquis_id]['COULEUR'] || !$TAB_ACQUIS[$acquis_id]['SIGLE'] || !$TAB_ACQUIS[$acquis_id]['LEGENDE'] )
       {
-        exit('Erreur avec les données transmises !');
+        Json::end( FALSE , 'Erreur avec les données transmises !' );
       }
       $longueur_couleur = mb_strlen($TAB_ACQUIS[$acquis_id]['COULEUR']);
       if( (!preg_match("/^\#[0-9a-f]{3,6}$/i", $TAB_ACQUIS[$acquis_id]['COULEUR'])) || ($longueur_couleur==5) || ($longueur_couleur==6) )
       {
-        exit('Erreur avec les données transmises !');
+        Json::end( FALSE , 'Erreur avec les données transmises !' );
       }
       // Passer si besoin d'un code hexadécimal à 3 caractères vers un code hexadécimal à 6 caractères.
       if($longueur_couleur==4)
@@ -156,7 +156,7 @@ if( ($action=='save_acquis') && isset($_POST['acquis_actif']) && isset($_POST['a
   SessionUser::memoriser_couleurs();
   SessionUser::adapter_daltonisme();
   SessionUser::actualiser_style();
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,37 +165,38 @@ if( ($action=='save_acquis') && isset($_POST['acquis_actif']) && isset($_POST['a
 
 if($action=='upload_symbole')
 {
+  // Récupération du fichier
   $fichier_nom_tmp = 'symbole_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom_tmp.'.<EXT>' /*fichier_nom*/ , array('gif','png','bmp','jpg','jpeg') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
   // vérifier la conformité du fichier image, récupérer les infos le concernant
   $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   if($tab_infos==FALSE)
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier image ne semble pas valide !');
+    Json::end( FALSE , 'Le fichier image ne semble pas valide !' );
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
   // vérifier les dimensions
   if( $image_largeur != 20 )
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier transmis a '.$image_largeur.' pixels de largeur au lieu de 20 !');
+    Json::end( FALSE , 'Le fichier transmis a '.$image_largeur.' pixels de largeur au lieu de 20 !');
   }
   if( $image_hauteur != 10 )
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier transmis a '.$image_hauteur.' pixels de largeur au lieu de 10 !');
+    Json::end( FALSE , 'Le fichier transmis a '.$image_hauteur.' pixels de largeur au lieu de 10 !');
   }
   // vérifier le type 
   $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_PNG=>'png' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
   if(!isset($tab_extension_types[$image_type]))
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier transmis n\'est pas un fichier image (type '.$image_type.') !');
+   Json::end( FALSE , 'Le fichier n\'est pas un fichier image (type '.$image_type.') !' );
   }
   $image_format = $tab_extension_types[$image_type];
   // récupérer l'image selon son format
@@ -227,7 +228,7 @@ if($action=='upload_symbole')
   FileSystem::deplacer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_tmp.'_h.gif' , FileSystem::chemin_fichier_symbole($image_nom,'h','perso') );
   FileSystem::deplacer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_tmp.'_v.gif' , FileSystem::chemin_fichier_symbole($image_nom,'v','perso') );
   // Générer la balise html et afficher le retour
-  exit('<span class="note_liste"><a href="#" id="p_'.$image_nom.'"><img alt="'.$image_nom.'" src="'.Html::note_src_couleur($image_nom,'h','perso').'" /></a><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></span>');
+  Json::end( TRUE , '<span class="note_liste"><a href="#" id="p_'.$image_nom.'"><img alt="'.$image_nom.'" src="'.Html::note_src_couleur($image_nom,'h','perso').'" /></a><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></span>' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -243,7 +244,7 @@ if( ($action=='delete_symbole') && $image_id )
   FileSystem::supprimer_fichier( FileSystem::chemin_fichier_symbole('upload_'.$image_id,'h','perso') );
   FileSystem::supprimer_fichier( FileSystem::chemin_fichier_symbole('upload_'.$image_id,'v','perso') );
   // c'est tout :)
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -252,13 +253,13 @@ if( ($action=='delete_symbole') && $image_id )
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

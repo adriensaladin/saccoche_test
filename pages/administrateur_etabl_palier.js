@@ -50,7 +50,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -61,8 +61,8 @@ $(document).ready
     (
       function()
       {
-        $("#bouton_valider").prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#bouton_valider').prop('disabled',true);
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         var check_ids = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
         $.ajax
         (
@@ -70,24 +70,24 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=Choix_paliers'+'&tab_id='+check_ids,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $("#bouton_valider").prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#bouton_valider').prop('disabled',false);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              $("#bouton_valider").prop('disabled',false);
-              if(responseHTML!='ok')
+              $('#bouton_valider').prop('disabled',false);
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande enregistrée !");
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").addClass("valide").html("Demande enregistrée !");
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

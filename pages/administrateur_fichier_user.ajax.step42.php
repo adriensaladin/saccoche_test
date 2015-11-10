@@ -107,18 +107,18 @@ $s_ras = ($nb_ras>1) ? 's' : '';
 $s_add = ($nb_add>1) ? 's' : '';
 $s_del = ($nb_del>1) ? 's' : '';
 $s_fin = ($nb_fin>1) ? 's' : '';
-echo'<p><label class="valide">'.$nb_ras.' groupe'.$s_ras.' présent'.$s_ras.' + '.$nb_add.' groupe'.$s_add.' ajouté'.$s_add.' &minus; '.$nb_del.' groupe'.$s_del.' supprimé'.$s_del.' = '.$nb_fin.' groupe'.$s_fin.' résultant'.$s_fin.'.</label></p>'.NL;
+Json::add_str('<p><label class="valide">'.$nb_ras.' groupe'.$s_ras.' présent'.$s_ras.' + '.$nb_add.' groupe'.$s_add.' ajouté'.$s_add.' &minus; '.$nb_del.' groupe'.$s_del.' supprimé'.$s_del.' = '.$nb_fin.' groupe'.$s_fin.' résultant'.$s_fin.'.</label></p>'.NL);
 if($mode=='complet')
 {
-  echo'<table>'.NL;
-  echo  '<thead>'.NL;
-  echo    '<tr><th>Niveau</th><th>Référence</th><th>Nom complet</th></tr>'.NL;
-  echo  '</thead>'.NL;
-  echo  '<tbody>'.NL;
-  echo    $lignes;
-  echo  '</tbody>'.NL;
-  echo'</table>'.NL;
+  Json::add_str('<table>'.NL);
+  Json::add_str(  '<thead>'.NL);
+  Json::add_str(    '<tr><th>Niveau</th><th>Référence</th><th>Nom complet</th></tr>'.NL);
+  Json::add_str(  '</thead>'.NL);
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    $lignes);
+  Json::add_str(  '</tbody>'.NL);
+  Json::add_str('</table>'.NL);
 }
-echo'<ul class="puce p"><li><a href="#step51" id="passer_etape_suivante">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL;
+Json::add_str('<ul class="puce p"><li><a href="#step51" id="passer_etape_suivante">Passer à l\'étape 5.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
 
 ?>

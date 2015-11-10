@@ -62,7 +62,8 @@ if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_c
   }
   require(CHEMIN_DOSSIER_INCLUDE.'fonction_bulletin.php');
   require(CHEMIN_DOSSIER_INCLUDE.'code_'.$section.'.php');
-  exit(); // Normalement, on n'arrive pas jusque là.
+  // Normalement, on est stoppé avant.
+  Json::end( FALSE , 'Problème de code : point d\'arrêt manquant !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,7 +76,7 @@ if( ($action=='signaler_faute') || ($action=='corriger_faute') )
   $message_contenu = (isset($_POST['f_message_contenu'])) ? Clean::texte($_POST['f_message_contenu'])  : '' ;
   if( !$destinataire_id || !$message_contenu )
   {
-    exit('Erreur avec les données transmises !');
+    Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
   // Notification (qui est envoyée de suite)
   $abonnement_ref = 'bilan_officiel_appreciation';
@@ -84,7 +85,7 @@ if( ($action=='signaler_faute') || ($action=='corriger_faute') )
   if(!$destinataires_nb)
   {
     // Normalement impossible, l'abonnement des personnels à ce type de de notification étant obligatoire
-    exit('Erreur : destinataire non trouvé !');
+    Json::end( FALSE , 'Destinataire non trouvé ! !' );
   }
   $notification_debut = ($action=='signaler_faute') ? 'Signalement effectué par ' : 'Correction apportée par ' ;
   $notification_contenu = $notification_debut.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".$message_contenu."\r\n";
@@ -100,7 +101,7 @@ if( ($action=='signaler_faute') || ($action=='corriger_faute') )
       $courriel_bilan = Sesamail::mail( $destinataire , 'Notification - Erreur appréciation bilan officiel' , $notification_contenu , $destinataire );
     }
   }
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -120,7 +121,8 @@ $tab_actions = array
 if( isset($tab_actions[$action]) )
 {
   require(CHEMIN_DOSSIER_INCLUDE.'code_officiel_archiver.php');
-  exit(); // Normalement, on n'arrive pas jusque là.
+  // Normalement, on est stoppé avant.
+  Json::end( FALSE , 'Problème de code : point d\'arrêt manquant !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,13 +131,13 @@ if( isset($tab_actions[$action]) )
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

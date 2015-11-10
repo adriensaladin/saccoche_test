@@ -78,7 +78,7 @@ $tab_sous_menu = array
   ),
   'validation' => array
   (
-    'administrateur_eleve_langue'     => array( 'texte' => Lang::_("Choisir la langue étrangère")      , 'class' => 'socle_langue'  , 'href' => 'page=administrateur_eleve_langue'                 ),
+    'administrateur_eleve_langue'     => array( 'texte' => Lang::_("Choisir la langue étrangère")      , 'class' => 'socle_langue'  , 'href' => 'page=validation_socle&amp;section=langue'         ),
     'validation_socle_item'           => array( 'texte' => Lang::_("Valider les items du socle")       , 'class' => 'socle_item'    , 'href' => 'page=validation_socle&amp;section=item'           ),
     'validation_socle_pilier'         => array( 'texte' => Lang::_("Valider les compétences du socle") , 'class' => 'socle_pilier'  , 'href' => 'page=validation_socle&amp;section=pilier'         ),
     'validation_socle_pilier_annuler' => array( 'texte' => Lang::_("Annuler une compétence validée")   , 'class' => 'socle_annuler' , 'href' => 'page=validation_socle&amp;section=pilier_annuler' ),

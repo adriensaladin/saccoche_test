@@ -54,7 +54,7 @@ function photo_file_to_base($user_id,$fichier_chemin)
   if($tab_infos==FALSE)
   {
     FileSystem::supprimer_fichier($fichier_chemin);
-    return'le fichier image ne semble pas valide';
+    return'Le fichier tansmis n\'est pas une image valide !';
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
   $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
@@ -62,18 +62,18 @@ function photo_file_to_base($user_id,$fichier_chemin)
   if(!isset($tab_extension_types[$image_type]))
   {
     FileSystem::supprimer_fichier($fichier_chemin);
-    return'le fichier transmis n\'est pas un fichier image';
+    return'Le fichier transmis n\'est pas un fichier image !';
   }
   // vérifier les dimensions
   if( ($image_largeur>1024) || ($image_hauteur>1024) )
   {
     FileSystem::supprimer_fichier($fichier_chemin);
-    return'le fichier transmis a des dimensions trop grandes ('.$image_largeur.' sur '.$image_hauteur.')';
+    return'Le fichier transmis a des dimensions trop grandes ('.$image_largeur.' sur '.$image_hauteur.') !';
   }
   if( ($image_largeur==0) && ($image_hauteur==0) )
   {
     FileSystem::supprimer_fichier($fichier_chemin);
-    return'le fichier transmis a des dimensions indéterminables';
+    return'Le fichier transmis a des dimensions indéterminables !';
   }
   // C'est bon, on continue
   $fichier_chemin_vignette = $fichier_chemin.'.mini.jpeg';
@@ -107,13 +107,13 @@ if($action=='afficher')
 {
   if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
   {
-    exit('Erreur avec les données transmises !');
+    Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
   // On récupère les élèves
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ ) ;
   if(empty($DB_TAB))
   {
-    exit('Aucun élève trouvé dans ce regroupement.');
+    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
   }
   $tab_vignettes = array();
   foreach($DB_TAB as $DB_ROW)
@@ -133,9 +133,9 @@ if($action=='afficher')
   // On affiche tout ça
   foreach($tab_vignettes as $user_id => $tab)
   {
-    echo'<div id="div_'.$user_id.'" class="photo"><div>'.$tab['image'].'</div>'.$tab['identite'].'</div>';
+    Json::add_str('<div id="div_'.$user_id.'" class="photo"><div>'.$tab['image'].'</div>'.$tab['identite'].'</div>');
   }
-  exit();
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,22 +144,23 @@ if($action=='afficher')
 
 if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré si fichier envoyé trop volumineux
 {
+  // Récupération du fichier
   $fichier_nom = 'photos_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
   // vérification du masque
   if(!$masque)
   {
-    exit('Erreur : masque des noms de fichiers non transmis !');
+    Json::end( FALSE , 'Masque des noms de fichiers non transmis !' );
   }
   $masque_filename  = '#\[(sconet_id|sconet_num|reference|nom|prenom|login|ent_id)\]#';
   $masque_extension = '#\.(gif|jpg|jpeg|png)$#';
   if( (!preg_match($masque_filename,$masque)) || (!preg_match($masque_extension,$masque)) )
   {
-    exit('Erreur : masque des noms de fichiers contenus dans l\'archive non conforme !');
+    Json::end( FALSE , 'Masque des noms de fichiers non conforme !' );
   }
   // Créer ou vider le dossier temporaire
   FileSystem::creer_ou_vider_dossier($dossier_temp);
@@ -169,7 +170,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   if($code_erreur)
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    exit('Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !');
+    Json::end( FALSE , 'L\'archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
   // Récupérer la liste des élèves et fabriquer le nom de fichier attendu correspondant à chacun
   $tab_bad = array( '[sconet_id]' , '[sconet_num]' , '[reference]' , '[nom]' , '[prenom]' , '[login]' , '[ent_id]' );
@@ -190,7 +191,6 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   $tab_fichier = FileSystem::lister_contenu_dossier($dossier_temp);
   foreach($tab_fichier as $fichier_nom)
   {
-    // echo'*'.$fichier_nom;
     $tab_user_id = array_keys( $tab_fichier_masque , $fichier_nom );
     $nb_user_find = count($tab_user_id);
     if($nb_user_find == 0)
@@ -208,7 +208,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
       $result = photo_file_to_base($user_id,$dossier_temp.$fichier_nom);
       if(is_string($result))
       {
-        $tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Erreur : '.$result.' !</td></tr>';
+        $tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>'.$result.'</td></tr>';
       }
       else
       {
@@ -222,7 +222,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   $fichier_nom = 'rapport_zip_photos_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
   // retour
-  exit(']¤['.URL_DIR_EXPORT.$fichier_nom);
+  Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -231,20 +231,27 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
 
 if( ($action=='envoyer_photo') && $user_id )
 {
+  // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , $tab_ext_images /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 500 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
   // traiter l'image : la vérifier, la redimensionner, l'enregistrer en BDD, et effacer les fichiers temporaires
   $result = photo_file_to_base($user_id,CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   if(is_string($result))
   {
-    exit('Erreur : '.$result.' !');
+    Json::end( FALSE , $result );
   }
   // retour
   list( $image_contenu_base_64 , $largeur_new , $hauteur_new) = $result;
-  exit('ok'.']¤['.$user_id.']¤['.$largeur_new.']¤['.$hauteur_new.']¤['.'data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$image_contenu_base_64);
+  Json::add_tab( array(
+    'user_id'    => $user_id ,
+    'img_width'  => $largeur_new ,
+    'img_height' => $hauteur_new ,
+    'img_src'    => 'data:'.image_type_to_mime_type(IMAGETYPE_JPEG).';base64,'.$image_contenu_base_64 ,
+  ) );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,7 +261,7 @@ if( ($action=='envoyer_photo') && $user_id )
 if( ($action=='supprimer_photo') && $user_id )
 {
   DB_STRUCTURE_IMAGE::DB_supprimer_image( $user_id , 'photo' );
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,13 +270,13 @@ if( ($action=='supprimer_photo') && $user_id )
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

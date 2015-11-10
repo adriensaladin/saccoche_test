@@ -84,7 +84,7 @@ $(document).ready
     var ajouter_partage = function()
     {
       mode = 'ajouter_partage';
-      $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_recherche').removeAttr('class').html("");
       $('#zone_partage, #zone_perso, #form_move').hide();
       $('#zone_ajout_form').show();
       return false;
@@ -198,29 +198,29 @@ $(document).ready
 
     function maj_resultat_recherche(famille_id)
     {
-      $('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=recherche_niveau_famille'+'&f_famille='+famille_id,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+            $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,3)=='<li')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+            if(responseJSON['statut']==true)
             {
-              $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
-              $('#f_recherche_resultat').html(responseHTML).show();
+              $('#ajax_msg_recherche').removeAttr('class').html("");
+              $('#f_recherche_resultat').html(responseJSON['value']).show();
             }
             else
             {
-              $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -243,7 +243,7 @@ $(document).ready
         }
         else
         {
-          $('#ajax_msg_recherche').removeAttr("class").html("&nbsp;");
+          $('#ajax_msg_recherche').removeAttr('class').html("");
         }
       }
     );
@@ -259,25 +259,25 @@ $(document).ready
       function()
       {
         var niveau_id = $(this).attr('id').substr(4); // add_
-        $('#ajax_msg_recherche').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=ajouter_partage'+'&f_id='+niveau_id,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_recherche').removeAttr("class").addClass("valide").html("Niveau ajouté.");
+                $('#ajax_msg_recherche').removeAttr('class').addClass('valide').html("Niveau ajouté.");
                 var texte = $('#add_'+niveau_id).parent().text();
                 var pos_separe  = (texte.indexOf('|')==-1) ? 0 : texte.lastIndexOf('|')+2 ;
                 var pos_par_ouv = texte.lastIndexOf('(');
@@ -286,12 +286,12 @@ $(document).ready
                 var niveau_ref  = texte.substring(pos_par_ouv+1,pos_par_fer);
                 $('#zone_partage table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#zone_partage table.form tbody').append('<tr id="id_'+niveau_id+'"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>');
-                $('#add_'+niveau_id).removeAttr("class").addClass("ajouter_non").attr('title',"Niveau déjà choisi.");
+                $('#add_'+niveau_id).removeAttr('class').addClass("ajouter_non").attr('title',"Niveau déjà choisi.");
                 tableau_maj_partage();
               }
               else
               {
-                $('#ajax_msg_recherche').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -331,7 +331,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
@@ -403,13 +403,13 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_gestion').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -419,29 +419,28 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      var tab_infos = responseHTML.split(']¤[');
-      if(tab_infos[0]!='')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter_perso':
-            var niveau_id  = tab_infos[1];
-            var niveau_ref = tab_infos[2];
-            var niveau_nom = tab_infos[3];
+            var niveau_id  = responseJSON['id'];
+            var niveau_ref = responseJSON['ref'];
+            var niveau_nom = responseJSON['nom'];
             new_tr = '<tr id="id_'+niveau_id+'" class="new"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="modifier" title="Modifier ce niveau."></q><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>';
             $('#zone_perso table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
             $('#zone_perso table.form tbody').prepend(new_tr);
@@ -449,16 +448,16 @@ $(document).ready
             $('#f_niveau_apres').append('<option value="'+niveau_id+'">'+niveau_nom+' ('+niveau_ref+')</option>');
             break;
           case 'modifier':
-            var niveau_id  = tab_infos[1];
-            var niveau_ref = tab_infos[2];
-            var niveau_nom = tab_infos[3];
+            var niveau_id  = responseJSON['id'];
+            var niveau_ref = responseJSON['ref'];
+            var niveau_nom = responseJSON['nom'];
             new_td = '<td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="modifier" title="Modifier ce niveau."></q><q class="supprimer" title="Supprimer ce niveau."></q></td>';
             $('#id_'+niveau_id).addClass("new").html(new_td);
             $('#f_niveau_avant option[value='+niveau_id+']').replaceWith('<option value="'+niveau_id+'">'+niveau_nom+' ('+niveau_ref+')</option>');
             $('#f_niveau_apres option[value='+niveau_id+']').replaceWith('<option value="'+niveau_id+'">'+niveau_nom+' ('+niveau_ref+')</option>');
             break;
           case 'supprimer':
-            var niveau_id = tab_infos[1];
+            var niveau_id = responseJSON['id'];
             $('#id_'+niveau_id).remove();
             $('#f_niveau_avant option[value='+niveau_id+']').remove();
             $('#f_niveau_apres option[value='+niveau_id+']').remove();

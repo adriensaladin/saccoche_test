@@ -25,7 +25,7 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "select_eleves" et le renvoyer en HTML
+// Mettre à jour l'élément de formulaire "select_eleves"
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
@@ -49,7 +49,7 @@ $tab_types = array(
 
 if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 $groupe_type = $tab_types[$groupe_type];
 if($groupe_type=='Divers')
@@ -72,6 +72,6 @@ $selection    = ($multiple) ? $selection  : FALSE ;
 
 // Affichage du retour.
 
-exit( HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut,$eleves_ordre) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
+Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut,$eleves_ordre) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 
 ?>

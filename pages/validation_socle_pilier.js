@@ -54,25 +54,25 @@ $(document).ready
       palier_id = $("#f_palier").val();
       if(palier_id)
       {
-        $('#ajax_maj_pilier').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_maj_pilier').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_piliers',
             data : 'f_palier='+palier_id+'&f_multiple=1',
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_maj_pilier').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_maj_pilier').removeAttr("class").html('&nbsp;');
-                $('#f_pilier').html(responseHTML).parent().show();
+                $('#ajax_maj_pilier').removeAttr('class').html('&nbsp;');
+                $('#f_pilier').html(responseJSON['value']).parent().show();
                 if(navig_auto)
                 {
                   navig_auto = false;
@@ -81,7 +81,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_maj_pilier').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_maj_pilier').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -89,7 +89,7 @@ $(document).ready
       }
       else
       {
-        $('#ajax_maj_pilier').removeAttr("class").html("&nbsp;");
+        $('#ajax_maj_pilier').removeAttr('class').html("");
       }
     };
 
@@ -110,19 +110,19 @@ $(document).ready
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
         if(typeof(groupe_type)=='undefined') {groupe_type = 'Classes';} // Cas d'un P.P.
-        $('#ajax_maj_eleve').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_maj_eleve').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_eleves',
             data : 'f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_eleves_ordre='+eleves_ordre+'&f_statut=1'+'&f_multiple=1'+'&f_selection=1',
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_maj_eleve').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               if(groupe_type=='Classes')
@@ -133,10 +133,10 @@ $(document).ready
               {
                 $("#bloc_ordre").show();
               }
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
-                $('#f_eleve').html(responseHTML).parent().show();
+                $('#ajax_maj_eleve').removeAttr('class').html("");
+                $('#f_eleve').html(responseJSON['value']).parent().show();
                 if(navig_auto)
                 {
                   navig_auto = false;
@@ -145,7 +145,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_maj_eleve').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_maj_eleve').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -154,7 +154,7 @@ $(document).ready
       else
       {
         $("#bloc_ordre").hide();
-        $('#ajax_maj_eleve').removeAttr("class").html("&nbsp;");
+        $('#ajax_maj_eleve').removeAttr('class').html("");
       }
     };
 
@@ -203,7 +203,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_choix",
@@ -227,12 +227,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi0(formData, jqForm, options)
     {
-      $('#ajax_msg_choix').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_choix').removeAttr('class').html("");
       var readytogo = validation0.form();
       if(readytogo)
       {
         $("#Afficher_validation").prop('disabled',true);
-        $('#ajax_msg_choix').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_choix').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -241,35 +241,35 @@ $(document).ready
     function retour_form_erreur0(jqXHR, textStatus, errorThrown)
     {
       $("#Afficher_validation").prop('disabled',false);
-      $('#ajax_msg_choix').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_choix').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide0(responseHTML)
+    function retour_form_valide0(responseJSON)
     {
       initialiser_compteur();
       $("#Afficher_validation").prop('disabled',false);
-      if(responseHTML.substring(0,7)!='<thead>')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_choix').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_choix').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         var objet_option_groupe = $("#f_groupe option:selected");
         var objet_option_palier = $("#f_palier option:selected");
-        responseHTML = responseHTML.replace( '@GROUPE@' , objet_option_groupe.text() );
-        responseHTML = responseHTML.replace( '@PALIER@' , objet_option_palier.text() );
-        if(!objet_option_groupe.prev().length || !objet_option_groupe.prev().val()) { responseHTML = responseHTML.replace( 'id="go_precedent_groupe"' , 'id="go_precedent_groupe" disabled' ); }
-        if(!objet_option_groupe.next().length)                                      { responseHTML = responseHTML.replace( 'id="go_suivant_groupe"'   , 'id="go_suivant_groupe" disabled'   ); }
-        if(!objet_option_palier.prev().length || !objet_option_palier.prev().val()) { responseHTML = responseHTML.replace( 'id="go_precedent_palier"' , 'id="go_precedent_palier" disabled' ); }
-        if(!objet_option_palier.next().length)                                      { responseHTML = responseHTML.replace( 'id="go_suivant_palier"'   , 'id="go_suivant_palier" disabled'   ); }
-        $('#tableau_validation').html(responseHTML);
+        responseJSON['value'] = responseJSON['value'].replace( '@GROUPE@' , objet_option_groupe.text() );
+        responseJSON['value'] = responseJSON['value'].replace( '@PALIER@' , objet_option_palier.text() );
+        if(!objet_option_groupe.prev().length || !objet_option_groupe.prev().val()) { responseJSON['value'] = responseJSON['value'].replace( 'id="go_precedent_groupe"' , 'id="go_precedent_groupe" disabled' ); }
+        if(!objet_option_groupe.next().length)                                      { responseJSON['value'] = responseJSON['value'].replace( 'id="go_suivant_groupe"'   , 'id="go_suivant_groupe" disabled'   ); }
+        if(!objet_option_palier.prev().length || !objet_option_palier.prev().val()) { responseJSON['value'] = responseJSON['value'].replace( 'id="go_precedent_palier"' , 'id="go_precedent_palier" disabled' ); }
+        if(!objet_option_palier.next().length)                                      { responseJSON['value'] = responseJSON['value'].replace( 'id="go_suivant_palier"'   , 'id="go_suivant_palier" disabled'   ); }
+        $('#tableau_validation').html(responseJSON['value']);
         $('#zone_validation').show('fast');
         if(voir_pourcentage)
         {
           $('#Afficher_pourcentage').click();
         }
-        $('#ajax_msg_choix').removeAttr("class").html('');
+        $('#ajax_msg_choix').removeAttr('class').html('');
         $('#zone_choix').hide('fast');
         $('#zone_information').show('fast');
         $("body").oneTime("1s", function() {window.scrollTo(0,1000);} );
@@ -320,17 +320,17 @@ $(document).ready
       {
         if($(this).data('etat')=='lock')
         {
-          $('#ajax_msg_validation').removeAttr("class").addClass("erreur").html('Pour annuler une validation, utiliser l\'interface dédiée.');
+          $('#ajax_msg_validation').removeAttr('class').addClass('erreur').html('Pour annuler une validation, utiliser l\'interface dédiée.');
           return false;
         }
         // Appliquer un état pour un item pour un élève
         var classe = $(this).attr('class');
         var new_classe = classe.charAt(0) + tab_class_next[classe.charAt(1)] ;
-        $(this).removeAttr("class").addClass(new_classe);
+        $(this).removeAttr('class').addClass(new_classe);
         if(modification==false)
         {
-          $('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
-          $('#fermer_zone_validation').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+          $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html('Penser à valider les modifications !');
+          $('#fermer_zone_validation').removeAttr('class').addClass("annuler").html('Annuler / Retour');
           modification = true;
         }
         return false;
@@ -351,31 +351,31 @@ $(document).ready
         }
         if(modification==false)
         {
-          $('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Penser à valider les modifications !');
-          $('#fermer_zone_validation').removeAttr("class").addClass("annuler").html('Annuler / Retour');
+          $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html('Penser à valider les modifications !');
+          $('#fermer_zone_validation').removeAttr('class').addClass("annuler").html('Annuler / Retour');
           modification = true;
         }
         var classe_debut = classe.substring(0,4);
         var classe_fin   = classe.charAt(4);
         var new_classe_th = classe_debut + tab_class_next[classe_fin] ;
-        var new_classe_td = 'v' + classe_fin ;
+        var new_classe_td = 'V' + classe_fin ;
         if(classe_debut=='left')
         {
           // Appliquer un état pour un pilier pour tous les élèves
-          $(this).removeAttr("class").addClass(new_classe_th).parent().children('td').removeAttr("class").addClass(new_classe_td);
+          $(this).removeAttr('class').addClass(new_classe_th).parent().children('td').removeAttr('class').addClass(new_classe_td);
           return false;
         }
         if(classe_debut=='down')
         {
           // Appliquer un état pour tout le palier pour un élève
           var id = $(this).attr('id') + 'C';
-          $(this).removeAttr("class").addClass(new_classe_th).parent().parent().find('td[id^='+id+']').removeAttr("class").addClass(new_classe_td);
+          $(this).removeAttr('class').addClass(new_classe_th).parent().parent().find('td[id^='+id+']').removeAttr('class').addClass(new_classe_td);
           return false;
         }
         if(classe_debut=='diag')
         {
           // Appliquer un état pour tous les piliers pour tous les élèves
-          $(this).removeAttr("class").addClass(new_classe_th).parent().parent().find('td').removeAttr("class").addClass(new_classe_td);
+          $(this).removeAttr('class').addClass(new_classe_th).parent().parent().find('td').removeAttr('class').addClass(new_classe_td);
           return false;
         }
       }
@@ -439,32 +439,31 @@ $(document).ready
       $('#pilier').html( $('#C'+pilier_id).next('th').children('div').text() );
       $('#stats').html('');
       $('#items').html('');
-      $('#ajax_msg_information').removeAttr("class").addClass("loader").html("En cours&hellip;");
+      $('#ajax_msg_information').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action=Afficher_information'+'&f_user='+user_id+'&f_pilier='+pilier_id,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_information').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg_information').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             // initialiser_compteur();
-            pos = responseHTML.indexOf('@');
-            if(pos==-1)
+            if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_information').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg_information').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg_information').removeAttr("class").html('&nbsp;');
-              $('#stats').html( responseHTML.substring(0,pos) );
-              $('#items').html( responseHTML.substring(pos+1) );
+              $('#ajax_msg_information').removeAttr('class').html('&nbsp;');
+              $('#stats').html( responseJSON['stats'] );
+              $('#items').html( responseJSON['items'] );
             }
           }
         }
@@ -486,7 +485,7 @@ $(document).ready
       $('#pilier').html('');
       $('#stats').html('');
       $('#items').html('');
-      $('#ajax_msg_information').removeAttr("class").html('');
+      $('#ajax_msg_information').removeAttr('class').html('');
       modification = false;
       if(navig_auto)
       {
@@ -588,7 +587,7 @@ $(document).ready
       function()
       {
         $("button").prop('disabled',true);
-        $('#ajax_msg_validation').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_validation').removeAttr('class').addClass('loader').html("En cours&hellip;");
         // Récupérer les infos
         var tab_valid = new Array();
         $("#tableau_validation tbody td").each
@@ -605,27 +604,27 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=Enregistrer_validation'+'&f_valid='+tab_valid,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("button").prop('disabled',false);
-              $('#ajax_msg_validation').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               modification = false; // Mis ici pour le cas "aucune modification détectée"
               initialiser_compteur();
               $("button").prop('disabled',false);
-              if(responseHTML.substring(0,2)!='OK')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_validation').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('td.v1').attr('data-etat','lock').html('');
-                $('#ajax_msg_validation').removeAttr("class").addClass("valide").html("Validations enregistrées !");
-                $('#fermer_zone_validation').removeAttr("class").addClass("retourner").html('Retour');
+                $('td.V1').attr('data-etat','lock').html('');
+                $('#ajax_msg_validation').removeAttr('class').addClass('valide').html("Validations enregistrées !");
+                $('#fermer_zone_validation').removeAttr('class').addClass("retourner").html('Retour');
               }
             }
           }

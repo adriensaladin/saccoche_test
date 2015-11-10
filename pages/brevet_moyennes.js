@@ -53,38 +53,38 @@ $(document).ready
       memo_eleve_id  = tab_id[1];
       memo_serie_ref = tab_id[2];
       $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',true);
-      $('#ajax_msg').removeAttr("class").addClass("loader").html('En cours&hellip;');
+      $('#ajax_msg').removeAttr('class').addClass('loader').html('En cours&hellip;');
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&f_action='+'proposer'+'&f_classe='+memo_classe_id+'&f_user='+memo_eleve_id+'&f_serie='+memo_serie_ref,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',false);
             $('#valider_notes').prop('disabled',true);
-            $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
             $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',false);
-            if(responseHTML.substring(0,8)!='<tr><td>')
+            if(responseJSON['statut']==false)
             {
               $('#valider_notes').prop('disabled',true);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               return false;
             }
             else
             {
               $('#go_selection_eleve option[value='+eleve_info+']').prop('selected',true);
               masquer_element_navigation_choix_eleve();
-              $('#ajax_msg').removeAttr("class").html('');
+              $('#ajax_msg').removeAttr('class').html('');
               $('#zone_resultat_eleve h3').html( $('#m_'+eleve_info).children('img').attr('title') );
-              $('#zone_resultat_eleve table tbody').html(responseHTML);
+              $('#zone_resultat_eleve table tbody').html(responseJSON['value']);
             }
           }
         }
@@ -192,7 +192,7 @@ $(document).ready
       '#fermer_zone_action_eleve',
       function()
       {
-        $('#ajax_msg').removeAttr("class").html('');
+        $('#ajax_msg').removeAttr('class').html('');
         $('#zone_resultat_eleve table tbody').html('<tr><td colspan="4"></td></tr>');
         $('#zone_action_eleve').hide(0);
         $('#table_accueil').show(0);
@@ -229,7 +229,7 @@ $(document).ready
       'select',
       function()
       {
-        $('#ajax_msg').removeAttr("class").addClass("alerte").html("Pensez à valider vos modifications !");
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -244,40 +244,39 @@ $(document).ready
       function()
       {
         $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html('En cours&hellip;');
+        $('#ajax_msg').removeAttr('class').addClass('loader').html('En cours&hellip;');
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action='+'enregistrer'+'&f_classe='+memo_classe_id+'&f_user='+memo_eleve_id+'&f_serie='+memo_serie_ref+'&'+$('#zone_resultat_eleve').serialize(),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
               $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',false);
-              if(responseHTML.substring(0,3)!='<td')
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
-                $('#ajax_msg').removeAttr("class").addClass("valide").html('Notes enregistrées.');
-                $('#m_'+memo_eleve_info).children('label').removeAttr("class").addClass("valide");
-                var tab_td = responseHTML.split('¤');
+                $('#ajax_msg').removeAttr('class').addClass('valide').html('Notes enregistrées.');
+                $('#m_'+memo_eleve_info).children('label').removeAttr('class').addClass('valide');
                 var numero_ligne = 0;
                 $('#zone_resultat_eleve table tbody tr').each
                 (
                   function()
                   {
-                    $(this).children('td:last,th:last').replaceWith(tab_td[numero_ligne]);
+                    $(this).children('td:last,th:last').replaceWith(responseJSON[numero_ligne]);
                     numero_ligne++;
                   }
                 );

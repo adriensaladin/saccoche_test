@@ -41,18 +41,18 @@ if( ($action=='memoriser_consultation') && $notification_id )
   // Afficher le retour
   if($is_modif)
   {
-    exit_json( TRUE );
+    Json::end( TRUE );
   }
   else
   {
-    exit_json( FALSE , 'Erreur : notification non trouvée ou pas associée à ce compte !' );
+    Json::end( FALSE , 'Erreur : notification non trouvée ou pas associée à ce compte !' );
   }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit_json( FALSE , 'Erreur avec les données transmises !' );
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

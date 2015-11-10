@@ -118,8 +118,8 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   </div>
   <p>Confirmez-vous vouloir importer ces données dans <em>SACoche</em> pour la période <b id="periode_import"></b> ?</p>
   <form action="#" method="post">
-    <p>
-      <span class="tab"></span><button id="confirmer_import" type="button" class="valider">Confirmer.</button> <button id="fermer_zone_confirmer" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirm">&nbsp;</label>
+    <p class="ml">
+      <button id="confirmer_import" type="button" class="valider">Confirmer.</button> <button id="fermer_zone_confirmer" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirm">&nbsp;</label>
     </p>
   </form>
 </div>
@@ -134,8 +134,8 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     <tbody><tr><td colspan="5"></td></tr></tbody>
   </table>
   <form action="#" method="post">
-    <p>
-      <span class="tab"></span><button id="Enregistrer_saisies" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button><label id="ajax_msg_saisir"></label>
+    <p class="ml">
+      <button id="Enregistrer_saisies" type="button" class="valider">Enregistrer les saisies</button> <button id="fermer_zone_saisir" type="button" class="retourner">Retour</button><label id="ajax_msg_saisir"></label>
     </p>
   </form>
 </div>

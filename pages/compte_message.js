@@ -177,25 +177,25 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=afficher_destinataires'+'&f_destinataires_liste='+destinataires_liste,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">Échec de la connexion ! Veuillez recommencer.</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.</label>' , {'centerOnScroll':true} );
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if( (responseHTML.substring(0,6)=='<label') || (responseHTML=='') )
+              if(responseJSON['statut']==true)
               {
-                $('#f_destinataires').html(responseHTML);
-                var etat_disabled = (responseHTML!='') ? false : true ;
+                $('#f_destinataires').html(responseJSON['value']);
+                var etat_disabled = (responseJSON['value']!='') ? false : true ;
                 $('#retirer_destinataires').prop('disabled',etat_disabled);
                 $('#valider_destinataires').prop('disabled',etat_disabled);
               }
               else
               {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
                 return false;
               }
             }
@@ -257,7 +257,7 @@ $(document).ready
       var profil_type = $("#f_profil option:selected").val();
       if(profil_type=='')
       {
-        $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_destinataires').removeAttr('class').html("");
         $('#div_users').hide();
         $('#ajouter_destinataires').prop('disabled',true);
         return false
@@ -275,7 +275,7 @@ $(document).ready
       }
       if(!groupe_val)
       {
-        $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_destinataires').removeAttr('class').html("");
         $('#div_users').hide();
         $('#ajouter_destinataires').prop('disabled',true);
         return false
@@ -294,7 +294,7 @@ $(document).ready
       }
       if($('#f_indiv').is(':checked'))
       {
-        $('#ajax_msg_destinataires').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_destinataires').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#bilan tbody').html('');
         $.ajax
         (
@@ -302,25 +302,25 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_action=afficher_users'+'&f_profil_type='+profil_type+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_msg_destinataires').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,6)=='<label')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
-                $('#f_user').html(responseHTML).show();
+                $('#ajax_msg_destinataires').removeAttr('class').html("");
+                $('#f_user').html(responseJSON['value']).show();
                 $('#span_check').show();
                 $('#div_users').show();
                 $('#ajouter_destinataires').prop('disabled',false);
               }
               else
               {
-                $('#ajax_msg_destinataires').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_msg_destinataires').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 $('#div_users').hide();
                 $('#ajouter_destinataires').prop('disabled',true);
               }
@@ -330,7 +330,7 @@ $(document).ready
       }
       else
       {
-        $('#ajax_msg_destinataires').removeAttr("class").html("&nbsp;");
+        $('#ajax_msg_destinataires').removeAttr('class').html("");
         $('#f_user').hide();
         $('#span_check').hide();
         $('#div_users').show();
@@ -529,7 +529,7 @@ $(document).ready
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
-      dataType : "html",
+      dataType : 'json',
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_gestion",
@@ -551,12 +551,12 @@ $(document).ready
     // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_gestion').removeAttr("class").html("&nbsp;");
+      $('#ajax_msg_gestion').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)
       {
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -565,35 +565,31 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide(responseHTML)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       $('#form_gestion button').prop('disabled',false);
-      if(responseHTML.substring(0,2)!='<t')
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').removeAttr("class").addClass("valide").html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter':
             $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
-            var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-            var new_tr = responseHTML.substring(0,position_script);
-            $('#table_action tbody').prepend(new_tr);
-            eval( responseHTML.substring(position_script+8) );
+            $('#table_action tbody').prepend(responseJSON['html']);
+            eval( responseJSON['script'] );
             break;
           case 'modifier':
-            var position_script = responseHTML.lastIndexOf('<SCRIPT>');
-            var new_tds = responseHTML.substring(0,position_script);
-            $('#id_'+$('#f_id').val()).addClass("new").html(new_tds);
-            eval( responseHTML.substring(position_script+8) );
+            $('#id_'+$('#f_id').val()).addClass("new").html(responseJSON['html']);
+            eval( responseJSON['script'] );
             break;
           case 'supprimer':
             $('#id_'+$('#f_id').val()).remove();

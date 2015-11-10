@@ -39,11 +39,11 @@ if($profil && $delai)
 {
   if( ($profil!='ALL') && !isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$profil]) )
   {
-    exit('Profil incorrect !');
+    Json::end( FALSE , 'Profil incorrect !' );
   }
   if( ($delai%10) || ($delai>120) )
   {
-    exit('Délai incorrect !');
+    Json::end( FALSE , 'Délai incorrect !' );
   }
   // Mettre à jour les paramètres dans la base
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_profil_parametre( $profil , 'user_profil_duree_inactivite' , $delai );
@@ -60,13 +60,13 @@ if($profil && $delai)
   {
     $_SESSION['TAB_PROFILS_ADMIN']['DUREE_INACTIVITE'][$profil] = $delai;
   }
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

@@ -133,7 +133,7 @@ if( ($action=='afficher_destinataires') && $nb_destinataires_valides )
     $tab_select_destinataires[$key] = array( 'valeur' => $tab_select_destinataires['valeur'][$key] , 'texte' => $tab_select_destinataires['texte'][$key] );
   }
   unset( $tab_select_destinataires['valeur'] , $tab_select_destinataires['texte'] );
-  exit( HtmlForm::afficher_select( $tab_select_destinataires , 'f_destinataires' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
+  Json::end( TRUE , HtmlForm::afficher_select( $tab_select_destinataires , 'f_destinataires' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ if( ($action=='afficher_users') && isset($tab_profils[$profil_type]) && $groupe_
 {
   $champs = ($profil_type!='parent') ? 'CONCAT(user_nom," ",user_prenom) AS texte , CONCAT(user_profil_type,"_user_",user_id) AS valeur' : 'CONCAT(parent.user_nom," ",parent.user_prenom," (",enfant.user_nom," ",enfant.user_prenom,")") AS texte , CONCAT("parent_user_",parent.user_id) AS valeur' ;
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil_type /*profil_type*/ , 1 /*statut*/ , $tab_types_abreges[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs ) ;
-  exit( HtmlForm::afficher_select( $DB_TAB , 'f_user' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
+  Json::end( TRUE , HtmlForm::afficher_select( $DB_TAB , 'f_user' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,11 +157,11 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
   $date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
   if($date_fin_mysql<$date_debut_mysql)
   {
-    exit('Date de fin antérieure à la date de début !');
+    Json::end( FALSE , 'Date de fin antérieure à la date de début !' );
   }
   if($nb_destinataires_valides>100)
   {
-    exit('Trop de sélections : choisir "Tous (automatique)" sur des regroupements !');
+    Json::end( FALSE , 'Trop de sélections : choisir "Tous (automatique)" sur des regroupements !' );
   }
   $message_id = DB_STRUCTURE_MESSAGE::DB_ajouter_message( $_SESSION['USER_ID'] , $date_debut_mysql , $date_fin_mysql , $message_contenu );
   DB_STRUCTURE_MESSAGE::DB_modifier_message_destinataires( $message_id , $tab_destinataires_valides , 'creer' );
@@ -183,20 +183,19 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
   }
   // Afficher le retour
   $destinataires_nombre = ($nb_destinataires_valides>1) ? $nb_destinataires_valides.' sélections' : $nb_destinataires_valides.' sélection' ;
-  echo'<tr id="id_'.$message_id.'" class="new">';
-  echo  '<td>'.$date_debut_fr.'</td>';
-  echo  '<td>'.$date_fin_fr.'</td>';
-  echo  '<td>'.$destinataires_nombre.'</td>';
-  echo  '<td>'.html(afficher_texte_tronque($message_contenu,60)).'</td>';
-  echo  '<td class="nu">';
-  echo    '<q class="modifier" title="Modifier ce message."></q>';
-  echo    '<q class="supprimer" title="Supprimer ce message."></q>';
-  echo  '</td>';
-  echo'</tr>';
-  echo'<SCRIPT>';
-  echo'tab_destinataires['.$message_id.']="'.implode(',',$tab_destinataires_valides).'";';
-  echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
-  exit();
+  Json::add_row( 'html' , '<tr id="id_'.$message_id.'" class="new">' );
+  Json::add_row( 'html' ,   '<td>'.$date_debut_fr.'</td>' );
+  Json::add_row( 'html' ,   '<td>'.$date_fin_fr.'</td>' );
+  Json::add_row( 'html' ,   '<td>'.$destinataires_nombre.'</td>' );
+  Json::add_row( 'html' ,   '<td>'.html(afficher_texte_tronque($message_contenu,60)).'</td>' );
+  Json::add_row( 'html' ,   '<td class="nu">' );
+  Json::add_row( 'html' ,     '<q class="modifier" title="Modifier ce message."></q>' );
+  Json::add_row( 'html' ,     '<q class="supprimer" title="Supprimer ce message."></q>' );
+  Json::add_row( 'html' ,   '</td>' );
+  Json::add_row( 'html' , '</tr>' );
+  Json::add_row( 'script' , 'tab_destinataires['.$message_id.']="'.implode(',',$tab_destinataires_valides).'";' );
+  Json::add_row( 'script' , 'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";' );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -209,11 +208,11 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
   $date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
   if($date_fin_mysql<$date_debut_mysql)
   {
-    exit('Date de fin antérieure à la date de début !');
+    Json::end( FALSE , 'Date de fin antérieure à la date de début !' );
   }
   if($nb_destinataires_valides>100)
   {
-    exit('Trop de sélections : choisir "Tous (automatique)" sur des regroupements !');
+    Json::end( FALSE , 'Trop de sélections : choisir "Tous (automatique)" sur des regroupements !' );
   }
   DB_STRUCTURE_MESSAGE::DB_modifier_message( $message_id , $_SESSION['USER_ID'] , $date_debut_mysql , $date_fin_mysql , $message_contenu );
   DB_STRUCTURE_MESSAGE::DB_modifier_message_destinataires( $message_id , $tab_destinataires_valides , 'substituer' );
@@ -236,18 +235,17 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
   }
   // Afficher le retour
   $destinataires_nombre = ($nb_destinataires_valides>1) ? $nb_destinataires_valides.' sélections' : $nb_destinataires_valides.' sélection' ;
-  echo'<td>'.$date_debut_fr.'</td>';
-  echo'<td>'.$date_fin_fr.'</td>';
-  echo'<td>'.$destinataires_nombre.'</td>';
-  echo'<td>'.html(afficher_texte_tronque($message_contenu,60)).'</td>';
-  echo'<td class="nu">';
-  echo  '<q class="modifier" title="Modifier ce message."></q>';
-  echo  '<q class="supprimer" title="Supprimer ce message."></q>';
-  echo'</td>';
-  echo'<SCRIPT>';
-  echo'tab_destinataires['.$message_id.']="'.implode(',',$tab_destinataires_valides).'";';
-  echo'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";';
-  exit();
+  Json::add_row( 'html' , '<td>'.$date_debut_fr.'</td>' );
+  Json::add_row( 'html' , '<td>'.$date_fin_fr.'</td>' );
+  Json::add_row( 'html' , '<td>'.$destinataires_nombre.'</td>' );
+  Json::add_row( 'html' , '<td>'.html(afficher_texte_tronque($message_contenu,60)).'</td>' );
+  Json::add_row( 'html' , '<td class="nu">' );
+  Json::add_row( 'html' ,   '<q class="modifier" title="Modifier ce message."></q>' );
+  Json::add_row( 'html' ,   '<q class="supprimer" title="Supprimer ce message."></q>' );
+  Json::add_row( 'html' , '</td>' );
+  Json::add_row( 'script' , 'tab_destinataires['.$message_id.']="'.implode(',',$tab_destinataires_valides).'";' );
+  Json::add_row( 'script' , 'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";' );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,19 +257,19 @@ if( ($action=='supprimer') && $message_id )
   $nb_suppression = DB_STRUCTURE_MESSAGE::DB_supprimer_message($message_id,$_SESSION['USER_ID']);
   if(!$nb_suppression)
   {
-    exit('Message introuvable ou dont vous n\'êtes pas l\'auteur !');
+    Json::end( FALSE , 'Message introuvable ou dont vous n\'êtes pas l\'auteur !' );
   }
   DB_STRUCTURE_MESSAGE::DB_supprimer_message_destinataires($message_id);
   // Notifications (rendues visibles ultérieurement)
   DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref , $message_id );
   // Afficher le retour
-  exit('<td>ok</td>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

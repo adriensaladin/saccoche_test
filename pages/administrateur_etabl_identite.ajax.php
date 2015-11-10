@@ -58,30 +58,30 @@ $mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) 
 $ip_variable                 = (isset($_POST['f_ip_variable']))                 ? Clean::entier($_POST['f_ip_variable'])                 : NULL;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour le formulaire f_geo1 et le renvoyer en HTML
+// Mettre à jour le formulaire f_geo1
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='Afficher_form_geo1')
 {
-  exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo1() );
+  Json::end( TRUE , ServeurCommunautaire::Sesamath_afficher_formulaire_geo1() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour le formulaire f_geo2 et le renvoyer en HTML
+// Mettre à jour le formulaire f_geo2
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Afficher_form_geo2') && ($geo1>0) )
 {
-  exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo2($geo1) );
+  Json::end( TRUE , ServeurCommunautaire::Sesamath_afficher_formulaire_geo2($geo1) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mettre à jour le formulaire f_geo3 et le renvoyer en HTML
+// Mettre à jour le formulaire f_geo3
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='Afficher_form_geo3') && ($geo1>0) && ($geo2>0) )
 {
-  exit( ServeurCommunautaire::Sesamath_afficher_formulaire_geo3($geo1,$geo2) );
+  Json::end( TRUE , ServeurCommunautaire::Sesamath_afficher_formulaire_geo3($geo1,$geo2) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,8 +90,8 @@ if( ($action=='Afficher_form_geo3') && ($geo1>0) && ($geo2>0) )
 
 if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 {
-  echo ($geo3) ? ServeurCommunautaire::Sesamath_lister_structures_by_commune($geo3) : ServeurCommunautaire::Sesamath_recuperer_structure_by_UAI($uai) ;
-  exit();
+  $retour = ($geo3) ? ServeurCommunautaire::Sesamath_lister_structures_by_commune($geo3) : ServeurCommunautaire::Sesamath_recuperer_structure_by_UAI($uai) ;
+  Json::end( TRUE , $retour );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,10 +100,10 @@ if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 
 if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 {
-  $retour = ServeurCommunautaire::Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
-  if($retour!='ok')
+  $result = ServeurCommunautaire::Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
+  if($result!=='ok')
   {
-    exit($retour);
+    Json::end( FALSE , $result );
   }
   // Si on arrive là, alors tout s'est bien passé.
   $tab_parametres = array();
@@ -117,7 +117,7 @@ if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
   $_SESSION['SESAMATH_UAI']      = $sesamath_uai ;
   $_SESSION['SESAMATH_TYPE_NOM'] = $sesamath_type_nom ;
   $_SESSION['SESAMATH_KEY']      = $sesamath_key ;
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,23 +129,23 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ( $contact_nom || $contact_p
   // Vérifier les variables récupérées en focntion de ce qui est autorisé et donc requis.
   if( (CONTACT_MODIFICATION_USER!='non') && ( !$contact_nom || !$contact_prenom ) )
   {
-    exit('Erreur avec les données transmises !');
+    Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
   if(CONTACT_MODIFICATION_MAIL!='non') // oui ou domaine restreint
   {
     if(!$contact_courriel)
     {
-      exit('Erreur avec les données transmises !');
+      Json::end( FALSE , 'Erreur avec les données transmises !' );
     }
     if( (CONTACT_MODIFICATION_MAIL!='oui') && strpos($contact_courriel,CONTACT_MODIFICATION_MAIL)===FALSE )
     {
-      exit('Erreur avec le domaine qui est restreint à "'.CONTACT_MODIFICATION_MAIL.'" par le webmestre.');
+      Json::end( FALSE , 'Erreur avec le domaine qui est restreint à "'.CONTACT_MODIFICATION_MAIL.'" par le webmestre.' );
     }
     // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
     list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($contact_courriel);
     if(!$is_domaine_valide)
     {
-      exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+      Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
     }
   }
   // On met à jour dans la base du webmestre, sans écraser l'existant.
@@ -156,7 +156,7 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ( $contact_nom || $contact_p
   $contact_courriel = (CONTACT_MODIFICATION_MAIL!='non') ? $contact_courriel : $DB_ROW['structure_contact_courriel'] ;
   DB_WEBMESTRE_ADMINISTRATEUR::DB_modifier_contact_infos($_SESSION['BASE'],$contact_nom,$contact_prenom,$contact_courriel);
   // Si on arrive là, alors tout s'est bien passé.
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,7 +171,7 @@ if( $etablissement_denomination )
     list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($etablissement_courriel);
     if(!$is_domaine_valide)
     {
-      exit('Erreur avec le domaine "'.$mail_domaine.'" !');
+      Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
     }
   }
   $tab_parametres = array();
@@ -192,7 +192,7 @@ if( $etablissement_denomination )
   $_SESSION['ETABLISSEMENT']['FAX']          = $etablissement_fax;
   $_SESSION['ETABLISSEMENT']['COURRIEL']     = $etablissement_courriel;
   $_SESSION['ETABLISSEMENT']['URL']          = $etablissement_url;
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,18 +201,19 @@ if( $etablissement_denomination )
 
 if($action=='upload_logo')
 {
+  // Récupération du fichier
   $fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('gif','jpg','jpeg','png') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
-    exit('Erreur : '.$result);
+    Json::end( FALSE , $result );
   }
   // vérifier la conformité du fichier image, récupérer les infos le concernant
   $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   if($tab_infos==FALSE)
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier image ne semble pas valide !');
+    Json::end( FALSE , 'Le fichier image ne semble pas valide !' );
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
   $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_PNG=>'png' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
@@ -220,14 +221,14 @@ if($action=='upload_logo')
   if(!isset($tab_extension_types[$image_type]))
   {
     FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-    exit('Erreur : le fichier transmis n\'est pas un fichier image (type '.$image_type.') !');
+   Json::end( FALSE , 'Le fichier n\'est pas un fichier image (type '.$image_type.') !' );
   }
   $image_format = $tab_extension_types[$image_type];
   // stocker l'image dans la base
   DB_STRUCTURE_IMAGE::DB_modifier_image( 0 /*user_id*/ , 'logo' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
   // Générer la balise html et afficher le retour
   list($width,$height) = Image::dimensions_affichage( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
-  exit('<li><img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>');
+  Json::end( TRUE , '<li><img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="Logo établissement" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +238,7 @@ if($action=='upload_logo')
 if($action=='delete_logo')
 {
   DB_STRUCTURE_IMAGE::DB_supprimer_image( 0 /*user_id*/ , 'logo' );
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -251,7 +252,7 @@ if( $mois_bascule_annee_scolaire )
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'] = $mois_bascule_annee_scolaire;
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -263,7 +264,7 @@ if( $etablissement_langue )
   // Vérifications
   if(!is_dir(LOCALE_DIR.DS.$etablissement_langue))
   {
-    exit('Erreur : dossier de langue "'.$etablissement_langue.'" non trouvé !');
+    Json::end( FALSE , 'Dossier de langue "'.$etablissement_langue.'" non trouvé !' );
   }
   // C'est ok...
   $tab_parametres = array();
@@ -275,7 +276,7 @@ if( $etablissement_langue )
   Lang::setlocale( LC_MESSAGES, Lang::get_locale_used() );
   SessionUser::memoriser_menu();
   // Retour
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +290,7 @@ if( !is_null($ip_variable) )
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['ETABLISSEMENT']['IP_VARIABLE'] = $ip_variable;
-  exit('ok');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -298,13 +299,13 @@ if( !is_null($ip_variable) )
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

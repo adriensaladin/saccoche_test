@@ -36,53 +36,58 @@ $ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre']) : 0;
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter une nouvelle période / Dupliquer une pédiode existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
 {
   // Vérifier que le nom de la période est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_periode_nom($nom) )
   {
-    exit('Erreur : nom de période déjà existant !');
+    Json::end( FALSE , 'Nom déjà utilisé !' );
   }
   // Insérer l'enregistrement
   $periode_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_periode($ordre,$nom);
   // Afficher le retour
-  echo'<tr id="id_'.$periode_id.'" class="new">';
-  echo  '<td>'.$ordre.'</td>';
-  echo  '<td>'.html($nom).'</td>';
-  echo  '<td class="nu">';
-  echo    '<q class="modifier" title="Modifier cette période."></q>';
-  echo    '<q class="dupliquer" title="Dupliquer cette période."></q>';
-  echo    '<q class="supprimer" title="Supprimer cette période."></q>';
-  echo  '</td>';
-  echo'</tr>';
+  Json::add_str('<tr id="id_'.$periode_id.'" class="new">');
+  Json::add_str(  '<td>'.$ordre.'</td>');
+  Json::add_str(  '<td>'.html($nom).'</td>');
+  Json::add_str(  '<td class="nu">');
+  Json::add_str(    '<q class="modifier" title="Modifier cette période."></q>');
+  Json::add_str(    '<q class="dupliquer" title="Dupliquer cette période."></q>');
+  Json::add_str(    '<q class="supprimer" title="Supprimer cette période."></q>');
+  Json::add_str(  '</td>');
+  Json::add_str('</tr>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier une période existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if( ($action=='modifier') && $id && $ordre && $nom )
+
+if( ($action=='modifier') && $id && $ordre && $nom )
 {
   // Vérifier que le nom de la période est disponible
   if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_periode_nom($nom,$id) )
   {
-    exit('Erreur : nom de période déjà existant !');
+    Json::end( FALSE , 'Nom déjà utilisé !' );
   }
   // Mettre à jour l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_periode($id,$ordre,$nom);
   // Afficher le retour
-  echo'<td>'.$ordre.'</td>';
-  echo'<td>'.html($nom).'</td>';
-  echo'<td class="nu">';
-  echo  '<q class="modifier" title="Modifier cette période."></q>';
-  echo  '<q class="dupliquer" title="Dupliquer cette période."></q>';
-  echo  '<q class="supprimer" title="Supprimer cette période."></q>';
-  echo'</td>';
+  Json::add_str('<td>'.$ordre.'</td>');
+  Json::add_str('<td>'.html($nom).'</td>');
+  Json::add_str('<td class="nu">');
+  Json::add_str(  '<q class="modifier" title="Modifier cette période."></q>');
+  Json::add_str(  '<q class="dupliquer" title="Dupliquer cette période."></q>');
+  Json::add_str(  '<q class="supprimer" title="Supprimer cette période."></q>');
+  Json::add_str('</td>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer une période existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-else if( ($action=='supprimer') && $id && $nom )
+
+if( ($action=='supprimer') && $id && $nom )
 {
   // Effacer l'enregistrement
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_periode($id);
@@ -92,11 +97,13 @@ else if( ($action=='supprimer') && $id && $nom )
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé la période "'.$nom.'" (n°'.$id.'), et donc les bilans officiels associés.'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
-  echo'<td>ok</td>';
+  Json::end( TRUE );
 }
 
-else
-{
-  echo'Erreur avec les données transmises !';
-}
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Json::end( FALSE , 'Erreur avec les données transmises !' );
+
 ?>

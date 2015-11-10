@@ -70,7 +70,7 @@ $tab_step = array(
 
 if(empty($_POST))
 {
-  exit('Erreur : aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload());
+  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,7 +79,7 @@ if(empty($_POST))
 
 if( !isset($tab_action[$action]) || !isset($tab_step[$STEP]) )
 {
-  exit('Erreur avec les données transmises !');
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 list( $import_origine , $import_profil ) = $tab_action[$action];
@@ -98,13 +98,13 @@ function load_fichier($nom)
   $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_'.$nom.'.txt';
   if(!is_file($fnom))
   {
-    exit('Erreur : le fichier contenant les données à traiter est introuvable !');
+    Json::end( FALSE , 'Le fichier transmis est introuvable !' );
   }
   $contenu = file_get_contents($fnom);
   $tableau = @unserialize($contenu);
   if($tableau===FALSE)
   {
-    exit('Erreur : le fichier contenant les données à traiter est syntaxiquement incorrect !');
+    Json::end( FALSE , 'Le fichier transmis est syntaxiquement incorrect !' );
   }
   return $tableau;
 }
@@ -171,6 +171,6 @@ function aff_champ($profil,$type,$val)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 require(CHEMIN_DOSSIER_PAGES.$PAGE.'.ajax.step'.$STEP.'.php');
-exit();
+Json::end( TRUE );
 
 ?>

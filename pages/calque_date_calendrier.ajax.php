@@ -117,13 +117,14 @@ for($i=1;$i<=42;$i++)
   }
 }
 $calendrier_affichage .= '</table>';
-echo'<h5>Calendrier</h5>';
-echo'<form action="#" method="post" id="form_calque">';
-echo'  <h6>Choisir une période :</h6>';
-echo'  <div>'.$calendrier_navigation.'</div>';
-echo'  <h6>Puis cliquer sur une date :</h6>';
-echo'  <div>'.$calendrier_affichage.'</div>';
-echo'  <div><button id="fermer_calque" type="button" class="annuler">Annuler / Fermer</button></div>';
-echo'</form>';
-
+// Affichage du retour
+Json::add_str('<h5>Calendrier</h5>');
+Json::add_str('<form action="#" method="post" id="form_calque">');
+Json::add_str(  '<h6>Choisir une période :</h6>');
+Json::add_str(  '<div>'.$calendrier_navigation.'</div>');
+Json::add_str(  '<h6>Puis cliquer sur une date :</h6>');
+Json::add_str(  '<div>'.$calendrier_affichage.'</div>');
+Json::add_str(  '<div><button id="fermer_calque" type="button" class="annuler">Annuler / Fermer</button></div>');
+Json::add_str('</form>');
+Json::end( TRUE );
 ?>

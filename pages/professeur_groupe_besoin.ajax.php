@@ -50,7 +50,7 @@ if(count($tab_profs))
   $indice = array_search($_SESSION['USER_ID'],$tab_profs);
   if($indice===FALSE)
   {
-    exit('Erreur : absent de la liste des collègues !');
+    Json::end( FALSE , 'Absent de la liste des collègues !');
   }
   unset($tab_profs[$indice]);
 }
@@ -64,7 +64,7 @@ if( ($action=='ajouter') && $niveau && $groupe_nom && $nb_eleves )
   // Vérifier que le nom du groupe est disponible
   if( DB_STRUCTURE_PROFESSEUR::DB_tester_groupe_nom($groupe_nom) )
   {
-    exit('Erreur : nom de groupe déjà existant !');
+    Json::end( FALSE , 'Nom de groupe de besoin déjà existant !');
   }
   // Insérer l'enregistrement ; y associe automatiquement le prof, en responsable du groupe
   $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('besoin',$groupe_nom,$niveau);
@@ -78,20 +78,19 @@ if( ($action=='ajouter') && $niveau && $groupe_nom && $nb_eleves )
   // Afficher le retour
   $eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
   $profs_texte   = ($nb_profs>1)  ? $nb_profs .' profs'  : 'moi seul' ;
-  echo'<tr id="id_'.$groupe_id.'" class="new">';
-  echo  '<td>{{NIVEAU_NOM}}</td>';
-  echo  '<td>'.html($groupe_nom).'</td>';
-  echo  '<td>'.$eleves_texte.'</td>';
-  echo  '<td>'.$profs_texte.'</td>';
-  echo  '<td class="nu">';
-  echo    '<q class="modifier" title="Modifier ce groupe de besoin."></q>';
-  echo    '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
-  echo  '</td>';
-  echo'</tr>';
-  echo'<SCRIPT>';
-  echo'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_eleves).'";';
-  echo'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_profs).'";';
-  exit();
+  Json::add_row( 'html' , '<tr id="id_'.$groupe_id.'" class="new">' );
+  Json::add_row( 'html' ,   '<td>{{NIVEAU_NOM}}</td>' );
+  Json::add_row( 'html' ,   '<td>'.html($groupe_nom).'</td>' );
+  Json::add_row( 'html' ,   '<td>'.$eleves_texte.'</td>' );
+  Json::add_row( 'html' ,   '<td>'.$profs_texte.'</td>' );
+  Json::add_row( 'html' ,   '<td class="nu">' );
+  Json::add_row( 'html' ,     '<q class="modifier" title="Modifier ce groupe de besoin."></q>' );
+  Json::add_row( 'html' ,     '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>' );
+  Json::add_row( 'html' ,   '</td>' );
+  Json::add_row( 'html' , '</tr>' );
+  Json::add_row( 'script' , 'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_eleves).'";' );
+  Json::add_row( 'script' , 'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_profs).'";' );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -103,7 +102,7 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
   // Vérifier que le nom du groupe est disponible
   if( DB_STRUCTURE_PROFESSEUR::DB_tester_groupe_nom($groupe_nom,$groupe_id) )
   {
-    exit('Erreur : nom de groupe de besoin déjà existant !');
+    Json::end( FALSE , 'Nom de groupe de besoin déjà existant !');
   }
   // Mettre à jour l'enregistrement
   DB_STRUCTURE_PROFESSEUR::DB_modifier_groupe_par_prof($groupe_id,$groupe_nom,$niveau);
@@ -117,18 +116,17 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
   // Afficher le retour
   $eleves_texte  = ($nb_eleves>1) ? $nb_eleves.' élèves' : '1 élève' ;
   $profs_texte   = ($nb_profs>1)  ? $nb_profs .' profs'  : 'moi seul' ;
-  echo'<td>{{NIVEAU_NOM}}</td>';
-  echo'<td>'.html($groupe_nom).'</td>';
-  echo'<td>'.$eleves_texte.'</td>';
-  echo'<td>'.$profs_texte.'</td>';
-  echo'<td class="nu">';
-  echo  '<q class="modifier" title="Modifier ce groupe de besoin."></q>';
-  echo  '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>';
-  echo'</td>';
-  echo'<SCRIPT>';
-  echo'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_eleves).'";';
-  echo'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_profs).'";';
-  exit();
+  Json::add_row( 'html' , '<td>{{NIVEAU_NOM}}</td>' );
+  Json::add_row( 'html' , '<td>'.html($groupe_nom).'</td>' );
+  Json::add_row( 'html' , '<td>'.$eleves_texte.'</td>' );
+  Json::add_row( 'html' , '<td>'.$profs_texte.'</td>' );
+  Json::add_row( 'html' , '<td class="nu">' );
+  Json::add_row( 'html' ,   '<q class="modifier" title="Modifier ce groupe de besoin."></q>' );
+  Json::add_row( 'html' ,   '<q class="supprimer" title="Supprimer ce groupe de besoin."></q>' );
+  Json::add_row( 'html' , '</td>' );
+  Json::add_row( 'script' , 'tab_eleves["'.$groupe_id.'"]="'.implode('_',$tab_eleves).'";' );
+  Json::add_row( 'script' , 'tab_profs["'.$groupe_id.'"]="'.implode('_',$tab_profs).'";' );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -145,13 +143,13 @@ if( ($action=='supprimer') && $groupe_id && $groupe_nom )
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé son regroupement "'.$groupe_nom.'" (besoin n°'.$groupe_id.'), et donc les devoirs associés.'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
   // Afficher le retour
-  exit('<td>ok</td>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là !
+// On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

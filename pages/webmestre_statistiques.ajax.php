@@ -65,7 +65,7 @@ if( ($action=='calculer') && $nb_bases )
   }
   // Retour
   $max = $nb_bases + 1 ; // La dernière étape consistera à vider la session temporaire et à renvoyer les totaux
-  exit('ok-'.$max);
+  Json::end( TRUE , $max );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,7 +106,7 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
     '<td class="label"><i>'.sprintf("%07u",$validation_use).'</i>'.number_format($validation_use,0,'',' ').'</td>'.
     '<td class="label">'.html($connexion_nom).'</td>'.
     '</tr>';
-  exit('ok-'.$ligne_etabl);
+  Json::end( TRUE , $ligne_etabl );
 }
 if( ($action=='calculer') && $num && $max && ($num==$max) )
 {
@@ -124,7 +124,7 @@ if( ($action=='calculer') && $num && $max && ($num==$max) )
     '<th class="nu"></th>'.
     '</tr>';
   unset($_SESSION['tmp']);
-  exit('ok-'.$ligne_total);
+  Json::end( TRUE , $ligne_total );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,13 +137,13 @@ if( ($action=='supprimer') && $nb_bases )
   {
     Webmestre::supprimer_multi_structure($base_id);
   }
-  exit('<ok>');
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas en arriver là...
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-exit('Erreur avec les données transmises !');
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

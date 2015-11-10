@@ -46,12 +46,12 @@ if($action=='associer')
   $listing_user_id = implode(',',$tab_eleve);
   if(!$listing_user_id)
   {
-    exit('Erreur : élève(s) non récupéré(s) !');
+    Json::end( FALSE , 'Aucun compte élève récupéré !' );
   }
   // langue
   if( (!$langue) || (!isset($tab_langues[$langue])) )
   {
-    exit('Erreur : langue non transmise ou incorrecte !');
+    Json::end( FALSE , 'Langue non transmise ou non reconnue !' );
   }
   // go
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_langue($listing_user_id,$langue);
@@ -97,16 +97,18 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
     $TF[$niveau_id] .= '<td>'.$nb.' élève'.$s.'</td>';
   }
 }
-echo'<hr />'.NL;
+// Afficher le retour
+Json::add_str('<hr />'.NL);
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
   if(mb_strlen($TB[$niveau_id])>9)
   {
-    echo'<table class="affectation">'.NL;
-    echo  '<thead><tr>'.$TH[$niveau_id].'</tr></thead>'.NL;
-    echo  '<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>'.NL;
-    echo  '<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>'.NL;
-    echo'</table>'.NL;
+    Json::add_str('<table class="affectation">'.NL);
+    Json::add_str(  '<thead><tr>'.$TH[$niveau_id].'</tr></thead>'.NL);
+    Json::add_str(  '<tbody><tr>'.$TB[$niveau_id].'</tr></tbody>'.NL);
+    Json::add_str(  '<tfoot><tr>'.$TF[$niveau_id].'</tr></tfoot>'.NL);
+    Json::add_str('</table>'.NL);
   }
 }
+Json::end( TRUE );
 ?>

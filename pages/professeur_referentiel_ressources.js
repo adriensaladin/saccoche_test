@@ -91,24 +91,24 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Voir_referentiel'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&matiere_ref='+matiere_ref,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
               $('label[for='+id+']').remove();
               afficher_masquer_images_action('show');
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,16)!='<ul class="ul_m1')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
               }
               else
               {
                 $('#zone_choix_referentiel').hide();
-                $('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter :<q class="deployer_m1"></q><q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des referentiels</button></p>'+responseHTML);
+                $('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter :<q class="deployer_m1"></q><q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des referentiels</button></p>'+responseJSON['value']);
                 // Récupérer le contenu des title des ressources avant que le tooltip ne les enlève
                 // Ajouter les icônes pour modifier les items
                 $('#zone_elaboration_referentiel li.li_n3').each
@@ -140,7 +140,7 @@ $(document).ready
       '#fermer_zone_elaboration_referentiel',
       function()
       {
-        $('#zone_elaboration_referentiel').html("&nbsp;");
+        $('#zone_elaboration_referentiel').html("");
         afficher_masquer_images_action('show'); // au cas où on serait en train d'éditer qq chose
         $('#zone_choix_referentiel').show('fast');
         return false;
@@ -161,12 +161,12 @@ $(document).ready
         item_lien = $('#n3_'+item_id).children('input').val();
         if(!item_lien)
         {
-          $('#n3_'+item_id).children('label').removeAttr("class").addClass("erreur").html("Adresse absente !");
+          $('#n3_'+item_id).children('label').removeAttr('class').addClass('erreur').html("Adresse absente !");
           return false;
         }
         if(!testURL(item_lien))
         {
-          $('#n3_'+item_id).children('label').removeAttr("class").addClass("erreur").html("Adresse incorrecte !");
+          $('#n3_'+item_id).children('label').removeAttr('class').addClass('erreur').html("Adresse incorrecte !");
           return false;
         }
         window.open(item_lien);
@@ -183,7 +183,7 @@ $(document).ready
       'input',
       function()
       {
-        $(this).parent().children('label').removeAttr("class").addClass("alerte").html("Penser à valider !");
+        $(this).parent().children('label').removeAttr('class').addClass('alerte').html("Penser à valider !");
         return false;
       }
     );
@@ -202,37 +202,37 @@ $(document).ready
         item_lien = $('#n3_'+item_id).children('input').val();
         if(item_lien && !testURL(item_lien))
         {
-          $('#n3_'+item_id).children('label').removeAttr("class").addClass("erreur").html("Adresse incorrecte !");
+          $('#n3_'+item_id).children('label').removeAttr('class').addClass('erreur').html("Adresse incorrecte !");
           return false;
         }
         // Envoi des infos en ajax pour le traitement de la demande
-        $('#n3_'+item_id).children('label').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#n3_'+item_id).children('label').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Enregistrer_lien'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#n3_'+item_id).children('label').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#n3_'+item_id).children('label').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML=='ok')  // Attention aux caractères accentués : l'utf-8 pose des pbs pour ce test
+              if(responseJSON['statut']==false)
+              {
+                $('#n3_'+item_id).children('label').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              }
+              else
               {
                 lien_image  = (item_lien=='') ? 'non' : 'oui' ;
                 lien_title  = (item_lien=='') ? 'Absence de ressource.' : escapeHtml(item_lien) ;
                 retour_msg  = (item_lien=='') ? 'Lien retiré.' : 'Lien enregistré.' ;
                 $('#n3_'+item_id).children('img').attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
                 tab_ressources[item_id] = (item_lien=='') ? '' : lien_title ;
-                $('#n3_'+item_id).children('label').removeAttr("class").addClass("valide").html(retour_msg);
-              }
-              else
-              {
-                $('#n3_'+item_id).children('label').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#n3_'+item_id).children('label').removeAttr('class').addClass('valide').html(retour_msg);
               }
             }
           }
@@ -266,35 +266,35 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Charger_ressources'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+'Échec de la connexion !'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
-              if(responseHTML.substring(0,3)!='<li')
+              if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseHTML+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
                 return false;
               }
               else
               {
                 initialiser_compteur();
                 // mode page_create | page_update
-                var mode = (responseHTML.substring(0,14)=='<li class="i">') ? 'page_create' : 'page_update' ;
+                var mode = (responseJSON['value'].substring(0,14)=='<li class="i">') ? 'page_create' : 'page_update' ;
                 $('#page_mode').val(mode);
                 // ajouter les boutons
                 var reg = new RegExp('</span>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
-                responseHTML = responseHTML.replace(reg,'</span>'+images[1]);
+                responseJSON['value'] = responseJSON['value'].replace(reg,'</span>'+images[1]);
                 var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
-                responseHTML = responseHTML.replace(reg,'</a>'+images[2]);
+                responseJSON['value'] = responseJSON['value'].replace(reg,'</a>'+images[2]);
                 // montrer le cadre
-                $('#sortable_v').html(responseHTML);
+                $('#sortable_v').html(responseJSON['value']);
                 $('#zone_resultat_recherche_liens').html('');
                 $('#zone_ressources q').show();
-                $('#ajax_ressources_msg').removeAttr("class").html("&nbsp;");
+                $('#ajax_ressources_msg').removeAttr('class').html("");
                 $.fancybox( { 'href':'#zone_ressources' , onStart:function(){$('#zone_ressources').css("display","block");} , onClosed:function(){$('#zone_ressources').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
                 $('#sortable_v').sortable( { cursor:'ns-resize' } );
               }
@@ -312,9 +312,9 @@ $(document).ready
     (
       function()
       {
-        $('label[for=paragraphe_nom]').removeAttr("class").html('');
-        $('label[for=lien_url]').removeAttr("class").html('');
-        $('label[for=lien_nom]').removeAttr("class").html('');
+        $('label[for=paragraphe_nom]').removeAttr('class').html('');
+        $('label[for=lien_url]').removeAttr('class').html('');
+        $('label[for=lien_nom]').removeAttr('class').html('');
         $.fancybox.close();
       }
     );
@@ -442,7 +442,7 @@ $(document).ready
           var paragraphe_nom = escapeHtml( entity_convert( $(this).parent().children('input[name=paragraphe_nom]').val() ) );
           if(paragraphe_nom == '')
           {
-            $(this).next().next('label').addClass("erreur").html("Nom manquant !");
+            $(this).next().next('label').addClass('erreur').html("Nom manquant !");
             $(this).parent().children('input[name=paragraphe_nom]').focus();
             return false;
           }
@@ -458,20 +458,20 @@ $(document).ready
           var lien_nom = escapeHtml( entity_convert( $(this).parent().children('input[name=lien_nom]').val() ) );
           if(lien_url == '')
           {
-            $(this).next().next('label').addClass("erreur").html("Adresse manquante !");
+            $(this).next().next('label').addClass('erreur').html("Adresse manquante !");
             $(this).parent().children('input[name=lien_url]').focus();
             return false;
           }
           else if(!testURL(lien_url))
           {
-            $(this).next().next('label').addClass("erreur").html("Adresse incorrecte !");
+            $(this).next().next('label').addClass('erreur').html("Adresse incorrecte !");
             $(this).parent().children('input[name=lien_url]').focus();
             return false;
           }
-          $(this).next().next('label').removeAttr("class").html("");
+          $(this).next().next('label').removeAttr('class').html("");
           if(lien_nom == '')
           {
-            $(this).next().next('label').addClass("erreur").html("Nom manquant !");
+            $(this).next().next('label').addClass('erreur').html("Nom manquant !");
             $(this).parent().children('input[name=lien_nom]').focus();
             return false;
           }
@@ -496,14 +496,14 @@ $(document).ready
         var paragraphe_nom = escapeHtml( entity_convert( $('#paragraphe_nom').val() ) );
         if(paragraphe_nom == '')
         {
-          $('label[for=paragraphe_nom]').addClass("erreur").html("Nom manquant !");
+          $('label[for=paragraphe_nom]').addClass('erreur').html("Nom manquant !");
           $('#paragraphe_nom').focus();
           return false;
         }
         else
         {
           initialiser_compteur();
-          $('label[for=paragraphe_nom]').removeAttr("class").html('');
+          $('label[for=paragraphe_nom]').removeAttr('class').html('');
           $('#sortable_v').append('<li><span class="b">'+paragraphe_nom+'</span>'+images[1]+'</li>');
           $('#sortable_v li.i').remove();
           $('#paragraphe_nom').val('');
@@ -523,26 +523,26 @@ $(document).ready
         var lien_url = escapeHtml( $('#lien_url').val() );
         if(lien_url == '')
         {
-          $('label[for=lien_url]').addClass("erreur").html("Adresse manquante !");
+          $('label[for=lien_url]').addClass('erreur').html("Adresse manquante !");
           $('#lien_url').focus();
           return false;
         }
         else if(!testURL(lien_url))
         {
-          $('label[for=lien_url]').addClass("erreur").html("Adresse incorrecte !");
+          $('label[for=lien_url]').addClass('erreur').html("Adresse incorrecte !");
           $('#lien_url').focus();
           return false;
         }
-        $('label[for=lien_url]').removeAttr("class").html("");
+        $('label[for=lien_url]').removeAttr('class').html("");
         // vérif lien_nom
         var lien_nom = escapeHtml( entity_convert( $('#lien_nom').val() ) );
         if(lien_nom == '')
         {
-          $('label[for=lien_nom]').addClass("erreur").html("Nom manquant !");
+          $('label[for=lien_nom]').addClass('erreur').html("Nom manquant !");
           $('#lien_nom').focus();
           return false;
         }
-        $('label[for=lien_nom]').removeAttr("class").html('');
+        $('label[for=lien_nom]').removeAttr('class').html('');
         // ok
         initialiser_compteur();
         $('#sortable_v').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
@@ -562,7 +562,7 @@ $(document).ready
       {
         if($('#sortable_v li.i').length)
         {
-          $('#ajax_ressources_msg').removeAttr("class").addClass("erreur").html("La liste de ressources est vide !");
+          $('#ajax_ressources_msg').removeAttr('class').addClass('erreur').html("La liste de ressources est vide !");
           return false;
         }
         // Récupérer les éléments
@@ -597,44 +597,44 @@ $(document).ready
         );
         if(modif_en_cours)
         {
-          $('#ajax_ressources_msg').removeAttr("class").addClass("erreur").html("Valider ou annuler d'abord toute modification en cours !");
+          $('#ajax_ressources_msg').removeAttr('class').addClass('erreur').html("Valider ou annuler d'abord toute modification en cours !");
           return false;
         }
         if(!nb_ressources)
         {
-          $('#ajax_ressources_msg').removeAttr("class").addClass("erreur").html("Aucun lien trouvé vers une ressource !");
+          $('#ajax_ressources_msg').removeAttr('class').addClass('erreur').html("Aucun lien trouvé vers une ressource !");
           return false;
         }
         // appel ajax
-        $('#ajax_ressources_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_ressources_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Enregistrer_ressources'+'&item_id='+item_id+'&item_nom='+encodeURIComponent(item_nom)+'&page_mode='+$('#page_mode').val()+'&ressources='+encodeURIComponent(tab_ressources.join('}¤{')),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_ressources_msg').removeAttr("class").addClass("alerte").html("Échec de la connexion !");
+              $('#ajax_ressources_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
-              if(!testURL(responseHTML))
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_ressources_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#ajax_ressources_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
-                $('label[for=paragraphe_nom]').removeAttr("class").html('');
-                $('label[for=lien_url]').removeAttr("class").html('');
-                $('label[for=lien_nom]').removeAttr("class").html('');
-                $('#ajax_ressources_msg').removeAttr("class").html("&nbsp;");
+                $('label[for=paragraphe_nom]').removeAttr('class').html('');
+                $('label[for=lien_url]').removeAttr('class').html('');
+                $('label[for=lien_nom]').removeAttr('class').html('');
+                $('#ajax_ressources_msg').removeAttr('class').html("");
                 $.fancybox.close();
                 initialiser_compteur();
-                $('#n3_'+item_id).children('input').val(responseHTML);
+                $('#n3_'+item_id).children('input').val(responseJSON['value']);
                 $('#n3_'+item_id).children('q.valider').click();
               }
             }
@@ -667,24 +667,24 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Rechercher_liens_ressources'+'&item_id='+item_id+'&findme='+encodeURIComponent(findme),
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#zone_resultat_recherche_liens').html('<label class="erreur">Échec de la connexion !</label>');
+              $('#zone_resultat_recherche_liens').html('<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>');
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
-              if(responseHTML.substring(0,3)!='<li')
+              if(responseJSON['statut']==false)
               {
-                $('#zone_resultat_recherche_liens').html('<label class="alerte">'+responseHTML+'</label>');
+                $('#zone_resultat_recherche_liens').html('<label class="alerte">'+responseJSON['value']+'</label>');
                 return false;
               }
               else
               {
                 var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
-                responseHTML = responseHTML.replace(reg,'</a>'+images[3]);
-                $('#zone_resultat_recherche_liens').html('<ul>'+responseHTML+'</ul>');
+                responseJSON['value'] = responseJSON['value'].replace(reg,'</a>'+images[3]);
+                $('#zone_resultat_recherche_liens').html('<ul>'+responseJSON['value']+'</ul>');
                 initialiser_compteur();
               }
             }
@@ -728,7 +728,7 @@ $(document).ready
           name: 'userfile',
           data: {'csrf':CSRF,'action':'Uploader_document'},
           autoSubmit: true,
-          responseType: "html",
+          responseType: 'json',
           onSubmit: verifier_fichier,
           onComplete: retourner_fichier
         }
@@ -739,38 +739,39 @@ $(document).ready
     {
       if (fichier_nom==null || fichier_nom.length<5)
       {
-        $('#ajax_ressources_upload').removeAttr("class").addClass("erreur").html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $('#ajax_ressources_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
         return false;
       }
       else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
       {
-        $('#ajax_ressources_upload').removeAttr("class").addClass("erreur").html('Extension non autorisée.');
+        $('#ajax_ressources_upload').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
         return false;
       }
       else
       {
         $('#zone_ressources_upload button').prop('disabled',true);
-        $('#ajax_ressources_upload').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#ajax_ressources_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
         return true;
       }
     }
 
-    function retourner_fichier(fichier_nom,responseHTML)  // Attention : avec jquery.ajaxupload.js, IE supprime mystérieusement les guillemets et met les éléments en majuscules dans responseHTML.
+    function retourner_fichier(fichier_nom,responseJSON)
     {
       fichier_extension = fichier_nom.split('.').pop();
       $('#zone_ressources_upload button').prop('disabled',false);
-      if(responseHTML.substring(0,4)!='http')
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      if(responseJSON['statut']==false)
       {
-        $('#ajax_ressources_upload').removeAttr("class").addClass("alerte").html(responseHTML);
+        $('#ajax_ressources_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        upload_lien = responseHTML;
-        $('#ajax_ressources_upload').removeAttr("class").html('');
+        upload_lien = responseJSON['value'];
+        $('#ajax_ressources_upload').removeAttr('class').html('');
         $('#afficher_zone_ressources_form').click();
-        $('label[for=lien_url]').removeAttr("class").addClass("valide").html("Upload réussi !");
-        $('label[for=lien_nom]').removeAttr("class").addClass("alerte").html("Validez l'ajout&hellip;");
+        $('label[for=lien_url]').removeAttr('class').addClass('valide').html("Upload réussi !");
+        $('label[for=lien_nom]').removeAttr('class').addClass('alerte').html("Validez l'ajout&hellip;");
         $('#lien_url').val(upload_lien);
         $('#lien_nom').focus();
         if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) )
@@ -819,24 +820,24 @@ $(document).ready
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&action=Rechercher_documents',
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#zone_resultat_recherche_ressources').html('<label class="erreur">Échec de la connexion !</label>');
+              $('#zone_resultat_recherche_ressources').html('<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>');
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
-              if(responseHTML.substring(0,3)!='<li')
+              if(responseJSON['statut']==false)
               {
-                $('#zone_resultat_recherche_ressources').html('<label class="alerte">'+responseHTML+'</label>');
+                $('#zone_resultat_recherche_ressources').html('<label class="alerte">'+responseJSON['value']+'</label>');
                 return false;
               }
               else
               {
                 var reg = new RegExp('</a>',"g"); // Si on ne prend pas une expression régulière alors replace() ne remplace que la 1e occurence
-                responseHTML = responseHTML.replace(reg,'</a>'+images[4]);
-                $('#zone_resultat_recherche_ressources').html('<ul>'+responseHTML+'</ul>');
+                responseJSON['value'] = responseJSON['value'].replace(reg,'</a>'+images[4]);
+                $('#zone_resultat_recherche_ressources').html('<ul>'+responseJSON['value']+'</ul>');
                 initialiser_compteur();
               }
             }
@@ -857,10 +858,10 @@ $(document).ready
       function()
       {
         var lien_url = $(this).prev().attr('href');
-        $('#ajax_ressources_upload').removeAttr("class").html('');
+        $('#ajax_ressources_upload').removeAttr('class').html('');
         $('#afficher_zone_ressources_form').click();
-        $('label[for=lien_url]').removeAttr("class").html("");
-        $('label[for=lien_nom]').removeAttr("class").addClass("alerte").html("Validez l'ajout&hellip;");
+        $('label[for=lien_url]').removeAttr('class').html("");
+        $('label[for=lien_nom]').removeAttr('class').addClass('alerte').html("Validez l'ajout&hellip;");
         $('#lien_url').val(lien_url);
         $('#lien_nom').focus();
       }
@@ -874,7 +875,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_ressources_upload').removeAttr("class").html('');
+        $('#ajax_ressources_upload').removeAttr('class').html('');
         $('#zone_ressources_form').hide();
         $('#zone_ressources_upload').show();
       }

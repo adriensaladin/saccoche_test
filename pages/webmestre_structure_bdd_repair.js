@@ -41,7 +41,7 @@ $(document).ready
         // grouper le select multiple
         if( $("#f_base input:checked").length==0 )
         {
-          $('#ajax_msg').removeAttr("class").addClass("erreur").html("Sélectionnez au moins un établissement !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez au moins un établissement !");
           return false;
         }
         else
@@ -50,33 +50,33 @@ $(document).ready
           var f_listing_id = new Array(); $("#f_base input:checked").each(function(){f_listing_id.push($(this).val());});
         }
         // on envoie
-        $("#bouton_valider").prop('disabled',true);
-        $('#ajax_msg').removeAttr("class").addClass("loader").html("En cours&hellip;");
+        $('#bouton_valider').prop('disabled',true);
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
             data : 'csrf='+CSRF+'&f_listing_id='+f_listing_id,
-            dataType : "html",
+            dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $("#bouton_valider").prop('disabled',false);
-              $('#ajax_msg').removeAttr("class").addClass("alerte").html('Échec de la connexion !');
+              $('#bouton_valider').prop('disabled',false);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
-            success : function(responseHTML)
+            success : function(responseJSON)
             {
               initialiser_compteur();
-              if(responseHTML.substring(0,2)!='ok')
+              if(responseJSON['statut']==false)
               {
-                $("#bouton_valider").prop('disabled',false);
-                $('#ajax_msg').removeAttr("class").addClass("alerte").html(responseHTML);
+                $('#bouton_valider').prop('disabled',false);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                var max = responseHTML.substring(3,responseHTML.length);
-                $('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape 1 sur ' + max + '...');
+                var max = responseJSON['value'];
+                $('#ajax_msg1').removeAttr('class').addClass('loader').html('Structures à l\'étude : étape 1 sur ' + max + '...');
                 $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
                 $('#ajax_num').html(1);
                 $('#ajax_max').html(max);
@@ -104,40 +104,40 @@ $(document).ready
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
           data : 'csrf='+CSRF+'&num='+num+'&max='+max,
-          dataType : "html",
+          dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg1').removeAttr("class").addClass("alerte").html('Échec lors de la connexion au serveur !');
+            $('#ajax_msg1').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
           },
-          success : function(responseHTML)
+          success : function(responseJSON)
           {
             initialiser_compteur();
-            if(responseHTML.substring(0,2)=='ok')
+            if(responseJSON['statut']==false)
             {
-              var ligne = responseHTML.substring(3,responseHTML.length);
+              $('#ajax_msg1').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
+            }
+            else
+            {
               num++;
               if(num > max)  // Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
               {
-                $('#ajax_msg1').removeAttr("class").addClass("valide").html('Calcul des statistiques terminé.');
+                var fichier = responseJSON['value'];
+                $('#ajax_msg1').removeAttr('class').addClass('valide').html('Calcul des statistiques terminé.');
                 $('#ajax_msg2').html('');
                 $('#ajax_info').hide('fast');
-                $("#bouton_valider").prop('disabled',false);
-                $('#ajax_msg').removeAttr("class").html("&nbsp;");
-                $.fancybox( { 'href':responseHTML.substring(3) , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
+                $('#bouton_valider').prop('disabled',false);
+                $('#ajax_msg').removeAttr('class').html("");
+                $.fancybox( { 'href':fichier , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
               }
               else
               {
                 $('#ajax_num').html(num);
-                $('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
+                $('#ajax_msg1').removeAttr('class').addClass('loader').html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
                 $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
                 analyser_et_reparer();
               }
-            }
-            else
-            {
-              $('#ajax_msg1').removeAttr("class").addClass("alerte").html(responseHTML);
-              $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
             }
           }
         }
@@ -152,7 +152,7 @@ $(document).ready
       {
         num = $('#ajax_num').html();
         max = $('#ajax_max').html();
-        $('#ajax_msg1').removeAttr("class").addClass("loader").html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg1').removeAttr('class').addClass('loader').html('Structures à l\'étude : étape ' + num + ' sur ' + max + '...');
         $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
         analyser_et_reparer();
       }

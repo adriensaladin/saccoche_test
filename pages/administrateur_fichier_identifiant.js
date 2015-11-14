@@ -167,7 +167,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action='+'user_export',
+            data : 'csrf='+CSRF+'&f_action='+'user_export',
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -203,7 +203,7 @@ $(document).ready
     (
       function()
       {
-        var action = $(this).attr('id');
+        var f_action = $(this).attr('id');
         var profil = $('#f_profil option:selected').val();
         if( !profil )
         {
@@ -231,7 +231,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action='+action+'&f_profil='+profil+'&f_user='+tab_user,
+            data : 'csrf='+CSRF+'&f_action='+f_action+'&f_profil='+profil+'&f_user='+tab_user,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -258,139 +258,106 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réagir au clic sur un bouton pour envoyer un import csv afin de forcer les logins ou/et mdp élèves (user_ent -> user_import)
-// Réagir au clic sur le bouton pour envoyer un csv issu de l'ENT
-// Réagir au clic sur un bouton pour envoyer un csv issu de Gepi
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire #form_select
+    // Upload d'un fichier (avec jquery.form.js)
+    // - import csv afin de forcer les logins ou/et mdp élèves (user_ent -> user_import)
+    // - envoyer un csv issu de l'ENT
+    // - envoyer un csv issu de Gepi
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Envoi du fichier avec jquery.ajaxupload.js
-    new AjaxUpload
-    ('#import_loginmdp',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'action':'import_loginmdp'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
-      }
-    );
-    new AjaxUpload
-    ('#import_ent',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'action':'import_ent'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
-      }
-    );
-    new AjaxUpload
-    ('#import_gepi_profs',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'action':'import_gepi_profs'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
-      }
-    );
-    new AjaxUpload
-    ('#import_gepi_parents',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'action':'import_gepi_parents'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
-      }
-    );
-    new AjaxUpload
-    ('#import_gepi_eleves',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'action':'import_gepi_eleves'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
-      }
-    );
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_import = $('#form_select');
 
-    function changer_fichier(fichier_nom,fichier_extension)
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_import =
     {
-      $('#ajax_msg').removeAttr('class').html('&nbsp;');
-      $('#ajax_retour').html("");
-      return true;
-    }
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      error : retour_form_erreur_import,
+      success : retour_form_valide_import
+    };
 
-    function verifier_fichier(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_import').change
+    (
+      function()
       {
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.csv.txt.'.indexOf('.'+fichier_ext+'.') == -1 )
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+            return false;
+          }
+          else
+          {
+            $('#form_select button').prop('disabled',true);
+            $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            $('#ajax_retour').html("");
+            formulaire_import.submit();
+          }
+        }
+      }
+    );
+
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_import.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions_import);
         return false;
       }
-      else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
-        return false;
-      }
-      else
-      {
-        $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#form_select button').prop('disabled',false);
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_import(responseJSON)
     {
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#form_select button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#form_select button').prop('disabled',false);
         $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        // AJAX Upload ne permet pas de faire remonter du code en quantité alors on s'y prend en 2 fois...
-        $.ajax
-        (
-          {
-            url : responseJSON['value'],
-            dataType : 'html', // Pas de JSON ici : on appelle un fichier texte !
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html('Échec de la connexion !');
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
-              $('#ajax_retour').html(responseHTML);
-            }
-          }
-        );
+        initialiser_compteur();
+        $('#form_select button').prop('disabled',false);
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        $('#ajax_retour').html(responseJSON['value']);
       }
     }
+
+    $('button.fichier_import').click
+    (
+      function()
+      {
+        var objet = $(this).attr('id'); // import_loginmdp | import_ent | import_gepi_profs | import_gepi_parents | import_gepi_eleves
+        $('#f_action').val(objet);
+        $('#f_import').click();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Réagir au clic sur un bouton afin de demander la duplication d'un champ
@@ -400,7 +367,7 @@ $(document).ready
     (
       function()
       {
-        var action = $(this).attr('id');
+        var f_action = $(this).attr('id');
         $('#ajax_retour').html('&nbsp;');
         $('#form_select button').prop('disabled',true);
         $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
@@ -409,7 +376,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action='+action,
+            data : 'csrf='+CSRF+'&f_action='+f_action,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

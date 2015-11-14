@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $action   = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])      : '';
 $courriel = (isset($_POST['f_courriel'])) ? Clean::courriel($_POST['f_courriel']) : NULL;
@@ -40,7 +40,7 @@ if( ($action=='courriel') && ($courriel!==NULL) )
   // Vérifier que l'utilisateur a les droits de la modifier / retirer
   if( ($_SESSION['USER_EMAIL_ORIGINE']=='admin') && ($_SESSION['USER_PROFIL_TYPE']!=='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']) )
   {
-    Json::end( FALSE , 'Erreur : droit insuffisant, contactez un administrateur !' );
+    Json::end( FALSE , 'Droit insuffisant, contactez un administrateur !' );
   }
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if($courriel)

@@ -39,12 +39,11 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_upload').removeAttr('class').html('&nbsp;');
+        $('#ajax_msg_upload_signature').removeAttr('class').html('&nbsp;');
         user_id    = $('#f_user option:selected').val();
         user_texte = $('#f_user option:selected').text();
-        // maj du paramètre AjaxUpload (les paramètres n'étant pas directement modifiables...)
-        uploader_signature['_settings']['data']['f_user_id']    = user_id;
-        uploader_signature['_settings']['data']['f_user_texte'] = user_texte;
+        $('#f_upload_user_id'   ).val(user_id   );
+        $('#f_upload_user_texte').val(user_texte);
       }
     );
 
@@ -156,64 +155,87 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Upload d'un fichier image avec jquery.ajaxupload.js
+    // Traitement du formulaire #form_tampon
+    // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
-    var uploader_signature = new AjaxUpload
-    ('#f_upload',
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_signature = $('#form_tampon');
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_signature =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_upload_signature",
+      error : retour_form_erreur_signature,
+      success : retour_form_valide_signature
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_signature').change
+    (
+      function()
       {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_action':'upload_signature','f_user_id':user_id,'f_user_texte':user_texte},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg_upload_signature').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.gif.jpg.jpeg.png.'.indexOf('.'+fichier_ext+'.') == -1 )
+          {
+            $('#ajax_msg_upload_signature').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (gif jpg jpeg png).');
+            return false;
+          }
+          else
+          {
+            $("#bouton_choisir_signature").prop('disabled',true);
+            $('#ajax_msg_upload_signature').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            formulaire_signature.submit();
+          }
+        }
       }
     );
 
-    function changer_fichier(fichier_nom,fichier_extension)
-    {
-      $("#f_upload").prop('disabled',true);
-      $('#ajax_upload').removeAttr('class').html('&nbsp;');
-      return true;
-    }
-
-    function verifier_fichier(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_signature.submit
+    (
+      function()
       {
-        $("#f_upload").prop('disabled',false);
-        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $(this).ajaxSubmit(ajaxOptions_signature);
         return false;
       }
-      else if ('.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        $("#f_upload").prop('disabled',false);
-        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (jpg jpeg gif png).');
-        return false;
-      }
-      else
-      {
-        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_signature(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_signature').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("#bouton_choisir_signature").prop('disabled',false);
+      $('#ajax_msg_upload_signature').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_signature(responseJSON)
     {
-      $("#f_upload").prop('disabled',false);
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      $('#f_signature').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("#bouton_choisir_signature").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_upload_signature').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_upload').removeAttr('class').addClass('valide').html('Image ajoutée');
+        $('#ajax_msg_upload_signature').removeAttr('class').addClass('valide').html('Image ajoutée');
         if($('#sgn_'+user_id).length)
         {
           $('#sgn_'+user_id).replaceWith(responseJSON['value']);
@@ -237,7 +259,7 @@ $(document).ready
       function()
       {
         var sgn_id = $(this).parent().attr('id').substr(4);
-        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_upload_signature').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -247,18 +269,18 @@ $(document).ready
             responseType: 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_upload_signature').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_upload_signature').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_upload').removeAttr('class').html('');
+                $('#ajax_msg_upload_signature').removeAttr('class').html('');
                 $('#sgn_'+sgn_id).remove();
               }
             }

@@ -73,9 +73,11 @@ $select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_struc
 <h2>Importer des établissements (données &amp; bases)</h2>
 
 <form action="#" method="post" id="form_importer"><fieldset>
-    <label class="tab" for="bouton_form_csv">Uploader fichier CSV :</label><button id="bouton_form_csv" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_csv">&nbsp;</label>
+    <input id="f_import" type="file" name="userfile" />
+    <input type="hidden" id="f_upload_action" name="f_action" value="" />
+    <label class="tab" for="importer_csv">Uploader fichier CSV :</label><button id="importer_csv" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_importer_csv">&nbsp;</label>
   <div id="div_zip" class="hide">
-    <label class="tab" for="bouton_form_zip">Uploader fichier ZIP :</label><button id="bouton_form_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
+    <label class="tab" for="importer_zip">Uploader fichier ZIP :</label><button id="importer_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_importer_zip">&nbsp;</label>
   </div>
   <div id="div_import" class="hide">
     <span class="tab"></span><button id="bouton_importer" type="button" class="valider">Restaurer les établissements.</button><label id="ajax_msg_import">&nbsp;</label>

@@ -26,9 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir_referentiel')){exit('Action désactivée pour la démo...');}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Voir_referentiel')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action      = (isset($_POST['action']))      ? Clean::texte($_POST['action'])      : '';
+$action      = (isset($_POST['f_action']))    ? Clean::texte($_POST['f_action'])    : '';
 $matiere_id  = (isset($_POST['matiere_id']))  ? Clean::entier($_POST['matiere_id']) : 0;
 $matiere_ref = (isset($_POST['matiere_ref'])) ? Clean::texte($_POST['matiere_ref']) : '';
 $niveau_id   = (isset($_POST['niveau_id']))   ? Clean::entier($_POST['niveau_id'])  : 0;
@@ -43,10 +43,8 @@ $findme      = (isset($_POST['findme']))      ? Clean::texte($_POST['findme'])  
 // Afficher le référentiel d'une matière et d'un niveau
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id && $matiere_ref )
+if( ($action=='Voir_referentiel') && $matiere_id && $niveau_id )
 {
-  // $matiere_ref trasmis maintenant car pas possible lors du AjaxUpload (moment où on en a besoin) ; du coup on le garde au chaud
-  $_SESSION['tmp']['matiere_ref'] = $matiere_ref;
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
   Json::end( TRUE , HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , FALSE /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ , 'n3' /*aff_id_li*/ ) );
 }
@@ -128,7 +126,7 @@ Finalement, j'ai opté pour le plus simple même si ce n'est pas le plus économ
 Ca va qu'une limite de 500Ko est imposée...
 */
 
-if($action=='Uploader_document')
+if( ($action=='Uploader_document') && $matiere_ref )
 {
   // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , 500 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
@@ -138,7 +136,7 @@ if($action=='Uploader_document')
   }
   $fichier_nom = Clean::fichier(FileSystem::$file_upload_name);
   // Transfert du fichier
-  $reponse = ServeurCommunautaire::uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $_SESSION['tmp']['matiere_ref'] , $fichier_nom , file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name) );
+  $reponse = ServeurCommunautaire::uploader_ressource( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_ref , $fichier_nom , file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name) );
   // Suppression de l'enregistrement temporaire
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   // Retour

@@ -26,9 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='afficher')){exit('Action désactivée pour la démo...');}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='afficher')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action      = (isset($_GET['f_action']))       ? $_GET['f_action']                     : ''; // Récupéré en GET car si on POST un fichier trop volumineux, alors l'info n'est pas récupérée
+$action      = (isset($_POST['f_action']))      ? $_POST['f_action']                    : '';
 $groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : ''; // d n c g b
 $groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
 $user_id     = (isset($_POST['f_user_id']))     ? Clean::entier($_POST['f_user_id'])    : 0;

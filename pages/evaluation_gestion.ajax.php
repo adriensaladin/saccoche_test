@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('lister_evaluations','ordonner','indiquer_eleves_deja','saisir','voir','voir_repart','archiver_repart','imprimer_cartouche','generer_tableau_scores_vierge_csv','generer_tableau_scores_rempli_csv','generer_tableau_scores_vierge_pdf','generer_tableau_scores_rempli_pdf'))) ) {exit('Action désactivée pour la démo...');}
+if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('lister_evaluations','ordonner','indiquer_eleves_deja','saisir','voir','voir_repart','archiver_repart','imprimer_cartouche','generer_tableau_scores_vierge_csv','generer_tableau_scores_rempli_csv','generer_tableau_scores_vierge_pdf','generer_tableau_scores_rempli_pdf'))) ) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $action           = (isset($_POST['f_action']))           ? Clean::texte($_POST['f_action'])                : '';
 $type             = (isset($_POST['f_type']))             ? Clean::texte($_POST['f_type'])                  : '';
@@ -1843,7 +1843,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 // Traiter une demande d'importation d'une saisie déportée ; on n'enregistre rien, on ne fait que décrypter le contenu du fichier et renvoyer une chaine résultante au javascript
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (isset($_GET['f_action'])) && ($_GET['f_action']=='importer_saisie_csv') )
+if($action=='importer_saisie_csv')
 {
   // Récupération du fichier
   $fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';

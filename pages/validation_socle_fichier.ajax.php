@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
@@ -381,17 +381,12 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
       }
     }
   }
-  // Pour le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
-  $fichier_nom  = 'validations_'.$action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
-  $fichier_contenu = '';
-  // On complète et on enregistre le bilan
-  $fichier_contenu .= '<li><label class="valide">Fichier d\'import traité.</label></li>'.NL;
-  $fichier_contenu .= $lignes_modifier;
-  $fichier_contenu .= $lignes_inchanger;
-  $fichier_contenu .= $lignes_ignorer;
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $fichier_contenu );
-  // On affiche le retour
-  Json::end( TRUE , URL_DIR_IMPORT.$fichier_nom );
+  // On complète et on affiche le bilan
+  Json::add_str('<li><label class="valide">Fichier d\'import traité.</label></li>'.NL);
+  Json::add_str($lignes_modifier);
+  Json::add_str($lignes_inchanger);
+  Json::add_str($lignes_ignorer);
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

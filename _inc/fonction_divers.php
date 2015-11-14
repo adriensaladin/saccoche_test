@@ -169,7 +169,7 @@ function afficher_nombre_acquisitions_par_etat( $tab_acquis )
  * @param float $precision
  * @return float
  */
-function roundTo($nombre,$precision)
+function roundTo( $nombre , $precision )
 {
   return ($precision) ? round( $nombre/$precision , 0 ) * $precision : $nombre ;
 }
@@ -181,7 +181,7 @@ function roundTo($nombre,$precision)
  * @param float $precision
  * @return float
  */
-function ceilTo($nombre,$precision)
+function ceilTo( $nombre , $precision )
 {
   return ($precision) ? ceil( $nombre/$precision ) * $precision : $nombre ;
 }
@@ -193,7 +193,7 @@ function ceilTo($nombre,$precision)
  * @param float $precision
  * @return float
  */
-function floorTo($nombre,$precision)
+function floorTo( $nombre , $precision )
 {
   return ($precision) ? floor( $nombre/$precision ) * $precision : $nombre ;
 }
@@ -206,7 +206,7 @@ function floorTo($nombre,$precision)
  * @param int    $calcul_limite    nb maxi d'éval à prendre en compte
  * @return int|FALSE
  */
-function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
+function calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite )
 {
   // on passe en revue les évaluations disponibles, et on retient les notes exploitables
   $tab_note = array(); // pour retenir les notes en question
@@ -272,15 +272,16 @@ function calculer_score($tab_devoirs,$calcul_methode,$calcul_limite)
  * @param string $log_contenu     contenu du log
  * @param string $log_fichier     transmettre __FILE__
  * @param string $log_ligne       transmettre __LINE__
- * @param bool   $only_sesamath   [TRUE] pour une inscription uniquement sur le serveur Sésamath (par défaut), [FALSE] sinon
+ * @param bool   $only_sesamath   [TRUE] pour un log uniquement sur le serveur Sésamath, [FALSE] sinon
  * @return void
  */
-function ajouter_log_PHP($log_objet,$log_contenu,$log_fichier,$log_ligne,$only_sesamath=TRUE)
+function ajouter_log_PHP( $log_objet , $log_contenu , $log_fichier , $log_ligne , $only_sesamath )
 {
   if( (!$only_sesamath) || (strpos(URL_INSTALL_SACOCHE,SERVEUR_PROJET)===0) )
   {
     $SEP = ' ║ ';
-    error_log('SACoche info' . $SEP . $log_objet . $SEP . 'base '.$_SESSION['BASE'] . $SEP . 'user '.$_SESSION['USER_ID'] . $SEP . basename($log_fichier).' '.$log_ligne . $SEP . $log_contenu,0);
+    $log_intro = ($only_sesamath) ? 'SACoche DEBUG' : 'SACoche INFO' ;
+    error_log( $log_intro . $SEP . $log_objet . $SEP . 'base '.$_SESSION['BASE'] . $SEP . 'user '.$_SESSION['USER_ID'] . $SEP . basename($log_fichier).' '.$log_ligne . $SEP . $log_contenu , 0 );
   }
 }
 
@@ -331,7 +332,7 @@ function charger_parametres_mysql_supplementaires( $BASE , $exit=TRUE )
  * @param string $profil_sigle
  * @return string
  */
-function fabriquer_login($prenom,$nom,$profil_sigle)
+function fabriquer_login( $prenom , $nom , $profil_sigle )
 {
   $modele = $_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'][$profil_sigle];
   $login_prenom = mb_substr( str_replace(array('.','-','_'),'',Clean::login($prenom)) , 0 , mb_substr_count($modele,'p') );
@@ -701,7 +702,7 @@ function texte_ligne_naissance($date_fr)
  * @param int    $annee_decalage   facultatif, pour les années scolaires précédentes ou suivantes
  * @return string
  */
-function jour_debut_annee_scolaire($format,$annee_decalage=0)
+function jour_debut_annee_scolaire( $format , $annee_decalage=0 )
 {
   $jour  = '01';
   $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
@@ -717,7 +718,7 @@ function jour_debut_annee_scolaire($format,$annee_decalage=0)
  * @param int    $annee_decalage   facultatif, pour les années scolaires précédentes ou suivantes
  * @return string
  */
-function jour_fin_annee_scolaire($format,$annee_decalage=0)
+function jour_fin_annee_scolaire( $format , $annee_decalage=0 )
 {
   $jour  = '01';
   $mois  = sprintf("%02u",$_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE']);
@@ -788,7 +789,7 @@ function test_periode_sortie()
  * @param string $restriction   'ONLY_PP' | 'ONLY_COORD' | 'ONLY_LV'
  * @return bool
  */
-function test_droit_specifique_restreint($listing_droits_sigles,$restriction)
+function test_droit_specifique_restreint( $listing_droits_sigles , $restriction )
 {
   return (strpos($listing_droits_sigles,$restriction)!==FALSE);
 }
@@ -831,7 +832,7 @@ function test_user_droit_specifique( $listing_droits_sigles , $matiere_coord_or_
  * @param string $format   "li" | "br"
  * @return bool
  */
-function afficher_profils_droit_specifique($listing_droits_sigles,$format)
+function afficher_profils_droit_specifique( $listing_droits_sigles , $format )
 {
   $tab_profils = array();
   $texte_testriction_pp    = test_droit_specifique_restreint($listing_droits_sigles,'ONLY_PP')    ? ' restreint aux professeurs principaux'  : '' ;
@@ -909,7 +910,7 @@ function afficher_texte_tronque( $texte , $longueur_max )
  * @param string $contexte   html | mail
  * @return string
  */
-function make_lien($texte,$contexte)
+function make_lien( $texte , $contexte )
 {
   $masque_recherche = '#\[([^\|]+)\|([^\|]+)\|([^\|]*)\]#' ;
   $masque_remplacement = ($contexte=='html') ? '<a href="$2" target="$3">$1</a>' : '$1 [$2]' ;

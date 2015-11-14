@@ -127,7 +127,7 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
   </tbody>
   </table>
   <p>
-    <input type="hidden" id="action" name="action" value="calculer" />
+    <input type="hidden" id="f_action" name="f_action" value="calculer" />
     <button id="initialiser_etablissement" type="button" class="retourner">Remettre les valeurs de l'établissement.</button>
     <button id="calculer" type="button" class="actualiser">Simuler avec ces valeurs.</button>
     <button id="enregistrer" type="button" class="valider">Enregistrer ces valeurs.</button>

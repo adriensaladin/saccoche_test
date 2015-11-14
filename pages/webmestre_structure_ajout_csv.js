@@ -38,54 +38,81 @@ $(document).ready
     var courriel_envoi = -1 ;
     var courriel_copie = -1 ;
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Réagir au clic sur un bouton pour uploader un fichier csv à importer
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire #form_importer
+    // Upload d'un fichier (avec jquery.form.js)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Envoi du fichier avec jquery.ajaxupload.js
-    new AjaxUpload
-    ('#bouton_form_csv',
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_csv = $('#form_importer');
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_csv =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_csv",
+      error : retour_form_erreur_csv,
+      success : retour_form_valide_csv
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_csv').change
+    (
+      function()
       {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_action':'importer_csv'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier_csv,
-        onSubmit: verifier_fichier_csv,
-        onComplete: retourner_fichier_csv
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg_csv').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.csv.txt.'.indexOf('.'+fichier_ext+'.') == -1 )
+          {
+            $('#ajax_msg_csv').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+            return false;
+          }
+          else
+          {
+            $("#bouton_choisir_csv").prop('disabled',true);
+            $('#ajax_msg_csv').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            formulaire_csv.submit();
+          }
+        }
       }
     );
 
-    function changer_fichier_csv(fichier_nom,fichier_extension)
-    {
-      $('#ajax_msg_csv').removeAttr('class').html('&nbsp;');
-      return true;
-    }
-
-    function verifier_fichier_csv(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_csv.submit
+    (
+      function()
       {
-        $('#ajax_msg_csv').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $(this).ajaxSubmit(ajaxOptions_csv);
         return false;
       }
-      else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        $('#ajax_msg_csv').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
-        return false;
-      }
-      else
-      {
-        $('button').prop('disabled',true);
-        $('#ajax_msg_csv').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_csv(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_csv').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("#bouton_choisir_csv").prop('disabled',false);
+      $('#ajax_msg_csv').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#div_import , #div_info_import , #structures').hide('fast');
     }
 
-    function retourner_fichier_csv(fichier_nom,responseJSON)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_csv(responseJSON)
     {
-      $('button').prop('disabled',false);
+      $('#f_csv').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("#bouton_choisir_csv").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
         $('#ajax_msg_csv').removeAttr('class').addClass('alerte').html(responseJSON['value']);

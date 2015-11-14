@@ -46,6 +46,7 @@ $(document).ready
         $('#span_mode , #fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base_eleves_eleves , #fieldset_base_eleves_parents , #fieldset_factos_eleves , #fieldset_factos_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
         // Puis afficher ce qu'il faut
         f_action = $(this).val();
+        $('#f_action').val(f_action);
         if(f_action!='')
         {
                if(f_action.indexOf('eleves')     !=-1) { $('#f_mode_'+check_eleve     ).prop('checked',true); }
@@ -90,204 +91,80 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // depart -> step10     Réagir au clic sur un bouton pour envoyer un import (quel qu'il soit)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Traitement du formulaire form_choix
+// Upload d'un fichier (avec jquery.form.js)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Envoi du fichier avec jquery.ajaxupload.js
-    // Attention, la variable f_action n'est pas accessible dans les AjaxUpload
-    var uploader_sconet_eleves = new AjaxUpload
-    ('#sconet_eleves',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_eleves_oui','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_sconet,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_sconet_parents = new AjaxUpload
-    ('#sconet_parents',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_parents_oui','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_sconet,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_sconet_professeurs_directeurs = new AjaxUpload
-    ('#sconet_professeurs_directeurs',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'sconet_professeurs_directeurs_oui','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_sconet,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_base_eleves_eleves = new AjaxUpload
-    ('#base_eleves_eleves',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'base_eleves_eleves','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_tableur,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_base_eleves_parents = new AjaxUpload
-    ('#base_eleves_parents',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'base_eleves_parents','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_tableur,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_factos_eleves = new AjaxUpload
-    ('#factos_eleves',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'factos_eleves','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_tableur,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_factos_parents = new AjaxUpload
-    ('#factos_parents',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'factos_parents','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_tableur,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_tableur_professeurs_directeurs = new AjaxUpload
-    ('#tableur_professeurs_directeurs',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_professeurs_directeurs','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_tableur,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_tableur_eleves = new AjaxUpload
-    ('#tableur_eleves',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_eleves','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_tableur,
-        onComplete: retourner_fichier
-      }
-    );
-    var uploader_tableur_parents = new AjaxUpload
-    ('#tableur_parents',
-      {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_step':10,'f_action':'tableur_parents','f_mode':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier_tableur,
-        onComplete: retourner_fichier
-      }
-    );
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_import = $('#form_choix');
 
-    function changer_fichier(fichier_nom,fichier_extension)
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_import =
     {
-      // Ne sachant pas identifier la fonction d'appel, je mes à jour toutes les variables...
-      f_mode = $('input[name=f_mode]:checked').val();
-      uploader_sconet_eleves[                 '_settings']['data']['f_mode'] = f_mode;
-      uploader_sconet_parents[                '_settings']['data']['f_mode'] = f_mode;
-      uploader_sconet_professeurs_directeurs[ '_settings']['data']['f_mode'] = f_mode;
-      uploader_base_eleves_eleves[            '_settings']['data']['f_mode'] = f_mode;
-      uploader_base_eleves_parents[           '_settings']['data']['f_mode'] = f_mode;
-      uploader_factos_eleves[                 '_settings']['data']['f_mode'] = f_mode;
-      uploader_factos_parents[                '_settings']['data']['f_mode'] = f_mode;
-      uploader_tableur_professeurs_directeurs['_settings']['data']['f_mode'] = f_mode;
-      uploader_tableur_eleves[                '_settings']['data']['f_mode'] = f_mode;
-      uploader_tableur_parents[               '_settings']['data']['f_mode'] = f_mode;
-      // suite normale
-      $('#ajax_msg').removeAttr('class').html('&nbsp;');
-      $('#ajax_retour').html("");
-      return true;
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      error : retour_form_erreur_import,
+      success : retour_form_valide_import
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_import').change
+    (
+      function()
+      {
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.xml.zip.'.indexOf('.'+fichier_ext+'.') == -1 )
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+            return false;
+          }
+          else
+          {
+            $('#form_choix button').prop('disabled',true);
+            $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            $('#ajax_retour').html("");
+            formulaire_import.submit();
+          }
+        }
+      }
+    );
+
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_import.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions_import);
+        return false;
+      }
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#form_choix button').prop('disabled',false);
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
-    function verifier_fichier_sconet(fichier_nom,fichier_extension)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_import(responseJSON)
     {
-      if (fichier_nom==null || fichier_nom.length<5)
-      {
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
-        return false;
-      }
-      else if ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
-        return false;
-      }
-      else
-      {
-        $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
-    }
-
-    function verifier_fichier_tableur(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
-      {
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
-        return false;
-      }
-      else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
-        return false;
-      }
-      else
-      {
-        $('button').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
-    }
-
-    function retourner_fichier(fichier_nom,responseJSON)
-    {
-      $('button').prop('disabled',false);
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#form_choix button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
         $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
@@ -302,6 +179,15 @@ $(document).ready
         $("#step1").addClass("on");
       }
     }
+
+    $('button.fichier_import').click
+    (
+      function()
+      {
+        f_mode = $('input[name=f_mode]:checked').val();
+        $('#f_import').click();
+      }
+    );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // step10 -> step20                              Passer à l'extraction des données

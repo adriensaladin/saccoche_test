@@ -174,7 +174,7 @@ foreach($tab_ip_variable as $option_value => $option_texte)
   <form action="#" method="post" id="form_logo">
     <hr />
     <h2>Logo de l'établissement</h2>
-    <p><label class="tab" for="f_upload">Uploader image :</label> <button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label></p>
+    <p><label class="tab" for="f_logo">Uploader image :</label><input type="hidden" name="f_action" value="upload_logo" /><input id="f_logo" type="file" name="userfile" /><button id="bouton_choisir_logo" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_logo">&nbsp;</label></p>
   </form>
   <ul class="puce" id="puce_logo"><?php echo $li_logo ?></ul>
 

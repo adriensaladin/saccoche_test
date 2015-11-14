@@ -141,7 +141,7 @@ class Session
     // Pour éviter "PHP Warning:  session_start(): The session id is too long or contains illegal characters, valid characters are a-z, A-Z, 0-9 and '-,' in ..."
     if( !preg_match('/^[a-z0-9]{45}$/',$ID) ) // car formé dans open_new() avec uniqid().md5() donc 13+32 caractères alphanumériques
     {
-      Session::close(FALSE); // Sinon on repasse par ici en boucle
+      Session::close(FALSE); // FALSE Sinon on repasse par ici en boucle
       exit_error( 'Ouverture de session' /*titre*/ , 'L\'identifiant de session n\'est pas conforme.<br />Valeur du cookie de session modifiée manuellement ?' /*contenu*/ );
     }
     session_id($ID);
@@ -278,13 +278,13 @@ class Session
   }
 
   /**
-   * Vérifier le droit d'accès à une page donnée.
+   * Récupérer le tableau des droits d'accès à une page donnée.
    * Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
    *
    * @param string $page
    * @return bool
    */
-  public static function verif_droit_acces($page)
+  public static function recuperer_droit_acces($page)
   {
     // Pour des raison de clarté / maintenance, il est préférable d'externaliser ce tableau dans un fichier.
     require(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php');
@@ -299,6 +299,18 @@ class Session
       Session::$tab_droits_page = $tab_droits_profil_tous;
       return FALSE;
     }
+  }
+
+  /**
+   * Vérifier le droit d'accès à une page donnée pour le profil transmis.
+   * recuperer_droit_acces() doit avoir été préalablement appelé.
+   *
+   * @param string $profil
+   * @return bool
+   */
+  public static function verifier_droit_acces($profil)
+  {
+    return Session::$tab_droits_page[$profil];
   }
 
   /*
@@ -339,7 +351,7 @@ class Session
 
   /*
    * Rechercher une session existante et gérer les différents cas possibles.
-   * Session::$tab_droits_page a déjà été renseigné lors de l'appel à Session::verif_droit_acces()
+   * Session::$tab_droits_page a déjà été renseigné lors de l'appel à Session::recuperer_droit_acces()
    * 
    * @param void
    * @return void | exit ! (sur une string si ajax, une page html, ou modification $PAGE pour process SSO)
@@ -351,7 +363,7 @@ class Session
       // 1. Aucune session transmise
       Session::open_new();
       Session::init();
-      if(!Session::$tab_droits_page['public'])
+      if(!Session::verifier_droit_acces('public'))
       {
         // 1.1. Demande d'accès à une page réservée (donc besoin d'identification) : session perdue / expirée, ou demande d'accès direct (lien profond) -> redirection pour une nouvelle identification
         $_SESSION['MEMO_GET'] = $_GET ; // On mémorise $_GET pour un lien profond hors SSO, mais pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
@@ -369,7 +381,7 @@ class Session
       if(!isset($_SESSION['USER_PROFIL_SIGLE']))
       {
         // 2.1. Pas de session retrouvée (sinon cette variable serait renseignée)
-        if(!Session::$tab_droits_page['public'])
+        if(!Session::verifier_droit_acces('public'))
         {
           // 2.1.1. Session perdue ou expirée et demande d'accès à une page réservée : redirection pour une nouvelle identification
           Session::close__open_new__init( TRUE /*memo_GET*/ );
@@ -384,7 +396,7 @@ class Session
       elseif($_SESSION['USER_PROFIL_SIGLE'] == 'OUT')
       {
         // 2.2. Session retrouvée, utilisateur non identifié
-        if(!Session::$tab_droits_page['public'])
+        if(!Session::verifier_droit_acces('public'))
         {
           // 2.2.1. Espace non identifié => Espace identifié : redirection pour identification
           $_SESSION['MEMO_GET'] = $_GET ; // On mémorise $_GET pour un lien profond hors SSO, mais pas d'initialisation de session sinon la redirection avec le SSO tourne en boucle.
@@ -411,11 +423,11 @@ class Session
       else
       {
         // 2.4. Session retrouvée, utilisateur identifié
-        if(Session::$tab_droits_page[$_SESSION['USER_PROFIL_TYPE']])
+        if(Session::verifier_droit_acces($_SESSION['USER_PROFIL_TYPE']))
         {
           // 2.4.1. Espace identifié => Espace identifié identique : RAS
         }
-        elseif(Session::$tab_droits_page['public'])
+        elseif(Session::verifier_droit_acces('public'))
         {
           // 2.4.2. Espace identifié => Espace non identifié : création d'une nouvelle session vierge, pas de message d'alerte pour indiquer que la session est perdue
           // A un moment il fallait tester que ce n'était pas un appel ajax, pour éviter une déconnexion si appel au calendrier qui était dans l'espace public, mais ce n'est plus le cas...
@@ -424,7 +436,7 @@ class Session
           Session::close__open_new__init( FALSE /*memo_GET*/ );
           if($SimpleSAMLphp_SESSION) { $_SESSION['SimpleSAMLphp_SESSION'] = $SimpleSAMLphp_SESSION; }
         }
-        elseif(!Session::$tab_droits_page['public']) // (forcément)
+        elseif(!Session::verifier_droit_acces('public')) // (forcément)
         {
           // 2.4.3. Espace identifié => Autre espace identifié incompatible : redirection pour une nouvelle identification
           // Pas de redirection SSO sinon on tourne en boucle (il faudrait faire une déconnexion SSO préalable).

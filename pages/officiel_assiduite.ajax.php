@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('import_sconet','import_siecle','import_gepi','import_pronote','afficher_formulaire_manuel'))) ) {exit('Action désactivée pour la démo...');}
+if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('import_sconet','import_siecle','import_gepi','import_pronote','afficher_formulaire_manuel'))) ) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $action     = (isset($_POST['f_action']))  ? $_POST['f_action']                 : '';
 $periode_id = (isset($_POST['f_periode'])) ? Clean::entier($_POST['f_periode']) : 0;

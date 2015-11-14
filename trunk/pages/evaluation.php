@@ -49,10 +49,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']!='parent') && ($_SESSION['USER_PROFIL_TYPE']!
       'demande_eleve' => Lang::_("Demandes d'évaluations formulées"),
     );
   }
-  else
-  {
-    ajouter_log_PHP( 'Profil inattendu' /*log_objet*/ , $_SESSION['USER_PROFIL_TYPE'] /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
-  }
   $tab_class_differente = array(
     'demande_eleve'      => 'evaluation_demande',
     'demande_professeur' => 'evaluation_demande',

@@ -90,7 +90,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Voir_referentiel'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&matiere_ref='+matiere_ref,
+            data : 'csrf='+CSRF+'&f_action=Voir_referentiel'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -212,7 +212,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Enregistrer_lien'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
+            data : 'csrf='+CSRF+'&f_action=Enregistrer_lien'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -265,7 +265,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Charger_ressources'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
+            data : 'csrf='+CSRF+'&f_action=Charger_ressources'+'&item_id='+item_id+'&item_lien='+encodeURIComponent(item_lien),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -612,7 +612,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Enregistrer_ressources'+'&item_id='+item_id+'&item_nom='+encodeURIComponent(item_nom)+'&page_mode='+$('#page_mode').val()+'&ressources='+encodeURIComponent(tab_ressources.join('}¤{')),
+            data : 'csrf='+CSRF+'&f_action=Enregistrer_ressources'+'&item_id='+item_id+'&item_nom='+encodeURIComponent(item_nom)+'&page_mode='+$('#page_mode').val()+'&ressources='+encodeURIComponent(tab_ressources.join('}¤{')),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -666,7 +666,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Rechercher_liens_ressources'+'&item_id='+item_id+'&findme='+encodeURIComponent(findme),
+            data : 'csrf='+CSRF+'&f_action=Rechercher_liens_ressources'+'&item_id='+item_id+'&findme='+encodeURIComponent(findme),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -713,77 +713,112 @@ $(document).ready
       }
     );
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Uploader une ressource
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Envoi du fichier avec jquery.ajaxupload.js
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire #zone_ressources_upload
+    // Upload d'un fichier (avec jquery.form.js)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    if( $('#zone_ressources_form').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
+    if( $('#zone_ressources_upload').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
     {
-      new AjaxUpload
-      ('#bouton_import',
+
+      // Le formulaire qui va être analysé et traité en AJAX
+      var formulaire_ressource = $('#zone_ressources_upload');
+
+      // Options d'envoi du formulaire (avec jquery.form.js)
+      var ajaxOptions_ressource =
+      {
+        url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+        type : 'POST',
+        dataType : 'json',
+        clearForm : false,
+        resetForm : false,
+        target : "#ajax_msg_ressource",
+        error : retour_form_erreur_ressource,
+        success : retour_form_valide_ressource
+      };
+
+      // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+      $('#f_ressource').change
+      (
+        function()
         {
-          action: 'ajax.php?page='+PAGE,
-          name: 'userfile',
-          data: {'csrf':CSRF,'action':'Uploader_document'},
-          autoSubmit: true,
-          responseType: 'json',
-          onSubmit: verifier_fichier,
-          onComplete: retourner_fichier
+          var file = this.files[0];
+          if( typeof(file) == 'undefined' )
+          {
+            $('#ajax_msg_ressource').removeAttr('class').html('');
+            return false;
+          }
+          else
+          {
+            var fichier_nom = file.name;
+            var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+            if( '.bat.com.exe.php.zip.'.indexOf('.'+fichier_ext+'.') !== -1 )
+            {
+              $('#ajax_msg_ressource').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
+              return false;
+            }
+            else
+            {
+              $('#f_ressource_matiere').val(matiere_ref);
+              $('#zone_ressources_upload button').prop('disabled',true);
+              $('#ajax_msg_ressource').removeAttr('class').addClass('loader').html("En cours&hellip;");
+              formulaire_ressource.submit();
+            }
+          }
         }
       );
-    }
 
-    function verifier_fichier(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
-      {
-        $('#ajax_ressources_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
-        return false;
-      }
-      else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
-      {
-        $('#ajax_ressources_upload').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
-        return false;
-      }
-      else
-      {
-        $('#zone_ressources_upload button').prop('disabled',true);
-        $('#ajax_ressources_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
-    }
-
-    function retourner_fichier(fichier_nom,responseJSON)
-    {
-      fichier_extension = fichier_nom.split('.').pop();
-      $('#zone_ressources_upload button').prop('disabled',false);
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
-      if(responseJSON['statut']==false)
-      {
-        $('#ajax_ressources_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-      }
-      else
-      {
-        initialiser_compteur();
-        upload_lien = responseJSON['value'];
-        $('#ajax_ressources_upload').removeAttr('class').html('');
-        $('#afficher_zone_ressources_form').click();
-        $('label[for=lien_url]').removeAttr('class').addClass('valide').html("Upload réussi !");
-        $('label[for=lien_nom]').removeAttr('class').addClass('alerte').html("Validez l'ajout&hellip;");
-        $('#lien_url').val(upload_lien);
-        $('#lien_nom').focus();
-        if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) )
+      // Envoi du formulaire (avec jquery.form.js)
+      formulaire_ressource.submit
+      (
+        function()
         {
-          $.prompt(
-            "Votre fichier a bien été enregistré comme ressource.<br />Néanmoins, pour être consulté, il nécessite un ordinateur équipé d'une suite bureautique adaptée.<br />Pour une meilleure accessibilité, il serait préférable de le convertir au format PDF.",
-            {
-              title  : 'Information'
-            }
-          );
+          $(this).ajaxSubmit(ajaxOptions_ressource);
+          return false;
+        }
+      ); 
+
+      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+      function retour_form_erreur_ressource(jqXHR, textStatus, errorThrown)
+      {
+        $('#f_ressource').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+        $('#zone_ressources_upload button').prop('disabled',false);
+        $('#ajax_msg_ressource').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      }
+
+      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+      function retour_form_valide_ressource(responseJSON)
+      {
+        $('#f_ressource').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+        $('#zone_ressources_upload button').prop('disabled',false);
+        if(responseJSON['statut']==false)
+        {
+          $('#ajax_msg_ressource').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        }
+        else
+        {
+          initialiser_compteur();
+          var upload_lien = responseJSON['value'];
+          var extension   = upload_lien.split('.').pop().toLowerCase();
+          $('#ajax_ressources_upload').removeAttr('class').html('');
+          $('#afficher_zone_ressources_form').click();
+          $('label[for=lien_url]').removeAttr('class').addClass('valide').html("Upload réussi !");
+          $('label[for=lien_nom]').removeAttr('class').addClass('alerte').html("Validez l'ajout&hellip;");
+          $('#lien_url').val(upload_lien);
+          $('#lien_nom').focus();
+          if ( '.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+extension+'.') !== -1 )
+          {
+            $.prompt(
+              "Votre fichier a bien été enregistré comme ressource.<br />Néanmoins, pour être consulté, il nécessite un ordinateur équipé d'une suite bureautique adaptée.<br />Pour une meilleure accessibilité, il serait préférable de le convertir au format PDF.",
+              {
+                title  : 'Information'
+              }
+            );
+          }
         }
       }
+
     }
 
     $('#acceptation_conditions').click
@@ -792,17 +827,14 @@ $(document).ready
       {
         if($(this).is(':checked'))
         {
-          $('#bouton_import').prop('disabled',false);
+          $('#bouton_choisir_ressource').prop('disabled',false);
         }
         else
         {
-          $('#bouton_import').prop('disabled',true);
+          $('#bouton_choisir_ressource').prop('disabled',true);
         }
       }
     );
-
-    // A remettre en disabled sinon la propriété disparait au chargement du js...
-    $('#bouton_import').prop('disabled',true);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour rechercher des ressources existantes uploadées par l'établissement
@@ -819,7 +851,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=Rechercher_documents',
+            data : 'csrf='+CSRF+'&f_action=Rechercher_documents',
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $action          = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $notification_id = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])    : 0;
@@ -45,7 +45,7 @@ if( ($action=='memoriser_consultation') && $notification_id )
   }
   else
   {
-    Json::end( FALSE , 'Erreur : notification non trouvée ou pas associée à ce compte !' );
+    Json::end( FALSE , 'Notification non trouvée ou pas associée à ce compte !' );
   }
 }
 

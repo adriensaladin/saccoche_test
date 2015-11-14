@@ -208,7 +208,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi0(formData, jqForm, options)
     {
       $('#ajax_msg_choix').removeAttr('class').html("");

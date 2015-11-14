@@ -61,6 +61,7 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
   <hr />
 
   <fieldset>
+    <input type="hidden" id="f_action" name="f_action" value="" /><input type="hidden" id="f_step" name="f_step" value="10" /><input id="f_import" type="file" name="userfile" />
     <label class="tab" for="f_choix_principal">Catégorie :</label>
     <select id="f_choix_principal" name="f_choix_principal">
       <option value="">&nbsp;</option>

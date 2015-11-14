@@ -61,8 +61,8 @@ $(document).ready
       (
         {
           type : 'POST',
-          url : 'ajax.php?page='+PAGE+'&f_action=afficher',
-          data : 'csrf='+CSRF+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action=afficher'+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type,
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -79,30 +79,6 @@ $(document).ready
             {
               $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
               $('#liste_eleves').html(responseJSON['value']);
-              // Mise en place des AjaxUpload
-              $("#liste_eleves q.ajouter").each
-              (
-                function()
-                {
-                  // On boucle pour activer / desactiver les options du select.
-                  var q_id = $(this).attr('id');
-                  var user_id = q_id.substring(2); // "q_" + id
-                  // Envoi du fichier avec jquery.ajaxupload.js
-                  new AjaxUpload
-                  ('#'+q_id,
-                    {
-                      action: 'ajax.php?page='+PAGE+'&f_action=envoyer_photo',
-                      name: 'userfile',
-                      data: {'csrf':CSRF,'f_user_id':user_id},
-                      autoSubmit: true,
-                      responseType: 'json',
-                      onChange: changer_fichier,
-                      onSubmit: verifier_fichier,
-                      onComplete: retourner_fichier
-                    }
-                  );
-                }
-              );
             }
           }
         }
@@ -118,116 +94,179 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Upload d'un fichier zip avec jquery.ajaxupload.js
+    // Traitement du formulaire form_photos
+    // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
-    var uploader_zip = new AjaxUpload
-    ('#bouton_zip',
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_photos = $('#form_photos');
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_photos =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_photos",
+      error : retour_form_erreur_photos,
+      success : retour_form_valide_photos
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_photos').change
+    (
+      function()
       {
-        action: 'ajax.php?page='+PAGE+'&f_action=envoyer_zip',
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_masque':'maj_plus_tard'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier_zip,
-        onSubmit: verifier_fichier_zip,
-        onComplete: retourner_fichier_zip
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg_photos').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var masque = $("#f_masque").val();
+          // Curieusement, besoin d'échapper l'échappement... (en PHP un échappement simple suffit)
+          var reg_filename  = new RegExp("\\[(sconet_id|sconet_num|reference|nom|prenom|login|ent_id)\\]","g");
+          var reg_extension = new RegExp("\\.(gif|jpg|jpeg|png)$","g");
+          if( (!reg_filename.test(masque)) || (!reg_extension.test(masque)) )
+          {
+            $('#f_photos').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+            $('#ajax_msg_photos').removeAttr('class').addClass('erreur').html('Indiquer correctement la forme des noms des fichiers contenus dans l\'archive.');
+            return false;
+          }
+          else
+          {
+            var fichier_nom = file.name;
+            var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+            if( fichier_ext != 'zip' )
+            {
+              $('#ajax_msg_photos').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
+              return false;
+            }
+            else
+            {
+              $("button").prop('disabled',true);
+              $('#ajax_msg_photos').removeAttr('class').addClass('loader').html("En cours&hellip;");
+              formulaire_photos.submit();
+            }
+          }
+        }
       }
     );
 
-    function changer_fichier_zip(fichier_nom,fichier_extension)
-    {
-      $("button").prop('disabled',true);
-      $('#ajax_msg_zip').removeAttr('class').html('');
-      var masque = $("#f_masque").val();
-      // Curieusement, besoin d'échapper l'échappement... (en PHP un échappement simple suffit)
-      var reg_filename  = new RegExp("\\[(sconet_id|sconet_num|reference|nom|prenom|login|ent_id)\\]","g");
-      var reg_extension = new RegExp("\\.(gif|jpg|jpeg|png)$","g");
-      if( (!reg_filename.test(masque)) || (!reg_extension.test(masque)) )
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_photos.submit
+    (
+      function()
       {
-        $("button").prop('disabled',false);
-        $('#ajax_msg_zip').removeAttr('class').addClass('erreur').html('Indiquer correctement la forme des noms des fichiers contenus dans l\'archive.');
-        $('#f_masque').focus();
+        $(this).ajaxSubmit(ajaxOptions_photos);
         return false;
       }
-      uploader_zip['_settings']['data']['f_masque'] = masque;
-      return true;
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_photos(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_photos').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("button").prop('disabled',false);
+      $('#ajax_msg_photos').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
-    function verifier_fichier_zip(fichier_nom,fichier_extension)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_photos(responseJSON)
     {
-      if (fichier_nom==null || fichier_nom.length<5)
+      $('#f_photos').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("button").prop('disabled',false);
+      if(responseJSON['statut']==false)
       {
-        $("button").prop('disabled',false);
-        $('#ajax_msg_zip').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
-        return false;
-      }
-      else if(fichier_extension.toLowerCase()!='zip')
-      {
-        $("button").prop('disabled',false);
-        $('#ajax_msg_zip').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
-        return false;
+        $('#ajax_msg_photos').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_zip').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
-    }
-
-    function retourner_fichier_zip(fichier_nom,responseJSON)
-    {
-      $("button").prop('disabled',false);
-      if(responseJSON['statut']==true)
-      {
-        $('#ajax_msg_zip').removeAttr('class').addClass('valide').html('Demande traitée !');
-        $.fancybox( { 'href':responseJSON['value'] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
         initialiser_compteur();
+        $('#ajax_msg_photos').removeAttr('class').addClass('valide').html('Demande traitée !');
+        $.fancybox( { 'href':responseJSON['value'] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
         maj_affichage();
       }
-      else
-      {
-        $('#ajax_msg_zip').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-        return false;
-      }
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du clic sur un bouton pour envoyer une photo
+    // Traitement du formulaire #form_photo
+    // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function changer_fichier(fichier_nom,fichier_extension)
-    {
-      afficher_masquer_images_action('hide');
-      $('#ajax_msg').removeAttr('class').html('&nbsp;');
-      return true;
-    }
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_photo = $('#form_photo');
 
-    function verifier_fichier(fichier_nom,fichier_extension)
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_photo =
     {
-      if (fichier_nom==null || fichier_nom.length<5)
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      error : retour_form_erreur_photo,
+      success : retour_form_valide_photo
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_photo').change
+    (
+      function()
       {
-        afficher_masquer_images_action('show');
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Chemin indiqué incorrect.');
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.gif.jpg.jpeg.png.'.indexOf('.'+fichier_ext+'.') == -1 )
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (gif jpg jpeg png).');
+            return false;
+          }
+          else
+          {
+            afficher_masquer_images_action('hide');
+            $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            formulaire_photo.submit();
+          }
+        }
+      }
+    );
+
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_photo.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions_photo);
         return false;
       }
-      else if ('.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        afficher_masquer_images_action('show');
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (gif jpg jpeg png).');
-        return false;
-      }
-      else
-      {
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_photo(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_photo').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      afficher_masquer_images_action('show');
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_photo(responseJSON)
     {
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      $('#f_photo').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      afficher_masquer_images_action('show');
       if(responseJSON['statut']==false)
       {
         $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
@@ -242,11 +281,23 @@ $(document).ready
         $('#ajax_msg').removeAttr('class').html('&nbsp;');
         $('#q_'+user_id).parent().html('<img width="'+img_width+'" height="'+img_height+'" src="'+img_src+'" alt="" /><q class="supprimer" title="Supprimer cette photo (aucune confirmation ne sera demandée)."></q>');
       }
-      afficher_masquer_images_action('show');
     }
 
+    $('#liste_eleves').on
+    (
+      'click',
+      'q.ajouter',
+      function()
+      {
+        var q_id = $(this).attr('id');
+        var user_id = q_id.substring(2); // "q_" + id
+        $('#f_user_id').val(user_id);
+        $('#f_photo').click();
+      }
+    );
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Appel en ajax pour supprimer un logo
+    // Appel en ajax pour supprimer une photo
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#liste_eleves').on
@@ -263,8 +314,8 @@ $(document).ready
         (
           {
             type : 'POST',
-            url : 'ajax.php?page='+PAGE+'&f_action=supprimer_photo',
-            data : 'csrf='+CSRF+'&f_user_id='+user_id,
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=supprimer_photo'+'&f_user_id='+user_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -282,19 +333,6 @@ $(document).ready
               {
                 $('#ajax_msg').removeAttr('class').html('');
                 memo_div.html('<q id="q_'+user_id+'" class="ajouter" title="Ajouter une photo."></q><img width="1" height="1" src="./_img/auto.gif" />');
-                new AjaxUpload
-                ('#q_'+user_id,
-                  {
-                    action: 'ajax.php?page='+PAGE+'&f_action=envoyer_photo',
-                    name: 'userfile',
-                    data: {'csrf':CSRF,'f_user_id':user_id},
-                    autoSubmit: true,
-                    responseType: 'json',
-                    onChange: changer_fichier,
-                    onSubmit: verifier_fichier,
-                    onComplete: retourner_fichier
-                  }
-                );
               }
             }
           }

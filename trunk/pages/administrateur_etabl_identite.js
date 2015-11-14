@@ -128,7 +128,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_sesamath(formData, jqForm, options)
     {
       $('#ajax_msg_sesamath').removeAttr('class').html("");
@@ -218,7 +218,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_contact(formData, jqForm, options)
     {
       $('#ajax_msg_contact').removeAttr('class').html("");
@@ -335,7 +335,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_etablissement(formData, jqForm, options)
     {
       $('#ajax_msg_etablissement').removeAttr('class').html("");
@@ -575,7 +575,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&action=Afficher_form_geo1',
+          data : 'csrf='+CSRF+'&f_action=Afficher_form_geo1',
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -609,7 +609,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&action=Afficher_form_geo2&f_geo1='+geo1_val,
+          data : 'csrf='+CSRF+'&f_action=Afficher_form_geo2&f_geo1='+geo1_val,
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -645,7 +645,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&action=Afficher_form_geo3&f_geo1='+geo1_val+'&f_geo2='+geo2_val,
+          data : 'csrf='+CSRF+'&f_action=Afficher_form_geo3&f_geo1='+geo1_val+'&f_geo2='+geo2_val,
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -681,7 +681,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&action=Afficher_structures&f_geo3='+geo3_val,
+          data : 'csrf='+CSRF+'&f_action=Afficher_structures&f_geo3='+geo3_val,
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -717,7 +717,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&action=Afficher_structures&f_uai='+uai_val,
+          data : 'csrf='+CSRF+'&f_action=Afficher_structures&f_uai='+uai_val,
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -905,67 +905,91 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Upload d'un fichier image avec jquery.ajaxupload.js
+    // Traitement du formulaire #form_logo
+    // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Envoi du fichier avec jquery.ajaxupload.js
-    new AjaxUpload
-    ('#f_upload',
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_logo = $('#form_logo');
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_logo =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_logo",
+      error : retour_form_erreur_logo,
+      success : retour_form_valide_logo
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_logo').change
+    (
+      function()
       {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'action':'upload_logo'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg_logo').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.gif.jpg.jpeg.png.'.indexOf('.'+fichier_ext+'.') == -1 )
+          {
+            $('#ajax_msg_logo').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (gif jpg jpeg png).');
+            return false;
+          }
+          else
+          {
+            $("#bouton_choisir_logo").prop('disabled',true);
+            $('#ajax_msg_logo').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            formulaire_logo.submit();
+          }
+        }
       }
     );
 
-    function changer_fichier(fichier_nom,fichier_extension)
-    {
-      $("#f_upload").prop('disabled',true);
-      $('#ajax_upload').removeAttr('class').html('&nbsp;');
-      return true;
-    }
-
-    function verifier_fichier(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_logo.submit
+    (
+      function()
       {
-        $("#f_upload").prop('disabled',false);
-        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $(this).ajaxSubmit(ajaxOptions_logo);
         return false;
       }
-      else if ('.gif.jpg.jpeg.png.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        $("#f_upload").prop('disabled',false);
-        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (jpg jpeg gif png).');
-        return false;
-      }
-      else
-      {
-        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_logo(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_logo').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("#bouton_choisir_logo").prop('disabled',false);
+      $('#ajax_msg_logo').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_logo(responseJSON)
     {
-      $("#f_upload").prop('disabled',false);
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      $('#f_logo').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("#bouton_choisir_logo").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_logo').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_upload').removeAttr('class').addClass('valide').html('Logo ajouté');
+        $('#ajax_msg_logo').removeAttr('class').addClass('valide').html('Logo ajouté');
         $('#puce_logo').html(responseJSON['value']);
       }
     }
+
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Appel en ajax pour supprimer le logo de l'établissement
@@ -983,7 +1007,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&action=delete_logo',
+            data : 'csrf='+CSRF+'&f_action=delete_logo',
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

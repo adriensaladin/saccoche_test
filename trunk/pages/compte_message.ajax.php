@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('afficher_users','afficher_destinataires'))) ) {exit('Action désactivée pour la démo...');}
+if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('afficher_users','afficher_destinataires'))) ) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des valeurs transmises

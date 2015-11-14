@@ -26,9 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action = (isset($_POST['action']))   ? $_POST['action']   : '';
+$action = (isset($_POST['f_action'])) ? $_POST['f_action'] : '';
 $profil = (isset($_POST['f_profil'])) ? $_POST['f_profil'] : '';
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_user = (isset($_POST['f_user'])) ? ( (is_array($_POST['f_user'])) ? $_POST['f_user'] : explode(',',$_POST['f_user']) ) : array() ;
@@ -367,11 +367,8 @@ if($action=='import_loginmdp')
       }
     }
   }
-  // Pour le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
-  $fichier_nom  = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
-  $fichier_contenu = '';
   // On archive les nouveaux identifiants dans un fichier pdf (classe fpdf + script étiquettes)
-  $fichier_contenu .= '<ul class="puce">'.NL;
+  Json::add_str('<ul class="puce">'.NL);
   if(count($fcontenu_pdf_tab))
   {
     $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
@@ -387,31 +384,29 @@ if($action=='import_loginmdp')
       $pdf -> Add_Label(To::pdf($text));
     }
     FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf' , $pdf );
-    $fichier_contenu .=   '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL;
-    $fichier_contenu .=   '<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL;
+    Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL);
+    Json::add_str(  '<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL);
   }
-  // On complète et on enregistre le bilan
+  // On complète le bilan et on affiche le retour
   $ligne_vide = '<tr><td colspan="3">Aucun</td></tr>'.NL;
   if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
   if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
-  $fichier_contenu .=   '<li><b>Résultat de l\'analyse et des opérations effectuées :</b></li>'.NL;
-  $fichier_contenu .= '</ul>'.NL;
-  $fichier_contenu .= '<table class="p">'.NL;
-  $fichier_contenu .=   '<tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants ont été modifiés.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_mod;
-  $fichier_contenu .=   '</tbody><tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants n\'ont pas pu être modifiés.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_pb;
-  $fichier_contenu .=   '</tbody><tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants sont inchangés.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_ras;
-  $fichier_contenu .=   '</tbody>'.NL;
-  $fichier_contenu .= '</table>'.NL;
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $fichier_contenu );
-  // On affiche le retour
-  Json::end( TRUE , URL_DIR_IMPORT.$fichier_nom );
+  Json::add_str(  '<li><b>Résultat de l\'analyse et des opérations effectuées :</b></li>'.NL);
+  Json::add_str('</ul>'.NL);
+  Json::add_str('<table class="p">'.NL);
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants ont été modifiés.</th></tr>'.NL);
+  Json::add_str(    $lignes_mod);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants n\'ont pas pu être modifiés.</th></tr>'.NL);
+  Json::add_str(    $lignes_pb);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants sont inchangés.</th></tr>'.NL);
+  Json::add_str(    $lignes_ras);
+  Json::add_str(  '</tbody>'.NL);
+  Json::add_str('</table>'.NL);
+  Json::end( TRUE );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -555,30 +550,25 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
       }
     }
   }
-  // Pour le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
-  $fichier_nom  = 'identifiants_'.$action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
-  $fichier_contenu = '';
-  // On complète et on enregistre le bilan
+  // On affiche le retour
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
   if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
   if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
-  $fichier_contenu .= '<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
-  $fichier_contenu .= '<table>'.NL;
-  $fichier_contenu .=   '<tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi a été modifié.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_mod;
-  $fichier_contenu .=   '</tbody><tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi n\'a pas pu être modifié.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_pb;
-  $fichier_contenu .=   '</tbody><tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi est inchangé.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_ras;
-  $fichier_contenu .=   '</tbody>'.NL;
-  $fichier_contenu .= '</table>'.NL;
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $fichier_contenu );
-  // On affiche le retour
-  Json::end( TRUE , URL_DIR_IMPORT.$fichier_nom );
+  Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
+  Json::add_str('<table class="p">'.NL);
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi a été modifié.</th></tr>'.NL);
+  Json::add_str(    $lignes_mod);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi n\'a pas pu être modifié.</th></tr>'.NL);
+  Json::add_str(    $lignes_pb);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi est inchangé.</th></tr>'.NL);
+  Json::add_str(    $lignes_ras);
+  Json::add_str(  '</tbody>'.NL);
+  Json::add_str('</table>'.NL);
+  Json::end( TRUE );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -775,30 +765,25 @@ if($action=='import_ent')
       }
     }
   }
-  // Pour le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
-  $fichier_nom  = 'identifiants_'.$action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
-  $fichier_contenu = '';
-  // On complète et on enregistre le bilan
+  // On affiche le retour
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
   if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
   if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
-  $fichier_contenu .= '<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL;
-  $fichier_contenu .= '<table>'.NL;
-  $fichier_contenu .=   '<tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT a été modifié.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_mod;
-  $fichier_contenu .=   '</tbody><tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_pb;
-  $fichier_contenu .=   '</tbody><tbody>'.NL;
-  $fichier_contenu .=     '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT est inchangé.</th></tr>'.NL;
-  $fichier_contenu .=     $lignes_ras;
-  $fichier_contenu .=   '</tbody>'.NL;
-  $fichier_contenu .= '</table>'.NL;
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $fichier_contenu );
-  // On affiche le retour
-  Json::end( TRUE , URL_DIR_IMPORT.$fichier_nom );
+  Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
+  Json::add_str('<table class="p">'.NL);
+  Json::add_str(  '<tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT a été modifié.</th></tr>'.NL);
+  Json::add_str(    $lignes_mod);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
+  Json::add_str(    $lignes_pb);
+  Json::add_str(  '</tbody><tbody>'.NL);
+  Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
+  Json::add_str(    $lignes_ras);
+  Json::add_str(  '</tbody>'.NL);
+  Json::add_str('</table>'.NL);
+  Json::end( TRUE );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

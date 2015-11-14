@@ -46,6 +46,7 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
 <form action="#" method="post" id="form_select">
 
   <fieldset>
+    <input type="hidden" id="f_action" name="f_action" value="" /><input id="f_import" type="file" name="userfile" />
     <label class="tab" for="f_choix_principal">Objectif :</label>
     <select id="f_choix_principal" name="f_choix_principal">
       <option value="">&nbsp;</option>

@@ -282,7 +282,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_info_heberg_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg').removeAttr('class').html("");
@@ -449,7 +449,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_param_mysql_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg').removeAttr('class').html("");

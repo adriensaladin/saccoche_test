@@ -1409,13 +1409,6 @@ switch($import_origine.'+'.$import_profil)
     break;
 }
 
-// Outil de résolution de bug ; le test1 provoque parfois l'erreur "Array sizes are inconsistent".
-// Edit au 11/05/2012 : a priori c'est corrigé, mais je laisse quand même le test au cas où, ça ne coûte rien...
-if(!$test1)
-{
-  ajouter_log_PHP( 'Import fichier '.$import_origine.' '.$import_profil /*log_objet*/ , serialize($tab_users_fichier) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
-}
-
 // On enregistre
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt'        ,serialize($tab_users_fichier));
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt'      ,serialize($tab_classes_fichier));

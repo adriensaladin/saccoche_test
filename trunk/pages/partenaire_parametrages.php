@@ -70,8 +70,18 @@ else
 <p class="astuce">Dans le cadre de la convention ENT, vous pouvez faire afficher un logo, un lien et un message en page d'accueil des utilisateurs connectés.</p>
 
 <h2>Paramétrages</h2>
+<form action="#" method="post" id="form_logo"><fieldset>
+  <div>
+    <label class="tab" for="f_logo">Logo :</label>
+    <input type="hidden" id="f_upload_action" name="f_action" value="upload_logo" />
+    <img id="image_logo" src="<?php echo html($partenaire_logo_url) ?>" />
+    <input id="f_logo" type="file" name="userfile" />
+    <button id="bouton_choisir_logo" type="button" class="fichier_import">Parcourir...</button>
+    <button id="f_delete_logo" type="button" class="supprimer"<?php echo $disabled ?>>Supprimer.</button>
+    <label id="ajax_msg_logo">&nbsp;</label>
+  </div>
+</fieldset></form>
 <form action="#" method="post" id="form_gestion"><fieldset>
-  <div><label class="tab" for="f_upload_logo">Logo :</label><img id="image_logo" src="<?php echo html($partenaire_logo_url) ?>" /><button id="f_upload_logo" type="button" class="fichier_import">Parcourir...</button> <button id="f_delete_logo" type="button" class="supprimer"<?php echo $disabled ?>>Supprimer.</button><label id="ajax_upload">&nbsp;</label></div>
   <div><label class="tab" for="f_adresse_web">Adresse web :</label><input id="f_adresse_web" name="f_adresse_web" size="60" type="text" value="<?php echo html($partenaire_adresse_web) ?>" /></div>
   <div><label class="tab" for="f_message">Message :</label><textarea name="f_message" id="f_message" rows="4" cols="58"><?php echo html($partenaire_message) ?></textarea><br /><span class="tab"></span><label id="f_message_reste"></label></div>
   <div><span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="enregistrer" /><button id="f_submit" type="submit" class="parametre">Valider ces réglages.</button><label id="ajax_msg">&nbsp;</label></div>

@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $profil = (isset($_POST['f_profil'])) ? Clean::texte($_POST['f_profil']) : '' ;
 $delai  = (isset($_POST['f_delai']))  ? Clean::entier($_POST['f_delai']) : 0  ;

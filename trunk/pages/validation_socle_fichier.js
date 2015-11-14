@@ -171,110 +171,104 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Importer un fichier de validations avec jquery.ajaxupload.js
+    // Traitement du formulaire #form_import
+    // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    if($('#import_sacoche').length)
-    {
-      new AjaxUpload
-      ('#import_sacoche',
-        {
-          action: 'ajax.php?page='+PAGE,
-          name: 'userfile',
-          data: {'csrf':CSRF,'f_action':'import_sacoche'},
-          autoSubmit: true,
-          responseType: 'json',
-          onChange: changer_fichier,
-          onSubmit: verifier_fichier,
-          onComplete: retourner_fichier
-        }
-      );
-    }
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_import = $('#form_import');
 
-    if($('#import_compatible').length)
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_import =
     {
-      new AjaxUpload
-      ('#import_compatible',
-        {
-          action: 'ajax.php?page='+PAGE,
-          name: 'userfile',
-          data: {'csrf':CSRF,'f_action':'import_compatible'},
-          autoSubmit: true,
-          responseType: 'json',
-          onChange: changer_fichier,
-          onSubmit: verifier_fichier,
-          onComplete: retourner_fichier
-        }
-      );
-    }
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg",
+      error : retour_form_erreur_import,
+      success : retour_form_valide_import
+    };
 
-    function changer_fichier(fichier_nom,fichier_extension)
-    {
-      $('button.enabled').prop('disabled',true);
-      $("#ajax_info").html('');
-      $('#ajax_msg').removeAttr('class').html('');
-      return true;
-    }
-
-    function verifier_fichier(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_import').change
+    (
+      function()
       {
-        $('button.enabled').prop('disabled',false);
-        $('#import_lpc_disabled').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.xml.zip.'.indexOf('.'+fichier_ext+'.') == -1 )
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+            return false;
+          }
+          else
+          {
+            $('button.enabled').prop('disabled',true);
+            $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            $('#ajax_retour').html("");
+            formulaire_import.submit();
+          }
+        }
+      }
+    );
+
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_import.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions_import);
         return false;
       }
-      else if ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
-      {
-        $('button.enabled').prop('disabled',false);
-        $('#import_lpc_disabled').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
-        return false;
-      }
-      else
-      {
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('button.enabled').prop('disabled',false);
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_import(responseJSON)
     {
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('button.enabled').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('button.enabled').prop('disabled',false);
-        $('#import_lpc_disabled').prop('disabled',true);
         $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        // AJAX Upload ne permet pas de faire remonter du code en quantité alors on s'y prend en 2 fois...
-        $.ajax
-        (
-          {
-            url : responseJSON['value'],
-            dataType : 'html', // Pas de JSON ici : on appelle un fichier texte !
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('button.enabled').prop('disabled',false);
-              $('#import_lpc_disabled').prop('disabled',true);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html('Échec de la connexion !');
-              return false;
-            },
-            success : function(responseHTML)
-            {
-              initialiser_compteur();
-              $('button.enabled').prop('disabled',false);
-              $('#import_lpc_disabled').prop('disabled',true);
-              $('#ajax_msg').removeAttr('class').html('');
-              $('#ajax_info').html(responseHTML);
-            }
-          }
-        );
+        initialiser_compteur();
+        $('button.enabled').prop('disabled',false);
+        $('#ajax_msg').removeAttr('class').html('');
+        $('#ajax_info').html(responseJSON['value']);
       }
     }
+
+    $('button.fichier_import').click
+    (
+      function()
+      {
+        $('#ajax_info').html('');
+        $('#ajax_msg').removeAttr('class').html('');
+        var objet = $(this).attr('id'); // import_sacoche | import_compatible
+        $('#f_action').val(objet);
+        $('#f_import').click();
+      }
+    );
 
   }
 );

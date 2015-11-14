@@ -91,66 +91,91 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Upload d'un fichier image avec jquery.ajaxupload.js
+    // Traitement du formulaire form_restauration
+    // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    new AjaxUpload
-    ('#bouton_restauration',
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_restauration = $('#form_restauration');
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_restauration =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      target : "#ajax_msg_restauration",
+      error : retour_form_erreur_restauration,
+      success : retour_form_valide_restauration
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_restauration').change
+    (
+      function()
       {
-        action: 'ajax.php?page='+PAGE,
-        name: 'userfile',
-        data: {'csrf':CSRF,'f_action':'uploader'},
-        autoSubmit: true,
-        responseType: 'json',
-        onChange: changer_fichier,
-        onSubmit: verifier_fichier,
-        onComplete: retourner_fichier
+        $("#ajax_info").html('');
+        $('#ajax_msg_sauvegarde').removeAttr('class').html('');
+        $('#ajax_msg_restauration').removeAttr('class').html('');
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg_restauration').removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( fichier_ext != 'zip' )
+          {
+            $('#ajax_msg_restauration').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
+            return false;
+          }
+          else
+          {
+            $("button").prop('disabled',true);
+            $('#ajax_msg_restauration').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            formulaire_restauration.submit();
+          }
+        }
       }
     );
 
-    function changer_fichier(fichier_nom,fichier_extension)
-    {
-      $("button").prop('disabled',true);
-      $("#ajax_info").html('');
-      $('#ajax_msg_sauvegarde').removeAttr('class').html('');
-      $('#ajax_msg_restauration').removeAttr('class').html('');
-      return true;
-    }
-
-    function verifier_fichier(fichier_nom,fichier_extension)
-    {
-      if (fichier_nom==null || fichier_nom.length<5)
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_restauration.submit
+    (
+      function()
       {
-        $("button").prop('disabled',false);
-        $('#ajax_msg_restauration').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        $(this).ajaxSubmit(ajaxOptions_restauration);
         return false;
       }
-      else if(fichier_extension.toLowerCase()!='zip')
-      {
-        $("button").prop('disabled',false);
-        $('#ajax_msg_restauration').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
-        return false;
-      }
-      else
-      {
-        $('#ajax_msg_restauration').removeAttr('class').addClass('loader').html("En cours&hellip;");
-        return true;
-      }
+    ); 
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_restauration(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_restauration').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("button").prop('disabled',false);
+      $('#ajax_msg_restauration').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
-    function retourner_fichier(fichier_nom,responseJSON)
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_restauration(responseJSON)
     {
-      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      $('#f_restauration').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $("button").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $("button").prop('disabled',false);
-        $('#ajax_msg_restauration').removeAttr('class').html('');
-        $('#ajax_info').html(responseJSON['value']);
+        $('#ajax_msg_restauration').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
+        $('#ajax_msg_restauration').removeAttr('class').addClass('valide').html('Contenu du fichier récupéré avec succès.');
         $.prompt(
-          "Souhaitez-vous vraiment restaurer la base contenue dans ce fichier&nbsp;?<br />==&gt; "+fichier_nom+"<br />Toute action effectuée depuis le moment de cette sauvegarde sera à refaire&nbsp;!!!<br />En particulier les saisies d'évaluations et les modifications de référentiels seront perdues&hellip;",
+          "Souhaitez-vous vraiment restaurer la base contenue dans ce fichier&nbsp;?<br />==&gt; "+responseJSON['value']+"<br />Toute action effectuée depuis le moment de cette sauvegarde sera à refaire&nbsp;!!!<br />En particulier les saisies d'évaluations et les modifications de référentiels seront perdues&hellip;",
           {
             title   : 'Demande de confirmation',
             buttons : {
@@ -160,8 +185,7 @@ $(document).ready
             submit  : function(event, value, message, formVals) {
               if(value)
               {
-                $('#ajax_msg_restauration').html('Demande traitée...');
-                $('#ajax_info').html(responseJSON['value']);
+                $('#ajax_msg_restauration').removeAttr('class').addClass('loader').html('Demande traitée...');
                 initialiser_compteur();
                 restaurer(1);
               }

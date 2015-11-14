@@ -88,7 +88,7 @@ $(document).ready
     (
       function()
       {
-        $('#action').val('calculer');
+        $('#f_action').val('calculer');
         formulaire.submit();
       }
     );
@@ -96,7 +96,7 @@ $(document).ready
     (
       function()
       {
-        $('#action').val('enregistrer');
+        $('#f_action').val('enregistrer');
         formulaire.submit();
       }
     );
@@ -173,7 +173,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg').removeAttr('class').html("");
@@ -262,7 +262,7 @@ $(document).ready
           return false;
         }
       }
-      if( $('#action').val()=='calculer' )
+      if( $('#f_action').val()=='calculer' )
       {
         $('#bilan table tbody').hide();
       }
@@ -283,17 +283,17 @@ $(document).ready
     {
       initialiser_compteur();
       $('button').prop('disabled',false);
-      var action = $('#action').val();
+      var f_action = $('#f_action').val();
       if(responseJSON['statut']==false)
       {
         $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
-      else if(action=='calculer')
+      else if(f_action=='calculer')
       {
         $('#ajax_msg').removeAttr('class').addClass('valide').html("Simulation effectuée !");
         $('#bilan table tbody').html(responseJSON['value']).show();
       }
-      else if(action=='enregistrer')
+      else if(f_action=='enregistrer')
       {
         eval(responseJSON['value']);
         $('#ajax_msg').removeAttr('class').addClass('valide').html("Valeurs mémorisées !");

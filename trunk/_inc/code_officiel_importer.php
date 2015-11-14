@@ -322,19 +322,19 @@ if($ACTION=='uploader_saisie_csv')
     }
   }
   // Affichage du résultat de l'analyse et suppression au passage des absences de modifs
-  $list_tr = '';
   $nb_modifs = 0;
+  Json::add_row( 'html' , '<thead><tr><th colspan="3">'.html($titre).'</th></tr></thead><tbody>' );
   foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
   {
     if(isset($tab_donnees_csv[$rubrique_id]))
     {
-      $list_tr .= '<tr><th colspan="3">'.html($rubrique_nom).'</th></tr>';
+      Json::add_row( 'html' , '<tr><th colspan="3">'.html($rubrique_nom).'</th></tr>' );
       foreach($tab_donnees_csv[$rubrique_id] as $eleve_id => $tab_infos)
       {
         if(isset($tab_infos['moyenne']))
         {
           $note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? $tab_infos['moyenne']['val'] : $tab_infos['moyenne']['val'].'&nbsp;%' ;
-          $list_tr .= '<tr class="'.$tab_infos['moyenne']['mode'].'"><td>'.html($tab_eleve_id[$eleve_id]).'</td><td>Moyenne</td><td>'.$note.'</td></tr>';
+          Json::add_row( 'html' , '<tr class="'.$tab_infos['moyenne']['mode'].'"><td>'.html($tab_eleve_id[$eleve_id]).'</td><td>Moyenne</td><td>'.$note.'</td></tr>' );
           if($tab_infos['moyenne']['mode']!='idem')
           {
             $tab_donnees_csv[$rubrique_id][$eleve_id]['moyenne'] = $tab_infos['moyenne']['val'];
@@ -348,7 +348,7 @@ if($ACTION=='uploader_saisie_csv')
         if(isset($tab_infos['appreciation']))
         {
           $appreciation = $tab_infos['appreciation']['val'];
-          $list_tr .= '<tr class="'.$tab_infos['appreciation']['mode'].'"><td>'.html($tab_eleve_id[$eleve_id]).'</td><td>Appreciation</td><td>'.html($appreciation).'</td></tr>';
+          Json::add_row( 'html' , '<tr class="'.$tab_infos['appreciation']['mode'].'"><td>'.html($tab_eleve_id[$eleve_id]).'</td><td>Appreciation</td><td>'.html($appreciation).'</td></tr>' );
           if($tab_infos['appreciation']['mode']!='idem')
           {
             $tab_donnees_csv[$rubrique_id][$eleve_id]['appreciation'] = $appreciation;
@@ -362,15 +362,16 @@ if($ACTION=='uploader_saisie_csv')
       }
     }
   }
+  Json::add_row( 'html' , '</tbody>' );
   if(!$nb_modifs)
   {
     Json::end( FALSE , 'Aucune différence trouvée avec ce qui est déjà enregistré !' );
   }
   // On enregistre
   FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_nom.'_'.session_id().'.txt',serialize($tab_donnees_csv));
-  // On affiche le retour ; AJAX Upload ne permet pas de faire remonter du HTML en quantité alors on s'y prend en 2 fois...
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_nom.'_rapport.txt','<thead><tr><th colspan="3">'.html($titre).'</th></tr></thead><tbody>'.$list_tr.'</tbody>');
-  Json::end( TRUE , $fichier_nom );
+  // On affiche le retour
+  Json::add_row( 'filename' , $fichier_nom );
+  Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

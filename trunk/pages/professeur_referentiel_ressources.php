@@ -124,14 +124,23 @@ else
     <div class="sortable"><label class="tab">Mots clefs :</label><input id="chaine_recherche" value="" size="80" maxlength="256" /> <button id="liens_rechercher" type="button" class="rechercher">Chercher.</button></div>
     <div id="zone_resultat_recherche_liens"></div>
   </form>
-  <div id="zone_ressources_upload" class="hide">
+  <form action="#" method="post" id="zone_ressources_upload" class="hide">
     <h2>Mettre en ligne une ressource</h2>
     <ul class="puce">
       <li><span class="danger">Lisez la documentation afin de prendre connaissance des conditions d'utilisation !</span></li>
       <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_uploader_ressources">DOC : Mettre en ligne des ressources pour travailler.</a></span></li>
     </ul>
-    <p><input type="checkbox" id="acceptation_conditions" name="acceptation_conditions" /><label for="acceptation_conditions"> J'ai lu, j'accepte et je respecte les conditions d'utilisation de ce service.</label><br /><button id="bouton_import" type="button" class="fichier_import" disabled>Parcourir...</button> <button id="afficher_zone_ressources_form" type="button" class="retourner">Annuler.</button><label id="ajax_ressources_upload">&nbsp;</label></p>
-    <p><button id="ressources_rechercher" type="button" class="rechercher">Voir les fichiers mis en ligne dans mon établissement.</button></p>
+    <p>
+      <input type="checkbox" id="acceptation_conditions" name="acceptation_conditions" /><label for="acceptation_conditions"> J'ai lu, j'accepte et je respecte les conditions d'utilisation de ce service.</label><br />
+      <input type="hidden" id="f_ressource_action" name="f_action" value="Uploader_document" />
+      <input type="hidden" id="f_ressource_matiere" name="matiere_ref" value="" />
+      <input id="f_ressource" type="file" name="userfile" />
+      <button id="bouton_choisir_ressource" type="button" class="fichier_import" disabled>Parcourir...</button>
+      <button id="afficher_zone_ressources_form" type="button" class="retourner">Annuler.</button><label id="ajax_ressources_upload">&nbsp;</label>
+    </p>
+    <p>
+      <button id="ressources_rechercher" type="button" class="rechercher">Voir les fichiers mis en ligne dans mon établissement.</button>
+    </p>
     <div id="zone_resultat_recherche_ressources"></div>
-  </div>
+  </form>
 </div>

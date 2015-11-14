@@ -119,7 +119,7 @@ if( ($action=='initialiser_mdp') && $partenaire_id && $denomination && $nom && $
   // Générer un nouveau mdp
   $password = fabriquer_mdp();
   // Mettre à jour l'enregistrement
-  DB_WEBMESTRE_WEBMESTRE::DB_modifier_partenaire_conventionne_mdp($partenaire_id,crypter_mdp($password));
+  DB_WEBMESTRE_WEBMESTRE::DB_modifier_partenaire_conventionne_mdp( $partenaire_id , crypter_mdp($password) );
   // Envoyer un courriel
   $courriel_contenu = Webmestre::contenu_courriel_partenaire_nouveau_mdp( $denomination , $nom , $prenom , $password , URL_DIR_SACOCHE );
   $courriel_bilan = Sesamail::mail( $courriel , 'Modification mdp compte partenaire ENT' , $courriel_contenu );

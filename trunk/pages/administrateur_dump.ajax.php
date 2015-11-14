@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $etape  = (isset($_POST['etape']))    ? Clean::entier($_POST['etape'])   : 0;
@@ -101,7 +101,7 @@ if($action=='uploader')
   if($code_erreur)
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<li><label class="alerte">Cette archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>' );
+    Json::end( FALSE , 'Cette archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
   // Vérifier le contenu : noms des fichiers
@@ -109,22 +109,22 @@ if($action=='uploader')
   if(!$fichier_taille_maximale)
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<li><label class="alerte">Cette archive ZIP ne semble pas contenir les fichiers d\'une sauvegarde de la base effectuée par SACoche !</label></li>' );
+    Json::end( FALSE , 'Cette archive ZIP ne semble pas contenir les fichiers d\'une sauvegarde de la base effectuée par SACoche !' );
   }
   // Vérifier le contenu : taille des requêtes
   if( !verifier_taille_requetes($fichier_taille_maximale) )
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<li><label class="alerte">Cette archive ZIP contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></li>' );
+    Json::end( FALSE , 'Cette archive ZIP contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !' );
   }
   // Vérifier le contenu : version de la base compatible avec la version logicielle
   if( version_base_fichier_svg($dossier_temp) > VERSION_BASE_STRUCTURE )
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<li><label class="alerte">Cette archive ZIP contient une sauvegarde plus récente que celle supportée par cette installation ! Le webmestre doit préalablement mettre à jour le programme...</label></li>' );
+    Json::end( FALSE , 'Cette archive ZIP contient une sauvegarde plus récente que celle supportée par cette installation ! Le webmestre doit préalablement mettre à jour le programme...' );
   }
   // Afficher le retour
-  Json::end( TRUE , '<li><label class="valide">Contenu du fichier récupéré avec succès.</label></li>' );
+  Json::end( TRUE , $_FILES['userfile']['name'] );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

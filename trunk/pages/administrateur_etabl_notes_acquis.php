@@ -132,11 +132,11 @@ foreach($DB_TAB as $DB_ROW)
 
 <hr />
 
-<form action="#" method="post" id="zone_notes" class="hide">
+<form action="#" method="post" id="form_symbole" class="hide">
   <p class="astuce">Cliquer sur un symbole coloré ou <button id="bouton_annuler_note" type="button" class="retourner">Annuler / Retour</button>.</p>
   <h3>Symboles fournis avec <em>SACoche</em></h3>
   <div id="notes_sacoche" class="note_liste"><?php echo implode('</div>'.NL.'<div class="note_liste">',$tab_notes_sacoche) ?></div>
   <h3 style="clear:both">Symboles spécifiques (établissement)</h3>
-  <p><label class="tab" for="f_upload">Uploader image :</label><button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label></p>
+  <p><label class="tab" for="f_symbole">Uploader image :</label><input type="hidden" name="f_action" value="upload_symbole" /><input id="f_symbole" type="file" name="userfile" /><button id="bouton_choisir_symbole" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_symbole">&nbsp;</label></p>
   <div id="notes_perso" class="note_liste"><?php echo implode('',$tab_notes_perso) ?></div>
 </form>

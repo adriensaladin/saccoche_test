@@ -26,9 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['action']!='Voir')){exit('Action désactivée pour la démo...');}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Voir')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action      = (isset($_POST['action']))      ? Clean::texte($_POST['action'])       : '';
+$action      = (isset($_POST['f_action']))    ? Clean::texte($_POST['f_action'])     : '';
 $contexte    = (isset($_POST['contexte']))    ? Clean::texte($_POST['contexte'])     : '';  // n1 | n2 | n3
 $granulosite = (isset($_POST['granulosite'])) ? Clean::texte($_POST['granulosite'])  : '';  // referentiel | domaine | theme
 $matiere_id  = (isset($_POST['matiere']))     ? Clean::entier($_POST['matiere'])     : 0;

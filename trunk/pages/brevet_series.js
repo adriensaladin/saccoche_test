@@ -135,8 +135,8 @@ $(document).ready
         (
           {
             type : 'POST',
-            url : 'ajax.php?page='+PAGE+'&action=associer',
-            data : 'csrf='+CSRF+'&f_serie='+f_serie+'&f_eleve='+tab_eleve,
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=associer'+'&f_serie='+f_serie+'&f_eleve='+tab_eleve,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -170,8 +170,8 @@ $(document).ready
     (
       {
         type : 'POST',
-        url : 'ajax.php?page='+PAGE+'&action=initialiser',
-        data : 'csrf='+CSRF,
+        url : 'ajax.php?page='+PAGE,
+        data : 'csrf='+CSRF+'&f_action=initialiser',
         dataType : 'json',
         error : function(jqXHR, textStatus, errorThrown)
         {

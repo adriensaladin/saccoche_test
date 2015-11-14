@@ -60,8 +60,8 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==true)
               {
-                $.fancybox( '<label class="valide">'+"Bascule réussie ; actualisation en cours&hellip;"+'</label>' , { 'minWidth':400 , 'centerOnScroll':true } );
-                document.location.reload();
+                $.fancybox( '<label class="valide">'+"Bascule réussie ; redirection en cours&hellip;"+'</label>' , { 'minWidth':400 , 'centerOnScroll':true } );
+                document.location.href = './index.php?page=compte_accueil';
               }
               else
               {
@@ -223,7 +223,7 @@ $(document).ready
       }
     );
 
-    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg_gestion').removeAttr('class').html("");

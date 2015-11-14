@@ -189,7 +189,7 @@ $(document).ready
       }
       else
       {
-        $('#ajax_maj').removeAttr('class').addClass('loader').html('Etape '+etape_numero+' - '+etape_info);
+        $('#ajax_maj').removeAttr('class').addClass('loader').html('Etape '+etape_numero+' - '+etape_info['value']);
         $.ajax
         (
           {
@@ -213,7 +213,7 @@ $(document).ready
               }
               else
               {
-                maj_etape(responseJSON['value']);
+                maj_etape(responseJSON);
               }
             }
           }

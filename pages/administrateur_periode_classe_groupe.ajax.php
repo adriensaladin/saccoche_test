@@ -26,9 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
-$action     = (isset($_POST['f_action']))     ? $_POST['f_action']                     : '';
+$action     = (isset($_GET['action']))        ? $_GET['action']                        : '';
 $date_debut = (isset($_POST['f_date_debut'])) ? Clean::date_fr($_POST['f_date_debut']) : '';
 $date_fin   = (isset($_POST['f_date_fin']))   ? Clean::date_fr($_POST['f_date_fin'])   : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...

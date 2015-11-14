@@ -69,7 +69,7 @@ $cnil_dates_class     = intval(CNIL_NUMERO) ? 'show' : 'hide' ;
 
 <h2>Logos disponibles</h2>
 <form action="#" method="post" id="form_logo"><fieldset>
-  <label class="tab" for="f_import_logo">Uploader image :</label><input type="hidden" name="f_action" value="upload_logo" /><input id="f_import_logo" type="file" name="userfile" /><button id="bouton_choisir_logo" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_logo">&nbsp;</label>
+  <label class="tab" for="f_upload">Uploader un logo :</label><button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label>
   <p><label id="ajax_listing"></label></p>
   <ul class="puce" id="listing_logos">
     <li></li>

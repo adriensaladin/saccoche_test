@@ -43,7 +43,7 @@ $TITRE = html(Lang::_("Sauvegarder / Restaurer la base"));
 <h2>Restaurer la base</h2>
 <div class="danger b">Restaurer une sauvegarde antérieure écrasera irrémédiablement les données actuelles !</div>
 <form action="#" method="post" id="form_restauration"><fieldset>
-  <label class="tab" for="bouton_restauration">Uploader le fichier :</label><input type="hidden" name="f_action" value="uploader" /><input id="f_restauration" type="file" name="userfile" /><button id="bouton_restauration" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_restauration">&nbsp;</label>
+  <label class="tab" for="bouton_restauration">Uploader le fichier :</label><button id="bouton_restauration" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_restauration">&nbsp;</label>
 </fieldset></form>
 
 <hr />

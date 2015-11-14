@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $action     = (isset($_POST['f_action']))    ? Clean::texte($_POST['f_action'])    : '';
 $famille_id = (isset($_POST['f_famille']))   ? Clean::entier($_POST['f_famille'])  : 0 ;
@@ -176,7 +176,7 @@ if( ($action=='deplacer_referentiels') && $id_avant && $id_apres && ($id_avant!=
   $is_ok = DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
   if(!$is_ok)
   {
-    Json::end( FALSE , 'La nouvelle matière contient déjà des données !' );
+    Json::end( FALSE , 'Erreur : la nouvelle matière contient déjà des données !' );
   }
   // Retirer l'ancienne matière partagée || Supprimer l'ancienne matière spécifique existante
   if($id_avant>ID_MATIERE_PARTAGEE_MAX)

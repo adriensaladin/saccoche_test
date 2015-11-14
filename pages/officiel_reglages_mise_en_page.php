@@ -168,12 +168,7 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
 <form action="#" method="post" id="form_tampon">
   <hr />
   <h2></h2>
-  <p>
-    <label class="tab" for="f_signature">Uploader image :</label> concernant <?php echo $select_user ?> <input id="f_signature" type="file" name="userfile" /><button id="bouton_choisir_signature" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_upload_signature">&nbsp;</label>
-    <input type="hidden" name="f_action" value="upload_signature" />
-    <input type="hidden" id="f_upload_user_id" name="f_user_id" value="" />
-    <input type="hidden" id="f_upload_user_texte" name="f_user_texte" value="" />
-  </p>
+  <p><label class="tab" for="f_upload">Uploader image :</label> concernant <?php echo $select_user ?> <button id="f_upload" type="button" class="fichier_import">Parcourir...</button><label id="ajax_upload">&nbsp;</label></p>
 </form>
 <h3>Images enregistrées</h3>
 <ul class="puce" id="listing_signatures"><?php echo $li_signatures ?></ul>

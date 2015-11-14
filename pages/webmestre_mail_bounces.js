@@ -83,7 +83,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_1(formData, jqForm, options)
     {
       $('#ajax_msg_1').removeAttr('class').html("");
@@ -171,7 +171,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_2(formData, jqForm, options)
     {
       $('#ajax_msg_2').removeAttr('class').html("");

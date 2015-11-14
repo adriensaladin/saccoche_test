@@ -170,26 +170,17 @@ function afficher_json_message_erreur(jqXHR, textStatus)
   {
     var pos_debut_json = jqXHR['responseText'].indexOf('{"');
     var chaine_anormale = (pos_debut_json>0) ? jqXHR['responseText'].substr(0,pos_debut_json) : jqXHR['responseText'] ;
-    return 'Anomalie rencontrée : ' + strip_tags(chaine_anormale);
+    return 'Anomalie rencontrée ! ' + strip_tags(chaine_anormale);
   }
-  // textStatus parmi [ null | "timeout" | "error" | "abort" ]
+  // Rien de retourné : probablement un souci de connexion au serveur
+  else if( (textStatus=='error') && (typeof(jqXHR['responseText'])=='undefined') )
+  {
+    return 'Échec de la connexion au serveur !';
+  }
+  // 404 ou autre...
   else
   {
-    if(jqXHR['status'])
-    {
-      // 404 par exemple...
-      return 'Erreur '+jqXHR['status']+' : '+jqXHR['statusText'];
-    }
-    else if(typeof(jqXHR['responseText'])!=='undefined')
-    {
-      // Je ne sais pas si on peut passer ici...
-      return 'Erreur inattendue : ' + escapeHtml(jqXHR['responseText']);
-    }
-    else
-    {
-      // Si le serveur est KO alors textStatus="error" et jqXHR ne contient aucune info exploitable
-      return 'Échec de la connexion au serveur !';
-    }
+    return 'Erreur inattendue ! ' + escapeHtml(jqXHR['responseText']);
   }
 }
 
@@ -1034,7 +1025,7 @@ if(typeof(navigator.cookieEnabled)!="undefined")
 else
 {
   document.cookie = "test";
-  var accepteCookies = (document.cookie.indexOf("test") !== -1) ? true : false ;
+  var accepteCookies = (document.cookie.indexOf("test") != -1) ? true : false ;
 }
 if(!accepteCookies)
 {
@@ -1431,19 +1422,6 @@ $(document).ready
     );
 
     /**
-     * Clic sur un bouton pour choisir un fichier à uploader (le input[type=file] n'étant pas stylisable, il est caché)
-     */
-    $(document).on
-    (
-      'click',
-      'button.fichier_import',
-      function()
-      {
-        $(this).prev('input[type=file]').click();
-      }
-    );
-
-    /**
      * Gestion de la durée d'inactivité
      *
      * Fonction tester_compteur() à appeler régulièrement (un diviseur de 60s).
@@ -1673,7 +1651,7 @@ $(document).ready
                             + '<p class="b">'+item_nom+'</p>'
                             + '<p><label class="tab">Destinaire(s) :</label><select name="f_prof_id">'+responseJSON['value']+'</select></p>'
                             + '<p><label class="tab">Message (facultatif) :</label><textarea id="zone_message" name="f_message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
-                            + '<div><label class="tab">Document (facultatif) :</label><input id="f_demande_evaluation_document" type="file" name="userfile" /><button id="bouton_choisir_demande_evaluation_document" type="button" class="fichier_import">Choisir un fichier.</button><label id="ajax_demande_evaluation_document"></label><input type="hidden" id="f_demande_evaluation_action" name="f_action" value="" /><input id="f_doc_nom" name="f_doc_nom" type="hidden" value="" /></div>'
+                            + '<div><label class="tab">Document (facultatif) :</label><button id="bouton_upload_demande_document" type="button" class="fichier_import">Choisir un fichier.</button><label id="ajax_upload_demande_document">&nbsp;</label><input id="f_doc_nom" name="f_doc_nom" type="hidden" value="" /></div>'
                             + '<p><span class="tab"></span><input name="f_matiere_id" type="hidden" value="'+matiere_id+'" /><input name="f_item_id" type="hidden" value="'+item_id+'" /><input name="f_score" type="hidden" value="'+score+'" />'
                             + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
                             + '</form>';
@@ -1687,87 +1665,60 @@ $(document).ready
                     afficher_textarea_reste( $(this) , nb_caracteres_max );
                   }
                 );
-                // Le formulaire qui va être analysé et traité en AJAX
-                var formulaire_demande_evaluation = $('#form_demande_evaluation');
-                // Options d'envoi du formulaire (avec jquery.form.js)
-                var ajaxOptions_demande_evaluation =
+                // Fonction à définir avant new AjaxUpload() sinon Firefox plante
+                function verifier_demande_document(fichier_nom,fichier_extension)
                 {
-                  url : 'ajax.php?page=evaluation_demande_eleve_ajout',
-                  type : 'POST',
-                  dataType : 'json',
-                  clearForm : false,
-                  resetForm : false,
-                  target : "#ajax_demande_evaluation_document",
-                  error : retour_form_erreur_demande_evaluation,
-                  success : retour_form_valide_demande_evaluation
-                };
-
-                // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
-                $('#f_demande_evaluation_document').change
-                (
-                  function()
+                  if (fichier_nom==null || fichier_nom.length<5)
                   {
-                    var file = this.files[0];
-                    if( typeof(file) == 'undefined' )
-                    {
-                      $('#ajax_demande_evaluation_document').removeAttr('class').html('');
-                      return false;
-                    }
-                    else
-                    {
-                      $('#f_doc_nom').val('');
-                      $('#f_demande_evaluation_action').val('uploader_document');
-                      var fichier_nom = file.name;
-                      var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
-                      if( '.bat.com.exe.php.zip.'.indexOf('.'+fichier_ext+'.') !== -1 )
-                      {
-                        $('#ajax_demande_evaluation_document').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
-                        return false;
-                      }
-                      else
-                      {
-                        $("#bouton_choisir_demande_evaluation_document").prop('disabled',true);
-                        $('#ajax_demande_evaluation_document').removeAttr('class').addClass('loader').html("En cours&hellip;");
-                        formulaire_demande_evaluation.submit();
-                      }
-                    }
-                  }
-                );
-                // Envoi du formulaire (avec jquery.form.js)
-                formulaire_demande_evaluation.submit
-                (
-                  function()
-                  {
-                    $(this).ajaxSubmit(ajaxOptions_demande_evaluation);
+                    $('#f_doc_nom').val('');
+                    $('#ajax_upload_demande_document').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
                     return false;
                   }
-                ); 
-                // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-                function retour_form_erreur_demande_evaluation(jqXHR, textStatus, errorThrown)
-                {
-                  $('#f_demande_evaluation_document').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-                  $("#bouton_choisir_demande_evaluation_document").prop('disabled',false);
-                  $('#ajax_demande_evaluation_document').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                  else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
+                  {
+                    $('#f_doc_nom').val('');
+                    $('#ajax_upload_demande_document').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
+                    return false;
+                  }
+                  else
+                  {
+                    $('#f_doc_nom').val('');
+                    $('#bouton_upload_demande_document').prop('disabled',true);
+                    $('#ajax_upload_demande_document').removeAttr('class').addClass('loader').html("En cours&hellip;");
+                    return true;
+                  }
                 }
-                // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-                function retour_form_valide_demande_evaluation(responseJSON)
+                // Fonction à définir avant new AjaxUpload() sinon Firefox plante
+                function retourner_demande_document(fichier_nom,responseJSON)
                 {
-                  $('#f_demande_evaluation_document').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-                  $("#bouton_choisir_demande_evaluation_document").prop('disabled',false);
+                  fichier_extension = fichier_nom.split('.').pop();
                   if(responseJSON['statut']==false)
                   {
-                    $('#ajax_demande_evaluation_document').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                    $('#ajax_upload_demande_document').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                   }
                   else
                   {
                     initialiser_compteur();
                     var doc_nom = responseJSON['nom'];
                     var doc_url = responseJSON['url'];
-                    var doc_ext = doc_url.split('.').pop().toLowerCase();
                     $('#f_doc_nom').val(doc_nom);
-                    $('#ajax_demande_evaluation_document').removeAttr('class').addClass('valide').html('<a href="'+doc_url+'" target="_blank">'+doc_nom+'</a>');
+                    $('#ajax_upload_demande_document').removeAttr('class').addClass('valide').html('<a href="'+doc_url+'" target="_blank">'+fichier_nom+'</a>');
                   }
+                  $('#bouton_upload_demande_document').prop('disabled',false);
                 }
+                // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
+                var upload_demande_document = new AjaxUpload
+                ('#bouton_upload_demande_document',
+                  {
+                    action: 'ajax.php?page=evaluation_demande_eleve_ajout',
+                    name: 'userfile',
+                    data: {'f_action':'uploader_document'},
+                    autoSubmit: true,
+                    responseType: 'json',
+                    onSubmit: verifier_demande_document,
+                    onComplete: retourner_demande_document
+                  }
+                );
               }
               $('#form_demande_evaluation button').prop('disabled',false);
             }
@@ -1800,7 +1751,6 @@ $(document).ready
       '#confirmer_demande_evaluation',
       function()
       {
-        $('#f_demande_evaluation_action').val('confirmer_ajout');
         $('#form_demande_evaluation button').prop('disabled',true);
         $('#ajax_msg_confirmer_demande').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
@@ -1808,7 +1758,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=evaluation_demande_eleve_ajout',
-            data : $("#form_demande_evaluation").serialize(),
+            data : 'f_action=confirmer_ajout'+'&'+$("#form_demande_evaluation").serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

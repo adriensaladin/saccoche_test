@@ -428,7 +428,7 @@ public static function DB_modifier_partenaire_conventionne($partenaire_id,$denom
 public static function DB_modifier_partenaire_conventionne_mdp($partenaire_id,$password_crypte)
 {
   $DB_SQL = 'UPDATE sacoche_partenaire ';
-  $DB_SQL.= 'SET partenaire_password=:password_crypte ';
+  $DB_SQL.= 'SET partenaire_courriel=:password_crypte ';
   $DB_SQL.= 'WHERE partenaire_id=:partenaire_id ';
   $DB_VAR = array(
     ':partenaire_id'   => $partenaire_id,

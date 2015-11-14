@@ -637,7 +637,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
       if(bilan_affiche)

@@ -598,7 +598,6 @@ button[disabled]:hover,button[disabled].hover{cursor:not-allowed}
 button img{width:16px;height:16px}
 
 /* input / select / textarea */
-input[type=file]{position:absolute;top:0;left:0;opacity:0;width:0;height:0} /* on cache ce input[type=file] qui n'est pas stylisable, mais sans "visibility:hidden" susceptible d'être ignoré par les navigateurs (Safari ?) par raison de sécurité */
 input[type=radio],input[type=checkbox],input[type=image] {vertical-align:-2px}
 input[type=text],input[type=password],select,textarea {margin:1px 0;background:#FFF;color:#000;border:1px solid #66F;}
 input[readonly],input[disabled] {color:#666;border:1px solid #666;}

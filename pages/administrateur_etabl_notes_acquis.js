@@ -78,7 +78,7 @@ $(document).ready
       function()
       {
         mode_note_code = $(this).prev('input').attr('id').substring(11); // note_image_
-        $.fancybox( { 'href':'#form_symbole' , onStart:function(){$('#form_symbole').css("display","block");} , onClosed:function(){$('#form_symbole').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+        $.fancybox( { 'href':'#zone_notes' , onStart:function(){$('#zone_notes').css("display","block");} , onClosed:function(){$('#zone_notes').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
       }
     );
 
@@ -596,88 +596,65 @@ $(document).ready
       }
     );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du formulaire #form_symbole
-    // Upload d'un fichier (avec jquery.form.js)
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Upload d'un fichier image avec jquery.ajaxupload.js
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire_symbole = $('#form_symbole');
-
-    // Options d'envoi du formulaire (avec jquery.form.js)
-    var ajaxOptions_symbole =
-    {
-      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-      type : 'POST',
-      dataType : 'json',
-      clearForm : false,
-      resetForm : false,
-      target : "#ajax_msg_symbole",
-      error : retour_form_erreur_symbole,
-      success : retour_form_valide_symbole
-    };
-
-    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
-    $('#f_symbole').change
-    (
-      function()
+    // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
+    var uploader_signature = new AjaxUpload
+    ('#f_upload',
       {
-        var file = this.files[0];
-        if( typeof(file) == 'undefined' )
-        {
-          $('#ajax_msg_symbole').removeAttr('class').html('');
-          return false;
-        }
-        else
-        {
-          var fichier_nom = file.name;
-          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
-          if( '.bmp.gif.jpg.jpeg.png.'.indexOf('.'+fichier_ext+'.') == -1 )
-          {
-            $('#ajax_msg_symbole').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (bmp gif jpg jpeg png).');
-            return false;
-          }
-          else
-          {
-            $("#bouton_choisir_symbole").prop('disabled',true);
-            $('#ajax_msg_symbole').removeAttr('class').addClass('loader').html("En cours&hellip;");
-            formulaire_symbole.submit();
-          }
-        }
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_action':'upload_symbole'},
+        autoSubmit: true,
+        responseType: 'json',
+        onChange: changer_fichier,
+        onSubmit: verifier_fichier,
+        onComplete: retourner_fichier
       }
     );
 
-    // Envoi du formulaire (avec jquery.form.js)
-    formulaire_symbole.submit
-    (
-      function()
-      {
-        $(this).ajaxSubmit(ajaxOptions_symbole);
-        return false;
-      }
-    ); 
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_erreur_symbole(jqXHR, textStatus, errorThrown)
+    function changer_fichier(fichier_nom,fichier_extension)
     {
-      $('#f_symbole').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-      $("#bouton_choisir_symbole").prop('disabled',false);
-      $('#ajax_msg_symbole').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $("#f_upload").prop('disabled',true);
+      $('#ajax_upload').removeAttr('class').html('&nbsp;');
+      return true;
     }
 
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide_symbole(responseJSON)
+    function verifier_fichier(fichier_nom,fichier_extension)
     {
-      $('#f_symbole').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-      $("#bouton_choisir_symbole").prop('disabled',false);
+      if (fichier_nom==null || fichier_nom.length<5)
+      {
+        $("#f_upload").prop('disabled',false);
+        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        return false;
+      }
+      else if ('.gif.png.bmp.jpg.jpeg.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
+      {
+        $("#f_upload").prop('disabled',false);
+        $('#ajax_upload').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension d\'image autorisée (gif png bmp jpg jpeg).');
+        return false;
+      }
+      else
+      {
+        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        return true;
+      }
+    }
+
+    function retourner_fichier(fichier_nom,responseJSON)
+    {
+      $("#f_upload").prop('disabled',false);
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_symbole').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_msg_symbole').removeAttr('class').addClass('valide').html('Image ajoutée');
+        $('#ajax_upload').removeAttr('class').addClass('valide').html('Image ajoutée');
         $('#notes_perso').append(responseJSON['value']);
       }
     }

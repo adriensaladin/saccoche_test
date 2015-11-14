@@ -35,7 +35,6 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var listing_id = new Array();
-    var f_action = '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Demande d'export des bases => soumission du formulaire
@@ -171,128 +170,126 @@ $(document).ready
       $('#bouton_exporter').click();
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du formulaire #form_importer
-    // Upload d'un fichier (avec jquery.form.js)
-    // Réagir au clic sur un bouton pour uploader un fichier csv ou zip à importer
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Réagir au clic sur un bouton pour uploader un fichier csv ou zip à importer
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire_import = $('#form_importer');
-
-    // Options d'envoi du formulaire (avec jquery.form.js)
-    var ajaxOptions_import =
-    {
-      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-      type : 'POST',
-      dataType : 'json',
-      clearForm : false,
-      resetForm : false,
-      target : "#ajax_msg",
-      error : retour_form_erreur_import,
-      success : retour_form_valide_import
-    };
-
-    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
-    $('#f_import').change
-    (
-      function()
+    // Envoi du fichier avec jquery.ajaxupload.js
+    new AjaxUpload
+    ('#bouton_form_csv',
       {
-        var file = this.files[0];
-        if( typeof(file) == 'undefined' )
-        {
-          $('#ajax_msg_'+f_action).removeAttr('class').html('');
-          return false;
-        }
-        else
-        {
-          var fichier_nom = file.name;
-          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
-          if ( (f_action=='importer_csv') && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
-          {
-            $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
-            return false;
-          }
-          else if ( (f_action=='importer_zip') && (fichier_ext!='zip') )
-          {
-            $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "zip".');
-            return false;
-          }
-          else
-          {
-            $('#form_importer button').prop('disabled',true);
-            $('#ajax_msg_'+f_action).removeAttr('class').addClass('loader').html("En cours&hellip;");
-            formulaire_import.submit();
-          }
-        }
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_action':'importer_csv'},
+        autoSubmit: true,
+        responseType: 'json',
+        onChange: changer_fichier_csv,
+        onSubmit: verifier_fichier_csv,
+        onComplete: retourner_fichier_csv
+      }
+    );
+    new AjaxUpload
+    ('#bouton_form_zip',
+      {
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_action':'importer_zip'},
+        autoSubmit: true,
+        responseType: 'json',
+        onChange: changer_fichier_zip,
+        onSubmit: verifier_fichier_zip,
+        onComplete: retourner_fichier_zip
       }
     );
 
-    // Envoi du formulaire (avec jquery.form.js)
-    formulaire_import.submit
-    (
-      function()
-      {
-        $(this).ajaxSubmit(ajaxOptions_import);
-        return false;
-      }
-    ); 
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
+    function changer_fichier_csv(fichier_nom,fichier_extension)
     {
-      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-      $('#form_importer button').prop('disabled',false);
-      $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_csv').removeAttr('class').html('&nbsp;');
+      return true;
     }
 
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide_import(responseJSON)
+    function changer_fichier_zip(fichier_nom,fichier_extension)
     {
-      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-      $('#form_importer button').prop('disabled',false);
+      $('#ajax_msg_zip').removeAttr('class').html('&nbsp;');
+      return true;
+    }
+
+    function verifier_fichier_csv(fichier_nom,fichier_extension)
+    {
+      if (fichier_nom==null || fichier_nom.length<5)
+      {
+        $('#ajax_msg_csv').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        return false;
+      }
+      else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
+      {
+        $('#ajax_msg_csv').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+        return false;
+      }
+      else
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_msg_csv').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        return true;
+      }
+    }
+
+    function verifier_fichier_zip(fichier_nom,fichier_extension)
+    {
+      if (fichier_nom==null || fichier_nom.length<5)
+      {
+        $('#ajax_msg_zip').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        return false;
+      }
+      else if (fichier_extension!='zip')
+      {
+        $('#ajax_msg_zip').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "zip".');
+        return false;
+      }
+      else
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_msg_zip').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        return true;
+      }
+    }
+
+    function retourner_fichier_csv(fichier_nom,responseJSON)
+    {
+      $('button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
-        if(f_action=='importer_csv')
-        {
-          $('#div_zip , #div_import , #div_info_import , #structures').hide('fast');
-        }
-        else
-        {
-          $('#div_import , #div_info_import , #structures').hide('fast');
-        }
+        $('#ajax_msg_csv').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#div_zip , #div_import , #div_info_import , #structures').hide('fast');
       }
       else
       {
         initialiser_compteur();
-        if(f_action=='importer_csv')
-        {
-          $('#ajax_msg_'+f_action).removeAttr('class').addClass('valide').html("Fichier bien reçu ; "+responseJSON['value']+".");
-          $('#div_import , #div_info_import , #structures').hide('fast');
-          $('#ajax_msg_zip').removeAttr('class').html('&nbsp;');
-          $('#div_zip').show('fast');
-        }
-        else
-        {
-          $('#ajax_msg_'+f_action).removeAttr('class').addClass('valide').html("Fichier bien reçu ; sauvegarde(s) extraite(s).");
-          $('#div_info_import , #structures').hide('fast');
-          $('#div_import').show('fast');
-          $('#ajax_import_num').html(1);
-          $('#ajax_import_max').html(responseJSON['value']);
-        }
+        $('#ajax_msg_csv').removeAttr('class').addClass('valide').html("Fichier bien reçu ; "+responseJSON['value']+".");
+        $('#div_import , #div_info_import , #structures').hide('fast');
+        $('#ajax_msg_zip').removeAttr('class').html('&nbsp;');
+        $('#div_zip').show('fast');
       }
     }
 
-    $('button.fichier_import').click
-    (
-      function()
+    function retourner_fichier_zip(fichier_nom,responseJSON)
+    {
+      $('button').prop('disabled',false);
+      if(responseJSON['statut']==false)
       {
-        f_action = $(this).attr('id');
-        $('#f_upload_action').val(f_action); // importer_csv | importer_zip
-        $('#f_import').click();
+        $('#ajax_msg_zip').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#div_import , #div_info_import , #structures').hide('fast');
       }
-    );
+      else
+      {
+        initialiser_compteur();
+        $('#ajax_msg_zip').removeAttr('class').addClass('valide').html("Fichier bien reçu ; sauvegarde(s) extraite(s).");
+        $('#div_info_import , #structures').hide('fast');
+        $('#div_import').show('fast');
+        $('#ajax_import_num').html(1);
+        $('#ajax_import_max').html(responseJSON['value']);
+      }
+    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Demande d'import des bases => soumission du formulaire
@@ -349,7 +346,7 @@ $(document).ready
               {
                 $('#ajax_msg_import').removeAttr('class').addClass('valide').html('');
                 $('#puce_info_import').html('<li>Import terminé !</li>');
-                $('#ajax_msg_importer_csv , #ajax_msg_importer_zip , #ajax_msg_import').removeAttr('class').html('');
+                $('#ajax_msg_csv , #ajax_msg_zip , #ajax_msg_import').removeAttr('class').html('&nbsp;');
                 $('#div_zip , #div_import').hide('fast');
                 $('#structures').show('fast');
                 $("button").prop('disabled',false);

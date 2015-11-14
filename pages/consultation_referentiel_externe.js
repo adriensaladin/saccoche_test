@@ -52,7 +52,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=Afficher_structures',
+          data : 'csrf='+CSRF+'&action=Afficher_structures',
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -218,7 +218,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=Lister_referentiels'+'&f_matiere_id='+matiere_id+'&f_niveau_id='+niveau_id+'&f_structure_id='+structure_id,
+            data : 'csrf='+CSRF+'&action=Lister_referentiels'+'&matiere_id='+matiere_id+'&niveau_id='+niveau_id+'&structure_id='+structure_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -267,7 +267,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=Voir_referentiel'+'&f_referentiel_id='+referentiel_id,
+            data : 'csrf='+CSRF+'&action=Voir_referentiel'+'&referentiel_id='+referentiel_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

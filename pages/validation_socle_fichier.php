@@ -46,7 +46,7 @@ $msg_cnil         = ($test_cnil)         ? '<label class="valide">Déclaration n
 $msg_id_sconet    = ($test_id_sconet)    ? '<label class="valide">Identifiants élèves présents.</label>'                                                                                                   : '<label class="alerte">'.$nb_eleves_sans_sconet.' élève'.$s.' trouvé'.$s.' sans identifiant Sconet.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_sconet">DOC</a></span>' ;
 $msg_key_sesamath = ($test_key_sesamath) ? '<label class="valide">Etablissement identifié sur le serveur communautaire.</label>'                                                                           : '<label class="erreur">Identification non effectuée par un administrateur.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure">DOC</a></span>' ;
 
-$bouton_export_lpc = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bouton_export" class="fichier_export enabled"' : 'id="disabled_export" class="fichier_export" disabled' ; /* la classe .enabled sert pour javascript */
+$bouton_export_lpc = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bouton_export" class="fichier_export enabled"' : 'id="disabled_export" class="fichier_export" disabled' ;
 ?>
 
 <?php
@@ -58,7 +58,7 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
 
 <hr />
 
-<form action="#" method="post" id="form_principal">
+<form action="#" method="post">
 
   <fieldset>
     <label class="tab" for="f_choix_principal">Procédure :</label>
@@ -76,10 +76,6 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
     </select><br />
   </fieldset>
 
-</form>
-
-<form action="#" method="post" id="form_export">
-
   <fieldset id="fieldset_export" class="hide">
     <hr />
     <p>
@@ -87,6 +83,7 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
       <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
     </p>
   </fieldset>
+
   <fieldset id="fieldset_export_lpc" class="hide">
     <label class="tab">UAI :</label><?php echo $msg_uai ?><br />
     <label class="tab">CNIL :</label><?php echo $msg_cnil ?><br />
@@ -97,15 +94,11 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
 
   <fieldset id="fieldset_export_sacoche" class="hide">
     <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
-    <span class="tab"></span><button type="button" id="export_sacoche" class="fichier_export enabled">Générer le fichier.</button><?php /* la classe .enabled sert pour javascript */ ?>
+    <span class="tab"></span><button type="button" id="export_sacoche" class="fichier_export enabled">Générer le fichier.</button>
   </fieldset>
 
-</form>
-
-<form action="#" method="post" id="form_import">
-
   <fieldset id="fieldset_import" class="hide">
-    <hr /><input type="hidden" id="f_action" name="f_action" value="" /><input id="f_import" type="file" name="userfile" />
+    <hr />
   </fieldset>
 
   <fieldset id="fieldset_import_lpc" class="hide">
@@ -115,13 +108,13 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
 
   <fieldset id="fieldset_import_sacoche" class="hide">
     <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
-    <p><span class="tab"></span><button type="button" id="import_sacoche" class="fichier_import enabled">Transmettre le fichier.</button></p><?php /* la classe .enabled sert pour javascript */ ?>
+    <p><span class="tab"></span><button type="button" id="import_sacoche" class="fichier_import enabled">Transmettre le fichier.</button></p>
   </fieldset>
 
   <fieldset id="fieldset_import_compatible" class="hide">
     <p class="astuce">On peut importer dans <em>SACoche</em> un fichier obtenu depuis un logiciel compatible avec <em>LPC</em> : <em>Gibii</em>, <em>Pronote</em>, <em>Educ-Horus</em>, <em>Campus</em>, etc.</p>
     <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?>
-    <p><span class="tab"></span><button type="button" id="import_compatible" class="fichier_import enabled">Transmettre le fichier.</button></p><?php /* la classe .enabled sert pour javascript */ ?>
+    <p><span class="tab"></span><button type="button" id="import_compatible" class="fichier_import enabled">Transmettre le fichier.</button></p>
   </fieldset>
 
 </form>

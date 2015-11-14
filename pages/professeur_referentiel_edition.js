@@ -99,7 +99,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=Voir'+'&matiere='+matiere_id,
+            data : 'csrf='+CSRF+'&action=Voir'+'&matiere='+matiere_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -573,7 +573,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=add'+'&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
+            data : 'csrf='+CSRF+'&action=add'+'&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -698,7 +698,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=edit'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
+            data : 'csrf='+CSRF+'&action=edit'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -817,7 +817,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=del'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom),
+          data : 'csrf='+CSRF+'&action=del'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -877,7 +877,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=fus'+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom)+'&nom2='+encodeURIComponent(element2_nom),
+            data : 'csrf='+CSRF+'&action=fus'+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&element2='+element2_id+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom)+'&nom2='+encodeURIComponent(element2_nom),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -994,7 +994,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=move'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id2='+tab_id2+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom),
+            data : 'csrf='+CSRF+'&action=move'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&tab_id='+tab_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id2='+tab_id2+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&nom='+encodeURIComponent(element_nom),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1147,7 +1147,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=lister_options'+'&granulosite='+granulosite+'&id_matieres='+id_matieres,
+          data : 'csrf='+CSRF+'&action=lister_options'+'&granulosite='+granulosite+'&id_matieres='+id_matieres,
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -1322,7 +1322,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=action_complementaire'+'&'+$('#zone_choix_referentiel').serialize()+'&groupe_nom_initial='+encodeURIComponent(groupe_nom_initial)+'&groupe_nom_final='+encodeURIComponent(groupe_nom_final),
+            data : 'csrf='+CSRF+'&action=action_complementaire'+'&'+$('#zone_choix_referentiel').serialize()+'&groupe_nom_initial='+encodeURIComponent(groupe_nom_initial)+'&groupe_nom_final='+encodeURIComponent(groupe_nom_final),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

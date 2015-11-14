@@ -62,6 +62,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
 
 <h2>Import de fichier</h2>
 <form action="#" method="post" id="form_fichier">
+  <?php /* Pour la gestion de plusieurs imports, prendre modèle sur les fichiers validation_socle_fichier.* */ ?>
   <p>
     <label class="tab" for="f_periode_import">Période :</label><select id="f_periode_import" name="f_periode_import"><?php echo $select_periode ?></select><br />
     <label class="tab" for="f_choix_principal">Origine :</label>
@@ -72,9 +73,6 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
       <option value="import_gepi">GEPI Absences 2</option>
       <option value="import_pronote">Pronote</option>
     </select>
-    <input id="f_import" type="file" name="userfile" />
-    <input type="hidden" id="f_upload_action" name="f_action" value="" />
-    <input type="hidden" id="f_upload_periode" name="f_periode" value="" />
   </p>
   <ul class="puce hide" id="puce_import_sconet">
     <li><span class="danger">Le ministère a remplacé <em>Sconet Absences</em> par <em>Siècle Vie Scolaire</em> à la rentrée 2014.</span></li>

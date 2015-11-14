@@ -39,12 +39,12 @@ $select_groupe = HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_regroupe
 
 <h2>Ajout multiple</h2>
 
-<form action="#" method="post" id="form_photos"><fieldset>
+<form action="#" method="post" id="form2"><fieldset>
   <p class="astuce">
     Taille maximale du fichier : <b><?php echo InfoServeur::minimum_limitations_upload(FALSE /*avec_explication*/) ?></b> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Le webmestre du serveur a accès au détail de la configuration PHP expliquant cette limite." />.
   </p>
   <label class="tab" for="f_masque">Forme noms fichiers :</label><input id="f_masque" name="f_masque" size="50" maxlength="50" type="text" value="" /><br />
-  <label class="tab" for="f_photos">Upload fichier <em>zip</em> :</label><input type="hidden" name="f_action" value="envoyer_zip" /><input id="f_photos" type="file" name="userfile" /><button id="bouton_photos" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_photos">&nbsp;</label>
+  <label class="tab" for="bouton_zip">Upload fichier <em>zip</em> :</label><button id="bouton_zip" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_zip">&nbsp;</label>
 </fieldset></form>
 
 <hr />
@@ -57,7 +57,3 @@ $select_groupe = HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_regroupe
 
 <p id="liste_eleves">
 </p>
-
-<form action="#" method="post" id="form_photo" class="hide"><fieldset>
-  <input type="hidden" id="f_user_id" name="f_user_id" value="" /><input type="hidden" name="f_action" value="envoyer_photo" /><input id="f_photo" type="file" name="userfile" /><button id="bouton_photo" type="button" class="fichier_import">Parcourir...</button>
-</fieldset></form>

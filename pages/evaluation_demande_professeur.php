@@ -56,7 +56,7 @@ $radio_boutons = implode(' ',$tab_radio_boutons);
 $date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var input_visible  = "'.TODAY_FR.'";' );
+Layout::add( 'js_inline_before' , 'var input_date     = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' );
 ?>
 

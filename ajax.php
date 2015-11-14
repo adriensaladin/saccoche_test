@@ -58,7 +58,7 @@ elseif($PAGE!='public_installation')
 }
 
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
-if(!Session::recuperer_droit_acces($PAGE))
+if(!Session::verif_droit_acces($PAGE))
 {
   exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.$PAGE.'" manquants.<br />Soit le paramètre "page" transmis en GET est incorrect, soit les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".' /*contenu*/ );
 }
@@ -78,7 +78,7 @@ if($PAGE=='conserver_session_active')
 // Arrêt s'il fallait seulement fermer la session
 if($PAGE=='fermer_session')
 {
-  Session::close(FALSE); // FALSE car il est arrivé que des appels ajax se croisent...
+  Session::close();
   Json::end( TRUE );
 }
 

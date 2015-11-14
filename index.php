@@ -81,7 +81,7 @@ elseif($PAGE!='public_installation')
 }
 
 // Le fait de lister les droits d'accès de chaque page empêche de surcroit l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
-if(!Session::recuperer_droit_acces($PAGE))
+if(!Session::verif_droit_acces($PAGE))
 {
   Session::$tab_message_erreur[] = 'Droits de la page "'.$PAGE.'" manquants !<br />Paramètre "page" transmis en GET incorrect, ou droits non attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".';
   // La page vers laquelle rediriger sera définie après ouverture de la session
@@ -167,12 +167,6 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 if(Session::$_sso_redirect)
 {
   require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
-  // En cas de redirection pour cause de profil incompatible, il faut vérifier que l'on n'est pas encore identifié avec le mauvais profil.
-  if( !Session::verifier_droit_acces($_SESSION['USER_PROFIL_TYPE']) && !Session::verifier_droit_acces('public') )
-  {
-    Session::$tab_message_erreur[] = 'Appel incompatible avec votre identification actuelle.'.' Veuillez vous (re)connecter.';
-    $PAGE = 'public_accueil';
-  }
 }
 
 // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd.
@@ -260,7 +254,7 @@ Layout::add( 'js_inline_before' , 'var isMobile          = '.(int)$_SESSION['BRO
 // Affichage
 $body_class = ($_SESSION['BROWSER']['mobile']) ? 'touch' : 'mouse' ;
 echo Layout::afficher_page_entete('prog-'.$body_class);
-if( substr($PAGE,0,7) !== 'public_' )
+if($_SESSION['USER_PROFIL_TYPE']!='public')
 {
   $lien_page_langue = ($_SESSION['USER_ETABLISSEMENT'])     ? ' <a href="./index.php?page=compte_langue">['.Lang::get_locale_used().']</a>' : '' ;
   $lien_page_switch = (!empty($_SESSION['USER_SWITCH_ID'])) ? '<a href="./index.php?page=compte_switch"><span class="top switch">'.$_SESSION['USER_PROFIL_NOM_COURT'].'</span></a>' : $_SESSION['USER_PROFIL_NOM_COURT'] ;

@@ -35,7 +35,7 @@ require('./_inc/_loader.php');
 require(CHEMIN_FICHIER_CONFIG_INSTALL);
 
 // Ouverture de la session et gestion des droits d'accès
-if(!Session::recuperer_droit_acces(SACoche))
+if(!Session::verif_droit_acces(SACoche))
 {
   exit_error( 'Droits manquants' /*titre*/ , 'Droits de la page "'.SACoche.'" manquants.<br />Les droits de cette page n\'ont pas été attribués dans le fichier "'.FileSystem::fin_chemin(CHEMIN_DOSSIER_INCLUDE.'tableau_droits.php').'".' /*contenu*/ , '' /*lien*/ );
 }

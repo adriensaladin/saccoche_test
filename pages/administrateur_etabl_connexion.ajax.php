@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $f_action                     = (isset($_POST['f_action']))                     ? Clean::texte($_POST['f_action'])                      : '';
 $f_annee                      = (isset($_POST['f_annee']))                      ? Clean::entier($_POST['f_annee'])                      : -1;
@@ -234,7 +234,7 @@ if( ($f_action=='ajouter_convention') && $f_connexion_mode && $f_connexion_ref &
   charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
   if(DB_WEBMESTRE_ADMINISTRATEUR::DB_tester_convention_precise( $_SESSION['BASE'] , $f_connexion_nom , $date_debut_mysql ))
   {
-    Json::end( FALSE , 'Convention déjà existante pour ce service sur cette période !' );
+    Json::end( FALSE , 'Erreur : convention déjà existante pour ce service sur cette période !' );
   }
   // Insérer l'enregistrement
   $convention_id = DB_WEBMESTRE_ADMINISTRATEUR::DB_ajouter_convention( $_SESSION['BASE'] , $f_connexion_nom , $date_debut_mysql , $date_fin_mysql );
@@ -262,11 +262,11 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   $DB_ROW = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_convention($f_convention_id);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'Convention non trouvée !' );
+    Json::end( FALSE , 'Erreur : convention non trouvée !' );
   }
   if($DB_ROW['sacoche_base']!=$_SESSION['BASE'])
   {
-    Json::end( FALSE , 'Convention d\'une autre structure !' );
+    Json::end( FALSE , 'Erreur : convention d\'une autre structure !' );
   }
   // Coordonnées de l'établissement
   $tab_etabl_coords = array( 0 => $_SESSION['ETABLISSEMENT']['DENOMINATION'] );

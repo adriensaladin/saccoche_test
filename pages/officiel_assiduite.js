@@ -54,6 +54,10 @@ $(document).ready
       function()
       {
         id_periode_import = $('#f_periode_import option:selected').val();
+        uploader_fichier_sconet[ '_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_siecle[ '_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_gepi[   '_settings']['data']['f_periode'] = id_periode_import;
+        uploader_fichier_pronote['_settings']['data']['f_periode'] = id_periode_import;
         afficher_upload();
       }
     );
@@ -123,148 +127,150 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du formulaire #form_fichier
-    // Upload d'un fichier (avec jquery.form.js)
+    // Upload d'un fichier avec jquery.ajaxupload.js
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Indéfini si pas de droit d'accès à cette fonctionnalité.
-    if( $('#form_fichier').length )
+    // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
+    // Attention, la variable f_action n'est pas accessible dans les AjaxUpload
+
+    if( $('#form_fichier').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
     {
-
-      // Le formulaire qui va être analysé et traité en AJAX
-      var formulaire_import = $('#form_fichier');
-
-      // Options d'envoi du formulaire (avec jquery.form.js)
-      var ajaxOptions_import =
-      {
-        url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-        type : 'POST',
-        dataType : 'json',
-        clearForm : false,
-        resetForm : false,
-        target : "#ajax_msg",
-        error : retour_form_erreur_import,
-        success : retour_form_valide_import
-      };
-
-      // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
-      $('#f_import').change
-      (
-        function()
+      var uploader_fichier_sconet = new AjaxUpload
+      ('#import_sconet',
         {
-          var file = this.files[0];
-          if( typeof(file) == 'undefined' )
-          {
-            $('#ajax_msg_'+f_action).removeAttr('class').html('');
-            return false;
-          }
-          else if (!id_periode_import)
-          {
-            $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html("Choisir d'abord la période concernée.");
-            return false;
-          }
-          else
-          {
-            var fichier_nom = file.name;
-            var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
-            if ( (f_action=='import_sconet') && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
-            {
-              $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
-              return false;
-            }
-            else if ( (f_action=='import_siecle') && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
-            {
-              $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
-              return false;
-            }
-            else if ( (f_action=='import_gepi') && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
-            {
-              $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
-              return false;
-            }
-            else if ( (f_action=='import_pronote') && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
-            {
-              $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
-              return false;
-            }
-            else
-            {
-              $('#form_fichier button').prop('disabled',true);
-              $('#ajax_msg_'+f_action).removeAttr('class').addClass('loader').html("En cours&hellip;");
-              $('#ajax_retour').html("");
-              formulaire_import.submit();
-            }
-          }
+          action: 'ajax.php?page='+PAGE,
+          name: 'userfile',
+          data: {'csrf':CSRF,'f_action':'import_sconet','f_periode':'maj_plus_tard'},
+          autoSubmit: true,
+          responseType: 'json',
+          onChange: changer_fichier,
+          onSubmit: verifier_fichier,
+          onComplete: retourner_fichier
         }
       );
-
-      // Envoi du formulaire (avec jquery.form.js)
-      formulaire_import.submit
-      (
-        function()
+      var uploader_fichier_siecle = new AjaxUpload
+      ('#import_siecle',
         {
-          $(this).ajaxSubmit(ajaxOptions_import);
-          return false;
-        }
-      ); 
-
-      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
-      {
-        $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-        $('#form_fichier button').prop('disabled',false);
-        $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-      }
-
-      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      function retour_form_valide_import(responseJSON)
-      {
-        $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-        $('#form_fichier button').prop('disabled',false);
-        if(responseJSON['statut']==false)
-        {
-          $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
-        }
-        else
-        {
-          initialiser_compteur();
-          $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote').hide(0);
-          if( (f_action=='import_sconet') || (f_action=='import_siecle') )
-          {
-            $('#sconet_date_export').html(responseJSON['date_export']);
-            $('#sconet_libelle'    ).html(responseJSON['libelle']);
-            $('#sconet_date_debut' ).html(responseJSON['date_debut']);
-            $('#sconet_date_fin'   ).html(responseJSON['date_fin']);
-          }
-          else if(f_action=='import_gepi')
-          {
-            $('#gepi_eleves_nb').html(responseJSON['eleves_nb']);
-          }
-          else if(f_action=='import_pronote')
-          {
-            $('#pronote_objet'     ).html(responseJSON['objet']);
-            $('#pronote_eleves_nb' ).html(responseJSON['eleves_nb']);
-            $('#pronote_date_debut').html(responseJSON['date_debut']);
-            $('#pronote_date_fin'  ).html(responseJSON['date_fin']);
-          }
-          $('#periode_import').html($('#f_periode_import option:selected').text());
-          $('#ajax_msg_'+f_action).removeAttr('class').html('');
-          $('#ajax_msg_confirm').removeAttr('class').html('');
-          $('#comfirm_'+f_action).show(0);
-          $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
-        }
-      }
-
-      $('button.fichier_import').click
-      (
-        function()
-        {
-          $('#f_upload_action').val(f_action); // import_sconet | import_siecle | import_gepi | import_pronote
-          $('#f_upload_periode').val(id_periode_import);
-          $('#f_import').click();
+          action: 'ajax.php?page='+PAGE,
+          name: 'userfile',
+          data: {'csrf':CSRF,'f_action':'import_siecle','f_periode':'maj_plus_tard'},
+          autoSubmit: true,
+          responseType: 'json',
+          onChange: changer_fichier,
+          onSubmit: verifier_fichier,
+          onComplete: retourner_fichier
         }
       );
+      var uploader_fichier_gepi = new AjaxUpload
+      ('#import_gepi',
+        {
+          action: 'ajax.php?page='+PAGE,
+          name: 'userfile',
+          data: {'csrf':CSRF,'f_action':'import_gepi','f_periode':'maj_plus_tard'},
+          autoSubmit: true,
+          responseType: 'json',
+          onChange: changer_fichier,
+          onSubmit: verifier_fichier,
+          onComplete: retourner_fichier
+        }
+      );
+      var uploader_fichier_pronote = new AjaxUpload
+      ('#import_pronote',
+        {
+          action: 'ajax.php?page='+PAGE,
+          name: 'userfile',
+          data: {'csrf':CSRF,'f_action':'import_pronote','f_periode':'maj_plus_tard'},
+          autoSubmit: true,
+          responseType: 'json',
+          onChange: changer_fichier,
+          onSubmit: verifier_fichier,
+          onComplete: retourner_fichier
+        }
+      );
+    }
 
+    function changer_fichier(fichier_nom,fichier_extension)
+    {
+      $('#ajax_msg_'+f_action).removeAttr('class').html("");
+      return true;
+    }
+
+    function verifier_fichier(fichier_nom,fichier_extension)
+    {
+      if (!id_periode_import)
+      {
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html("Choisir d'abord la période concernée.");
+        return false;
+      }
+      else if (fichier_nom==null || fichier_nom.length<5)
+      {
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        return false;
+      }
+      else if ( (f_action=='import_sconet') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
+      {
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        return false;
+      }
+      else if ( (f_action=='import_siecle') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
+      {
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        return false;
+      }
+      else if ( (f_action=='import_gepi') && ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
+      {
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+        return false;
+      }
+      else if ( (f_action=='import_pronote') && ('.xml.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1) )
+      {
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+        return false;
+      }
+      else
+      {
+        $('button').prop('disabled',true);
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        return true;
+      }
+    }
+
+    function retourner_fichier(fichier_nom,responseJSON)
+    {
+      $('button').prop('disabled',false);
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
+      if(responseJSON['statut']==false)
+      {
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+      }
+      else
+      {
+        $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote').hide(0);
+        if( (f_action=='import_sconet') || (f_action=='import_siecle') )
+        {
+          $('#sconet_date_export').html(responseJSON['date_export']);
+          $('#sconet_libelle'    ).html(responseJSON['libelle']);
+          $('#sconet_date_debut' ).html(responseJSON['date_debut']);
+          $('#sconet_date_fin'   ).html(responseJSON['date_fin']);
+        }
+        else if(f_action=='import_gepi')
+        {
+          $('#gepi_eleves_nb').html(responseJSON['eleves_nb']);
+        }
+        else if(f_action=='import_pronote')
+        {
+          $('#pronote_objet'     ).html(responseJSON['objet']);
+          $('#pronote_eleves_nb' ).html(responseJSON['eleves_nb']);
+          $('#pronote_date_debut').html(responseJSON['date_debut']);
+          $('#pronote_date_fin'  ).html(responseJSON['date_fin']);
+        }
+        $('#periode_import').html($('#f_periode_import option:selected').text());
+        $('#ajax_msg_'+f_action).removeAttr('class').html('');
+        $('#ajax_msg_confirm').removeAttr('class').html('');
+        $('#comfirm_'+f_action).show(0);
+        $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+        initialiser_compteur();
+      }
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,7 +369,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg_manuel').removeAttr('class').html("");
@@ -387,6 +393,7 @@ $(document).ready
     function retour_form_valide(responseJSON)
     {
       $('button').prop('disabled',false);
+      log('info',responseJSON['statut']);
       if(responseJSON['statut']==false)
       {
         $('#ajax_msg_manuel').removeAttr('class').addClass('alerte').html(responseJSON['value']);

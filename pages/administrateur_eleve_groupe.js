@@ -122,8 +122,8 @@ $(document).ready
         (
           {
             type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+id+'&'+$('#form_select').serialize(),
+            url : 'ajax.php?page='+PAGE+'&action='+id,
+            data : 'csrf='+CSRF+'&'+$('#form_select').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -158,8 +158,8 @@ $(document).ready
     (
       {
         type : 'POST',
-        url : 'ajax.php?page='+PAGE,
-        data : 'csrf='+CSRF+'&f_action=initialiser',
+        url : 'ajax.php?page='+PAGE+'&action=initialiser',
+        data : 'csrf='+CSRF,
         dataType : 'json',
         error : function(jqXHR, textStatus, errorThrown)
         {

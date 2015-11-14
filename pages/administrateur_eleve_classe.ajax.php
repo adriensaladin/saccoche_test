@@ -26,9 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
+if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_GET['action']!='initialiser')){exit('Action désactivée pour la démo...');}
 
-$action = (isset($_POST['f_action'])) ? $_POST['f_action'] : '';
+$action = (isset($_GET['action'])) ? $_GET['action'] : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve  = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;
 $tab_classe = (isset($_POST['f_classe'])) ? ( (is_array($_POST['f_classe'])) ? $_POST['f_classe'] : explode(',',$_POST['f_classe']) ) : array() ;

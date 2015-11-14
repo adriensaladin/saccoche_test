@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
 $BASE     = (isset($_POST['f_base']))     ? Clean::entier(  $_POST['f_base']    ) : 0 ;
 $courriel = (isset($_POST['f_courriel'])) ? Clean::courriel($_POST['f_courriel']) : '';

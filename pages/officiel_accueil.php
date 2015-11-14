@@ -673,18 +673,10 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
   <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></p>
   <ul class="puce">
     <li><a id="export_file_saisie_deportee" target="_blank" href=""><span class="file file_txt">Récupérer un fichier vierge à compléter pour une saisie déportée (format <em>csv</em>).</span></a></li>
-    <li><input id="f_saisie_deportee" type="file" name="userfile" /><button id="bouton_choisir_saisie_deportee" type="button" class="fichier_import">Envoyer un fichier d'appréciations complété (format <em>csv</em>).</button></li>
+    <li><button id="import_file" type="button" class="fichier_import">Envoyer un fichier d'appréciations complété (format <em>csv</em>).</button></li>
   </ul>
   <p class="ti">
     <label id="msg_import">&nbsp;</label>
-    <input type="hidden" name="f_action" value="uploader_saisie_csv" />
-    <input type="hidden" name="f_section" value="officiel_importer" />
-    <input type="hidden" id="f_upload_bilan_type" name="f_bilan_type" value="" />
-    <input type="hidden" id="f_upload_classe" name="f_classe" value="" />
-    <input type="hidden" id="f_upload_groupe" name="f_groupe" value="" />
-    <input type="hidden" id="f_upload_periode" name="f_periode" value="" />
-    <input type="hidden" id="f_upload_objet" name="f_objet" value="" />
-    <input type="hidden" id="f_upload_mode" name="f_mode" value="" />
   </p>
 </form>
 

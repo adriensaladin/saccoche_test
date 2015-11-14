@@ -26,9 +26,9 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {exit('Action désactivée pour la démo...');}
 
-$action                      = (isset($_POST['f_action']))                      ? $_POST['f_action']                                    : '';
+$action                      = (isset($_POST['action']))                        ? $_POST['action']                                      : '';
 $geo1                        = (isset($_POST['f_geo1']))                        ? Clean::entier($_POST['f_geo1'])                        : 0;
 $geo2                        = (isset($_POST['f_geo2']))                        ? Clean::entier($_POST['f_geo2'])                        : 0;
 $geo3                        = (isset($_POST['f_geo3']))                        ? Clean::entier($_POST['f_geo3'])                        : 0;

@@ -88,7 +88,7 @@ $(document).ready
     (
       function()
       {
-        $('#f_action').val('calculer');
+        $('#action').val('calculer');
         formulaire.submit();
       }
     );
@@ -165,7 +165,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg').removeAttr('class').html("");
@@ -254,7 +254,7 @@ $(document).ready
           return false;
         }
       }
-      if( $('#f_action').val()=='calculer' )
+      if( $('#action').val()=='calculer' )
       {
         $('#bilan table tbody').hide();
       }

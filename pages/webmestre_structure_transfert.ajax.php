@@ -245,7 +245,7 @@ if($action=='importer_zip')
 {
   if(!count($_SESSION['tab_info']))
   {
-    Json::end( FALSE , 'Données du fichier CSV non retrouvées !' );
+    Json::end( FALSE , 'Erreur : données du fichier CSV non retrouvées !' );
   }
   // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_zip_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
@@ -257,7 +257,7 @@ if($action=='importer_zip')
   $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom , CHEMIN_DOSSIER_DUMP , TRUE /*use_ZipArchive*/ );
   if($code_erreur)
   {
-    Json::end( FALSE , 'Cette archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
+    Json::end( FALSE , '<li><label class="alerte">Erreur : votre archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !</label></li>' );
   }
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom);
   // Vérifier le contenu : noms des fichiers

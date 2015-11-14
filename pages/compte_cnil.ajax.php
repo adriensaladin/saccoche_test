@@ -24,7 +24,7 @@
  * si ce n’est pas le cas, consultez : <http://www.gnu.org/licenses/>.
  * 
  */
-if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée pour la démo.' );}
+if($_SESSION['SESAMATH_ID']==ID_DEMO){exit('Action désactivée pour la démo...');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des informations transmises

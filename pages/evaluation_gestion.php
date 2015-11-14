@@ -265,7 +265,6 @@ $AUDIO_DUREE_MAX = min( 120 , FICHIER_TAILLE_MAX/4 );
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var TYPE           = "'.$TYPE.'";' );
-Layout::add( 'js_inline_before' , 'var input_visible  = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' );
 Layout::add( 'js_inline_before' , 'var user_id        = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var reception_todo = '.$reception_todo.';' );
@@ -424,17 +423,14 @@ Layout::add( 'js_inline_before' , '// ]]>' );
   <p>
     <label class="tab">Sujet :</label><span id="span_sujet"></span> <button id="bouton_supprimer_sujet" type="button" class="supprimer">Retirer</button><br />
     <span class="tab"></span><button id="bouton_referencer_sujet" type="button" class="referencer_lien">Diriger vers ce lien externe.</button> <input id="f_adresse_sujet" name="f_adresse_sujet" maxlength="256" size="50" type="text" value="" /><br />
-    <span class="tab"></span><input id="f_uploader_sujet" type="file" name="userfile" /><button id="bouton_uploader_sujet" type="button" class="fichier_import">Envoyer un fichier à utiliser.</button> <?php echo FICHIER_TAILLE_MAX ?> Ko maxi, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre." />
+    <span class="tab"></span><button id="bouton_uploader_sujet" type="button" class="fichier_import">Envoyer un fichier à utiliser.</button> <?php echo FICHIER_TAILLE_MAX ?> Ko maxi, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre." />
   </p>
   <p>
     <label class="tab">Corrigé :</label><span id="span_corrige"></span> <button id="bouton_supprimer_corrige" type="button" class="supprimer">Retirer</button><br />
     <span class="tab"></span><button id="bouton_referencer_corrige" type="button" class="referencer_lien">Diriger vers ce lien externe.</button> <input id="f_adresse_corrige" name="f_adresse_corrige" maxlength="256" size="50" type="text" value="" /><br />
-    <span class="tab"></span><input id="f_uploader_corrige" type="file" name="userfile" /><button id="bouton_uploader_corrige" type="button" class="fichier_import">Envoyer un fichier à utiliser.</button> <?php echo FICHIER_TAILLE_MAX ?> Ko maxi, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre." />
+    <span class="tab"></span><button id="bouton_uploader_corrige" type="button" class="fichier_import">Envoyer un fichier à utiliser.</button> <?php echo FICHIER_TAILLE_MAX ?> Ko maxi, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre." />
   </p>
-  <p>
-    <span class="tab"></span><button id="fermer_zone_upload" type="button" class="retourner">Retour</button><label id="ajax_document_upload">&nbsp;</label>
-    <input type="hidden" name="f_action" value="uploader_document" /><input type="hidden" id="f_doc_objet" name="f_doc_objet" value="" /><input type="hidden" id="uploader_ref" name="f_ref" value="" />
-  </p>
+  <p><span class="tab"></span><button id="fermer_zone_upload" type="button" class="retourner">Retour</button><label id="ajax_document_upload">&nbsp;</label></p>
 </form>
 
 <form action="#" method="post" id="zone_ordonner" class="hide">
@@ -553,7 +549,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
   <ul class="puce">
     <li><button id="generer_tableau_scores_vierge_csv" type="button" class="fichier_export">Récupérer un fichier vierge pour une saisie déportée (format <em>csv</em>).</button>
     <li><button id="generer_tableau_scores_rempli_csv" type="button" class="fichier_export">Récupérer un fichier complété avec les scores <b>enregistrés</b> (format <em>csv</em>).</button>
-    <li class="saisir"><input id="f_importer_scores" type="file" name="userfile" /><button id="bouton_importer_scores" type="button" class="fichier_import">Envoyer un fichier de notes complété (format <em>csv</em>).</button></li>
+    <li class="saisir"><button id="import_file" type="button" class="fichier_import">Envoyer un fichier de notes complété (format <em>csv</em>).</button></li>
     <li class="voir"><span class="astuce">Pour importer un fichier <em>csv</em> de notes complété, choisir "<em>Saisir les acquisitions</em>".</span></li>
   </ul>
   <p class="ti">
@@ -565,7 +561,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
     <li><button id="generer_tableau_scores_rempli_pdf" type="button" class="imprimer">Archiver / Imprimer le tableau complété avec les scores <b>enregistrés</b> (format <em>pdf</em>).</button>
   </ul>
   <hr />
-  <p><label id="ajax_msg_deport_archivage">&nbsp;</label><input type="hidden" id="f_archivage_action" name="f_action" value="" /></p>
+  <p><label id="ajax_msg_deport_archivage">&nbsp;</label></p>
 <!--
 <a target="_blank" href=""><span class="file file_txt"></span></a></li>
 <a id="" target="_blank" href=""><span class="file file_pdf">.</span></a></li>

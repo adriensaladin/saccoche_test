@@ -285,7 +285,7 @@ $select_famille_niveau  = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_
   <div id="lister_referentiel_communautaire" class="hide">
     <h2>Liste des référentiels trouvés</h2>
     <p>
-      <span class="danger">Les référentiels partagés ne sont pas des modèles à suivre ! Ils peuvent être améliorables, inadaptés, obsolètes&hellip;</span><br />
+      <span class="danger">Les référentiels partagés ne sont pas des modèles à suivre ! Ils peuvent être améliorables ou même inadaptés&hellip;</span><br />
       <span class="astuce">Le nombre de reprises ne présage pas de l'intérêt ni de la pertinence d'un référentiel.</span>
     </p>
     <table id="table_action" class="form hsort">

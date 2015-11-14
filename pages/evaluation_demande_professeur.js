@@ -51,11 +51,12 @@ $(document).ready
       // Emploi de css() au lieu de show() hide() car sinon conflits constatés avec $("#step_creer").show() et $("#step_creer").hide() vers ligne 360.
       if($('#box_date').is(':checked'))
       {
+        $('#f_date_visible').val($('#f_date').val());
         $('#box_date').next().css('display','inline-block').next().css('display','none');
       }
       else
       {
-        $('#box_date').next().css('display','none').next().css('display','inline-block').val(input_visible).focus();
+        $('#box_date').next().css('display','none').next().css('display','inline-block');
       }
     }
 
@@ -83,8 +84,8 @@ $(document).ready
       else
       {
         var tab_infos = new Array();
-        tab_infos[0] = '';
-        tab_infos[1] = input_visible;
+        tab_infos[0] = input_date;
+        tab_infos[1] = input_date;
       }
       if(tab_infos.length>1)
       {
@@ -214,7 +215,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi0(formData, jqForm, options)
     {
       $('#ajax_msg_prechoix').removeAttr('class').html("");
@@ -615,7 +616,6 @@ $(document).ready
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg_gestion",
-      beforeSerialize : action_form_avant_serialize,
       beforeSubmit : test_form_avant_envoi,
       error : retour_form_erreur,
       success : retour_form_valide
@@ -635,17 +635,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédent le traitement du formulaire (avec jquery.form.js)
-    function action_form_avant_serialize(jqForm, options)
-    {
-      if($('#box_date').is(':checked'))
-      {
-        // Obligé rajouter le test à ce niveau car si la date a été changé depuis le calendrier, l'événement change() n'a pas été déclenché (et dans test_form_avant_envoi() c'est trop tard).
-        $('#f_date_visible').val($('#f_date').val());
-      }
-    }
-
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg_gestion').removeAttr('class').html("");

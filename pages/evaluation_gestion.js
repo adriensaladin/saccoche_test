@@ -144,9 +144,9 @@ $(document).ready
       $('#f_fini').val(fini);
       // date de visibilité
       if(date_visible=='identique')
-      { 
+      {
         $('#box_visible').prop('checked',true).next().show(0);
-        $('#f_date_visible').parent().hide(0);
+        $('#f_date_visible').val(date_fr).parent().hide(0);
       }
       else
       {
@@ -611,8 +611,10 @@ $(document).ready
       $('#ajax_document_upload').removeAttr('class').html("");
       $('#span_sujet').html(img_sujet);
       $('#span_corrige').html(img_corrige);
-      $('#uploader_ref').val(ref);
       activer_boutons_upload(ref);
+      // maj du paramètre AjaxUpload (les paramètres n'étant pas directement modifiables...)
+      uploader_sujet['_settings']['data']['f_ref']   = ref;
+      uploader_corrige['_settings']['data']['f_ref'] = ref;
       // Afficher la zone
       $.fancybox( { 'href':'#zone_upload' , onStart:function(){$('#zone_upload').css("display","block");} , onClosed:function(){$('#zone_upload').css("display","none");} , 'minWidth':800 , 'modal':true , 'centerOnScroll':true } );
     };
@@ -756,11 +758,12 @@ $(document).ready
       {
         if($(this).is(':checked'))
         {
+          $('#f_date_visible').val($('#f_date').val());
           $(this).next().show(0).next().hide(0);
         }
         else
         {
-          $(this).next().hide(0).next().show(0).children('input').val(input_visible).focus();
+          $(this).next().hide(0).next().show(0).children('input').focus();
         }
       }
     );
@@ -780,6 +783,21 @@ $(document).ready
         else
         {
           $(this).next().hide(0).next().show(0).children('input').focus().val(input_autoeval);
+        }
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Reporter la date visible si modif date du devoir et demande dates identiques
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#f_date').change
+    (
+      function()
+      {
+        if($('#box_visible').is(':checked'))
+        {
+          $('#f_date_visible').val($('#f_date').val());
         }
       }
     );
@@ -1125,7 +1143,6 @@ $(document).ready
       'button[id^=generer_tableau_scores]',
       function()
       {
-        $('#f_archivage_action').val( $(this).attr('id') );
         $('#zone_deport_archivage button').prop('disabled',true);
         $('#ajax_msg_deport_archivage').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
@@ -1133,7 +1150,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&'+$("#zone_deport_archivage").serialize(),
+            data : 'csrf='+CSRF+'&f_action='+$(this).attr('id')+'&'+$("#zone_deport_archivage").serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1213,9 +1230,9 @@ $(document).ready
                 var tab_dates   = new Array();
                 var tab_groupes = new Array();
                 var memo_groupe_id = 0;
-                for(i in responseJSON)
+                for(i in responseJSON['value'])
                 {
-                  if( i != 'statut' )
+                  if(i!='statut')
                   {
                     var tab = responseJSON[i].split('_');
                     tab_dates[tab[0]] = tab[1];
@@ -1895,7 +1912,7 @@ $(document).ready
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          if( '.f_date.f_date_visible.f_date_autoeval.'.indexOf('.'+element.attr("id")+'.') !== -1 ) { element.next().after(error); }
+          if('.f_date.f_date_visible.f_date_autoeval.'.indexOf('.'+element.attr("id")+'.')!=-1) { element.next().after(error); }
           else {element.after(error);}
         }
       }
@@ -1947,7 +1964,7 @@ $(document).ready
       }
     }
 
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
       $('#ajax_msg_gestion').removeAttr('class').html("");
@@ -2018,80 +2035,54 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du clic sur le bouton pour envoyer un import csv (saisie déportée, formulaire #zone_deport_archivage)
-    // Upload d'un fichier (avec jquery.form.js)
+    // Traitement du clic sur le bouton pour envoyer un import csv (saisie déportée)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire_importer_scores = $('#zone_deport_archivage');
-
-    // Options d'envoi du formulaire (avec jquery.form.js)
-    var ajaxOptions_importer_scores =
-    {
-      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-      type : 'POST',
-      dataType : 'json',
-      clearForm : false,
-      resetForm : false,
-      target : "#ajax_msg_deport_archivage",
-      error : retour_form_erreur_importer_scores,
-      success : retour_form_valide_importer_scores
-    };
-
-    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
-    $('#f_importer_scores').change
-    (
-      function()
+    // Envoi du fichier avec jquery.ajaxupload.js
+    new AjaxUpload
+    ('#import_file',
       {
-        var file = this.files[0];
-        if( typeof(file) == 'undefined' )
-        {
-          $('#ajax_msg_deport_archivage').removeAttr('class').html('');
-          return false;
-        }
-        else
-        {
-          var fichier_nom = file.name;
-          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
-          if( '.csv.txt.'.indexOf('.'+fichier_ext+'.') == -1 )
-          {
-            $('#ajax_msg_deport_archivage').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
-            return false;
-          }
-          else
-          {
-            $('#f_archivage_action').val('importer_saisie_csv');
-            $('#zone_deport_archivage button').prop('disabled',true);
-            $('#ajax_msg_deport_archivage').removeAttr('class').addClass('loader').html("En cours&hellip;");
-            formulaire_importer_scores.submit();
-          }
-        }
+        action: 'ajax.php?page='+PAGE+'&f_action=importer_saisie_csv',
+        name: 'userfile',
+        data : {'csrf':CSRF},
+        autoSubmit: true,
+        responseType: 'json',
+        onChange: changer_fichier,
+        onSubmit: verifier_fichier,
+        onComplete: retourner_fichier
       }
     );
 
-    // Envoi du formulaire (avec jquery.form.js)
-    formulaire_importer_scores.submit
-    (
-      function()
-      {
-        $(this).ajaxSubmit(ajaxOptions_importer_scores);
-        return false;
-      }
-    ); 
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_erreur_importer_scores(jqXHR, textStatus, errorThrown)
+    function changer_fichier(fichier_nom,fichier_extension)
     {
-      $('#f_importer_scores').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-      $('#zone_deport_archivage button').prop('disabled',false);
-      $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_deport_archivage').removeAttr('class').html('&nbsp;');
+      return true;
     }
 
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide_importer_scores(responseJSON)
+    function verifier_fichier(fichier_nom,fichier_extension)
     {
-      $('#f_importer_scores').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      if (fichier_nom==null || fichier_nom.length<5)
+      {
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('erreur').html('"'+fichier_nom+'" n\'est pas un chemin de fichier correct.');
+        return false;
+      }
+      else if ('.csv.txt.'.indexOf('.'+fichier_extension.toLowerCase()+'.')==-1)
+      {
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
+        return false;
+      }
+      else
+      {
+        $('#zone_deport_archivage button').prop('disabled',true);
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        return true;
+      }
+    }
+
+    function retourner_fichier(fichier_nom,responseJSON)
+    {
       $('#zone_deport_archivage button').prop('disabled',false);
+      // AJAX Upload ne traite pas les erreurs si le retour est un JSON invalide : cela provoquera une erreur javascript et un arrêt du script...
       if(responseJSON['statut']==false)
       {
         $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(responseJSON['value']);
@@ -2101,9 +2092,9 @@ $(document).ready
         initialiser_compteur();
         var nb_notes_remontees = 0;
         var nb_notes_reportees = 0;
-        for(i in responseJSON)
+        for(i in responseJSON['value'])
         {
-          if( i != 'statut' )
+          if(i!='statut')
           {
             tab_valeur = responseJSON[i].split('.');
             if(tab_valeur.length==3)
@@ -2140,83 +2131,62 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du formulaire zone_upload
     // Traitement du clic sur un bouton pour envoyer un sujet ou un corrigé de devoir
-    // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire_document = $('#zone_upload');
-
-    // Options d'envoi du formulaire (avec jquery.form.js)
-    var ajaxOptions_document =
-    {
-      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-      type : 'POST',
-      dataType : 'json',
-      clearForm : false,
-      resetForm : false,
-      target : "#ajax_document_upload",
-      error : retour_form_erreur_document,
-      success : retour_form_valide_document
-    };
-
-    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
-    $('#f_uploader_sujet , #f_uploader_corrige').change
-    (
-      function()
+    // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
+    var uploader_sujet = new AjaxUpload
+    ('#bouton_uploader_sujet',
       {
-        var file = this.files[0];
-        if( typeof(file) == 'undefined' )
-        {
-          $('#ajax_document_upload').removeAttr('class').html('');
-          return false;
-        }
-        else
-        {
-          var fichier_nom = file.name;
-          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
-          if( '.bat.com.exe.php.zip.'.indexOf('.'+fichier_ext+'.') !== -1 )
-          {
-            $('#ajax_document_upload').removeAttr('class').addClass('erreur').html('Extension du fichier "'+fichier_nom+'" interdite.');
-            return false;
-          }
-          else
-          {
-            var doc_objet = $(this).attr('id').substring(11); // f_uploader_*
-            $('#f_doc_objet').val(doc_objet);
-            $('#zone_upload button').prop('disabled',true);
-            $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
-            formulaire_document.submit();
-          }
-        }
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_action':'uploader_document','f_doc_objet':'sujet','f_ref':'maj_plus_tard'},
+        autoSubmit: true,
+        responseType: 'json',
+        onSubmit: verifier_fichier_document,
+        onComplete: retourner_fichier_document
       }
     );
 
-    // Envoi du formulaire (avec jquery.form.js)
-    formulaire_document.submit
-    (
-      function()
+    // Envoi du fichier avec jquery.ajaxupload.js ; on lui donne un nom afin de pouvoir changer dynamiquement le paramètre.
+    var uploader_corrige = new AjaxUpload
+    ('#bouton_uploader_corrige',
       {
-        $(this).ajaxSubmit(ajaxOptions_document);
+        action: 'ajax.php?page='+PAGE,
+        name: 'userfile',
+        data: {'csrf':CSRF,'f_action':'uploader_document','f_doc_objet':'corrige','f_ref':'maj_plus_tard'},
+        autoSubmit: true,
+        responseType: 'json',
+        onSubmit: verifier_fichier_document,
+        onComplete: retourner_fichier_document
+      }
+    );
+
+    function verifier_fichier_document(fichier_nom,fichier_extension)
+    {
+      if (fichier_nom==null || fichier_nom.length<5)
+      {
+        $('#ajax_document_upload').removeAttr('class').addClass('erreur').html('Cliquer sur "Parcourir..." pour indiquer un chemin de fichier correct.');
+        activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
         return false;
       }
-    ); 
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_erreur_document(jqXHR, textStatus, errorThrown)
-    {
-      $('#f_uploader_sujet').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-      $('#f_uploader_corrige').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-      activer_boutons_upload( $('#uploader_ref').val() );
-      $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      else if ('.bat.com.exe.php.zip.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1)
+      {
+        $('#ajax_document_upload').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
+        activer_boutons_upload(uploader_sujet['_settings']['data']['f_ref']);
+        return false;
+      }
+      else
+      {
+        $('#zone_upload button').prop('disabled',true);
+        $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        return true;
+      }
     }
 
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide_document(responseJSON)
+    function retourner_fichier_document(fichier_nom,responseJSON)
     {
-      $('#f_uploader_sujet').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-      $('#f_uploader_corrige').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      fichier_extension = fichier_nom.split('.').pop();
       if(responseJSON['statut']==false)
       {
         $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
@@ -2228,14 +2198,13 @@ $(document).ready
         var ref   = responseJSON['ref'];
         var objet = responseJSON['objet'];
         var url   = responseJSON['url'];
-        var ext   = url.split('.').pop().toLowerCase();
-        if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref]   = url; }
+        if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = url; }
         else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
         var lien        = '<a href="'+url+'" target="_blank" class="no_puce"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
         $('#span_'+objet).html(lien);
         $('#devoir_'+ref).parent().addClass("new");
         $('#devoir_'+ref).prev().prev().children().eq(numero).replaceWith(lien);
-        if ( '.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+ext+'.') !== -1 )
+        if ( ('.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+fichier_extension.toLowerCase()+'.')!=-1) )
         {
           $.prompt(
             "Votre fichier a bien été joint au devoir.<br />Néanmoins, pour être consulté, il nécessite un ordinateur équipé d'une suite bureautique adaptée.<br />Pour une meilleure accessibilité, il serait préférable de le convertir au format PDF.",
@@ -2245,7 +2214,7 @@ $(document).ready
           );
         }
       }
-      activer_boutons_upload( $('#uploader_ref').val() );
+      activer_boutons_upload(ref);
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2259,7 +2228,7 @@ $(document).ready
         $('#zone_upload button').prop('disabled',true);
         $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
         var objet = $(this).attr('id').substring(17);
-        var ref   = $('#uploader_ref').val();
+        var ref   = uploader_sujet['_settings']['data']['f_ref'];
         var url   = (objet=='sujet') ? tab_sujets[ref] : tab_corriges[ref] ;
         $.ajax
         (
@@ -2307,7 +2276,7 @@ $(document).ready
       function()
       {
         var objet = $(this).attr('id').substring(18);
-        var ref   = $('#uploader_ref').val();
+        var ref   = uploader_sujet['_settings']['data']['f_ref'];
         var url   = $('#f_adresse_'+objet).val();
         if(url == '')
         {
@@ -3247,7 +3216,7 @@ $(document).ready
       }
     ); 
 
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    // Fonction précédent l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_prechoix(formData, jqForm, options)
     {
       $('#ajax_msg_prechoix').removeAttr('class').html("");

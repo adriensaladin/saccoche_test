@@ -81,7 +81,7 @@ else
   }
   else
   {
-    echo'<p><span class="astuce">'.$PAGE.'_'.$SECTION.'&hellip;</span></p>'.NL;
+    echo'<p class="astuce">Choisir un sous-menu ci-dessus&hellip;</p>'.NL;
   }
 }
 ?>

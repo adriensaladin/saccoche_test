@@ -768,7 +768,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=evaluation_ponctuelle',
-          data : 'csrf='+CSRF+'&'+'f_action=enregistrer_note'+'&'+'f_item='+item_id+'&'+'f_eleve='+user_id+'&'+'f_note='+valeur+'&'+'f_devoir='+devoir_id+'&'+'f_groupe='+groupe_id,
+          data : 'csrf='+CSRF+'&f_action=enregistrer_note'+'&f_item='+item_id+'&f_eleve='+user_id+'&f_note='+valeur+'&f_devoir='+devoir_id+'&f_groupe='+groupe_id+'&box_autodescription=1',
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {

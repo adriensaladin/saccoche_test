@@ -126,24 +126,9 @@ $(document).ready
         {
           var fichier_nom = file.name;
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
-          if( (f_action.indexOf('sconet')!=-1) && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
+          if( '.xml.zip.'.indexOf('.'+fichier_ext+'.') == -1 )
           {
             $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
-            return false;
-          }
-          else if ( (f_action.indexOf('base_eleves')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
-          {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
-            return false;
-          }
-          else if ( (f_action.indexOf('factos')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
-          {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
-            return false;
-          }
-          else if ( (f_action.indexOf('tableur')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
-          {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }
           else

@@ -167,11 +167,11 @@ class PDF_item_releve extends PDF
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
         {
           list( $bloc_droite_hauteur , $bloc_gauche_largeur_restante ) = $this->officiel_bloc_adresse_position_contrainte_et_pliures($tab_adresse);
-          $this->SetXY( $this->marge_gauche , $this->marge_haut );
+          $this->SetXY($this->marge_gauche,$this->marge_haut);
         }
         // Bloc établissement
         $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : 80 ;
-        $bloc_etabl_hauteur = $this->officiel_bloc_etablissement( $tab_etabl_coords , $tab_etabl_logo , $bloc_etabl_largeur );
+        $bloc_etabl_hauteur = $this->officiel_bloc_etablissement($tab_etabl_coords,$tab_etabl_logo,$bloc_etabl_largeur);
         // Bloc titres
         $alerte_archive = (($tab_adresse==='archive')&&($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
@@ -179,7 +179,7 @@ class PDF_item_releve extends PDF
           // En dessous du bloc établissement
           $bloc_titre_largeur = $bloc_etabl_largeur ;
           $this->SetXY( $this->marge_gauche , $this->GetY() + 2 );
-          $bloc_titre_hauteur = $this->officiel_bloc_titres( $tab_bloc_titres , $alerte_archive , $bloc_titre_largeur );
+          $bloc_titre_hauteur = $this->officiel_bloc_titres($tab_bloc_titres,$alerte_archive,$bloc_titre_largeur);
           $bloc_gauche_hauteur = $bloc_etabl_hauteur + 2 + $bloc_titre_hauteur + 2 ;
         }
         else
@@ -187,7 +187,7 @@ class PDF_item_releve extends PDF
           // En haut à droite, modulo la place pour le texte indiquant le nombre de pages
           $bloc_titre_largeur = 100;
           $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut+4 );
-          $bloc_titre_hauteur = $this->officiel_bloc_titres( $tab_bloc_titres , $alerte_archive , $bloc_titre_largeur) + 6;
+          $bloc_titre_hauteur = $this->officiel_bloc_titres($tab_bloc_titres,$alerte_archive,$bloc_titre_largeur)+4;
           $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
           $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
         }
@@ -196,8 +196,8 @@ class PDF_item_releve extends PDF
         // Bloc adresse en positionnement libre
         if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
         {
-          $bloc_adresse_largeur = $bloc_titre_largeur - 10; // Pour avoir un petit décalage par rapport au bloc titre
-          $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_adresse_largeur , $this->marge_haut+$bloc_titre_hauteur+4 );
+          $bloc_adresse_largeur = $bloc_titre_largeur;
+          $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_adresse_largeur , $this->marge_haut+$bloc_titre_hauteur+2 );
           $bloc_adresse_hauteur = $this->officiel_bloc_adresse_position_libre($tab_adresse,$bloc_adresse_largeur);
           $bloc_droite_hauteur = $bloc_titre_hauteur + $bloc_adresse_hauteur ;
         }

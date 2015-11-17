@@ -1540,7 +1540,6 @@ $(document).ready
         {
           $('#fermer_zone_saisir_voir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
           $('#kbd_27').removeAttr('class').addClass("img annuler");
-          $(window).bind('beforeunload', confirmOnLeave );
           modification = true;
         }
         $('#ajax_msg_saisir_voir').removeAttr('class').html("");
@@ -1711,7 +1710,6 @@ $(document).ready
         {
           $('#fermer_zone_saisir_voir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
           $('#kbd_27').removeAttr('class').addClass("img annuler");
-          $(window).bind('beforeunload', confirmOnLeave );
           modification = true;
         }
         $('#ajax_msg_saisir_voir').removeAttr('class').html("");
@@ -1830,7 +1828,6 @@ $(document).ready
               success : function(responseJSON)
               {
                 modification = false; // Mis ici pour le cas "aucune modification détectée"
-                $(window).unbind( 'beforeunload', confirmOnLeave );
                 initialiser_compteur();
                 $('button').prop('disabled',false);
                 if(responseJSON['statut']==false)
@@ -2132,11 +2129,7 @@ $(document).ready
                 }
                 champ.parent().css("background-color","#F6D");
               }
-              if(modification==false)
-              {
-                $(window).bind('beforeunload', confirmOnLeave );
-                modification = true;
-              }
+              modification = true;
             }
           }
         }

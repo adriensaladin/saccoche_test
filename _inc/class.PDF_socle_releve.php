@@ -108,7 +108,7 @@ class PDF_socle_releve extends PDF
           // En haut à droite, modulo la place pour le texte indiquant le nombre de pages
             $bloc_titre_largeur = 100;
             $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut+4 );
-            $bloc_titre_hauteur = $this->officiel_bloc_titres( $tab_bloc_titres , $alerte_archive , $bloc_titre_largeur) + 6;
+            $bloc_titre_hauteur = $this->officiel_bloc_titres( $tab_bloc_titres , $alerte_archive , $bloc_titre_largeur+4 );
             $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
             $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
           }
@@ -117,8 +117,8 @@ class PDF_socle_releve extends PDF
           // Bloc adresse en positionnement libre
           if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
           {
-          $bloc_adresse_largeur = $bloc_titre_largeur - 10; // Pour avoir un petit décalage par rapport au bloc titre
-            $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_adresse_largeur , $this->marge_haut+$bloc_titre_hauteur+4 );
+            $bloc_adresse_largeur = $bloc_titre_largeur;
+            $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_adresse_largeur , $this->marge_haut+$bloc_titre_hauteur+2 );
             $bloc_adresse_hauteur = $this->officiel_bloc_adresse_position_libre($tab_adresse,$bloc_adresse_largeur);
             $bloc_droite_hauteur = $bloc_titre_hauteur + $bloc_adresse_hauteur ;
           }

@@ -1042,15 +1042,6 @@ if(!accepteCookies)
 }
 
 /**
- * Est appelé ainsi :
- * $(window).bind('beforeunload', confirmOnLeave );
- * $(window).unbind( 'beforeunload', confirmOnLeave );
- */
-var confirmOnLeave = function() {
-  return "ATTENTION : VOUS N'AVEZ PAS ENREGISTRÉ VOTRE TRAVAIL !";
-};
-
-/**
  * jQuery !
  */
 $(document).ready

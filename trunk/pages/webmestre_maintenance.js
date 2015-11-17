@@ -220,6 +220,7 @@ $(document).ready
         );
       }
     }
+        maj_etape( { "value" : "Récupération de l'archive <em>zip</em>&hellip;" } );
 
     $('#bouton_maj').click
     (
@@ -232,7 +233,7 @@ $(document).ready
           return false;
         }
         $('#bouton_maj').prop('disabled',true);
-        maj_etape("Récupération de l'archive <em>zip</em>&hellip;");
+        maj_etape( { "value" : "Récupération de l'archive <em>zip</em>&hellip;" } );
       }
     );
 

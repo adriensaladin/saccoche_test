@@ -422,6 +422,7 @@ $(document).ready
         {
           $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html('Penser à valider les modifications !');
           $('#fermer_zone_validation').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+          $(window).bind('beforeunload', confirmOnLeave );
           modification = true;
         }
         return false;
@@ -444,6 +445,7 @@ $(document).ready
         {
           $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html('Penser à valider les modifications !');
           $('#fermer_zone_validation').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+          $(window).bind('beforeunload', confirmOnLeave );
           modification = true;
         }
         var classe_debut = classe.substring(0,4);
@@ -580,7 +582,11 @@ $(document).ready
       $('#stats').html('');
       $('#items').html('');
       $('#ajax_msg_information').removeAttr('class').html('');
-      modification = false;
+      if(modification==true)
+      {
+        $(window).unbind( 'beforeunload', confirmOnLeave );
+        modification = false;
+      }
       if(navig_auto)
       {
         if(navig_sens=='suivant')
@@ -707,6 +713,7 @@ $(document).ready
             {
               $("button").prop('disabled',false);
               $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $(window).unbind( 'beforeunload', confirmOnLeave );
               return false;
             },
             success : function(responseJSON)

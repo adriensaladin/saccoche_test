@@ -1309,18 +1309,11 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':param_accueil' : $tab_set[] = 'user_param_accueil=' .$key; break;
     }
   }
-  try
-  {
-    $DB_SQL = 'UPDATE sacoche_user ';
-    $DB_SQL.= 'SET '.implode(', ',$tab_set).' ';
-    $DB_SQL.= 'WHERE user_id=:user_id ';
-    $DB_VAR[':user_id'] = $user_id;
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  }
-  catch (Exception $e)
-  {
-    ajouter_log_PHP( 'Erreur DB_modifier_user() : '.$e /*log_objet*/ , serialize($DB_VAR) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
-  }
+  $DB_SQL = 'UPDATE sacoche_user ';
+  $DB_SQL.= 'SET '.implode(', ',$tab_set).' ';
+  $DB_SQL.= 'WHERE user_id=:user_id ';
+  $DB_VAR[':user_id'] = $user_id;
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

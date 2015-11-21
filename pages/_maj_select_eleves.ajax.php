@@ -71,14 +71,7 @@ $option_first = ($multiple) ? FALSE       : ''    ;
 $selection    = ($multiple) ? $selection  : FALSE ;
 
 // Affichage du retour.
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement( $groupe_type , $groupe_id , $statut , $eleves_ordre );
-if(!is_array($DB_TAB))
-{
-  Json::end( FALSE , $DB_TAB );  // Aucun élève trouvé.
-}
-else
-{
-  Json::end( TRUE , HtmlForm::afficher_select( $DB_TAB , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
-}
+
+Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut,$eleves_ordre) , $select_nom , $option_first , $selection , '' /*optgroup*/ , $multiple ) );
 
 ?>

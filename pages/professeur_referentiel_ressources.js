@@ -719,51 +719,8 @@ $(document).ready
     // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // Indéfini si pas de droit d'accès à cette fonctionnalité.
-    if( $('#zone_ressources_upload').length )
+    if( $('#zone_ressources_upload').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
     {
-
-      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dasn une boucle if{} !
-      function retour_form_erreur_ressource(jqXHR, textStatus, errorThrown)
-      {
-        $('#f_ressource').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-        $('#zone_ressources_upload button').prop('disabled',false);
-        $('#ajax_msg_ressource').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-      }
-
-      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dasn une boucle if{} !
-      function retour_form_valide_ressource(responseJSON)
-      {
-        $('#f_ressource').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-        $('#zone_ressources_upload button').prop('disabled',false);
-        if(responseJSON['statut']==false)
-        {
-          $('#ajax_msg_ressource').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-        }
-        else
-        {
-          initialiser_compteur();
-          var upload_lien = responseJSON['value'];
-          var extension   = upload_lien.split('.').pop().toLowerCase();
-          $('#ajax_ressources_upload').removeAttr('class').html('');
-          $('#afficher_zone_ressources_form').click();
-          $('label[for=lien_url]').removeAttr('class').addClass('valide').html("Upload réussi !");
-          $('label[for=lien_nom]').removeAttr('class').addClass('alerte').html("Validez l'ajout&hellip;");
-          $('#lien_url').val(upload_lien);
-          $('#lien_nom').focus();
-          if ( '.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+extension+'.') !== -1 )
-          {
-            $.prompt(
-              "Votre fichier a bien été enregistré comme ressource.<br />Néanmoins, pour être consulté, il nécessite un ordinateur équipé d'une suite bureautique adaptée.<br />Pour une meilleure accessibilité, il serait préférable de le convertir au format PDF.",
-              {
-                title  : 'Information'
-              }
-            );
-          }
-        }
-      }
 
       // Le formulaire qui va être analysé et traité en AJAX
       var formulaire_ressource = $('#zone_ressources_upload');
@@ -821,6 +778,46 @@ $(document).ready
           return false;
         }
       ); 
+
+      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+      function retour_form_erreur_ressource(jqXHR, textStatus, errorThrown)
+      {
+        $('#f_ressource').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+        $('#zone_ressources_upload button').prop('disabled',false);
+        $('#ajax_msg_ressource').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      }
+
+      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+      function retour_form_valide_ressource(responseJSON)
+      {
+        $('#f_ressource').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+        $('#zone_ressources_upload button').prop('disabled',false);
+        if(responseJSON['statut']==false)
+        {
+          $('#ajax_msg_ressource').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        }
+        else
+        {
+          initialiser_compteur();
+          var upload_lien = responseJSON['value'];
+          var extension   = upload_lien.split('.').pop().toLowerCase();
+          $('#ajax_ressources_upload').removeAttr('class').html('');
+          $('#afficher_zone_ressources_form').click();
+          $('label[for=lien_url]').removeAttr('class').addClass('valide').html("Upload réussi !");
+          $('label[for=lien_nom]').removeAttr('class').addClass('alerte').html("Validez l'ajout&hellip;");
+          $('#lien_url').val(upload_lien);
+          $('#lien_nom').focus();
+          if ( '.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+extension+'.') !== -1 )
+          {
+            $.prompt(
+              "Votre fichier a bien été enregistré comme ressource.<br />Néanmoins, pour être consulté, il nécessite un ordinateur équipé d'une suite bureautique adaptée.<br />Pour une meilleure accessibilité, il serait préférable de le convertir au format PDF.",
+              {
+                title  : 'Information'
+              }
+            );
+          }
+        }
+      }
 
     }
 

@@ -118,7 +118,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 // Si pas grille générique et si notes demandées ou besoin pour colonne bilan ou besoin pour synthèse
 $besoin_notes = ( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese ) ) ? TRUE : FALSE ;
 
-if( !$matiere_id || ( !$type_generique && ( !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve_id) ) ) || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || !count($tab_type) || !$eleves_ordre )
+if( !$matiere_id || ( !$type_generique && (!$groupe_id || !$groupe_nom || !$groupe_type) ) || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && !$retroactif ) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || !count($tab_type) || !$eleves_ordre )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }

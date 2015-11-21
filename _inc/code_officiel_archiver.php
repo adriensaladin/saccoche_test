@@ -126,13 +126,13 @@ if($action=='imprimer_donnees_eleves_prof')
   {
     if(!isset($tab_rubriques[$DB_ROW['rubrique_id']]))
     {
+      $tab_rubriques[$DB_ROW['rubrique_id']] = ($DB_ROW['rubrique_id']) ? $DB_ROW['rubrique_nom'] : 'Synthèse générale' ;
       $nb_lignes_supplémentaires[$DB_ROW['rubrique_id']] = 0;
       // Prévoir une ligne pour la classe et une autre par élève même si rien n'est saisi.
       $tab_saisie[$DB_ROW['rubrique_id']] = $tab_saisie_init;
     }
     if($DB_ROW['prof_id'])
     {
-      $tab_rubriques[$DB_ROW['rubrique_id']] = ($DB_ROW['rubrique_id']) ? $DB_ROW['rubrique_nom'] : 'Synthèse générale' ;
       $tab_saisie[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['appreciation'] = suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']);
       $nb_lignes_supplémentaires[$DB_ROW['rubrique_id']] += nombre_de_ligne_supplémentaires($DB_ROW['saisie_appreciation']);
       unset($DB_TAB[$key]);
@@ -154,19 +154,16 @@ if($action=='imprimer_donnees_eleves_prof')
   $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
   foreach($tab_saisie as $rubrique_id => $tab)
   {
-    if(isset($tab_rubriques[$rubrique_id]))
+    $archivage_tableau_PDF->appreciation_initialiser_eleves_prof( $nb_eleves , $nb_lignes_supplémentaires[$rubrique_id] , $with_moyenne );
+    $archivage_tableau_PDF->appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - Appréciations de '.$prof_nom.' - '.$tab_rubriques[$rubrique_id] );
+    // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
+    foreach($tab_eleve_id as $eleve_id => $tab_eleve)
     {
-      $archivage_tableau_PDF->appreciation_initialiser_eleves_prof( $nb_eleves , $nb_lignes_supplémentaires[$rubrique_id] , $with_moyenne );
-      $archivage_tableau_PDF->appreciation_intitule( $tab_types[$BILAN_TYPE]['titre'].' - '.$classe_nom.' - '.$periode_nom.' - Appréciations de '.$prof_nom.' - '.$tab_rubriques[$rubrique_id] );
-      // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
-      foreach($tab_eleve_id as $eleve_id => $tab_eleve)
+      extract($tab_eleve);  // $eleve_nom $eleve_prenom
+      if(isset($tab[$eleve_id]))
       {
-        extract($tab_eleve);  // $eleve_nom $eleve_prenom
-        if(isset($tab[$eleve_id]))
-        {
-          extract($tab[$eleve_id]);  // $note $appreciation
-          $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
-        }
+        extract($tab[$eleve_id]);  // $note $appreciation
+        $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
       }
     }
   }

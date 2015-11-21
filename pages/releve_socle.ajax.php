@@ -85,7 +85,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
   }
 }
 
-if( !$palier_id || !$palier_nom || ( $groupe_id && ( !$groupe_nom || !$groupe_type || !count($tab_eleve_id) ) ) || !count($tab_pilier_id) || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
+if( !$palier_id || !$palier_nom || ( $groupe_id && ( !$groupe_nom || !$groupe_type) ) || !count($tab_pilier_id) || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }

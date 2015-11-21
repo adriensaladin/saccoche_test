@@ -131,55 +131,6 @@ $(document).ready
     if( $('#form_fichier').length )
     {
 
-      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dasn une boucle if{} !
-      function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
-      {
-        $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-        $('#form_fichier button').prop('disabled',false);
-        $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-      }
-
-      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dasn une boucle if{} !
-      function retour_form_valide_import(responseJSON)
-      {
-        $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-        $('#form_fichier button').prop('disabled',false);
-        if(responseJSON['statut']==false)
-        {
-          $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
-        }
-        else
-        {
-          initialiser_compteur();
-          $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote').hide(0);
-          if( (f_action=='import_sconet') || (f_action=='import_siecle') )
-          {
-            $('#sconet_date_export').html(responseJSON['date_export']);
-            $('#sconet_libelle'    ).html(responseJSON['libelle']);
-            $('#sconet_date_debut' ).html(responseJSON['date_debut']);
-            $('#sconet_date_fin'   ).html(responseJSON['date_fin']);
-          }
-          else if(f_action=='import_gepi')
-          {
-            $('#gepi_eleves_nb').html(responseJSON['eleves_nb']);
-          }
-          else if(f_action=='import_pronote')
-          {
-            $('#pronote_objet'     ).html(responseJSON['objet']);
-            $('#pronote_eleves_nb' ).html(responseJSON['eleves_nb']);
-            $('#pronote_date_debut').html(responseJSON['date_debut']);
-            $('#pronote_date_fin'  ).html(responseJSON['date_fin']);
-          }
-          $('#periode_import').html($('#f_periode_import option:selected').text());
-          $('#ajax_msg_'+f_action).removeAttr('class').html('');
-          $('#ajax_msg_confirm').removeAttr('class').html('');
-          $('#comfirm_'+f_action).show(0);
-          $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
-        }
-      }
-
       // Le formulaire qui va être analysé et traité en AJAX
       var formulaire_import = $('#form_fichier');
 
@@ -256,6 +207,53 @@ $(document).ready
           return false;
         }
       ); 
+
+      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+      function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
+      {
+        $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+        $('#form_fichier button').prop('disabled',false);
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      }
+
+      // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+      function retour_form_valide_import(responseJSON)
+      {
+        $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+        $('#form_fichier button').prop('disabled',false);
+        if(responseJSON['statut']==false)
+        {
+          $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        }
+        else
+        {
+          initialiser_compteur();
+          $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote').hide(0);
+          if( (f_action=='import_sconet') || (f_action=='import_siecle') )
+          {
+            $('#sconet_date_export').html(responseJSON['date_export']);
+            $('#sconet_libelle'    ).html(responseJSON['libelle']);
+            $('#sconet_date_debut' ).html(responseJSON['date_debut']);
+            $('#sconet_date_fin'   ).html(responseJSON['date_fin']);
+          }
+          else if(f_action=='import_gepi')
+          {
+            $('#gepi_eleves_nb').html(responseJSON['eleves_nb']);
+          }
+          else if(f_action=='import_pronote')
+          {
+            $('#pronote_objet'     ).html(responseJSON['objet']);
+            $('#pronote_eleves_nb' ).html(responseJSON['eleves_nb']);
+            $('#pronote_date_debut').html(responseJSON['date_debut']);
+            $('#pronote_date_fin'  ).html(responseJSON['date_fin']);
+          }
+          $('#periode_import').html($('#f_periode_import option:selected').text());
+          $('#ajax_msg_'+f_action).removeAttr('class').html('');
+          $('#ajax_msg_confirm').removeAttr('class').html('');
+          $('#comfirm_'+f_action).show(0);
+          $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+        }
+      }
 
       $('button.fichier_import').click
       (

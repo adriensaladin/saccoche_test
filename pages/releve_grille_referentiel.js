@@ -281,7 +281,8 @@ $(document).ready
     );
 
     // Rechercher automatiquement la meilleure période au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
-    if( $('#form_select').length ) // Indéfini si pas de droit d'accès à cette fonctionnalité.
+    // Indéfini si pas de droit d'accès à cette fonctionnalité.
+    if( $('#form_select').length )
     {
       selectionner_periode_adaptee();
     }

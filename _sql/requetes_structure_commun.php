@@ -664,13 +664,14 @@ public static function DB_modifier_parametres($tab_parametres)
 public static function DB_modifier_user_parametre($user_id,$champ_nom,$champ_val)
 {
   $user_email_origine = ($champ_val) ? 'user' : '' ;
-  $set_email_origine  = ($champ_nom=='user_email') ? ', user_email_origine="'.$user_email_origine.'" ' : '' ;
+  $set_email_origine  = ($champ_nom=='user_email') ? ', user_email_origine=:mail_origine ' : '' ;
   $DB_SQL = 'UPDATE sacoche_user ';
   $DB_SQL.= 'SET '.$champ_nom.'=:champ_val '.$set_email_origine;
   $DB_SQL.= 'WHERE user_id=:user_id ';
   $DB_VAR = array(
-    ':user_id'   => $user_id,
-    ':champ_val' => $champ_val,
+    ':user_id'      => $user_id,
+    ':champ_val'    => $champ_val,
+    ':mail_origine' => $user_email_origine,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

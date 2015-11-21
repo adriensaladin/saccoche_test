@@ -581,7 +581,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
   </div>
   <div id="report_audio">
     <h3>Commentaire audio</h3>
-    <audio id="f_ecouter_audio" controls="" src="" class="prof"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>
+    <audio id="f_ecouter_audio" controls="" class="prof"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio>
   </div>
 </div>
 
@@ -625,7 +625,7 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
     <label class="tab">Enregistrement :</label><span id="record_start" class="hide"><button id="audio_enregistrer_start" type="button" class="enregistrer_start">Démarrer</button></span><span id="record_stop" class="hide"><button id="audio_enregistrer_stop" type="button" class="enregistrer_stop">Arrêter</button></span> <label id="ajax_msg_enregistrer_audio">&nbsp;</label>
   </p>
   <p>
-    <label class="tab">Lecture :</label><span id="record_play" class="hide"><audio id="audio_lecture" controls="" src="" class="prof"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio></span> <span id="record_delete" class="hide"><button id="audio_enregistrer_supprimer" type="button" class="supprimer">Supprimer</button></span>
+    <label class="tab">Lecture :</label><span id="record_play" class="hide"><audio id="audio_lecture" controls="" class="prof"><span class="probleme">Votre navigateur est trop ancien, il ne supporte pas la balise [audio] !</span></audio></span> <span id="record_delete" class="hide"><button id="audio_enregistrer_supprimer" type="button" class="supprimer">Supprimer</button></span>
   </p>
   <div>
     <span class="tab"></span><button id="fermer_enregistrer_audio" type="button" class="retourner">Retour</button>

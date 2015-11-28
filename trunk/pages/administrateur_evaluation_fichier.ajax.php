@@ -32,183 +32,163 @@ $action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : ''
 $tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
+Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , TRUE /*time*/ );
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Exporter un fichier de validations
+// Exporter un fichier d'évaluations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_eleve) )
+if( ($action=='export') && count($tab_eleve) )
 {
-  $tab_validations  = array(); // [i] => [user_id][palier_id][pilier_id][entree_id] => [date][etat] Retenir les validations ; item à 0 si validation d'un palier.
   $listing_eleve_id = implode(',',$tab_eleve);
-  $only_positives   = ($action=='export_lpc') ? TRUE : FALSE ;
-  // Validations des items
-  $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_validations_items($listing_eleve_id,$only_positives);
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $tab_validations[$DB_ROW['user_id']][$DB_ROW['palier_id']][$DB_ROW['pilier_id']][$DB_ROW['entree_id']] = array('date'=>$DB_ROW['validation_entree_date'],'etat'=>$DB_ROW['validation_entree_etat'],'info'=>$DB_ROW['validation_entree_info']) ;
-  }
-  // Validations des compétences
-  $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_validations_competences($listing_eleve_id,$only_positives);
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $tab_validations[$DB_ROW['user_id']][$DB_ROW['palier_id']][$DB_ROW['pilier_id']][0] = array('date'=>$DB_ROW['validation_pilier_date'],'etat'=>$DB_ROW['validation_pilier_etat'],'info'=>$DB_ROW['validation_pilier_info']) ;
-  }
-  // Validations trouvées ?
-  if(!count($tab_validations))
-  {
-    $positive = $only_positives ? 'positive ' : '' ;
-    Json::end( FALSE , 'Aucune validation '.$positive.'d\'élève trouvée !');
-  }
-  // Données élèves
-  $tab_eleves     = array(); // [user_id] => array(nom,prenom,sconet_id) Ordonné par classe et alphabet.
-  $only_sconet_id = ($action=='export_lpc') ? TRUE : FALSE ;
-  $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_eleves_cibles_actuels_avec_sconet_id($listing_eleve_id,$only_sconet_id);
+  $dossier_temp = CHEMIN_DOSSIER_EXPORT.$_SESSION['BASE'].DS;
+  // Récupérer les saisies, donc aussi les identifiants des élèves et des items
+  $tab_item = array();
+  $tab_user = array();
+  $tab_code = array();
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves( $listing_eleve_id );
   if(empty($DB_TAB))
   {
-    $identifiant = $only_sconet_id ? 'n\'ont pas d\'identifiant Sconet ou ' : '' ;
-    Json::end( FALSE , 'Les élèves trouvés '.$identifiant.'sont anciens !');
+    Json::end( FALSE , 'Aucune saisie d\'évaluation trouvée !');
   }
+  // Créer ou vider le dossier temporaire
+  FileSystem::creer_ou_vider_dossier($dossier_temp);
+  // Infos concernant les saisies
+  $nb_saisies = count($DB_TAB);
+  $xml_saisie = '<saisies>'."\r\n";
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_eleves[$DB_ROW['user_id']] = array('nom'=>$DB_ROW['user_nom'],'prenom'=>$DB_ROW['user_prenom'],'sconet_id'=>$DB_ROW['user_sconet_id']);
-  }
-  // Fabrication du XML
-  $nb_eleves  = 0;
-  $nb_piliers = 0;
-  $nb_items   = 0;
-  if($action=='export_lpc')
-  {
-    $xml = '<?xml version="1.0" encoding="ISO-8859-15"?>'."\r\n";
-    $xml.= '<lpc xmlns="urn:ac-grenoble.fr:lpc:import:v1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:ac-grenoble.fr:lpc:import:v1.0 import-lpc.xsd">'."\r\n";
-    $xml.= '  <entete>'."\r\n";
-    $xml.= '    <editeur>SESAMATH</editeur>'."\r\n";
-    $xml.= '    <application>SACOCHE</application>'."\r\n";
-    $xml.= '    <etablissement>'.html($_SESSION['WEBMESTRE_UAI']).'</etablissement>'."\r\n";
-    $xml.= '  </entete>'."\r\n";
-    $xml.= '  <donnees>'."\r\n";
-  }
-  else
-  {
-    $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\r\n";
-    $xml.= '<sacoche>'."\r\n";
-    $xml.= '  <donnees>'."\r\n";
-  }
-  foreach($tab_eleves as $user_id => $tab_user)
-  {
-    if(isset($tab_validations[$user_id]))
+    $tab_user[$DB_ROW['user_id']] = $DB_ROW['user_id'];
+    $tab_item[$DB_ROW['item_id']] = $DB_ROW['item_id'];
+    if(is_numeric($DB_ROW['note']))
     {
-      $nb_eleves++;
-      $xml.= '    <eleve id="'.$tab_user['sconet_id'].'" nom="'.html($tab_user['nom']).'" prenom="'.html($tab_user['prenom']).'">'."\r\n";
-      foreach($tab_validations[$user_id] as $palier_id => $tab_pilier)
-      {
-        $xml.= '      <palier id="'.$palier_id.'">'."\r\n";
-        foreach($tab_pilier as $pilier_id => $tab_item)
-        {
-          $xml.= '        <competence id="'.$pilier_id.'">'."\r\n";
-          if(isset($tab_item[0]))
-          {
-            // Validation de la compétence
-            $nb_piliers++;
-            $xml.= '          <validation>'."\r\n";
-            $xml.= '            <date>'.$tab_item[0]['date'].'</date>'."\r\n";
-            if(!$only_positives)
-            {
-              $xml.= '            <etat>'.$tab_item[0]['etat'].'</etat>'."\r\n";
-              $xml.= '            <info>'.html($tab_item[0]['info']).'</info>'."\r\n";
-            }
-            $xml.= '          </validation>'."\r\n";
-            unset($tab_item[0]);
-          }
-          if(count($tab_item))
-          {
-            // Validation d'items de la compétence
-            foreach($tab_item as $item_id => $tab_item_infos)
-            {
-              $nb_items++;
-              $xml.= '          <item id="'.$item_id.'">'."\r\n";
-              $xml.= '            <renseignement>'."\r\n";
-              $xml.= '              <date>'.$tab_item_infos['date'].'</date>'."\r\n";
-              if(!$only_positives)
-              {
-                $xml.= '              <etat>'.$tab_item_infos['etat'].'</etat>'."\r\n";
-                $xml.= '              <info>'.html($tab_item_infos['info']).'</info>'."\r\n";
-              }
-              $xml.= '            </renseignement>'."\r\n";
-              $xml.= '          </item>'."\r\n";
-            }
-          }
-          $xml.= '        </competence>'."\r\n";
-        }
-        $xml.= '      </palier>'."\r\n";
-      }
-      $xml.= '    </eleve>'."\r\n";
+      $tab_code[$DB_ROW['note']] = $DB_ROW['note'];
     }
+    $xml_saisie.= '  <saisie user="'.$DB_ROW['user_id'].'" item="'.$DB_ROW['item_id'].'" date="'.$DB_ROW['date'].'" note="'.$DB_ROW['note'].'" info="'.html($DB_ROW['info']).'" visu="'.$DB_ROW['visible'].'" />'."\r\n";
   }
-  $fichier_extension = ($action=='export_lpc') ? 'xml' : 'zip' ;
-  $fichier_nom = str_replace('export_','import-',$action).'-'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
-  if($action=='export_lpc')
+  $xml_saisie.= '</saisies>'."\r\n";
+  FileSystem::ecrire_fichier( $dossier_temp.'saisies.xml' , $xml_saisie );
+  unset($xml_saisie);
+  // Infos concernant les codes d'évaluation
+  sort($tab_code);
+  $xml_code = '<codes>'."\r\n";
+  foreach($tab_code as $code)
   {
-    $xml.= '  </donnees>'."\r\n";
-    $xml.= '</lpc>'."\r\n";
-    // Pour LPC, ajouter la signature via un appel au serveur sécurisé
-    $xml = utf8_decode($xml);
-    $xml = ServeurCommunautaire::signer_exportLPC( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $xml ); // fonction sur le modèle de envoyer_arborescence_XML()
-    if(substr($xml,0,5)!='<?xml')
-    {
-      Json::end( FALSE , html($xml) );
-    }
-    FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $xml );
-    $fichier_lien = './force_download.php?fichier='.$fichier_nom;
+    $xml_code.= '  <code id="'.$code.'" valeur="'.$_SESSION['NOTE'][$code]['VALEUR'].'" legende="'.html($_SESSION['NOTE'][$code]['LEGENDE']).'" />'."\r\n";
   }
-  else
+  $xml_code.= '</codes>'."\r\n";
+  FileSystem::ecrire_fichier( $dossier_temp.'codes.xml' , $xml_code );
+  unset($xml_code);
+  // Infos concernant les élèves
+  $xml_user = '<users>'."\r\n";
+  $listing_user_id = implode(',',$tab_user);
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( $listing_user_id , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_nom,user_prenom' );
+  foreach($DB_TAB as $DB_ROW)
   {
-    $xml.= '  </donnees>'."\r\n";
-    $xml.= '</sacoche>'."\r\n";
-    // L'export pour SACoche on peut le zipper (le gain est très significatif : facteur 40 à 50 !)
-    $result = FileSystem::zip_chaine( CHEMIN_DOSSIER_EXPORT.$fichier_nom , 'import_validations.xml' , $xml );
-    if($result!==TRUE)
-    {
-      Json::end( FALSE , $result );
-    }
-    $fichier_lien = URL_DIR_EXPORT.$fichier_nom;
+    $xml_user.= '  <user id="'.$DB_ROW['user_id'].'" sconet="'.$DB_ROW['user_sconet_id'].'" elenoet="'.$DB_ROW['user_sconet_elenoet'].'" reference="'.html($DB_ROW['user_reference']).'" nom="'.html($DB_ROW['user_nom']).'" prenom="'.html($DB_ROW['user_prenom']).'" />'."\r\n";
   }
+  $xml_user.= '</users>'."\r\n";
+  FileSystem::ecrire_fichier( $dossier_temp.'users.xml' , $xml_user );
+  unset($xml_user);
+  // Infos concernant les items (et les arborescences associées)
+  $tab_matiere = array();
+  $tab_niveau  = array();
+  $tab_domaine = array();
+  $tab_theme   = array();
+  $xml_item    = '<items>'."\r\n";
+  $listing_item_id = implode(',',$tab_item);
+  $DB_TAB = DB_STRUCTURE_BILAN::recuperer_arborescence_items( $listing_item_id );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_matiere[$DB_ROW['matiere_id']] = '  <matiere id="'.$DB_ROW['matiere_id'].'" nom="'.html($DB_ROW['matiere_nom']).'" />'."\r\n";
+    $tab_niveau[$DB_ROW['niveau_id']]   = '  <niveau id="'.$DB_ROW['niveau_id'].'" nom="'.html($DB_ROW['niveau_nom']).'" />'."\r\n";
+    $tab_domaine[$DB_ROW['domaine_id']] = '  <domaine id="'.$DB_ROW['domaine_id'].'" nom="'.html($DB_ROW['domaine_nom']).'" matiere="'.$DB_ROW['matiere_id'].'" niveau="'.$DB_ROW['niveau_id'].'" />'."\r\n";
+    $tab_theme[$DB_ROW['theme_id']]     = '  <theme id="'.$DB_ROW['theme_id'].'" nom="'.html($DB_ROW['theme_nom']).'" domaine="'.$DB_ROW['domaine_id'].'" />'."\r\n";
+    $xml_item.= '  <item id="'.$DB_ROW['item_id'].'" nom="'.html($DB_ROW['item_nom']).'" theme="'.$DB_ROW['theme_id'].'" />'."\r\n";
+  }
+  $xml_item.= '</items>'."\r\n";
+  FileSystem::ecrire_fichier( $dossier_temp.'items.xml' , $xml_item );
+  unset($xml_item);
+  // Infos concernant les éléments de référentiel associés
+  FileSystem::ecrire_fichier( $dossier_temp.'matieres.xml' , '<matieres>'."\r\n".implode('',$tab_matiere).'  </matieres>'."\r\n" );
+  FileSystem::ecrire_fichier( $dossier_temp.'niveaux.xml'  , '<niveaux>' ."\r\n".implode('',$tab_niveau ).'  </niveaux>' ."\r\n" );
+  FileSystem::ecrire_fichier( $dossier_temp.'domaines.xml' , '<domaines>'."\r\n".implode('',$tab_domaine).'  </domaines>'."\r\n" );
+  FileSystem::ecrire_fichier( $dossier_temp.'themes.xml'   , '<themes>'  ."\r\n".implode('',$tab_theme  ).'  </themes>'  ."\r\n" );
+  unset( $tab_matiere , $tab_niveau , $tab_domaine , $tab_theme );
+  // On zippe (gain significatif de facteur 15 à 20)
+  $fichier_zip_nom = 'evaluations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
+  $result = FileSystem::zip_fichiers( $dossier_temp , CHEMIN_DOSSIER_EXPORT , $fichier_zip_nom );
+  if($result!==TRUE)
+  {
+    Json::end( FALSE , $result );
+  }
+  // Supprimer le dossier temporaire
+  FileSystem::supprimer_dossier($dossier_temp);
   // Afficher le retour
+  $fichier_lien = URL_DIR_EXPORT.$fichier_zip_nom;
+  $nb_eleves = count($tab_user);
+  $nb_items = count($tab_item);
+  $ss = ($nb_saisies>1) ? 's' : '' ;
   $se = ($nb_eleves>1)  ? 's' : '' ;
-  $sp = ($nb_piliers>1) ? 's' : '' ;
   $si = ($nb_items>1)   ? 's' : '' ;
-  $in = $only_positives ? '' : '(in)-' ;
-  Json::add_str('<li><label class="valide">Fichier d\'export généré : '.$nb_piliers.' '.$in.'validation'.$sp.' de compétence'.$sp.' et '.$nb_items.' '.$in.'validation'.$si.' d\'item'.$si.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>'.NL);
-  Json::add_str('<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>'.NL);
-  if($action=='export_lpc')
-  {
-    Json::add_str('<li>Vous devrez indiquer dans <em>lpc</em> les dates suivantes : <span class="b">'.html(CNIL_DATE_ENGAGEMENT).'</span> (déclaration <em>cnil</em>) et <span class="b">'.html(CNIL_DATE_RECEPISSE).'</span> (retour du récépissé).</li>'.NL);
-  }
+  Json::add_str('<li><label class="valide">Fichier d\'export généré : '.number_format($nb_saisies,0,'',' ').' saisie'.$ss.' d\'évaluations trouvées concernant '.number_format($nb_eleves,0,'',' ').' élève'.$se.' et '.number_format($nb_items,0,'',' ').' item'.$si.'.</label></li>'.NL);
+  Json::add_str('<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_zip">Récupérer le fichier au format <em>zip</em>.</span></a></li>'.NL);
   Json::add_str('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>'.NL);
   Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier de validations
+// Importer un fichier d'évaluations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array( $action , array('import_sacoche','import_compatible') ) )
+if($action=='import')
 {
+  $dossier_temp = CHEMIN_DOSSIER_IMPORT.$_SESSION['BASE'].DS;
   // Récupération du fichier
-  // Si c'est un fichier zippé, on considère alors que c'est un zip devant venir de SACoche, et contenant import_validations.xml
-  $fichier_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
-  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('xml','zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'import_validations.xml' /*filename_in_zip*/ );
+  $fichier_upload_nom = 'evaluations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
+  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_upload_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
     Json::end( FALSE , $result );
   }
-  // On passe au contenu
-  $fichier_contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
-  $fichier_contenu = To::deleteBOM(To::utf8($fichier_contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $xml = @simplexml_load_string($fichier_contenu);
-  if($xml===FALSE)
+  // Créer ou vider le dossier temporaire
+  FileSystem::creer_ou_vider_dossier($dossier_temp);
+  // Dezipper dans le dossier temporaire
+  $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom , $dossier_temp , FALSE /*use_ZipArchive*/ );
+  if($code_erreur)
   {
-    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !');
+    FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
+    Json::end( FALSE , 'Cette archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
+
+  // Vérifier le contenu : noms des fichiers
+  $tab_fichiers_archive = array( 'saisies.xml' , 'codes.xml' , 'users.xml' , 'items.xml' , 'matieres.xml' , 'niveaux.xml'  , 'domaines.xml' , 'themes.xml' ); // ordre important
+  $tab_fichiers_cherches = array_fill_keys( $tab_fichiers_attendus , TRUE );
+  $tab_fichiers_trouves  = FileSystem::lister_contenu_dossier($dossier_temp);
+  foreach($tab_fichiers_trouves as $fichier_nom)
+  {
+    unset($tab_fichiers_cherches[$fichier_nom]);
+  }
+  if(count($tab_fichiers_cherches))
+  {
+    FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
+    Json::end( FALSE , 'Cette archive ZIP ne semble pas contenir les fichiers d\'un export d\'évaluations effectué par SACoche !' );
+  }
+  // On passe au contenu
+  foreach($tab_fichiers_archive as $fichier_nom)
+  {
+    $fichier_contenu = file_get_contents($dossier_temp.$fichier_nom);
+    $fichier_contenu = To::deleteBOM(To::utf8($fichier_contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+    $xml = @simplexml_load_string($fichier_contenu);
+    if($xml===FALSE)
+    {
+      Json::end( FALSE , 'Le fichier extrait "'.$fichier_nom.'" n\'est pas un XML valide !');
+    }
+    
+    
+    
+  }
+
   // On extrait les infos du XML
   $tab_eleve_fichier = array();
   if( ($xml->donnees) && ($xml->donnees->eleve) )

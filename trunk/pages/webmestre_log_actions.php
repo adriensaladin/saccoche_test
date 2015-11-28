@@ -26,12 +26,16 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Log des actions sensibles"));
+$TITRE = "Log des actions sensibles"; // Pas de traduction car pas de choix de langue pour ce profil.
 ?>
 
 <p class="astuce">Les actions sensibles sont enregistrées, ce qui permet aux administrateurs de rechercher quel compte est fautif en cas de problème...</p>
 <p class="astuce">Ces logs sont enregistrés dans un fichier (pas dans la base) ; ils sont donc propres à un serveur et ne sont pas transférés lors d'une sauvegarde / restauration de base.</p>
 <p class="astuce">Concernant la suppression d'un référentiel, suivez ces liens pour savoir à quoi correspondent les identifiants <a target="_blank" href="http://redmine.sesamath.net/projects/sacoche/repository/entry/_sql/structure/sacoche_matiere.sql">de matières</a> et <a target="_blank" href="http://redmine.sesamath.net/projects/sacoche/repository/entry/_sql/structure/sacoche_niveau.sql">de niveaux</a>.</p>
+
+<hr />
+
+<?php if(HEBERGEUR_INSTALLATION=='mono-structure'): /* * * * * * MONO-STRUCTURE DEBUT * * * * * */ ?>
 
 <?php
 $fichier_log_contenu = SACocheLog::lire($_SESSION['BASE']);
@@ -67,3 +71,19 @@ else
   echo $table_log_extrait;
 }
 ?>
+
+<?php endif /* * * * * * MONO-STRUCTURE FIN * * * * * */ ?>
+
+<?php if(HEBERGEUR_INSTALLATION=='multi-structures'): /* * * * * * MULTI-STRUCTURES DEBUT * * * * * */ ?>
+
+<?php
+$select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , 'f_base' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'zones_geo' /*optgroup*/ , FALSE /*multiple*/ );
+?>
+
+<form action="#" method="post"><fieldset>
+  <label class="tab" for="f_base">Structure :</label><?php echo $select_structure ?><label id="ajax_msg">&nbsp;</label>
+</fieldset></form>
+<div id="ajax_retour" class="p">
+</div>
+
+<?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>

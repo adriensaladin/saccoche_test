@@ -93,7 +93,11 @@ if( ($action=='exporter') && $num && $max && ($num<$max) )
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$export_id);
   // Zipper les fichiers de svg
-  FileSystem::zipper_fichiers($dossier_temp_sql,$dossier_temp_zip,$fichier_nom);
+  $result = FileSystem::zip_fichiers($dossier_temp_sql,$dossier_temp_zip,$fichier_nom);
+  if($result!==TRUE)
+  {
+    Json::end( FALSE , $result );
+  }
   // Appel suivant
   Json::end( TRUE );
 }
@@ -102,7 +106,11 @@ elseif( ($action=='exporter') && $num && $max && ($num==$max) )
   // Supprimer le dossier temporaire des sql
   FileSystem::supprimer_dossier($dossier_temp_sql);
   // Zipper les zip de svg
-  FileSystem::zipper_fichiers($dossier_temp_zip,CHEMIN_DOSSIER_DUMP,$fichier_zip_nom);
+  $result = FileSystem::zip_fichiers($dossier_temp_zip,CHEMIN_DOSSIER_DUMP,$fichier_zip_nom);
+  if($result!==TRUE)
+  {
+    Json::end( FALSE , $result );
+  }
   // Supprimer le dossier temporaire des zip
   FileSystem::supprimer_dossier($dossier_temp_zip);
   // Game over

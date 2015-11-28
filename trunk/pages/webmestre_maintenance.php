@@ -28,6 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = "Maintenance &amp; Mise à jour"; // Pas de traduction car pas de choix de langue pour ce profil.
 
+$titre_verifi_dossiers_additionnels = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'Vérification des dossiers additionnels par établissement' : 'Vérification des dossiers additionnels' ;
+
 // Initialisation de l'état de l'accès
 $blocage_msg = LockAcces::tester_blocage('webmestre',0);
 if($blocage_msg!==NULL)
@@ -88,17 +90,13 @@ else
   <span class="tab"></span><button id="bouton_verif_file_appli" type="button" class="parametre">Lancer la vérification.</button><label id="ajax_verif_file_appli">&nbsp;</label>
 </fieldset></form>
 
-<?php if(HEBERGEUR_INSTALLATION=='multi-structures'): /* * * * * * MULTI-STRUCTURES DEBUT * * * * * */ ?>
-
 <hr />
 
-<h2>Vérification des dossiers additionnels par établissement</h2>
+<h2><?php echo $titre_verifi_dossiers_additionnels ?></h2>
 
 <form action="#" method="post" id="form_verif_dir_etabl"><fieldset>
   <span class="tab"></span><button id="bouton_verif_dir_etabl" type="button" class="parametre">Lancer la vérification.</button><label id="ajax_verif_dir_etabl">&nbsp;</label>
 </fieldset></form>
-
-<?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>
 
 <hr />
 

@@ -639,7 +639,7 @@ class SessionUser
       Sesamail::envoyer_notifications();
       DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_anciens();
       // On efface le marqueur
-      FileSystem::supprimer_fichier($fichier_lock);
+      FileSystem::supprimer_fichier( $fichier_lock , TRUE /*verif_exist*/ );
     }
     // Si le fichier témoin du nettoyage existe, on vérifie que sa présence n'est pas anormale (cela s'est déjà produit...)
     else

@@ -188,7 +188,11 @@ if( ($ACTION=='imprimer') && ($etape==3) )
     $releve_pdf = new PDFMerger;
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_numero ) -> merge( 'file' , $fichier_extraction_chemin );
   }
-  FileSystem::zipper_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $_SESSION['tmp']['fichier_nom'].'.zip' );
+  $result = FileSystem::zip_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $_SESSION['tmp']['fichier_nom'].'.zip' );
+  if($result!==TRUE)
+  {
+    Json::end( FALSE , $result );
+  }
   FileSystem::supprimer_dossier($chemin_temp_pdf);
   $_SESSION['tmp']['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
   unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);

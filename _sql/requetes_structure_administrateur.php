@@ -407,7 +407,7 @@ public static function DB_lister_classes_et_groupes_avec_niveaux()
  * @param string   $avec_info         facultatif ; "classe" pour récupérer la classe des élèves | "enfant" pour récupérer une classe et un enfant associé à un parent
  * @return array
  */
-public static function DB_lister_users_cibles( $listing_user_id , $listing_champs , $avec_info='' )
+public static function DB_lister_users_cibles($listing_user_id,$listing_champs,$avec_info='')
 {
   if($avec_info=='classe')
   {
@@ -1301,7 +1301,6 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':daltonisme'    : $tab_set[] = 'user_daltonisme='    .$key; break;
       case ':connexion_date': $tab_set[] = 'user_connexion_date='.$key; break;
       case ':sortie_date'   : $tab_set[] = 'user_sortie_date='   .$key; break;
-      case ':classe'        : $tab_set[] = 'eleve_classe_id='    .$key; break;
       case ':elv_classe'    : $tab_set[] = 'eleve_classe_id='    .$key; break;
       case ':elv_langue'    : $tab_set[] = 'eleve_langue='       .$key; break;
       case ':elv_brevet'    : $tab_set[] = 'eleve_brevet_serie=' .$key; break;
@@ -1310,7 +1309,7 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':param_accueil' : $tab_set[] = 'user_param_accueil=' .$key; break;
     }
   }
-  if(count($tab_set))
+  try
   {
     $DB_SQL = 'UPDATE sacoche_user ';
     $DB_SQL.= 'SET '.implode(', ',$tab_set).' ';
@@ -1318,9 +1317,9 @@ public static function DB_modifier_user($user_id,$DB_VAR)
     $DB_VAR[':user_id'] = $user_id;
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
-  else
+  catch (Exception $e)
   {
-    ajouter_log_PHP( 'Erreur DB_modifier_user()' /*log_objet*/ , serialize($DB_VAR) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
+    ajouter_log_PHP( 'Erreur DB_modifier_user() : '.$e /*log_objet*/ , serialize($DB_VAR) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
   }
 }
 

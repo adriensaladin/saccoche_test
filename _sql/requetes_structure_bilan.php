@@ -426,26 +426,6 @@ public static function DB_recuperer_arborescence_synthese( $liste_eleve_id , $ma
 }
 
 /**
- * recuperer_arborescence_items
- * Retourner l'arborescence des items insiqués => pour un export/import
- *
- * @param string $liste_item_id   id des éitems séparés par des virgules
- * @return array
- */
-public static function recuperer_arborescence_items( $liste_item_id )
-{
-  $DB_SQL = 'SELECT item_id , item_nom , theme_id , theme_nom , domaine_id , domaine_nom , matiere_id , matiere_nom , niveau_id , niveau_nom ';
-  $DB_SQL.= 'FROM sacoche_referentiel_item ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE item_id IN('.$liste_item_id.') ';
-  $DB_SQL.= 'ORDER BY matiere_ordre ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * recuperer_modes_synthese_inconnu
  *
  * @param void
@@ -525,27 +505,6 @@ public static function DB_lister_result_eleves_items( $liste_eleve_id , $liste_i
     ':date_fin'   => $date_mysql_fin,
   );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_result_eleves
- * Retourner les résultats pour des élèves donnés
- *
- * @param string   $liste_eleve_id  id des élèves séparés par des virgules
- * @return array
- */
-public static function DB_lister_result_eleves( $liste_eleve_id )
-{
-  $DB_SQL = 'SELECT eleve_id AS user_id , item_id , saisie_note AS note , saisie_date AS date , saisie_info AS info , saisie_visible_date AS visible ';
-  $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND niveau_actif=1 AND matiere_active=1 AND saisie_note!="PA" ';
-  $DB_SQL.= 'ORDER BY user_id ASC, item_id ASC, saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

@@ -55,10 +55,6 @@ $groupe_type = $tab_types[$groupe_type];
 if($groupe_type=='Divers')
 {
   $groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
-  if($groupe_id==3)
-  {
-    $_POST['f_statut'] = 0 ;
-  }
 }
 
 // Autres valeurs à récupérer ou à définir.

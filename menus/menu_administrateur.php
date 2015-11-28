@@ -81,15 +81,14 @@ $tab_sous_menu = array
   ),
   'admin_generale' => array
   (
-    'administrateur_dump'                => array( 'texte' => Lang::_("Sauvegarder / Restaurer la base")      , 'class' => 'dump'               , 'href' => 'page=administrateur_dump'                ),
-    'administrateur_nettoyage'           => array( 'texte' => Lang::_("Nettoyer / Initialiser la base")       , 'class' => 'nettoyage'          , 'href' => 'page=administrateur_nettoyage'           ),
-    'administrateur_fichier_user'        => array( 'texte' => Lang::_("Importer des fichiers d'utilisateurs") , 'class' => 'fichier_import'     , 'href' => 'page=administrateur_fichier_user'        ),
-    'administrateur_fichier_identifiant' => array( 'texte' => Lang::_("Importer / Imposer des identifiants")  , 'class' => 'fichier_import'     , 'href' => 'page=administrateur_fichier_identifiant' ),
-    'administrateur_evaluation_fichier'  => array( 'texte' => Lang::_("Import / Export des évaluations")      , 'class' => 'evaluation_fichier' , 'href' => 'page=administrateur_evaluation_fichier'  ),
-    'validation_socle_fichier'           => array( 'texte' => Lang::_("Import / Export des validations")      , 'class' => 'socle_fichier'      , 'href' => 'page=validation_socle_fichier'           ),
-    'compte_message'                     => array( 'texte' => Lang::_("Messages d'accueil")                   , 'class' => 'message_accueil'    , 'href' => 'page=compte_message'                     ),
-    'administrateur_blocage'             => array( 'texte' => Lang::_("Blocage des connexions")               , 'class' => 'blocage'            , 'href' => 'page=administrateur_blocage'             ),
-    'administrateur_resilier'            => array( 'texte' => Lang::_("Résilier l'inscription")               , 'class' => 'resilier'           , 'href' => 'page=administrateur_resilier'            ),
+    'administrateur_dump'                => array( 'texte' => Lang::_("Sauvegarder / Restaurer la base")      , 'class' => 'dump'            , 'href' => 'page=administrateur_dump'                ),
+    'administrateur_nettoyage'           => array( 'texte' => Lang::_("Nettoyer / Initialiser la base")       , 'class' => 'nettoyage'       , 'href' => 'page=administrateur_nettoyage'           ),
+    'administrateur_fichier_user'        => array( 'texte' => Lang::_("Importer des fichiers d'utilisateurs") , 'class' => 'fichier_import'  , 'href' => 'page=administrateur_fichier_user'        ),
+    'administrateur_fichier_identifiant' => array( 'texte' => Lang::_("Importer / Imposer des identifiants")  , 'class' => 'fichier_import'  , 'href' => 'page=administrateur_fichier_identifiant' ),
+    'validation_socle_fichier'           => array( 'texte' => Lang::_("Import / Export des validations")      , 'class' => 'socle_fichier'   , 'href' => 'page=validation_socle_fichier'           ),
+    'compte_message'                     => array( 'texte' => Lang::_("Messages d'accueil")                   , 'class' => 'message_accueil' , 'href' => 'page=compte_message'                     ),
+    'administrateur_blocage'             => array( 'texte' => Lang::_("Blocage des connexions")               , 'class' => 'blocage'         , 'href' => 'page=administrateur_blocage'             ),
+    'administrateur_resilier'            => array( 'texte' => Lang::_("Résilier l'inscription")               , 'class' => 'resilier'        , 'href' => 'page=administrateur_resilier'            ),
   ),
   'gestion_courante' => array
   (

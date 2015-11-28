@@ -1074,12 +1074,11 @@ public static function DB_OPT_domaines($pilier_id)
  * Retourner un tableau [valeur texte optgroup] des niveaux / classes / groupes d'un établissement
  * optgroup sert à pouvoir regrouper les options
  *
- * @param bool   $sans   TRUE  par défaut => pour avoir un choix "Sans classe affectée"
- * @param bool   $tout   TRUE  par défaut => pour avoir un choix "Tout l'établissement"
- * @param bool   $ancien FALSE par défaut => pour avoir un choix "Anciens élèves"
+ * @param bool   $sans   TRUE par défaut => pour avoir un choix "Sans classe affectée"
+ * @param bool   $tout   TRUE par défaut => pour avoir un choix "Tout l'établissement"
  * @return array|string
  */
-public static function DB_OPT_regroupements_etabl( $sans=TRUE , $tout=TRUE , $ancien=FALSE )
+public static function DB_OPT_regroupements_etabl($sans=TRUE,$tout=TRUE)
 {
   // Options du select : catégorie "Divers"
   $DB_TAB_divers = array();
@@ -1096,14 +1095,6 @@ public static function DB_OPT_regroupements_etabl( $sans=TRUE , $tout=TRUE , $an
     $DB_TAB_divers[] = array(
       'valeur'   => 'd2',
       'texte'    => 'Tout l\'établissement',
-      'optgroup' => 'divers',
-    );
-  }
-  if($ancien)
-  {
-    $DB_TAB_divers[] = array(
-      'valeur'   => 'd3',
-      'texte'    => 'Anciens élèves',
       'optgroup' => 'divers',
     );
   }

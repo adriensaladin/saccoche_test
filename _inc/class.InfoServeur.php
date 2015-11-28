@@ -85,37 +85,37 @@ class InfoServeur
   {
     switch($sujet)
     {
-      case 'version_php'                    : return "Version ".PHP_VERSION_MINI_REQUISE." ou ultérieure requise.<br \>Version ".PHP_VERSION_MINI_CONSEILLEE." ou ultérieure conseillée.<br \>PHP 5.2 n'est plus supporté depuis le 16 décembre 2010.<br \>PHP 5.3 ne reçoit plus de correctifs de sécurité depuis le 14 août 2014.";
-      case 'version_mysql'                  : return "Version ".MYSQL_VERSION_MINI_REQUISE." ou ultérieure requise.<br \>Version ".MYSQL_VERSION_MINI_CONSEILLEE." ou ultérieure conseillée.<br \>MySQL 5.1 n'est plus supporté depuis le 31 décembre 2013.<br \>MySQL 5.5 est stable depuis octobre 2010.";
-      case 'version_sacoche_prog'           : return "Dernière version disponible : ".InfoServeur::SACoche_version_dispo();
-      case 'version_sacoche_base_structure' : return InfoServeur::info_base_complement('structure')."Version attendue : ".VERSION_BASE_STRUCTURE;
-      case 'version_sacoche_base_webmestre' : return InfoServeur::info_base_complement('webmestre')."Version attendue : ".VERSION_BASE_WEBMESTRE;
-      case 'max_execution_time'             : return "Par défaut 30 secondes.<br />Une valeur trop faible peut gêner les sauvegardes / restaurations de grosses bases ou des générations de bilans PDF.";
-      case 'max_input_vars'                 : return "Par défaut 1000.<br />Une valeur inférieure est susceptible de tronquer la transmission de formulaires importants.<br \>Disponible à compter de PHP 5.3.9 uniquement.";
-      case 'max_input_time'                 : return "Par défaut -1 (pas de limitation).<br />Disponible à compter de PHP 4.3.0 uniquement.";
-      case 'max_input_nesting_level'        : return "Par défaut 64.<br />Disponible à compter de PHP 4.4.8 et PHP 5.2.3 uniquement.";
-      case 'memory_limit'                   : return "Par défaut 128Mo (convient très bien).<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 128Mo peut poser problème (pour générer des bilans PDF en particulier).<br />Mais 64Mo voire 32Mo peuvent aussi convenir, tout dépend de l'usage (nombre d'élèves considérés à la fois, quantité de données&hellip;).";
-      case 'post_max_size'                  : return "Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).";
-      case 'upload_max_filesize'            : return "Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d'une taille supérieure.";
-      case 'max_allowed_packet'             : return "Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.";
-      case 'max_user_connections'           : return "Une valeur inférieure à 5 est susceptible, suivant la charge, de poser problème.";
-      case 'group_concat_max_len'           : return "Par défaut 1024 octets.<br />Une telle valeur devrait suffire.";
-      case 'safe_mode'                      : return "Fonctionnalité obsolète depuis PHP 5.3.0, à ne plus utiliser.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).";
-      case 'open_basedir'                   : return "Limite les fichiers pouvant être ouverts par PHP à une architecture de dossiers spécifique.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).";
-      case 'ini_set_memory_limit'           : return "Possibilité d'augmenter la mémoire allouée au script.";
-      case 'register_globals'               : return "Enregistrer les variables environnement Get/Post/Cookie/Server comme des variables globales.<br />Par défaut désactivé depuis PHP 4.2.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.";
-      case 'magic_quotes_gpc'               : return "Échapper les apostrophes pour Get/Post/Cookie.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.";
-      case 'magic_quotes_sybase'            : return "Échapper les apostrophes pour Get/Post/Cookie.<br />Remplace la directive magic_quotes_gpc en cas d'activation.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.";
-      case 'magic_quotes_runtime'           : return "Échapper les apostrophes pour toutes les données externes, y compris les bases de données et les fichiers texte.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.";
-      case 'session_gc_maxlifetime'         : return "Durée de vie des données (session) sur le serveur, en nombre de secondes.<br />Par défaut 1440s soit 24min.<br />SACoche permet de régler une conservation de session plus longue.<br />Mais cela ne fonctionnera que si le serveur est configuré pour une durée minimum de 10min.";
-      case 'session_use_trans_sid'          : return "Par défaut désactivé, ce qui rend le support de l'identifiant de session transparent.<br />C'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.<br />La configuration session.use_trans_sid=ON couplée à session.use_only_cookies=OFF engendre des dysfonctionnements.";
-      case 'session_use_only_cookies'       : return "Par défaut activé, ce qui indique d'utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.<br />C'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.<br />La configuration session.use_trans_sid=ON couplée à session.use_only_cookies=OFF engendre des dysfonctionnements.";
-      case 'zend_ze1_compatibility_mode'    : return "Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C'est incompatible avec classe PDO, et l'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.";
-      case 'server_protocole'               : return "Variable serveur indiquant le protocole ; on regarde dans l'ordre :<br />- HTTPS si définie correctement<br />- HTTP_X_FORWARDED_PROTO si définie correctement<br />- c'est HTTP sinon";
-      case 'server_IP_client'               : return "IP cliente présentée au serveur ; on regarde dans l'ordre :<br />- HTTP_X_REAL_IP si définie<br />- HTTP_X_FORWARDED_FOR si définie<br />- REMOTE_ADDR sinon";
-      case 'modules_PHP'                    : return "Les modules sur fond coloré sont requis par SACoche.<br />Cliquer sur un module pour consulter le détail des informations.";
-      case 'suhosin'                        : return "Module retiré à compter de PHP 5.4 (PHP prenant nativement en charge la plupart des fonctionnalités).";
-      default                               : return "";
+      case 'version_php'                    : return 'Version '.PHP_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.PHP_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>PHP 5.2 n\'est plus supporté depuis le 16 décembre 2010.<br \>PHP 5.3 ne reçoit plus de correctifs de sécurité depuis le 14 août 2014.';
+      case 'version_mysql'                  : return 'Version '.MYSQL_VERSION_MINI_REQUISE.' ou ultérieure requise.<br \>Version '.MYSQL_VERSION_MINI_CONSEILLEE.' ou ultérieure conseillée.<br \>MySQL 5.1 n\'est plus supporté depuis le 31 décembre 2013.<br \>MySQL 5.5 est stable depuis octobre 2010.';
+      case 'version_sacoche_prog'           : return 'Dernière version disponible : '.InfoServeur::SACoche_version_dispo();
+      case 'version_sacoche_base_structure' : return InfoServeur::info_base_complement('structure').'Version attendue : '.VERSION_BASE_STRUCTURE;
+      case 'version_sacoche_base_webmestre' : return InfoServeur::info_base_complement('webmestre').'Version attendue : '.VERSION_BASE_WEBMESTRE;
+      case 'max_execution_time'             : return 'Par défaut 30 secondes.<br />Une valeur trop faible peut gêner les sauvegardes / restaurations de grosses bases ou des générations de bilans PDF.';
+      case 'max_input_vars'                 : return 'Par défaut 1000.<br />Une valeur inférieure est susceptible de tronquer la transmission de formulaires importants.<br \>Disponible à compter de PHP 5.3.9 uniquement.';
+      case 'max_input_time'                 : return 'Par défaut -1 (pas de limitation).<br />Disponible à compter de PHP 4.3.0 uniquement.';
+      case 'max_input_nesting_level'        : return 'Par défaut 64.<br />Disponible à compter de PHP 4.4.8 et PHP 5.2.3 uniquement.';
+      case 'memory_limit'                   : return 'Par défaut 128Mo (convient très bien).<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 128Mo peut poser problème (pour générer des bilans PDF en particulier).<br />Mais 64Mo voire 32Mo peuvent aussi convenir, tout dépend de l\'usage (nombre d\'élèves considérés à la fois, quantité de données&hellip;).';
+      case 'post_max_size'                  : return 'Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).';
+      case 'upload_max_filesize'            : return 'Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d\'une taille supérieure.';
+      case 'max_allowed_packet'             : return 'Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.';
+      case 'max_user_connections'           : return 'Une valeur inférieure à 5 est susceptible, suivant la charge, de poser problème.';
+      case 'group_concat_max_len'           : return 'Par défaut 1024 octets.<br />Une telle valeur devrait suffire.';
+      case 'safe_mode'                      : return 'Fonctionnalité obsolète depuis PHP 5.3.0, à ne plus utiliser.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).';
+      case 'open_basedir'                   : return 'Limite les fichiers pouvant être ouverts par PHP à une architecture de dossiers spécifique.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).';
+      case 'ini_set_memory_limit'           : return 'Possibilité d\'augmenter la mémoire allouée au script.';
+      case 'register_globals'               : return 'Enregistrer les variables environnement Get/Post/Cookie/Server comme des variables globales.<br />Par défaut désactivé depuis PHP 4.2.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
+      case 'magic_quotes_gpc'               : return 'Échapper les apostrophes pour Get/Post/Cookie.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
+      case 'magic_quotes_sybase'            : return 'Échapper les apostrophes pour Get/Post/Cookie.<br />Remplace la directive magic_quotes_gpc en cas d\'activation.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
+      case 'magic_quotes_runtime'           : return 'Échapper les apostrophes pour toutes les données externes, y compris les bases de données et les fichiers texte.<br />Fonctionnalité obsolète depuis PHP 5.3 et supprimée depuis PHP 5.4.';
+      case 'session_gc_maxlifetime'         : return 'Durée de vie des données (session) sur le serveur, en nombre de secondes.<br />Par défaut 1440s soit 24min.<br />SACoche permet de régler une conservation de session plus longue.<br />Mais cela ne fonctionnera que si le serveur est configuré pour une durée minimum de 10min.';
+      case 'session_use_trans_sid'          : return 'Par défaut désactivé, ce qui rend le support de l\'identifiant de session transparent.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
+      case 'session_use_only_cookies'       : return 'Par défaut activé, ce qui indique d\'utiliser seulement les cookies pour stocker les identifiants de sessions du côté du navigateur.<br />C\'est une protection contre les attaques qui utilisent des identifiants de sessions dans les URL.';
+      case 'zend_ze1_compatibility_mode'    : return 'Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C\'est incompatible avec classe PDO, et l\'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.';
+      case 'server_protocole'               : return 'Variable serveur indiquant le protocole ; on regarde dans l\'ordre :<br />- HTTPS si définie correctement<br />- HTTP_X_FORWARDED_PROTO si définie correctement<br />- c\'est HTTP sinon';
+      case 'server_IP_client'               : return 'IP cliente présentée au serveur ; on regarde dans l\'ordre :<br />- HTTP_X_REAL_IP si définie<br />- HTTP_X_FORWARDED_FOR si définie<br />- REMOTE_ADDR sinon';
+      case 'modules_PHP'                    : return 'Les modules sur fond coloré sont requis par SACoche.<br />Cliquer sur un module pour consulter le détail des informations.';
+      case 'suhosin'                        : return 'Module retiré à compter de PHP 5.4 (PHP prenant nativement en charge la plupart des fonctionnalités).';
+      default                               : return '';
     }
   }
 

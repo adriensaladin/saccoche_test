@@ -58,11 +58,7 @@ if( ($action=='sauvegarder') && $etape )
     LockAcces::debloquer_application('automate',$_SESSION['BASE']);
     // Zipper les fichiers de svg
     $fichier_zip_nom = 'dump_SACoche_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
-    $result = FileSystem::zip_fichiers( $dossier_temp , CHEMIN_DOSSIER_DUMP , $fichier_zip_nom );
-    if($result!==TRUE)
-    {
-      Json::end( FALSE , $result );
-    }
+    FileSystem::zipper_fichiers($dossier_temp,CHEMIN_DOSSIER_DUMP,$fichier_zip_nom);
     // Supprimer le dossier temporaire
     FileSystem::supprimer_dossier($dossier_temp);
     // Pour le retour

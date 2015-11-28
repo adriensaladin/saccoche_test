@@ -35,7 +35,7 @@ class SACocheLog
   /**
    * chemin_fichier_log
    *
-   * @param int $base_id
+   * @param int      $base_id
    * @return string
    */
   private static function chemin_fichier_log($base_id)
@@ -67,13 +67,13 @@ class SACocheLog
 
   /**
    * Renvoie le contenu d'un fichier de log si existant, et sinon NULL.
+   * Nécessite que la session soit ouverte.
    * 
-   * @param int $base_id
    * @return string|NULL
    */
-  public static function lire($base_id)
+  public static function lire()
   {
-    return is_file( SACocheLog::chemin_fichier_log($base_id) ) ? file_get_contents(SACocheLog::chemin_fichier_log($base_id)) : NULL ;
+    return (is_file( SACocheLog::chemin_fichier_log($_SESSION['BASE']) )) ? file_get_contents(SACocheLog::chemin_fichier_log($_SESSION['BASE'])) : NULL ;
   }
 
 }

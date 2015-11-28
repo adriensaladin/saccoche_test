@@ -32,6 +32,8 @@ $action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : ''
 $tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
+$top_depart = microtime(TRUE);
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Exporter un fichier de validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -165,7 +167,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
     $xml.= '  </donnees>'."\r\n";
     $xml.= '</sacoche>'."\r\n";
     // L'export pour SACoche on peut le zipper (le gain est très significatif : facteur 40 à 50 !)
-    $result = FileSystem::zip_chaine( CHEMIN_DOSSIER_EXPORT.$fichier_nom , 'import_validations.xml' , $xml );
+    $result = FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_nom , 'import_validations.xml' , $xml );
     if($result!==TRUE)
     {
       Json::end( FALSE , $result );

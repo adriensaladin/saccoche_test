@@ -49,42 +49,26 @@ if($action=='debloquer')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Vérification des dossiers additionnels (par établissement si multi-structures)
+// Vérification des dossiers additionnels par établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='verif_dir_etabl')
 {
-  $tab_dossiers = array();
-  // Pour l'affichage du retour
-  $titre_verifi_dossiers_additionnels = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'Vérification des dossiers additionnels par établissement' : 'Vérification des dossiers additionnels' ;
-  $thead = '<tr><td colspan="2">'.$titre_verifi_dossiers_additionnels.' - '.date('d/m/Y H:i:s').'</td></tr>';
-  $tbody_ok = '';
-  $tbody_pb = '';
-  // On commence déjà par les répertoires principaux
-  $tab_dossiers = array_fill_keys ( FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_TMP) , TRUE );
-  foreach(FileSystem::$tab_dossier_tmp as $dossier_key => $dossier_dir)
-  {
-    if(isset($tab_dossiers[substr($dossier_key,6,-1)]))
-    {
-      $tbody_ok .= '<tr class="v"><td>Dossier présent</td><td>'.$dossier_key.'</td></tr>';
-      unset($tab_dossiers[$dossier_dir]);
-    }
-    else
-    {
-      FileSystem::creer_dossier($dossier_dir);
-      $tbody_pb .= '<tr class="r"><td>Dossier manquant (&rarr; ajouté)</td><td>'.$dossier_key.'</td></tr>';
-    }
-  }
   // Récupérer les ids des structures
-  $tab_bases = (HEBERGEUR_INSTALLATION=='multi-structures') ? array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() ) : array(0) ;
+  $tab_bases = array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() );
   // Récupérer les dossiers additionnels par établissement
+  $tab_dossiers = array();
   foreach(FileSystem::$tab_dossier_tmp_structure as $dossier_key => $dossier_dir)
   {
     $tab_dossiers[$dossier_dir] = array_fill_keys ( FileSystem::lister_contenu_dossier($dossier_dir) , TRUE );
     unset($tab_dossiers[$dossier_dir]['index.htm']);
     ksort($tab_dossiers[$dossier_dir],SORT_NATURAL);
   }
-  // On parcourt les sous-dossiers devant exister : ok ou création.
+  // Pour l'affichage du retour
+  $thead = '<tr><td colspan="2">Vérification des dossiers additionnels par établissement - '.date('d/m/Y H:i:s').'</td></tr>';
+  $tbody_ok = '';
+  $tbody_pb = '';
+  // On parcourt les dossiers devant exister : ok ou création.
   foreach($tab_bases as $base_id)
   {
     foreach(FileSystem::$tab_dossier_tmp_structure as $dossier_key => $dossier_dir)

@@ -263,11 +263,7 @@ if( ($ACTION=='imprimer') && ($etape==3) )
       $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
     }
   }
-  $result = FileSystem::zip_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $_SESSION['tmp']['fichier_nom'].'.zip' );
-  if($result!==TRUE)
-  {
-    Json::end( FALSE , $result );
-  }
+  FileSystem::zipper_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $_SESSION['tmp']['fichier_nom'].'.zip' );
   FileSystem::supprimer_dossier($chemin_temp_pdf);
   $_SESSION['tmp']['pages_non_anonymes']     = implode(',',$tab_pages_non_anonymes);
   $_SESSION['tmp']['pages_nombre_par_bilan'] = implode(' ; ',$tab_pages_nombre_par_bilan);

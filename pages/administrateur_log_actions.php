@@ -34,7 +34,7 @@ $TITRE = html(Lang::_("Log des actions sensibles"));
 <p class="astuce">Concernant la suppression d'un référentiel, suivez ces liens pour savoir à quoi correspondent les identifiants <a target="_blank" href="http://redmine.sesamath.net/projects/sacoche/repository/entry/_sql/structure/sacoche_matiere.sql">de matières</a> et <a target="_blank" href="http://redmine.sesamath.net/projects/sacoche/repository/entry/_sql/structure/sacoche_niveau.sql">de niveaux</a>.</p>
 
 <?php
-$fichier_log_contenu = SACocheLog::lire($_SESSION['BASE']);
+$fichier_log_contenu = SACocheLog::lire();
 if($fichier_log_contenu===NULL)
 {
   echo'<p class="danger">Le fichier n\'existe pas : probablement qu\'aucune action sensible n\'a encore été effectuée !</p>'.NL;

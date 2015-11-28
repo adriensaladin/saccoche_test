@@ -121,7 +121,7 @@ if( ($action=='supprimer') && $fichier_logs )
 if( ($action=='voir') && $fichier_logs )
 {
   // Compression du fichier
-  $result = FileSystem::zip_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , PHPCAS_LOGS_CHEMIN.$fichier_logs.'.txt' );
+  $result = FileSystem::zip( CHEMIN_DOSSIER_EXPORT.$fichier_logs.'.zip' , $fichier_logs.'.txt' , file_get_contents(PHPCAS_LOGS_CHEMIN.$fichier_logs.'.txt') );
   if($result!==TRUE)
   {
     Json::end( FALSE , $result );

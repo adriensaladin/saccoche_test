@@ -349,12 +349,7 @@ if($connexion_mode=='cas')
     if (is_a($e, 'CAS_AuthenticationException'))
     {
       // $e->getMessage() ne contient rien...
-      /*
-       * error_log() retiré car il on récupère en nombre des choses genre :
-       * <cas:serviceResponse xmlns:cas='http://www.yale.edu/tp/cas'><cas:authenticationFailure code="INVALID_SERVICE">Service https://sacoche.sesamath.net/sacoche/?sso=6317&cookie invalid for the ticket found</cas:authenticationFailure></cas:serviceResponse>
-       * qui génèrent aussi "PHP Warning:  DOMDocument::loadXML(): EntityRef: expecting ';' in Entity" à cause de l'éperluette dans l'adresse.
-       */
-      // error_log('SACoche - Erreur phpCAS sur l\'ENT "'.$connexion_nom.'" (serveur '.$cas_serveur_host.') pour l\'établissement n°'.$BASE.'.');
+      error_log('SACoche - Erreur phpCAS sur l\'ENT "'.$connexion_nom.'" (serveur '.$cas_serveur_host.') pour l\'établissement n°'.$BASE.'.');
       exit_CAS_Exception( $contenu_erreur_phpcas , $msg_supplementaire );
     }
     else

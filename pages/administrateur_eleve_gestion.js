@@ -50,7 +50,7 @@ $(document).ready
 // Recharger la page en restreignant l'affichage en fonction des choix préalables
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#f_groupes').change
+    $('#form_prechoix select').change
     (
       function()
       {

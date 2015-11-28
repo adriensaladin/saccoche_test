@@ -30,12 +30,13 @@ $TITRE = html(Lang::_("Gérer les élèves"));
 
 // Récupérer d'éventuels paramètres pour restreindre l'affichage
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
+$statut      = (isset($_POST['f_statut']))   ? Clean::entier($_POST['f_statut']) : 1 ;
 $groupe      = (isset($_POST['f_groupes']))  ? Clean::texte($_POST['f_groupes']) : '' ;
-$statut      = ($groupe=='d3')               ? 0                                 : 1 ;
 $groupe_type = Clean::texte( substr($groupe,0,1) );
 $groupe_id   = Clean::entier( substr($groupe,1) );
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , TRUE /*tout*/ , TRUE /*ancien*/ ) , 'f_groupes' /*select_nom*/ ,    '' /*option_first*/ , $groupe /*selection*/ , 'regroupements' /*optgroup*/);
+$select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl() , 'f_groupes' /*select_nom*/ ,    '' /*option_first*/ , $groupe /*selection*/ , 'regroupements' /*optgroup*/);
+$select_f_statuts = HtmlForm::afficher_select(Form::$tab_select_statut                          , 'f_statut'  /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ ,              '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var input_date      = "'.TODAY_FR.'";' );
@@ -57,29 +58,16 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>
 
 <form action="./index.php?page=administrateur_eleve&amp;section=gestion" method="post" id="form_prechoix">
-  <fieldset><label class="tab" for="f_groupes">Regroupement :</label><?php echo $select_f_groupes ?></fieldset>
+  <div><label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_f_groupes ?></div>
+  <div><label class="tab" for="f_statut">Statut :</label><?php echo $select_f_statuts ?><input type="hidden" id="f_afficher" name="f_afficher" value="1" /></div>
 </form>
 
 <hr />
 
 <?php
-$tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
-
-if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
+if(empty($_POST['f_afficher']))
 {
   return; // Ne pas exécuter la suite de ce fichier inclus.
-}
-else
-{
-  $groupe_type = $tab_types[$groupe_type];
-  if($groupe_type=='Divers')
-  {
-    $groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
-    if($groupe_id==3)
-    {
-      $statut = 0 ;
-    }
-  }
 }
 ?>
 
@@ -106,6 +94,12 @@ else
   <tbody>
     <?php
     // Lister les élèves
+    $tab_types = array('d'=>'Divers' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe');
+    $groupe_type = $tab_types[$groupe_type];
+    if($groupe_type=='Divers')
+    {
+      $groupe_type = ($groupe_id==1) ? 'sdf' : 'all' ;
+    }
     $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_login, user_email, user_sortie_date' ;
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
     if(!empty($DB_TAB))

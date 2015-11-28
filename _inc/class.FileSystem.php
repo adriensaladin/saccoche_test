@@ -632,7 +632,7 @@ class FileSystem
    * @param bool     $with_sous_dossiers   TRUE pour forcer aussi la suppression de sous-dossiers résiduels (facultatif)
    * @return void
    */
-  public static function effacer_fichiers_temporaires($dossier,$nb_minutes,$with_sous_dossiers=FALSE)
+  public static function effacer_fichiers_temporaires( $dossier , $nb_minutes , $with_sous_dossiers=FALSE )
   {
     if(is_dir($dossier))
     {
@@ -688,9 +688,9 @@ class FileSystem
     }
     $nb_mois = (defined('FICHIER_DUREE_CONSERVATION')) ? FICHIER_DUREE_CONSERVATION : 12 ; // Une fois tous les devoirs ont été supprimés sans raison claire : nettoyage simultané avec une mise à jour ?
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS      ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT         ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP           ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip qui ne serait pas allé au bout (pb de mémoire...)
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT         ,  10080     ); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT         ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP           ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT         ,   1440,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 jour  + sous-dossiers temporaires d'un zip avec procédure interrompue
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP            , 219000     ); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800     ); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000     ); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
@@ -701,39 +701,76 @@ class FileSystem
   }
 
   /**
-   * zipper_fichiers
-   * Zipper les fichiers de svg
+   * Zipper un ensemble de fichiers
    *
    * @param string $dossier_fichiers_a_zipper
    * @param string $dossier_zip_final
    * @param string $fichier_zip_nom
-   * @return void
+   * @return TRUE|string                       TRUE ou un message d'erreur
    */
 
-  public static function zipper_fichiers($dossier_fichiers_a_zipper,$dossier_zip_final,$fichier_zip_nom)
+  public static function zip_fichiers( $dossier_fichiers_a_zipper , $dossier_zip_final , $fichier_zip_nom )
   {
     $zip = new ZipArchive();
     $ds = (substr($dossier_zip_final,-1)==DS) ? '' : DS ;
-    $zip->open($dossier_zip_final.$ds.$fichier_zip_nom, ZIPARCHIVE::CREATE);
+    $result_open = $zip->open( $dossier_zip_final.$ds.$fichier_zip_nom , ZIPARCHIVE::CREATE );
+    if($result_open!==TRUE)
+    {
+      return 'Problème de création de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !';
+    }
     $tab_fichier = FileSystem::lister_contenu_dossier($dossier_fichiers_a_zipper);
     $ds = (substr($dossier_fichiers_a_zipper,-1)==DS) ? '' : DS ;
-    foreach($tab_fichier as $fichier_sql_nom)
+    foreach($tab_fichier as $fichier_nom)
     {
-      $zip->addFile($dossier_fichiers_a_zipper.$ds.$fichier_sql_nom,$fichier_sql_nom);
+      $result_add = $zip->addFile( $dossier_fichiers_a_zipper.$ds.$fichier_nom , $fichier_nom );
+      if($result_add!==TRUE)
+      {
+        return 'Problème d\'ajout dans l\'archive ZIP !';
+      }
     }
     $zip->close();
+    return TRUE;
   }
 
   /**
-   * Zipper un fichier seul.
-   * Exit sur une phrase d'erreur si problème
+   * Zipper un fichier seul
+   *
+   * @param string   $chemin_fichier_zip       chemin et nom de l'archive zip à créer
+   * @param string   $fichier_nom              nom du fichier dans l'archive zip
+   * @param string   $chemin_fichier_a_zipper  fichier à zipper
+   * @return TRUE|string                       TRUE ou un message d'erreur
+   */
+
+  public static function zip_fichier( $chemin_fichier_zip , $fichier_nom , $chemin_fichier_a_zipper )
+  {
+    $zip = new ZipArchive();
+    $result_open = $zip->open( $chemin_fichier_zip , ZIPARCHIVE::CREATE );
+    if($result_open!==TRUE)
+    {
+      return 'Problème de création de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !';
+    }
+    $result_add = $zip->addFile( $chemin_fichier_a_zipper , $fichier_nom );
+    if($result_add!==TRUE)
+    {
+      return 'Problème d\'ajout dans l\'archive ZIP !';
+    }
+    $result_close = $zip->close();
+    if($result_close!==TRUE)
+    {
+      return 'Problème de fermeture de l\'archive ZIP !';
+    }
+    return TRUE;
+  }
+
+  /**
+   * Zipper un fichier à partir d'une chaine.
    * 
    * @param string   $chemin_fichier_zip   chemin et nom de l'archive zip à créer
    * @param string   $fichier_nom          nom du fichier dans l'archive zip
    * @param string   $fichier_contenu      contenu à zipper
    * @return TRUE|string                   TRUE ou un message d'erreur
    */
-  public static function zip( $chemin_fichier_zip , $fichier_nom , $fichier_contenu )
+  public static function zip_chaine( $chemin_fichier_zip , $fichier_nom , $fichier_contenu )
   {
     $zip = new ZipArchive();
     $result_open = $zip->open($chemin_fichier_zip, ZIPARCHIVE::CREATE);
@@ -741,8 +778,16 @@ class FileSystem
     {
       return 'Problème de création de l\'archive ZIP ('.FileSystem::$tab_zip_error[$result_open].') !';
     }
-    $zip->addFromString($fichier_nom,$fichier_contenu);
-    $zip->close();
+    $result_add = $zip->addFromString($fichier_nom,$fichier_contenu);
+    if($result_add!==TRUE)
+    {
+      return 'Problème d\'ajout dans l\'archive ZIP !';
+    }
+    $result_close = $zip->close();
+    if($result_close!==TRUE)
+    {
+      return 'Problème de fermeture de l\'archive ZIP !';
+    }
     return TRUE;
   }
 
@@ -756,7 +801,7 @@ class FileSystem
    * @param string   $chemin_nom_final     chemin du fichier une fois extrait
    * @return TRUE|string                   TRUE ou un message d'erreur
    */
-  public static function unzip_one($chemin_fichier_zip,$fichier_nom_archive,$chemin_nom_final)
+  public static function unzip_one( $chemin_fichier_zip , $fichier_nom_archive , $chemin_nom_final )
   {
     $zip = new ZipArchive();
     $result_open = $zip->open($chemin_fichier_zip);

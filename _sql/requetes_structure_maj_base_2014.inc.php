@@ -713,9 +713,9 @@ if($version_base_structure_actuelle=='2014-11-18')
       foreach($tab_convert as $id_avant => $id_apres)
       {
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_active=1 WHERE matiere_id='.$id_apres );
-        DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
+        DB_STRUCTURE_MATIERE::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
         SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
-        DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_matiere_specifique($id_avant);
+        DB_STRUCTURE_MATIERE::DB_supprimer_matiere_specifique($id_avant);
         SACocheLog::ajouter('Suppression d\'une matière spécifique (n°'.$id_avant.').');
         SACocheLog::ajouter('Suppression des référentiels associés (matière '.$id_avant.').');
       }

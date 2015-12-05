@@ -43,7 +43,7 @@ $tab_groupes_fichier = load_fichier('groupes');
 $tab_groupes_base        = array();
 $tab_groupes_base['ref'] = array();
 $tab_groupes_base['nom'] = array();
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes();
+$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_groupes();
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_groupes_base['ref'][$DB_ROW['groupe_id']] = $DB_ROW['groupe_ref'];
@@ -79,7 +79,7 @@ if(count($tab_groupes_fichier['ref']))
 {
   $select_niveau = '<option value="">&nbsp;</option>';
   $tab_niveau_ref = array();
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_particuliers*/);
+  $DB_TAB = DB_STRUCTURE_NIVEAU::DB_lister_niveaux_etablissement( FALSE /*with_particuliers*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';

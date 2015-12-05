@@ -837,8 +837,9 @@ if( $make_graph && (count($tab_graph_data)) )
   }
   else
   {
-    $ymax = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? 20 : 100 ;
-    Json::add_row( 'script' , 'ChartOptions.yAxis[1] = { min: 0, max: '.$ymax.', title: { style: { color: "#333" } , text: "Moyennes" }, opposite: true };' );
+    $ymax         = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? 20 : 100 ;
+    $tickInterval = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ?  5 :  25 ;
+    Json::add_row( 'script' , 'ChartOptions.yAxis[1] = { min: 0, max: '.$ymax.', tickInterval: '.$tickInterval.', gridLineColor: "#C0D0E0", title: { style: { color: "#333" } , text: "Moyennes" }, opposite: true };' );
   }
   // Séries de valeurs
   $tab_graph_series = array();

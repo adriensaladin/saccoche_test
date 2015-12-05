@@ -170,7 +170,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['enfant'][$genre]) && $nom &&
   $tab_groupe_type = array( 'c'=>'classe' , 'g'=>'groupe' );
   if( isset($tab_groupe_type[$groupe_type]) && $groupe_id )
   {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , $tab_groupe_type[$groupe_type] , TRUE );
+    DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , $tab_groupe_type[$groupe_type] , TRUE );
   }
   // Afficher le retour
   Json::add_str('<tr id="id_'.$user_id.'" class="new">');

@@ -62,7 +62,7 @@ if(!$droit_voir_archives_pdf)
 
 // Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
 
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
+$DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_periodes();
 if(empty($DB_TAB))
 {
   echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>'.NL;

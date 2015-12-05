@@ -85,17 +85,17 @@ if($action=='purger')
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_devoirs_sans_saisies();
   SACocheLog::ajouter('Suppression de tous les devoirs sans les saisies associées.');
   // Supprimer tous les types de groupes, sauf les classes (donc 'groupe' ; 'besoin' ; 'eval'), ainsi que les jointures avec les périodes.
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_sauf_classes();
+  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_groupes_sauf_classes();
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
-      DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $DB_ROW['groupe_id'] , $DB_ROW['groupe_type'] , FALSE /*with_devoir*/ );
+      DB_STRUCTURE_REGROUPEMENT::DB_supprimer_groupe_par_admin( $DB_ROW['groupe_id'] , $DB_ROW['groupe_type'] , FALSE /*with_devoir*/ );
     }
   }
   SACocheLog::ajouter('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
   // Supprimer les jointures classes/périodes, et donc les états des bilans officiels
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_groupe_periode( TRUE /*groupe_id*/ , TRUE /*periode_id*/ , FALSE /*etat*/ , '' /*date_debut_mysql*/ ,'' /*date_fin_mysql*/ );
+  DB_STRUCTURE_PERIODE::DB_supprimer_liaisons_groupe_periode();
   // Supprimer les saisies & les archives des bilans officiels
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
   // Supprimer les saisies brevet & les archives (Notanet & fiches brevet)

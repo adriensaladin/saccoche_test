@@ -51,7 +51,7 @@ Layout::add( 'js_inline_before' , 'var ID_NIVEAU_PARTAGE_MAX = '.ID_NIVEAU_PARTA
     <tbody>
       <?php
       // Lister les niveaux
-      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_niveaux(FALSE /*is_specifique*/);
+      $DB_TAB = DB_STRUCTURE_NIVEAU::DB_lister_niveaux(FALSE /*is_specifique*/);
       if(!empty($DB_TAB))
       {
         foreach($DB_TAB as $DB_ROW)
@@ -88,7 +88,7 @@ Layout::add( 'js_inline_before' , 'var ID_NIVEAU_PARTAGE_MAX = '.ID_NIVEAU_PARTA
     <tbody>
       <?php
       // Lister les niveaux spécifiques
-      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_niveaux(TRUE /*is_specifique*/);
+      $DB_TAB = DB_STRUCTURE_NIVEAU::DB_lister_niveaux(TRUE /*is_specifique*/);
       if(!empty($DB_TAB))
       {
         foreach($DB_TAB as $DB_ROW)

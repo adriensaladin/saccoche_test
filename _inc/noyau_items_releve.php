@@ -1462,7 +1462,7 @@ if( $type_bulletin && $make_html )
     if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
     {
       // Attention : $groupe_id peut être un identifiant de groupe et non de classe, auquel cas les élèves peuvent être issus de différentes classes dont les états des bulletins sont différents...
-      $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_periodes_bulletins_saisies_ouvertes($liste_eleve);
+      $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_periodes_bulletins_saisies_ouvertes($liste_eleve);
       $nb_periodes_ouvertes = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
       if($nb_periodes_ouvertes==1)
       {

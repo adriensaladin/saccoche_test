@@ -93,31 +93,6 @@ public static function DB_lister_devoir_profs_droit_saisie($devoir_id)
 }
 
 /**
- * Lister les classes des élèves associés à un parent
- *
- * @param int $parent_id
- * @return array
- */
-public static function DB_lister_classes_parent($parent_id)
-{
-  $DB_SQL = 'SELECT groupe_id, groupe_nom, groupe_type ';
-  $DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_parent_eleve.eleve_id=sacoche_user.user_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe ON eleve_classe_id=groupe_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
-  $DB_SQL.= 'GROUP BY groupe_id '; // si plusieurs enfants dans la même classe
-  $DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(
-    ':parent_id'   => $parent_id,
-    ':profil_type' => 'eleve',
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * Retourner les résultats pour un élève, pour des items donnés
  *
  * @param int    $eleve_id

@@ -98,7 +98,7 @@ else
   $groupe_id   = 0;
 }
 
-// Contrôler la liste des items transmis
+// Contrôler la liste des items transmis (ordre dans l'évaluation)
 $tab_id      = (isset($_POST['tab_id'])) ? explode(',',$_POST['tab_id']) : array() ;
 $tab_id      = Clean::map_entier($tab_id);
 $tab_id      = array_filter($tab_id,'positif');
@@ -376,7 +376,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   if($type=='selection')
   {
     // Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur) ; y associe automatiquement le prof, en responsable du groupe
-    $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof( $groupe_type , '' , 0 );
+    $groupe_id = DB_STRUCTURE_REGROUPEMENT::DB_ajouter_groupe_par_prof( $_SESSION['USER_ID'] , $groupe_type , '' /*groupe_nom*/ , 0 /*niveau_id*/ );
   }
   // Insèrer l'enregistrement de l'évaluation
   $devoir_id2 = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , $date_mysql , $description , $date_visible_mysql , $date_autoeval_mysql , $doc_sujet , $doc_corrige , $eleves_ordre );
@@ -731,7 +731,7 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
   if($type=='selection')
   {
     // supprimer le groupe spécialement associé (invisible à l'utilisateur) et les entrées dans sacoche_jointure_user_groupe pour une évaluation avec des élèves piochés en dehors de tout groupe prédéfini
-    DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , $groupe_type , FALSE /*with_devoir*/ );
+    DB_STRUCTURE_REGROUPEMENT::DB_supprimer_groupe_par_prof( $groupe_id , $groupe_type , FALSE /*with_devoir*/ );
     SACocheLog::ajouter('Suppression d\'un regroupement ('.$groupe_type.' '.$groupe_id.'), sans les devoirs associés.');
   }
   // on supprime l'évaluation avec ses saisies

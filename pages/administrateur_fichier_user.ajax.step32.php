@@ -59,7 +59,7 @@ if(count($tab_add))
   {
     if( $tab['ref'] && $tab['nom'] && $tab['niv'] )
     {
-      $classe_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_groupe_par_admin('classe',$tab['ref'],$tab['nom'],$tab['niv']);
+      $classe_id = DB_STRUCTURE_REGROUPEMENT::DB_ajouter_groupe_par_admin( 'classe' , $tab['ref'] , $tab['nom'] , $tab['niv'] );
       $nb_add++;
       $tab_i_classe_TO_id_base[$i] = (int) $classe_id;
     }
@@ -75,7 +75,7 @@ if(count($tab_del))
   {
     if( $groupe_id )
     {
-      DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $groupe_id , 'classe' , TRUE /*with_devoir*/ );
+      DB_STRUCTURE_REGROUPEMENT::DB_supprimer_groupe_par_admin( $groupe_id , 'classe' , TRUE /*with_devoir*/ );
       $nb_del++;
       // Log de l'action
       SACocheLog::ajouter('Suppression d\'une classe (n°'.$groupe_id.') lors d\'un import de fichier, et donc des devoirs associés.');
@@ -94,7 +94,7 @@ $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 // Afficher le bilan
 $lignes = '';
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
+$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_avec_niveaux();
 if($mode=='complet')
 {
   foreach($DB_TAB as $DB_ROW)

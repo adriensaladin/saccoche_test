@@ -47,9 +47,9 @@ $tab_jointure  = array();
 // Récupérer la liste des classes & groupes, dans l'ordre des niveaux
 switch($_SESSION['USER_PROFIL_TYPE'])
 {
-  case 'directeur'  : $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_et_groupes_avec_niveaux(); break;
-  case 'professeur' : $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']); break;
-  case 'parent'     : $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_classes_parent($_SESSION['USER_ID']); break;
+  case 'directeur'  : $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_et_groupes_avec_niveaux(); break;
+  case 'professeur' : $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']); break;
+  case 'parent'     : $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_parent($_SESSION['USER_ID']); break;
   case 'eleve'      : $DB_TAB = array( 0 => array( 'groupe_id' => $_SESSION['ELEVE_CLASSE_ID'] , 'groupe_nom' => $_SESSION['ELEVE_CLASSE_NOM'] ) );
 }
 if(!empty($DB_TAB))
@@ -60,7 +60,7 @@ if(!empty($DB_TAB))
   }
 
   // Récupérer la liste des périodes, dans l'ordre choisi par l'admin
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
+  $DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_periodes();
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -70,7 +70,7 @@ if(!empty($DB_TAB))
 
     // Récupérer la liste des jointures
     $listing_groupes_id = implode(',',array_keys($tab_groupe));
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupes_id);
+    $DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_jointure_groupe_periode($listing_groupes_id);
     $memo_groupe_id = 0;
     if(!empty($DB_TAB))
     {

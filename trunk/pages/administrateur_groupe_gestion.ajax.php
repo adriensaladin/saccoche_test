@@ -41,12 +41,12 @@ $nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])     : '';
 if( ($action=='ajouter') && $niveau && $ref && $nom )
 {
   // Vérifier que la référence du groupe est disponible
-  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_groupe_reference($ref) )
+  if( DB_STRUCTURE_REGROUPEMENT::DB_tester_groupe_reference($ref) )
   {
     Json::end( FALSE , 'Référence déjà utilisée !' );
   }
   // Insérer l'enregistrement
-  $groupe_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_groupe_par_admin('groupe',$ref,$nom,$niveau);
+  $groupe_id = DB_STRUCTURE_REGROUPEMENT::DB_ajouter_groupe_par_admin( 'groupe' , $ref , $nom , $niveau );
   // Afficher le retour
   Json::add_str('<tr id="id_'.$groupe_id.'" class="new">');
   Json::add_str(  '<td>{{NIVEAU_NOM}}</td>');
@@ -67,12 +67,12 @@ if( ($action=='ajouter') && $niveau && $ref && $nom )
 if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 {
   // Vérifier que la référence du groupe est disponible
-  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_groupe_reference($ref,$id) )
+  if( DB_STRUCTURE_REGROUPEMENT::DB_tester_groupe_reference($ref,$id) )
   {
     Json::end( FALSE , 'Référence déjà utilisée !' );
   }
   // Mettre à jour l'enregistrement
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_groupe_par_admin($id,$ref,$nom,$niveau);
+  DB_STRUCTURE_REGROUPEMENT::DB_modifier_groupe_par_admin($id,$ref,$nom,$niveau);
   // Afficher le retour
   Json::add_str('<td>{{NIVEAU_NOM}}</td>');
   Json::add_str('<td>'.html($ref).'</td>');
@@ -91,7 +91,7 @@ if( ($action=='modifier') && $id && $niveau && $ref && $nom )
 if( ($action=='supprimer') && $id && $nom )
 {
   // Effacer l'enregistrement
-  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_groupe_par_admin( $id , 'groupe' , TRUE /*with_devoir*/ );
+  DB_STRUCTURE_REGROUPEMENT::DB_supprimer_groupe_par_admin( $id , 'groupe' , TRUE /*with_devoir*/ );
   // Log de l'action
   SACocheLog::ajouter('Suppression du groupe "'.$nom.'" (n°'.$id.'), et donc des devoirs associés.');
   // Notifications (rendues visibles ultérieurement)

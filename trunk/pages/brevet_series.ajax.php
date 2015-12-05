@@ -73,7 +73,7 @@ $tab_niveau_groupe[0][0] = 'sans classe';
 $tab_user[0]             = '';
 
 // Récupérer la liste des classes
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux($niveau_ordre='DESC');
+$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_avec_niveaux($niveau_ordre='DESC');
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);

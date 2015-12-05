@@ -206,6 +206,21 @@ public static function DB_lister_notifications_a_publier()
 }
 
 /**
+ * lister_classes_noms
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_lister_classes_noms()
+{
+  $DB_SQL = 'SELECT groupe_id, groupe_nom ';
+  $DB_SQL.= 'FROM sacoche_groupe ';
+  $DB_SQL.= 'WHERE groupe_type=:type ';
+  $DB_VAR = array(':type'=>'classe');
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Compter le nombre de notifications qu'un utilisateur n'a pas consulté
  *
  * @param int   $user_id

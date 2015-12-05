@@ -202,75 +202,6 @@ public static function DB_lister_matieres_professeur_infos_referentiel($prof_id)
 }
 
 /**
- * lister_groupes_professeur
- *
- * @param int    $prof_id
- * @param string $user_join_groupes
- * @return array
- */
-public static function DB_lister_groupes_professeur($prof_id,$user_join_groupes)
-{
-  if($user_join_groupes=='config')
-  {
-    $DB_SQL = 'SELECT groupe_id, groupe_type, groupe_nom, niveau_ordre ';
-    $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
-    $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-    $DB_SQL.= 'WHERE user_id=:user_id AND groupe_type!=:type4 ';
-  }
-  else
-  {
-    $DB_SQL = 'SELECT DISTINCT groupe_id, groupe_type, groupe_nom, niveau_ordre ';
-    $DB_SQL.= 'FROM sacoche_groupe ';
-    $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-    $DB_SQL.= 'WHERE ( groupe_type IN (:type1,:type2) ) OR ( groupe_type=:type3 AND user_id=:user_id ) ';
-  }
-  $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(
-    ':user_id' => $prof_id,
-    ':type1'   => 'classe',
-    ':type2'   => 'groupe',
-    ':type3'   => 'besoin',
-    ':type4'   => 'eval',
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_classes_groupes_professeur
- *
- * @param int $prof_id
- * @param string $user_join_groupes
- * @return array
- */
-public static function DB_lister_classes_groupes_professeur($prof_id,$user_join_groupes)
-{
-  if($user_join_groupes=='config')
-  {
-    $DB_SQL = 'SELECT groupe_id, groupe_type, groupe_nom, jointure_pp ';
-    $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
-    $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-    $DB_SQL.= 'WHERE user_id=:user_id AND groupe_type IN (:type1,:type2) ';
-  }
-  else
-  {
-    $DB_SQL = 'SELECT groupe_id, groupe_type, groupe_nom, 0 AS jointure_pp ';
-    $DB_SQL.= 'FROM sacoche_groupe ';
-    $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-    $DB_SQL.= 'WHERE groupe_type IN (:type1,:type2) ';
-  }
-  $DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
-  $DB_VAR = array(
-    ':user_id' => $prof_id,
-    ':type1'   => 'classe',
-    ':type2'   => 'groupe',
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * lister_classes_eleves_from_groupes
  *
  * @param string   $listing_groupe_id   id des groupes séparés par des virgules
@@ -713,26 +644,6 @@ public static function DB_lister_nb_saisies_par_evaluation($listing_devoir_id)
 }
 
 /**
- * lister_jointure_groupe_periode ; le rangement par ordre de période permet, si les périodes se chevauchent, que javascript choisisse la 1ère par défaut
- *
- * @param string   $listing_user_id   id des élèves séparés par des virgules
- * @return array
- */
-public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_user_id)
-{
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
-  $DB_SQL = 'SELECT periode_id, periode_nom, GROUP_CONCAT(user_id SEPARATOR "_") AS eleves_listing ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_groupe_periode ON sacoche_user.eleve_classe_id=sacoche_jointure_groupe_periode.groupe_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
-  $DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') AND officiel_bulletin IN("2rubrique","3mixte") ';
-  $DB_SQL.= 'GROUP BY periode_id ';
-  $DB_SQL.= 'ORDER BY periode_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * tester_prof_principal
  *
  * @param int $user_id
@@ -818,39 +729,6 @@ public static function DB_tester_groupe_nom($groupe_nom,$groupe_id=FALSE)
 }
 
 /**
- * ajouter_groupe_par_prof
- *
- * @param string $groupe_type   'besoin' | 'eval'
- * @param string $groupe_nom
- * @param int    $niveau_id
- * @return int
- */
-public static function DB_ajouter_groupe_par_prof($groupe_type,$groupe_nom,$niveau_id)
-{
-  $DB_SQL = 'INSERT INTO sacoche_groupe(groupe_type,groupe_ref,groupe_nom,niveau_id) ';
-  $DB_SQL.= 'VALUES(:groupe_type,:groupe_ref,:groupe_nom,:niveau_id)';
-  $DB_VAR = array(
-    ':groupe_type' => $groupe_type,
-    ':groupe_ref'  => '',
-    ':groupe_nom'  => $groupe_nom,
-    ':niveau_id'   => $niveau_id,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  $groupe_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
-  // Y associer automatiquement le prof, en responsable du groupe
-  $DB_SQL = 'INSERT INTO sacoche_jointure_user_groupe ( user_id, groupe_id, jointure_pp) ';
-  $DB_SQL.= 'VALUES                                   (:user_id,:groupe_id,:jointure_pp)';
-  $DB_VAR = array(
-    ':user_id'     => $_SESSION['USER_ID'],
-    ':groupe_id'   => $groupe_id,
-    ':jointure_pp' => 1,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  // Retour de l'id du groupe
-  return $groupe_id;
-}
-
-/**
  * ajouter_devoir
  *
  * @param int    $prof_id
@@ -912,27 +790,6 @@ public static function DB_ajouter_saisie($prof_id,$eleve_id,$devoir_id,$item_id,
     ':item_note'         => $item_note,
     ':item_info'         => $item_info,
     ':item_date_visible' => $item_date_visible_mysql,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_groupe_par_prof ; on ne touche pas à "groupe_type" (ni à "groupe_ref" qui reste vide)
- *
- * @param int    $groupe_id
- * @param string $groupe_nom
- * @param int    $niveau_id
- * @return void
- */
-public static function DB_modifier_groupe_par_prof($groupe_id,$groupe_nom,$niveau_id)
-{
-  $DB_SQL = 'UPDATE sacoche_groupe ';
-  $DB_SQL.= 'SET groupe_nom=:groupe_nom,niveau_id=:niveau_id ';
-  $DB_SQL.= 'WHERE groupe_id=:groupe_id ';
-  $DB_VAR = array(
-    ':groupe_id'  => $groupe_id,
-    ':groupe_nom' => $groupe_nom,
-    ':niveau_id'  => $niveau_id,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1255,84 +1112,6 @@ public static function DB_modifier_liaison_devoir_prof($devoir_id,$tab_profs,$mo
 }
 
 /**
- * modifier_liaison_user_groupe_par_prof
- * Utilisé pour [1] la gestion d'évaluations de type 'eval', ainsi que [2] la gestion de groupes de besoin.
- *
- * @param int    $groupe_id
- * @param array  $tab_eleves   tableau des id des élèves
- * @param array  $tab_profs    tableau des id des profs (sans objet pour [1]), SANS le responsable du groupe
- * @param string $mode         'creer' pour un insert dans un nouveau groupe || 'substituer' pour une maj delete / insert || 'ajouter' pour maj insert uniquement (sans objet pour [2])
- * @param int    $devoir_id    pour supprimer les notes saisies associées (uniquement pour [1]) ; sert aussi à savoir si on est dans le cas [1] ou [2]
- * @return void
- */
-public static function DB_modifier_liaison_user_groupe_par_prof($groupe_id,$tab_eleves,$tab_profs,$mode,$devoir_id)
-{
-  $tab_users = array_merge($tab_eleves,$tab_profs);
-  // -> on récupère la liste des users actuels déjà associés au groupe (pour la comparer à la liste transmise)
-  if($mode!='creer')
-  {
-    // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
-    $DB_SQL = 'SELECT GROUP_CONCAT(user_id SEPARATOR " ") AS users_listing ';
-    $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
-    $DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-    $DB_SQL.= 'WHERE groupe_id=:groupe_id ';
-    $DB_SQL.= ($devoir_id) ? 'AND user_profil_type=:profil_type ' : 'AND user_id!=:prof_id ' ; // Pour [1] on ne s'intéresse qu'aux élèves ; pour [2] on s'intéresse à tout le monde sauf au prof responsable du groupe (non transmis)
-    
-    $DB_SQL.= 'GROUP BY groupe_id';
-    $DB_VAR = array(
-      ':groupe_id'   => $groupe_id,
-      ':profil_type' => 'eleve',
-      ':prof_id'     => $_SESSION['USER_ID'],
-    );
-    $users_listing = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $tab_users_avant = ($users_listing) ? explode(' ',$users_listing) : array() ;
-  }
-  else
-  {
-    $tab_users_avant = array() ;
-  }
-  // -> on supprime si besoin les anciens élèves associés à ce groupe qui ne sont plus dans la liste transmise
-  // -> on supprime si besoin les saisies des anciens élèves associés à ce devoir qui ne sont plus dans la liste transmise
-  //   (pour les saisies superflues concernant les items, voir DB_modifier_liaison_devoir_item() )
-  if($mode=='substituer')
-  {
-    $tab_users_moins = array_diff($tab_users_avant,$tab_users);
-    if(count($tab_users_moins))
-    {
-      $chaine_user_id = implode(',',$tab_users_moins);
-      $DB_SQL = 'DELETE FROM sacoche_jointure_user_groupe ';
-      $DB_SQL.= 'WHERE user_id IN('.$chaine_user_id.') AND groupe_id=:groupe_id ';
-      $DB_VAR = array(':groupe_id'=>$groupe_id);
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-      if($devoir_id)
-      {
-        $DB_SQL = 'DELETE FROM sacoche_saisie ';
-        $DB_SQL.= 'WHERE devoir_id=:devoir_id AND eleve_id IN('.$chaine_user_id.')';
-        $DB_VAR = array(':devoir_id'=>$devoir_id);
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-      }
-    }
-  }
-  // -> on ajoute si besoin les nouveaux élèves dans la liste transmise qui n'étaient pas déjà associés à ce groupe
-  $tab_users_plus = array_diff($tab_users,$tab_users_avant);
-  if(count($tab_users_plus))
-  {
-    foreach($tab_users_plus as $user_id)
-    {
-      $DB_SQL = 'INSERT INTO sacoche_jointure_user_groupe (user_id,groupe_id) ';
-      $DB_SQL.= 'VALUES(:user_id,:groupe_id)';
-      $DB_VAR = array(
-        ':user_id'   => $user_id,
-        ':groupe_id' => $groupe_id,
-      );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    }
-  }
-}
-
-/**
  * modifier_liaison_devoir_eleve
  * Uniquement pour les évaluations de type 'eval' ; voir DB_modifier_liaison_devoir_groupe() pour les autres
  *
@@ -1344,7 +1123,7 @@ public static function DB_modifier_liaison_user_groupe_par_prof($groupe_id,$tab_
  */
 public static function DB_modifier_liaison_devoir_eleve($devoir_id,$groupe_id,$tab_eleves,$mode)
 {
-  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof($groupe_id,$tab_eleves,array() /*tab_profs*/,$mode,$devoir_id);
+  DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_prof( $_SESSION['USER_ID'] , $groupe_id , $tab_eleves , array() /*tab_profs*/ , $mode , $devoir_id );
 }
 
 /**
@@ -1377,47 +1156,6 @@ public static function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
     $DB_SQL = 'DELETE FROM sacoche_saisie ';
     $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
     $DB_VAR = array(':devoir_id'=>$devoir_id);
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  }
-}
-
-/**
- * supprimer_groupe_par_prof
- * Par défaut, on supprime aussi les devoirs associés ($with_devoir=TRUE), mais on conserve les notes, qui deviennent orphelines et non éditables ultérieurement.
- * Mais on peut aussi vouloir dans un second temps ($with_devoir=FALSE) supprimer les devoirs associés avec leurs notes en utilisant DB_supprimer_devoir_et_saisies().
- *
- * @param int    $groupe_id
- * @param string $groupe_type   'besoin' | 'eval'
- * @param bool   $with_devoir
- * @return void
- */
-public static function DB_supprimer_groupe_par_prof($groupe_id,$groupe_type,$with_devoir=TRUE)
-{
-  // Il faut aussi supprimer les jointures avec les utilisateurs
-  // Il faut aussi supprimer les jointures avec les périodes
-  $jointure_periode_delete = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? ', sacoche_jointure_groupe_periode ' : '' ;
-  $jointure_periode_join   = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? 'LEFT JOIN sacoche_jointure_groupe_periode USING (groupe_id) ' : '' ;
-  // Il faut aussi supprimer les évaluations portant sur le groupe
-  $jointure_devoir_delete = ($with_devoir) ? ', sacoche_devoir , sacoche_jointure_devoir_item , sacoche_jointure_devoir_prof , sacoche_jointure_devoir_eleve ' : '' ;
-  $jointure_devoir_join   = ($with_devoir) ? 'LEFT JOIN sacoche_devoir USING (groupe_id) LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ' : '' ;
-  // Il faut aussi supprimer les destinataires de messages portant sur le groupe
-  $jointure_message_delete = ($groupe_type!='eval') ? ', sacoche_jointure_message_destinataire ' : '' ;
-  $jointure_message_join   = ($groupe_type!='eval') ? 'LEFT JOIN sacoche_jointure_message_destinataire ON sacoche_groupe.groupe_id=sacoche_jointure_message_destinataire.destinataire_id AND destinataire_type="'.$groupe_type.'" ' : '' ;
-  // Let's go
-  $DB_SQL = 'DELETE sacoche_groupe , sacoche_jointure_user_groupe '.$jointure_periode_delete.$jointure_devoir_delete.$jointure_message_delete;
-  $DB_SQL.= 'FROM sacoche_groupe ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-  $DB_SQL.= $jointure_periode_join.$jointure_devoir_join.$jointure_message_join;
-  $DB_SQL.= 'WHERE groupe_id=:groupe_id ';
-  $DB_VAR = array(':groupe_id'=>$groupe_id);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  // Sans oublier le champ pour les affectations des élèves dans une classe
-  if($groupe_type=='classe')
-  {
-    $DB_SQL = 'UPDATE sacoche_user ';
-    $DB_SQL.= 'SET eleve_classe_id=0 ';
-    $DB_SQL.= 'WHERE eleve_classe_id=:groupe_id';
-    $DB_VAR = array(':groupe_id'=>$groupe_id);
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
 }

@@ -47,7 +47,7 @@ if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
     $prof_id   = Clean::entier($prof_id);
     if($classe_id && $prof_id)
     {
-      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $prof_id , 'professeur' , $classe_id , 'classe' , $etat );
+      DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_admin( $prof_id , 'professeur' , $classe_id , 'classe' , $etat );
     }
   }
   Json::end( TRUE );
@@ -60,7 +60,7 @@ if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
 if( in_array($action,array('ajouter_pp','retirer_pp')) && ($classe_id) && ($prof_id) )
 {
   $etat = ($action=='ajouter_pp') ? TRUE : FALSE ;
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal( $prof_id , $classe_id , $etat );
+  DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_professeur_principal( $prof_id , $classe_id , $etat );
   Json::end( TRUE );
 }
 

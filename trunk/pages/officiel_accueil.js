@@ -48,8 +48,9 @@ $(document).ready
     ChartOptions = {
       chart: {
         renderTo: 'div_graphique_synthese',
+        alignTicks: false,
         type: 'column',
-        spacingTop: 5
+        spacingTop: 10
        },
       colors: 
         BACKGROUND_COLORS
@@ -59,7 +60,10 @@ $(document).ready
         text: null // Pourrait être MAJ ensuite
       },
       xAxis: {
-        labels: { style: { color: '#000' } },
+        labels: {
+          style: { color: '#000' },
+          autoRotationLimit: 0
+        },
         categories: [] // MAJ ensuite
       },
       yAxis: [
@@ -67,6 +71,7 @@ $(document).ready
           labels: { enabled: false },
           min: 0,
           max: 100,
+          gridLineWidth: 0,
           title: { style: { color: '#333' } , text: 'Items acquis' }
         },
         {} // MAJ ensuite

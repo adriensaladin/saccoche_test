@@ -89,7 +89,7 @@ if(count($tab_add))
   $tab_nom_classe = array();
   if($import_profil=='eleve')
   {
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
+    $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes();
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_nom_classe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];

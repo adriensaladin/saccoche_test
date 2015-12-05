@@ -44,7 +44,7 @@ $TITRE = html(Lang::_("Gérer les périodes"));
   <tbody>
     <?php
     // Lister les périodes
-    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
+    $DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_periodes();
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)

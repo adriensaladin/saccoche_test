@@ -168,9 +168,16 @@ function afficher_json_message_erreur(jqXHR, textStatus)
   // Une erreur de syntaxe lors de l'analyse du json : probablement une erreur ou un avertissement PHP, éventuellement suivi de la chaine json retournée
   if(textStatus=='parsererror')
   {
-    var pos_debut_json = jqXHR['responseText'].indexOf('{"');
-    var chaine_anormale = (pos_debut_json>0) ? jqXHR['responseText'].substr(0,pos_debut_json) : jqXHR['responseText'] ;
-    return 'Anomalie rencontrée : ' + strip_tags(chaine_anormale);
+    if( jqXHR['responseText'] == '' )
+    {
+      return 'Absence de réponse du serveur : dépassement des capacités (mémoire ou durée d\'exécution) ?';
+    }
+    else
+    {
+      var pos_debut_json = jqXHR['responseText'].indexOf('{"');
+      var chaine_anormale = (pos_debut_json>0) ? jqXHR['responseText'].substr(0,pos_debut_json) : jqXHR['responseText'] ;
+      return 'Anomalie rencontrée : ' + strip_tags(chaine_anormale);
+    }
   }
   // textStatus parmi [ null | "timeout" | "error" | "abort" ]
   else
@@ -180,7 +187,7 @@ function afficher_json_message_erreur(jqXHR, textStatus)
       // 404 par exemple...
       return 'Erreur '+jqXHR['status']+' : '+jqXHR['statusText'];
     }
-    else if(typeof(jqXHR['responseText'])!=='undefined')
+    else if( typeof(jqXHR['responseText']) !== 'undefined' )
     {
       // Je ne sais pas si on peut passer ici...
       return 'Erreur inattendue : ' + escapeHtml(jqXHR['responseText']);

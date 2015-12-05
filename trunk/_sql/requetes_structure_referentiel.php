@@ -28,7 +28,7 @@
 // Extension de classe qui étend DB (pour permettre l'autoload)
 
 // Ces méthodes ne concernent qu'une base STRUCTURE.
-// Ces méthodes ne concernent que la gestion des référentiels par les profs coordonnateurs.
+// Ces méthodes ne concernent (quasiment) que la gestion des référentiels par les personnels habilités.
 
 class DB_STRUCTURE_REFERENTIEL extends DB
 {
@@ -80,6 +80,78 @@ public static function DB_OPT_lister_elements_referentiels_prof( $prof_id , $gra
   $DB_VAR = array(':user_id'=>$prof_id);
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élément de référentiel trouvé.' ;
+}
+
+/**
+ * recuperer_referentiels_domaines
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_recuperer_referentiels_domaines()
+{
+  $DB_SQL = 'SELECT matiere_id, niveau_id, domaine_nom ';
+  $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
+  $DB_SQL.= 'ORDER BY domaine_ordre ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * recuperer_referentiels_domaines_cibles
+ *
+ * @param string $listing_matiere_id
+ * @param string $listing_niveau_id
+ * @return array
+ */
+public static function DB_recuperer_referentiels_domaines_cibles($listing_matiere_id,$listing_niveau_id)
+{
+  $DB_SQL = 'SELECT matiere_id, niveau_id, domaine_id, domaine_nom ';
+  $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
+  $DB_SQL.= 'WHERE matiere_id IN('.$listing_matiere_id.') AND niveau_id IN('.$listing_niveau_id.') ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * recuperer_referentiels_themes
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_recuperer_referentiels_themes()
+{
+  $DB_SQL = 'SELECT matiere_id, niveau_id, theme_nom ';
+  $DB_SQL.= 'FROM sacoche_referentiel_theme ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+  $DB_SQL.= 'ORDER BY domaine_ordre ASC, theme_ordre ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * recuperer_referentiels_themes_cibles
+ *
+ * @param string $listing_domaine_id
+ * @return array
+ */
+public static function DB_recuperer_referentiels_themes_cibles($listing_domaine_id)
+{
+  $DB_SQL = 'SELECT domaine_id, theme_id, theme_nom ';
+  $DB_SQL.= 'FROM sacoche_referentiel_theme ';
+  $DB_SQL.= 'WHERE domaine_id IN('.$listing_domaine_id.') ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * recuperer_referentiels_items_cibles
+ *
+ * @param string $listing_theme_id
+ * @return array
+ */
+public static function DB_recuperer_referentiels_items_cibles($listing_theme_id)
+{
+  $DB_SQL = 'SELECT theme_id, item_id, item_nom ';
+  $DB_SQL.= 'FROM sacoche_referentiel_item ';
+  $DB_SQL.= 'WHERE theme_id IN('.$listing_theme_id.') ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -805,7 +877,7 @@ public static function DB_renumeroter_referentiel_liste_elements($element_champ,
 {
   $listing_elements_id = implode(',',$tab_elements_id);
   $DB_SQL = 'UPDATE sacoche_referentiel_'.$element_champ.' ';
-  $DB_SQL.= 'SET '.$element_champ.'_ordre='.$element_champ.'_ordre'.$operation.' ';
+  $DB_SQL.= 'SET '.$element_champ.'_ordre = GREATEST( '.$element_champ.'_ordre'.$operation.' , 0 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
   $DB_SQL.= 'WHERE '.$element_champ.'_id IN('.$listing_elements_id.') ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -821,7 +893,7 @@ public static function DB_renumeroter_referentiel_liste_elements($element_champ,
 public static function DB_renumeroter_referentiel_domaines_suivants($matiere_id,$niveau_id,$ordre_id)
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-  $DB_SQL.= 'SET domaine_ordre=domaine_ordre-1 ';
+  $DB_SQL.= 'SET domaine_ordre = GREATEST( domaine_ordre-1 , 0 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id AND domaine_ordre>:ordre_id ';
   $DB_VAR = array(
     ':matiere_id' => $matiere_id,
@@ -841,7 +913,7 @@ public static function DB_renumeroter_referentiel_domaines_suivants($matiere_id,
 public static function DB_renumeroter_referentiel_themes_suivants($domaine_id,$ordre_id)
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-  $DB_SQL.= 'SET theme_ordre=theme_ordre-1 ';
+  $DB_SQL.= 'SET theme_ordre = GREATEST( theme_ordre-1 , 0 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
   $DB_SQL.= 'WHERE domaine_id=:domaine_id AND theme_ordre>:ordre_id ';
   $DB_VAR = array(
     ':domaine_id' => $domaine_id,

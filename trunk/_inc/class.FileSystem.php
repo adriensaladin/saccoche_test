@@ -296,7 +296,7 @@ class FileSystem
   {
     if( (!$verif_exist) || is_file($fichier) )
     {
-      unlink($fichier);
+      @unlink($fichier); // @ car dans de rares cas le fichier est simultanément supprimé par un autre appel à effacer_fichiers_temporaires()
     }
   }
 
@@ -402,7 +402,7 @@ class FileSystem
   public static function ecrire_sortie_PDF($fichier_chemin,$objet_PDF)
   {
     @umask(FileSystem::systeme_umask());
-    $objet_PDF->Output($fichier_chemin,'F');
+    $objet_PDF->Output('F',$fichier_chemin);
     return TRUE;
   }
 
@@ -643,7 +643,7 @@ class FileSystem
       {
         $chemin_contenu = $dossier.$ds.$contenu;
         $extension = pathinfo($chemin_contenu,PATHINFO_EXTENSION);
-        $date_unix = @filemtime($chemin_contenu); // @ car dans de rares cas le fichier est simultanément supprimé par un autre processus
+        $date_unix = @filemtime($chemin_contenu); // @ car dans de rares cas le fichier est simultanément supprimé par un autre appel à effacer_fichiers_temporaires()
         if( ($date_unix<$date_limite) && ($extension!='htm') )
         {
           if(is_file($chemin_contenu))

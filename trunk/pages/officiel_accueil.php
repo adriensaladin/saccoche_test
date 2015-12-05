@@ -99,14 +99,14 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
         }
         // Récupération du nom des classes (sans fignoler)
         $tab_classes = array();
-        $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
+        $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_classes_noms();
         foreach($DB_TAB as $DB_ROW)
         {
           $tab_classes[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
         }
         // Récupération du nom des périodes (sans fignoler)
         $tab_periodes = array();
-        $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
+        $DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_periodes();
         foreach($DB_TAB as $DB_ROW)
         {
           $tab_periodes[$DB_ROW['periode_id']] = $DB_ROW['periode_nom'];
@@ -126,7 +126,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
           // Les professeurs ne sont rattachés qu'à certaines classes
           $listing_profs_id   = implode(',',$tab_profils['professeur']);
           $listing_groupes_id = implode(',',array_keys($tab_classes));
-          $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_groupes($listing_profs_id,$listing_groupes_id);
+          $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_jointure_professeurs_groupes($listing_profs_id,$listing_groupes_id);
           foreach($DB_TAB as $DB_ROW)
           {
             $tab_profs_par_classe[$DB_ROW['groupe_id']][] = $DB_ROW['user_id'];
@@ -272,7 +272,7 @@ if($_SESSION['USER_PROFIL_TYPE']!='professeur') // administrateur | directeur
 }
 else // professeur
 {
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
+  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
   foreach($DB_TAB as $DB_ROW)
   {
     $droit_voir_archives_pdf     = test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']);
@@ -328,7 +328,7 @@ if(!count($tab_classe))
 // Initialiser au passage les cellules du tableau à afficher
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_periodes();
+$DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_periodes();
 if(empty($DB_TAB))
 {
   echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>'.NL;
@@ -361,7 +361,7 @@ Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"] = new Array();' );
 Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"] = new Array();' );
 
 $listing_classes_id = implode(',',array_keys($tab_classe));
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_classes_id);
+$DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_jointure_groupe_periode($listing_classes_id);
 foreach($DB_TAB as $DB_ROW)
 {
   $classe_id = $DB_ROW['groupe_id'];
@@ -558,7 +558,7 @@ elseif(($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin'))
   $form_hidden .= '<input type="hidden" id="f_listing_matieres" name="f_listing_matieres" value="'.$listing_matieres_id.'" />';
   $tab_matieres_id = explode(',',$listing_matieres_id);
   // Lister les matières de l'établissement
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+  $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;

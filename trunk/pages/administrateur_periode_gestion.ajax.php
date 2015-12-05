@@ -40,12 +40,12 @@ $ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre']) : 0;
 if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
 {
   // Vérifier que le nom de la période est disponible
-  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_periode_nom($nom) )
+  if( DB_STRUCTURE_PERIODE::DB_tester_periode_nom($nom) )
   {
     Json::end( FALSE , 'Nom déjà utilisé !' );
   }
   // Insérer l'enregistrement
-  $periode_id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_periode($ordre,$nom);
+  $periode_id = DB_STRUCTURE_PERIODE::DB_ajouter_periode($ordre,$nom);
   // Afficher le retour
   Json::add_str('<tr id="id_'.$periode_id.'" class="new">');
   Json::add_str(  '<td>'.$ordre.'</td>');
@@ -66,12 +66,12 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
 if( ($action=='modifier') && $id && $ordre && $nom )
 {
   // Vérifier que le nom de la période est disponible
-  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_periode_nom($nom,$id) )
+  if( DB_STRUCTURE_PERIODE::DB_tester_periode_nom($nom,$id) )
   {
     Json::end( FALSE , 'Nom déjà utilisé !' );
   }
   // Mettre à jour l'enregistrement
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_periode($id,$ordre,$nom);
+  DB_STRUCTURE_PERIODE::DB_modifier_periode($id,$ordre,$nom);
   // Afficher le retour
   Json::add_str('<td>'.$ordre.'</td>');
   Json::add_str('<td>'.html($nom).'</td>');
@@ -90,7 +90,7 @@ if( ($action=='modifier') && $id && $ordre && $nom )
 if( ($action=='supprimer') && $id && $nom )
 {
   // Effacer l'enregistrement
-  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_periode($id);
+  DB_STRUCTURE_PERIODE::DB_supprimer_periode($id);
   // Log de l'action
   SACocheLog::ajouter('Suppression de la période "'.$nom.'" (n°'.$id.'), et donc des bilans officiels associés.');
   // Notifications (rendues visibles ultérieurement)

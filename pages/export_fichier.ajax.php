@@ -580,7 +580,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
 
   // Récupérer la liste des classes
   $tab_groupe = array();
-  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_groupe[$DB_ROW['groupe_id']] = array( 'ref'=>$DB_ROW['groupe_ref'] , 'nom'=>$DB_ROW['groupe_nom'] );
@@ -682,7 +682,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
 
   // Récupérer la liste des classes
   $tab_groupe = array();
-  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_groupe[$DB_ROW['groupe_id']] = array( 'ref'=>$DB_ROW['groupe_ref'] , 'nom'=>$DB_ROW['groupe_nom'] );

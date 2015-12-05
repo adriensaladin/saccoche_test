@@ -43,7 +43,7 @@ $tab_niveau  = array();
 $tab_colonne = array();
 
 // On récupère la liste des matières utilisées par l'établissement
-$DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
 $nb_matieres = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
 if(!$nb_matieres)
 {
@@ -60,7 +60,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // On récupère la liste des niveaux utilisés par l'établissement
-$DB_TAB = DB_STRUCTURE_NIVEAU::DB_lister_niveaux_etablissement( TRUE /*with_particuliers*/ );
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(TRUE /*with_particuliers*/);
 $nb_niveaux = !empty($DB_TAB) ? count($DB_TAB) : 0 ;
 if(!$nb_niveaux)
 {

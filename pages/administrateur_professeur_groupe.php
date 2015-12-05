@@ -68,7 +68,7 @@ $tab_lignes_groupes   = array();
 $tab_lignes_profs     = array();
 
 // Récupérer la liste des groupes
-$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_groupes_avec_niveaux();
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
 if(empty($DB_TAB))
 {
   echo'<p class="danger">Aucun groupe trouvé !</p>'.NL;
@@ -107,7 +107,7 @@ if(!count($tab_profs))
 // Récupérer la liste des jointures
 $liste_profs_id   = implode(',',array_keys($tab_profs));
 $liste_groupes_id = implode(',',array_keys($tab_groupes));
-$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_jointure_professeurs_groupes($liste_profs_id,$liste_groupes_id);
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_groupes($liste_profs_id,$liste_groupes_id);
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_js .= 'tab_join['.$DB_ROW['groupe_id'].']['.$DB_ROW['user_id'].']=1;';

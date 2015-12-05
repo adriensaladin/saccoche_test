@@ -131,7 +131,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
         }
         // Récupération du nom des classes (sans fignoler)
         $tab_classes = array();
-        $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_classes_noms();
+        $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
         foreach($DB_TAB as $DB_ROW)
         {
           $tab_classes[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
@@ -151,7 +151,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
           // Les professeurs ne sont rattachés qu'à certaines classes
           $listing_profs_id   = implode(',',$tab_profils['professeur']);
           $listing_groupes_id = implode(',',array_keys($tab_classes));
-          $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_jointure_professeurs_groupes($listing_profs_id,$listing_groupes_id);
+          $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_groupes($listing_profs_id,$listing_groupes_id);
           foreach($DB_TAB as $DB_ROW)
           {
             $tab_profs_par_classe[$DB_ROW['groupe_id']][] = $DB_ROW['user_id'];
@@ -270,7 +270,7 @@ if($_SESSION['USER_PROFIL_TYPE']!='professeur') // administrateur | directeur
 }
 else // professeur
 {
-  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
   foreach($DB_TAB as $DB_ROW)
   {
     if($DB_ROW['groupe_type']=='classe')
@@ -338,7 +338,7 @@ Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"] = new Array();' );
 Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"] = new Array();' );
 
 $listing_classes_id = implode(',',array_keys($tab_classe));
-$DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_jointure_groupe_periode($listing_classes_id);
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_classes_id);
 foreach($tab_classe as $classe_id => $tab_groupes)
 {
   $etat = $tab_classe_etat[$classe_id];

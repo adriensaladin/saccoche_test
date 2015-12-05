@@ -212,7 +212,7 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   if($qui=='select')
   {
     // Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur) ; y associe automatiquement le prof, en responsable du groupe
-    $groupe_id = DB_STRUCTURE_REGROUPEMENT::DB_ajouter_groupe_par_prof( $_SESSION['USER_ID'] , 'eval' /*groupe_type*/ , '' /*groupe_nom*/ , 0 /*niveau_id*/ );
+    $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('eval','',0);
   }
   // Insérer l'enregistrement de l'évaluation
   $doc_sujet   = '';

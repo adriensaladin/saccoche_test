@@ -166,7 +166,7 @@ class HtmlForm
         if($tab_groupe_periode)
         {
           $tab_memo_groupes = array();
-          $DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_jointure_groupe_periode($listing_groupe_id);
+          $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_jointure_groupe_periode($listing_groupe_id);
           foreach($DB_TAB as $DB_ROW)
           {
             if(!isset($tab_memo_groupes[$DB_ROW['groupe_id']]))
@@ -202,7 +202,7 @@ class HtmlForm
     $tab_regroupements = array();
     $tab_id = array('classe'=>'','groupe'=>'');
     // Recherche de la liste des classes et des groupes du professeur
-    $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
+    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_regroupements[$DB_ROW['groupe_id']] = array('nom'=>$DB_ROW['groupe_nom'],'eleve'=>array());

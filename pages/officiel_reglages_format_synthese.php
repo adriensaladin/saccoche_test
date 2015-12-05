@@ -46,7 +46,7 @@ else
   $tab_choix = array( 'domaine'=>'synthèse par domaine' , 'theme'=>'synthèse par thème' , 'sans'=>'pas de synthèse' );
   // Récupérer la liste des domaines de chaque référentiel
   $tab_domaines = array();
-  $DB_TAB_DOMAINES = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiels_domaines();
+  $DB_TAB_DOMAINES = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_referentiels_domaines();
   foreach($DB_TAB_DOMAINES as $DB_ROW)
   {
     $ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];
@@ -54,7 +54,7 @@ else
   }
   // Récupérer la liste des thèmes de chaque référentiel
   $tab_themes = array();
-  $DB_TAB_THEMES = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiels_themes();
+  $DB_TAB_THEMES = DB_STRUCTURE_ADMINISTRATEUR::DB_recuperer_referentiels_themes();
   foreach($DB_TAB_THEMES as $DB_ROW)
   {
     $ids = $DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'];

@@ -47,7 +47,7 @@ if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
     $prof_id   = Clean::entier($prof_id);
     if($matiere_id && $prof_id)
     {
-      DB_STRUCTURE_MATIERE::DB_modifier_liaison_professeur_matiere( $prof_id , $matiere_id , $etat );
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere( $prof_id , $matiere_id , $etat );
     }
   }
   Json::end( TRUE );
@@ -60,7 +60,7 @@ if( in_array($action,array('ajouter','retirer')) && count($tab_modifs) )
 if( in_array($action,array('ajouter_coord','retirer_coord')) && ($matiere_id) && ($prof_id) )
 {
   $etat = ($action=='ajouter_coord') ? TRUE : FALSE ;
-  DB_STRUCTURE_MATIERE::DB_modifier_liaison_professeur_coordonnateur( $prof_id , $matiere_id , $etat );
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_coordonnateur( $prof_id , $matiere_id , $etat );
   Json::end( TRUE );
 }
 

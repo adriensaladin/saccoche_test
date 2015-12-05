@@ -136,60 +136,40 @@ $(document).ready
           var f_eleve = new Array(); $("#f_eleve input:checked").each(function(){f_eleve.push($(this).val());});
         }
         // on envoie
-        $('#ajax_info').html("");
         $('#bouton_export').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("Extraction des saisies&hellip;");
-        initialiser_compteur();
-        exporter(1,f_eleve);
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Appel en ajax pour lancer un export
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function exporter(etape,eleves)
-    {
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=export'+'&f_etape='+etape+'&f_eleve='+eleves,
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_info').html("");
+        $.ajax
+        (
           {
-            $('#bouton_export').prop('disabled',false);
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-            return false;
-          },
-          success : function(responseJSON)
-          {
-            if(responseJSON['statut']==false)
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=export'+'&f_eleve='+f_eleve,
+            dataType : 'json',
+            error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_export').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-            }
-            else
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              return false;
+            },
+            success : function(responseJSON)
             {
-              initialiser_compteur();
-              etape++;
-              if(etape<5)
+              $('#bouton_export').prop('disabled',false);
+              if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr('class').addClass('loader').html(responseJSON['value']);
-                exporter(etape,'');
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#bouton_export').prop('disabled',false);
                 $('#ajax_msg').removeAttr('class').html('');
                 $('#ajax_info').html(responseJSON['value']);
+                initialiser_compteur();
               }
             }
           }
-        }
-      );
-    }
+        );
+      }
+    );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Traitement du formulaire #form_import
@@ -235,8 +215,8 @@ $(document).ready
           }
           else
           {
-            $('#bouton_import').prop('disabled',true);
-            $('#ajax_msg').removeAttr('class').addClass('loader').html("Récupération du fichier&hellip;");
+            $('#bouton_export').prop('disabled',true);
+            $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
             $('#ajax_retour').html("");
             formulaire_import.submit();
           }
@@ -266,85 +246,18 @@ $(document).ready
     function retour_form_valide_import(responseJSON)
     {
       $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#bouton_import').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#bouton_import').prop('disabled',false);
         $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $.prompt(
-          "La structure d'origine a utilisé les conventions de notations suivantes&nbsp;:<br /><br />"+responseJSON['value']+"<br />Observez bien le nombre, l'ordre, et les valeurs des codes.<br />Ces conventions sont-elles bien compatibles avec celles de votre structure&nbsp;?<br />Toute confirmation entraînera l'import définitif des données&nbsp;!!!",
-          {
-            title   : 'Demande de confirmation',
-            buttons : {
-              "Non, ça ne va pas !" : false ,
-              "Pause, je vais vérifier !" : false ,
-              "Oui, je confirme !" : true
-            },
-            submit  : function(event, value, message, formVals) {
-              if(value)
-              {
-                $('#ajax_msg').removeAttr('class').addClass('loader').html('Analyse des matières&hellip;');
-                initialiser_compteur();
-                importer(1);
-              }
-              else
-              {
-                $('#bouton_import').prop('disabled',false);
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html('Importation annulée.');
-              }
-            }
-          }
-        );
+        initialiser_compteur();
+        $('#bouton_import').prop('disabled',false);
+        $('#ajax_msg').removeAttr('class').html('');
+        $('#ajax_info').html(responseJSON['value']);
       }
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Appel en ajax pour lancer un import
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function importer(etape)
-    {
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=import'+'&f_etape='+etape,
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#bouton_import').prop('disabled',false);
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-            return false;
-          },
-          success : function(responseJSON)
-          {
-            if(responseJSON['statut']==false)
-            {
-              $('#bouton_import').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-            }
-            else
-            {
-              initialiser_compteur();
-              etape++;
-              if(etape<10)
-              {
-                $('#ajax_msg').removeAttr('class').addClass('loader').html(responseJSON['value']);
-                importer(etape);
-              }
-              else
-              {
-                $('#bouton_import').prop('disabled',false);
-                $('#ajax_msg').removeAttr('class').html('');
-                $('#ajax_info').html(responseJSON['value']);
-              }
-            }
-          }
-        }
-      );
     }
 
   }

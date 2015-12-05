@@ -40,7 +40,7 @@ $nom        = (isset($_POST['f_nom']))      ? Clean::texte($_POST['f_nom'])     
 
 if( ($action=='recherche_niveau_famille') && $famille_id )
 {
-  $DB_TAB = DB_STRUCTURE_NIVEAU::DB_lister_niveaux_famille($famille_id);
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_niveaux_famille($famille_id);
   foreach($DB_TAB as $DB_ROW)
   {
     $class = ($DB_ROW['niveau_actif']) ? 'ajouter_non' : 'ajouter' ;
@@ -56,7 +56,7 @@ if( ($action=='recherche_niveau_famille') && $famille_id )
 
 if( ($action=='ajouter_partage') && $id )
 {
-  DB_STRUCTURE_NIVEAU::DB_modifier_niveau_partage($id,1);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($id,1);
   Json::end( TRUE );
 }
 
@@ -67,12 +67,12 @@ if( ($action=='ajouter_partage') && $id )
 if( ($action=='ajouter_perso') && $ref && $nom )
 {
   // Vérifier que la référence de la matière est disponible
-  if( DB_STRUCTURE_NIVEAU::DB_tester_niveau_reference($ref) )
+  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_niveau_reference($ref) )
   {
     Json::end( FALSE , 'Référence déjà utilisée !' );
   }
   // Insérer l'enregistrement
-  $id = DB_STRUCTURE_NIVEAU::DB_ajouter_niveau_specifique($ref,$nom);
+  $id = DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_niveau_specifique($ref,$nom);
   // Afficher le retour
   Json::end( TRUE ,  array( 'id'=>$id , 'ref'=>html($ref) , 'nom'=>html($nom) ) );
 }
@@ -84,12 +84,12 @@ if( ($action=='ajouter_perso') && $ref && $nom )
 if( ($action=='modifier') && $id && $ref && $nom && ($id>ID_NIVEAU_PARTAGE_MAX) )
 {
   // Vérifier que la référence du niveau est disponible
-  if( DB_STRUCTURE_NIVEAU::DB_tester_niveau_reference($ref,$id) )
+  if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_niveau_reference($ref,$id) )
   {
     Json::end( FALSE , 'Référence déjà utilisée !' );
   }
   // Mettre à jour l'enregistrement
-  DB_STRUCTURE_NIVEAU::DB_modifier_niveau_specifique($id,$ref,$nom);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_specifique($id,$ref,$nom);
   // Afficher le retour
   Json::end( TRUE ,  array( 'id'=>$id , 'ref'=>html($ref) , 'nom'=>html($nom) ) );
 }
@@ -100,7 +100,7 @@ if( ($action=='modifier') && $id && $ref && $nom && ($id>ID_NIVEAU_PARTAGE_MAX) 
 
 if( ($action=='supprimer') && $id && $nom && ($id<=ID_NIVEAU_PARTAGE_MAX) )
 {
-  DB_STRUCTURE_NIVEAU::DB_modifier_niveau_partage($id,0);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_niveau_partage($id,0);
   // Log de l'action
   SACocheLog::ajouter('Retrait du niveau partagé "'.$nom.'" (n°'.$id.').');
   // Notifications (rendues visibles ultérieurement)
@@ -116,7 +116,7 @@ if( ($action=='supprimer') && $id && $nom && ($id<=ID_NIVEAU_PARTAGE_MAX) )
 
 if( ($action=='supprimer') && $id && $nom && ($id>ID_NIVEAU_PARTAGE_MAX) )
 {
-  DB_STRUCTURE_NIVEAU::DB_supprimer_niveau_specifique($id);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_niveau_specifique($id);
   // Log de l'action
   SACocheLog::ajouter('Suppression du niveau spécifique "'.$nom.'" (n°'.$id.') et donc des référentiels associés.');
   // Notifications (rendues visibles ultérieurement)

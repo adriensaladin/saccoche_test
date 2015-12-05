@@ -317,7 +317,7 @@ if($version_base_structure_actuelle=='2015-04-22')
       $id_avant = 601;
       $id_apres = 600;
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_id = '.$id_apres.' WHERE matiere_id = '.$id_avant.' ' );
-      DB_STRUCTURE_MATIERE::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
+      DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
       SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
       // nouvelles matières
       $insert = '
@@ -672,7 +672,7 @@ if($version_base_structure_actuelle=='2015-06-09')
       foreach($tab_modif_id as $id_avant => $id_apres)
       {
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_id = '.$id_apres.', matiere_famille_id=69 WHERE matiere_id = '.$id_avant.' ' );
-        DB_STRUCTURE_MATIERE::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
+        DB_STRUCTURE_ADMINISTRATEUR::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
         SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
       }
       // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajouts dans sacoche_matiere)

@@ -91,7 +91,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
   if(!$presence_devoir)
   {
     // Commencer par créer un nouveau groupe de type "eval", utilisé uniquement pour cette évaluation (c'est transparent pour le professeur) ; y associe automatiquement le prof, en responsable du groupe
-    $groupe_id = DB_STRUCTURE_REGROUPEMENT::DB_ajouter_groupe_par_prof( $_SESSION['USER_ID'] , 'eval' /*groupe_type*/ , '' /*groupe_nom*/ , 0 /*niveau_id*/ );
+    $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof( 'eval' /*groupe_type*/ , '' /*groupe_nom*/ , 0 /*niveau_id*/ );
     // Insèrer l'enregistrement de l'évaluation
     $devoir_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_devoir( $_SESSION['USER_ID'] , $groupe_id , TODAY_MYSQL , $description , TODAY_MYSQL /*date_visible_mysql*/ ,NULL /*date_autoeval_mysql*/ , '' /*doc_sujet*/ , '' /*doc_corrige*/ , 'alpha' /*eleves_ordre*/ );
   }

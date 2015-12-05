@@ -68,13 +68,13 @@ if($import_profil=='professeur')
   // On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=TRUE $tab_base_classe[groupe_id]=groupe_nom
   // En deux requêtes sinon on ne récupère pas les groupes sans utilisateurs affectés.
   $tab_base_classe = array();
-  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes();
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_base_classe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];
   }
   $tab_base_affectation = array();
-  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_professeurs_avec_classes();
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_professeurs_avec_classes();
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;
@@ -126,7 +126,7 @@ if($import_profil=='professeur')
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=TRUE ($tab_base_classe déjà renseigné)
     $tab_base_affectation = array();
-    $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_jointure_professeurs_principaux();
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_principaux();
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['groupe_id']] = TRUE;
@@ -178,14 +178,14 @@ if($import_profil=='professeur')
     // En deux requêtes sinon on ne récupère pas les matieres sans utilisateurs affectés.
     $tab_base_matiere = array();
     $tab_matiere_ref_TO_id_base = array();
-    $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_base_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
       $tab_matiere_ref_TO_id_base[$DB_ROW['matiere_ref']] = $DB_ROW['matiere_id'];
     }
     $tab_base_affectation = array();
-    $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_jointure_professeurs_matieres();
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres();
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_base_affectation[$DB_ROW['user_id'].'_'.$DB_ROW['matiere_id']] = TRUE;
@@ -229,7 +229,7 @@ $tab_base_user_identite = array();
 // On récupère le contenu de la base pour comparer : $tab_base_affectation[user_id_groupe_id]=TRUE et $tab_base_groupe[groupe_id]=groupe_nom
 // En deux requêtes sinon on ne récupère pas les groupes sans utilisateurs affectés.
 $tab_base_groupe = array();
-$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_groupes();
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes();
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_base_groupe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_nom'];

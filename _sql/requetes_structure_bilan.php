@@ -605,26 +605,6 @@ public static function DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordr
 }
 
 /**
- * lister_jointure_groupe_periode ; le rangement par ordre de période permet, si les périodes se chevauchent, que javascript choisisse la 1ère par défaut
- *
- * @param string   $listing_user_id   id des élèves séparés par des virgules
- * @return array
- */
-public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_user_id)
-{
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
-  $DB_SQL = 'SELECT periode_id, periode_nom, GROUP_CONCAT(user_id SEPARATOR "_") AS eleves_listing ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_groupe_periode ON sacoche_user.eleve_classe_id=sacoche_jointure_groupe_periode.groupe_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
-  $DB_SQL.= 'WHERE user_id IN ('.$listing_user_id.') AND officiel_bulletin IN("2rubrique","3mixte") ';
-  $DB_SQL.= 'GROUP BY periode_id ';
-  $DB_SQL.= 'ORDER BY periode_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * compter_modes_synthese_inconnu
  *
  * @param void

@@ -227,7 +227,7 @@ if($TYPE=='groupe')
 {
   // Élément de formulaire "f_aff_classe" pour le choix des élèves (liste des classes / groupes / besoins) du professeur, enregistré dans une variable javascript pour utilisation suivant le besoin, et utilisé pour un tri initial
   // Fabrication du tableau javascript "tab_groupe" indiquant le nom d'un groupe
-  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
+  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
   $tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
   foreach($DB_TAB as $DB_ROW)
   {

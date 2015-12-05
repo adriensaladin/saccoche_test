@@ -68,7 +68,7 @@ $tab_lignes_matieres   = array();
 $tab_lignes_profs      = array();
 
 // Récupérer la liste des matières
-$DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
 if(empty($DB_TAB))
 {
   echo'<p class="danger">Aucune matière trouvée !</p>'.NL;
@@ -104,7 +104,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // Récupérer la liste des jointures
-$DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_jointure_professeurs_matieres();
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_jointure_professeurs_matieres();
 foreach($DB_TAB as $DB_ROW)
 {
   if( (isset($tab_profs[$DB_ROW['user_id']])) && (isset($tab_matieres[$DB_ROW['matiere_id']])) )

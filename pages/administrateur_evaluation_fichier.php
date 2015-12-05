@@ -32,7 +32,10 @@ $TITRE = html(Lang::_("Import / Export des évaluations"));
 $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , FALSE /*tout*/ , TRUE /*ancien*/ ) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__evaluations_export_import">DOC : Import / Export des évaluations</a></span></p>
+<div class="travaux">Page en construction ; documentation et finalisation à venir prochainement !</div>
+
+<?php return ?>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_export_import">DOC : Import / Export des évaluations</a></span></p>
 
 <hr />
 
@@ -56,7 +59,7 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
 <form action="#" method="post" id="form_import" class="hide">
   <hr />
   <p>
-    <label class="tab" for="bouton_import">Fichier à importer :</label><input type="hidden" id="f_action" name="f_action" value="import" /><input type="hidden" id="f_etape" name="f_etape" value="0" /><input id="f_import" type="file" name="userfile" /><button type="button" id="bouton_import" class="fichier_import">Parcourir...</button>
+    <label class="tab" for="bouton_import">Fichier à importer :</label><input type="hidden" id="f_action" name="f_action" value="import" /><input id="f_import" type="file" name="userfile" /><button type="button" id="bouton_import" class="fichier_import">Parcourir...</button>
   </p>
 
 </form>

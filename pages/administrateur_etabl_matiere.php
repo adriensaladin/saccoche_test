@@ -32,7 +32,7 @@ $TITRE = html(Lang::_("Matières"));
 $select_matiere_famille = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , 'f_famille' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'familles_matieres' /*optgroup*/);
 
 // Lister les matières de l'établissement
-$DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
 $matieres_options = '<option value="0"></option>';
 foreach($DB_TAB as $DB_ROW)
 {
@@ -59,7 +59,7 @@ Layout::add( 'js_inline_before' , 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE_PA
     <tbody>
       <?php
       // Lister les matières partagées
-      $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres( FALSE /*is_specifique*/ );
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres(FALSE /*is_specifique*/);
       if(!empty($DB_TAB))
       {
         foreach($DB_TAB as $DB_ROW)
@@ -97,7 +97,7 @@ Layout::add( 'js_inline_before' , 'var ID_MATIERE_PARTAGEE_MAX = '.ID_MATIERE_PA
     <tbody>
       <?php
       // Lister les matières spécifiques
-      $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres( TRUE /*is_specifique*/ );
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_matieres(TRUE /*is_specifique*/);
       if(!empty($DB_TAB))
       {
         foreach($DB_TAB as $DB_ROW)

@@ -916,37 +916,4 @@ function make_lien( $texte , $contexte )
   $masque_remplacement = ($contexte=='html') ? '<a href="$2" target="$3">$1</a>' : '$1 [$2]' ;
   return str_replace( 'target=""' , '' , preg_replace( $masque_recherche , $masque_remplacement , $texte ) );
 }
-
-/**
- * Calculer la distance Levenshtein entre 2 chaines et retourner la réponse sous forme de pourcentage
- * Autre méthode dénichée mais non essayée : http://tonyarchambeau.com/blog/400-php-coefficient-de-dice/
- *
- * @see http://fr.php.net/levenshtein
- * @param string $string1
- * @param string $string2
- * @return floor
- */
-function poucentage_commun( $string1 , $string2 )
-{
-  // levenshtein() est sensible à la casse
-  $string1 = strtolower($string1);
-  $string2 = strtolower($string2);
-  // levenshtein() requiert des arguments < 256 caractères (renvoie -1 sinon)
-  $string1_longueur = min( mb_strlen($string1) , 255 );
-  if($string1_longueur==255)
-  {
-    $string1 = substr($string1,0,255);
-  }
-  $string2_longueur = min( mb_strlen($string2) , 255 );
-  if($string2_longueur==255)
-  {
-    $string2 = substr($string2,0,255);
-  }
-  // on compare les chaînes tronquées
-  $nb_differences = levenshtein( $string1 , $string2 );
-  // on calcule le pourcentage en commun ; max(*,0) car levenshtein() compte double les caractères accentués
-  $longueur = max( $string1_longueur , $string2_longueur );
-  $pourcent_commun = 100 * max( $longueur - $nb_differences , 0 ) / $longueur ;
-  return $pourcent_commun;
-}
 ?>

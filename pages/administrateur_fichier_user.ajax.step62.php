@@ -51,7 +51,7 @@ if($nb_asso_classes)
   {
     foreach($tab_id2 as $classe_id => $etat)
     {
-      DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_admin($user_id,$import_profil,$classe_id,'classe',$etat);
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,$import_profil,$classe_id,'classe',$etat);
     }
   }
 }
@@ -64,7 +64,7 @@ if($nb_asso_pps)
     foreach($tab_id2 as $classe_id => $etat)
     {
       // En espérant qu'on ne fasse pas une association de PP avec une classe à laquelle le prof n'est pas associée
-      DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_professeur_principal($user_id,$classe_id,$etat);
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_principal($user_id,$classe_id,$etat);
     }
   }
 }
@@ -76,7 +76,7 @@ if($nb_asso_matieres)
   {
     foreach($tab_id2 as $matiere_id => $etat)
     {
-      DB_STRUCTURE_MATIERE::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,$etat);
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_professeur_matiere($user_id,$matiere_id,$etat);
     }
   }
 }
@@ -88,7 +88,7 @@ if($nb_asso_groupes)
   {
     foreach($tab_id2 as $groupe_id => $etat)
     {
-      DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_admin($user_id,$import_profil,$groupe_id,'groupe',$etat);
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin($user_id,$import_profil,$groupe_id,'groupe',$etat);
     }
   }
 }

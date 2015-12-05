@@ -67,9 +67,9 @@ if( ($action=='ajouter') && $niveau && $groupe_nom && $nb_eleves )
     Json::end( FALSE , 'Nom de groupe de besoin déjà existant !');
   }
   // Insérer l'enregistrement ; y associe automatiquement le prof, en responsable du groupe
-  $groupe_id = DB_STRUCTURE_REGROUPEMENT::DB_ajouter_groupe_par_prof( $_SESSION['USER_ID'] , 'besoin' /*groupe_type*/ , $groupe_nom , $niveau );
+  $groupe_id = DB_STRUCTURE_PROFESSEUR::DB_ajouter_groupe_par_prof('besoin',$groupe_nom,$niveau);
   // Affecter les élèves et les profs au groupe
-  DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_prof( $_SESSION['USER_ID'] , $groupe_id , $tab_eleves , $tab_profs , 'creer' /*mode*/ , 0 /*devoir_id*/ );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof( $groupe_id , $tab_eleves , $tab_profs , 'creer' /*mode*/ , 0 /*devoir_id*/ );
   // Remettre le prof responsable (si partagé avec d'autres collègues)
   if($indice!==FALSE)
   {
@@ -105,9 +105,9 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
     Json::end( FALSE , 'Nom de groupe de besoin déjà existant !');
   }
   // Mettre à jour l'enregistrement
-  DB_STRUCTURE_REGROUPEMENT::DB_modifier_groupe_par_prof( $groupe_id , $groupe_nom , $niveau );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_groupe_par_prof($groupe_id,$groupe_nom,$niveau);
   // Mettre les affectations des élèves et des profs au groupe
-  DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_prof( $_SESSION['USER_ID'] , $groupe_id , $tab_eleves , $tab_profs , 'substituer' /*mode*/ , 0 /*devoir_id*/ );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_groupe_par_prof( $groupe_id , $tab_eleves , $tab_profs , 'substituer' /*mode*/ , 0 /*devoir_id*/ );
   // Remettre le prof responsable (si partagé avec d'autres collègues)
   if($indice!==FALSE)
   {
@@ -136,7 +136,7 @@ if( ($action=='modifier') && $groupe_id && $niveau && $groupe_nom && $nb_eleves 
 if( ($action=='supprimer') && $groupe_id && $groupe_nom )
 {
   // Effacer l'enregistrement
-  DB_STRUCTURE_REGROUPEMENT::DB_supprimer_groupe_par_prof( $groupe_id , 'besoin' , TRUE /*with_devoir*/ );
+  DB_STRUCTURE_PROFESSEUR::DB_supprimer_groupe_par_prof( $groupe_id , 'besoin' , TRUE /*with_devoir*/ );
   // Log de l'action
   SACocheLog::ajouter('Suppression du regroupement "'.$groupe_nom.'" (besoin n°'.$groupe_id.'), et donc des devoirs associés.');
   // Notifications (rendues visibles ultérieurement)

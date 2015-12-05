@@ -37,7 +37,7 @@ Layout::add( 'js_inline_before' , 'var niveau_ordre_longueur = '.$niveau_ordre_l
 
 $select_niveau = '<option value="">&nbsp;</option>';
 
-$DB_TAB = DB_STRUCTURE_NIVEAU::DB_lister_niveaux_etablissement( FALSE /*with_particuliers*/ );
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_niveaux_etablissement(FALSE /*with_particuliers*/);
 if(!empty($DB_TAB))
 {
   foreach($DB_TAB as $DB_ROW)
@@ -73,7 +73,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
   <tbody>
     <?php
     // Lister les classes avec les niveaux
-    $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_avec_niveaux();
+    $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_classes_avec_niveaux();
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)

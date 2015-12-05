@@ -111,11 +111,11 @@ class PDFMerger
 		
 		if($mode == 'S')
 		{
-			return $fpdi->Output('S', $outputpath);
+			return $fpdi->Output($outputpath, 'S');
 		}
 		else
 		{
-			if($fpdi->Output($mode, $outputpath)!==false)
+			if($fpdi->Output($outputpath, $mode)!==false)
 			{
 				return true;
 			}

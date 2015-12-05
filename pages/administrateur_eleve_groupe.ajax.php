@@ -42,7 +42,7 @@ if($action=='ajouter')
   {
     foreach($tab_groupe as $groupe_id)
     {
-      DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , TRUE );
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , TRUE );
     }
   }
 }
@@ -54,7 +54,7 @@ elseif($action=='retirer')
   {
     foreach($tab_groupe as $groupe_id)
     {
-      DB_STRUCTURE_REGROUPEMENT::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , FALSE );
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_liaison_user_groupe_par_admin( $user_id , 'eleve' , $groupe_id , 'groupe' , FALSE );
     }
   }
 }
@@ -63,7 +63,7 @@ elseif($action=='retirer')
 $tab_niveau_groupe = array();
 $tab_user          = array();
 // Récupérer la liste des groupes
-$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_groupes_avec_niveaux();
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_groupes_avec_niveaux();
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);

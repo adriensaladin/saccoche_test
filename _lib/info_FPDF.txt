@@ -1,17 +1,11 @@
 ﻿================================================================================
-Librairie : FPDF                        Version : 1.8
+Librairie : FPDF                        Version : 1.7
 ================================================================================
 
 FPDF est une classe PHP qui permet de produire des fichiers PDF.
 
 Seule la classe est présente dans SACoche.
 Pour infos documentations et génération de fonts : http://www.fpdf.org/
-
-Pas de solution simple pour écrire du texte en arabe...
-Il faudra peut-être se tourner vers une de ces solutions plus complètes :
-TODO http://www.mpdf1.com/mpdf/index.php
-TODO http://www.tcpdf.org/index.php
-
 
 PDF_Label est une extension de classe de FPDF pour générer un fichier d'étiquettes.
 http://www.fpdf.org/fr/script/script29.php
@@ -34,15 +28,25 @@ http://www.fpdf.org/en/script/script37.php  Pour protéger le PDF en écriture -
 Attention : à partir de FPDF 1.7 il faut remplacer 4x dans le script18 "DefPageFormat" par "DefPageSize" !
 http://www.fpdf.org/phorum/read.php?f=1&i=56024&t=56024
 
-Attention : la fonction get_defined_vars() pouvant être désactivée, la fonction _loadfont() a été modifiée.
+Attention : la fonction get_defined_vars() pouvant être désactivée, la fonction _loadfont() a été remplacée par le contenu suivant :
 http://www.fpdf.org/?go=forum&i=56830&t=56830
 
-Attention : remplacer "__construct()" par "FPDF()" pour des histoires de classes dépendantes.
-
-Attention : remplacer dans FPDF 1.8
-  $n = $this->PageInfo[1]['n'];
-par
-  $n = isset($this->PageInfo[1]['n']) ? $this->PageInfo[1]['n'] : 3 ;
-sinon erreur de variable indéfinie rencontrée :
-http://www.fpdf.org/phorum/read.php?f=1&i=66808&t=66808
-  
+function _loadfont($font)
+{
+  // Load a font definition file from the font directory
+  if(!file_exists($this->fontpath.$font))
+  {
+    $this->Error('Could not include font definition file');
+  }
+  include($this->fontpath.$font);
+  $a_var = array('type','name','desc','up','ut','cw','enc','file','diff','size1','size2','originalsize');
+  $a = array();
+  foreach($a_var as $var)
+  {
+    if(isset(${$var}))
+    {
+       $a[$var] = ${$var};
+    }
+  }
+  return $a;
+}

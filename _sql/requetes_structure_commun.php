@@ -337,6 +337,23 @@ public static function DB_lister_tables()
 }
 
 /**
+ * lister_niveaux_etablissement
+ *
+ * @param bool $with_particuliers
+ * @return array
+ */
+public static function DB_lister_niveaux_etablissement($with_particuliers)
+{
+  $DB_SQL = 'SELECT niveau_id, niveau_ordre, niveau_ref, code_mef, niveau_nom ';
+  $DB_SQL.= 'FROM sacoche_niveau ';
+  $DB_SQL.= ($with_particuliers) ? '' : 'LEFT JOIN sacoche_niveau_famille USING (niveau_famille_id) ';
+  $DB_SQL.= 'WHERE niveau_actif=1 ';
+  $DB_SQL.= ($with_particuliers) ? '' : 'AND niveau_famille_categorie=3 ';
+  $DB_SQL.= 'ORDER BY niveau_ordre ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * lister_identite_coordonnateurs_par_matiere
  *
  * @param void
@@ -533,6 +550,22 @@ public static function DB_lister_referentiels_infos_details_matieres_niveaux( $m
   $DB_SQL.= ($matiere_id) ? 'WHERE matiere_id='.$matiere_id.' ' : 'WHERE matiere_active=1 ' ; // Test matiere car un prof peut être encore relié à des matières décochées par l'admin.
   $DB_SQL.= ($niveau_id)  ? 'AND niveau_id='.$niveau_id.' '     : 'AND niveau_actif=1 ' ;
   $DB_SQL.= 'ORDER BY matiere_id ASC, niveau_ordre ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * lister_jointure_groupe_periode ; le rangement par ordre de période permet, si les périodes se chevauchent, que javascript choisisse la 1ère par défaut
+ *
+ * @param string   $listing_groupes_id   id des groupes séparés par des virgules
+ * @return array
+ */
+public static function DB_lister_jointure_groupe_periode($listing_groupes_id)
+{
+  $DB_SQL = 'SELECT sacoche_jointure_groupe_periode.* ';
+  $DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
+  $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
+  $DB_SQL.= 'WHERE groupe_id IN ('.$listing_groupes_id.') ';
+  $DB_SQL.= 'ORDER BY periode_ordre ASC';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

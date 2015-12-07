@@ -499,7 +499,7 @@ public static function DB_compter_devoirs_annees_scolaires_precedentes()
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'WHERE devoir_date<:devoir_date ';
-  $DB_VAR = array( ':devoir_date' => To::jour_debut_annee_scolaire('mysql') );
+  $DB_VAR = array( ':devoir_date' => jour_debut_annee_scolaire('mysql') );
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -759,7 +759,7 @@ public static function DB_modifier_user($user_id,$DB_VAR)
   }
   else
   {
-    Outil::ajouter_log_PHP( 'Erreur DB_modifier_user()' /*log_objet*/ , serialize($DB_VAR) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
+    ajouter_log_PHP( 'Erreur DB_modifier_user()' /*log_objet*/ , serialize($DB_VAR) /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
   }
 }
 

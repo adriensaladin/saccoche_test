@@ -225,7 +225,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
       $DB_TAB = array();
       if( (IS_HEBERGEMENT_SESAMATH) && (HEBERGEUR_INSTALLATION=='multi-structures') )
       {
-        DBextra::charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
+        charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
         $DB_ROW2 = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
         $contact_nom      = $DB_ROW2['structure_contact_nom'];
         $contact_prenom   = $DB_ROW2['structure_contact_prenom'];
@@ -237,8 +237,8 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
         foreach($DB_TAB as $DB_ROW)
         {
           // Formater certains éléments
-          $texte_signature  = ($DB_ROW['convention_signature']===NULL) ? 'Non réceptionné' : 'Oui, le '.To::date_mysql_to_french($DB_ROW['convention_signature']) ;
-          $texte_paiement   = ($DB_ROW['convention_paiement']===NULL)  ? 'Non réceptionné' : 'Oui, le '.To::date_mysql_to_french($DB_ROW['convention_paiement']) ;
+          $texte_signature  = ($DB_ROW['convention_signature']===NULL) ? 'Non réceptionné' : 'Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_signature']) ;
+          $texte_paiement   = ($DB_ROW['convention_paiement']===NULL)  ? 'Non réceptionné' : 'Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_paiement']) ;
           $texte_activation = (!$DB_ROW['convention_activation']) ? 'Non' : ( ( ($DB_ROW['convention_date_debut']>TODAY_MYSQL) || ($DB_ROW['convention_date_fin']<TODAY_MYSQL) ) ? 'Non (hors période)' : 'Oui' ) ;
           $class_signature  = (substr($texte_signature ,0,3)=='Non') ? 'br' : 'bv' ;
           $class_paiement   = (substr($texte_paiement  ,0,3)=='Non') ? 'br' : 'bv' ;
@@ -246,8 +246,8 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
           // Afficher une ligne du tableau
           echo'<tr id="id_'.$DB_ROW['convention_id'].'">';
           echo  '<td>'.html($DB_ROW['connexion_nom']).'</td>';
-          echo  '<td>du '.To::date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.To::date_mysql_to_french($DB_ROW['convention_date_fin']).'</td>';
-          echo  '<td>Oui, le '.To::date_mysql_to_french($DB_ROW['convention_creation']).'</td>';
+          echo  '<td>du '.convert_date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.convert_date_mysql_to_french($DB_ROW['convention_date_fin']).'</td>';
+          echo  '<td>Oui, le '.convert_date_mysql_to_french($DB_ROW['convention_creation']).'</td>';
           echo  '<td class="'.$class_signature.'">'.$texte_signature.'</td>';
           echo  '<td class="'.$class_paiement.'">'.$texte_paiement.'</td>';
           echo  '<td class="'.$class_activation.'">'.$texte_activation.'</td>';
@@ -280,8 +280,8 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
   <p>
     <label class="tab" for="f_annee">Période :</label><select id="f_annee" name="f_annee">
       <option value="-1"></option>
-      <option value="0">Année scolaire actuelle : du <?php echo To::jour_debut_annee_scolaire('french',0).' au '.To::jour_fin_annee_scolaire('french',0) ?></option>
-      <option value="1">Année scolaire suivante : du <?php echo To::jour_debut_annee_scolaire('french',1).' au '.To::jour_fin_annee_scolaire('french',1) ?></option>
+      <option value="0">Année scolaire actuelle : du <?php echo jour_debut_annee_scolaire('french',0).' au '.jour_fin_annee_scolaire('french',0) ?></option>
+      <option value="1">Année scolaire suivante : du <?php echo jour_debut_annee_scolaire('french',1).' au '.jour_fin_annee_scolaire('french',1) ?></option>
     </select><br />
     <span class="tab"></span><span class="astuce">Les dates sont basées sur l'année scolaire définie dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</span>
   </p>

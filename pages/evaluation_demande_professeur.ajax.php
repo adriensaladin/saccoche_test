@@ -134,7 +134,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
   }
   $listing_user_id = implode(',', array_keys($tab_eleves) );
   // Lister les demandes (et les messages associés)
-  $fnom_export = 'messages_'.$_SESSION['BASE'].'_'.Clean::fichier($matiere_nom).'_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom_export = 'messages_'.$_SESSION['BASE'].'_'.Clean::fichier($matiere_nom).'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   $separateur = ';';
   $messages_html = '<table><thead><tr><th>Matière - Item</th><th>Groupe - Élève</th><th>Message(s)</th></tr></thead><tbody>';
   $fichier_csv = 'Matière'.$separateur.'Item Ref'.$separateur.'Item Nom'.$separateur.'Groupe'.$separateur.'Élève'.$separateur.'Score'.$separateur.'Date'.$separateur.'Message'."\r\n";
@@ -149,7 +149,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     unset($tab_autres[$DB_ROW['eleve_id']]);
     $tab_demandes[] = $DB_ROW['demande_id'];
     $score  = ($DB_ROW['demande_score']!==NULL) ? $DB_ROW['demande_score'] : FALSE ;
-    $date   = To::date_mysql_to_french($DB_ROW['demande_date']);
+    $date   = convert_date_mysql_to_french($DB_ROW['demande_date']);
     $statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
     $dest   = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? 'vous seul' : 'collègues concernés' ;
     $class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
@@ -205,9 +205,9 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
 
 if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (isset($tab_types[$groupe_type])) && $groupe_id ) ) && $date && $date_visible && $date_autoeval && $description && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items )
 {
-  $date_mysql          = To::date_french_to_mysql($date);
-  $date_visible_mysql  = To::date_french_to_mysql($date_visible);
-  $date_autoeval_mysql = To::date_french_to_mysql($date_autoeval);
+  $date_mysql          = convert_date_french_to_mysql($date);
+  $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
+  $date_autoeval_mysql = convert_date_french_to_mysql($date_autoeval);
   // Dans le cas d'une évaluation sur une liste d'élèves sélectionnés,
   if($qui=='select')
   {
@@ -232,7 +232,7 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'creer');
   // Insérer les marqueurs d'évaluation (paniers) pour indiquer au prof les demandes dans le tableau de saisie
   $tab_item_for_user = array();
-  $info = 'À saisir ('.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
+  $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
@@ -254,7 +254,7 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
   if($listing_abonnes)
   {
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
-    $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+    $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
     $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id);
     $tab_item_infos = array();
@@ -290,8 +290,8 @@ if( ($action=='creer') && in_array($qui,$tab_qui) && ( ($qui=='select') || ( (is
 
 if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (isset($tab_types[$groupe_type])) ) && $devoir_id && $devoir_groupe_id && in_array($suite,$tab_suite) && $nb_demandes && $nb_users && $nb_items && $date && $date_visible && $description )
 {
-  $date_mysql         = To::date_french_to_mysql($date);
-  $date_visible_mysql = To::date_french_to_mysql($date_visible);
+  $date_mysql         = convert_date_french_to_mysql($date);
+  $date_visible_mysql = convert_date_french_to_mysql($date_visible);
   // Dans le cas d'une évaluation sur une liste d'élèves sélectionnés
   if($qui=='select')
   {
@@ -302,7 +302,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_devoir_item($devoir_id,$tab_item_id,'ajouter');
   // Insérer les marqueurs d'évaluation (paniers) pour indiquer au prof les demandes dans le tableau de saisie
   $tab_item_for_user = array();
-  $info = 'À saisir ('.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
+  $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
   foreach($tab_user_item as $key)
   {
     list($eleve_id,$item_id) = explode('x',$key);
@@ -324,7 +324,7 @@ if( ($action=='completer') && in_array($qui,$tab_qui) && ( ($qui=='select') || (
   if($listing_abonnes)
   {
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
-    $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+    $notification_contenu = 'Évaluation "'.$description.'" prévue le '.$date.' par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
     $notification_contenu.= 'Y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id);
     $tab_item_infos = array();
@@ -388,12 +388,12 @@ if( ($action=='retirer') && $nb_demandes )
     }
     if(!$devoir_saisie)
     {
-      $notification_contenu = 'retirée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $notification_contenu = 'retirée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $notification_contenu.= ($message) ? 'Commentaire :'."\r\n".$message."\r\n\r\n" : 'Pas de commentaire saisi.'."\r\n\r\n" ;
     }
     else
     {
-      $notification_contenu = 'évaluée directement par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $notification_contenu = 'évaluée directement par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $notification_contenu.= 'Y accéder :'."\r\n".$adresse_lien_profond.$devoir_saisie;
     }
     $tab_item_infos = array();
@@ -429,7 +429,7 @@ if( ($action=='actualiser_score') && ($nb_demandes==1) && ($nb_users==1) && ($nb
   {
     $tab_devoirs[] = array('note'=>$DB_ROW['note']);
   }
-  $score_new = (count($tab_devoirs)) ? OutilBilan::calculer_score($tab_devoirs,$DB_ROW['calcul_methode'],$DB_ROW['calcul_limite']) : FALSE ;
+  $score_new = (count($tab_devoirs)) ? calculer_score($tab_devoirs,$DB_ROW['calcul_methode'],$DB_ROW['calcul_limite']) : FALSE ;
   if( ( ($score==-1) && ($score_new!==FALSE) ) || ( ($score>-1) && ($score_new!==$score) ) )
   {
     // maj score

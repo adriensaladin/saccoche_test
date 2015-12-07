@@ -94,7 +94,7 @@ if(empty($_POST['f_afficher']))
     {
       // Formater la date
       $date_mysql  = $DB_ROW['structure_inscription_date'];
-      $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
+      $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($date_mysql) : '-' ;
       // Afficher une ligne du tableau
       $img = (LockAcces::tester_blocage('webmestre',$DB_ROW['sacoche_base'])===NULL) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
       echo'<tr id="id_'.$DB_ROW['sacoche_base'].'">';

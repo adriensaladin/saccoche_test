@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Modifier le contenu des référentiels"));
 
-if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'li');
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>
@@ -47,7 +47,7 @@ if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NU
 
 <form action="#" method="post" id="zone_choix_referentiel" onsubmit="return false;">
 <?php
-$texte_profil = Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'br');
+$texte_profil = afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'br');
 // On récupère la liste des référentiels des matières auxquelles le professeur est rattaché, et s'il en est coordonnateur
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_niveaux_referentiels_professeur($_SESSION['USER_ID']);
 if(empty($DB_TAB))
@@ -66,7 +66,7 @@ else
   {
     if(!isset($tab_matiere[$DB_ROW['matiere_id']]))
     {
-      $matiere_droit = Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , $DB_ROW['jointure_coord'] /*matiere_coord_or_groupe_pp_connu*/ );
+      $matiere_droit = test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , $DB_ROW['jointure_coord'] /*matiere_coord_or_groupe_pp_connu*/ );
       $icone_action  = ($matiere_droit) ? '<q class="modifier" title="Modifier les référentiels de cette matière."></q>' : '<q class="modifier_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q>' ;
       $tab_matiere[$DB_ROW['matiere_id']] = array( 
         'matiere_nom' => html($DB_ROW['matiere_nom']) ,

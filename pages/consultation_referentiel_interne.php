@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Référentiels en place (dans l'établissement)"));
 
-if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']) )
+if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']) )
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS'],'li');
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 

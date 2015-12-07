@@ -39,7 +39,7 @@ $annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
 $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
 
 // Javascript
-$jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
+$jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
 $check_eleve      = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_ELEVES']      ) ? 'complet' : 'partiel' ;
 $check_parent     = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_PARENTS']     ) ? 'complet' : 'partiel' ;
 $check_professeur = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_PROFESSEURS'] ) ? 'complet' : 'partiel' ;

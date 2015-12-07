@@ -153,8 +153,8 @@ if( ($action=='afficher_users') && isset($tab_profils[$profil_type]) && $groupe_
 
 if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu && $nb_destinataires_valides )
 {
-  $date_debut_mysql  = To::date_french_to_mysql($date_debut_fr);
-  $date_fin_mysql    = To::date_french_to_mysql($date_fin_fr);
+  $date_debut_mysql  = convert_date_french_to_mysql($date_debut_fr);
+  $date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
   if($date_fin_mysql<$date_debut_mysql)
   {
     Json::end( FALSE , 'Date de fin antérieure à la date de début !' );
@@ -173,7 +173,7 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
     if($listing_abonnes)
     {
       $notification_date = ( TODAY_MYSQL < $date_debut_mysql ) ? $date_debut_mysql : NULL ;
-      $notification_contenu = 'Message de '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".Outil::make_lien($message_contenu,'mail')."\r\n";
+      $notification_contenu = 'Message de '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".make_lien($message_contenu,'mail')."\r\n";
       $tab_abonnes = explode(',',$listing_abonnes);
       foreach($tab_abonnes as $abonne_id)
       {
@@ -187,7 +187,7 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
   Json::add_row( 'html' ,   '<td>'.$date_debut_fr.'</td>' );
   Json::add_row( 'html' ,   '<td>'.$date_fin_fr.'</td>' );
   Json::add_row( 'html' ,   '<td>'.$destinataires_nombre.'</td>' );
-  Json::add_row( 'html' ,   '<td>'.html(Outil::afficher_texte_tronque($message_contenu,60)).'</td>' );
+  Json::add_row( 'html' ,   '<td>'.html(afficher_texte_tronque($message_contenu,60)).'</td>' );
   Json::add_row( 'html' ,   '<td class="nu">' );
   Json::add_row( 'html' ,     '<q class="modifier" title="Modifier ce message."></q>' );
   Json::add_row( 'html' ,     '<q class="supprimer" title="Supprimer ce message."></q>' );
@@ -204,8 +204,8 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
 
 if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $message_contenu && $nb_destinataires_valides )
 {
-  $date_debut_mysql  = To::date_french_to_mysql($date_debut_fr);
-  $date_fin_mysql    = To::date_french_to_mysql($date_fin_fr);
+  $date_debut_mysql  = convert_date_french_to_mysql($date_debut_fr);
+  $date_fin_mysql    = convert_date_french_to_mysql($date_fin_fr);
   if($date_fin_mysql<$date_debut_mysql)
   {
     Json::end( FALSE , 'Date de fin antérieure à la date de début !' );
@@ -225,7 +225,7 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
     if($listing_abonnes)
     {
       $notification_date = ( TODAY_MYSQL < $date_debut_mysql ) ? $date_debut_mysql : NULL ;
-      $notification_contenu = 'Message de '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".Outil::make_lien($message_contenu,'mail')."\r\n";
+      $notification_contenu = 'Message de '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".make_lien($message_contenu,'mail')."\r\n";
       $tab_abonnes = explode(',',$listing_abonnes);
       foreach($tab_abonnes as $abonne_id)
       {
@@ -238,7 +238,7 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
   Json::add_row( 'html' , '<td>'.$date_debut_fr.'</td>' );
   Json::add_row( 'html' , '<td>'.$date_fin_fr.'</td>' );
   Json::add_row( 'html' , '<td>'.$destinataires_nombre.'</td>' );
-  Json::add_row( 'html' , '<td>'.html(Outil::afficher_texte_tronque($message_contenu,60)).'</td>' );
+  Json::add_row( 'html' , '<td>'.html(afficher_texte_tronque($message_contenu,60)).'</td>' );
   Json::add_row( 'html' , '<td class="nu">' );
   Json::add_row( 'html' ,   '<q class="modifier" title="Modifier ce message."></q>' );
   Json::add_row( 'html' ,   '<q class="supprimer" title="Supprimer ce message."></q>' );

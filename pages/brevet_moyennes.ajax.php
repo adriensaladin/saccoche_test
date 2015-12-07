@@ -142,7 +142,7 @@ if($action=='proposer')
   $groupe_nom               = '';
   $groupe_type              = '';
   $periode_id               = 0;
-  $date_debut               = To::jour_debut_annee_scolaire('french');
+  $date_debut               = jour_debut_annee_scolaire('french');
   $date_fin                 = TODAY_FR;
   $retroactif               = 'non';
   $only_socle               = 0;
@@ -246,7 +246,7 @@ if($action=='proposer')
         // Attention au test suivant : ( 414 == '414,406' ) renvoie TRUE
         $checked       = ((string)$matiere_id===(string)$test_checked) ? ' checked' : '' ;
         $note_proposee = ((string)$matiere_id===(string)$test_checked) ? $tab_moyenne_referentiel[$matiere_id] : $note_proposee ;
-        $note_reportee = ($tab_moyenne_referentiel[$matiere_id]!==FALSE) ? Math::ceilTo( $tab_moyenne_referentiel[$matiere_id] , 0.5 ) : '' ;
+        $note_reportee = ($tab_moyenne_referentiel[$matiere_id]!==FALSE) ? ceilTo( $tab_moyenne_referentiel[$matiere_id] , 0.5 ) : '' ;
         $tab_td[2] .= '<div class="b"><input type="radio" id="radio_'.$epreuve_code.'_'.$matiere_id.'" name="check_'.$epreuve_code.'" value="'.$matiere_id.'"'.$checked.' /><i>'.str_replace('.','v',(string)$note_reportee).'</i><label for="radio_'.$epreuve_code.'_'.$matiere_id.'"> '.$tab_matieres_etabl[$matiere_id].'</label></div>'.$ligne_calcul_moyenne;
       }
       // Si besoin, terminer avec une moyenne des référentiels
@@ -260,7 +260,7 @@ if($action=='proposer')
         // Attention au test suivant : ( 414 == '414,406' ) renvoie TRUE
         $checked       = ((string)$epreuve_choix_matieres===(string)$test_checked) ? ' checked' : '' ;
         $note_proposee = ((string)$epreuve_choix_matieres===(string)$test_checked) ? $moyenne_moyenne_referentiels : $note_proposee ;
-        $note_reportee = ($moyenne_moyenne_referentiels!==FALSE) ? Math::ceilTo( $moyenne_moyenne_referentiels , 0.5 ) : '' ;
+        $note_reportee = ($moyenne_moyenne_referentiels!==FALSE) ? ceilTo( $moyenne_moyenne_referentiels , 0.5 ) : '' ;
         $tab_td[2] .= '<div class="b"><input type="radio" id="radio_'.$epreuve_code.'_multi" name="check_'.$epreuve_code.'" value="'.implode('-',$tab_choix_matieres_avec_donnees).'"'.$checked.' /><i>'.str_replace('.','v',(string)$note_reportee).'</i><label for="radio_'.$epreuve_code.'_multi"> Ensemble des référentiels</label></div>';
         if($moyenne_moyenne_referentiels!==FALSE)
         {
@@ -274,7 +274,7 @@ if($action=='proposer')
     {
       if($epreuve_note_chiffree)
       {
-        $note_selectionnee = Math::ceilTo( $note_proposee , 0.5 );
+        $note_selectionnee = ceilTo( $note_proposee , 0.5 );
       }
       else
       {
@@ -364,7 +364,7 @@ if($action=='enregistrer')
     {
       Json::end( FALSE , 'Note manquante pour l\'épreuve "'.html($epreuve_nom).'" !' );
     }
-    if( is_numeric($note_transmise) && ( (Math::ceilTo($note_transmise,0.5)!=$note_transmise) || ($note_transmise<0) || ($note_transmise>20) || (!$epreuve_note_chiffree) ) )
+    if( is_numeric($note_transmise) && ( (ceilTo($note_transmise,0.5)!=$note_transmise) || ($note_transmise<0) || ($note_transmise>20) || (!$epreuve_note_chiffree) ) )
     {
       Json::end( FALSE , 'Note '.html($note_transmise).' invalide pour l\'épreuve "'.html($epreuve_nom).'" !' );
     }

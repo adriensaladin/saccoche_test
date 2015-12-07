@@ -88,7 +88,7 @@ if( ($action=='signaler_faute') || ($action=='corriger_faute') )
     Json::end( FALSE , 'Destinataire non trouvé ! !' );
   }
   $notification_debut = ($action=='signaler_faute') ? 'Signalement effectué par ' : 'Correction apportée par ' ;
-  $notification_contenu = $notification_debut.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".$message_contenu."\r\n";
+  $notification_contenu = $notification_debut.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".$message_contenu."\r\n";
   foreach($DB_TAB as $DB_ROW)
   {
     // 1 seul passage en fait

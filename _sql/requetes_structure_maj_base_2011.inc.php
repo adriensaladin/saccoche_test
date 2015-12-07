@@ -472,7 +472,7 @@ if($version_base_structure_actuelle=='2011-08-20')
     $DB_SQL = 'UPDATE sacoche_saisie SET saisie_info=:saisie_info WHERE prof_id=:prof_id AND eleve_id=:eleve_id AND devoir_id=:devoir_id AND item_id=:item_id';
     foreach($DB_TAB as $DB_ROW)
     {
-      $saisie_info = $DB_ROW['devoir_info'].' ('.To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE).')';
+      $saisie_info = $DB_ROW['devoir_info'].' ('.afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE).')';
       $DB_VAR = array(
         ':prof_id'     => $DB_ROW['prof_id'],
         ':eleve_id'    => $DB_ROW['eleve_id'],

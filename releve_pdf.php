@@ -75,7 +75,7 @@ if( !isset($_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type]) || !isset
   exit_error( 'Accès non autorisé' /*titre*/ , 'Cet appel n\'est valide que pour un utilisateur précis, connecté, et ayant affiché la page listant les archives disponibles.<br />Veuillez ne pas appeler ce lien dans un autre contexte (ni le transmettre à un tiers).' /*contenu*/ , '' /*lien*/ );
 }
 
-$fichier_archive = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $periode_id );
+$fichier_archive = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $periode_id );
 if(!is_file($fichier_archive))
 {
   exit_error( 'Document manquant' /*titre*/ , 'Archive non trouvée sur ce serveur.' /*contenu*/ , '' /*lien*/ );
@@ -83,7 +83,7 @@ if(!is_file($fichier_archive))
 
 // Copie du fichier pour préserver son anonymat
 
-$fichier_copie_nom = 'officiel_'.$bilan_type.'_archive_'.$eleve_id.'_'.$periode_id.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.pdf' ;
+$fichier_copie_nom = 'officiel_'.$bilan_type.'_archive_'.$eleve_id.'_'.$periode_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.pdf' ;
 copy($fichier_archive,CHEMIN_DOSSIER_EXPORT.$fichier_copie_nom);
 
 // Enregistrement de l'accès

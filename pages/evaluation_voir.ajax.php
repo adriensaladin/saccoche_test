@@ -47,8 +47,8 @@ $url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
 if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
 {
   // Formater les dates
-  $date_debut_mysql = To::date_french_to_mysql($date_debut);
-  $date_fin_mysql   = To::date_french_to_mysql($date_fin);
+  $date_debut_mysql = convert_date_french_to_mysql($date_debut);
+  $date_fin_mysql   = convert_date_french_to_mysql($date_fin);
   // Vérifier que la date de début est antérieure à la date de fin
   if($date_debut_mysql>$date_fin_mysql)
   {
@@ -75,7 +75,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
   foreach($DB_TAB as $DB_ROW)
   {
     $nb_saisies_possibles = $DB_ROW['items_nombre'];
-    $date_affich = To::date_mysql_to_french($DB_ROW['devoir_date']);
+    $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
     $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
     $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
     $remplissage_nombre   = $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']].'/'.$nb_saisies_possibles ;
@@ -85,7 +85,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     // Afficher une ligne du tableau
     Json::add_row( 'html' , '<tr>' );
     Json::add_row( 'html' ,   '<td>'.html($date_affich).'</td>' );
-    Json::add_row( 'html' ,   '<td>'.html(To::texte_identite($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).'</td>' );
+    Json::add_row( 'html' ,   '<td>'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).'</td>' );
     Json::add_row( 'html' ,   '<td>'.html($DB_ROW['devoir_info']).'</td>' );
     Json::add_row( 'html' ,   '<td>'.$image_sujet.$image_corrige.'</td>' );
     Json::add_row( 'html' ,   '<td class="hc '.$remplissage_class.'">'.$remplissage_nombre.'</td>' );
@@ -99,12 +99,12 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     }
     elseif($DB_ROW['devoir_autoeval_date']<TODAY_MYSQL)
     {
-      Json::add_row( 'html' , '<q class="saisir_non" title="Auto-évaluation terminée le '.To::date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>' );
+      Json::add_row( 'html' , '<q class="saisir_non" title="Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>' );
     }
     else
     {
-      Json::add_row( 'html' , '<q class="saisir" title="Auto-évaluation possible jusqu\'au '.To::date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>' );
-      Json::add_row( 'script' , 'tab_dates['.$DB_ROW['devoir_id'].']="'.To::date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'";' );
+      Json::add_row( 'html' , '<q class="saisir" title="Auto-évaluation possible jusqu\'au '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'."></q>' );
+      Json::add_row( 'script' , 'tab_dates['.$DB_ROW['devoir_id'].']="'.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).'";' );
     }
     Json::add_row( 'html' ,   '</td>' );
     Json::add_row( 'html' , '</tr>' );
@@ -146,7 +146,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
-    $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? OutilBilan::calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
+    $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
     if($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
     elseif(!$DB_ROW['matiere_nb_demandes'])    { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
     elseif(!$DB_ROW['item_cart'])              { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
@@ -165,7 +165,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $tab_affich[$item_id] .= (isset($tab_notes[$item_id])) ? '<td class="hc">'.Html::note_image($tab_notes[$item_id],'','',TRUE /*tri*/).'</td>' : '<td class="hc">-</td>' ;
   }
   // ajouter les états d'acquisition
-  if(Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION']))
+  if(test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION']))
   {
     foreach($tab_liste_item as $item_id)
     {
@@ -174,7 +174,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   }
   $affichage = '<tr>'.implode('</tr><tr>',$tab_affich).'</tr>';
   // la légende, qui peut être personnalisée (codes AB, NN, etc.)
-  $score_legende  = (Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION'])) ? TRUE : FALSE ;
+  $score_legende  = (test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION'])) ? TRUE : FALSE ;
   $legende = Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ );
   // Les commentaires texte ou audio
   $commentaire_texte = '';
@@ -317,7 +317,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   }
   if($DB_ROW['devoir_autoeval_date']<TODAY_MYSQL)
   {
-    Json::end( FALSE , 'Auto-évaluation terminée le '.To::date_mysql_to_french($DB_ROW['devoir_autoeval_date']).' !' );
+    Json::end( FALSE , 'Auto-évaluation terminée le '.convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']).' !' );
   }
   $devoir_proprio_id  = $DB_ROW['proprio_id'];
   $devoir_date_mysql  = $DB_ROW['devoir_date'];
@@ -377,7 +377,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   // Il n'y a plus qu'à mettre à jour la base
   //
   // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
-  $info = $devoir_description.' ('.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
+  $info = $devoir_description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
   foreach($tab_nouveau_ajouter as $item_id => $note)
   {
     DB_STRUCTURE_PROFESSEUR::DB_ajouter_saisie( $devoir_proprio_id , $_SESSION['USER_ID'] , $devoir_id , $item_id , $devoir_date_mysql , $note , $info , $date_visible_mysql );
@@ -396,7 +396,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   }
   // Ajout aux flux RSS des profs concernés
   $tab_profs_rss = array_merge( array($devoir_proprio_id) , DB_STRUCTURE_ELEVE::DB_lister_devoir_profs_droit_saisie($devoir_id) );
-  $titre = 'Autoévaluation effectuée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
+  $titre = 'Autoévaluation effectuée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' s\'auto-évalue sur le devoir "'.$devoir_description.'".'."\r\n";
   $texte.= ($msg_data) ? 'Commentaire :'."\r\n".$msg_data."\r\n" : 'Pas de commentaire saisi.'."\r\n" ;
   $guid  = 'autoeval_'.$devoir_id.'_'.$_SESSION['USER_ID'].'_'.$_SERVER['REQUEST_TIME']; // obligé d'ajouter un time pour unicité au cas où un élève valide 2x l'autoévaluation
@@ -432,7 +432,7 @@ if( ($action=='Enregistrer_saisies') && $devoir_id && in_array($msg_autre,array(
   // Mise à jour dans la base
   if($msg_data)
   {
-    $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$_SESSION['USER_ID'].'_'.'texte'.'_'.$_SERVER['REQUEST_TIME'].'.'.'txt'; // pas besoin de le rendre inaccessible -> FileSystem::generer_fin_nom_fichier__date_et_alea() inutilement lourd
+    $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$_SESSION['USER_ID'].'_'.'texte'.'_'.$_SERVER['REQUEST_TIME'].'.'.'txt'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
     DB_STRUCTURE_COMMENTAIRE::DB_remplacer_devoir_commentaire( $devoir_id , $_SESSION['USER_ID'] , 'texte' , $url_dossier_devoir.$fichier_nom );
     // et enregistrement du fichier
     FileSystem::ecrire_fichier( $chemin_devoir.$fichier_nom , $msg_data );

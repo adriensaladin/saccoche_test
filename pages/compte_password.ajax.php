@@ -44,11 +44,11 @@ if( ($password_ancien!='') && ($password_nouveau!='') )
   }
   elseif($_SESSION['USER_PROFIL_TYPE']=='partenaire')
   {
-    $result_bool = DB_WEBMESTRE_PARTENAIRE::DB_modifier_mdp_partenaire( $_SESSION['USER_ID'] , Outil::crypter_mdp($password_ancien) , Outil::crypter_mdp($password_nouveau) );
+    $result_bool = DB_WEBMESTRE_PARTENAIRE::DB_modifier_mdp_partenaire( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) );
   }
   else
   {
-    $result_bool = DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , Outil::crypter_mdp($password_ancien) , Outil::crypter_mdp($password_nouveau) );
+    $result_bool = DB_STRUCTURE_COMMUN::DB_modifier_mdp_utilisateur( $_SESSION['USER_ID'] , crypter_mdp($password_ancien) , crypter_mdp($password_nouveau) );
   }
   // affichage du retour
   $result_message = ($result_bool) ? 'Mot de passe modifié !' : 'Saisie incorrecte du mot de passe actuel !' ;

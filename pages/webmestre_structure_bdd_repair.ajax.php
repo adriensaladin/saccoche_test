@@ -68,7 +68,7 @@ if( $num && $max && ($num<$max) )
   $base_id                = $_SESSION['tmp']['infos']['base_id'               ][$num-1];
   $structure_denomination = $_SESSION['tmp']['infos']['structure_denomination'][$num-1];
   // Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
-  DBextra::charger_parametres_mysql_supplementaires($base_id);
+  charger_parametres_mysql_supplementaires($base_id);
   // Lancer analyse et réparation si besoin
   list( $niveau_alerte , $messages ) = analyser_et_reparer_tables_base_etablissement();
   // Retenir le résultat
@@ -92,7 +92,7 @@ if( $num && $max && ($num==$max) )
     $_SESSION['tmp']['infos']['messages']
   );
   // Enregistrement du rapport
-  $fichier_nom = 'rapport_analyser_et_reparer_tables_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+  $fichier_nom = 'rapport_analyser_et_reparer_tables_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   $thead = '<tr><td colspan="2">Analyse et réparation éventuelle des tables de bases de données par établissement - '.date('d/m/Y H:i:s').'</td></tr>';
   $tbody = implode('',$_SESSION['tmp']['infos']['messages']);
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );

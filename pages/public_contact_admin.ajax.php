@@ -67,7 +67,7 @@ if(!$code)
     Json::end( FALSE , 'Ordre incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['TMP']['CAPTCHA']['DELAI'].'s.' );
   }
   // Vérifier le domaine du serveur mail même en mode mono-structure parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
-  list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
+  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
     Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -107,7 +107,7 @@ if($code)
   // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
   if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
-    $result = DBextra::charger_parametres_mysql_supplementaires($BASE,FALSE);
+    $result = charger_parametres_mysql_supplementaires($BASE,FALSE);
     if(!$result)
     {
       Json::end( FALSE , 'Paramètres de connexion à la base de données non trouvés.' );

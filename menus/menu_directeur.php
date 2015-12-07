@@ -111,19 +111,19 @@ $tab_sous_menu = array
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Voir le paramètrage des codes et des états d'acquisition.
-if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_NOTES_ACQUIS']))
+if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_NOTES_ACQUIS']))
 {
   $tab_sous_menu['information']['consultation_codes_couleurs']['class'] .= ' disabled';
 }
 
 // Voir et simuler l'algorithme de calcul.
-if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
+if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
 {
   $tab_sous_menu['information']['consultation_algorithme']['class'] .= ' disabled';
 }
 
 // Voir les référentiels en place (dans l'établissement) (pas de restriction pour le profil [administrateur]).
-if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']))
+if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']))
 {
   $tab_sous_menu['information']['consultation_referentiel_interne']['class'] .= ' disabled';
 }
@@ -135,37 +135,37 @@ if( !$_SESSION['SESAMATH_ID'] || !$_SESSION['SESAMATH_KEY'] )
 }
 
 // Changer son mot de passe (pas de restriction pour les profils [administrateur] et [webmestre]).
-if(!Outil::test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
+if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
 {
   $tab_sous_menu['parametrage']['compte_password']['class'] .= ' disabled';
 }
 
 // Changer son adresse e-mail (pas de restriction pour le profil [administrateur].
-if(!Outil::test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']))
+if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']))
 {
   $tab_sous_menu['parametrage']['compte_email']['class'] .= ' disabled';
 }
 
 // Choisir la langue étrangère pour le socle commun (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_sous_menu['validation']['administrateur_eleve_langue']['class'] .= ' disabled';
 }
 
 // Valider les items du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_sous_menu['validation']['validation_socle_item']['class'] .= ' disabled';
 }
 
 // Valider les piliers du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_sous_menu['validation']['validation_socle_pilier']['class'] .= ' disabled';
 }
 
 // Annuler une compétence validée du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_sous_menu['validation']['validation_socle_pilier_annuler']['class'] .= ' disabled';
 }
@@ -177,7 +177,7 @@ if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
 }
 
 // Grille d'items d'un référentiel.
-if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
+if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 {
   $tab_sous_menu['releve']['releve_grille_referentiel']['class'] .= ' disabled';
 }
@@ -190,7 +190,7 @@ if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
 }
 
 // Import des absences / retards sur les bilans officiels (profils [professeur] et [directeur] uniquement).
-if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_sous_menu['officiel']['officiel_assiduite']['class'] .= ' disabled';
 }

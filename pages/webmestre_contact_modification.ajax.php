@@ -40,7 +40,7 @@ if( in_array($f_user,array('oui','non')) && in_array($f_mail,array('oui','non','
   if($f_mail=='domaine')
   {
     // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
-    list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide('username@'.$f_domaine);
+    list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide('username@'.$f_domaine);
     if(!$is_domaine_valide)
     {
       Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );

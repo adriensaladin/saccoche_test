@@ -67,7 +67,7 @@ foreach($DB_TAB as $DB_ROW)
   $tab_users_base['genre'        ][$DB_ROW['user_id']] = $DB_ROW['user_genre'];
   $tab_users_base['nom'          ][$DB_ROW['user_id']] = $DB_ROW['user_nom'];
   $tab_users_base['prenom'       ][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
-  $tab_users_base['birth_date'   ][$DB_ROW['user_id']] = To::date_mysql_to_french($DB_ROW['user_naissance_date']);
+  $tab_users_base['birth_date'   ][$DB_ROW['user_id']] = convert_date_mysql_to_french($DB_ROW['user_naissance_date']);
   $tab_users_base['courriel'     ][$DB_ROW['user_id']] = $DB_ROW['user_email'] ;
   $tab_users_base['email_origine'][$DB_ROW['user_id']] = $DB_ROW['user_email_origine'] ;
   $tab_users_base['sortie'       ][$DB_ROW['user_id']] = $DB_ROW['user_sortie_date'] ;
@@ -153,7 +153,7 @@ foreach($tab_indices_fichier as $i_fichier)
     $indication = ($import_profil=='eleve') ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
     $date_sortie_fr = TODAY_FR;
     $lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>'.NL;
-    $tab_users_retirer[$id_base] = To::date_french_to_mysql($date_sortie_fr);
+    $tab_users_retirer[$id_base] = convert_date_french_to_mysql($date_sortie_fr);
   }
   // Cas [4] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), ancien dans la base : contenu inchangé (probablement des anciens élèves déjà écartés)
   elseif( ($import_profil=='eleve') && (!$tab_users_fichier['classe'][$i_fichier]) && ($tab_users_base['sortie'][$id_base]!=SORTIE_DEFAUT_MYSQL) )
@@ -177,7 +177,7 @@ foreach($tab_indices_fichier as $i_fichier)
       }
       if($champ_ref=='courriel')
       {
-        $test_saisie_user  = ($tab_users_base['email_origine'][$id_base]=='user') && Outil::test_user_droit_specifique( $_SESSION['DROIT_MODIFIER_EMAIL'] , NULL , 0 , $tab_users_fichier['profil_sigle'][$i_fichier] , NULL ) ;
+        $test_saisie_user  = ($tab_users_base['email_origine'][$id_base]=='user') && test_user_droit_specifique( $_SESSION['DROIT_MODIFIER_EMAIL'] , NULL , 0 , $tab_users_fichier['profil_sigle'][$i_fichier] , NULL ) ;
         $test_saisie_admin = ($tab_users_base['email_origine'][$id_base]=='admin') && $tab_users_base[$champ_ref][$id_base] && !$tab_users_fichier[$champ_ref][$i_fichier] ;
         // On n'écrase pas lors d'un import massif : une valeur personnalisée par l'utilisateur ; une suppression d'une valeur probablement renseignée manuellement par un administrateur.
         if( $test_saisie_user || $test_saisie_admin )
@@ -207,7 +207,7 @@ foreach($tab_indices_fichier as $i_fichier)
     }
     if($tab_users_base['sortie'][$id_base]!=SORTIE_DEFAUT_MYSQL)
     {
-      $td_modif .= ' || <b>Sortie : '.To::date_mysql_to_french($tab_users_base['sortie'][$id_base]).' &rarr; non</b>';
+      $td_modif .= ' || <b>Sortie : '.convert_date_mysql_to_french($tab_users_base['sortie'][$id_base]).' &rarr; non</b>';
       $tab_users_modifier[$id_base]['entree'] = SORTIE_DEFAUT_MYSQL ;
       $nb_modif++;
     }
@@ -256,7 +256,7 @@ if(count($tab_users_base['sconet_id']))
       $indication = ($import_profil=='eleve') ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
       $date_sortie_fr = isset($_SESSION['tmp']['date_sortie'][$tab_users_base['sconet_id'][$id_base]]) ? $_SESSION['tmp']['date_sortie'][$tab_users_base['sconet_id'][$id_base]] : TODAY_FR ;
       $lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>'.NL;
-      $tab_users_retirer[$id_base] = To::date_french_to_mysql($date_sortie_fr);
+      $tab_users_retirer[$id_base] = convert_date_french_to_mysql($date_sortie_fr);
     }
     // Cas [8] : absent dans le fichier, présent dans la base, ancien : contenu inchangé (restant ancien)
     else

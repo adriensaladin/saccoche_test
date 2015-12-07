@@ -42,7 +42,7 @@ class RSS
   {
     // Le nom du RSS est tordu pour le rendre un minimum privé, sans être totalement aléatoire car il doit être fixe (mais il n'y a rien de confidentiel non plus).
     $fichier_nom_debut = 'rss_'.$prof_id;
-    $fichier_nom_fin   = FileSystem::generer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
+    $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
     return $fichier_nom_debut.'_'.$fichier_nom_fin.'.xml';
   }
 

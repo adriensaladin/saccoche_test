@@ -72,7 +72,7 @@ class InfoServeur
    */
   private static function SACoche_version_dispo()
   {
-    return (InfoServeur::$SACoche_version_dispo!==NULL) ? InfoServeur::$SACoche_version_dispo : Outil::recuperer_numero_derniere_version() ;
+    return (InfoServeur::$SACoche_version_dispo!==NULL) ? InfoServeur::$SACoche_version_dispo : recuperer_numero_derniere_version() ;
   }
 
   /**

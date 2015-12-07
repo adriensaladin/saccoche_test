@@ -154,7 +154,7 @@ if( ($action=='signature') && $tampon_signature )
 if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
 {
   // Récupération du fichier
-  $fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.<EXT>';
+  $fichier_nom = 'signature_'.$_SESSION['BASE'].'_'.$user_id.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('gif','jpg','jpeg','png') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {

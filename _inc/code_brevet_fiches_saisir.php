@@ -99,7 +99,7 @@ if($ACTION=='enregistrer_appr')
   }
   $avis_et_appreciation = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? $appreciation : $avis_conseil.'|'.$appreciation ;
   DB_STRUCTURE_BREVET::DB_modifier_brevet_appreciation($serie_ref , $epreuve_id , $eleve_id , $_SESSION['USER_ID'] , $avis_et_appreciation);
-  $prof_info = To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
+  $prof_info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   $ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
   $txt_avis_conseil_classe = ($epreuve_id!=CODE_BREVET_EPREUVE_TOTAL) ? '' : ( ($avis_conseil=='F') ? '<div id="avis_conseil_classe" class="b">Avis favorable</div>' : '<div id="avis_conseil_classe" class="b">Doit faire ses preuves</div>' ) ;
   Json::end( TRUE , '<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>'.$txt_avis_conseil_classe );
@@ -176,7 +176,7 @@ $make_action = $OBJET; // 'modifier' || 'tamponner' (et plus seulement 'saisir')
 $make_html   = ( ($OBJET=='tamponner') && ($mode=='graphique') ) ? FALSE : TRUE ;
 $make_pdf    = FALSE;
 $make_graph  = ( ($OBJET=='tamponner') && ($mode=='graphique') ) ? TRUE : FALSE ;
-$droit_corriger_appreciation = Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
+$droit_corriger_appreciation = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 
 $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
 $groupe_nom     = $groupe_nom; // Déjà défini avant car on en avait besoin

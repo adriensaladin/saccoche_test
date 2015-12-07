@@ -45,7 +45,7 @@ foreach($DB_TAB as $DB_ROW)
 {
   // Formater la date (dont on ne garde que le jour)
   $date_mysql  = ($DB_ROW['connexion_date']===NULL) ? '0' : substr($DB_ROW['connexion_date'],0,10) ;
-  $date_affich = ($DB_ROW['connexion_date']===NULL) ? '' : To::date_mysql_to_french($date_mysql) ;
+  $date_affich = ($DB_ROW['connexion_date']===NULL) ? '' : convert_date_mysql_to_french($date_mysql) ;
   // Afficher une ligne du tableau
   Json::add_str('<tr>');
   Json::add_str(  '<td>'.html($DB_ROW['user_identite']).'</td>');

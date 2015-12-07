@@ -68,7 +68,7 @@ $fini             = (isset($_POST['f_fini']))             ? Clean::texte($_POST[
 
 $chemin_devoir      = CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
 $url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
-$fnom_export = $_SESSION['BASE'].'_'.Clean::fichier($groupe_nom).'_'.Clean::fichier($description).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+$fnom_export = $_SESSION['BASE'].'_'.Clean::fichier($groupe_nom).'_'.Clean::fichier($description).'_'.fabriquer_fin_nom_fichier__date_et_alea();
 
 // Si "ref" est renseigné (pour Éditer ou Retirer ou Saisir ou ...), il contient l'id de l'évaluation + '_' + l'initiale du type de groupe + l'id du groupe
 // Dans le cas d'une duplication, "ref" sert à retrouver l'évaluation d'origine pour évenuellement récupérer l'ordre des items
@@ -148,8 +148,8 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
   if($aff_periode==0)
   {
     // Formater les dates
-    $date_debut_mysql = To::date_french_to_mysql($date_debut);
-    $date_fin_mysql   = To::date_french_to_mysql($date_fin);
+    $date_debut_mysql = convert_date_french_to_mysql($date_debut);
+    $date_fin_mysql   = convert_date_french_to_mysql($date_fin);
     // Vérifier que la date de début est antérieure à la date de fin
     if($date_debut_mysql>$date_fin_mysql)
     {
@@ -240,9 +240,9 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       {
         Json::end( FALSE , 'Vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$DB_ROW['devoir_id'].' !' );
       }
-      $date_affich   = To::date_mysql_to_french($DB_ROW['devoir_date']);
-      $date_visible  = ($DB_ROW['devoir_date']==$DB_ROW['devoir_visible_date']) ? 'identique'  : To::date_mysql_to_french($DB_ROW['devoir_visible_date']) ;
-      $date_autoeval = ($DB_ROW['devoir_autoeval_date']===NULL)                 ? 'sans objet' : To::date_mysql_to_french($DB_ROW['devoir_autoeval_date']) ;
+      $date_affich   = convert_date_mysql_to_french($DB_ROW['devoir_date']);
+      $date_visible  = ($DB_ROW['devoir_date']==$DB_ROW['devoir_visible_date']) ? 'identique'  : convert_date_mysql_to_french($DB_ROW['devoir_visible_date']) ;
+      $date_autoeval = ($DB_ROW['devoir_autoeval_date']===NULL)                 ? 'sans objet' : convert_date_mysql_to_french($DB_ROW['devoir_autoeval_date']) ;
       $ref = $DB_ROW['devoir_id'].'_'.strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
       $cs = ($DB_ROW['items_nombre']>1) ? 's' : '';
       $us = ($type=='groupe') ? '' : ( ($DB_ROW['users_nombre']>1) ? 's' : '' );
@@ -312,9 +312,9 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
 
 if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $date && $date_visible && $date_autoeval && $description && ( ($groupe_type && $groupe_id) || $nb_eleves ) && $nb_items && in_array($eleves_ordre,array('alpha','classe')) )
 {
-  $date_mysql          = To::date_french_to_mysql($date);
-  $date_visible_mysql  = To::date_french_to_mysql($date_visible);
-  $date_autoeval_mysql = To::date_french_to_mysql($date_autoeval);
+  $date_mysql          = convert_date_french_to_mysql($date);
+  $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
+  $date_autoeval_mysql = convert_date_french_to_mysql($date_autoeval);
   // Tester les dates
   $date_stamp          = strtotime($date_mysql);
   $date_visible_stamp  = strtotime($date_visible_mysql);
@@ -394,7 +394,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
     $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_partage , $listing_profs );
     if($listing_abonnes)
     {
-      $notification_contenu = To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
+      $notification_contenu = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
       $tab_texte_etat = array( 'voir'=>'de la visualiser / dupliquer.'."\r\n\r\n" , 'saisir'=>'d\'en co-saisir les notes.'."\r\n\r\n" , 'modifier'=>'d\'en modifier les paramètres.'."\r\n\r\n" );
       $notification_lien = "\r\n".'Pour y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=gestion_'.$type);
       $tab_abonnes = explode(',',$listing_abonnes);
@@ -409,7 +409,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   // Insérer les marqueurs d'évaluation 'PA' (cas d'une création d'évaluation depuis une synthèse, à partir d'items personnalisés par élève)
   if(!empty($_SESSION['TMP']['req_user_item']))
   {
-    $info = 'À saisir ('.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
+    $info = 'À saisir ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE).')';
     foreach($_SESSION['TMP']['req_user_item'] as $req)
     {
       list($eleve_id,$item_id) = explode('x',$req);
@@ -428,7 +428,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
     {
       $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id2.'&eleve_id=');
       $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
-      $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
       foreach($tab_abonnes as $abonne_id => $tab_abonne)
       {
@@ -495,9 +495,9 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
 
 if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date && $date_visible && $date_autoeval && $description && ( ($type=='groupe') || $nb_eleves ) && $nb_items && in_array($fini,array('oui','non')) && in_array($eleves_ordre,array('alpha','classe')) )
 {
-  $date_mysql          = To::date_french_to_mysql($date);
-  $date_visible_mysql  = To::date_french_to_mysql($date_visible);
-  $date_autoeval_mysql = To::date_french_to_mysql($date_autoeval);
+  $date_mysql          = convert_date_french_to_mysql($date);
+  $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
+  $date_autoeval_mysql = convert_date_french_to_mysql($date_autoeval);
   // Tester les dates
   $date_stamp          = strtotime($date_mysql);
   $date_visible_stamp  = strtotime($date_visible_mysql);
@@ -565,7 +565,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     Json::end( FALSE , 'Vous n\'êtes ni propriétaire ni bénéficiaire de droits sur le devoir n°'.$devoir_id.' !' );
   }
   $proprietaire_identite = $proprietaire_nom.' '.$proprietaire_prenom;
-  $proprietaire_archive  = To::texte_identite($proprietaire_nom,FALSE,$proprietaire_prenom,TRUE,$proprietaire_genre);
+  $proprietaire_archive  = afficher_identite_initiale($proprietaire_nom,FALSE,$proprietaire_prenom,TRUE,$proprietaire_genre);
   // Ordre des élèves
   if($groupe_type=='classe')
   {
@@ -601,7 +601,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
         $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_partage , $listing_profs );
         if($listing_abonnes)
         {
-          $notification_contenu = To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
+          $notification_contenu = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' vous partage son évaluation "'.$description.'" avec le droit ';
           $tab_texte_etat = array( 'voir'=>'de la visualiser / dupliquer.'."\r\n\r\n" , 'saisir'=>'d\'en co-saisir les notes.'."\r\n\r\n" , 'modifier'=>'d\'en modifier les paramètres.'."\r\n\r\n" );
           $notification_lien = "\r\n".'Pour y accéder :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=gestion_'.$type);
           $tab_abonnes = explode(',',$listing_abonnes);
@@ -647,7 +647,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
     if($listing_abonnes)
     {
       $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id=');
-      $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
       foreach($tab_abonnes as $abonne_id => $tab_abonne)
       {
@@ -775,11 +775,11 @@ if( ($action=='ordonner') && $devoir_id )
 
 if( ($action=='indiquer_eleves_deja') && $description && $date_debut )
 {
-  $date_debut_mysql = To::date_french_to_mysql($date_debut);
+  $date_debut_mysql = convert_date_french_to_mysql($date_debut);
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_eleves_devoirs($_SESSION['USER_ID'],$description,$date_debut_mysql);
   foreach($DB_TAB as $DB_ROW)
   {
-    Json::add_row( NULL , $DB_ROW['user_id'].'_'.To::date_mysql_to_french($DB_ROW['devoir_date']) );
+    Json::add_row( NULL , $DB_ROW['user_id'].'_'.convert_date_mysql_to_french($DB_ROW['devoir_date']) );
   }
   Json::end( TRUE );
 }
@@ -1065,9 +1065,9 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
     Json::end( FALSE , 'Aucune modification détectée !' );
   }
   // L'information associée à la note comporte le nom de l'évaluation + celui du professeur (c'est une information statique, conservée sur plusieurs années)
-  $date_mysql         = To::date_french_to_mysql($date_fr);
-  $date_visible_mysql = ($date_visible=='00/00/0000') ? $date_mysql : To::date_french_to_mysql($date_visible);
-  $info = $description.' ('.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
+  $date_mysql         = convert_date_french_to_mysql($date_fr);
+  $date_visible_mysql = ($date_visible=='00/00/0000') ? $date_mysql : convert_date_french_to_mysql($date_visible);
+  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
   $tab_notif = array();
   foreach($tab_nouveau_ajouter as $key => $note)
   {
@@ -1101,7 +1101,7 @@ if( ($action=='enregistrer_saisie') && $devoir_id && $date_fr && $date_visible &
   {
     $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id=');
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
-    $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+    $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
     foreach($tab_abonnes as $abonne_id => $tab_abonne)
     {
@@ -1427,7 +1427,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     $affichage_HTML .= '</table>'.NL;
     $affichage_HTML .= '</form>'.NL;
     // On enregistre la sortie HTML
-    $fichier_nom = 'evaluation_'.$devoir_id.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+    $fichier_nom = 'evaluation_'.$devoir_id.'_'.fabriquer_fin_nom_fichier__date_et_alea();
     FileSystem::ecrire_fichier(CHEMIN_DOSSIER_EXPORT.$fichier_nom.'.html' , $affichage_HTML );
     // Affichage de l'adresse
     Json::add_row( 'href' , './releve_html.php?fichier='.$fichier_nom );
@@ -1846,7 +1846,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 if($action=='importer_saisie_csv')
 {
   // Récupération du fichier
-  $fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.<EXT>';
+  $fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -1855,8 +1855,8 @@ if($action=='importer_saisie_csv')
   // On passe à son contenu
   $contenu_csv = file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   $contenu_csv = To::deleteBOM(To::utf8($contenu_csv)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu_csv); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = extraire_lignes($contenu_csv); // Extraire les lignes du fichier
+  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
   // Pas de ligne d'en-tête à supprimer
   // Mémoriser les eleve_id de la 1ère ligne
   $tab_eleve = array();
@@ -1942,7 +1942,7 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
     Json::end( FALSE , 'Vous n\'êtes pas propriétaire du devoir n°'.$devoir_id.' !' );
   }
   // Récupération du fichier
-  $fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> FileSystem::generer_fin_nom_fichier__date_et_alea() inutilement lourd
+  $fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
   $result = FileSystem::recuperer_upload( $chemin_devoir /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -2053,7 +2053,7 @@ if( ($action=='recuperer_message') && $devoir_id && $eleve_id && in_array($msg_o
 if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $devoir_id && $eleve_id && in_array($msg_autre,array('oui','non')) && $date_visible && $description )
 {
   $msg_objet = substr($action,-5);
-  $date_visible_mysql  = To::date_french_to_mysql($date_visible);
+  $date_visible_mysql  = convert_date_french_to_mysql($date_visible);
   // Tester les droits
   $proprio_id = DB_STRUCTURE_PROFESSEUR::DB_recuperer_devoir_prorietaire_id( $devoir_id );
   if($proprio_id==$_SESSION['USER_ID'])
@@ -2105,7 +2105,7 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
     {
       $ext = 'txt';
     }
-    $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$eleve_id.'_'.$msg_objet.'_'.$_SERVER['REQUEST_TIME'].'.'.$ext; // pas besoin de le rendre inaccessible -> FileSystem::generer_fin_nom_fichier__date_et_alea() inutilement lourd
+    $fichier_nom = 'devoir_'.$devoir_id.'_eleve_'.$eleve_id.'_'.$msg_objet.'_'.$_SERVER['REQUEST_TIME'].'.'.$ext; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
     DB_STRUCTURE_COMMENTAIRE::DB_remplacer_devoir_commentaire( $devoir_id , $eleve_id , $msg_objet , $url_dossier_devoir.$fichier_nom );
     $presence = TRUE;
     // et enregistrement du fichier
@@ -2132,7 +2132,7 @@ if( ( ($action=='enregistrer_texte') || ($action=='enregistrer_audio') ) && $dev
   if($listing_abonnes)
   {
     $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
-    $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+    $notification_contenu = 'Saisies pour l\'évaluation "'.$description.'" du '.$date_fr.' enregistrées par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
     $notification_lien = 'Voir le détail :'."\r\n".Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id='.$eleve_id);
     $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
     foreach($tab_abonnes as $abonne_id => $tab_abonne)

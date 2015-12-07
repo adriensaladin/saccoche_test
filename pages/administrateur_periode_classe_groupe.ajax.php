@@ -76,8 +76,8 @@ foreach($DB_TAB as $DB_ROW)
 if( ($action=='ajouter') && $date_debut && $date_fin )
 {
   // Formater les dates
-  $date_debut_mysql = To::date_french_to_mysql($date_debut);
-  $date_fin_mysql   = To::date_french_to_mysql($date_fin);
+  $date_debut_mysql = convert_date_french_to_mysql($date_debut);
+  $date_fin_mysql   = convert_date_french_to_mysql($date_fin);
   // Vérifier que le date de début est antérieure à la date de fin
   if($date_debut_mysql>$date_fin_mysql)
   {
@@ -133,8 +133,8 @@ $memo_groupe_id = 0;
 foreach($DB_TAB as $DB_ROW)
 {
   $groupe_id = $DB_ROW['groupe_id'];
-  $date_affich_debut = To::date_mysql_to_french($DB_ROW['jointure_date_debut']);
-  $date_affich_fin   = To::date_mysql_to_french($DB_ROW['jointure_date_fin']);
+  $date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
+  $date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
   $tab_jointure[$groupe_id][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin).'<q class="date_ajouter" title="Importer ces dates dans les champs."></q>';
   // graphique (début)
   if($memo_groupe_id!=$groupe_id)
@@ -180,7 +180,7 @@ foreach($tab_periode as $periode_id => $periode_nom)
 Json::add_str('<hr />'.NL);
 Json::add_str('<table>'.NL);
 Json::add_str(  '<thead>'.NL);
-Json::add_str(    '<tr><td class="nu"></td>'.implode('',$tab_periode).'<td class="graph_total">Étendue du '.To::date_mysql_to_french($tout_debut).' au '.To::date_mysql_to_french($toute_fin).'.</td></tr>'.NL);
+Json::add_str(    '<tr><td class="nu"></td>'.implode('',$tab_periode).'<td class="graph_total">Étendue du '.convert_date_mysql_to_french($tout_debut).' au '.convert_date_mysql_to_french($toute_fin).'.</td></tr>'.NL);
 Json::add_str(  '</thead>'.NL);
 Json::add_str(  '<tbody>'.NL);
 Json::add_str(    '<tr>'.implode('</tr>'.NL.'<tr>',$tab_groupe).'</tr>'.NL);

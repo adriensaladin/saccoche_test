@@ -36,7 +36,7 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 // Chemins d'enregistrement
 
-$fichier_nom = 'fiche_brevet_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea() ;
+$fichier_nom = 'fiche_brevet_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
 
 // Initialisation de tableaux
 
@@ -116,7 +116,7 @@ foreach($tab_brevet_serie as $serie_ref)
 $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_eleves( $liste_eleve , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $prof_info = ($DB_ROW['prof_id']) ? To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
+  $prof_info = ($DB_ROW['prof_id']) ? afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
   $tab_eleve_saisie[$DB_ROW['eleve_id']][$DB_ROW['brevet_epreuve_code']] = array( 'matieres_id'=>$DB_ROW['matieres_id'] , 'prof_id'=>$DB_ROW['prof_id'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$DB_ROW['saisie_note'] );
 }
 $DB_TAB = DB_STRUCTURE_BREVET::DB_recuperer_brevet_saisies_classe( $classe_id , 0 /*prof_id*/ , FALSE /*with_epreuve_nom*/ , FALSE /*only_total*/ );
@@ -159,7 +159,7 @@ if($make_pdf)
 {
   $fiche_brevet_PDF = new PDF_fiche_brevet( TRUE /*make_officiel*/ , 'portrait' /*orientation*/ , 16 /*marge_gauche*/ , 16 /*marge_droite*/ , 16 /*marge_haut*/ , 12 /*marge_bas*/ , 'oui' /*couleur*/ , 'oui' /*legende*/ , !empty($is_test_impression) /*filigrane*/ );
   // Tag date heure initiales
-  $tag_date_heure_initiales = date('d/m/Y H:i').' '.To::texte_identite($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
+  $tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
   // Quelques valeurs de positionnement ...
   $pdf_coords_session       = array( 'G'=>array(111,18,15,4) , 'P'=>array(103,18,15,4) );
   $pdf_coords_academie      = array( 30  ,29.5,38,3);
@@ -246,7 +246,7 @@ if($make_pdf)
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
   extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $eleve_genre $date_naissance $eleve_brevet_serie
-  $date_naissance = ($date_naissance) ? To::date_mysql_to_french($date_naissance) : '' ;
+  $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
   $eleve_brevet_serie_initiale = $eleve_brevet_serie{0};
   // Initialisation / Intitulé
   if($make_pdf)
@@ -407,7 +407,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
     // Fiche brevet - Date de naissance
     if( ($date_naissance) && ( ($make_html) || ($make_graph) ) )
     {
-      $fiche_brevet_HTML .= '<div class="i">'.To::texte_ligne_naissance($date_naissance).'</div>'.NL;
+      $fiche_brevet_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
     }
     // Mémorisation des pages de début et de fin pour chaque élève pour découpe et archivage ultérieur
     if($make_action=='imprimer')

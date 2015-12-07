@@ -62,13 +62,13 @@ $menu = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? '[Paramétrages]' : 
       foreach($DB_TAB as $DB_ROW)
       {
         $class = ($DB_ROW['notification_statut']=='consultable') ? ' class="new"' : '' ;
-        $datetime_affich = To::datetime_mysql_to_french($DB_ROW['notification_date']);
+        $datetime_affich = convert_datetime_mysql_to_french($DB_ROW['notification_date']);
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['notification_id'].'"'.$class.'>';
         echo  '<td>'.$datetime_affich.'</td>';
         echo  '<td>'.$DB_ROW['notification_statut'].'</td>';
         echo  '<td>'.$DB_ROW['abonnement_objet'].'</td>';
-        echo  '<td class="i">'.html(Outil::afficher_texte_tronque($DB_ROW['notification_contenu'],60)).'</td>';
+        echo  '<td class="i">'.html(afficher_texte_tronque($DB_ROW['notification_contenu'],60)).'</td>';
         echo  '<td class="nu">';
         echo    '<q class="voir" title="Consulter la notification complète."></q>';
         echo  '</td>';

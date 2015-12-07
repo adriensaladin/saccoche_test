@@ -48,7 +48,7 @@ if( (!$user_pass_key) || ( ($BASE==0) && (HEBERGEUR_INSTALLATION=='multi-structu
 // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
-  $result = DBextra::charger_parametres_mysql_supplementaires($BASE,FALSE);
+  $result = charger_parametres_mysql_supplementaires($BASE,FALSE);
   if(!$result)
   {
     exit_error( $TITRE /*titre*/ , 'Le code transmis est invalide ou périmé (base inexistante).' /*contenu*/ );
@@ -63,15 +63,15 @@ if(empty($DB_ROW))
   exit_error( $TITRE /*titre*/ , 'Le code transmis est invalide ou périmé (absence de correspondance).' /*contenu*/ );
 }
 
-if( Outil::crypter_mdp($DB_ROW['user_id'].$DB_ROW['user_email'].$DB_ROW['user_password'].$DB_ROW['user_connexion_date']) != $user_pass_key )
+if( crypter_mdp($DB_ROW['user_id'].$DB_ROW['user_email'].$DB_ROW['user_password'].$DB_ROW['user_connexion_date']) != $user_pass_key )
 {
   exit_error( $TITRE /*titre*/ , 'Le code transmis est périmé (incompatible avec les données actuelles).' /*contenu*/ );
 }
 
 // Prendre en compte la demande de changement de mdp
-$newpass = Outil::fabriquer_mdp(); // On ne transmet pas de profil car necessite sinon une variable de session non définie à ce stade.
+$newpass = fabriquer_mdp(); // On ne transmet pas de profil car necessite sinon une variable de session non définie à ce stade.
 
-DB_STRUCTURE_PUBLIC::DB_modifier_user_password_or_key ($DB_ROW['user_id'] , Outil::crypter_mdp($newpass) /*user_password*/ , '' /*user_pass_key*/ );
+DB_STRUCTURE_PUBLIC::DB_modifier_user_password_or_key ($DB_ROW['user_id'] , crypter_mdp($newpass) /*user_password*/ , '' /*user_pass_key*/ );
 
 // Affichage du résultat (confirmation + identifiants)
 ?>

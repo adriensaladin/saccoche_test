@@ -36,14 +36,14 @@ $motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '' ;
 
 if($action=='bloquer')
 {
-  Outil::ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+  ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::bloquer_application($_SESSION['USER_PROFIL_TYPE'],'0',$motif);
   Json::end( TRUE , '<label class="erreur">Application fermée : '.html($motif).'</label>' );
 }
 
 if($action=='debloquer')
 {
-  Outil::ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+  ajouter_log_PHP( 'Maintenance' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::debloquer_application($_SESSION['USER_PROFIL_TYPE'],'0');
   Json::end( TRUE , '<label class="valide">Application accessible.</label>' );
 }
@@ -127,7 +127,7 @@ if($action=='verif_dir_etabl')
     }
   }
   // Enregistrement du rapport
-  $fichier_nom = 'rapport_verif_dir_etabl_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+  $fichier_nom = 'rapport_verif_dir_etabl_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody_pb.$tbody_ok );
   Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
 }
@@ -199,7 +199,7 @@ if($action=='maj_etape4')
   $thead = '<tr><td colspan="2">Mise à jour automatique - '.date('d/m/Y H:i:s').'</td></tr>';
   $tbody = '';
   // Bloquer l'application
-  Outil::ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+  ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::bloquer_application('automate','0','Mise à jour des fichiers en cours.');
   // Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.
   ksort($_SESSION['tmp']['dossier']);
@@ -215,7 +215,7 @@ if($action=='maj_etape4')
       $tbody .= '<tr><td class="v">Dossier ajouté</td><td>'.$dossier.'</td></tr>';
       if( !FileSystem::creer_dossier($dossier_install.$dossier) )
       {
-        Outil::ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+        ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
         LockAcces::debloquer_application('automate','0');
         Json::end( FALSE , 'Dossier "'.$dossier.'" non créé ou inaccessible en écriture !' );
       }
@@ -241,7 +241,7 @@ if($action=='maj_etape4')
         // Fichier changé => maj (si le .htaccess a été changé, c'est sans doute volontaire, ne pas y toucher)
         if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
         {
-          Outil::ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+          ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
           LockAcces::debloquer_application('automate','0');
           Json::end( FALSE , 'Erreur lors de l\'écriture du fichier "'.$fichier.'" !' );
         }
@@ -253,7 +253,7 @@ if($action=='maj_etape4')
       // Fichier à ajouter (si le .htaccess n'y est pas, c'est sans doute volontaire, ne pas l'y remettre)
       if( !copy( $dossier_dezip.$fichier , $dossier_install.$fichier ) )
       {
-        Outil::ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+        ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
         LockAcces::debloquer_application('automate','0');
         Json::end( FALSE , 'Erreur lors de l\'écriture du fichier "'.$fichier.'" !' );
       }
@@ -267,10 +267,10 @@ if($action=='maj_etape4')
     }
   }
   // Débloquer l'application
-  Outil::ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+  ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application accessible.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::debloquer_application('automate','0');
   // Enregistrement du rapport
-  $_SESSION['tmp']['rapport_filename'] = 'rapport_maj_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+  $_SESSION['tmp']['rapport_filename'] = 'rapport_maj_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $_SESSION['tmp']['rapport_filename'] , $thead , $tbody );
   Json::end( TRUE , 'Rapport des modifications apportées et nettoyage&hellip;' );
 }
@@ -396,7 +396,7 @@ if($action=='verif_file_appli_etape4')
     }
   }
   // Enregistrement du rapport
-  $_SESSION['tmp']['rapport_filename'] = 'rapport_verif_file_appli_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+  $_SESSION['tmp']['rapport_filename'] = 'rapport_verif_file_appli_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $_SESSION['tmp']['rapport_filename'] , $thead , $tbody_pb.$tbody_ok );
   Json::end( TRUE , 'Rapport des différences trouvées et nettoyage&hellip;' );
 }
@@ -434,7 +434,7 @@ if( ($action=='maj_bases_etabl') && $step )
   elseif(!empty($_SESSION['tmp']['base_id']))
   {
     $base_id = current($_SESSION['tmp']['base_id']);
-    DBextra::charger_parametres_mysql_supplementaires($base_id);
+    charger_parametres_mysql_supplementaires($base_id);
     $version_base = DB_STRUCTURE_MAJ_BASE::DB_version_base();
     if(empty($_SESSION['tmp']['rapport'][$base_id]))
     {
@@ -496,7 +496,7 @@ if( ($action=='maj_bases_etabl') && $step )
       $tbody .= ($version_base==VERSION_BASE_STRUCTURE) ? '<tr><td class="b">Base n°'.$base_id.' déjà à jour.</td></tr>' : '<tr><td class="v">Base n°'.$base_id.' mise à jour depuis la version '.$version_base.'.</td></tr>' ;
     }
     // Enregistrement du rapport
-    $fichier_rapport = 'rapport_maj_bases_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+    $fichier_rapport = 'rapport_maj_bases_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
     FileSystem::fabriquer_fichier_rapport( $fichier_rapport , $thead , $tbody );
     $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
     // retour

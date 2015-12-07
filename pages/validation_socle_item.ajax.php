@@ -188,11 +188,11 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
         {
           extract($tab_item[$item_id]);  // $calcul_methode $calcul_limite
           // calcul du bilan de l'item
-          $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+          $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
           if($score!==FALSE)
           {
             // on détermine si il est acquis ou pas
-            $indice = OutilBilan::determiner_etat_acquisition( $score );
+            $indice = determiner_etat_acquisition( $score );
             // on enregistre les infos
             $tab_score_socle_eleve[$socle_id][$eleve_id][$indice]++;
             $tab_score_socle_eleve[$socle_id][$eleve_id]['nb']++;
@@ -210,7 +210,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
     {
       if($tab_scores['nb'])
       {
-        $tab_modif_cellule[$eleve_id][$socle_id]['html'] = OutilBilan::calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] );
+        $tab_modif_cellule[$eleve_id][$socle_id]['html'] = calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] );
       }
     }
   }
@@ -224,7 +224,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
   {
     $etat = ($DB_ROW['validation_entree_etat']) ? 'Validé' : 'Invalidé' ;
     $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['class'] = ' class="V'.$DB_ROW['validation_entree_etat'].'"';
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['title'] = ' title="'.$etat.' le '.To::date_mysql_to_french($DB_ROW['validation_entree_date']).' par '.html($DB_ROW['validation_entree_info']).'"';
+    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['entree_id']]['title'] = ' title="'.$etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_entree_date']).' par '.html($DB_ROW['validation_entree_info']).'"';
   }
   // - - - - - - - - - - - - - - - - - - - - - - - - -
   // Récupérer la liste des jointures : validations de piliers
@@ -291,11 +291,11 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id &
     {
       extract($tab_item[$item_id]);  // $item_ref $item_nom $matiere_id $calcul_methode $calcul_limite
       // calcul du bilan de l'item
-      $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+      $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
       if($score!==FALSE)
       {
         // on détermine si il est acquis ou pas
-        $indice = OutilBilan::determiner_etat_acquisition( $score );
+        $indice = determiner_etat_acquisition( $score );
         // on enregistre les infos
         $tab_infos_socle_eleve[] = '<span class="pourcentage A'.$indice.'">'.$score.'%</span> '.html($item_ref.' - '.$item_nom);
         $tab_score_socle_eleve[$indice]++;
@@ -304,13 +304,13 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id &
     }
   }
   // On calcule le pourcentage d'acquisition des items
-  $tab_score_socle_eleve['%'] = ($tab_score_socle_eleve['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_score_socle_eleve , $tab_score_socle_eleve['nb'] ) : FALSE ;
+  $tab_score_socle_eleve['%'] = ($tab_score_socle_eleve['nb']) ? calculer_pourcentage_acquisition_items( $tab_score_socle_eleve , $tab_score_socle_eleve['nb'] ) : FALSE ;
   if($tab_score_socle_eleve['%']===FALSE)
   {
     Json::end( FALSE , 'Aucun item évalué n\'est relié avec cette entrée du socle !' );
   }
   // Retour
-  Json::add_row( 'stats' , '<span class="A'.OutilBilan::determiner_etat_acquisition($tab_score_socle_eleve['%']).'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.OutilBilan::afficher_nombre_acquisitions_par_etat($tab_score_socle_eleve).')&nbsp;</span>' );
+  Json::add_row( 'stats' , '<span class="A'.determiner_etat_acquisition($tab_score_socle_eleve['%']).'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.afficher_nombre_acquisitions_par_etat($tab_score_socle_eleve).')&nbsp;</span>' );
   Json::add_row( 'items' , implode('<br />',$tab_infos_socle_eleve) );
   Json::end( TRUE );
 }
@@ -374,7 +374,7 @@ if($action=='Enregistrer_validation')
     Json::end( FALSE , 'Aucune modification détectée !' );
   }
   // L'information associée à la validation comporte le nom du validateur (c'est une information statique, conservée sur plusieurs années)
-  $info = To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
+  $info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   foreach($tab_nouveau_ajouter as $key => $etat)
   {
     list($entree_id,$eleve_id) = explode('x',$key);

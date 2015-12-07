@@ -62,10 +62,10 @@ $auto_select_classe_id = ( ($auto_select_eleve_num!==FALSE) && !empty($_SESSION[
 // Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-  $check_etat_acquisition   = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION'])   ? ' checked' : '' ;
-  $check_moyenne_score      = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? ' checked' : '' ;
-  $check_pourcentage_acquis = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? ' checked' : '' ;
-  $check_conversion_sur_20  = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? ' checked' : '' ;
+  $check_etat_acquisition   = test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION'])   ? ' checked' : '' ;
+  $check_moyenne_score      = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? ' checked' : '' ;
+  $check_pourcentage_acquis = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? ' checked' : '' ;
+  $check_conversion_sur_20  = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? ' checked' : '' ;
 }
 
 $class_etat_acquisition   = ($check_etat_acquisition)                           ? 'show' : 'hide' ;
@@ -104,7 +104,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $objet_selection = '';
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
-  $tab_profs    = array(0=>array('valeur'=>$_SESSION['USER_ID'],'texte'=>To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])));
+  $tab_profs    = array(0=>array('valeur'=>$_SESSION['USER_ID'],'texte'=>afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])));
   $of_groupe = '';
   $sel_groupe = FALSE;
   $class_form_type = 'show';
@@ -197,7 +197,7 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
 Layout::add( 'js_inline_before' , 'var auto_voir_releve     = '.$auto_voir_releve.';' );
 Layout::add( 'js_inline_before' , 'var auto_select_eleve_id = '.$auto_select_eleve_id.';' );
 Layout::add( 'js_inline_before' , 'var user_id     = '.$_SESSION['USER_ID'].';' );
-Layout::add( 'js_inline_before' , 'var user_texte  = "'.html(To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])).'";' );
+Layout::add( 'js_inline_before' , 'var user_texte  = "'.html(afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])).'";' );
 Layout::add( 'js_inline_before' , 'var user_profil = "'.$_SESSION['USER_PROFIL_TYPE'].'";' );
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_periode*/ , FALSE /*tab_groupe_niveau*/ );
@@ -262,7 +262,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   <p id="zone_periodes" class="<?php echo $class_form_periode ?>">
     <label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
     <span id="dates_perso" class="show">
-      du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo To::jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
+      du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
       au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
     </span><br />
     <span class="radio"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>

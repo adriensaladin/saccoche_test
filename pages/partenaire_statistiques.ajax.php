@@ -67,7 +67,7 @@ if( $num && $max && ($num<$max) )
   // Récupérer les infos ($base_id $structure $geo)
   extract($_SESSION['tmp']['infos'][$num-1]);
   // Récupérer une série de stats
-  DBextra::charger_parametres_mysql_supplementaires($base_id);
+  charger_parametres_mysql_supplementaires($base_id);
   list($personnel_use,$eleve_use,$evaluation_use,$validation_use,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( FALSE /*info_user_nb*/ , TRUE /*info_user_use*/ , FALSE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
   if( mb_strpos( $_SESSION['USER_CONNECTEURS'] , '|'.$connexion_nom.',' ) !== FALSE )
   {

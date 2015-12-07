@@ -53,7 +53,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
       exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" ou "id" n\'a pas été transmis en GET ou n\'est pas un entier et n\'a pas non plus été trouvé dans un Cookie).' /*contenu*/ );
     }
   }
-  DBextra::charger_parametres_mysql_supplementaires($BASE);
+  charger_parametres_mysql_supplementaires($BASE);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +61,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Mettre à jour la base si nécessaire
-DBextra::maj_base_structure_si_besoin($BASE);
+maj_base_structure_si_besoin($BASE);
 
 // Récupérer les infos utiles de l'établissement pour la déconnexion 
 $tab_parametres = array(
@@ -99,7 +99,7 @@ if($connexion_mode=='cas')
     if( (HEBERGEUR_INSTALLATION=='mono-structure') || !PHPCAS_LOGS_ETABL_LISTING || (strpos(PHPCAS_LOGS_ETABL_LISTING,','.$BASE.',')!==FALSE) )
     {
       $fichier_nom_debut = 'debugcas_'.$BASE;
-      $fichier_nom_fin   = FileSystem::generer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
+      $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
       phpCAS::setDebug(PHPCAS_LOGS_CHEMIN.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
     }
   }

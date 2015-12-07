@@ -76,7 +76,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
   }
 
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'export_listing-eleves_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_listing-eleves_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
@@ -150,7 +150,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
     }
   }
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
@@ -202,7 +202,7 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
         {
           $tab_count[$item_id][$annee_decalage] = 0;
         }
-        $date_min = To::jour_debut_annee_scolaire('mysql',-$annee_decalage);
+        $date_min = jour_debut_annee_scolaire('mysql',-$annee_decalage);
         foreach($DB_TAB as $key => $DB_ROW)
         {
           if( $date_min <= $DB_ROW['date'] )
@@ -231,7 +231,7 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
   }
   // Finalisation de l'export CSV (archivage dans un fichier)
   $export_csv  = $export_csv_entete."\r\n\r\n".implode( "\r\n" , $tab_export_csv );
-  $fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_listing-items_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html = $export_html_entete.NL.'</thead><tbody>'.NL.implode( NL , $tab_export_html ).NL.'</tbody></table>'.NL;
@@ -333,7 +333,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
   $export_html .= '</ul>'.NL;
 
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'export_arbre-matiere_'.Clean::fichier($matiere_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_arbre-matiere_'.Clean::fichier($matiere_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
@@ -417,7 +417,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
   $export_html .= '</ul>'.NL;
 
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'export_arbre-socle_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_arbre-socle_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
@@ -528,7 +528,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
   $export_html .= '</ul>'.NL;
 
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'export_jointures_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_jointures_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
@@ -592,7 +592,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
   {
     foreach($DB_TAB as $DB_ROW)
     {
-      $date_fr = To::date_mysql_to_french($DB_ROW['user_naissance_date']);
+      $date_fr = convert_date_mysql_to_french($DB_ROW['user_naissance_date']);
       $export_csv .= $DB_ROW['user_id']
         .$separateur.$DB_ROW['user_id_ent']
         .$separateur.$DB_ROW['user_id_gepi']
@@ -626,7 +626,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
   }
 
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'export_infos-eleves_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_infos-eleves_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
@@ -734,7 +734,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   }
 
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'export_infos-parents_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_infos-parents_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
@@ -820,7 +820,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   }
 
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'export_infos-professeurs_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_infos-professeurs_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;

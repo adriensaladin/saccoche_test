@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Créer / paramétrer les référentiels"));
 
-if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'li');
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -95,7 +95,7 @@ $tab_matiere = array();
 $tab_niveau  = array();
 $tab_colonne = array();
 
-$texte_profil = Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'br');
+$texte_profil = afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'br');
 // On récupère la liste des matières où le professeur est rattaché, et s'il en est coordonnateur
 $DB_TAB_MATIERES = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_professeur_infos_referentiel($_SESSION['USER_ID']);
 if(empty($DB_TAB_MATIERES))
@@ -192,7 +192,7 @@ else
     {
       $matiere_nom    = $tab['nom'];
       $matiere_coord  = $tab['coord'];
-      $matiere_droit  = Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , $matiere_coord /*matiere_coord_or_groupe_pp_connu*/ );
+      $matiere_droit  = test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , $matiere_coord /*matiere_coord_or_groupe_pp_connu*/ );
       $matiere_ajout  = ($matiere_droit) ? '<q class="ajouter" title="Créer un référentiel vierge ou importer un référentiel existant."></q>' : '<q class="ajouter_non" title="Droit d\'accès :<br />'.$texte_profil.'."></q>' ;
       echo'<h2 id="h2_'.$matiere_id.'">'.$matiere_nom.'</h2>'.NL;
       echo'<table id="mat_'.$matiere_id.'" class="vm_nug"><thead>'.NL.'<tr><th>Niveau</th><th>Partage</th><th>Méthode de calcul</th><th class="nu" id="th_'.$matiere_id.'">'.$matiere_ajout.'</th></tr>'.NL.'</thead><tbody>'.NL;

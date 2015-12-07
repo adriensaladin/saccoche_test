@@ -64,7 +64,7 @@ $DB_ROW = DB_STRUCTURE_IMAGE::DB_recuperer_image( 0 /*user_id*/ , 'logo' );
 if(!empty($DB_ROW))
 {
   // Enregistrer temporairement le fichier sur le disque
-  $fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['image_format'];
+  $fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$DB_ROW['image_format'];
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , base64_decode($DB_ROW['image_contenu']) );
   // Générer la balise html pour afficher l'image
   list($width,$height) = Image::dimensions_affichage( $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
@@ -75,7 +75,7 @@ if(!empty($DB_ROW))
 if(HEBERGEUR_INSTALLATION=='multi-structures')
 {
   $contact_class_zone = 'show';
-  DBextra::charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
+  charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
   $DB_ROW = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
   $contact_nom      = $DB_ROW['structure_contact_nom'];
   $contact_prenom   = $DB_ROW['structure_contact_prenom'];

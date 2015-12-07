@@ -736,11 +736,11 @@ class PDF extends FPDF
   }
   else
   {
-    $this->choisir_couleur_fond('A'.OutilBilan::determiner_etat_acquisition($tab_infos['%']).$this->couleur);
+    $this->choisir_couleur_fond('A'.determiner_etat_acquisition($tab_infos['%']).$this->couleur);
     if($affich=='detail')
     {
       $this->SetFont('Arial' , $gras , $this->taille_police);
-      $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.OutilBilan::afficher_nombre_acquisitions_par_etat($tab_infos).')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.afficher_nombre_acquisitions_par_etat($tab_infos).')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
     elseif($affich=='pourcentage')
     {
@@ -761,7 +761,7 @@ class PDF extends FPDF
   public function afficher_score_bilan( $score , $br )
   {
     // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-    $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
+    $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
     if($score===FALSE)
     {
       $affichage = ($afficher_score) ? '-' : '' ;
@@ -770,7 +770,7 @@ class PDF extends FPDF
     }
     else
     {
-      $this->choisir_couleur_fond('A'.OutilBilan::determiner_etat_acquisition($score).$this->couleur);
+      $this->choisir_couleur_fond('A'.determiner_etat_acquisition($score).$this->couleur);
       $affichage = ($afficher_score) ? $score : '' ;
       $this->SetFont('Arial' , '' , $this->taille_police-2);
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
@@ -995,7 +995,7 @@ class PDF extends FPDF
     if($type_legende=='score_bilan')
     {
       // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-      $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
+      $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
@@ -1067,7 +1067,7 @@ class PDF extends FPDF
     }
     if($this->officiel===FALSE)
     {
-      $initiales = To::texte_identite( $_SESSION['USER_NOM'] , FALSE , $_SESSION['USER_PRENOM'] , TRUE , $_SESSION['USER_GENRE'] );
+      $initiales = afficher_identite_initiale( $_SESSION['USER_NOM'] , FALSE , $_SESSION['USER_PRENOM'] , TRUE , $_SESSION['USER_GENRE'] );
       $texte = 'Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$initiales.' ('.$_SESSION['USER_PROFIL_NOM_COURT'].') avec SACoche [ '.SERVEUR_PROJET.' ] version '.VERSION_PROG.'.';
       $this->SetXY( 0 , -$this->distance_pied );
       $this->SetFont( 'Arial' , '' , 7 );

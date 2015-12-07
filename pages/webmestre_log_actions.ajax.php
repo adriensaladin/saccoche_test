@@ -45,7 +45,7 @@ if($base_id)
     
     // 1 En extraire le plus récent (les 100 derniers enregistrements)
     $table_log_extrait = '<table class="p"><thead><tr><th>Date &amp; Heure</th><th>Utilisateur</th><th>Action</th></tr></thead><tbody>';
-    $tab_lignes = OutilCSV::extraire_lignes($fichier_log_contenu);
+    $tab_lignes = extraire_lignes($fichier_log_contenu);
     $indice_ligne_debut = count($tab_lignes)-1 ;
     $indice_ligne_fin   = max(-1 , $indice_ligne_debut-100) ;
     $nb_lignes          = $indice_ligne_debut - $indice_ligne_fin ;
@@ -58,7 +58,7 @@ if($base_id)
     $table_log_extrait .= '</tbody></table>';
     // 2 Enregistrer un csv récupérable
     $fichier_log_contenu = str_replace(array('<?php /*','*/ ?>'),'',$fichier_log_contenu);
-    $fichier_export_nom = 'log_'.$base_id.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+    $fichier_export_nom = 'log_'.$base_id.'_'.fabriquer_fin_nom_fichier__date_et_alea();
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.csv' , To::csv($fichier_log_contenu) );
     // Afficher tout ça
     Json::add_str('<ul class="puce">'.NL);

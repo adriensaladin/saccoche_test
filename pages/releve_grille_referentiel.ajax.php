@@ -155,8 +155,8 @@ if($besoin_notes)
 {
   if($periode_id==0)
   {
-    $date_mysql_debut = To::date_french_to_mysql($date_debut);
-    $date_mysql_fin   = To::date_french_to_mysql($date_fin);
+    $date_mysql_debut = convert_date_french_to_mysql($date_debut);
+    $date_mysql_fin   = convert_date_french_to_mysql($date_fin);
   }
   else
   {
@@ -167,8 +167,8 @@ if($besoin_notes)
     }
     $date_mysql_debut = $DB_ROW['jointure_date_debut'];
     $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-    $date_debut = To::date_mysql_to_french($date_mysql_debut);
-    $date_fin   = To::date_mysql_to_french($date_mysql_fin);
+    $date_debut = convert_date_mysql_to_french($date_mysql_debut);
+    $date_fin   = convert_date_mysql_to_french($date_mysql_fin);
   }
   if($date_mysql_debut>$date_mysql_fin)
   {
@@ -280,7 +280,7 @@ if($besoin_notes)
   $calcul_retroactif = $DB_TAB[0]['referentiel_calcul_retroactif'];
   // Détermination de la date de départ
   $retroactif = ($retroactif=='auto') ? $calcul_retroactif : $retroactif ; // Ne peut plus valoir que "oui" | "non" | "annuel" à présent
-  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
+  $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // forcément 'oui' puisque le cas 'auto' a déjà été écarté (possible car un unique référentiel est considéré ici)
@@ -313,7 +313,7 @@ unset($DB_TAB);
 // Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$fichier = 'grille_item_'.Clean::fichier($matiere_nom).'_'.Clean::fichier($niveau_nom).'_<REPLACE>_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+$fichier = 'grille_item_'.Clean::fichier($matiere_nom).'_'.Clean::fichier($niveau_nom).'_<REPLACE>_'.fabriquer_fin_nom_fichier__date_et_alea();
 $fichier_nom_type1 = ($type_generique) ? str_replace( '<REPLACE>' , 'generique' , $fichier ) : str_replace( '<REPLACE>' , Clean::fichier($groupe_nom).'_individuel' , $fichier ) ;
 $fichier_nom_type2 = str_replace( '<REPLACE>' , Clean::fichier($groupe_nom).'_synthese' , $fichier ) ;
 
@@ -341,7 +341,7 @@ if(count($tab_eval))
     foreach($tab_items as $item_id => $tab_devoirs)
     {
       // calcul du bilan de l'item
-      $tab_score_eleve_item[$eleve_id][$item_id] = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+      $tab_score_eleve_item[$eleve_id][$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
       if($type_synthese)
       {
         $tab_score_item_eleve[$item_id][$eleve_id] = $tab_score_eleve_item[$eleve_id][$item_id];
@@ -375,8 +375,8 @@ if(count($tab_eval))
       // ... un pour le nombre d\'items considérés acquis ou pas
       if($nb_scores)
       {
-        $tab_acquisitions = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
-        $tab_pourcentage_acquis_eleve[$eleve_id] = OutilBilan::calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
+        $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+        $tab_pourcentage_acquis_eleve[$eleve_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
       }
       else
       {
@@ -402,9 +402,9 @@ if($type_synthese)
     if($nb_scores)
     {
       $somme_scores = array_sum($tableau_score_filtre);
-      $tab_acquisitions = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+      $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
       $tab_moyenne_scores_item[$item_id]     = round($somme_scores/$nb_scores,0);
-      $tab_pourcentage_acquis_item[$item_id] = OutilBilan::calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
+      $tab_pourcentage_acquis_item[$item_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
     }
     else
     {
@@ -468,7 +468,7 @@ $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL_TYPE']=='profe
 
 if( $type_generique || $type_individuel )
 {
-  $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
+  $jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
   // Initialiser au cas où $aff_coef / $aff_socle / $aff_lien sont à 0
   $texte_coef       = '';
   $texte_socle      = '';

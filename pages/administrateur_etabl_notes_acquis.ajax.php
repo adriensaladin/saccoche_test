@@ -166,7 +166,7 @@ if( ($action=='save_acquis') && isset($_POST['acquis_actif']) && isset($_POST['a
 if($action=='upload_symbole')
 {
   // Récupération du fichier
-  $fichier_nom_tmp = 'symbole_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fichier_nom_tmp = 'symbole_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom_tmp.'.<EXT>' /*fichier_nom*/ , array('gif','png','bmp','jpg','jpeg') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {

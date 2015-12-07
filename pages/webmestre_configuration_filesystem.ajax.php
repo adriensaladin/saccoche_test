@@ -84,7 +84,7 @@ if($action=='appliquer_chmod')
     $tbody .= (@chmod($fichier,$mode_fichier)) ? '<tr><td class="v">Droits appliqués au fichier</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Permission insuffisante sur ce fichier pour en modifier les droits</td><td>'.$fichier.'</td></tr>' ;
   }
   // Enregistrement du rapport
-  $fichier_nom = 'rapport_chmod_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+  $fichier_nom = 'rapport_chmod_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
   Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
 }
@@ -117,7 +117,7 @@ if($action=='verif_droits')
     $tbody .= (@is_writable($fichier)) ? '<tr><td class="v">Fichier accessible en écriture</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Fichier aux droits insuffisants</td><td>'.$fichier.'</td></tr>' ;
   }
   // Enregistrement du rapport
-  $fichier_nom = 'rapport_droits_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+  $fichier_nom = 'rapport_droits_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
   Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
 }

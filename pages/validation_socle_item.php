@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Valider les items du socle"));
 
-if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_VALIDATION_ENTREE'],'li');
+  echo afficher_profils_droit_specifique($_SESSION['DROIT_VALIDATION_ENTREE'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -50,7 +50,7 @@ if($_SESSION['USER_JOIN_GROUPES']=='all') // Directeurs et CPE, ces derniers aya
 }
 else // Ne passent ici que les professeurs
 {
-  if(Outil::test_droit_specifique_restreint($_SESSION['DROIT_VALIDATION_ENTREE'],'ONLY_PP'))
+  if(test_droit_specifique_restreint($_SESSION['DROIT_VALIDATION_ENTREE'],'ONLY_PP'))
   {
     $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']);
     $of_g = FALSE;

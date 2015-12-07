@@ -100,7 +100,7 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 // Logs d'infos au cas où un trop grand nombre de variables seraient postées (par défaut max_input_vars est configuré dans PHP à 1000, et en cas de dépassement les logs indiquent juste "in Unknown on line 0").
 if(count($_POST)>999)
 {
-  Outil::ajouter_log_PHP( 'Trop de variables postées' /*log_objet*/ , 'Page '.$PAGE /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
+  ajouter_log_PHP( 'Trop de variables postées' /*log_objet*/ , 'Page '.$PAGE /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
 }
 
 // Jeton CSRF

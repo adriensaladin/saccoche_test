@@ -45,8 +45,8 @@ if($admin_id)
   $admin_prenom = $DB_ROW['user_prenom'];
   $admin_login  = $DB_ROW['user_login'];
   // Générer un nouveau mdp de l'admin
-  $admin_password = Outil::fabriquer_mdp();
-  DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,Outil::crypter_mdp($admin_password));
+  $admin_password = fabriquer_mdp();
+  DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
   // On affiche le retour
   Json::add_str('<ul class="puce">');
   Json::add_str('<li>Le mot de passe administrateur de <em>'.html($admin_prenom.' '.$admin_nom).'</em> vient d\'être réinitialisé.</li>');

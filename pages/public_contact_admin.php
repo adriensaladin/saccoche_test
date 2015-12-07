@@ -72,7 +72,7 @@ if($courriel)
 }
 
 // Protection contre les robots (pour éviter des envois intempestifs de courriels)
-list($html_imgs,$captcha_soluce) = Outil::captcha();
+list($html_imgs,$captcha_soluce) = captcha();
 $_SESSION['TMP']['CAPTCHA'] = array(
   'TIME'   => $_SERVER['REQUEST_TIME'] ,
   'DELAI'  => 4, // en secondes, est ensuite incrémenté en cas d'erreur

@@ -101,7 +101,7 @@ if(count($tab_add))
     {
       // Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement...
       // Construire le login
-      $login = Outil::fabriquer_login($tab_memo_analyse['ajouter'][$i_fichier]['prenom'] , $tab_memo_analyse['ajouter'][$i_fichier]['nom'] , $tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle']);
+      $login = fabriquer_login($tab_memo_analyse['ajouter'][$i_fichier]['prenom'] , $tab_memo_analyse['ajouter'][$i_fichier]['nom'] , $tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle']);
       // Puis tester le login (parmi tout le personnel de l'établissement)
       if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login) )
       {
@@ -111,14 +111,14 @@ if(count($tab_add))
       // Construire le password
       if( ($import_profil!='eleve') || (!$_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI']['ELV']) || (empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date'])) )
       {
-        $password = Outil::fabriquer_mdp($tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle']);
+        $password = fabriquer_mdp($tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle']);
       }
       else
       {
         $password = str_replace('/','',$tab_memo_analyse['ajouter'][$i_fichier]['birth_date']);
       }
       // Attention à la date de naissance, définie seulement pour les élèves
-      $birth_date = empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ? NULL : To::date_french_to_mysql($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ;
+      $birth_date = empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ? NULL : convert_date_french_to_mysql($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ;
       // Ajouter l'utilisateur
       $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur(
         $tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'],
@@ -132,7 +132,7 @@ if(count($tab_add))
         $tab_memo_analyse['ajouter'][$i_fichier]['courriel'],
         $tab_memo_analyse['ajouter'][$i_fichier]['email_origine'],
         $login,
-        Outil::crypter_mdp($password),
+        crypter_mdp($password),
         $tab_memo_analyse['ajouter'][$i_fichier]['classe']
       );
       if($import_profil=='professeur')
@@ -167,7 +167,7 @@ if(count($tab_mod))
     {
       if($tab_memo_analyse['modifier'][$id_base][$champ_ref] !== FALSE)
       {
-        $DB_VAR[':'.$champ_ref] = ($champ_ref!='birth_date') ? $tab_memo_analyse['modifier'][$id_base][$champ_ref] : To::date_french_to_mysql($tab_memo_analyse['modifier'][$id_base][$champ_ref]) ;
+        $DB_VAR[':'.$champ_ref] = ($champ_ref!='birth_date') ? $tab_memo_analyse['modifier'][$id_base][$champ_ref] : convert_date_french_to_mysql($tab_memo_analyse['modifier'][$id_base][$champ_ref]) ;
       }
     }
     if($tab_memo_analyse['modifier'][$id_base]['entree'] !== FALSE)
@@ -200,7 +200,7 @@ foreach($DB_TAB as $DB_ROW)
     $class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
     $td_password = (isset($tab_password[$DB_ROW['user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;
     $champ = ($import_profil=='eleve') ? $DB_ROW['groupe_ref'] : $DB_ROW['user_profil_nom_court_singulier'] ;
-    $date_affich = ($DB_ROW['user_sortie_date']!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($DB_ROW['user_sortie_date']) : '-' ;
+    $date_affich = ($DB_ROW['user_sortie_date']!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($DB_ROW['user_sortie_date']) : '-' ;
     $lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_sconet_id']).'</td><td>'.html($DB_ROW['user_sconet_elenoet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$date_affich.'</td></tr>'.NL;
   }
 }
@@ -215,7 +215,7 @@ if($nb_add)
 {
   // On archive les nouveaux identifiants dans un fichier tableur (csv tabulé)
   $profil = ($import_profil=='eleve') ? 'eleve' : ( ($import_profil=='parent') ? 'parent' : 'personnel' ) ;
-  $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.csv' , To::csv($fcontenu_csv) );
   // On archive les nouveaux identifiants dans un fichier pdf (classe fpdf + script étiquettes)
   $pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));

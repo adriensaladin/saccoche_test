@@ -145,7 +145,7 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
     }
   }
   $fichier_extension = ($action=='export_lpc') ? 'xml' : 'zip' ;
-  $fichier_nom = str_replace('export_','import-',$action).'-'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
+  $fichier_nom = str_replace('export_','import-',$action).'-'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$fichier_extension; // LPC recommande le modèle "import-lpc-{timestamp}.xml"
   if($action=='export_lpc')
   {
     $xml.= '  </donnees>'."\r\n";
@@ -195,7 +195,7 @@ if( in_array( $action , array('import_sacoche','import_compatible') ) )
 {
   // Récupération du fichier
   // Si c'est un fichier zippé, on considère alors que c'est un zip devant venir de SACoche, et contenant import_validations.xml
-  $fichier_nom = 'import_validations_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.xml';
+  $fichier_nom = 'import_validations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.xml';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('xml','zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , 'import_validations.xml' /*filename_in_zip*/ );
   if($result!==TRUE)
   {

@@ -125,8 +125,8 @@ if( ($action=='import_gepi') && $periode_id )
   // Récupération des données du fichier
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   // Aanalyse et maj du contenu de la base
   $tab_users_fichier = array();
@@ -196,8 +196,8 @@ if( ($action=='import_pronote') && $periode_id )
       $nb_absence    = ($eleve->DEMI_JOUR)  ? Clean::entier($eleve->DEMI_JOUR) : NULL ;
       $nb_absence_nj = ($eleve->REGLE) && ($eleve->REGLE=='N') ? $nb_absence   : 0 ;
       $id            = ($eleve->ID_ELEVE)   ? Clean::entier($eleve->ID_ELEVE)  : $nom.'.'.$prenom ;
-      $date_debut    = ($eleve->DATE_DEBUT) ? To::date_french_to_mysql($eleve->DATE_DEBUT) : NULL ;
-      $date_fin      = ($eleve->DATE_FIN)   ? To::date_french_to_mysql($eleve->DATE_FIN)   : NULL ;
+      $date_debut    = ($eleve->DATE_DEBUT) ? convert_date_french_to_mysql($eleve->DATE_DEBUT) : NULL ;
+      $date_fin      = ($eleve->DATE_FIN)   ? convert_date_french_to_mysql($eleve->DATE_FIN)   : NULL ;
       if( $nom && $prenom && $nb_absence && $date_debut && $date_fin )
       {
         if(!isset($tab_users_fichier[$id]))
@@ -234,7 +234,7 @@ if( ($action=='import_pronote') && $periode_id )
       $prenom = ($eleve->PRENOM) ? Clean::prenom($eleve->PRENOM)  : NULL ;
       $nb_retard_nj = ($eleve->REGLE) && ($eleve->REGLE=='N') ? 1 : 0 ;
       $id     = $nom.'.'.$prenom ;
-      $date   = ($eleve->DATE)   ? To::date_french_to_mysql($eleve->DATE) : NULL ;
+      $date   = ($eleve->DATE)   ? convert_date_french_to_mysql($eleve->DATE) : NULL ;
       if( $nom && $prenom && $date )
       {
         if(!isset($tab_users_fichier[$id]))
@@ -271,8 +271,8 @@ if( ($action=='import_pronote') && $periode_id )
   Json::add_tab( array(
     'objet'      => $objet ,
     'eleves_nb'  => $nb_eleves_trouves ,
-    'date_debut' => To::date_mysql_to_french($memo_date_debut) ,
-    'date_fin'   => To::date_mysql_to_french($memo_date_fin) ,
+    'date_debut' => convert_date_mysql_to_french($memo_date_debut) ,
+    'date_fin'   => convert_date_mysql_to_french($memo_date_fin) ,
   ) );
   Json::end( TRUE );
 }

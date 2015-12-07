@@ -74,7 +74,7 @@ class Erreur500
    * Source : http://pmol.fr/programmation/web/la-gestion-des-erreurs-en-php/
    * Mais ça ne fonctionne pas en CGI : PHP a déjà envoyé l'erreur 500 et cette fonction est appelée trop tard, PHP n'a plus la main.
    * Pour avoir des informations accessibles en cas d'erreur type « PHP Fatal error : Allowed memory size of ... bytes exhausted » on peut aussi mettre dans les pages sensibles :
-   * ajouter_log_PHP( 'Demande de bilan' , serialize($_POST) , __FILE__ , __LINE__ , TRUE );
+   * Outil::ajouter_log_PHP( 'Demande de bilan' , serialize($_POST) , __FILE__ , __LINE__ , TRUE );
    * 
    * @param void
    * @return void

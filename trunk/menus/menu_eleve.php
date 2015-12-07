@@ -86,37 +86,37 @@ $tab_sous_menu = array
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Voir le paramètrage des codes et des états d'acquisition.
-if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_NOTES_ACQUIS']))
+if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_NOTES_ACQUIS']))
 {
   $tab_sous_menu['information']['consultation_codes_couleurs']['class'] .= ' disabled';
 }
 
 // Voir et simuler l'algorithme de calcul.
-if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
+if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
 {
   $tab_sous_menu['information']['consultation_algorithme']['class'] .= ' disabled';
 }
 
 // Voir les référentiels en place (dans l'établissement) (pas de restriction pour le profil [administrateur]).
-if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']))
+if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']))
 {
   $tab_sous_menu['information']['consultation_referentiel_interne']['class'] .= ' disabled';
 }
 
 // Changer son mot de passe (pas de restriction pour les profils [administrateur] et [webmestre]).
-if(!test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
+if(!Outil::test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
 {
   $tab_sous_menu['parametrage']['compte_password']['class'] .= ' disabled';
 }
 
 // Grille d'items d'un référentiel.
-if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
+if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 {
   $tab_sous_menu['releve']['releve_grille_referentiel']['class'] .= ' disabled';
 }
 
 // Relevé de maîtrise du socle (profils [parent] et [eleve] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']))
+if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']))
 {
   $tab_sous_menu['releve']['releve_socle']['class'] .= ' disabled';
 }
@@ -126,7 +126,7 @@ $tab_droits = array( 'FICHE_BREVET' , 'OFFICIEL_RELEVE' , 'OFFICIEL_BULLETIN' , 
 $droit_voir_archives_pdf = FALSE;
 foreach($tab_droits as $droit)
 {
-  $droit_voir_archives_pdf = $droit_voir_archives_pdf || test_user_droit_specifique($_SESSION['DROIT_'.$droit.'_VOIR_ARCHIVE']) ;
+  $droit_voir_archives_pdf = $droit_voir_archives_pdf || Outil::test_user_droit_specifique($_SESSION['DROIT_'.$droit.'_VOIR_ARCHIVE']) ;
 }
 if(!$droit_voir_archives_pdf)
 {

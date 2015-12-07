@@ -116,7 +116,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
     if($DB_ROW['validation_pilier_etat'])
     {
       $tab_bad[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="V3">';
-      $tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="V'.$DB_ROW['validation_pilier_etat'].'" title="Validé le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'" data-etat="lock">';
+      $tab_bon[] = 'U'.$DB_ROW['user_id'].'C'.$DB_ROW['pilier_id'].'" class="V'.$DB_ROW['validation_pilier_etat'].'" title="Validé le '.To::date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'" data-etat="lock">';
     }
   }
   $affichage = str_replace($tab_bad,$tab_bon,$affichage);

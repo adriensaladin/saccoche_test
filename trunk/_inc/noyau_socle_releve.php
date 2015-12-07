@@ -37,7 +37,7 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$fichier_nom = ($make_action!='imprimer') ? 'releve_socle_detail_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea() ;
 
 // Tableau des langues
 
@@ -207,7 +207,7 @@ if($test_affichage_Validation)
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($liste_eleve,$listing_entree_id,$domaine_id=0,$pilier_id=0,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les entrées
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_user_entree[$DB_ROW['user_id']][$DB_ROW['entree_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
+    $tab_user_entree[$DB_ROW['user_id']][$DB_ROW['entree_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>To::date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
   }
   // On commence par remplir tout le tableau des piliers pour ne pas avoir ensuite à tester tout le temps si le champ existe
   foreach($tab_eleve_id as $eleve_id)
@@ -222,7 +222,7 @@ if($test_affichage_Validation)
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($liste_eleve,$listing_pilier_id,$palier_id=0); // en fait on connait aussi le palier mais la requête est plus simple (pas de jointure) avec les piliers
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_user_pilier[$DB_ROW['user_id']][$DB_ROW['pilier_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);
+    $tab_user_pilier[$DB_ROW['user_id']][$DB_ROW['pilier_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>To::date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);
   }
 }
 
@@ -276,11 +276,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 {
                   extract($tab_item[$item_id]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $matiere_nb_demandes $calcul_methode $calcul_limite
                   // calcul du bilan de l'item
-                  $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+                  $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
                   if($score!==FALSE)
                   {
                     // on détermine si il est acquis ou pas
-                    $indice = determiner_etat_acquisition( $score );
+                    $indice = OutilBilan::determiner_etat_acquisition( $score );
                     // le détail HTML
                     if($make_html)
                     {
@@ -330,7 +330,7 @@ if($test_affichage_Pourcentage)
   // {
   //   foreach($tab_pilier_eleve as $eleve_id=>$tab_scores)
   //   {
-  //     $tab_score_pilier_eleve[$pilier_id][$eleve_id]['%'] = ($tab_scores['nb']) ? calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
+  //     $tab_score_pilier_eleve[$pilier_id][$eleve_id]['%'] = ($tab_scores['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
   //   }
   // }
   // Pour les sections
@@ -338,7 +338,7 @@ if($test_affichage_Pourcentage)
   // {
   //   foreach($tab_section_eleve as $eleve_id=>$tab_scores)
   //   {
-  //     $tab_score_section_eleve[$section_id][$eleve_id]['%'] = ($tab_scores['nb']) ? calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
+  //     $tab_score_section_eleve[$section_id][$eleve_id]['%'] = ($tab_scores['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
   //   }
   // }
   // Pour les items du socle
@@ -346,7 +346,7 @@ if($test_affichage_Pourcentage)
   {
     foreach($tab_socle_eleve as $eleve_id=>$tab_scores)
     {
-      $tab_score_socle_eleve[$socle_id][$eleve_id]['%'] = ($tab_scores['nb']) ? calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
+      $tab_score_socle_eleve[$socle_id][$eleve_id]['%'] = ($tab_scores['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_scores , $tab_scores['nb'] ) : FALSE ;
     }
   }
 }
@@ -497,7 +497,7 @@ if($make_pdf)
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
   extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_langue
-  $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
+  $date_naissance = ($date_naissance) ? To::date_mysql_to_french($date_naissance) : '' ;
   if($make_officiel)
   {
     // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
@@ -791,7 +791,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
     // État de maîtrise du socle - Date de naissance
     if( ($make_officiel) && ($date_naissance) && ( ($make_html) || ($make_graph) ) )
     {
-      $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
+      $releve_HTML .= '<div class="i">'.To::texte_ligne_naissance($date_naissance).'</div>'.NL;
     }
     // État de maîtrise du socle - Légende
     if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') && empty($is_appreciation_groupe) )

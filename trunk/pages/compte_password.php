@@ -32,11 +32,11 @@ $TITRE = html(Lang::_("Changer son mot de passe"));
 Layout::add( 'js_inline_before' , 'var PASSWORD_LONGUEUR_MIN = '.$_SESSION['USER_MDP_LONGUEUR_MINI'].';' );
 Layout::add( 'js_inline_before' , 'var PASSWORD_LONGUEUR_MAX = '.PASSWORD_LONGUEUR_MAX.';' );
 
-if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','partenaire')) && !test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']) )
+if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','partenaire')) && !Outil::test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']) )
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_MODIFIER_MDP'],'li');
+  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_MODIFIER_MDP'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 

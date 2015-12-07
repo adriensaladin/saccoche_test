@@ -47,7 +47,7 @@ $tab_objet  = array('imprimer','voir_archive');
 $tab_action = array('initialiser','imprimer');
 
 $bilan_type = 'brevet';
-$annee_session_brevet = annee_session_brevet();
+$annee_session_brevet = To::annee_session_brevet();
 
 // On vérifie les paramètres principaux
 
@@ -80,7 +80,7 @@ if(!$DB_ROW['listing_user_id'])
   Json::end( FALSE , 'Aucun élève concerné dans cette classe !' );
 }
 
-if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
+if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
   Json::end( FALSE , 'Droits insuffisants pour cette action !' );
 }
@@ -119,7 +119,7 @@ if($ACTION=='initialiser')
     if($OBJET=='imprimer')
     {
       $checked    = (isset($DB_TAB[$eleve_id])) ? '' : ' checked' ;
-      $archive_td = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']) : 'Non' ;
+      $archive_td = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']) : 'Non' ;
       Json::add_str('<tr id="id_'.$eleve_id.'">');
       Json::add_str(  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$eleve_id.'"'.$checked.' /></td>');
       Json::add_str(  '<td class="label">'.$tab_eleve_td[$eleve_id].'</td>');
@@ -132,10 +132,10 @@ if($ACTION=='initialiser')
       {
         $archive_td = 'Non, pas encore imprimé' ;
       }
-      elseif(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $annee_session_brevet )))
+      elseif(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $annee_session_brevet )))
       {
         $_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-        $archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" target="_blank">Oui, le '.convert_date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
+        $archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" target="_blank">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
       }
       else
       {
@@ -161,7 +161,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
   {
     list( $eleve_identite , $page_numero ) = $tab_tirages[1];
     DB_STRUCTURE_BREVET::DB_modifier_brevet_fichier($eleve_id);
-    $fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $annee_session_brevet );
+    $fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $annee_session_brevet );
     unset($_SESSION['tmp']['tab_pages_decoupe_pdf'][$eleve_id][1]);
     $releve_pdf = new PDFMerger;
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_numero ) -> merge( 'file' , $fichier_extraction_chemin );
@@ -250,11 +250,11 @@ else
   extract($DB_ROW);  // $geo_departement_nom $geo_academie_nom
 }
 
-$annee_session_brevet = annee_session_brevet();
+$annee_session_brevet = To::annee_session_brevet();
 
 // Tag date heure initiales
 
-$tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
+$tag_date_heure_initiales = date('d/m/Y H:i').' '.To::texte_identite($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initialisation de variables supplémentaires

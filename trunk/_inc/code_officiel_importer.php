@@ -161,7 +161,7 @@ if($ACTION=='generer_csv_vierge')
     }
     $export_csv .= "\r\n"; // une valeur NULL donnera une chaine vide
   }
-  $fnom_export = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.Clean::fichier($BILAN_TYPE).'_'.Clean::fichier($periode_nom).'_'.Clean::fichier($groupe_nom).'_'.$BILAN_ETAT.'_'.fabriquer_fin_nom_fichier__date_et_alea().'.csv';
+  $fnom_export = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.Clean::fichier($BILAN_TYPE).'_'.Clean::fichier($periode_nom).'_'.Clean::fichier($groupe_nom).'_'.$BILAN_ETAT.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.csv';
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom_export , To::csv($export_csv) );
   Json::end( TRUE , $fnom_export );
 }
@@ -173,7 +173,7 @@ if($ACTION=='generer_csv_vierge')
 if($ACTION=='uploader_saisie_csv')
 {
   // Récupération du fichier
-  $fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.Clean::fichier($BILAN_TYPE).'_'.$periode_id.'_'.$groupe_id.'_'.$BILAN_ETAT.'_'.fabriquer_fin_nom_fichier__date_et_alea();
+  $fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.Clean::fichier($BILAN_TYPE).'_'.$periode_id.'_'.$groupe_id.'_'.$BILAN_ETAT.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom.'.<EXT>' /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -182,12 +182,12 @@ if($ACTION=='uploader_saisie_csv')
   // On passe au contenu
   $contenu_csv = file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   $contenu_csv = To::deleteBOM(To::utf8($contenu_csv)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu_csv); // Extraire les lignes du fichier
+  $tab_lignes = OutilCSV::extraire_lignes($contenu_csv); // Extraire les lignes du fichier
   if(count($tab_lignes)<4)
   {
     Json::end( FALSE , 'Absence de données suffisantes (fichier comportant moins de 4 lignes) !' );
   }
-  $separateur = extraire_separateur_csv($tab_lignes[2]); // Déterminer la nature du séparateur
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[2]); // Déterminer la nature du séparateur
   // Données de la ligne d'en-tête
   $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   unset($tab_lignes[0]);

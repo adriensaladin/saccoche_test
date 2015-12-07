@@ -92,7 +92,7 @@ foreach($tab_eleves as $eleve_id => $user_reference)
 
 // Enregistrer le fichier csv / Retour
 
-$fichier_nom = 'export_notanet'.'_'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+$fichier_nom = 'export_notanet'.'_'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.txt';
 FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , To::csv($csv_contenu) );
 
 // Retour

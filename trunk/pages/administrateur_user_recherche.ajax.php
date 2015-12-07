@@ -71,7 +71,7 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
       $_SESSION['tmp'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_singulier'];
       // Formater la date
       $date_mysql  = $DB_ROW['user_sortie_date'];
-      $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($date_mysql) : '-' ;
+      $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
       // Afficher une ligne du tableau
       Json::add_str('<tr id="id_'.$DB_ROW['user_id'].'">');
       Json::add_str(  '<td>'.html($DB_ROW['user_id_ent']).'</td>');
@@ -157,7 +157,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   {
     if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+      list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
       if(!$is_domaine_valide)
       {
         Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -177,7 +177,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   }
   else
   {
-    $sortie_date_mysql = convert_date_french_to_mysql($sortie_date);
+    $sortie_date_mysql = To::date_french_to_mysql($sortie_date);
   }
   // Mettre à jour l'enregistrement
   $tab_donnees += array(

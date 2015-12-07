@@ -145,7 +145,7 @@ if($action=='afficher')
 if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré si fichier envoyé trop volumineux
 {
   // Récupération du fichier
-  $fichier_nom = 'photos_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
+  $fichier_nom = 'photos_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -219,7 +219,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   // Supprimer le dossier temporaire
   FileSystem::supprimer_dossier($dossier_temp);
   // Enregistrement du rapport
-  $fichier_nom = 'rapport_zip_photos_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.html';
+  $fichier_nom = 'rapport_zip_photos_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
   // retour
   Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );

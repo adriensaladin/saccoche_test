@@ -42,7 +42,7 @@ $connecteurs   = (isset($_POST['f_connecteurs']))  ? Clean::texte($_POST['f_conn
 if( ($action=='ajouter') && $denomination && $nom && $prenom && $courriel && $connecteurs )
 {
   // Vérifier le domaine du serveur mail (hébergement Sésamath donc serveur ouvert sur l'extérieur).
-  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+  list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
     Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -51,9 +51,9 @@ if( ($action=='ajouter') && $denomination && $nom && $prenom && $courriel && $co
   $connecteurs = (mb_substr($connecteurs,0,1)==',') ? $connecteurs : ','.$connecteurs ;
   $connecteurs = (mb_substr($connecteurs,-1) ==',') ? $connecteurs : $connecteurs.',' ;
   // Générer un mdp aléatoire
-  $password = fabriquer_mdp();
+  $password = Outil::fabriquer_mdp();
   // Insérer l'enregistrement
-  $partenaire_id = DB_WEBMESTRE_WEBMESTRE::DB_ajouter_partenaire_conventionne( $denomination , $nom , $prenom , $courriel , crypter_mdp($password) , $connecteurs );
+  $partenaire_id = DB_WEBMESTRE_WEBMESTRE::DB_ajouter_partenaire_conventionne( $denomination , $nom , $prenom , $courriel , Outil::crypter_mdp($password) , $connecteurs );
   // Envoyer un courriel
   $texte = Webmestre::contenu_courriel_partenaire_ajout( $denomination , $nom , $prenom , $password , URL_DIR_SACOCHE );
   $courriel_bilan = Sesamail::mail( $courriel , 'Création compte partenaire ENT' , $texte );
@@ -85,7 +85,7 @@ if( ($action=='ajouter') && $denomination && $nom && $prenom && $courriel && $co
 if( ($action=='modifier') && $partenaire_id && $denomination && $nom && $prenom && $courriel && $connecteurs )
 {
   // Vérifier le domaine du serveur mail (hébergement Sésamath donc serveur ouvert sur l'extérieur).
-  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+  list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
     Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -117,9 +117,9 @@ if( ($action=='modifier') && $partenaire_id && $denomination && $nom && $prenom 
 if( ($action=='initialiser_mdp') && $partenaire_id && $denomination && $nom && $prenom && $courriel )
 {
   // Générer un nouveau mdp
-  $password = fabriquer_mdp();
+  $password = Outil::fabriquer_mdp();
   // Mettre à jour l'enregistrement
-  DB_WEBMESTRE_WEBMESTRE::DB_modifier_partenaire_conventionne_mdp( $partenaire_id , crypter_mdp($password) );
+  DB_WEBMESTRE_WEBMESTRE::DB_modifier_partenaire_conventionne_mdp( $partenaire_id , Outil::crypter_mdp($password) );
   // Envoyer un courriel
   $courriel_contenu = Webmestre::contenu_courriel_partenaire_nouveau_mdp( $denomination , $nom , $prenom , $password , URL_DIR_SACOCHE );
   $courriel_bilan = Sesamail::mail( $courriel , 'Modification mdp compte partenaire ENT' , $courriel_contenu );

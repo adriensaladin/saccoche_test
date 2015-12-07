@@ -91,7 +91,7 @@ if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='5compl
   Json::end( FALSE , 'Bilan interdit d\'accès pour cette action !' );
 }
 
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
+if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
   $is_bouton_test_impression = ($eleve_id) ? TRUE : FALSE ;
 }
@@ -151,14 +151,14 @@ $tab_moyenne_exception_matieres = ( ($BILAN_TYPE!='bulletin') || !$_SESSION['OFF
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $prof_info = ($DB_ROW['prof_id']) ? afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
+  $prof_info = ($DB_ROW['prof_id']) ? To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
   $note = !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ? $DB_ROW['saisie_note'] : NULL ;
   $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
 }
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BILAN_TYPE , $periode_id , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $prof_info = ($DB_ROW['prof_id']) ? afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
+  $prof_info = ($DB_ROW['prof_id']) ? To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
   $note = !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ? $DB_ROW['saisie_note'] : NULL ;
   $tab_saisie[0][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
 }
@@ -186,14 +186,14 @@ if( $affichage_prof_principal )
   }
   else if(count($DB_TAB)==1)
   {
-    $texte_prof_principal = 'Professeur principal : '.afficher_identite_initiale($DB_TAB[0]['user_nom'],FALSE,$DB_TAB[0]['user_prenom'],TRUE,$DB_TAB[0]['user_genre']);
+    $texte_prof_principal = 'Professeur principal : '.To::texte_identite($DB_TAB[0]['user_nom'],FALSE,$DB_TAB[0]['user_prenom'],TRUE,$DB_TAB[0]['user_genre']);
   }
   else
   {
     $tab_pp = array();
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_pp[] = afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre']);
+      $tab_pp[] = To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre']);
     }
     $texte_prof_principal = 'Professeurs principaux : '.implode(' ; ',$tab_pp);
   }
@@ -211,7 +211,7 @@ $make_html     = ( ($BILAN_TYPE=='bulletin') && ($mode=='graphique') ) ? FALSE :
 $make_pdf      = FALSE;
 $make_csv      = FALSE;
 $make_graph    = ( ($BILAN_TYPE=='bulletin') && ($mode=='graphique') ) ? TRUE : FALSE ;
-$droit_corriger_appreciation = test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
+$droit_corriger_appreciation = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 
 if($BILAN_TYPE=='releve')
 {

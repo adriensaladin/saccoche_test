@@ -72,14 +72,14 @@ Layout::add( 'js_inline_before' , 'var tab_msg_contenus  = new Array();' );
       Layout::add( 'js_inline_before' , '// <![CDATA[' );
       foreach($DB_TAB as $DB_ROW)
       {
-        $date_debut_affich = convert_date_mysql_to_french($DB_ROW['message_debut_date']);
-        $date_fin_affich   = convert_date_mysql_to_french($DB_ROW['message_fin_date']);
+        $date_debut_affich = To::date_mysql_to_french($DB_ROW['message_debut_date']);
+        $date_fin_affich   = To::date_mysql_to_french($DB_ROW['message_fin_date']);
         $destinataires_nombre = ($DB_ROW['destinataires_nombre']>1) ? $DB_ROW['destinataires_nombre'].' sélections' : $DB_ROW['destinataires_nombre'].' sélection' ;
         echo'<tr id="id_'.$DB_ROW['message_id'].'">';
         echo  '<td>'.$date_debut_affich.'</td>';
         echo  '<td>'.$date_fin_affich.'</td>';
         echo  '<td>'.$destinataires_nombre.'</td>';
-        echo  '<td>'.html(afficher_texte_tronque($DB_ROW['message_contenu'],60)).'</td>';
+        echo  '<td>'.html(Outil::afficher_texte_tronque($DB_ROW['message_contenu'],60)).'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier ce message."></q>';
         echo    '<q class="supprimer" title="Supprimer ce message."></q>';

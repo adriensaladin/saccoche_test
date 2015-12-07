@@ -65,27 +65,27 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   $info_rentree  = FALSE ;
   if(!DB_STRUCTURE_ADMINISTRATEUR::DB_compter_matieres_etabl())
   {
-    $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucune matière n\'est choisie pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
+    $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucune matière n\'est choisie pour l\'établissement !<br /><a href="./index.php?page=administrateur_etabl_matiere">Gestion des matières.</a></p>';
     $alerte_novice = TRUE ;
   }
   if(!DB_STRUCTURE_ADMINISTRATEUR::DB_compter_niveaux_etabl( TRUE /*with_specifiques*/ ))
   {
-    $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucun niveau n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
+    $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucun niveau n\'est choisi pour l\'établissement !<br /><a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
     $alerte_novice = TRUE ;
   }
   elseif(!DB_STRUCTURE_ADMINISTRATEUR::DB_compter_niveaux_etabl( FALSE /*with_specifiques*/ ))
   {
-    $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucun niveau de classe n\'est choisi pour l\'établissement ! <a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
+    $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucun niveau de classe n\'est choisi pour l\'établissement !<br /><a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
     $alerte_novice = TRUE ;
   }
   if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annees_scolaires_precedentes())
   {
-    $tab_accueil['alert']['contenu'] .= '<p class="danger">Année scolaire précédente non archivée ! Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
+    $tab_accueil['alert']['contenu'] .= '<p class="danger">Année scolaire précédente non archivée !<br />Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
     $info_rentree  = TRUE ;
   }
   if(!$_SESSION['USER_EMAIL'])
   {
-    $tab_accueil['alert']['contenu'] .= '<p class="danger">Votre adresse de courriel n\'est pas renseignée ! <a href="./index.php?page=compte_email">Saisir une adresse e-mail</a> pour ne pas être bloqué en cas de perte de mot de passe.</p>';
+    $tab_accueil['alert']['contenu'] .= '<p class="danger">Votre adresse de courriel n\'est pas renseignée !<br /><a href="./index.php?page=compte_email">Saisir une adresse e-mail</a> pour ne pas être bloqué en cas de perte de mot de passe.</p>';
   }
   if($alerte_novice)
   {
@@ -192,12 +192,12 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
     // volontairement pas en pop-up mais dans un nouvel onglet
     $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a target="_blank" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
-  if( $info_rentree || test_periode_rentree() )
+  if( $info_rentree || Outil::test_periode_rentree() )
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
     $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a target="_blank" href="'.SERVEUR_GUIDE_RENTREE.'">Guide de changement d\'année d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
-  if( test_periode_sortie() )
+  if( Outil::test_periode_sortie() )
   {
     $lien_contact_referent = (HEBERGEUR_INSTALLATION=='multi-structures') ? '<a href="./index.php?page=administrateur_etabl_identite"><span class="b">indiquer le nouveau contact référent éventuel</span></a> et à ' : '' ;
     $tab_accueil['user']['contenu'] .= '<p><span class="danger">Si vous passez la main à la prochaine rentrée</span>, alors pensez à '.$lien_contact_referent.'<a href="./index.php?page=administrateur_administrateur"><span class="b">transmettre des identifiants d\'administrateur</span></a>.</p>';
@@ -250,8 +250,8 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
     {
       $findme = ','.$_SESSION['USER_ID'].',';
       $tab_accueil['messages']['contenu'][$DB_ROW['message_id']] = array(
-        'titre'   => html(Lang::_("Message")).' ('.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).')',
-        'message' => make_lien(nl2br(html($DB_ROW['message_contenu'])),'html'),
+        'titre'   => html(Lang::_("Message")).' ('.html(To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).')',
+        'message' => Outil::make_lien(nl2br(html($DB_ROW['message_contenu'])),'html'),
         'visible' => (strpos($DB_ROW['message_dests_cache'],$findme)===FALSE),
       );
     }
@@ -287,8 +287,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       $text_eleve_nom = ($nb_eleves>1) ? html($tab_eleve_info['texte']).' || ' : '' ;
       foreach($DB_TAB as $DB_ROW)
       {
-        $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-        $tab_accueil['previsions']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+        $date_affich = To::date_mysql_to_french($DB_ROW['devoir_date']);
+        $tab_accueil['previsions']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(To::texte_identite($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
       }
       $tab_accueil['previsions']['contenu'].= '</ul>';
     }
@@ -320,8 +320,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       $text_eleve_nom = ($nb_eleves>1) ? html($tab_eleve_info['texte']).' || ' : '' ;
       foreach($DB_TAB as $DB_ROW)
       {
-        $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-        $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+        $date_affich = To::date_mysql_to_french($DB_ROW['devoir_date']);
+        $tab_accueil['resultats']['contenu'] .= '<li>'.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].$param_eleve_id.'">'.html(To::texte_identite($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
       }
       $tab_accueil['resultats']['contenu'].= '</ul>';
     }
@@ -392,8 +392,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
           $text_eleve_nom  = ($nb_eleves==1) ? '' : html($tab_eleve_info['texte']).' || ' ;
           foreach(${'tab_selection_'.$critere.'_key'} as $item_id => $tab_temp)
           {
-            $date_affich = convert_date_mysql_to_french($DB_TAB[$item_id][0]['saisie_date']);
-            $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note_image($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
+            $date_affich = To::date_mysql_to_french($DB_TAB[$item_id][0]['saisie_date']);
+            $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note_image($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.Outil::afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
           }
           $tab_accueil[$critere]['contenu'].= '</ul>';
         }
@@ -453,8 +453,8 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
     $tab_accueil['saisies']['contenu'].= '<ul class="puce p">';
     foreach($DB_TAB as $DB_ROW)
     {
-      $date_affich = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-      $tab_accueil['saisies']['contenu'] .= '<li>'.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].'&amp;autoeval">'.html(afficher_identite_initiale($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
+      $date_affich = To::date_mysql_to_french($DB_ROW['devoir_date']);
+      $tab_accueil['saisies']['contenu'] .= '<li>'.html($date_affich).' || <a href="./index.php?page=evaluation&amp;section=voir&amp;devoir_id='.$DB_ROW['devoir_id'].'&amp;autoeval">'.html(To::texte_identite($DB_ROW['prof_nom'],FALSE,$DB_ROW['prof_prenom'],TRUE,$DB_ROW['prof_genre'])).' || '.html($DB_ROW['devoir_info']).'</a></li>';
     }
     $tab_accueil['saisies']['contenu'].= '</ul>';
   }
@@ -481,7 +481,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
   $droit_voir_archives_pdf = FALSE;
   foreach($tab_types as $BILAN_TYPE => $tab)
   {
-    $droit_voir_archives_pdf = $droit_voir_archives_pdf || test_user_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
+    $droit_voir_archives_pdf = $droit_voir_archives_pdf || Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
     if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
   }
   if($droit_voir_archives_pdf)
@@ -505,9 +505,9 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
     $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( '' /*BILAN_TYPE*/ , 0 /*periode_id*/ , $tab_eleve_id , TRUE /*with_periode_nom*/ , $_SESSION['USER_PROFIL_TYPE'] /*only_profil_non_vu*/ );
     foreach($DB_TAB as $DB_ROW)
     {
-      if(test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']))
+      if(Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']))
       {
-        if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
+        if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
         {
           $text_eleve_nom  = ($nb_eleves>1) ? html($_SESSION['OPT_PARENT_ENFANTS'][array_search($DB_ROW['user_id'],$tab_eleve_id)]['texte']).' || ' : '' ;
           $tab_accueil['officiel']['nombre'] += 1;

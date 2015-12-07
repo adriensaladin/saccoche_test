@@ -25,58 +25,49 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-
-/*
- * Réciproque de html()
- * 
- * @param string
- * @return string
- */
-function html_decode($text)
+class Math
 {
-  return htmlspecialchars_decode($text,ENT_COMPAT) ;
-}
+
+  // //////////////////////////////////////////////////
+  // Méthodes publiques
+  // //////////////////////////////////////////////////
 
 /**
- * Fonctions utilisées avec array_filter() ; teste si différent de FALSE et de NULL.
- * @return bool
+ * roundTo
+ * Arrondir à une précision donnée, par exemple à 0,5 près
+ * @see   http://fr.php.net/manual/fr/function.round.php#93747
+ * @param float $nombre
+ * @param float $precision
+ * @return float
  */
-function non_vide($n)
+public static function roundTo( $nombre , $precision )
 {
-  return ($n!==FALSE) && ($n!==NULL) ;
-}
-/**
- * Fonctions utilisées avec array_filter() ; teste si différent de zéro.
- * @return bool
- */
-function non_zero($n)
-{
-  return $n!==0 ;
-}
-/**
- * Fonctions utilisées avec array_filter() ; teste si strictement positif.
- * @return bool
- */
-function positif($n)
-{
-  return $n>0 ;
-}
-/**
- * Fonctions utilisées avec array_filter() ; teste si différent "X" (pas "PA" car désormais cela peut être saisi).
- * @return bool
- */
-function sans_rien($note)
-{
-  return $note!='X' ;
-}
-/**
- * Fonctions utilisées avec array_filter() ; teste si différent de 2.
- * @return bool
- */
-function is_renseigne($etat)
-{
-  return $etat!=2 ;
+  return ($precision) ? round( $nombre/$precision , 0 ) * $precision : $nombre ;
 }
 
+/**
+ * ceilTo
+ * Arrondir à une précision donnée, par exemple à 0,5 près, par excès
+ * @param float $nombre
+ * @param float $precision
+ * @return float
+ */
+public static function ceilTo( $nombre , $precision )
+{
+  return ($precision) ? ceil( $nombre/$precision ) * $precision : $nombre ;
+}
+
+/**
+ * floorTo
+ * Arrondir à une précision donnée, par exemple à 0,5 près, par défaut
+ * @param float $nombre
+ * @param float $precision
+ * @return float
+ */
+public static function floorTo( $nombre , $precision )
+{
+  return ($precision) ? floor( $nombre/$precision ) * $precision : $nombre ;
+}
+
+}
 ?>

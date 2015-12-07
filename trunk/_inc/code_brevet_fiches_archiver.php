@@ -37,7 +37,7 @@ $groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
 $bilan_type = 'brevet';
-$annee_session_brevet = annee_session_brevet();
+$annee_session_brevet = To::annee_session_brevet();
 
 // On vérifie les paramètres principaux
 
@@ -319,7 +319,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
 // Enregistrement et affichage du retour.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$fichier_export = 'saisies_'.$bilan_type.'_'.$annee_session_brevet.'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
+$fichier_export = 'saisies_'.$bilan_type.'_'.$annee_session_brevet.'_'.Clean::fichier($classe_nom).'_'.$action.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
 Json::add_str('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>');
 // Et le csv éventuel

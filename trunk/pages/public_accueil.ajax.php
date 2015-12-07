@@ -117,7 +117,7 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
 
 if($action=='tester_version')
 {
-  $version_last = recuperer_numero_derniere_version();
+  $version_last = Outil::recuperer_numero_derniere_version();
   if(!preg_match('#^[0-9]{4}\-[0-9]{2}\-[0-9]{2}[a-z]?$#', $version_last))
   {
     Json::add_tab( array(
@@ -179,7 +179,7 @@ if( ($action=='initialiser') && ($profil=='partenaire') )
 if( ($action=='initialiser') && (HEBERGEUR_INSTALLATION=='mono-structure') && $profil )
 {
   // Mettre à jour la base si nécessaire
-  maj_base_structure_si_besoin($BASE);
+  DBextra::maj_base_structure_si_besoin($BASE);
   // Requête pour récupérer la dénomination et le mode de connexion
   $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"webmestre_denomination","connexion_mode","connexion_nom"');
   foreach($DB_TAB as $DB_ROW)
@@ -213,8 +213,8 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
     Json::end( FALSE , 'Établissement non trouvé dans la base d\'administration !' );
   }
   // Mettre à jour la base si nécessaire
-  charger_parametres_mysql_supplementaires($BASE);
-  maj_base_structure_si_besoin($BASE);
+  DBextra::charger_parametres_mysql_supplementaires($BASE);
+  DBextra::maj_base_structure_si_besoin($BASE);
   // Une deuxième requête sur SACOCHE_STRUCTURE_BD_NAME pour savoir si le mode de connexion est SSO ou pas
   $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"connexion_mode","connexion_nom"');
   foreach($DB_TAB as $DB_ROW)

@@ -142,14 +142,14 @@ if( (HEBERGEUR_INSTALLATION=='multi-structures') && ( $contact_nom || $contact_p
       Json::end( FALSE , 'Erreur avec le domaine qui est restreint à "'.CONTACT_MODIFICATION_MAIL.'" par le webmestre.' );
     }
     // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
-    list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($contact_courriel);
+    list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($contact_courriel);
     if(!$is_domaine_valide)
     {
       Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
     }
   }
   // On met à jour dans la base du webmestre, sans écraser l'existant.
-  charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
+  DBextra::charger_parametres_mysql_supplementaires( 0 /*BASE*/ );
   $DB_ROW = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
   $contact_nom      = (CONTACT_MODIFICATION_USER!='non') ? $contact_nom      : $DB_ROW['structure_contact_nom'] ;
   $contact_prenom   = (CONTACT_MODIFICATION_USER!='non') ? $contact_prenom   : $DB_ROW['structure_contact_prenom'] ;
@@ -168,7 +168,7 @@ if( $etablissement_denomination )
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if( ($etablissement_courriel) && (HEBERGEUR_INSTALLATION=='multi-structures') )
   {
-    list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($etablissement_courriel);
+    list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($etablissement_courriel);
     if(!$is_domaine_valide)
     {
       Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -202,7 +202,7 @@ if( $etablissement_denomination )
 if($action=='upload_logo')
 {
   // Récupération du fichier
-  $fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.<EXT>';
+  $fichier_nom = 'logo_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.<EXT>';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('gif','jpg','jpeg','png') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , 100 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {

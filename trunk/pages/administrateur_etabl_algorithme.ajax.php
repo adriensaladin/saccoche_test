@@ -175,7 +175,7 @@ if($action=='calculer')
         $score = round( array_sum($tab_notes)/count($tab_notes) , 0 );
       }
       // Ligne retournée
-      $bg = 'A'.determiner_etat_acquisition( $score , $acquis_seuil );
+      $bg = 'A'.OutilBilan::determiner_etat_acquisition( $score , $acquis_seuil );
       $tab_lignes[$cas] .= '<td class="'.$bg.'">'.$score.'</td>';
       if( ($cas==0) && ($nb_devoirs!=$nb_devoirs_total) )
       {

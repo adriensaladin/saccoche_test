@@ -57,7 +57,7 @@ if( ($action=='sauvegarder') && $etape )
     // Débloquer l'application
     LockAcces::debloquer_application('automate',$_SESSION['BASE']);
     // Zipper les fichiers de svg
-    $fichier_zip_nom = 'dump_SACoche_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
+    $fichier_zip_nom = 'dump_SACoche_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
     $result = FileSystem::zip_fichiers( $dossier_temp , CHEMIN_DOSSIER_DUMP , $fichier_zip_nom );
     if($result!==TRUE)
     {
@@ -92,7 +92,7 @@ if( ($action=='sauvegarder') && $etape )
 if($action=='uploader')
 {
   // Récupération du fichier
-  $fichier_upload_nom = 'dump_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
+  $fichier_upload_nom = 'dump_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_upload_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {

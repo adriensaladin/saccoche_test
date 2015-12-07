@@ -54,8 +54,8 @@ foreach($DB_TAB as $key => $DB_ROW)
   // Le code js a besoin qu'une option soit sélectionnée
   $selected = $key ? '' : ' selected' ;
   // Formater la date et la référence de l'évaluation
-  $date_affich         = convert_date_mysql_to_french($DB_ROW['devoir_date']);
-  $date_visible_affich = convert_date_mysql_to_french($DB_ROW['devoir_visible_date']);
+  $date_affich         = To::date_mysql_to_french($DB_ROW['devoir_date']);
+  $date_visible_affich = To::date_mysql_to_french($DB_ROW['devoir_visible_date']);
   $option_val = $DB_ROW['devoir_id'].'_'.$DB_ROW['groupe_id'];
   $option_txt = $date_affich.' || '.$date_visible_affich.' || '.html($DB_ROW['devoir_info']);
   Json::add_str('<option value="'.$option_val.'"'.$selected.'>'.$option_txt.'</option>');

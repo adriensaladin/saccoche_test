@@ -38,7 +38,7 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$synthese_modele.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$fichier_nom = ($make_action!='imprimer') ? 'releve_synthese_'.$synthese_modele.'_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea() ;
 
 // Initialisation de tableaux
 
@@ -73,8 +73,8 @@ if( ($make_html) || ($make_pdf) || ($make_graph) )
 
 if($periode_id==0)
 {
-  $date_mysql_debut = convert_date_french_to_mysql($date_debut);
-  $date_mysql_fin   = convert_date_french_to_mysql($date_fin);
+  $date_mysql_debut = To::date_french_to_mysql($date_debut);
+  $date_mysql_fin   = To::date_french_to_mysql($date_fin);
 }
 else
 {
@@ -85,8 +85,8 @@ else
   }
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-  $date_debut = convert_date_mysql_to_french($date_mysql_debut);
-  $date_fin   = convert_date_mysql_to_french($date_mysql_fin);
+  $date_debut = To::date_mysql_to_french($date_mysql_debut);
+  $date_fin   = To::date_mysql_to_french($date_mysql_fin);
 }
 if($date_mysql_debut>$date_mysql_fin)
 {
@@ -197,7 +197,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
   {
     $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
   }
-  $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
+  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -250,7 +250,7 @@ if(empty($is_appreciation_groupe))
 {
   $forcer_profil_sigle = ($make_officiel) ? 'TUT'    : NULL ;
   $forcer_profil_type  = ($make_officiel) ? 'parent' : NULL ;
-  $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
+  $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
     // Si cet élève a été évalué...
@@ -262,14 +262,14 @@ if(empty($is_appreciation_groupe))
         // le score bilan
         extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite $calcul_retroactif $synthese_ref
         $matiere_nb_demandes = $tab_matiere[$matiere_id]['matiere_nb_demandes'];
-        $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite) ;
+        $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite) ;
         $tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref][$item_id] = $score;
         // le détail HTML
         if($make_html)
         {
           if($score!==FALSE)
           {
-            $indice = determiner_etat_acquisition( $score );
+            $indice = OutilBilan::determiner_etat_acquisition( $score );
             if($aff_coef)
             {
               $texte_coef = '['.$item_coef.'] ';
@@ -306,7 +306,7 @@ if(empty($is_appreciation_groupe))
           }
           if($nb_scores)
           {
-            $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+            $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
             foreach( $tab_infos_acquis_eleve[$eleve_id][$matiere_id][$synthese_ref] as $acquis_id => $acquis_nb )
             {
               $tab_infos_acquis_eleve[$eleve_id][$matiere_id]['total'][$acquis_id] += $acquis_nb;
@@ -425,7 +425,7 @@ if($make_pdf)
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
   extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $eleve_genre $date_naissance
-  $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
+  $date_naissance = ($date_naissance) ? To::date_mysql_to_french($date_naissance) : '' ;
   if($make_officiel)
   {
     // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
@@ -785,7 +785,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       // Bulletin - Date de naissance
       if( ($make_officiel) && ($date_naissance) && ( ($make_html) || ($make_graph) ) )
       {
-        $releve_HTML .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
+        $releve_HTML .= '<div class="i">'.To::texte_ligne_naissance($date_naissance).'</div>'.NL;
       }
       // Bulletin - Légende
       if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') && empty($is_appreciation_groupe) )

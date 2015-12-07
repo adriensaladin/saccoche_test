@@ -124,7 +124,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
     $title_etat = ($DB_ROW['validation_pilier_etat']) ? 'Validé' : 'Invalidé' ;
     $data_etat  = ($DB_ROW['validation_pilier_etat']) ? ' data-etat="lock"' : '' ;
     $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['class'] = ' class="V'.$DB_ROW['validation_pilier_etat'].'"';
-    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['title'] = ' title="'.$title_etat.' le '.convert_date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'"';
+    $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['title'] = ' title="'.$title_etat.' le '.To::date_mysql_to_french($DB_ROW['validation_pilier_date']).' par '.html($DB_ROW['validation_pilier_info']).'"';
     $tab_modif_cellule[$DB_ROW['user_id']][$DB_ROW['pilier_id']]['data_etat']  = $data_etat;
   }
 
@@ -265,7 +265,7 @@ if($action=='Enregistrer_validation')
     Json::end( FALSE , 'Aucune modification détectée !' );
   }
   // L'information associée à la validation comporte le nom du validateur (c'est une information statique, conservée sur plusieurs années)
-  $info = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
+  $info = To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   foreach($tab_nouveau_ajouter as $key => $etat)
   {
     list($pilier_id,$eleve_id) = explode('x',$key);

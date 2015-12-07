@@ -52,7 +52,7 @@ if( ($action=='lister_profs') && $matiere_id )
     $options = (count($DB_TAB)==1) ? '' : '<option value="0">Tous les enseignants concernés</option>' ;
     foreach($DB_TAB as $DB_ROW)
     {
-      $options .= '<option value="'.$DB_ROW['user_id'].'">'.html(afficher_identite_initiale($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).'</option>';
+      $options .= '<option value="'.$DB_ROW['user_id'].'">'.html(To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])).'</option>';
     }
     Json::end( TRUE , $options );
   }
@@ -66,7 +66,7 @@ if( ($action=='lister_profs') && $matiere_id )
 if($action=='uploader_document')
 {
   // Récupération du fichier
-  $fichier_nom = 'demande_'.$_SESSION['BASE'].'_user_'.$_SESSION['USER_ID'].'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> fabriquer_fin_nom_fichier__date_et_alea() inutilement lourd
+  $fichier_nom = 'demande_'.$_SESSION['BASE'].'_user_'.$_SESSION['USER_ID'].'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> FileSystem::generer_fin_nom_fichier__date_et_alea() inutilement lourd
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -135,7 +135,7 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   $demande_id = DB_STRUCTURE_DEMANDE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , $prof_id , $score , 'eleve' /*statut*/ , $message , $demande_doc );
 
   // Ajout aux flux RSS des profs concernés
-  $titre = 'Demande ajoutée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
+  $titre = 'Demande ajoutée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
   $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' ajoute la demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'".'."\r\n";
   $texte.= ($demande_doc) ? 'Document joint : '.$demande_doc."\r\n" : 'Pas de document joint.'."\r\n" ;
   $texte.= ($message)     ? 'Commentaire :'."\r\n".$message."\r\n" : 'Pas de commentaire saisi.'."\r\n" ;

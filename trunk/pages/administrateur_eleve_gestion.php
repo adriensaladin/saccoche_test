@@ -114,8 +114,8 @@ else
       {
         // Formater les dates
         $date_mysql  = $DB_ROW['user_sortie_date'];
-        $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL)  ? convert_date_mysql_to_french($date_mysql)                    : '-' ;
-        $date_naissance = ($DB_ROW['user_naissance_date']) ? convert_date_mysql_to_french($DB_ROW['user_naissance_date']) : '-' ;
+        $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL)  ? To::date_mysql_to_french($date_mysql)                    : '-' ;
+        $date_naissance = ($DB_ROW['user_naissance_date']) ? To::date_mysql_to_french($DB_ROW['user_naissance_date']) : '-' ;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['user_id'].'">';
         echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['user_id'].'" /></td>';

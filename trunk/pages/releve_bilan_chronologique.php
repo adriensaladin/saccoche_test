@@ -36,13 +36,13 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && (!$_SESSION['NB_ENFANTS']) )
 
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-  if( !test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']) )
+  if( !Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']) )
   {
     echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
     echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux états d\'acquisitions&hellip;</div>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }
-  if( !test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']) && !test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) )
+  if( !Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']) && !Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) )
   {
     echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
     echo'<div class="astuce">En effet, les administrateurs n\'ont pas autorisé que vous accédiez aux moyennes des scores ni aux pourcentages d\'items acquis&hellip;</div>'.NL;
@@ -63,13 +63,13 @@ $class_conversion_sur_20  = ($check_moyenne_scores || $check_pourcentage_acquis)
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   // Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
-  $check_moyenne_scores     = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? $check_moyenne_scores     : '' ;
-  $check_pourcentage_acquis = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? $check_pourcentage_acquis : '' ;
-  $check_conversion_sur_20  = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? $check_conversion_sur_20  : '' ;
+  $check_moyenne_scores     = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? $check_moyenne_scores     : '' ;
+  $check_pourcentage_acquis = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? $check_pourcentage_acquis : '' ;
+  $check_conversion_sur_20  = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? $check_conversion_sur_20  : '' ;
   $class_conversion_sur_20  = ($check_moyenne_scores || $check_pourcentage_acquis)                     ? 'show' : 'hide' ;
-  $moyenne_scores     = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? '<label for="f_indicateur_MS"><input type="radio" id="f_indicateur_MS" name="f_indicateur" value="moyenne_scores"'.$check_moyenne_scores.' /> Moyenne des scores</label>'                                                     : '<del>Moyenne des scores</del>' ;
-  $pourcentage_acquis = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? '<label for="f_indicateur_PA"><input type="radio" id="f_indicateur_PA" name="f_indicateur" value="pourcentage_acquis"'.$check_pourcentage_acquis.' /> Pourcentage d\'items acquis</label>'                                    : '<del>Pourcentage d\'items acquis</del>' ;
-  $conversion_sur_20  = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? '<label for="f_conversion_sur_20" class="'.$class_conversion_sur_20.'"><input type="checkbox" id="f_conversion_sur_20" name="f_conversion_sur_20" value="1"'.$check_conversion_sur_20.' /> Conversion en note sur 20</label>' : '<del>Conversion en note sur 20</del>' ;
+  $moyenne_scores     = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? '<label for="f_indicateur_MS"><input type="radio" id="f_indicateur_MS" name="f_indicateur" value="moyenne_scores"'.$check_moyenne_scores.' /> Moyenne des scores</label>'                                                     : '<del>Moyenne des scores</del>' ;
+  $pourcentage_acquis = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? '<label for="f_indicateur_PA"><input type="radio" id="f_indicateur_PA" name="f_indicateur" value="pourcentage_acquis"'.$check_pourcentage_acquis.' /> Pourcentage d\'items acquis</label>'                                    : '<del>Pourcentage d\'items acquis</del>' ;
+  $conversion_sur_20  = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? '<label for="f_conversion_sur_20" class="'.$class_conversion_sur_20.'"><input type="checkbox" id="f_conversion_sur_20" name="f_conversion_sur_20" value="1"'.$check_conversion_sur_20.' /> Conversion en note sur 20</label>' : '<del>Conversion en note sur 20</del>' ;
 }
 else
 {
@@ -199,7 +199,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   <p id="zone_periodes" class="<?php echo $class_form_periode ?>">
     <label class="tab" for="f_periode"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Les items pris en compte sont ceux qui sont évalués<br />au moins une fois sur cette période." /> Période :</label><?php echo $select_periode ?>
     <span id="dates_perso" class="show">
-      du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
+      du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo To::jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
       au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo TODAY_FR ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q>
     </span><br />
     <span class="radio"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Le bilan peut être établi uniquement sur la période considérée<br />ou en tenant compte d'évaluations antérieures des items concernés.<br />En automatique, les paramètres enregistrés pour chaque référentiel s'appliquent." /> Prise en compte des évaluations antérieures :</span>

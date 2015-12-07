@@ -34,11 +34,11 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && (!$_SESSION['NB_ENFANTS']) )
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','directeur')) && !test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']) )
+if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','directeur')) && !Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']) )
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) en complément des professeurs et directeurs :</div>'.NL;
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_SOCLE_ACCES'],'li');
+  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_SOCLE_ACCES'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -53,8 +53,8 @@ $check_socle_EV      = (Form::$tab_choix['aff_socle_EV'])  ? ' checked' : '' ;
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   // Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
-  $check_socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? ' checked' : '' ;
-  $check_socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? ' checked' : '' ;
+  $check_socle_PA = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? ' checked' : '' ;
+  $check_socle_EV = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? ' checked' : '' ;
 }
 $check_mode_auto   = (Form::$tab_choix['mode']=='auto')   ? ' checked' : '' ;
 $check_mode_manuel = (Form::$tab_choix['mode']=='manuel') ? ' checked' : '' ;
@@ -82,8 +82,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
   $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_option_groupe = 'hide'; $class_option_mode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 0; // volontaire
-  $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
-  $socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
+  $socle_PA = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
+  $socle_EV = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
@@ -91,8 +91,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
   $of_g = FALSE; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
   $is_select_multiple = 0;
-  $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
-  $socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
+  $socle_PA = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
+  $socle_EV = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
 }
 
 elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
@@ -101,8 +101,8 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $of_g = FALSE; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_option_groupe = 'show'; $class_option_mode = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
   $is_select_multiple = 0;
-  $socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
-  $socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
+  $socle_PA = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $socle_PA : '<del>Pourcentage d\'items acquis</del>' ;
+  $socle_EV = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $socle_EV : '<del>État de validation</del>' ;
 }
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();

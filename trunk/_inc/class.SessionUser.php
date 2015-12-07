@@ -45,7 +45,7 @@ class SessionUser
   public static function tester_authentification_webmestre($password)
   {
     global $PAGE;
-    $password_crypte = crypter_mdp($password);
+    $password_crypte = Outil::crypter_mdp($password);
     return ($password_crypte==WEBMESTRE_PASSWORD_MD5) ? array( TRUE , '' ) : array( FALSE , 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' ) ;
   }
 
@@ -58,7 +58,7 @@ class SessionUser
    */
   public static function tester_authentification_developpeur($password)
   {
-    $result = ServeurCommunautaire::tester_auth_devel( crypter_mdp($password) );
+    $result = ServeurCommunautaire::tester_auth_devel( Outil::crypter_mdp($password) );
     return ($result=='ok') ? array( TRUE , '' ) : array( FALSE , $result ) ;
   }
 
@@ -79,7 +79,7 @@ class SessionUser
       return array( FALSE , 'Partenaire introuvable !' );
     }
     // Si mdp incorrect...
-    if($DB_ROW['partenaire_password']!=crypter_mdp($password))
+    if($DB_ROW['partenaire_password']!=Outil::crypter_mdp($password))
     {
       global $PAGE;
       return array( FALSE , 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
@@ -111,7 +111,7 @@ class SessionUser
     // Sauf pour une connexion à un ENT, car alors il a déjà fallu les charger pour récupérer les paramètres de connexion à l'ENT
     if( ($BASE) && ($mode_connection=='normal') )
     {
-      charger_parametres_mysql_supplementaires($BASE);
+      DBextra::charger_parametres_mysql_supplementaires($BASE);
     }
     // Récupérer les données associées à l'utilisateur.
     $DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur($mode_connection,$login,$parent_nom,$parent_prenom);
@@ -132,7 +132,7 @@ class SessionUser
     // Blocage éventuel par le webmestre ou un administrateur ou l'automate
     LockAcces::stopper_si_blocage( $BASE , $DB_ROW['user_profil_sigle'] );
     // Si mdp incorrect...
-    if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=crypter_mdp($password)) )
+    if( ($mode_connection=='normal') && ($DB_ROW['user_password']!=Outil::crypter_mdp($password)) )
     {
       global $PAGE;
       return array( FALSE , 'Mot de passe incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );

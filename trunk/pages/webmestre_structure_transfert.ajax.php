@@ -83,7 +83,7 @@ if( ($action=='exporter') && $num && $max && ($num<$max) )
   // Récupérer une série d'infos, sachant que seuls $export_id et $fichier_nom sont utiles
   list($export_id,$import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel,$date,$fichier_nom) = explode($separateur,$tab_ligne[$num]);
   // Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
-  charger_parametres_mysql_supplementaires($export_id);
+  DBextra::charger_parametres_mysql_supplementaires($export_id);
   // Créer ou vider le dossier temporaire des sql
   FileSystem::creer_ou_vider_dossier($dossier_temp_sql);
   // Bloquer l'application
@@ -140,8 +140,8 @@ if($action=='importer_csv')
   // Tester si le contenu est correct, et mémoriser les infos en session
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   $tab_nouvel_uai = array();
   $tab_nouvel_id  = array();
@@ -185,25 +185,25 @@ if($action=='importer_csv')
       // Vérifier que le n°UAI est disponible
       if($uai)
       {
-        if( (!tester_UAI($uai)) || (isset($tab_nouvel_uai[$uai])) || DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
+        if( (!Outil::tester_UAI($uai)) || (isset($tab_nouvel_uai[$uai])) || DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
         {
           $tab_erreur['uai']['nb']++;
         }
         $tab_nouvel_uai[$uai] = TRUE;
       }
       // Vérifier que l'adresse de courriel est correcte
-      if(!tester_courriel($contact_courriel))
+      if(!Outil::tester_courriel($contact_courriel))
       {
         $tab_erreur['mail']['nb']++;
       }
       // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
-      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($contact_courriel);
+      list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($contact_courriel);
       if(!$is_domaine_valide)
       {
         $tab_erreur['mail']['nb']++;
       }
       // Vérifier que la date est correcte
-      if(!tester_date($date))
+      if(!Outil::tester_date($date))
       {
         $tab_erreur['date']['nb']++;
       }
@@ -341,7 +341,7 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
     FileSystem::ecrire_fichier_index($dossier.$base_id);
   }
   // Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
-  charger_parametres_mysql_supplementaires($base_id);
+  DBextra::charger_parametres_mysql_supplementaires($base_id);
   // Restaurer des fichiers de svg et mettre la base à jour si besoin.
   $texte_etape = restaurer_tables_base_etablissement($dossier_temp_sql,0);
   // Supprimer le dossier temporaire

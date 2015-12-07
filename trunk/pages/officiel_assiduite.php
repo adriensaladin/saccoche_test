@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Absences / Retards"));
 
-if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
+if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :<div>'.NL;
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'],'li');
+  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
@@ -44,7 +44,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_JOIN_G
 }
 else // Ne passent ici que les professeurs
 {
-  $tab_groupes = (test_droit_specifique_restreint($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'],'ONLY_PP')) ? DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_professeur($_SESSION['USER_ID']) ;
+  $tab_groupes = (Outil::test_droit_specifique_restreint($_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'],'ONLY_PP')) ? DB_STRUCTURE_COMMUN::DB_OPT_classes_prof_principal($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_professeur($_SESSION['USER_ID']) ;
 }
 
 $select_periode = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() ,      FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);

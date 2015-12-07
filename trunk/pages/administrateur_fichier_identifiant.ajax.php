@@ -44,7 +44,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
 {
   $prefixe = ($profil!='parents') ? 'user_' : 'parent_' ;
   // Nom sans extension des fichiers de sortie
-  $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.fabriquer_fin_nom_fichier__date_et_alea();
+  $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.$profil.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   // La classe n'est affichée que pour l'élève
   $avec_info = ($profil=='eleves') ? 'classe' : ( ($profil=='parents') ? 'enfant' : '' ) ;
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
     foreach($DB_TAB as $DB_ROW)
     {
       // Construire le login
-      $login = fabriquer_login($DB_ROW[$prefixe.'prenom'] , $DB_ROW[$prefixe.'nom'] , $DB_ROW[$prefixe.'profil_sigle']);
+      $login = Outil::fabriquer_login($DB_ROW[$prefixe.'prenom'] , $DB_ROW[$prefixe.'nom'] , $DB_ROW[$prefixe.'profil_sigle']);
       // Puis tester le login
       if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login,$DB_ROW[$prefixe.'id']) )
       {
@@ -83,8 +83,8 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
     // Mettre à jour les mots de passe des utilisateurs concernés
     foreach($DB_TAB as $DB_ROW)
     {
-      $password = fabriquer_mdp($DB_ROW[$prefixe.'profil_sigle']);
-      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $DB_ROW[$prefixe.'id'] , array(':password'=>crypter_mdp($password)) );
+      $password = Outil::fabriquer_mdp($DB_ROW[$prefixe.'profil_sigle']);
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $DB_ROW[$prefixe.'id'] , array(':password'=>Outil::crypter_mdp($password)) );
       $tab_password[$DB_ROW[$prefixe.'id']] = $password;
     }
   }
@@ -106,8 +106,8 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
     {
       if($DB_ROW['user_naissance_date'])
       {
-        $password = str_replace('/','',convert_date_mysql_to_french($DB_ROW['user_naissance_date']));
-        DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $DB_ROW[$prefixe.'id'] , array(':password'=>crypter_mdp($password)) );
+        $password = str_replace('/','',To::date_mysql_to_french($DB_ROW['user_naissance_date']));
+        DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $DB_ROW[$prefixe.'id'] , array(':password'=>Outil::crypter_mdp($password)) );
         $tab_password[$DB_ROW[$prefixe.'id']] = $password;
       }
     }
@@ -181,7 +181,7 @@ if($action=='user_export')
     $fcontenu_csv .= $DB_ROW['user_login'].$separateur.''.$separateur.$DB_ROW['user_nom'].$separateur.$DB_ROW['user_prenom'].$separateur.$DB_ROW['user_profil_nom_court_singulier'].$separateur.$DB_ROW['groupe_ref']."\r\n";
   }
   // On archive dans un fichier tableur (csv tabulé)
-  $fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.fabriquer_fin_nom_fichier__date_et_alea();
+  $fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($fcontenu_csv) );
   // Retour
   Json::end( TRUE , '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer le fichier exporté de la base SACoche (format <em>csv</em>).</span></a></li></ul>' );
@@ -194,7 +194,7 @@ if($action=='user_export')
 if($action=='import_loginmdp')
 {
   // Récupération du fichier
-  $fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt' ;
+  $fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.txt' ;
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -208,8 +208,8 @@ if($action=='import_loginmdp')
   $tab_users_fichier['prenom'] = array();
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   foreach ($tab_lignes as $ligne_contenu)
   {
@@ -310,7 +310,7 @@ if($action=='import_loginmdp')
         {
           // Contenu du fichier à modifier : login non indiqué et mdp différents
           $password = $tab_users_fichier['mdp'][$i_fichier];
-          DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>crypter_mdp($password)) );
+          DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>Outil::crypter_mdp($password)) );
           $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
           $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id_base]."\r\n".'Mot de passe : '.$password;
         }
@@ -323,7 +323,7 @@ if($action=='import_loginmdp')
           // Contenu du fichier à ignorer : logins identiques et mdp non indiqué
           $lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td colspan="2">nom d\'utilisateur identique et mot de passe non imposé</td></tr>'.NL;
         }
-        elseif(crypter_mdp($tab_users_fichier['mdp'][$i_fichier])==$tab_users_base['mdp'][$id_base])
+        elseif(Outil::crypter_mdp($tab_users_fichier['mdp'][$i_fichier])==$tab_users_base['mdp'][$id_base])
         {
           // Contenu du fichier à ignorer : logins identiques et mdp identique
           $lignes_ras .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td colspan="2">nom d\'utilisateur et mot de passe identiques</td></tr>'.NL;
@@ -332,7 +332,7 @@ if($action=='import_loginmdp')
         {
           // Contenu du fichier à modifier : logins identiques et mdp différents
           $password = $tab_users_fichier['mdp'][$i_fichier];
-          DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>crypter_mdp($password)) );
+          DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>Outil::crypter_mdp($password)) );
           $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
           $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id_base]."\r\n".'Mot de passe : '.$password;
         }
@@ -345,7 +345,7 @@ if($action=='import_loginmdp')
           // Contenu du fichier à problème : login déjà pris
           $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td colspan="2">nom d\'utilisateur proposé déjà affecté à un autre utilisateur</td></tr>'.NL;
         }
-        elseif( ($tab_users_fichier['mdp'][$i_fichier]=='') || (crypter_mdp($tab_users_fichier['mdp'][$i_fichier])==$tab_users_base['mdp'][$id_base]) )
+        elseif( ($tab_users_fichier['mdp'][$i_fichier]=='') || (Outil::crypter_mdp($tab_users_fichier['mdp'][$i_fichier])==$tab_users_base['mdp'][$id_base]) )
         {
           // Contenu du fichier à modifier : logins différents et mdp identiques on non imposé
           $login = $tab_users_fichier['login'][$i_fichier];
@@ -359,7 +359,7 @@ if($action=='import_loginmdp')
           // Contenu du fichier à modifier : logins différents et mdp différents
           $login = $tab_users_fichier['login'][$i_fichier];
           $password = $tab_users_fichier['mdp'][$i_fichier];
-          DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login,':password'=>crypter_mdp($password)) );
+          DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login,':password'=>Outil::crypter_mdp($password)) );
           $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
           $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : '.$password;
           $tab_users_base['login'][$id_base] = $login; // Prendre en compte cette modif de login dans les comparaisons futures
@@ -371,7 +371,7 @@ if($action=='import_loginmdp')
   Json::add_str('<ul class="puce">'.NL);
   if(count($fcontenu_pdf_tab))
   {
-    $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea();
+    $fnom = 'identifiants_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
     $pdf = new PDF_Label(array('paper-size'=>'A4', 'metric'=>'mm', 'marginLeft'=>5, 'marginTop'=>5, 'NX'=>3, 'NY'=>8, 'SpaceX'=>7, 'SpaceY'=>5, 'width'=>60, 'height'=>30, 'font-size'=>11));
     $pdf -> AddFont('Arial','' ,'arial.php');
     $pdf -> SetFont('Arial'); // Permet de mieux distinguer les "l 1" etc. que la police Times ou Courrier
@@ -416,7 +416,7 @@ if($action=='import_loginmdp')
 if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($action=='import_gepi_eleves') )
 {
   // Récupération du fichier
-  $fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+  $fichier_nom = $action.'_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.txt';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -440,8 +440,8 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
   $tab_users_fichier['sconet_num'] = array(); // Ne servira que pour les élèves
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   // Pas de ligne d'en-tête à supprimer
   // Récupérer les données du fichier
   foreach ($tab_lignes as $ligne_contenu)
@@ -578,7 +578,7 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
 if($action=='import_ent')
 {
   // Récupération du fichier
-  $fichier_nom  = 'identifiants_'.$action.'_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.txt';
+  $fichier_nom  = 'identifiants_'.$action.'_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.txt';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -595,8 +595,8 @@ if($action=='import_ent')
   $tab_users_fichier['id_sconet'] = array();
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   // CSV avec ordre des champs variables : utiliser la 1ère ligne pour déterminer l'emplacement des données
   if( $tab_infos_csv['csv_entete'] && !$tab_infos_csv['csv_ordre'] )
   {

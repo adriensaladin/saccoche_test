@@ -1428,7 +1428,7 @@ public static function DB_OPT_profs_groupe($groupe_type,$groupe_id)
   {
     foreach($DB_TAB as $key => $DB_ROW)
     {
-      $texte = afficher_identite_initiale( $DB_ROW['prof_nom'] , FALSE , $DB_ROW['prof_prenom'] , TRUE , $DB_ROW['prof_genre'] );
+      $texte = To::texte_identite( $DB_ROW['prof_nom'] , FALSE , $DB_ROW['prof_prenom'] , TRUE , $DB_ROW['prof_genre'] );
       unset( $DB_TAB[$key]['prof_nom'], $DB_TAB[$key]['prof_prenom'], $DB_TAB[$key]['prof_genre'] );
       $DB_TAB[$key]['texte'] = $texte;
     }

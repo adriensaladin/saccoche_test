@@ -70,7 +70,7 @@ if($PROFIL=='structure')
 }
 
 // Protection contre les attaques par force brute des robots (piratage compte ou envoi intempestif de courriels)
-list($html_imgs,$captcha_soluce) = captcha();
+list($html_imgs,$captcha_soluce) = Outil::captcha();
 $_SESSION['FORCEBRUTE'][$PAGE] = array(
   'TIME'    => $_SERVER['REQUEST_TIME'] ,
   'DELAI'   => 4, // en secondes, est ensuite incrémenté en cas d'erreur

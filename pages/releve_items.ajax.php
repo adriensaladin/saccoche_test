@@ -95,9 +95,9 @@ if($releve_modele=='multimatiere')
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   $releve_individuel_format = 'eleve';
-  $aff_moyenne_scores       = test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? $aff_moyenne_scores     : 0 ;
-  $aff_pourcentage_acquis   = test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? $aff_pourcentage_acquis : 0 ;
-  $conversion_sur_20        = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? $conversion_sur_20      : 0 ;
+  $aff_moyenne_scores       = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE'])      ? $aff_moyenne_scores     : 0 ;
+  $aff_pourcentage_acquis   = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS']) ? $aff_pourcentage_acquis : 0 ;
+  $conversion_sur_20        = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20'])  ? $conversion_sur_20      : 0 ;
   $tab_type                 = array('individuel');
   // Pour un élève on surcharge avec les données de session
   if($_SESSION['USER_PROFIL_TYPE']=='eleve')

@@ -196,7 +196,7 @@ if($action=='imprimer_donnees_eleves_collegues')
     if($DB_ROW['prof_id'])
     {
       // Les appréciations
-      $texte = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
+      $texte = To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
       $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['tab_appreciation'][] = suppression_sauts_de_ligne($texte);
       $nb_lignes_rubriques += nombre_de_ligne_supplémentaires($texte);
     }
@@ -252,7 +252,7 @@ if($action=='imprimer_donnees_classe_collegues')
     if($DB_ROW['prof_id'])
     {
       // Les appréciations
-      $texte = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
+      $texte = To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
       $tab_saisie[$DB_ROW['rubrique_id']]['tab_appreciation'][] = suppression_sauts_de_ligne($texte);
       $nb_lignes_supplémentaires += nombre_de_ligne_supplémentaires($texte);
     }
@@ -300,7 +300,7 @@ if($action=='imprimer_donnees_eleves_syntheses')
     if($DB_ROW['prof_id'])
     {
       // L'appréciation
-      $texte = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
+      $texte = To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' - '.$DB_ROW['saisie_appreciation'];
       $tab_saisie[$DB_ROW['eleve_id']]['appreciation'] = suppression_sauts_de_ligne($texte);
       $nb_lignes_supplémentaires += nombre_de_ligne_supplémentaires($texte);
     }
@@ -430,7 +430,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
       if($DB_ROW['prof_id'])
       {
         $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['appreciation'][$DB_ROW['periode_ordre']] = suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']);
-        $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['professeur'][$DB_ROW['prof_id']] = afficher_identite_initiale( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] );
+        $tab_saisies[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['professeur'][$DB_ROW['prof_id']] = To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] );
       }
       else if( ($DB_ROW['saisie_note']!==NULL) && !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ) // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
       {
@@ -524,7 +524,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
     $annee_affichee .= $annee_actuelle.'/'.($annee_actuelle+1);
   }
   // Tag date heure initiales (code repris de [code_officiel_imprimer.php] )
-  $tag_date_heure_initiales = date('d/m/Y H:i').' '.afficher_identite_initiale($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
+  $tag_date_heure_initiales = date('d/m/Y H:i').' '.To::texte_identite($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
   // Fabrication du PDF
   $archivage_tableau_PDF = new PDF_archivage_tableau( TRUE /*officiel*/ , 'portrait' /*orientation*/ , 5 /*marge_gauche*/ , 5 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
   unset($tab_eleve_id[0]);
@@ -548,7 +548,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
 // Enregistrement et affichage du retour.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$fichier_export = 'saisies_'.$BILAN_TYPE.'_'.Clean::fichier($periode_nom).'_'.Clean::fichier($classe_nom).'_'.$action.'_'.fabriquer_fin_nom_fichier__date_et_alea();
+$fichier_export = 'saisies_'.$BILAN_TYPE.'_'.Clean::fichier($periode_nom).'_'.Clean::fichier($classe_nom).'_'.$action.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
 Json::add_str('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>');
 // Et le csv éventuel

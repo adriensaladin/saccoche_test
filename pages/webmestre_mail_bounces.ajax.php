@@ -42,7 +42,7 @@ if($action=='EnregistrerBounce')
   {
     if($bounce)
     {
-      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($bounce);
+      list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($bounce);
       if(!$is_domaine_valide)
       {
         Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -63,7 +63,7 @@ if($action=='EnregistrerBounce')
 
 if( ($action=='TestEnvoiCourriel') && $courriel )
 {
-  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+  list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
     Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" ou serveur extérieur injoignable !' );

@@ -76,8 +76,8 @@ if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)
       {
-        $date_affich_debut = convert_date_mysql_to_french($DB_ROW['jointure_date_debut']);
-        $date_affich_fin   = convert_date_mysql_to_french($DB_ROW['jointure_date_fin']);
+        $date_affich_debut = To::date_mysql_to_french($DB_ROW['jointure_date_debut']);
+        $date_affich_fin   = To::date_mysql_to_french($DB_ROW['jointure_date_fin']);
         $tab_jointure[$DB_ROW['groupe_id']][$DB_ROW['periode_id']] = html($date_affich_debut).' ~ '.html($date_affich_fin);
       }
     }

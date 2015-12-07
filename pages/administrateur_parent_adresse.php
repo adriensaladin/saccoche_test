@@ -79,7 +79,7 @@ elseif($levenshtein) // (forcément)
         $adresse_parent1 = $DB_TAB_parents[1]['adresse_ligne1'].$DB_TAB_parents[1]['adresse_ligne2'].$DB_TAB_parents[1]['adresse_ligne3'].$DB_TAB_parents[1]['adresse_ligne4'].$DB_TAB_parents[1]['adresse_postal_code'].$DB_TAB_parents[1]['adresse_postal_libelle'].$DB_TAB_parents[1]['adresse_pays_nom'];
         if($adresse_parent0!=$adresse_parent1)
         {
-          if( poucentage_commun( $adresse_parent0 , $adresse_parent1 ) > 60 )
+          if( Outil::pourcentage_commun( $adresse_parent0 , $adresse_parent1 ) > 60 )
           {
             $parent_id0 = $DB_TAB_parents[0]['parent_id'];
             $parent_id1 = $DB_TAB_parents[1]['parent_id'];
@@ -151,7 +151,7 @@ elseif($levenshtein) // (forcément)
 if( $levenshtein && !empty($DB_TAB) )
 {
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'extraction_ressemblances_adresses_'.fabriquer_fin_nom_fichier__date_et_alea();
+  $fnom = 'extraction_ressemblances_adresses_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   echo'<p><ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
 }

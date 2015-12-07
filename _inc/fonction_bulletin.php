@@ -62,7 +62,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
   {
     $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
   }
-  $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
+  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -100,7 +100,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
           {
             extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif
             // calcul du bilan de l'item
-            $tab_score[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+            $tab_score[$item_id] = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
           }
           // calcul des bilans des scores
           $tableau_score_filtre = array_filter($tab_score,'non_vide');
@@ -259,7 +259,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin( $periode_id , $classe
   $tab_liste_item = array_keys($tab_item);
   $liste_item_id = implode(',',$tab_liste_item);
   // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
-  $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
+  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -281,7 +281,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin( $periode_id , $classe
   {
     extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
     // calcul du bilan de l'item
-    $tab_score[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+    $tab_score[$item_id] = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
   }
   // calcul des bilans des scores
   $tableau_score_filtre = array_filter($tab_score,'non_vide');
@@ -424,7 +424,7 @@ function enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $clas
 function enregistrer_note( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , $moyenne )
 {
   $note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? round($moyenne,1) : round($moyenne/5,1) ;
-  $appreciation = 'Moyenne figée reportée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
+  $appreciation = 'Moyenne figée reportée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
   return array( $note , $appreciation );
 }

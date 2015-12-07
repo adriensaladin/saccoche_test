@@ -25,58 +25,45 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
+class OutilCSV
+{
 
-/*
- * Réciproque de html()
- * 
- * @param string
- * @return string
- */
-function html_decode($text)
-{
-  return htmlspecialchars_decode($text,ENT_COMPAT) ;
-}
+  // //////////////////////////////////////////////////
+  // Méthodes publiques
+  // //////////////////////////////////////////////////
 
-/**
- * Fonctions utilisées avec array_filter() ; teste si différent de FALSE et de NULL.
- * @return bool
- */
-function non_vide($n)
-{
-  return ($n!==FALSE) && ($n!==NULL) ;
-}
-/**
- * Fonctions utilisées avec array_filter() ; teste si différent de zéro.
- * @return bool
- */
-function non_zero($n)
-{
-  return $n!==0 ;
-}
-/**
- * Fonctions utilisées avec array_filter() ; teste si strictement positif.
- * @return bool
- */
-function positif($n)
-{
-  return $n>0 ;
-}
-/**
- * Fonctions utilisées avec array_filter() ; teste si différent "X" (pas "PA" car désormais cela peut être saisi).
- * @return bool
- */
-function sans_rien($note)
-{
-  return $note!='X' ;
-}
-/**
- * Fonctions utilisées avec array_filter() ; teste si différent de 2.
- * @return bool
- */
-function is_renseigne($etat)
-{
-  return $etat!=2 ;
-}
+  /**
+   * Retourner un tableau de lignes à partir d'un texte en se basant sur les retours chariot.
+   * Utilisé notamment lors de la récupération d'un fichier CSV.
+   * 
+   * @param string   $texte
+   * @return array
+   */
+  public static function extraire_lignes($texte)
+  {
+    $texte = trim($texte);
+    $texte = str_replace('"','',$texte);
+    $texte = str_replace(array("\r\n","\n\n","\r\r","\r","\n"),'®',$texte);
+    return explode('®',$texte);
+  }
 
+  /**
+   * Déterminer la nature du séparateur d'un fichier CSV.
+   * 
+   * @param string   $ligne   la première ligne du fichier
+   * @return string
+   */
+  public static function extraire_separateur($ligne)
+  {
+    $tab_separateur = array( ';'=>0 , ','=>0 , ':'=>0 , "\t"=>0 );
+    foreach($tab_separateur as $separateur => $occurrence)
+    {
+      $tab_separateur[$separateur] = mb_substr_count($ligne,$separateur);
+    }
+    arsort($tab_separateur);
+    reset($tab_separateur);
+    return key($tab_separateur);
+  }
+
+}
 ?>

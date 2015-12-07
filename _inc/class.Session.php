@@ -251,7 +251,7 @@ class Session
     $UA_new = Session::get_UserAgent();
     if($UA_old != $UA_new)
     {
-      $UA_old = ( poucentage_commun( $UA_old , $UA_new ) > 90 ) ? $UA_old : 'Chaîne non dévoilée par sécurité.' ;
+      $UA_old = ( Outil::pourcentage_commun( $UA_old , $UA_new ) > 90 ) ? $UA_old : 'Chaîne non dévoilée par sécurité.' ;
       return array( 'navigateur différent' , $UA_old , $UA_new );
     }
     // OK

@@ -62,7 +62,7 @@ if($user_id==-1)
     Json::end( FALSE , 'Ordre incorrect ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
   }
   // Vérifier le domaine du serveur mail même en mode mono-structure parce que de toutes façons il faudra ici envoyer un mail, donc l'installation doit être ouverte sur l'extérieur.
-  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+  list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
   if(!$is_domaine_valide)
   {
     Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -70,7 +70,7 @@ if($user_id==-1)
   // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
   if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
-    charger_parametres_mysql_supplementaires($BASE);
+    DBextra::charger_parametres_mysql_supplementaires($BASE);
   }
   // On cherche des utilisateurs ayant cette adresse mail
   $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_user_for_mail($courriel);
@@ -105,7 +105,7 @@ if($user_id)
   // En cas de multi-structures, il faut charger les paramètres de connexion à la base concernée
   if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
-    charger_parametres_mysql_supplementaires($BASE);
+    DBextra::charger_parametres_mysql_supplementaires($BASE);
   }
   // On récupère les données de l'utilisateur
   $DB_ROW = DB_STRUCTURE_PUBLIC::DB_recuperer_user_for_new_mdp('user_id',$user_id);
@@ -123,7 +123,7 @@ if($user_id)
     Json::end( FALSE , 'Adresse mail non concordante ! Nouvelle tentative autorisée dans '.$_SESSION['FORCEBRUTE'][$PAGE]['DELAI'].'s.' );
   }
   // On enregistre un ticket pour cette demande
-  $user_pass_key = crypter_mdp($DB_ROW['user_id'].$DB_ROW['user_email'].$DB_ROW['user_password'].$DB_ROW['user_connexion_date']);
+  $user_pass_key = Outil::crypter_mdp($DB_ROW['user_id'].$DB_ROW['user_email'].$DB_ROW['user_password'].$DB_ROW['user_connexion_date']);
   $code_mdp = ($BASE) ? $user_pass_key.'g'.$BASE : $user_pass_key ;
   DB_STRUCTURE_PUBLIC::DB_modifier_user_password_or_key ($DB_ROW['user_id'] , '' /*user_password*/ , $user_pass_key /*user_pass_key*/ );
   // On envoi le courriel à l'utilisateur

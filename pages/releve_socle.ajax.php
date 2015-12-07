@@ -57,8 +57,8 @@ $tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' )
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-  $aff_socle_PA = test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $aff_socle_PA : 0 ;
-  $aff_socle_EV = test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $aff_socle_EV : 0 ;
+  $aff_socle_PA = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_POURCENTAGE_ACQUIS']) ? $aff_socle_PA : 0 ;
+  $aff_socle_EV = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ETAT_VALIDATION'])    ? $aff_socle_EV : 0 ;
   $only_presence = 0;
   // Pour un élève on surcharge avec les données de session
   if($_SESSION['USER_PROFIL_TYPE']=='eleve')

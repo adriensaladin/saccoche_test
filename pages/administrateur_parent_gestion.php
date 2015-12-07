@@ -137,7 +137,7 @@ elseif($find_doublon) // (forcément)
       {
         // Formater la date
         $date_mysql  = $DB_ROW['user_sortie_date'];
-        $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? convert_date_mysql_to_french($date_mysql) : '-' ;
+        $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['user_id'].'">';
         echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['user_id'].'" /></td>';
@@ -178,7 +178,7 @@ elseif($find_doublon) // (forcément)
 if( $find_doublon && !empty($DB_TAB) )
 {
   // Finalisation de l'export CSV (archivage dans un fichier)
-  $fnom = 'extraction_doublons_responsables_'.fabriquer_fin_nom_fichier__date_et_alea();
+  $fnom = 'extraction_doublons_responsables_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   echo'<p><ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
 }

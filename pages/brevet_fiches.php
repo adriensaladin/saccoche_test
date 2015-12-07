@@ -70,16 +70,16 @@ if(!$listing_classes_concernees)
 $tab_classes_concernees = explode(',',$listing_classes_concernees);
 
 // Indication des profils pouvant modifier le statut d'une fiche brevet
-$profils_modifier_statut = 'administrateurs (de l\'établissement)<br />'.afficher_profils_droit_specifique($_SESSION['DROIT_FICHE_BREVET_MODIFIER_STATUT'],'br');
+$profils_modifier_statut = 'administrateurs (de l\'établissement)<br />'.Outil::afficher_profils_droit_specifique($_SESSION['DROIT_FICHE_BREVET_MODIFIER_STATUT'],'br');
 // Indication des profils ayant accès à l'appréciation générale
-$profils_appreciation_generale = afficher_profils_droit_specifique($_SESSION['DROIT_FICHE_BREVET_APPRECIATION_GENERALE'],'br');
+$profils_appreciation_generale = Outil::afficher_profils_droit_specifique($_SESSION['DROIT_FICHE_BREVET_APPRECIATION_GENERALE'],'br');
 // Indication des profils ayant accès à l'impression PDF
-$profils_impression_pdf = 'administrateurs (de l\'établissement)<br />'.afficher_profils_droit_specifique($_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'],'br');
+$profils_impression_pdf = 'administrateurs (de l\'établissement)<br />'.Outil::afficher_profils_droit_specifique($_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'],'br');
 // Indication des profils ayant accès aux copies des impressions PDF
-$profils_archives_pdf = 'administrateurs (de l\'établissement)<br />'.afficher_profils_droit_specifique($_SESSION['DROIT_FICHE_BREVET_VOIR_ARCHIVE'],'br');
+$profils_archives_pdf = 'administrateurs (de l\'établissement)<br />'.Outil::afficher_profils_droit_specifique($_SESSION['DROIT_FICHE_BREVET_VOIR_ARCHIVE'],'br');
 
 // Droit de modifier le statut d'une fiche brevet (dans le cas PP, restera à affiner classe par classe...).
-$affichage_formulaire_statut = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_MODIFIER_STATUT']) ;
+$affichage_formulaire_statut = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_MODIFIER_STATUT']) ;
 
 $tab_etats = array
 ( // le <span> supplémentaire sert pour appliquer un style css
@@ -90,7 +90,7 @@ $tab_etats = array
   '5complet'  => 'Complet (fermé)',
 );
 
-$annee_session_brevet = annee_session_brevet();
+$annee_session_brevet = To::annee_session_brevet();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération et traitement des données postées, si formulaire soumis
@@ -160,7 +160,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
       }
     }
     // On passe au traitement des données reçues
-    $auteur = afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
+    $auteur = To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
     foreach($tab_ids as $classe_id)
     {
       $is_modif = DB_STRUCTURE_BREVET::DB_modifier_brevet_classe_etat($classe_id,$new_etat);
@@ -256,10 +256,10 @@ $tab_affich[0]['fiche'] = '<th class="hc" id="session_'.$annee_session_brevet.'"
 
 if($_SESSION['USER_PROFIL_TYPE']!='professeur') // administrateur | directeur
 {
-  $droit_modifier_statut       = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_MODIFIER_STATUT'])       );
-  $droit_appreciation_generale = ( ($_SESSION['USER_PROFIL_TYPE']=='directeur')      && test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_APPRECIATION_GENERALE']) );
-  $droit_impression_pdf        = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'])        );
-  $droit_voir_archives_pdf     = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_VOIR_ARCHIVE'])          );
+  $droit_modifier_statut       = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_MODIFIER_STATUT'])       );
+  $droit_appreciation_generale = ( ($_SESSION['USER_PROFIL_TYPE']=='directeur')      && Outil::test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_APPRECIATION_GENERALE']) );
+  $droit_impression_pdf        = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'])        );
+  $droit_voir_archives_pdf     = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique($_SESSION['DROIT_FICHE_BREVET_VOIR_ARCHIVE'])          );
   foreach($tab_classe_etabl as $classe_id => $classe_nom)
   {
     $tab_classe[$classe_id][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' , 'droit_voir_archives_pdf' );
@@ -278,10 +278,10 @@ else // professeur
       if(in_array($DB_ROW['groupe_id'],$tab_classes_concernees))
       {
         // Pour les classes, RAS
-        $droit_modifier_statut       = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_MODIFIER_STATUT']       , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
-        $droit_appreciation_generale = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_APPRECIATION_GENERALE'] , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
-        $droit_impression_pdf        = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF']        , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
-        $droit_voir_archives_pdf     = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_VOIR_ARCHIVE']);
+        $droit_modifier_statut       = Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_MODIFIER_STATUT']       , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
+        $droit_appreciation_generale = Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_APPRECIATION_GENERALE'] , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
+        $droit_impression_pdf        = Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF']        , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
+        $droit_voir_archives_pdf     = Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_VOIR_ARCHIVE']);
         $tab_classe[$DB_ROW['groupe_id']][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
         $tab_affich[$DB_ROW['groupe_id'].'_0']['title'] = '<th id="groupe_'.$DB_ROW['groupe_id'].'_0">'.html($DB_ROW['groupe_nom']).'</th>' ;
         $tab_affich[$DB_ROW['groupe_id'].'_0']['fiche'] = '<td class="hc">-</td>' ;
@@ -308,8 +308,8 @@ else // professeur
           {
             $classe_id = $tab['eleve_classe_id'];
             $droit_modifier_statut       = FALSE ;
-            $droit_appreciation_generale = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_APPRECIATION_GENERALE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
-            $droit_impression_pdf        = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF']        , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
+            $droit_appreciation_generale = Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_APPRECIATION_GENERALE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
+            $droit_impression_pdf        = Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF']        , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
             $tab_classe[$classe_id][$groupe_id] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
             $tab_affich[$classe_id.'_'.$groupe_id]['title'] = '<th id="groupe_'.$classe_id.'_'.$groupe_id.'">'.html($tab_classe_etabl[$classe_id]).'<br />'.html($groupe_nom).'</th>' ;
             $tab_affich[$classe_id.'_'.$groupe_id]['fiche'] = '<td class="hc">-</td>' ;

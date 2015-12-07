@@ -34,11 +34,11 @@ $acces_serveur_communautaire = ( $_SESSION['SESAMATH_ID'] && $_SESSION['SESAMATH
 // Javascript
 Layout::add( 'js_inline_before' , 'var etablissement_identifie = '.(int)$acces_serveur_communautaire.';' );
 
-if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
+if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_GERER_RESSOURCE'],'li');
+  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_RESSOURCE'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>
@@ -51,7 +51,7 @@ if(!test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*mati
 
 <form action="#" method="post" id="zone_choix_referentiel" onsubmit="return false;">
 <?php
-$texte_profil = afficher_profils_droit_specifique($_SESSION['DROIT_GERER_RESSOURCE'],'br');
+$texte_profil = Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_RESSOURCE'],'br');
 // On récupère la liste des référentiels des matières auxquelles le professeur est rattaché, et s'il en est coordonnateur
 $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_matieres_niveaux_referentiels_professeur($_SESSION['USER_ID']);
 if(empty($DB_TAB))
@@ -70,7 +70,7 @@ else
   {
     if(!isset($tab_matiere[$DB_ROW['matiere_id']]))
     {
-      $matiere_droit = test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , $DB_ROW['jointure_coord'] /*matiere_coord_or_groupe_pp_connu*/ );
+      $matiere_droit = Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , $DB_ROW['jointure_coord'] /*matiere_coord_or_groupe_pp_connu*/ );
       $icone_action  = ($matiere_droit) ? '<q class="modifier" title="Modifier les ressources de ce référentiel."></q>' : '<q class="modifier_non" title="Droit d\'accès : '.$texte_profil.'."></q>' ;
       $tab_matiere[$DB_ROW['matiere_id']] = array(
         'matiere_nom' => html($DB_ROW['matiere_nom']),

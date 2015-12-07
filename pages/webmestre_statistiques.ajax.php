@@ -77,7 +77,7 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
   // Récupérer les infos ($base_id $structure_denomination $contact $inscription_date)
   extract($_SESSION['tmp']['infos'][$num-1]);
   // Récupérer une série de stats
-  charger_parametres_mysql_supplementaires($base_id);
+  DBextra::charger_parametres_mysql_supplementaires($base_id);
   list($personnel_nb,$eleve_nb,$personnel_use,$eleve_use,$evaluation_nb,$validation_nb,$evaluation_use,$validation_use,$connexion_nom,$date_last_connexion) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( TRUE /*info_user_nb*/ , TRUE /*info_user_use*/ , TRUE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
   // maj les totaux
   $_SESSION['tmp']['totaux']['personnel_nb']   += $personnel_nb;

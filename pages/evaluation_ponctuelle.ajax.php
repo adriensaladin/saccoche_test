@@ -117,7 +117,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
     }
   }
   // On enregistre les modifications.
-  $info = $description.' ('.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
+  $info = $description.' ('.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).')';
   if(!$presence_item)
   {
     // 'ajouter' plutôt que 'creer' car en cas d'ajout puis de suppression d'une note à un élève, un item peut se retrouver déjà affecté à un devoir sans qu'il n'y ait de note trouvée
@@ -161,7 +161,7 @@ if( ($action=='enregistrer_note') && $item_id && $eleve_id && in_array($note_val
     if($listing_abonnes)
     {
       $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id=');
-      $notification_contenu = 'Saisie "à la volée" enregistrée par '.afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+      $notification_contenu = 'Saisie "à la volée" enregistrée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
       $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
       foreach($tab_abonnes as $abonne_id => $tab_abonne)
       {

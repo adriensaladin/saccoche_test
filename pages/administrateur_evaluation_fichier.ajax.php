@@ -173,7 +173,7 @@ if( ($action=='export') && ($etape==4) )
   FileSystem::supprimer_fichier( $dossier_temp_export.'nb_eleves.txt' );
   FileSystem::supprimer_fichier( $dossier_temp_export.'nb_items.txt' );
   // On zippe (gain significatif de facteur 15 à 20)
-  $fichier_zip_nom = 'evaluations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
+  $fichier_zip_nom = 'evaluations_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
   $result = FileSystem::zip_fichiers( $dossier_temp_export , CHEMIN_DOSSIER_EXPORT , $fichier_zip_nom );
   if($result!==TRUE)
   {
@@ -199,7 +199,7 @@ if( ($action=='export') && ($etape==4) )
 if( ($action=='import') && ($etape==0) )
 {
   // Récupération du fichier
-  $fichier_upload_nom = 'evaluations_'.$_SESSION['BASE'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.zip';
+  $fichier_upload_nom = 'evaluations_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_upload_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -314,7 +314,7 @@ if( ($action=='import') && ($etape==1) )
       {
         foreach($DB_TAB as $key => $DB_ROW)
         {
-          if( poucentage_commun( $matiere_info['nom'] , $DB_ROW['matiere_nom'] ) > 80 )
+          if( Outil::pourcentage_commun( $matiere_info['nom'] , $DB_ROW['matiere_nom'] ) > 80 )
           {
             $tab_matiere[$matiere_id]['base_id'] = (int)$DB_ROW['matiere_id'];
             unset($DB_TAB[$key]);
@@ -411,7 +411,7 @@ if( ($action=='import') && ($etape==2) )
       {
         foreach($DB_TAB as $key => $DB_ROW)
         {
-          if( poucentage_commun( $niveau_info['nom'] , $DB_ROW['niveau_nom'] ) > 80 )
+          if( Outil::pourcentage_commun( $niveau_info['nom'] , $DB_ROW['niveau_nom'] ) > 80 )
           {
             $tab_niveau[$niveau_id]['base_id'] = (int)$DB_ROW['niveau_id'];
             unset($DB_TAB[$key]);
@@ -519,7 +519,7 @@ if( ($action=='import') && ($etape==3) )
         {
           if( ($tab_matiere[$matiere_id]['base_id']==$DB_ROW['matiere_id']) && ($tab_niveau[$niveau_id]['base_id']==$DB_ROW['niveau_id']) )
           {
-            if( poucentage_commun( $domaine_info['nom'] , $DB_ROW['domaine_nom'] ) > 80 )
+            if( Outil::pourcentage_commun( $domaine_info['nom'] , $DB_ROW['domaine_nom'] ) > 80 )
             {
               $tab_domaine[$domaine_id]['base_id'] = (int)$DB_ROW['domaine_id'];
               unset($DB_TAB[$key]);
@@ -626,7 +626,7 @@ if( ($action=='import') && ($etape==4) )
         {
           if($tab_domaine[$domaine_id]['base_id']==$DB_ROW['domaine_id'])
           {
-            if( poucentage_commun( $theme_info['nom'] , $DB_ROW['theme_nom'] ) > 80 )
+            if( Outil::pourcentage_commun( $theme_info['nom'] , $DB_ROW['theme_nom'] ) > 80 )
             {
               $tab_theme[$theme_id]['base_id'] = (int)$DB_ROW['theme_id'];
               unset($DB_TAB[$key]);
@@ -724,7 +724,7 @@ if( ($action=='import') && ($etape==5) )
         {
           if($tab_theme[$theme_id]['base_id']==$DB_ROW['theme_id'])
           {
-            if( poucentage_commun( $item_info['nom'] , $DB_ROW['item_nom'] ) > 80 )
+            if( Outil::pourcentage_commun( $item_info['nom'] , $DB_ROW['item_nom'] ) > 80 )
             {
               $tab_item[$item_id]['base_id'] = (int)$DB_ROW['item_id'];
               unset($DB_TAB[$key]);

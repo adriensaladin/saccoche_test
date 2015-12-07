@@ -70,7 +70,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
   $BASE = (isset($_GET['base']))    ? Clean::entier($_GET['base']) : $BASE ;
   // Test si UAI d'établissement transmis dans l'URL
   // Nouveauté 07/2014 : pouvoir passer l'UAI de l'établissement comme valeur du paramètre SSO
-  $trans_UAI = (isset($_GET['uai'])) ? Clean::uai($_GET['uai']) : ( tester_UAI($_GET['sso']) ? Clean::uai($_GET['sso']) : NULL ) ;
+  $trans_UAI = (isset($_GET['uai'])) ? Clean::uai($_GET['uai']) : ( Outil::tester_UAI($_GET['sso']) ? Clean::uai($_GET['sso']) : NULL ) ;
   $BASE = ($trans_UAI) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI($trans_UAI) : $BASE ;
   if(!$BASE)
   {
@@ -83,7 +83,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
       exit_error( 'Donnée manquante' /*titre*/ , 'Référence de base manquante (le paramètre "base" ou "id" ou "sso" n\'a pas été transmis ou n\'est pas un entier et n\'a pas non plus été trouvé dans un Cookie).' /*contenu*/ );
     }
   }
-  charger_parametres_mysql_supplementaires($BASE);
+  DBextra::charger_parametres_mysql_supplementaires($BASE);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Mettre à jour la base si nécessaire
-maj_base_structure_si_besoin($BASE);
+DBextra::maj_base_structure_si_besoin($BASE);
 
 // Récupérer les infos utiles de l'établissement pour la connexion 
 $tab_parametres = array(
@@ -291,7 +291,7 @@ if($connexion_mode=='cas')
       if( (HEBERGEUR_INSTALLATION=='mono-structure') || !PHPCAS_LOGS_ETABL_LISTING || (strpos(PHPCAS_LOGS_ETABL_LISTING,','.$BASE.',')!==FALSE) )
       {
         $fichier_nom_debut = 'debugcas_'.$BASE;
-        $fichier_nom_fin   = fabriquer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
+        $fichier_nom_fin   = FileSystem::generer_fin_nom_fichier__pseudo_alea($fichier_nom_debut);
         phpCAS::setDebug(PHPCAS_LOGS_CHEMIN.$fichier_nom_debut.'_'.$fichier_nom_fin.'.txt');
       }
     }

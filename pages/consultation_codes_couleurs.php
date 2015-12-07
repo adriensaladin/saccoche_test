@@ -86,7 +86,7 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
 <hr />
 
 <?php
-if(test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
+if(Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
 {
   echo'<p class="astuce">Vous pouvez aussi consulter les algorithmes de calcul depuis votre menu <a href="?page=consultation_algorithme">[Informations] [Algorithme de calcul]</a>.</p>'.NL;
   echo'<hr />'.NL;

@@ -540,8 +540,8 @@ if( ($import_origine=='tableur') && ($import_profil=='professeur') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   //
   // On passe les utilisateurs en revue : on mémorise leurs infos
@@ -632,8 +632,8 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   //
   // On passe les utilisateurs en revue : on mémorise leurs infos et les classes trouvées
@@ -721,8 +721,8 @@ if( ($import_origine=='tableur') && ($import_profil=='parent') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   // L'import ne contient aucun id parent ni enfant.
   // On récupère la liste des références des élèves actuels pour comparer au contenu du fichier.
@@ -825,8 +825,8 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
     'nom'        => $init_negatif ,
@@ -890,7 +890,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
       $nom        = $tab_elements[$tab_numero_colonne['nom']   ];
       $prenom     = $tab_elements[$tab_numero_colonne['prenom']];
       $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;
-      $birth_date = strpos($tab_elements[$tab_numero_colonne['birth_date']],'-') ? convert_date_mysql_to_french($tab_elements[$tab_numero_colonne['birth_date']]) : $tab_elements[$tab_numero_colonne['birth_date']] ; // Selon les fichiers, trouvé au format français ou mysql
+      $birth_date = strpos($tab_elements[$tab_numero_colonne['birth_date']],'-') ? To::date_mysql_to_french($tab_elements[$tab_numero_colonne['birth_date']]) : $tab_elements[$tab_numero_colonne['birth_date']] ; // Selon les fichiers, trouvé au format français ou mysql
       $niveau     = $tab_elements[$tab_numero_colonne['niveau']];
       $classe     = $tab_elements[$tab_numero_colonne['classe']];
       if( ($nom!='') && ($prenom!='') && ($niveau!='') && ($classe!='') )
@@ -934,8 +934,8 @@ if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
     'genre'         => $init_negatif ,
@@ -1052,8 +1052,8 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
     'sconet_num' => $init_negatif ,
@@ -1130,8 +1130,8 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
     'sconet_num_1'     => $init_negatif ,

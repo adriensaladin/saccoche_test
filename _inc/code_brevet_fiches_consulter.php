@@ -73,7 +73,7 @@ if(!$DB_ROW['listing_user_id'])
   Json::end( FALSE , 'Aucun élève concerné dans cette classe !' );
 }
 
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
+if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
   $is_bouton_test_impression = TRUE;
 }
@@ -121,7 +121,7 @@ $make_action = 'consulter';
 $make_html   = ($mode=='graphique') ? FALSE : TRUE ;
 $make_pdf    = FALSE;
 $make_graph  = ($mode=='graphique') ? TRUE : FALSE ;
-$droit_corriger_appreciation = test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
+$droit_corriger_appreciation = Outil::test_user_droit_specifique( $_SESSION['DROIT_FICHE_BREVET_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 
 $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
 $groupe_nom     = $groupe_nom; // Déjà défini avant car on en avait besoin

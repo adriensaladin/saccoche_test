@@ -36,7 +36,7 @@ $max            = (isset($_POST['max']))              ? (int)$_POST['max']      
 $courriel_envoi = (isset($_POST['f_courriel_envoi'])) ? Clean::entier($_POST['f_courriel_envoi']) : 0 ;
 $courriel_copie = (isset($_POST['f_courriel_copie'])) ? Clean::entier($_POST['f_courriel_copie']) : 0 ;
 
-$fichier_csv_nom  = 'ajout_structures_'.fabriquer_fin_nom_fichier__date_et_alea().'.csv';
+$fichier_csv_nom  = 'ajout_structures_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.csv';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Import d'un fichier CSV avec le listing des structures
@@ -61,8 +61,8 @@ if($action=='importer_csv')
   $_SESSION['tab_info'] = array();
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = extraire_separateur_csv($tab_lignes[0]); // Déterminer la nature du séparateur
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   $tab_nouvel_uai = array();
   $tab_nouvel_id  = array();
@@ -113,19 +113,19 @@ if($action=='importer_csv')
       // Vérifier que le n°UAI est disponible et correct
       if($uai)
       {
-        if( (!tester_UAI($uai)) || (isset($tab_nouvel_uai[$uai])) || DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
+        if( (!Outil::tester_UAI($uai)) || (isset($tab_nouvel_uai[$uai])) || DB_WEBMESTRE_WEBMESTRE::DB_tester_structure_UAI($uai) )
         {
           $tab_erreur['uai']['nb']++;
         }
         $tab_nouvel_uai[$uai] = TRUE;
       }
       // Vérifier que l'adresse de courriel est correcte
-      if(!tester_courriel($contact_courriel))
+      if(!Outil::tester_courriel($contact_courriel))
       {
         $tab_erreur['mail']['nb']++;
       }
       // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
-      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($contact_courriel);
+      list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($contact_courriel);
       if(!$is_domaine_valide)
       {
         $tab_erreur['mail']['nb']++;
@@ -183,9 +183,9 @@ if( ($action=='ajouter') && $num && $max )
     FileSystem::ecrire_fichier_index($dossier.$base_id);
   }
   // Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
-  charger_parametres_mysql_supplementaires($base_id);
+  DBextra::charger_parametres_mysql_supplementaires($base_id);
   // Lancer les requêtes pour créer et remplir les tables
-  charger_parametres_mysql_supplementaires($base_id);
+  DBextra::charger_parametres_mysql_supplementaires($base_id);
   DB_STRUCTURE_COMMUN::DB_creer_remplir_tables_structure();
   // Il est arrivé que la fonction DB_modifier_parametres() retourne une erreur disant que la table n'existe pas.
   // Comme si les requêtes de DB_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
@@ -200,8 +200,8 @@ if( ($action=='ajouter') && $num && $max )
   $tab_parametres['etablissement_denomination'] = $denomination;
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // Insérer le compte administrateur dans la base de cette structure
-  $password = fabriquer_mdp();
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'user' /*user_email_origine*/ , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
+  $password = Outil::fabriquer_mdp();
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'user' /*user_email_origine*/ , 'admin' /*login*/ , Outil::crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
   // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
   DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'contact_externe' , 'accueil' );
   // Envoyer un courriel au contact et / ou une copie du courriel au webmestre

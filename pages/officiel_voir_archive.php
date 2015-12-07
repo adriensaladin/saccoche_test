@@ -42,7 +42,7 @@ $droit_voir_archives_pdf = FALSE;
 
 foreach($tab_types as $BILAN_TYPE => $tab)
 {
-  $droit_voir_archives_pdf = $droit_voir_archives_pdf || test_user_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
+  $droit_voir_archives_pdf = $droit_voir_archives_pdf || Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
   if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
 }
 
@@ -54,7 +54,7 @@ if(!$droit_voir_archives_pdf)
   {
     $titre = ($BILAN_TYPE!='palier1') ? $tab['titre'] : 'Maîtrise du socle' ;
     echo'<h3>'.$titre.'</h3>'.NL;
-    echo afficher_profils_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE'],'li');
+    echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE'],'li');
     if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
   }
   return; // Ne pas exécuter la suite de ce fichier inclus.
@@ -69,7 +69,7 @@ if(empty($DB_TAB))
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-$annee_session_brevet = annee_session_brevet();
+$annee_session_brevet = To::annee_session_brevet();
 
 $tab_thead = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>'') : array(0=>'<th class="nu"></th>');
 $tab_tbody = array();
@@ -105,9 +105,9 @@ $_SESSION['tmp_droit_voir_archive'] = array();
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( '' /*BILAN_TYPE*/ , 0 /*periode_id*/ , $tab_eleve_id );
 foreach($DB_TAB as $DB_ROW)
 {
-  if(test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']))
+  if(Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']))
   {
-    if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
+    if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
     {
       $_SESSION['tmp_droit_voir_archive'][$DB_ROW['user_id'].$DB_ROW['officiel_type']] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
       $tab_tbody[$DB_ROW['user_id']][$DB_ROW['periode_id']][] = '<a href="releve_pdf.php?fichier='.$DB_ROW['user_id'].'_'.$DB_ROW['officiel_type'].'_'.$DB_ROW['periode_id'].'" target="_blank">'.$tab_types[$DB_ROW['officiel_type']]['titre'].'</a>' ;
@@ -116,13 +116,13 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // autre boucle pour les fiches brevet (ce n'est pas la même table)
-if(test_user_droit_specifique($_SESSION['DROIT_'.$tab_types['brevet']['droit'].'_VOIR_ARCHIVE']))
+if(Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types['brevet']['droit'].'_VOIR_ARCHIVE']))
 {
   $bilan_type = 'brevet';
   $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_fichiers( implode(',',$tab_eleve_id) );
   foreach($DB_TAB as $user_id => $tab)
   {
-    if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.fabriquer_nom_fichier_bilan_officiel( $user_id , $bilan_type , $annee_session_brevet )))
+    if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $user_id , $bilan_type , $annee_session_brevet )))
     {
       $_SESSION['tmp_droit_voir_archive'][$user_id.$bilan_type] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
       $tab_tbody[$user_id]['+'.$annee_session_brevet][] = '<a href="releve_pdf.php?fichier='.$user_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" target="_blank">'.$tab_types['brevet']['titre'].'</a>' ;

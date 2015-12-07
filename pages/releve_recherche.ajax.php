@@ -190,7 +190,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
     $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($liste_eleve,$socle_item_id,$domaine_id=0,$pilier_id=0,$palier_id=0);
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_user_validation[$DB_ROW['user_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
+      $tab_user_validation[$DB_ROW['user_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>To::date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
     }
   }
   elseif($is_socle_pilier_validation)
@@ -198,7 +198,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
     $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($liste_eleve,$socle_pilier_id,$palier_id=0);
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_user_validation[$DB_ROW['user_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>convert_date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);
+      $tab_user_validation[$DB_ROW['user_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>To::date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);
     }
   }
 }
@@ -239,7 +239,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
       {
         extract($tab_item[$item_id]);  // $item_coef $calcul_methode $calcul_limite
         // calcul du bilan de l'item
-        $tab_score_item[$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+        $tab_score_item[$item_id] = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
       }
       // calcul des bilans des scores
       $tableau_score_filtre = array_filter($tab_score_item,'non_vide');
@@ -262,9 +262,9 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
       // ... un pour le nombre d\'items considérés acquis ou pas
       if($nb_scores)
       {
-        $tab_eleve_pourcentage[$eleve_id]       = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+        $tab_eleve_pourcentage[$eleve_id]       = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
         $tab_eleve_pourcentage[$eleve_id]['nb'] = $nb_scores;
-        $tab_eleve_pourcentage[$eleve_id]['%']  = calculer_pourcentage_acquisition_items( $tab_eleve_pourcentage[$eleve_id] , $nb_scores );
+        $tab_eleve_pourcentage[$eleve_id]['%']  = OutilBilan::calculer_pourcentage_acquisition_items( $tab_eleve_pourcentage[$eleve_id] , $nb_scores );
       }
     }
   }
@@ -275,7 +275,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
     extract($tab);  // $user_id $user_nom $user_prenom $eleve_langue
     if($is_matiere_items_bilanMS)
     {
-      $user_acquisition_etat = ($tab_eleve_moy_scores[$user_id]===FALSE) ? 0 : determiner_etat_acquisition($tab_eleve_moy_scores[$user_id]) ;
+      $user_acquisition_etat = ($tab_eleve_moy_scores[$user_id]===FALSE) ? 0 : OutilBilan::determiner_etat_acquisition($tab_eleve_moy_scores[$user_id]) ;
       if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
       {
         $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
@@ -284,7 +284,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
     }
     elseif($is_matiere_items_bilanPA)
     {
-      $user_acquisition_etat = ($tab_eleve_pourcentage[$user_id]===FALSE) ? 0 : determiner_etat_acquisition($tab_eleve_pourcentage[$user_id]['%']) ;
+      $user_acquisition_etat = ($tab_eleve_pourcentage[$user_id]===FALSE) ? 0 : OutilBilan::determiner_etat_acquisition($tab_eleve_pourcentage[$user_id]['%']) ;
       if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
       {
         $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
@@ -312,24 +312,24 @@ if( $is_socle_item_pourcentage )
       {
         extract($tab_item[$item_id]);  // $calcul_methode $calcul_limite
         // calcul du bilan de l'item
-        $score = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+        $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
         if($score!==FALSE)
         {
           // on détermine l'état d'acquisition et on enregistre les infos
-          $tab_score_socle_eleve[$eleve_id][determiner_etat_acquisition($score)]++;
+          $tab_score_socle_eleve[$eleve_id][OutilBilan::determiner_etat_acquisition($score)]++;
           $tab_score_socle_eleve[$eleve_id]['nb']++;
         }
       }
     }
     // On calcule le pourcentage d'acquisition des items
-    $tab_score_socle_eleve[$eleve_id]['%'] = ($tab_score_socle_eleve[$eleve_id]['nb']) ? calculer_pourcentage_acquisition_items( $tab_score_socle_eleve[$eleve_id] , $tab_score_socle_eleve[$eleve_id]['nb'] ) : FALSE ;
+    $tab_score_socle_eleve[$eleve_id]['%'] = ($tab_score_socle_eleve[$eleve_id]['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_score_socle_eleve[$eleve_id] , $tab_score_socle_eleve[$eleve_id]['nb'] ) : FALSE ;
   }
   // On ne garde que les lignes qui satisfont au critère demandé
   $tab_tr = array();
   foreach($tab_eleve as $tab)
   {
     extract($tab);  // $user_id $user_nom $user_prenom $eleve_langue
-    $user_acquisition_etat = ($tab_score_socle_eleve[$user_id]['%']===FALSE) ? 0 : determiner_etat_acquisition($tab_score_socle_eleve[$user_id]['%']) ;
+    $user_acquisition_etat = ($tab_score_socle_eleve[$user_id]['%']===FALSE) ? 0 : OutilBilan::determiner_etat_acquisition($tab_score_socle_eleve[$user_id]['%']) ;
     if( in_array( $user_acquisition_etat , $critere_tab_seuil_acquis ) )
     {
       $drapeau_langue = $is_langue ? $eleve_langue : 0 ;

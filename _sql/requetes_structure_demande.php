@@ -236,7 +236,7 @@ public static function DB_recuperer_item_infos($item_id)
  */
 public static function DB_modifier_demandes_statut( $listing_demande_id , $statut , $message )
 {
-  $message_complementaire = ($message) ? "\r\n\r\n".afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])."\r\n".$message : '' ;
+  $message_complementaire = ($message) ? "\r\n\r\n".To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])."\r\n".$message : '' ;
   $DB_SQL = 'UPDATE sacoche_demande ';
   $DB_SQL.= 'SET demande_statut=:demande_statut, demande_messages=CONCAT(demande_messages,:message_complementaire) ';
   $DB_SQL.= 'WHERE demande_id IN('.$listing_demande_id.') ';
@@ -322,7 +322,7 @@ public static function DB_tester_demande_existante( $eleve_id , $matiere_id , $i
  */
 public static function DB_ajouter_demande( $eleve_id , $matiere_id , $item_id , $prof_id , $demande_score , $demande_statut , $message , $demande_doc )
 {
-  $demande_messages = ($message) ? afficher_identite_initiale($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE)."\r\n".$message : '' ;
+  $demande_messages = ($message) ? To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE)."\r\n".$message : '' ;
   $DB_SQL = 'INSERT INTO sacoche_demande( eleve_id, matiere_id, item_id, prof_id,demande_date, demande_score, demande_statut, demande_messages, demande_doc) ';
   $DB_SQL.= 'VALUES                     (:eleve_id,:matiere_id,:item_id,:prof_id,       NOW(),:demande_score,:demande_statut,:demande_messages,:demande_doc)';
   $DB_VAR = array(

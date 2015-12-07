@@ -191,7 +191,7 @@ if( $step==41 )
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if($installation=='multi-structures')
   {
-    list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+    list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
     if(!$is_domaine_valide)
     {
       Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -211,7 +211,7 @@ if( $step==41 )
     'WEBMESTRE_NOM'              => $nom,
     'WEBMESTRE_PRENOM'           => $prenom,
     'WEBMESTRE_COURRIEL'         => $courriel,
-    'WEBMESTRE_PASSWORD_MD5'     => crypter_mdp($password),
+    'WEBMESTRE_PASSWORD_MD5'     => Outil::crypter_mdp($password),
     'SERVEUR_PROXY_USED'         => '',
     'SERVEUR_PROXY_NAME'         => '',
     'SERVEUR_PROXY_PORT'         => '',
@@ -504,8 +504,8 @@ if( $step==7 )
       $tab_parametres['etablissement_denomination'] = HEBERGEUR_DENOMINATION;
       DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
       // Insérer un compte administrateur dans la base de la structure
-      $password = fabriquer_mdp();
-      $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , WEBMESTRE_COURRIEL , 'user' /*user_email_origine*/ , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
+      $password = Outil::fabriquer_mdp();
+      $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , WEBMESTRE_COURRIEL , 'user' /*user_email_origine*/ , 'admin' /*login*/ , Outil::crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
       // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
       DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'contact_externe' , 'accueil' );
       // Affichage du retour

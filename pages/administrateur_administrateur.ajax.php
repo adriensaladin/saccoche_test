@@ -67,7 +67,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   if($box_login)
   {
     // Construire puis tester le login (parmi tous les utilisateurs de l'établissement)
-    $login = fabriquer_login($prenom,$nom,$profil);
+    $login = Outil::fabriquer_login($prenom,$nom,$profil);
     if( DB_STRUCTURE_ADMINISTRATEUR::DB_tester_utilisateur_identifiant('login',$login) )
     {
       // Login pris : en chercher un autre en remplaçant la fin par des chiffres si besoin
@@ -85,7 +85,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   if($box_password)
   {
     // Générer un mdp aléatoire
-    $password = fabriquer_mdp($profil);
+    $password = Outil::fabriquer_mdp($profil);
   }
   else
   {
@@ -100,7 +100,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   {
     if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+      list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
       if(!$is_domaine_valide)
       {
         Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -109,7 +109,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   }
   $user_email_origine = ($courriel) ? 'admin' : '' ;
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , Outil::crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
   // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
   DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'contact_externe' , 'accueil' );
   // Afficher le retour
@@ -167,7 +167,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
   {
     if(HEBERGEUR_INSTALLATION=='multi-structures')
     {
-      list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($courriel);
+      list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($courriel);
       if(!$is_domaine_valide)
       {
         Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -182,7 +182,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['adulte'][$genre]) &&
   // Cas du mot de passe
   if(!$box_password)
   {
-    $tab_donnees[':password'] = crypter_mdp($password);
+    $tab_donnees[':password'] = Outil::crypter_mdp($password);
   }
   // Mettre à jour l'enregistrement
   $tab_donnees += array(

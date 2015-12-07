@@ -48,7 +48,7 @@ $matiere_et_groupe = ($releve_modele=='matiere') ? $matiere_nom.' - '.$groupe_no
 
 // Chemins d'enregistrement
 
-$fichier_nom = ($make_action!='imprimer') ? 'releve_item_'.$releve_modele.'_'.Clean::fichier($groupe_nom).'_<REPLACE>_'.fabriquer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.fabriquer_fin_nom_fichier__date_et_alea() ;
+$fichier_nom = ($make_action!='imprimer') ? 'releve_item_'.$releve_modele.'_'.Clean::fichier($groupe_nom).'_<REPLACE>_'.FileSystem::generer_fin_nom_fichier__date_et_alea() : 'officiel_'.$BILAN_TYPE.'_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea() ;
 
 // Si pas grille générique et si notes demandées ou besoin pour colonne bilan ou besoin pour synthèse
 $calcul_acquisitions = ( $type_synthese || $type_bulletin || $aff_etat_acquisition ) ? TRUE : FALSE ;
@@ -88,8 +88,8 @@ if( ($make_html) || ($make_pdf) )
 
 if($periode_id==0)
 {
-  $date_mysql_debut = convert_date_french_to_mysql($date_debut);
-  $date_mysql_fin   = convert_date_french_to_mysql($date_fin);
+  $date_mysql_debut = To::date_french_to_mysql($date_debut);
+  $date_mysql_fin   = To::date_french_to_mysql($date_fin);
 }
 else
 {
@@ -100,8 +100,8 @@ else
   }
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-  $date_debut = convert_date_mysql_to_french($date_mysql_debut);
-  $date_fin   = convert_date_mysql_to_french($date_mysql_fin);
+  $date_debut = To::date_mysql_to_french($date_mysql_debut);
+  $date_fin   = To::date_mysql_to_french($date_mysql_fin);
 }
 if($date_mysql_debut>$date_mysql_fin)
 {
@@ -261,7 +261,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
   {
     $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
   }
-  $date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
+  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -355,7 +355,7 @@ if(empty($is_appreciation_groupe))
             {
               extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
               // calcul du bilan de l'item
-              $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+              $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
               $tab_score_item_eleve[$item_id][$eleve_id] = $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id];
             }
             // calcul des bilans des scores
@@ -387,9 +387,9 @@ if(empty($is_appreciation_groupe))
             // ... un pour le nombre d'items considérés acquis ou pas
             if($nb_scores)
             {
-              $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
-              $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
-              $tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = afficher_nombre_acquisitions_par_etat( $tab_acquisitions );
+              $tab_acquisitions = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+              $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = OutilBilan::calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
+              $tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = OutilBilan::afficher_nombre_acquisitions_par_etat( $tab_acquisitions );
               if( ($matiere_nb>1) && $type_synthese )
               {
                 // Total multimatières
@@ -411,7 +411,7 @@ if(empty($is_appreciation_groupe))
           // On prend la matière 0 pour mettre les résultats toutes matières confondues
           if($with_coef) { $tab_moyenne_scores_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_coefs'])  ? round($tab_total[$eleve_id]['somme_scores_coefs']  /$tab_total[$eleve_id]['nb_coefs'] ,0) : FALSE ; }
           else           { $tab_moyenne_scores_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? round($tab_total[$eleve_id]['somme_scores_simples']/$tab_total[$eleve_id]['nb_scores'],0) : FALSE ; }
-          $tab_pourcentage_acquis_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? calculer_pourcentage_acquisition_items( $tab_total[$eleve_id] , $tab_total[$eleve_id]['nb_scores'] ) : FALSE ;
+          $tab_pourcentage_acquis_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_total[$eleve_id] , $tab_total[$eleve_id]['nb_scores'] ) : FALSE ;
         }
       }
     }
@@ -444,10 +444,10 @@ if( $type_synthese || ($releve_individuel_format=='item') )
       if($nb_scores)
       {
         $somme_scores = array_sum($tableau_score_filtre);
-        $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+        $tab_acquisitions = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
         $tab_moyenne_scores_item[$item_id]     = round($somme_scores/$nb_scores,0);
-        $tab_pourcentage_acquis_item[$item_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
-        $tab_infos_acquis_item[$item_id]       = afficher_nombre_acquisitions_par_etat( $tab_acquisitions );
+        $tab_pourcentage_acquis_item[$item_id] = OutilBilan::calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
+        $tab_infos_acquis_item[$item_id]       = OutilBilan::afficher_nombre_acquisitions_par_etat( $tab_acquisitions );
       }
       else
       {
@@ -589,7 +589,7 @@ $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL_TYPE']=='profe
 
 if($type_individuel)
 {
-  $jour_debut_annee_scolaire = jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
+  $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
   if($make_html)
   {
     $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;
@@ -641,7 +641,7 @@ if($type_individuel)
     foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
     {
       extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_id_gepi
-      $date_naissance = ($date_naissance) ? convert_date_mysql_to_french($date_naissance) : '' ;
+      $date_naissance = ($date_naissance) ? To::date_mysql_to_french($date_naissance) : '' ;
       if($make_officiel)
       {
         // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
@@ -1041,7 +1041,7 @@ if($type_individuel)
           // Relevé de notes - Date de naissance
           if( ($make_officiel) && ($date_naissance) && ( ($make_html) || ($make_graph) ) )
           {
-            $releve_HTML_individuel .= '<div class="i">'.texte_ligne_naissance($date_naissance).'</div>'.NL;
+            $releve_HTML_individuel .= '<div class="i">'.To::texte_ligne_naissance($date_naissance).'</div>'.NL;
           }
           // Relevé de notes - Légende
           if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') && empty($is_appreciation_groupe) )

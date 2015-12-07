@@ -111,7 +111,7 @@ if($action=='enregistrer')
     {
       FileSystem::supprimer_fichier( CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] , TRUE /*verif_exist*/ );
     }
-    $_SESSION['tmp']['partenaire_logo_actuel_filename'] = 'logo_'.$_SESSION['USER_ID'].'_'.fabriquer_fin_nom_fichier__date_et_alea().'.'.$_SESSION['tmp']['partenaire_logo_new_file_ext'];
+    $_SESSION['tmp']['partenaire_logo_actuel_filename'] = 'logo_'.$_SESSION['USER_ID'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.'.$_SESSION['tmp']['partenaire_logo_new_file_ext'];
     copy( CHEMIN_DOSSIER_IMPORT.$_SESSION['tmp']['partenaire_logo_new_filename'] , CHEMIN_DOSSIER_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] );
   }
   unset( $_SESSION['tmp']['partenaire_logo_new_filename'] , $_SESSION['tmp']['partenaire_logo_new_file_ext'] );

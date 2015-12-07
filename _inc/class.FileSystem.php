@@ -437,6 +437,61 @@ class FileSystem
   }
 
   /**
+   * Générer une date et une valeur aléatoire pour terminer un nom de fichier.
+   * 
+   * @param void
+   * @return string
+   */
+  public static function generer_fin_nom_fichier__date_et_alea()
+  {
+    // date
+    $chaine_date = date('Y-m-d_H\hi\m\i\ns\s'); // lisible par un humain et compatible avec le système de fichiers
+    // valeur aléatoire
+    $longueur_chaine = 15; // permet > 2x10^23 possibilités : même en en testant 1 milliard /s il faudrait plus de 7 millions d'années pour toutes les essayer
+    $caracteres = '0123456789abcdefghijklmnopqrstuvwxyz';
+    $alea_max = strlen($caracteres)-1;
+    $chaine_alea = '';
+    for( $i=0 ; $i<$longueur_chaine ; $i++ )
+    {
+      $chaine_alea .= $caracteres{mt_rand(0,$alea_max)};
+    }
+    // retour
+    return $chaine_date.'_'.$chaine_alea;
+  }
+
+  /**
+   * Générer une fin de fichier pseudo-aléatoire pour terminer un nom de fichier.
+   * 
+   * Le suffixe est suffisamment tordu pour le rendre un privé et non retrouvable par un utilisateur, mais sans être totalement aléatoire car il doit fixe (retrouvé).
+   * Utilisé pour les flux RSS et les bilans officiels PDF.
+   * 
+   * @param string   $fichier_nom_debut
+   * @return string
+   */
+  public static function generer_fin_nom_fichier__pseudo_alea($fichier_nom_debut)
+  {
+    return md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
+  }
+
+  /**
+   * Générer une fin de fichier pseudo-aléatoire pour terminer un nom de fichier.
+   * 
+   * Le suffixe est suffisamment tordu pour le rendre un privé et non retrouvable par un utilisateur, mais sans être totalement aléatoire car il doit fixe (retrouvé).
+   * Utilisé pour les flux RSS, les bilans officiels PDF, les fiches brevet PDF.
+   * 
+   * @param int      $eleve_id
+   * @param string   $bilan_type
+   * @param int      $periode_id
+   * @return string
+   */
+  public static function generer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $periode_id )
+  {
+    $fichier_bilan_officiel_nom_debut = 'user'.$eleve_id.'_officiel_'.$bilan_type.'_periode'.$periode_id;
+    $fichier_bilan_officiel_nom_fin   = FileSystem::generer_fin_nom_fichier__pseudo_alea($fichier_bilan_officiel_nom_debut);
+    return $fichier_bilan_officiel_nom_debut.'_'.$fichier_bilan_officiel_nom_fin.'.pdf';
+  }
+
+  /**
    * Fabriquer ou mettre à jour le fichier de configuration de l'hébergement (gestion par le webmestre)
    * 
    * @param array          $tab_constantes_modifiees => $constante_valeur des paramètres à modifier (sinon, on prend les constantes déjà définies)

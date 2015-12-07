@@ -58,10 +58,10 @@ $liste_item_id    = implode(',',$tab_items);
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-  if(!test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']))      { $indicateur = 'pourcentage_acquis'; }
-  if(!test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS'])) { $indicateur = 'moyenne_scores'; }
-  if(!test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']))   { $indicateur = ''; }
-  $conversion_sur_20 = test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20']) ? $conversion_sur_20 : 0 ;
+  if(!Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_MOYENNE_SCORE']))      { $indicateur = 'pourcentage_acquis'; }
+  if(!Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_POURCENTAGE_ACQUIS'])) { $indicateur = 'moyenne_scores'; }
+  if(!Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_ETAT_ACQUISITION']))   { $indicateur = ''; }
+  $conversion_sur_20 = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20']) ? $conversion_sur_20 : 0 ;
   // Pour un élève on surcharge avec les données de session
   if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   {
@@ -136,8 +136,8 @@ $tab_rubrique_for_item = array();  // [item_id] => rubrique_id
 
 if($periode_id==0)
 {
-  $date_mysql_debut = convert_date_french_to_mysql($date_debut);
-  $date_mysql_fin   = convert_date_french_to_mysql($date_fin);
+  $date_mysql_debut = To::date_french_to_mysql($date_debut);
+  $date_mysql_fin   = To::date_french_to_mysql($date_fin);
 }
 else
 {
@@ -148,8 +148,8 @@ else
   }
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-  $date_debut = convert_date_mysql_to_french($date_mysql_debut);
-  $date_fin   = convert_date_mysql_to_french($date_mysql_fin);
+  $date_debut = To::date_mysql_to_french($date_mysql_debut);
+  $date_fin   = To::date_mysql_to_french($date_mysql_fin);
 }
 if($date_mysql_debut>$date_mysql_fin)
 {
@@ -198,7 +198,7 @@ function date_mysql_to_date_js($date_mysql)
   return 'Date.UTC('.$annee.','.((int)$mois-1).','.(int)$jour.')';
 }
 
-$date_mysql_debut_annee_scolaire = jour_debut_annee_scolaire('mysql');
+$date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
     if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
 elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
 else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -267,7 +267,7 @@ if(count($tab_date))
     {
       extract($tab_item[$item_id][0]);  // $item_coef $calcul_methode $calcul_limite $calcul_retroactif
       $rubrique_id = $tab_rubrique_for_item[$item_id];
-      $tab_score_eleve_item[$eleve_id][$rubrique_id][$item_id] = calculer_score(array_slice($tab_eval[$eleve_id][$item_id],0,$nb_evals),$calcul_methode,$calcul_limite);
+      $tab_score_eleve_item[$eleve_id][$rubrique_id][$item_id] = OutilBilan::calculer_score(array_slice($tab_eval[$eleve_id][$item_id],0,$nb_evals),$calcul_methode,$calcul_limite);
       $tab_rubrique_todo_moyenne[] = $rubrique_id;
     }
     // On (re)-calcule les moyennes des matières concernées
@@ -302,8 +302,8 @@ if(count($tab_date))
         if($nb_scores)
         {
 
-          $tab_acquisitions = compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
-          $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
+          $tab_acquisitions = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+          $tab_moyenne_eleve_rubrique[$eleve_id][$rubrique_id] = OutilBilan::calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
         }
         else
         {

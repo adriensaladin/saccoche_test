@@ -53,7 +53,7 @@ class Webmestre
     // Génération des paramètres de connexion à la base de données
     $BD_name = 'sac_base_'.$base_id; // Limité à 64 caractères (tranquille...)
     $BD_user = 'sac_user_'.$base_id; // Limité à 16 caractères (attention !)
-    $BD_pass = fabriquer_mdp();
+    $BD_pass = Outil::fabriquer_mdp();
     // Créer le fichier de connexion de la base de données de la structure
     FileSystem::fabriquer_fichier_connexion_base($base_id,SACOCHE_WEBMESTRE_BD_HOST,SACOCHE_WEBMESTRE_BD_PORT,$BD_name,$BD_user,$BD_pass);
     // Créer la base de données d'une structure, un utilisateur MySQL, et lui attribuer ses droits.
@@ -127,13 +127,13 @@ class Webmestre
   public static function modifier_mdp_webmestre($password_ancien,$password_nouveau)
   {
     // Tester si l'ancien mot de passe correspond à celui enregistré
-    $password_ancien_crypte = crypter_mdp($password_ancien);
+    $password_ancien_crypte = Outil::crypter_mdp($password_ancien);
     if($password_ancien_crypte!=WEBMESTRE_PASSWORD_MD5)
     {
       return FALSE;
     }
     // Remplacer par le nouveau mot de passe
-    $password_nouveau_crypte = crypter_mdp($password_nouveau);
+    $password_nouveau_crypte = Outil::crypter_mdp($password_nouveau);
     $result = FileSystem::fabriquer_fichier_hebergeur_info( array('WEBMESTRE_PASSWORD_MD5'=>$password_nouveau_crypte) );
     if($result!==TRUE)
     {

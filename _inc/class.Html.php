@@ -164,14 +164,14 @@ class Html
   public static function td_score( $score , $methode_tri , $pourcent='' , $checkbox_val=''  , $make_officiel=FALSE )
   {
     // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-    $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
+    $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
     $checkbox = ($checkbox_val) ? ' <input type="checkbox" name="id_req[]" value="'.$checkbox_val.'" />' : '' ;
    if($score===FALSE)
     {
       $affichage = ($afficher_score) ? '-' : '' ;
       return '<td class="hc">'.$affichage.$checkbox.'</td>';
     }
-    $class = 'A'.determiner_etat_acquisition($score);
+    $class = 'A'.OutilBilan::determiner_etat_acquisition($score);
     $affichage = ($afficher_score) ? $score.$pourcent : '' ;
     $tri = ($methode_tri=='score') ? sprintf("%03u",$score) : Html::$tab_tri_etat[$class] ;  // le sprintf et le tab_tri_etat servent pour le tri du tableau
     return '<td class="hc '.$class.'"><i>'.$tri.'</i>'.$affichage.$checkbox.'</td>';
@@ -236,7 +236,7 @@ class Html
     if($score_bilan)
     {
       // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-      $afficher_score = test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
+      $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
       $retour .= '<div><b>États d\'acquisitions :</b>';
       foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
@@ -323,9 +323,9 @@ class Html
       $texte = ($detail) ? '---' : '-' ; // Mettre qq chose sinon en mode daltonien le gris de la case se confond avec les autres couleurs.
       return '<'.$type_cellule.' class="hc">'.$texte.'</'.$type_cellule.'>' ;
     }
-    $class = 'A'.determiner_etat_acquisition($tab_infos['%']);
+    $class = 'A'.OutilBilan::determiner_etat_acquisition($tab_infos['%']);
     $style = ($largeur) ? ' style="width:'.$largeur.'px"' : '' ;
-    $texte = html($tab_infos['%'].'% acquis ('.afficher_nombre_acquisitions_par_etat($tab_infos).')');
+    $texte = html($tab_infos['%'].'% acquis ('.OutilBilan::afficher_nombre_acquisitions_par_etat($tab_infos).')');
     return ($detail) ? '<'.$type_cellule.' class="hc '.$class.'"'.$style.'>'.$texte.'</'.$type_cellule.'>' : '<'.$type_cellule.' class="'.$class.'" title="'.$texte.'"></'.$type_cellule.'>';
   }
 

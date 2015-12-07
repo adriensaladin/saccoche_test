@@ -75,7 +75,7 @@ if( ($action=='recherche_matiere_motclef') && $motclef )
     {
       $class = ($DB_ROW['matiere_active']) ? 'ajouter_non' : 'ajouter' ;
       $title = ($DB_ROW['matiere_active']) ? 'Matière déjà choisie.' : 'Ajouter cette matière.' ;
-      $pourcent_commun = poucentage_commun( $motclef , $DB_ROW['matiere_nom'] );
+      $pourcent_commun = Outil::pourcentage_commun( $motclef , $DB_ROW['matiere_nom'] );
       $score_retenu = round( max( $DB_ROW['score'] , $pourcent_commun) );
       $tab_li['<li>['.$score_retenu.'%] <i>'.html($DB_ROW['matiere_famille_nom']).'</i> || '.html($DB_ROW['matiere_nom'].' ('.$DB_ROW['matiere_ref'].')').'<q id="add_'.$DB_ROW['matiere_id'].'" class="'.$class.'" title="'.$title.'"></q></li>'] = $score_retenu ;
     }

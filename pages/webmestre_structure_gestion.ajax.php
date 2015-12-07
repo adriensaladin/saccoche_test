@@ -83,7 +83,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
     }
   }
   // Vérifier le domaine du serveur mail (multi-structures donc serveur ouvert sur l'extérieur).
-  list($mail_domaine,$is_domaine_valide) = tester_domaine_courriel_valide($contact_courriel);
+  list($mail_domaine,$is_domaine_valide) = Outil::tester_domaine_courriel_valide($contact_courriel);
   if(!$is_domaine_valide)
   {
     Json::end( FALSE , 'Erreur avec le domaine "'.$mail_domaine.'" !' );
@@ -100,7 +100,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
     FileSystem::ecrire_fichier_index($dossier.$base_id);
   }
   // Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
-  charger_parametres_mysql_supplementaires($base_id);
+  DBextra::charger_parametres_mysql_supplementaires($base_id);
   // Lancer les requêtes pour créer et remplir les tables
   DB_STRUCTURE_COMMUN::DB_creer_remplir_tables_structure();
   // Il est arrivé que la fonction DB_modifier_parametres() retourne une erreur disant que la table n'existe pas.
@@ -116,8 +116,8 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   $tab_parametres['etablissement_denomination'] = $denomination;
   DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // Insérer le compte administrateur dans la base de cette structure
-  $password = fabriquer_mdp();
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'user' /*user_email_origine*/ , 'admin' /*login*/ , crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
+  $password = Outil::fabriquer_mdp();
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'user' /*user_email_origine*/ , 'admin' /*login*/ , Outil::crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
   // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
   DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'contact_externe' , 'accueil' );
   // Envoyer un courriel au contact et / ou une copie du courriel au webmestre
@@ -175,7 +175,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
   // On met à jour l'enregistrement dans la base du webmestre
   DB_WEBMESTRE_WEBMESTRE::DB_modifier_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
   // On met à jour l'enregistrement dans la base de la structure
-  charger_parametres_mysql_supplementaires($base_id);
+  DBextra::charger_parametres_mysql_supplementaires($base_id);
   $tab_parametres = array();
   $tab_parametres['webmestre_uai']          = $uai;
   $tab_parametres['webmestre_denomination'] = $denomination;
@@ -204,7 +204,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
 
 if( ($action=='lister_admin') && $base_id )
 {
-  charger_parametres_mysql_supplementaires($base_id);
+  DBextra::charger_parametres_mysql_supplementaires($base_id);
   Json::end( TRUE , HtmlForm::afficher_select(DB_STRUCTURE_WEBMESTRE::DB_OPT_administrateurs_etabl() , FALSE /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/) );
 }
 
@@ -214,7 +214,7 @@ if( ($action=='lister_admin') && $base_id )
 
 if( ($action=='initialiser_mdp') && $base_id && $admin_id )
 {
-  charger_parametres_mysql_supplementaires($base_id);
+  DBextra::charger_parametres_mysql_supplementaires($base_id);
   // Informations sur la structure, notamment coordonnées du contact.
   $DB_ROW = DB_WEBMESTRE_WEBMESTRE::DB_recuperer_structure_by_Id($base_id);
   if(empty($DB_ROW))
@@ -235,8 +235,8 @@ if( ($action=='initialiser_mdp') && $base_id && $admin_id )
   $admin_prenom = $DB_ROW['user_prenom'];
   $admin_login  = $DB_ROW['user_login'];
   // Générer un nouveau mdp de l'admin
-  $admin_password = fabriquer_mdp();
-  DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,crypter_mdp($admin_password));
+  $admin_password = Outil::fabriquer_mdp();
+  DB_STRUCTURE_WEBMESTRE::DB_modifier_admin_mdp($admin_id,Outil::crypter_mdp($admin_password));
   // Envoyer un courriel au contact et éventuellement une copie du courriel au webmestre
   $courriel_contenu = Webmestre::contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , URL_DIR_SACOCHE );
   $courriel_titre   = 'Modification mdp administrateur - Inscription n°'.$base_id;

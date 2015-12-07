@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Algorithme de calcul"));
 
-if(!test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
+if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
-  echo afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME'],'li');
+  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 

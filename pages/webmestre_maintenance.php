@@ -71,7 +71,7 @@ else
 
 <ul class="puce">
   <li>Version actuellement installée : <label id="ajax_version_installee"><?php echo VERSION_PROG ?></label></li>
-  <li>Dernière version disponible : <span id="ajax_version_disponible" class="astuce"><?php echo recuperer_numero_derniere_version() ?></span></li>
+  <li>Dernière version disponible : <span id="ajax_version_disponible" class="astuce"><?php echo Outil::recuperer_numero_derniere_version() ?></span></li>
 </ul>
 
 <hr />

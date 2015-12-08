@@ -79,10 +79,6 @@ public static function DB_lister_periodes()
  */
 public static function DB_lister_jointure_groupe_periode($listing_groupes_id)
 {
-  if( !$listing_groupes_id || str_replace(array('0','1','2','3','4','5','6','7','8','9',','),'',$listing_groupes_id) )
-  {
-    Outil::ajouter_log_PHP( 'Erreur DB_lister_jointure_groupe_periode()' /*log_objet*/ , $listing_groupes_id /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , TRUE /*only_sesamath*/ );
-  }
   $DB_SQL = 'SELECT sacoche_jointure_groupe_periode.* ';
   $DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
   $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';

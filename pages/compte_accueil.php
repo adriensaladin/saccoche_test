@@ -134,7 +134,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='parent')
     {
       $tab_nom_enfants[] =html($DB_ROW['texte']);
     }
-    $tab_accueil['user']['contenu'] .= '<p>'.html(Lang::_("Élève(s) affecté(s) dans une classe associé(s) à votre compte :")).' <b>'.implode('</b> ; <b>',$tab_nom_enfants).'</b>.</p>';
+    $tab_accueil['user']['contenu'] .= '<p>'.html(Lang::_("Élève(s) associé(s) à votre compte :")).' <b>'.implode('</b> ; <b>',$tab_nom_enfants).'</b>.</p>';
   }
   else
   {

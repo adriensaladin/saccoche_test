@@ -219,8 +219,7 @@ public static function DB_lister_classes_parent($parent_id)
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe ON eleve_classe_id=groupe_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  // Test "eleve_classe_id!=0" pour éviter les enfants non affectés à une classe (on peut aussi utiliser INNER JOIN sur sacoche_jointure_user_groupe)
-  $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() AND eleve_classe_id!=0 ';
+  $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
   $DB_SQL.= 'GROUP BY groupe_id '; // si plusieurs enfants dans la même classe
   $DB_SQL.= 'ORDER BY groupe_type ASC, niveau_ordre ASC, groupe_nom ASC';
   $DB_VAR = array(

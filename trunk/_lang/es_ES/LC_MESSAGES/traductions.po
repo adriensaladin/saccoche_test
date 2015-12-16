@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
-"POT-Creation-Date: 2015-10-15 20:44+0100\n"
-"PO-Revision-Date: 2015-10-15 20:44+0100\n"
+"POT-Creation-Date: 2015-12-16 16:52+0100\n"
+"PO-Revision-Date: 2015-12-16 16:52+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: es_ES\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 # Dans le sens du menu du logiciel, pas du menu de la cantine. :)
 # Laisser en majuscules.
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\_inc/class.SessionUser.php:579
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\_inc/class.SessionUser.php:582
 msgid "MENU"
 msgstr "MENÚ"
 
@@ -222,73 +222,78 @@ msgid "Importer / Imposer des identifiants"
 msgstr "Importar / Imponer identificadores"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:88
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_evaluation_fichier.php:29
+msgid "Import / Export des évaluations"
+msgstr ""
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:89
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:85
 msgid "Import / Export des validations"
 msgstr "Importar / Exportar validaciones"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:89
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:90
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:70
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:70
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_message.php:29
 msgid "Messages d'accueil"
 msgstr "Mensaje de inicio"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:90
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:91
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_blocage.php:29
 msgid "Blocage des connexions"
 msgstr "Bloqueo conexiones"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:91
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:92
 msgid "Résilier l'inscription"
 msgstr "Cancelar la inscripción"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:95
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:96
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode.php:29
 msgid "Périodes"
 msgstr "Periodos"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:96
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:97
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:72
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/officiel.php:29
 msgid "Synthèses / Bilans"
 msgstr "Síntesis / Balances"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:97
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:98
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:105
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:29
 msgid "Notanet & Fiches brevet"
 msgstr "Notanet & Fichas Brevet"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:98
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:99
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe.php:29
 msgid "Classes"
 msgstr "Clases"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:99
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:100
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_groupe.php:29
 msgid "Groupes"
 msgstr "Grupos"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:100
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:101
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:29
 msgid "Élèves"
 msgstr "Alumnos"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:101
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:102
 msgid "Parents"
 msgstr "Padres"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:102
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:103
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur.php:29
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_gestion.php:29
 msgid "Professeurs / Personnels"
 msgstr "Profesores / Personal del centro"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:103
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:104
 msgid "Administrateurs"
 msgstr "Administradores"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:104
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:105
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_user_recherche.php:29
 msgid "Rechercher un utilisateur"
 msgstr "Buscar un usuario"
@@ -305,6 +310,7 @@ msgstr "Ajustes"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:40
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:40
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:41
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation.php:29
 msgid "Évaluations"
 msgstr "Evaluaciones"
 
@@ -383,17 +389,21 @@ msgstr "Número de recogidas"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:67
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:67
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:86
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation.php:42
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation.php:48
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_voir.php:29
 msgid "Liste des évaluations"
 msgstr "Lista de las evaluaciones"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:81
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:90
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle.php:36
 msgid "Choisir la langue étrangère"
 msgstr "Elegir la lengua extranjera"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:82
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:91
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle.php:37
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_item.php:29
 msgid "Valider les items du socle"
 msgstr "Convalidar los ítems de la base común"
@@ -410,6 +420,7 @@ msgstr "Cancelar una competencia convalidada"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:89
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:97
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve.php:34
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_recherche.php:29
 msgid "Recherche ciblée"
 msgstr "Búsqueda dirigida"
@@ -418,6 +429,7 @@ msgstr "Búsqueda dirigida"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:72
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:71
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:98
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve.php:35
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_grille_referentiel.php:29
 msgid "Grille d'items d'un référentiel"
 msgstr "Tabla de ítems de un referencial"
@@ -426,6 +438,7 @@ msgstr "Tabla de ítems de un referencial"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:73
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:72
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:99
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve.php:36
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:29
 msgid "Relevé d'items"
 msgstr "Extracto de ítems"
@@ -434,6 +447,7 @@ msgstr "Extracto de ítems"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:74
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:73
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:100
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve.php:37
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_synthese.php:29
 msgid "Synthèse d'items"
 msgstr "Síntesis de ítems"
@@ -442,6 +456,7 @@ msgstr "Síntesis de ítems"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:75
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:74
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:101
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve.php:38
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_bilan_chronologique.php:29
 msgid "Bilan chronologique"
 msgstr "Balance cronológico"
@@ -450,12 +465,14 @@ msgstr "Balance cronológico"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:76
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_parent.php:75
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:102
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve.php:39
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_socle.php:29
 msgid "Relevé de maîtrise du socle"
 msgstr "Extracto del control de la base común"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:95
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:103
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve.php:40
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_synthese_socle.php:29
 msgid "Synthèse de maîtrise du socle"
 msgstr "Síntesis del control de la base común"
@@ -504,6 +521,8 @@ msgstr "Control del nivel 3"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_eleve.php:68
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:82
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation.php:38
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation.php:49
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_demande_eleve.php:29
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_demande_professeur.php:29
 msgid "Demandes d'évaluations formulées"
@@ -542,16 +561,19 @@ msgid "Associer des ressources aux items"
 msgstr "Unir recursos a los ítems"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:83
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation.php:39
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_gestion.php:81
 msgid "Évaluer une classe ou un groupe"
 msgstr "Evaluar una clase o un grupo"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:84
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation.php:40
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_gestion.php:81
 msgid "Évaluer des élèves sélectionnés"
 msgstr "Evaluar alumnos seleccionados"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:85
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation.php:41
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/evaluation_ponctuelle.php:29
 msgid "Évaluer un élève à la volée"
 msgstr "Evaluar un alumno sobre la marcha"
@@ -608,6 +630,11 @@ msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:42
 msgid "Élèves & photos"
+msgstr ""
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:43
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_fusion.php:29
+msgid "Fusion de comptes"
 msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_classe.php:29
@@ -846,8 +873,8 @@ msgid "Vous êtes dans l'environnement %s."
 msgstr "Está en el entorno %s."
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:137
-msgid "Élève(s) associé(s) à votre compte :"
-msgstr "Alumno(s) asociado(s) a su cuenta :"
+msgid "Élève(s) affecté(s) dans une classe associé(s) à votre compte :"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:235
 msgid "Notifications à consulter"
@@ -913,19 +940,19 @@ msgstr "Archivos consultables de los balances oficiales"
 msgid "Gérer ses groupes de besoin"
 msgstr "Gestionar sus grupos de necesidades"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:168
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:170
 msgid "Relevé d'items d'une matière"
 msgstr "Extracto de ítems de una asignatura"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:169
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:171
 msgid "Relevé d'items pluridisciplinaire"
 msgstr "Extracto de ítems pluridisciplinar"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:170
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:172
 msgid "Relevé d'items sélectionnés"
 msgstr "Extracto de ítems seleccionados"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:171
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/releve_items.php:173
 msgid "Relevé d'items d'un enseignant"
 msgstr "Extracto de ítems de un profesor"
 
@@ -937,17 +964,23 @@ msgstr "Síntesis de una asignatura"
 msgid "Synthèse pluridisciplinaire"
 msgstr "Síntesis pluridisciplinar"
 
-#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_fichier.php:29
-msgid "Import / Export de validations du socle"
-msgstr "Importar / Exportar validaciones de la base común"
-
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle.php:38
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_pilier.php:29
 msgid "Valider les compétences (piliers) du socle"
 msgstr "Validar las competencias de la base común"
 
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle.php:39
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_pilier_annuler.php:29
 msgid "Annuler une compétence validée du socle"
 msgstr "Cancelar una competencia validada de la base común"
+
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle.php:40
+#: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/validation_socle_fichier.php:29
+msgid "Import / Export de validations du socle"
+msgstr "Importar / Exportar validaciones de la base común"
+
+#~ msgid "Élève(s) associé(s) à votre compte :"
+#~ msgstr "Alumno(s) asociado(s) a su cuenta :"
 
 #~ msgid "Notation : codes, couleurs, légendes"
 #~ msgstr "Notación : códigos, colores, leyendas"

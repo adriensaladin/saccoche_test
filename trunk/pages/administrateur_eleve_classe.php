@@ -31,7 +31,7 @@ $TITRE = html(Lang::_("Affecter les élèves aux classes"));
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_eleve  = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()            , 'select_groupe' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
+$select_eleve  = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl()            , 'select_groupe' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
 $select_classe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(TRUE /*with_ref*/) , 'f_classe'      /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ , $multiple=TRUE);
 ?>
 

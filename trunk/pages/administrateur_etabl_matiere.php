@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Matières"));
 
 // Formulaire des familles de matières, en 3 catégories
-$select_matiere_famille = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , 'f_famille' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'familles_matieres' /*optgroup*/);
+$select_matiere_famille = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_familles_matieres() , 'f_famille' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'familles_matieres' /*optgroup*/ );
 
 // Lister les matières de l'établissement
 $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );

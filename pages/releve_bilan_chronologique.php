@@ -140,15 +140,15 @@ $tab_select_objet_releve = array(
     array('valeur' => 'selection'        , 'texte' => "items sélectionnés") ,
 );
 
-$select_objet_releve = HtmlForm::afficher_select($tab_select_objet_releve       , 'f_objet'        /*select_nom*/ ,                      '' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/ );
+$select_objet_releve = HtmlForm::afficher_select($tab_select_objet_releve       , 'f_objet'        /*select_nom*/ ,                      '' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/);
 $select_groupe       = HtmlForm::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                           /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/ );
+$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/);
 $select_matieres     = HtmlForm::afficher_select($tab_matieres                  , 'f_matieres'     /*select_nom*/ ,                   FALSE /*option_first*/ , TRUE                             /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
-$select_matiere      = HtmlForm::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']   /*selection*/ ,              '' /*optgroup*/ );
-$select_periode      = HtmlForm::afficher_select($tab_periodes                  , 'f_periode'      /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/ );
-$select_echelle      = HtmlForm::afficher_select(Form::$tab_echelle             , 'f_echelle'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['echelle']      /*selection*/ ,              '' /*optgroup*/ );
+$select_matiere      = HtmlForm::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']   /*selection*/ ,              '' /*optgroup*/);
+$select_periode      = HtmlForm::afficher_select($tab_periodes                  , 'f_periode'      /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/);
+$select_echelle      = HtmlForm::afficher_select(Form::$tab_echelle             , 'f_echelle'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['echelle']      /*selection*/ ,              '' /*optgroup*/);
 
-$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ );
+$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
@@ -213,7 +213,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   </div>
   <div class="toggle hide">
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-    <label class="tab">Restriction :</label><label for="f_only_socle"><input type="checkbox" id="f_only_socle" name="f_only_socle" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés au socle</label><br />
+    <label class="tab">Restriction :</label><label for="f_restriction"><input type="checkbox" id="f_restriction" name="f_restriction" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés au socle</label><br />
     <label class="tab">Échelle :</label>axe des ordonnées <?php echo $select_echelle ?>
   </div>
   <p><span class="tab"></span><button id="bouton_valider" type="submit" class="generer">Générer.</button><label id="ajax_msg">&nbsp;</label></p>

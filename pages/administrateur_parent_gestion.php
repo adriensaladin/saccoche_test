@@ -35,7 +35,7 @@ $debut_nom    = (isset($_POST['f_debut_nom']))    ? Clean::nom($_POST['f_debut_n
 $debut_prenom = (isset($_POST['f_debut_prenom'])) ? Clean::prenom($_POST['f_debut_prenom']) : '' ;
 $find_doublon = (isset($_POST['f_doublon']))      ? TRUE                                    : FALSE ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
-$select_f_statuts = HtmlForm::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/ );
+$select_f_statuts = HtmlForm::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var input_date      = "'.TODAY_FR.'";' );

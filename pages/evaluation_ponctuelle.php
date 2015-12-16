@@ -31,8 +31,8 @@ $TITRE = html(Lang::_("Évaluer un élève à la volée"));
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
 $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
 
-$select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_classe'  /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_matiere = HtmlForm::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ );
+$select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_classe'  /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/);
+$select_matiere = HtmlForm::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/);
 
 // boutons radio
 $tab_radio_boutons = array();

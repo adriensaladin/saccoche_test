@@ -57,7 +57,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
 {
   $tab_groupes  = array();
   $of_g = FALSE; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'show'; $js_aff_nom_eleve = 'true';
-  $select_eleves = HtmlForm::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , FALSE /*select_nom*/ , '' /*option_first*/ , $auto_select_eleve_id /*selection*/ , '' /*optgroup*/ );
+  $select_eleves = HtmlForm::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , FALSE /*select_nom*/ , '' /*option_first*/ , $auto_select_eleve_id /*selection*/ , '' /*optgroup*/);
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
@@ -166,7 +166,7 @@ Layout::add( 'js_inline_before' , 'var auto_mode = "'.$auto_mode.'";' );
       <tr><td class="nu" colspan="7"></td></tr>
     </tbody>
   </table>
-  <?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ ); ?>
+  <?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ ); ?>
   <div>
     <h3>Commentaire éventuel</h3>
     <textarea name="f_msg_data" id="f_msg_texte" rows="5" cols="100"></textarea><br />

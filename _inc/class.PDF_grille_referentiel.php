@@ -88,7 +88,7 @@ class PDF_grille_referentiel extends PDF
     $this->calculer_dimensions_images($this->cases_largeur,$this->cases_hauteur);
   }
 
-  public function entete( $bilan_titre , $matiere_nom , $niveau_nom , $eleve_id , $eleve_nom , $eleve_prenom )
+  public function entete( $matiere_nom , $niveau_nom , $eleve_id , $eleve_nom , $eleve_prenom )
   {
     // On prend une nouvelle page PDF pour chaque élève
     $this->AddPage($this->orientation , 'A4');
@@ -96,13 +96,13 @@ class PDF_grille_referentiel extends PDF
     $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
     // intitulé-structure
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.4);
-    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($bilan_titre)                               , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf('Grille d\'items d\'un référentiel')        , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     // matière-niveau-élève
-    $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($matiere_nom.' - Niveau '.$niveau_nom) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($matiere_nom.' - Niveau '.$niveau_nom) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     if($eleve_id)
     {
-      $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+      $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     }
     else
     {
@@ -125,7 +125,7 @@ class PDF_grille_referentiel extends PDF
     }
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
     $this->SetXY(15 , $this->GetY()+1);
-    $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($domaine_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->Cell( $this->intitule_largeur , $this->cases_hauteur , To::pdf($domaine_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
   }
 
   public function theme( $theme_ref , $theme_nom , $theme_nb_lignes )

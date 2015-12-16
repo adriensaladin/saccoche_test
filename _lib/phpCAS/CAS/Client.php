@@ -2028,7 +2028,7 @@ class CAS_Client
             // Fix possible whitspace problems
             $dom->preserveWhiteSpace = false;
             // read the response of the CAS server into a DOM object
-            if (!(@$dom->loadXML($text_response))) {
+            if (!($dom->loadXML($text_response))) {
                 phpCAS::trace('dom->loadXML() failed');
                 throw new CAS_AuthenticationException(
                     $this, 'SA not validated', $validate_url,
@@ -2625,7 +2625,7 @@ class CAS_Client
             // Fix possible whitspace problems
             $dom->preserveWhiteSpace = false;
             // read the response of the CAS server into a DOM object
-            if ( !(@$dom->loadXML($cas_response))) {
+            if ( !($dom->loadXML($cas_response))) {
                 phpCAS::trace('dom->loadXML() failed');
                 // read failed
                 $bad_response = true;
@@ -3133,7 +3133,7 @@ class CAS_Client
         // CAS servers should only return data in utf-8
         $dom->encoding = "utf-8";
         // read the response of the CAS server into a DOMDocument object
-        if ( !(@$dom->loadXML($text_response))) {
+        if ( !($dom->loadXML($text_response))) {
             // read failed
             throw new CAS_AuthenticationException(
                 $this, 'Ticket not validated', $validate_url,

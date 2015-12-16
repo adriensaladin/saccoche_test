@@ -56,29 +56,6 @@ class OutilBilan
   }
 
   /**
-   * Tester si l'acquisition d'un item correspond à l'attente au vu du score transmis.
-   * 
-   * @param int    $score
-   * @param string $etat_attendu   'acquis' | 'non_acquis'
-   * @return bool
-   */
-  public static function tester_acquisition( $score , $etat_attendu )
-  {
-    if($score === FALSE)
-    {
-      return FALSE;
-    }
-    $score = min($score,100);
-    foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
-    {
-      if( ($score<=$tab_acquis_info['SEUIL_MAX']) && ($score>=$tab_acquis_info['SEUIL_MIN']) )
-      {
-        return ( ($etat_attendu=='acquis') && ($tab_acquis_info['VALEUR']>50) ) || ( ($etat_attendu=='non_acquis') && ($tab_acquis_info['VALEUR']<50) ) ;
-      }
-    }
-  }
-
-  /**
    * Compter le nb d'états d'acquisition de chaque catégorie à partir d'un tableau de scores transmis.
    * 
    * @param array $tab_score

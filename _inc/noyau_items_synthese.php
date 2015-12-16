@@ -29,7 +29,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 /**
  * Code inclus commun aux pages
- * [./pages/releve_synthese.ajax.php]
+ * [./pages/releve_synthese_matiere.ajax.php]
+ * [./pages/releve_synthese_multimatiere.ajax.php]
  * [./_inc/code_officiel_***.php]
  */
 
@@ -411,7 +412,7 @@ if( ($make_html) || ($make_graph) )
   $releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
   $separation = (count($tab_eleve_infos)>1) ? '<hr class="breakafter" />'.NL : '' ;
   // Légende identique pour tous les élèves car pas de codes de notation donc pas de codages spéciaux.
-  $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel , FALSE /*force_nb*/ ) : '' ;
+  $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ) : '' ;
   $width_barre = (!$make_officiel) ? 180 : 50 ;
   $width_texte = 900 - $width_barre;
 }

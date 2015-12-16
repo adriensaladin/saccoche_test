@@ -50,7 +50,6 @@ $check_with_coef          = (Form::$tab_choix['with_coef'])              ? ' che
 $class_form_with_coef     = ($check_type_synthese || $check_type_bulletin || ($check_type_individuel && $check_moyenne_score) ) ? 'show' : 'hide' ;
 
 // Réception d'id transmis via un lien en page d'accueil.
-$class_form_matiere     = isset($_GET['matiere_id']) ? 'show'                             : 'hide' ;
 $auto_voir_releve       = isset($_GET['matiere_id']) ? 'true'                             : 'false' ;
 $auto_select_objet      = isset($_GET['matiere_id']) ? 'matiere'                          : FALSE ;
 $auto_select_matiere_id = isset($_GET['matiere_id']) ? Clean::entier($_GET['matiere_id']) : Form::$tab_choix['matiere_id'] ;
@@ -75,7 +74,6 @@ $check_retroactif_auto    = (Form::$tab_choix['retroactif']=='auto')     ? ' che
 $check_retroactif_non     = (Form::$tab_choix['retroactif']=='non')      ? ' checked' : '' ;
 $check_retroactif_oui     = (Form::$tab_choix['retroactif']=='oui')      ? ' checked' : '' ;
 $check_retroactif_annuel  = (Form::$tab_choix['retroactif']=='annuel')   ? ' checked' : '' ;
-$check_only_socle         = (Form::$tab_choix['only_socle'])             ? ' checked' : '' ;
 $check_aff_coef           = (Form::$tab_choix['aff_coef'])               ? ' checked' : '' ;
 $check_aff_socle          = (Form::$tab_choix['aff_socle'])              ? ' checked' : '' ;
 $check_aff_lien           = (Form::$tab_choix['aff_lien'])               ? ' checked' : '' ;
@@ -173,26 +171,25 @@ $tab_select_objet_releve = array(
     array('valeur' => 'professeur'   , 'texte' => Lang::_("Relevé d'items d'un enseignant")) ,
 );
 
-$select_objet_releve      = HtmlForm::afficher_select($tab_select_objet_releve            , 'f_objet'             /*select_nom*/ ,                      '' /*option_first*/ , $auto_select_objet                           /*selection*/ ,              '' /*optgroup*/ );
-$select_individuel_format = HtmlForm::afficher_select(Form::$tab_select_individuel_format , 'f_individuel_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['releve_individuel_format'] /*selection*/ ,              '' /*optgroup*/ );
-$select_synthese_format   = HtmlForm::afficher_select(Form::$tab_select_synthese_format   , 'f_synthese_format'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_synthese_format']  /*selection*/ ,              '' /*optgroup*/ );
-$select_tri_mode          = HtmlForm::afficher_select(Form::$tab_select_tri_mode          , 'f_tri_mode'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_mode']         /*selection*/ ,              '' /*optgroup*/ );
-$select_groupe            = HtmlForm::afficher_select($tab_groupes                        , 'f_groupe'            /*select_nom*/ ,              $of_groupe /*option_first*/ , $sel_groupe                                  /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_eleves_ordre      = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre      , 'f_eleves_ordre'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre']             /*selection*/ ,              '' /*optgroup*/ );
-$select_professeur        = HtmlForm::afficher_select($tab_profs                          , 'f_prof'              /*select_nom*/ ,                   FALSE /*option_first*/ , $_SESSION['USER_ID']                         /*selection*/ ,              '' /*optgroup*/ );
-$select_matiere           = HtmlForm::afficher_select($tab_matieres                       , 'f_matiere'           /*select_nom*/ ,                      '' /*option_first*/ , $auto_select_matiere_id                      /*selection*/ ,              '' /*optgroup*/ );
-$select_periode           = HtmlForm::afficher_select($tab_periodes                       , 'f_periode'           /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                        /*selection*/ ,              '' /*optgroup*/ );
-$select_only_etat         = HtmlForm::afficher_select(Form::$tab_select_only_etat         , 'f_only_etat'         /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['only_etat']                /*selection*/ ,              '' /*optgroup*/ );
-$select_orientation       = HtmlForm::afficher_select(Form::$tab_select_orientation       , 'f_orientation'       /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']              /*selection*/ ,              '' /*optgroup*/ );
-$select_marge_min         = HtmlForm::afficher_select(Form::$tab_select_marge_min         , 'f_marge_min'         /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']                /*selection*/ ,              '' /*optgroup*/ );
-$select_pages_nb          = HtmlForm::afficher_select(Form::$tab_select_pages_nb          , 'f_pages_nb'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['pages_nb']                 /*selection*/ ,              '' /*optgroup*/ );
-$select_couleur           = HtmlForm::afficher_select(Form::$tab_select_couleur           , 'f_couleur'           /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']                  /*selection*/ ,              '' /*optgroup*/ );
-$select_fond              = HtmlForm::afficher_select(Form::$tab_select_fond              , 'f_fond'              /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['fond']                     /*selection*/ ,              '' /*optgroup*/ );
-$select_legende           = HtmlForm::afficher_select(Form::$tab_select_legende           , 'f_legende'           /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']                  /*selection*/ ,              '' /*optgroup*/ );
-$select_cases_nb          = HtmlForm::afficher_select(Form::$tab_select_cases_nb          , 'f_cases_nb'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']                 /*selection*/ ,              '' /*optgroup*/ );
-$select_cases_larg        = HtmlForm::afficher_select(Form::$tab_select_cases_size        , 'f_cases_larg'        /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur']            /*selection*/ ,              '' /*optgroup*/ );
+$select_objet_releve      = HtmlForm::afficher_select($tab_select_objet_releve            , 'f_objet'             /*select_nom*/ ,                      '' /*option_first*/ , $auto_select_objet                           /*selection*/ ,              '' /*optgroup*/);
+$select_individuel_format = HtmlForm::afficher_select(Form::$tab_select_individuel_format , 'f_individuel_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['releve_individuel_format'] /*selection*/ ,              '' /*optgroup*/);
+$select_synthese_format   = HtmlForm::afficher_select(Form::$tab_select_synthese_format   , 'f_synthese_format'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_synthese_format']  /*selection*/ ,              '' /*optgroup*/);
+$select_tri_mode          = HtmlForm::afficher_select(Form::$tab_select_tri_mode          , 'f_tri_mode'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_mode']         /*selection*/ ,              '' /*optgroup*/);
+$select_groupe            = HtmlForm::afficher_select($tab_groupes                        , 'f_groupe'            /*select_nom*/ ,              $of_groupe /*option_first*/ , $sel_groupe                                  /*selection*/ , 'regroupements' /*optgroup*/);
+$select_eleves_ordre      = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre      , 'f_eleves_ordre'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre']             /*selection*/ ,              '' /*optgroup*/);
+$select_professeur        = HtmlForm::afficher_select($tab_profs                          , 'f_prof'              /*select_nom*/ ,                   FALSE /*option_first*/ , $_SESSION['USER_ID']                         /*selection*/ ,              '' /*optgroup*/);
+$select_matiere           = HtmlForm::afficher_select($tab_matieres                       , 'f_matiere'           /*select_nom*/ ,                      '' /*option_first*/ , $auto_select_matiere_id                      /*selection*/ ,              '' /*optgroup*/);
+$select_periode           = HtmlForm::afficher_select($tab_periodes                       , 'f_periode'           /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                                        /*selection*/ ,              '' /*optgroup*/);
+$select_orientation       = HtmlForm::afficher_select(Form::$tab_select_orientation       , 'f_orientation'       /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['orientation']              /*selection*/ ,              '' /*optgroup*/);
+$select_marge_min         = HtmlForm::afficher_select(Form::$tab_select_marge_min         , 'f_marge_min'         /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['marge_min']                /*selection*/ ,              '' /*optgroup*/);
+$select_pages_nb          = HtmlForm::afficher_select(Form::$tab_select_pages_nb          , 'f_pages_nb'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['pages_nb']                 /*selection*/ ,              '' /*optgroup*/);
+$select_couleur           = HtmlForm::afficher_select(Form::$tab_select_couleur           , 'f_couleur'           /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['couleur']                  /*selection*/ ,              '' /*optgroup*/);
+$select_fond              = HtmlForm::afficher_select(Form::$tab_select_fond              , 'f_fond'              /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['fond']                     /*selection*/ ,              '' /*optgroup*/);
+$select_legende           = HtmlForm::afficher_select(Form::$tab_select_legende           , 'f_legende'           /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['legende']                  /*selection*/ ,              '' /*optgroup*/);
+$select_cases_nb          = HtmlForm::afficher_select(Form::$tab_select_cases_nb          , 'f_cases_nb'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_nb']                 /*selection*/ ,              '' /*optgroup*/);
+$select_cases_larg        = HtmlForm::afficher_select(Form::$tab_select_cases_size        , 'f_cases_larg'        /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['cases_largeur']            /*selection*/ ,              '' /*optgroup*/);
 
-$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ );
+$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var date_mysql  = "'.TODAY_MYSQL.'";' );
@@ -217,7 +214,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     <label class="tab" for="f_objet">Objet :</label><?php echo str_replace( '"selection"' , '"selection"'.$objet_selection , $select_objet_releve); ?>
   </div>
 
-  <div id="choix_matiere" class="<?php echo $class_form_matiere ?>">
+  <div id="choix_matiere" class="hide">
     <label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><?php echo $bouton_modifier_matieres ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
   </div>
 
@@ -280,8 +277,6 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   </div>
   <div class="toggle hide">
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
-    <label class="tab">Restrictions :</label><?php echo $select_only_etat ?><br />
-    <span class="tab"></span><label for="f_only_etat"><input type="checkbox" id="f_only_etat" name="f_only_etat" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés au socle</label><br />
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le relévé individuel, les paramètres des items peuvent être affichés." /> Infos items :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_domaine"><input type="checkbox" id="f_domaine" name="f_domaine" value="1"<?php echo $check_aff_domaine ?> /> Domaines</label>&nbsp;&nbsp;&nbsp;<label for="f_theme"><input type="checkbox" id="f_theme" name="f_theme" value="1"<?php echo $check_aff_theme ?> /> Thèmes</label><br />
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format PDF." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_fond ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?> <?php echo $select_pages_nb ?><br />
     <label class="tab">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?>

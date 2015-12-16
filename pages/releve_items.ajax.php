@@ -60,8 +60,7 @@ $periode_id               = (isset($_POST['f_periode']))            ? Clean::ent
 $date_debut               = (isset($_POST['f_date_debut']))         ? Clean::date_fr($_POST['f_date_debut'])           : '';
 $date_fin                 = (isset($_POST['f_date_fin']))           ? Clean::date_fr($_POST['f_date_fin'])             : '';
 $retroactif               = (isset($_POST['f_retroactif']))         ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
-$only_etat                = (isset($_POST['f_only_etat']))          ? Clean::texte($_POST['f_only_etat'])              : '';
-$only_socle               = (isset($_POST['f_only_socle']))         ? 1                                                : 0;
+$only_socle               = (isset($_POST['f_restriction']))        ? 1                                                : 0;
 $aff_coef                 = (isset($_POST['f_coef']))               ? 1                                                : 0;
 $aff_socle                = (isset($_POST['f_socle']))              ? 1                                                : 0;
 $aff_lien                 = (isset($_POST['f_lien']))               ? 1                                                : 0;
@@ -139,7 +138,7 @@ $tab_modele = array(
   'professeur'   => TRUE,
 );
 
-if( !isset($tab_modele[$releve_modele]) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$only_etat || ( ($releve_modele=='matiere') && ( !$matiere_id || !$matiere_nom ) ) || ( ($releve_modele=='professeur') && !$prof_id ) || ( ($releve_modele=='selection') && !count($tab_items) ) || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$eleves_ordre )
+if( !isset($tab_modele[$releve_modele]) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || ( ($releve_modele=='matiere') && ( !$matiere_id || !$matiere_nom ) ) || ( ($releve_modele=='professeur') && !$prof_id ) || ( ($releve_modele=='selection') && !count($tab_items) ) || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$eleves_ordre )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }

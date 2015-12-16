@@ -1106,6 +1106,8 @@ if($version_base_structure_actuelle=='2015-09-13')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_param_algorithme"   , "'.$droit_voir_algorithme.'" )' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "droit_voir_param_notes_acquis" , "'.$droit_voir_algorithme.'" )' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="droit_voir_algorithme" ' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     // Adaptation de la table sacoche_saisie pour le passage de 4 à 6 codes de notation possibles
     // On change le type ENUM par un CHAR(2) car utiliser des entiers dans un ENUM est déconseillé.
     // Problème : un UPDATE quand il y a plus d'un million de lignes dépasse très largement le max_execution_time de PHP
@@ -1260,21 +1262,5 @@ if($version_base_structure_actuelle=='2015-10-16')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2015-10-17 => 2015-12-16
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2015-10-17')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2015-12-16';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // ajout d'un paramètre
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_only_etat" , "tous" )' );
-    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
-  }
-}
 
 ?>

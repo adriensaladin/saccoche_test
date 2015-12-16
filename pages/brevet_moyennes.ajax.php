@@ -145,7 +145,6 @@ if($action=='proposer')
   $date_debut               = To::jour_debut_annee_scolaire('french');
   $date_fin                 = TODAY_FR;
   $retroactif               = 'non';
-  $only_etat                = 'tous';
   $only_socle               = 0;
   $aff_domaine              = 0;
   $aff_theme                = 0;

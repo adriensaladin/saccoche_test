@@ -199,10 +199,9 @@ class Html
    * @param bool $pourcentage_acquis
    * @param bool $etat_validation
    * @param bool $force_nb   FALSE par défaut, TRUE pour $etat_acquisition seulement
-   * @param bool $highlight  FALSE par défaut, TRUE si un item a été surligné
    * @return string
    */
-  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $make_officiel , $force_nb = FALSE , $highlight = FALSE )
+  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $make_officiel , $force_nb = FALSE  )
   {
     // initialisation variables
     $retour = '';
@@ -279,11 +278,6 @@ class Html
         $retour .= '<span class="cadre V'.$valid_etat.'">'.$tab_valid_info['LEGENDE'].'</span>';
       }
       $retour .= '</div>'.NL;
-    }
-    // légende surlignage
-    if($highlight)
-    {
-      $retour .= '<div><b>Item :</b> <span class="fluo">&nbsp;Intitulé sur lequel vous aviez cliqué !&nbsp;</span></div>'.NL;
     }
     // retour
     return ($retour) ? '<h3>Légende</h3>'.NL.'<div class="legende">'.NL.$retour.'</div>'.NL : '' ;

@@ -175,7 +175,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   $affichage = '<tr>'.implode('</tr><tr>',$tab_affich).'</tr>';
   // la légende, qui peut être personnalisée (codes AB, NN, etc.)
   $score_legende  = (Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION'])) ? TRUE : FALSE ;
-  $legende = Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ );
+  $legende = Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ );
   // Les commentaires texte ou audio
   $commentaire_texte = '';
   $commentaire_audio = '';

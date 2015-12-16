@@ -519,7 +519,6 @@ if($BILAN_TYPE=='releve')
   $date_debut               = '';
   $date_fin                 = '';
   $retroactif               = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
-  $only_etat                = $_SESSION['OFFICIEL']['RELEVE_ONLY_ETAT'];
   $only_socle               = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
   $aff_coef                 = $_SESSION['OFFICIEL']['RELEVE_AFF_COEF'];
   $aff_socle                = $_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'];
@@ -538,7 +537,6 @@ if($BILAN_TYPE=='releve')
   $cases_nb                 = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
   $cases_largeur            = 5; // pas jugé utile de le mettre en option...
   $eleves_ordre             = 'alpha';
-  $highlight_id             = 0; // Ne sert que pour le relevé d'items d'une matière
   $tab_eleve                = $tab_eleve_id;
   $liste_eleve              = $liste_eleve_id;
   $tab_type[]               = 'individuel';

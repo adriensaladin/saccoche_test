@@ -566,7 +566,7 @@ $(document).ready
           f_date_debut         : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
           f_date_fin           : { required:function(){return $("#f_periode").val()==0;} , dateITA:true },
           f_retroactif         : { required:true },
-          f_only_socle         : { required:false },
+          f_restriction        : { required:false },
           f_echelle            : { required:true }
         },
         messages :
@@ -588,7 +588,7 @@ $(document).ready
           f_date_debut         : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_fin           : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_retroactif         : { required:"choix manquant" },
-          f_only_socle         : { },
+          f_restriction        : { },
           f_echelle            : { required:"échelle manquante" }
         },
         errorElement : "label",

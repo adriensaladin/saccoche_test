@@ -40,7 +40,6 @@ $releve_ligne_supplementaire           = (isset($_POST['f_releve_check_supplemen
 $releve_assiduite                      = (isset($_POST['f_releve_assiduite']))                      ? 1                                                                : 0;
 $releve_prof_principal                 = (isset($_POST['f_releve_prof_principal']))                 ? 1                                                                : 0;
 $releve_retroactif                     = (isset($_POST['f_releve_retroactif']))                     ? Clean::calcul_retroactif($_POST['f_releve_retroactif'])          : '';
-$releve_only_etat                      = (isset($_POST['f_releve_only_etat']))                      ? Clean::texte($_POST['f_releve_only_etat'])                       : '';
 $releve_only_socle                     = (isset($_POST['f_releve_only_socle']))                     ? 1                                                                : 0;
 $releve_etat_acquisition               = (isset($_POST['f_releve_etat_acquisition']))               ? 1                                                                : 0;
 $releve_moyenne_scores                 = (isset($_POST['f_releve_moyenne_scores']))                 ? 1                                                                : 0;
@@ -117,7 +116,6 @@ $tab_variables = array(
     'assiduite',
     'prof_principal',
     'retroactif',
-    'only_etat',
     'only_socle',
     'etat_acquisition',
     'moyenne_scores',

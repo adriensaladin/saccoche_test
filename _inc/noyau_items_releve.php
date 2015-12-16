@@ -29,10 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 /**
  * Code inclus commun aux pages
- * [./pages/releve_items_matiere.ajax.php]
- * [./pages/releve_items_selection.ajax.php]
- * [./pages/releve_items_professeur.php]
- * [./pages/releve_items_multimatiere.ajax.php]
+ * [./pages/releve_items.ajax.php]
  * [./pages/brevet_moyennes.ajax.php]
  * [./_inc/code_officiel_***.php]
  */
@@ -66,12 +63,18 @@ $tab_eval             = array();  // [eleve_id][matiere_id][item_id][devoir] OU 
 if( ($make_html) || ($make_pdf) )
 {
   $professeur = empty($prof_texte) ? '' : $prof_texte ; // pour avoir une variable définie, seul [releve_items_professeur] utilisant ceci
-  $tab_titre = array(
-    'matiere'      => 'd\'items - '.$matiere_nom ,
-    'multimatiere' => 'd\'items pluridisciplinaire' ,
-    'professeur'   => 'd\'items restreint à '.$professeur ,
-    'selection'    => 'd\'items sélectionnés' ,
+  $tab_titre_etat = array(
+    'tous'       => 'évalués' ,
+    'acquis'     => 'réussis' ,
+    'non_acquis' => 'échoués' ,
   );
+  $tab_titre_modele = array(
+    'matiere'      => '- '.$matiere_nom ,
+    'multimatiere' => 'pluridisciplinaire' ,
+    'professeur'   => 'restreint à '.$professeur ,
+    'selection'    => 'sélectionnés' ,
+  );
+  $bilan_titre = 'd\'items '.$tab_titre_etat[$only_etat].' '.$tab_titre_modele[$releve_modele];
   $info_ponderation_complete = ($with_coef) ? '(pondérée)' : '(non pondérée)' ;
   $info_ponderation_courte   = ($with_coef) ? 'pondérée'   : 'simple' ;
   if(!$aff_coef)  { $texte_coef       = ''; }
@@ -355,56 +358,77 @@ if(empty($is_appreciation_groupe))
             {
               extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
               // calcul du bilan de l'item
-              $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
-              $tab_score_item_eleve[$item_id][$eleve_id] = $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id];
-            }
-            // calcul des bilans des scores
-            $tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id][$matiere_id],'non_vide');
-            $nb_scores = count( $tableau_score_filtre );
-            // la moyenne peut être pondérée par des coefficients
-            $somme_scores_ponderes = 0;
-            $somme_coefs = 0;
-            if($nb_scores)
-            {
-              foreach($tableau_score_filtre as $item_id => $item_score)
+              $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+              if( ($only_etat=='tous') || OutilBilan::tester_acquisition( $score , $only_etat ) )
               {
-                $somme_scores_ponderes += $item_score*$tab_item_infos[$item_id][0]['item_coef'];
-                $somme_coefs += $tab_item_infos[$item_id][0]['item_coef'];
+                $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = $score;
+                $tab_score_item_eleve[$item_id][$eleve_id] = $score;
               }
-              $somme_scores_simples = array_sum($tableau_score_filtre);
-              if( ($matiere_nb>1) && $type_synthese )
+              else
               {
-                // Total multimatières avec ou sans coef
-                $tab_total[$eleve_id]['somme_scores_coefs']   += $somme_scores_ponderes;
-                $tab_total[$eleve_id]['somme_scores_simples'] += $somme_scores_simples;
-                $tab_total[$eleve_id]['nb_coefs']             += $somme_coefs;
-                $tab_total[$eleve_id]['nb_scores']            += $nb_scores;
+                unset( $tab_eval[$eleve_id][$matiere_id][$item_id] );
               }
             }
-            // ... un pour la moyenne des pourcentages d'acquisition
-            if($with_coef) { $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) : FALSE ; }
-            else           { $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] = ($nb_scores)   ? round($somme_scores_simples/$nb_scores,0)    : FALSE ; }
-            // ... un pour le nombre d'items considérés acquis ou pas
-            if($nb_scores)
+            if( ($only_etat=='tous') || !empty($tab_score_eleve_item[$eleve_id][$matiere_id]) )
             {
-              $tab_acquisitions = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
-              $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = OutilBilan::calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
-              $tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = OutilBilan::afficher_nombre_acquisitions_par_etat( $tab_acquisitions );
-              if( ($matiere_nb>1) && $type_synthese )
+              // calcul des bilans des scores
+              $tableau_score_filtre = array_filter($tab_score_eleve_item[$eleve_id][$matiere_id],'non_vide');
+              $nb_scores = count( $tableau_score_filtre );
+              // la moyenne peut être pondérée par des coefficients
+              $somme_scores_ponderes = 0;
+              $somme_coefs = 0;
+              if($nb_scores)
               {
-                // Total multimatières
-                foreach( $tab_acquisitions as $acquis_id => $acquis_nb )
+                foreach($tableau_score_filtre as $item_id => $item_score)
                 {
-                  $tab_total[$eleve_id][$acquis_id] += $acquis_nb;
+                  $somme_scores_ponderes += $item_score*$tab_item_infos[$item_id][0]['item_coef'];
+                  $somme_coefs += $tab_item_infos[$item_id][0]['item_coef'];
                 }
+                $somme_scores_simples = array_sum($tableau_score_filtre);
+                if( ($matiere_nb>1) && $type_synthese )
+                {
+                  // Total multimatières avec ou sans coef
+                  $tab_total[$eleve_id]['somme_scores_coefs']   += $somme_scores_ponderes;
+                  $tab_total[$eleve_id]['somme_scores_simples'] += $somme_scores_simples;
+                  $tab_total[$eleve_id]['nb_coefs']             += $somme_coefs;
+                  $tab_total[$eleve_id]['nb_scores']            += $nb_scores;
+                }
+              }
+              // ... un pour la moyenne des pourcentages d'acquisition
+              if($with_coef) { $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] = ($somme_coefs) ? round($somme_scores_ponderes/$somme_coefs,0) : FALSE ; }
+              else           { $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] = ($nb_scores)   ? round($somme_scores_simples/$nb_scores,0)    : FALSE ; }
+              // ... un pour le nombre d'items considérés acquis ou pas
+              if($nb_scores)
+              {
+                $tab_acquisitions = OutilBilan::compter_nombre_acquisitions_par_etat( $tableau_score_filtre );
+                $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = OutilBilan::calculer_pourcentage_acquisition_items( $tab_acquisitions , $nb_scores );
+                $tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = OutilBilan::afficher_nombre_acquisitions_par_etat( $tab_acquisitions );
+                if( ($matiere_nb>1) && $type_synthese )
+                {
+                  // Total multimatières
+                  foreach( $tab_acquisitions as $acquis_id => $acquis_nb )
+                  {
+                    $tab_total[$eleve_id][$acquis_id] += $acquis_nb;
+                  }
+                }
+              }
+              else
+              {
+                $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = FALSE;
+                $tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = FALSE;
               }
             }
             else
             {
-              $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] = FALSE;
-              $tab_infos_acquis_eleve[$matiere_id][$eleve_id]       = FALSE;
+              // Cas où, à cause de la restriction à des items échoués ou réussis, on n'a plus d'évaluation pour un élève dans une matière
+              unset( $tab_eval[$eleve_id][$matiere_id] );
             }
           }
+        }
+        if( ($only_etat!='tous') && empty($tab_eval[$eleve_id]) )
+        {
+        // Cas où, à cause de la restriction à des items échoués ou réussis, on n'a plus d'évaluation pour un élève
+          unset( $tab_eval[$eleve_id] );
         }
         if( ($matiere_nb>1) && $type_synthese )
         {
@@ -414,6 +438,11 @@ if(empty($is_appreciation_groupe))
           $tab_pourcentage_acquis_eleve[0][$eleve_id] = ($tab_total[$eleve_id]['nb_scores']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_total[$eleve_id] , $tab_total[$eleve_id]['nb_scores'] ) : FALSE ;
         }
       }
+    }
+    if( ($only_etat!='tous') && empty($tab_eval) && !$make_officiel && !$make_brevet ) // Dans le cas d'un bilan officiel, ou d'une récupération pour une fiche brevet, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
+    {
+      // Cas où, à cause de la restriction à des items échoués ou réussis, on n'a plus d'évaluation pour tous les élèves
+      Json::end( FALSE , 'Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !' );
     }
   }
 }
@@ -596,7 +625,7 @@ if($type_individuel)
     $bouton_print_appr = ($make_officiel)                                     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
     $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
     $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
-    $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$releve_modele].'</h1>'.NL;
+    $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$bilan_titre.'</h1>'.NL;
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>'.NL;
     $releve_HTML_individuel .= ($bouton_print_appr || $bouton_print_test || $bouton_import_csv) ? '<div class="ti">'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '' ;
     $bilan_colspan = $cases_nb + 2 ;
@@ -605,7 +634,7 @@ if($type_individuel)
   }
   if($make_csv)
   {
-    $releve_CSV = 'Bilan '.$tab_titre[$releve_modele]."\r\n".'Exploitation tableur'."\r\n".$groupe_nom."\r\n".$texte_periode;
+    $releve_CSV = 'Bilan '.$bilan_titre."\r\n".'Exploitation tableur'."\r\n".$groupe_nom."\r\n".$texte_periode;
     $separateur = ';';
     $csv_head = $separateur.'nb items';
     if($aff_etat_acquisition)
@@ -666,7 +695,7 @@ if($type_individuel)
               $releve_PDF->__set('couleur',$couleur_tirage);
             }
             $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
-            $tab_infos_entete = (!$make_officiel) ? array( $tab_titre[$releve_modele] , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
+            $tab_infos_entete = (!$make_officiel) ? array( $bilan_titre , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
             $releve_PDF->entete_format_eleve( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes );
           }
           // Pour chaque matiere...
@@ -1046,7 +1075,7 @@ if($type_individuel)
           // Relevé de notes - Légende
           if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') && empty($is_appreciation_groupe) )
           {
-            if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ); }
+            if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel , FALSE /*force_nb*/ , $highlight_id ); }
             if($make_pdf)  { $releve_PDF->legende(); }
           }
           // Indiquer a posteriori le nombre de pages par élève
@@ -1084,7 +1113,7 @@ if($type_individuel)
       $lignes_nb = array_sum($tab_nb_lignes_total_item) + ($matiere_nb*1.5) ;
       $aff_anciennete_notation = ($retroactif!='non') ? TRUE : FALSE ;
       $releve_PDF->initialiser( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $item_nb , $pages_nb );
-      $releve_PDF->entete_format_item( $tab_titre[$releve_modele] , $texte_periode , $groupe_nom );
+      $releve_PDF->entete_format_item( $bilan_titre , $texte_periode , $groupe_nom );
     }
     // Pour chaque matiere...
     foreach($tab_matiere as $matiere_id => $tab)
@@ -1270,7 +1299,7 @@ if($type_individuel)
         // Relevé de notes - Légende
         if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
         {
-          if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel ); }
+          if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel , FALSE /*force_nb*/ ); }
           if($make_pdf)  { $releve_PDF->legende(); }
         }
       }
@@ -1294,7 +1323,7 @@ if($type_individuel)
 if($type_synthese)
 {
   $releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
-  $releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$tab_titre[$releve_modele].'</h1>'.NL;
+  $releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$bilan_titre.'</h1>'.NL;
   $releve_HTML_synthese .= '<h2>'.html($matiere_et_groupe).'</h2>'.NL;
   if($texte_periode)
   {
@@ -1305,7 +1334,7 @@ if($type_synthese)
   $orientation_auto = ( ( ($eleve_nb>$item_nb) && ($tableau_synthese_format=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_synthese_format=='item') ) ) ? 'portrait' : 'landscape' ;
   $releve_PDF = new PDF_item_tableau( $make_officiel , $orientation_auto , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , 'oui' /*legende*/ );
   $releve_PDF->initialiser($eleve_nb,$item_nb,$tableau_synthese_format);
-  $releve_PDF->entete($tab_titre[$releve_modele],$matiere_et_groupe,$texte_periode);
+  $releve_PDF->entete($bilan_titre,$matiere_et_groupe,$texte_periode);
   // 1ère ligne
   $releve_PDF->ligne_tete_cellule_debut();
   $th = ($tableau_synthese_format=='eleve') ? 'Élève' : 'Item' ;
@@ -1490,7 +1519,7 @@ if( $type_bulletin && $make_html )
   }
   $bulletin_body = '';
   $bulletin_PDF = new PDF_item_bulletin( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond );
-  $bulletin_PDF->initialiser_et_entete( $tab_titre[$releve_modele] , $eleve_nb , $matiere_et_groupe , $texte_periode , $info_ponderation_complete );
+  $bulletin_PDF->initialiser_et_entete( $bilan_titre , $eleve_nb , $matiere_et_groupe , $texte_periode , $info_ponderation_complete );
   $bulletin_csv_entete = 'GEPI_IDENTIFIANT;NOTE;APPRECIATION'."\r\n";  // Ajout du préfixe 'GEPI_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr)
   $tab_bulletin_csv_gepi = array_fill_keys( array('note_appreciation','note','appreciation_PA','appreciation_MS') , $bulletin_csv_entete );
   // Pour chaque élève...
@@ -1526,7 +1555,7 @@ if( $type_bulletin && $make_html )
       }
       else
       {
-        $bulletin_matiere = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) , 'f_rubrique' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+        $bulletin_matiere = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) , 'f_rubrique' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ );
       }
       $bulletin_form = '<li><form id="form_report_bulletin"><fieldset><button id="bouton_report" type="button" class="eclair">Report forcé</button> vers le bulletin <em>SACoche</em> '.$bulletin_periode.'<input type="hidden" id="f_eleves_moyennes" name="f_eleves_moyennes" value="'.implode('x',$tab_bulletin_input).'" /> '.$bulletin_matiere.'</fieldset></form><label id="ajax_msg_report"></label></li>';
       $bulletin_alerte = '<div class="danger">Un report forcé interrompt le report automatique des moyennes pour le bulletin et la matière concernée.</div>' ;
@@ -1541,7 +1570,7 @@ if( $type_bulletin && $make_html )
   $bulletin_head  = '<thead><tr><th>Élève</th><th>Moyenne '.$info_ponderation_complete.' sur 20<br />(des scores d\'acquisitions)</th><th>Élément d\'appréciation<br />(pourcentage d\'items acquis)</th></tr></thead>'.NL;
   $bulletin_body  = '<tbody>'.NL.$bulletin_body.'</tbody>'.NL;
   $bulletin_foot  = '<tfoot><tr><th>Moyenne '.$info_ponderation_complete.' sur 20</th><th>'.$moyenne_affichee.'</th><th>'.$moyenne_pourcentage_acquis.'% d\'items acquis</th></tr></tfoot>'.NL;
-  $bulletin_html  = '<h1>Bilan '.$tab_titre[$releve_modele].'</h1>';
+  $bulletin_html  = '<h1>Bilan '.$bilan_titre.'</h1>';
   $bulletin_html .= '<h2>'.html($matiere_et_groupe).'</h2>';
   $bulletin_html .= '<h2>'.$texte_periode.'</h2>';
   $bulletin_html .= '<h2>Moyenne sur 20 / Élément d\'appréciation</h2>';

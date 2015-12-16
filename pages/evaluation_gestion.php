@@ -243,12 +243,12 @@ if($TYPE=='groupe')
     }
   }
   // Élément de formulaire "f_aff_periode" pour le choix d'une période
-  $select_periode = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , 'f_aff_periode' /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+  $select_periode = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl() , 'f_aff_periode' /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ );
   // On désactive les périodes prédéfinies pour le choix "toute classe / tout groupe" initialement sélectionné
   $select_periode = preg_replace( '#'.'value="([1-9].*?)"'.'#' , 'value="$1" disabled' , $select_periode );
 }
 
-$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/);
+$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ );
 
 // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
@@ -257,7 +257,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
 Form::load_choix_memo();
 
 // Élément de formulaire "f_eleves_ordre"
-$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ , '' /*optgroup*/);
+$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ , '' /*optgroup*/ );
 
 // Longueur max pour un enregistrement audio (de toutes façons limitée techniquement à 120s).
 // Selon les tests effectués la taille du MP3 enregistrée est de 3,9 Ko/s.
@@ -453,14 +453,14 @@ Layout::add( 'js_inline_before' , '// ]]>' );
 // Fabrication des éléments select du formulaire
 Form::load_choix_memo();
 $check_cart_restriction = (Form::$tab_choix['cart_restriction']) ? ' checked' : '' ;
-$select_cart_detail   = HtmlForm::afficher_select(Form::$tab_select_cart_detail   , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']   /*selection*/ , '' /*optgroup*/);
-$select_cart_cases_nb = HtmlForm::afficher_select(Form::$tab_select_cart_cases_nb , 'f_cases_nb'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb'] /*selection*/ , '' /*optgroup*/);
-$select_cart_contenu  = HtmlForm::afficher_select(Form::$tab_select_cart_contenu  , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']  /*selection*/ , '' /*optgroup*/);
-$select_orientation   = HtmlForm::afficher_select(Form::$tab_select_orientation   , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ , '' /*optgroup*/);
-$select_cart_hauteur  = HtmlForm::afficher_select(Form::$tab_select_cart_hauteur  , 'f_hauteur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_hauteur']  /*selection*/ , '' /*optgroup*/);
-$select_couleur       = HtmlForm::afficher_select(Form::$tab_select_couleur       , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ , '' /*optgroup*/);
-$select_fond          = HtmlForm::afficher_select(Form::$tab_select_fond          , 'f_fond'        /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']          /*selection*/ , '' /*optgroup*/);
-$select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ , '' /*optgroup*/);
+$select_cart_detail   = HtmlForm::afficher_select(Form::$tab_select_cart_detail   , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']   /*selection*/ , '' /*optgroup*/ );
+$select_cart_cases_nb = HtmlForm::afficher_select(Form::$tab_select_cart_cases_nb , 'f_cases_nb'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb'] /*selection*/ , '' /*optgroup*/ );
+$select_cart_contenu  = HtmlForm::afficher_select(Form::$tab_select_cart_contenu  , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']  /*selection*/ , '' /*optgroup*/ );
+$select_orientation   = HtmlForm::afficher_select(Form::$tab_select_orientation   , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ , '' /*optgroup*/ );
+$select_cart_hauteur  = HtmlForm::afficher_select(Form::$tab_select_cart_hauteur  , 'f_hauteur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_hauteur']  /*selection*/ , '' /*optgroup*/ );
+$select_couleur       = HtmlForm::afficher_select(Form::$tab_select_couleur       , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ , '' /*optgroup*/ );
+$select_fond          = HtmlForm::afficher_select(Form::$tab_select_fond          , 'f_fond'        /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']          /*selection*/ , '' /*optgroup*/ );
+$select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ , '' /*optgroup*/ );
 ?>
 
 <form action="#" method="post" id="zone_imprimer" class="hide"><fieldset>

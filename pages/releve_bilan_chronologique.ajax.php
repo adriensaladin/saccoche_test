@@ -43,7 +43,7 @@ $periode_id        = (isset($_POST['f_periode']))           ? Clean::entier($_PO
 $date_debut        = (isset($_POST['f_date_debut']))        ? Clean::date_fr($_POST['f_date_debut'])           : '';
 $date_fin          = (isset($_POST['f_date_fin']))          ? Clean::date_fr($_POST['f_date_fin'])             : '';
 $retroactif        = (isset($_POST['f_retroactif']))        ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
-$only_socle        = (isset($_POST['f_restriction']))       ? 1                                                : 0;
+$only_socle        = (isset($_POST['f_only_socle']))        ? 1                                                : 0;
 $eleves_ordre      = (isset($_POST['f_eleves_ordre']))      ? Clean::texte($_POST['f_eleves_ordre'])           : ''; // En vérité, ne sert pas ici.
 $echelle           = (isset($_POST['f_echelle']))           ? Clean::texte($_POST['f_echelle'])                : '';
 

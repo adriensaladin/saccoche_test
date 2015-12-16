@@ -37,7 +37,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 82, // en attente
+    'statut'     => 81, // en attente
     'langue'     => array( 'code' => 'en'  , 'nom' => 'Anglais' ),
     'pays'       => array( 'code' => '150' , 'nom' => 'Europe' ),
     'traducteur' => array(
@@ -46,7 +46,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 87, // complète (% effectué)
+    'statut'     => 85, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'CO' , 'nom' => 'Colombie' ),
     'traducteur' => array(
@@ -54,7 +54,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 85, // complète (% effectué)
+    'statut'     => 84, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'ES' , 'nom' => 'Espagne' ),
     'traducteur' => array(
@@ -62,7 +62,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 85, // complète (% effectué)
+    'statut'     => 84, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'MX' , 'nom' => 'Mexique' ),
     'traducteur' => array(
@@ -91,7 +91,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 87, // complète (% effectué)
+    'statut'     => 85, // complète (% effectué)
     'langue'     => array( 'code' => 'rcf' , 'nom' => 'Créole réunionnais' ),
     'pays'       => array( 'code' => 'RE'  , 'nom' => 'La Réunion' ),
     'traducteur' => array(
@@ -99,7 +99,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 86, // complète (% effectué)
+    'statut'     => 85, // complète (% effectué)
     'langue'     => array( 'code' => 'vi' , 'nom' => 'Vietnamien' ),
     'pays'       => array( 'code' => 'VN' , 'nom' => 'Vietnam' ),
     'traducteur' => array(

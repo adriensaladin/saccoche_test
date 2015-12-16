@@ -49,11 +49,11 @@ foreach($tab_options as $val => $txt)
 
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
 
-$select_groupe          = HtmlForm::afficher_select($tab_groupes                                                      , 'f_groupe'          /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,   'regroupements' /*optgroup*/);
-$select_critere_objet   = HtmlForm::afficher_select(Form::$tab_select_recherche_objet                                 , 'f_critere_objet'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'objet_recherche' /*optgroup*/);
+$select_groupe          = HtmlForm::afficher_select($tab_groupes                                                      , 'f_groupe'          /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,   'regroupements' /*optgroup*/ );
+$select_critere_objet   = HtmlForm::afficher_select(Form::$tab_select_recherche_objet                                 , 'f_critere_objet'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'objet_recherche' /*optgroup*/ );
 $select_matiere         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()                      , 'f_matiere'         /*select_nom*/ , FALSE /*option_first*/ , TRUE  /*selection*/ ,                '' /*optgroup*/ , TRUE /*multiple*/);
-$select_piliers         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers()                     , 'f_select_pilier'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,         'paliers' /*optgroup*/);
-$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,                '' /*optgroup*/);
+$select_piliers         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers()                     , 'f_select_pilier'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,         'paliers' /*optgroup*/ );
+$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,                '' /*optgroup*/ );
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_ETATS_ACQUISITION']-1).';' );

@@ -393,7 +393,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
           foreach(${'tab_selection_'.$critere.'_key'} as $item_id => $tab_temp)
           {
             $date_affich = To::date_mysql_to_french($DB_TAB[$item_id][0]['saisie_date']);
-            $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note_image($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($DB_TAB[$item_id][0]['item_ref'].' - '.Outil::afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
+            $item_ref = ($DB_TAB[$item_id][0]['ref_perso']) ? $DB_TAB[$item_id][0]['matiere_ref'].'.'.$DB_TAB[$item_id][0]['ref_perso'] : $DB_TAB[$item_id][0]['matiere_ref'].'.'.$DB_TAB[$item_id][0]['ref_auto'] ;
+            $tab_accueil[$critere]['contenu'] .= '<li>'.Html::note_image($DB_TAB[$item_id][0]['saisie_note'],'','').' '.$text_eleve_nom.html($date_affich).' || <a href="./index.php?page=releve&amp;section=items&amp;matiere_id='.$DB_TAB[$item_id][0]['matiere_id'].'&amp;item_id='.$item_id.$param_eleve_num.'">'.html($DB_TAB[$item_id][0]['matiere_nom']).' || '.html($item_ref.' - '.Outil::afficher_texte_tronque($DB_TAB[$item_id][0]['item_nom'],$longueur_intitule_item_maxi)).'</a></li>';
           }
           $tab_accueil[$critere]['contenu'].= '</ul>';
         }

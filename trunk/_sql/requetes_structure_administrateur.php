@@ -401,7 +401,7 @@ public static function DB_lister_users_desactives_obsoletes()
 {
   $DB_SQL = 'SELECT user_id, user_profil_sigle ';
   $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'WHERE user_sortie_date<NOW() AND DATE_ADD(user_sortie_date,INTERVAL 3 YEAR)<NOW() ';
+  $DB_SQL.= 'WHERE user_sortie_date < DATE_SUB(NOW(),INTERVAL 3 YEAR) ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

@@ -52,6 +52,7 @@ $check_retroactif_non    = (Form::$tab_choix['retroactif']=='non')    ? ' checke
 $check_retroactif_oui    = (Form::$tab_choix['retroactif']=='oui')    ? ' checked' : '' ;
 $check_retroactif_annuel = (Form::$tab_choix['retroactif']=='annuel') ? ' checked' : '' ;
 $check_only_socle        = (Form::$tab_choix['only_socle'])           ? ' checked' : '' ;
+$check_aff_reference     = (Form::$tab_choix['aff_reference'])        ? ' checked' : '' ;
 $check_aff_coef          = (Form::$tab_choix['aff_coef'])             ? ' checked' : '' ;
 $check_aff_socle         = (Form::$tab_choix['aff_socle'])            ? ' checked' : '' ;
 $check_aff_lien          = (Form::$tab_choix['aff_lien'])             ? ' checked' : '' ;
@@ -203,7 +204,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
     <label class="tab">Restrictions :</label><?php echo $select_only_etat ?><br />
     <span class="tab"></span><label for="f_only_socle"><input type="checkbox" id="f_only_socle" name="f_only_socle" value="1"<?php echo $check_only_socle ?> /> Uniquement les items liés au socle</label><br />
-    <label class="tab">Indications :</label><label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label><br />
+    <label class="tab">Indications :</label><label for="f_reference"><input type="checkbox" id="f_reference" name="f_reference" value="1"<?php echo $check_aff_reference ?> /> Références</label>&nbsp;&nbsp;&nbsp;<label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>&nbsp;&nbsp;&nbsp;<label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label><br />
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format PDF." /> Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_fond ?> <?php echo $select_legende ?> <?php echo $select_marge_min ?> <?php echo $select_pages_nb ?><br />
     <label class="tab">Évaluations :</label><?php echo $select_cases_nb ?> de largeur <?php echo $select_cases_larg ?>
   </div>

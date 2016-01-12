@@ -62,6 +62,7 @@ $date_fin                 = (isset($_POST['f_date_fin']))           ? Clean::dat
 $retroactif               = (isset($_POST['f_retroactif']))         ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
 $only_etat                = (isset($_POST['f_only_etat']))          ? Clean::texte($_POST['f_only_etat'])              : '';
 $only_socle               = (isset($_POST['f_only_socle']))         ? 1                                                : 0;
+$aff_reference            = (isset($_POST['f_reference']))          ? 1                                                : 0;
 $aff_coef                 = (isset($_POST['f_coef']))               ? 1                                                : 0;
 $aff_socle                = (isset($_POST['f_socle']))              ? 1                                                : 0;
 $aff_lien                 = (isset($_POST['f_lien']))               ? 1                                                : 0;

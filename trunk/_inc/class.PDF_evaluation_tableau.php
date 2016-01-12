@@ -99,7 +99,7 @@ class PDF_evaluation_tableau extends PDF
   {
     foreach($DB_TAB_COMP as $DB_ROW_COMP)
     {
-      $item_ref    =  $DB_ROW_COMP['item_ref'];
+      $item_ref    =  $DB_ROW_COMP['matiere_ref'].'.'.$DB_ROW_COMP['item_ref'];
       $texte_socle = ($DB_ROW_COMP['entree_id']) ? ' [S]' : ' [–]';
       $this->saisie_reference_item( $item_ref.$texte_socle , $DB_ROW_COMP['item_nom'] );
       if($tab_scores)

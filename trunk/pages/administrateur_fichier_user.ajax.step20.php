@@ -465,7 +465,7 @@ if( ($import_origine=='sconet') && ($import_profil=='parent') )
         Clean::adresse($adresse->LIGNE2_ADRESSE) ,
         Clean::adresse($adresse->LIGNE3_ADRESSE) ,
         Clean::adresse($adresse->LIGNE4_ADRESSE) ,
-        Clean::entier($adresse->CODE_POSTAL) ,
+        Clean::codepostal($adresse->CODE_POSTAL) ,
         Clean::commune($adresse->LIBELLE_POSTAL) ,
         Clean::pays($adresse->LL_PAYS) ,
       );
@@ -1243,7 +1243,7 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
             Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne2_1']]) ,
             Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne3_1']]) ,
             '' ,
-            Clean::commune($tab_elements[$tab_numero_colonne['code_postal_1']]) , // pas un nombre entier à l'étranger
+            Clean::codepostal($tab_elements[$tab_numero_colonne['code_postal_1']]) , // pas un nombre entier à l'étranger
             Clean::commune($tab_elements[$tab_numero_colonne['commune_1']]) ,
             Clean::pays($tab_elements[$tab_numero_colonne['pays_1']]) ,
           );
@@ -1267,7 +1267,7 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
             Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne2_2']]) ,
             Clean::adresse($tab_elements[$tab_numero_colonne['adresse_ligne3_2']]) ,
             '' ,
-            Clean::commune($tab_elements[$tab_numero_colonne['code_postal_2']]) , // pas un nombre entier à  l'étranger
+            Clean::codepostal($tab_elements[$tab_numero_colonne['code_postal_2']]) , // pas un nombre entier à  l'étranger
             Clean::commune($tab_elements[$tab_numero_colonne['commune_2']]) ,
             Clean::pays($tab_elements[$tab_numero_colonne['pays_2']]) ,
           );

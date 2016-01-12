@@ -299,18 +299,20 @@ public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_et
  * @param int    $matiere_id
  * @param int    $niveau_id
  * @param int    $domaine_ordre
+ * @param string $domaine_code
  * @param string $domaine_ref
  * @param string $domaine_nom
  * @return int
  */
-public static function DB_ajouter_referentiel_domaine($matiere_id,$niveau_id,$domaine_ordre,$domaine_ref,$domaine_nom)
+public static function DB_ajouter_referentiel_domaine( $matiere_id , $niveau_id , $domaine_ordre , $domaine_code , $domaine_ref , $domaine_nom )
 {
-  $DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
-  $DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:domaine_ordre,:domaine_ref,:domaine_nom)';
+  $DB_SQL = 'INSERT INTO sacoche_referentiel_domaine( matiere_id, niveau_id, domaine_ordre, domaine_code, domaine_ref, domaine_nom) ';
+  $DB_SQL.= 'VALUES                                 (:matiere_id,:niveau_id,:domaine_ordre,:domaine_code,:domaine_ref,:domaine_nom)';
   $DB_VAR = array(
     ':matiere_id'    => $matiere_id,
     ':niveau_id'     => $niveau_id,
     ':domaine_ordre' => $domaine_ordre,
+    ':domaine_code'  => $domaine_code,
     ':domaine_ref'   => $domaine_ref,
     ':domaine_nom'   => $domaine_nom,
   );
@@ -323,16 +325,18 @@ public static function DB_ajouter_referentiel_domaine($matiere_id,$niveau_id,$do
  *
  * @param int    $domaine_id
  * @param int    $theme_ordre
+ * @param string $theme_ref
  * @param string $theme_nom
  * @return int
  */
-public static function DB_ajouter_referentiel_theme($domaine_id,$theme_ordre,$theme_nom)
+public static function DB_ajouter_referentiel_theme( $domaine_id , $theme_ordre , $theme_ref , $theme_nom )
 {
-  $DB_SQL = 'INSERT INTO sacoche_referentiel_theme(domaine_id,theme_ordre,theme_nom) ';
-  $DB_SQL.= 'VALUES(:domaine_id,:theme_ordre,:theme_nom)';
+  $DB_SQL = 'INSERT INTO sacoche_referentiel_theme( domaine_id, theme_ordre, theme_ref, theme_nom) ';
+  $DB_SQL.= 'VALUES                               (:domaine_id,:theme_ordre,:theme_ref,:theme_nom)';
   $DB_VAR = array(
     ':domaine_id'  => $domaine_id,
     ':theme_ordre' => $theme_ordre,
+    ':theme_ref'   => $theme_ref,
     ':theme_nom'   => $theme_nom,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -345,20 +349,24 @@ public static function DB_ajouter_referentiel_theme($domaine_id,$theme_ordre,$th
  * @param int    $theme_id
  * @param int    $socle_id
  * @param int    $item_ordre
+ * @param string $item_ref
  * @param string $item_nom
+ * @param string $item_abbr
  * @param int    $item_coef
  * @param int    $item_cart
  * @return int
  */
-public static function DB_ajouter_referentiel_item($theme_id,$socle_id,$item_ordre,$item_nom,$item_coef,$item_cart)
+public static function DB_ajouter_referentiel_item( $theme_id , $socle_id , $item_ordre , $item_ref , $item_nom , $item_abbr , $item_coef , $item_cart )
 {
-  $DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart) ';
-  $DB_SQL.= 'VALUES(:theme_id,:socle_id,:item_ordre,:item_nom,:item_coef,:item_cart)';
+  $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abbr, item_coef, item_cart) ';
+  $DB_SQL.= 'VALUES                              (:theme_id,:socle_id ,:item_ordre,:item_ref,:item_nom,:item_abbr,:item_coef,:item_cart)';
   $DB_VAR = array(
     ':theme_id'   => $theme_id,
     ':socle_id'   => $socle_id,
     ':item_ordre' => $item_ordre,
+    ':item_ref'   => $item_ref,
     ':item_nom'   => $item_nom,
+    ':item_abbr'  => $item_abbr,
     ':item_coef'  => $item_coef,
     ':item_cart'  => $item_cart,
   );
@@ -455,15 +463,17 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
   $domaine_nb = $domaine_liste -> length;
   for($domaine_ordre=0; $domaine_ordre<$domaine_nb; $domaine_ordre++)
   {
-    $domaine_xml = $domaine_liste -> item($domaine_ordre);
-    $domaine_ref = $domaine_xml -> getAttribute('ref');
-    $domaine_nom = $domaine_xml -> getAttribute('nom');
-    $DB_SQL = 'INSERT INTO sacoche_referentiel_domaine(matiere_id,niveau_id,domaine_ordre,domaine_ref,domaine_nom) ';
-    $DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:ordre,:ref,:nom)';
+    $domaine_xml  = $domaine_liste -> item($domaine_ordre);
+    $domaine_code = $domaine_xml -> getAttribute('code');
+    $domaine_ref  = $domaine_xml -> getAttribute('ref');
+    $domaine_nom  = $domaine_xml -> getAttribute('nom');
+    $DB_SQL = 'INSERT INTO sacoche_referentiel_domaine( matiere_id, niveau_id, domaine_ordre, domaine_code, domaine_ref, domaine_nom) ';
+    $DB_SQL.= 'VALUES                                 (:matiere_id,:niveau_id,        :ordre,        :code,        :ref,        :nom)';
     $DB_VAR = array(
       ':matiere_id' => $matiere_id,
       ':niveau_id'  => $niveau_id,
       ':ordre'      => $domaine_ordre+1,
+      ':code'       => $domaine_code,
       ':ref'        => $domaine_ref,
       ':nom'        => $domaine_nom,
     );
@@ -475,12 +485,14 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
     for($theme_ordre=0; $theme_ordre<$theme_nb; $theme_ordre++)
     {
       $theme_xml = $theme_liste -> item($theme_ordre);
+      $theme_ref = $theme_xml -> getAttribute('ref');
       $theme_nom = $theme_xml -> getAttribute('nom');
-      $DB_SQL = 'INSERT INTO sacoche_referentiel_theme(domaine_id,theme_ordre,theme_nom) ';
-      $DB_SQL.= 'VALUES(:domaine_id,:ordre,:nom)';
+      $DB_SQL = 'INSERT INTO sacoche_referentiel_theme( domaine_id, theme_ordre, theme_ref, theme_nom) ';
+      $DB_SQL.= 'VALUES                               (:domaine_id,      :ordre,      :ref,      :nom)';
       $DB_VAR = array(
         ':domaine_id' => $domaine_id,
         ':ordre'      => $theme_ordre+1,
+        ':ref'        => $theme_ref,
         ':nom'        => $theme_nom,
       );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -492,17 +504,21 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
       {
         $item_xml   = $item_liste -> item($item_ordre);
         $item_socle = $item_xml -> getAttribute('socle');
+        $item_ref   = $item_xml -> getAttribute('ref');
         $item_nom   = $item_xml -> getAttribute('nom');
+        $item_abbr  = $item_xml -> getAttribute('abbr');
         $item_coef  = $item_xml -> getAttribute('coef');
         $item_cart  = $item_xml -> getAttribute('cart');
         $item_lien  = $item_xml -> getAttribute('lien');
-        $DB_SQL = 'INSERT INTO sacoche_referentiel_item(theme_id,entree_id,item_ordre,item_nom,item_coef,item_cart,item_lien) ';
-        $DB_SQL.= 'VALUES(:theme,:socle,:ordre,:nom,:coef,:cart,:lien)';
+        $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abbr, item_coef, item_cart, item_lien) ';
+        $DB_SQL.= 'VALUES                              (:theme   ,:socle    ,     :ordre,     :ref,     :nom,     :abbr,     :coef,     :cart,     :lien)';
         $DB_VAR = array(
           ':theme' => $theme_id,
           ':socle' => $item_socle,
           ':ordre' => $item_ordre,
+          ':ref'   => $item_ref,
           ':nom'   => $item_nom,
+          ':abbr'  => $item_abbr,
           ':coef'  => $item_coef,
           ':cart'  => $item_cart,
           ':lien'  => $item_lien,
@@ -541,19 +557,21 @@ public static function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
  * Modifier les caractéristiques d'un domaine d'un référentiel
  *
  * @param int     $domaine_id
+ * @param string  $domaine_code
  * @param string  $domaine_ref
  * @param string  $domaine_nom
  * @return int   nb de lignes modifiées (0|1)
  */
-public static function DB_modifier_referentiel_domaine($domaine_id,$domaine_ref,$domaine_nom)
+public static function DB_modifier_referentiel_domaine( $domaine_id , $domaine_code , $domaine_ref , $domaine_nom )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-  $DB_SQL.= 'SET domaine_ref=:domaine_ref, domaine_nom=:domaine_nom ';
+  $DB_SQL.= 'SET domaine_code=:domaine_code, domaine_ref=:domaine_ref, domaine_nom=:domaine_nom ';
   $DB_SQL.= 'WHERE domaine_id=:domaine_id ';
   $DB_VAR = array(
-    ':domaine_id'  => $domaine_id,
-    ':domaine_ref' => $domaine_ref,
-    ':domaine_nom' => $domaine_nom,
+    ':domaine_id'   => $domaine_id,
+    ':domaine_code' => $domaine_code,
+    ':domaine_ref'  => $domaine_ref,
+    ':domaine_nom'  => $domaine_nom,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
@@ -564,16 +582,18 @@ public static function DB_modifier_referentiel_domaine($domaine_id,$domaine_ref,
  *
  * @param int     $theme_id
  * @param string  $theme_ref
+ * @param string  $theme_ref
  * @param string  $theme_nom
  * @return int   nb de lignes modifiées (0|1)
  */
-public static function DB_modifier_referentiel_theme($theme_id,$theme_nom)
+public static function DB_modifier_referentiel_theme( $theme_id , $theme_ref , $theme_nom )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-  $DB_SQL.= 'SET theme_nom=:theme_nom ';
+  $DB_SQL.= 'SET theme_ref=:theme_ref, theme_nom=:theme_nom ';
   $DB_SQL.= 'WHERE theme_id=:theme_id ';
   $DB_VAR = array(
     ':theme_id'  => $theme_id,
+    ':theme_ref' => $theme_ref,
     ':theme_nom' => $theme_nom,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -585,20 +605,24 @@ public static function DB_modifier_referentiel_theme($theme_id,$theme_nom)
  *
  * @param int     $item_id
  * @param int     $socle_id
+ * @param string  $item_ref
  * @param string  $item_nom
+ * @param string  $item_abbr
  * @param int     $item_coef
  * @param int     $item_cart
  * @return int   nb de lignes modifiées (0|1)
  */
-public static function DB_modifier_referentiel_item($item_id,$socle_id,$item_nom,$item_coef,$item_cart)
+public static function DB_modifier_referentiel_item( $item_id , $socle_id , $item_ref , $item_nom , $item_abbr , $item_coef , $item_cart )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
-  $DB_SQL.= 'SET entree_id=:socle_id, item_nom=:item_nom, item_coef=:item_coef, item_cart=:item_cart ';
+  $DB_SQL.= 'SET entree_id=:socle_id, item_ref=:item_ref, item_nom=:item_nom, item_abbr=:item_abbr, item_coef=:item_coef, item_cart=:item_cart ';
   $DB_SQL.= 'WHERE item_id=:item_id ';
   $DB_VAR = array(
     ':item_id'   => $item_id,
     ':socle_id'  => $socle_id,
+    ':item_ref'  => $item_ref,
     ':item_nom'  => $item_nom,
+    ':item_abbr' => $item_abbr,
     ':item_coef' => $item_coef,
     ':item_cart' => $item_cart,
   );

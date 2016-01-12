@@ -124,12 +124,12 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   {
     foreach($DB_TAB as $DB_ROW)
     {
-      $item_ref = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
+      $item_ref = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
       $demande_eval = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
       $export_csv .= $DB_ROW['item_id']
         .$separateur.$matiere_nom
         .$separateur.$DB_ROW['niveau_nom']
-        .$separateur.$item_ref
+        .$separateur.$DB_ROW['matiere_ref'].'.'.$item_ref
         .$separateur.'"'.$DB_ROW['item_nom'].'"'
         .$separateur.$DB_ROW['item_coef']
         .$separateur.$demande_eval
@@ -179,9 +179,9 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
   {
     foreach($DB_TAB as $DB_ROW)
     {
-      $item_ref = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
-      $tab_export_csv[$DB_ROW['item_id']]  = $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"';
-      $tab_export_html[$DB_ROW['item_id']] = '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td>';
+      $item_ref = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
+      $tab_export_csv[$DB_ROW['item_id']]  = $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$DB_ROW['matiere_ref'].'.'.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"';
+      $tab_export_html[$DB_ROW['item_id']] = '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['matiere_ref'].'.'.$item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td>';
     }
   }
 
@@ -273,17 +273,20 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
     if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
     {
       $domaine_id = $DB_ROW['domaine_id'];
-      $tab_domaine[$niveau_id][$domaine_id] = $DB_ROW['domaine_ref'].' - '.$DB_ROW['domaine_nom'];
+      $reference  = ($DB_ROW['domaine_ref']) ? $DB_ROW['domaine_ref'] : $DB_ROW['domaine_code'] ;
+      $tab_domaine[$niveau_id][$domaine_id] = $reference.' - '.$DB_ROW['domaine_nom'];
     }
     if( (!is_null($DB_ROW['theme_id'])) && ($DB_ROW['theme_id']!=$theme_id) )
     {
       $theme_id = $DB_ROW['theme_id'];
-      $tab_theme[$niveau_id][$domaine_id][$theme_id] = $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].' - '.$DB_ROW['theme_nom'];
+      $reference = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'] : $DB_ROW['domaine_code'].$DB_ROW['theme_ordre'] ;
+      $tab_theme[$niveau_id][$domaine_id][$theme_id] = $reference.' - '.$DB_ROW['theme_nom'];
     }
     if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
     {
       $item_id = $DB_ROW['item_id'];
-      $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'];
+      $reference = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
+      $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $reference.' - '.$DB_ROW['item_nom'];
     }
   }
   $export_csv .= $DB_ROW['matiere_ref'].' - '.$matiere_nom."\r\n";
@@ -472,7 +475,8 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_entrees_socle();
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_jointure[$DB_ROW['entree_id']][] = $DB_ROW['matiere_ref'].'.'.$DB_ROW['niveau_ref'].'.'.$DB_ROW['item_ref'].' - '.$DB_ROW['item_nom'];
+    $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
+    $tab_jointure[$DB_ROW['entree_id']][] = $DB_ROW['matiere_ref'].'.'.$item_ref.' - '.$DB_ROW['item_nom'];
   }
 
   // Elaboration de la sortie

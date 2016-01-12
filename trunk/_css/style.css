@@ -528,7 +528,7 @@ span.droit_z {width:16px;height:16px;display:inline-block;margin:auto 2px;} /* 4
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 /* Affichage des message ajax dans des champs <label> */
-label.alerte , label.erreur , label.loader , label.valide , label.astuce {padding-left:19px;background:transparent no-repeat top left;}
+label.alerte , label.erreur , label.loader , label.valide , label.astuce {padding-left:19px;padding-bottom:1px;background:transparent no-repeat top left;}
 form label.alerte , form label.erreur , form label.loader , form label.valide , form label.astuce {margin-left:5px;}
 label.alerte {color:#A00;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAA8FBMVEUAAADouDnotjjZmSTmsjTotTfbnCbgpi3otjflsDPmtDbsvz3eoyvntTfotzjrvDzrvDzjrDHpuTrmszbUjh3mszbNgBPJeQ7lsDTDbQbjrTHiqi/BaAO/ZADWoj3+/O/+/PP02lzz11f13F356JT++uf12lj+++vRiBj110///vnx04T++u3puTn888X89uHx16D89tb147/y1lT12VP23WPeoyrIdAvCagTbnSbYliHlu2jtyHH36sjdsUf679XhqS/y2JT036nw04/6657nwH3w0ozry1f45Yvlv4j677Xov2Lgpy3Sk0TMfhHrzquByH+SAAAAHnRSTlMAA1rx/s5aDBIw+wPKad6V3pa4rIckJLhLS/Cj46PpUlYpAAAAsElEQVQY03XP1Q7CQBBA0cXd3bbbrcMidcHd4f//hgIBSgjzMMk9yTwM+DOJbMj3BZlOJ+XtaJeaBqMeyM8Rt8x9OtZtsysyi70hvSAQyoPkq/2jNgMhTYbhZ0fiY46GEPeUQOQBhY3A0hOImf66eO9SEPUYWt+qGtsXyy6EBtyOd09UTZL3FQCqR3TgeYwxL0m6cK6BuoIoQijKXURA1yZonAzDth1HFC+maVmtn79vaXwWBrYtRuMAAAAASUVORK5CYII=");} /* ajax_alerte */
 label.erreur {color:#A00;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABCFBMVEUAAADjbG3YYlzeamfOW064SirJWEe6TTDPXU+1SynhaWq4Syq5TC6/UznCUjzPYVPRXlPGVULfamrgaWrWY1vUYFjhbGzibW3HV0XpWU3////sX1T5k372hGzmV031op72rKHjbmPwjHfnenLvhH3uko+9UDTvZVTmWVD93NbqW0/6nYvDTjP7qp3vj4D71M3aY2DzeGPcZmP6uq/OUD33r6XsaF3XXVHgZVzLWUm3Sivzc13WYFT8x7r4jHb1pqHyrar6mofgaWrzp6P4tqjMW0zbVkv2gmjwhXDnXVn0tKq8SzDpY1vqg334hnD4w775y8T6o5Hie3X0joHxnZbxnJbpf3jviHkpMtHkAAAAGXRSTlMAU+fnU/NTIiJTfX3n533y9PT08n1+IiPyYA6PqQAAALRJREFUGNNtjkUSwkAUBXF3DwwQBeKOu7vD/Y/CTEJW0Lvu+r/quf5SjHg1xZMLOe7OMBf5uidSvq/Pp6x+48URtQogL2QX7EwiARgviRL6ipxkHpBViGoaCRi8pkhWLNTHOw6DpoNt2QJrPxswKPh544QXCh4JDDALjr7HYMiv8WYTea1VF6IwhJIEXuGwFvShP4iG+HrdCX3c0fVOP2xPDaQNimEowQ/dJpiINw6xKLr/5QMq8hgf8baEVQAAAABJRU5ErkJggg==");} /* ajax_erreur */
@@ -859,7 +859,7 @@ li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top
 #zone_matieres_items , #zone_socle_item , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}  /* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
 #zone_upload {min-width:600px;min-height:300px}  /* pour le fancybox qui se montre radin en place allouée */
 
-li.li_n3 b{font-weight:normal}
+li.li_n1 b{font-weight:normal}
 li.li_n3 b img{margin-right:2px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -876,9 +876,8 @@ span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;backgro
 /* Zone de modification d'un référentiel                                                               */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#zone_elaboration_referentiel li {line-height:1.5em}  /* évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
-#zone_elaboration_referentiel i.tab {display:inline-block;width:4.5em;}
-#zone_elaboration_referentiel .sep {margin-right:3em}
+#zone_elaboration_referentiel li, #referentiel_edit {line-height:1.5em}  /* évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
+#zone_elaboration_referentiel i.tab {display:inline-block;width:5em;}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Affichage de l'item du socle dans la zone de validation d'un item ou d'un pilier                    */

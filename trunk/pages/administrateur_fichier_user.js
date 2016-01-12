@@ -128,21 +128,25 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( (f_action.indexOf('sconet')!=-1) && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
+            $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
             $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
             return false;
           }
           else if ( (f_action.indexOf('base_eleves')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
+            $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
             $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }
           else if ( (f_action.indexOf('factos')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
+            $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
             $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }
           else if ( (f_action.indexOf('tableur')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
+            $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
             $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }

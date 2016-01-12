@@ -55,11 +55,13 @@ require(CHEMIN_DOSSIER_INCLUDE.'class.Image.php');
 $dossier   = isset($_GET['dossier']) ? Clean::entier($_GET['dossier']) : 'x' ;
 $nom       = isset($_GET['nom'])     ? Clean::nom($_GET['nom'])        : ' ' ;
 $prenom    = isset($_GET['prenom'])  ? Clean::prenom($_GET['prenom'])  : ' ' ;
+$item      = isset($_GET['item'])    ? Clean::texte($_GET['item'])     : '' ;
 $br_line   = isset($_GET['br'])      ? 2                               : 1 ; // 2 pour nom / retour à la ligne / prénom ; 1 pour nom / prénom à la suite
 $font_size = isset($_GET['size'])    ? Clean::entier($_GET['size'])    : 10 ;
 
 $chemin  = CHEMIN_DOSSIER_BADGE.$dossier.DS;
-$fichier = $chemin.Clean::login($nom.'_'.$prenom).'_'.$br_line.'_'.$font_size.'.png';
+$debut   = ($item) ? $item : $nom.'_'.$prenom ;
+$fichier = $chemin.Clean::login($debut).'_'.$br_line.'_'.$font_size.'.png';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Créer l'image si elle n'existe pas
@@ -87,8 +89,9 @@ if(!file_exists($fichier))
   // imagettftext() : 3e param = angle de rotation ; 4e et 5e param = coordonnées du coin inférieur gauche du premier caractère
   if($br_line==1)
   {
+    $texte = ($item) ? $item : $nom.' '.$prenom ;
     $b_g_y_demande = $hauteur_tmp - 5 ;
-    list($b_g_x , $b_g_y , $b_d_x , $b_d_y , $h_d_x , $h_d_y , $h_g_x , $h_g_y) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$nom.' '.$prenom);
+    list($b_g_x , $b_g_y , $b_d_x , $b_d_y , $h_d_x , $h_d_y , $h_g_x , $h_g_y) = imagettftext($image_tmp,$font_size,0,5,$b_g_y_demande,$couleur_texte,$police,$texte);
   }
   else
   {

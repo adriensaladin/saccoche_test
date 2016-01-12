@@ -129,17 +129,32 @@ class ServeurCommunautaire
       if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
       {
         $domaine_id = $DB_ROW['domaine_id'];
-        $tab_domaine[$domaine_id] = array('ref'=>$DB_ROW['domaine_ref'],'nom'=>$DB_ROW['domaine_nom']);
+        $tab_domaine[$domaine_id] = array(
+          'code' => $DB_ROW['domaine_code'],
+          'ref'  => $DB_ROW['domaine_ref'],
+          'nom'  => $DB_ROW['domaine_nom'],
+        );
       }
       if( (!is_null($DB_ROW['theme_id'])) && ($DB_ROW['theme_id']!=$theme_id) )
       {
         $theme_id = $DB_ROW['theme_id'];
-        $tab_theme[$domaine_id][$theme_id] = array('nom'=>$DB_ROW['theme_nom']);
+        $tab_theme[$domaine_id][$theme_id] = array(
+          'ref' => $DB_ROW['theme_ref'],
+          'nom' => $DB_ROW['theme_nom'],
+        );
       }
       if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
       {
         $item_id = $DB_ROW['item_id'];
-        $tab_item[$domaine_id][$theme_id][$item_id] = array('socle'=>$DB_ROW['entree_id'],'nom'=>$DB_ROW['item_nom'],'coef'=>$DB_ROW['item_coef'],'cart'=>$DB_ROW['item_cart'],'lien'=>$DB_ROW['item_lien']);
+        $tab_item[$domaine_id][$theme_id][$item_id] = array(
+          'socle' => $DB_ROW['entree_id'],
+          'ref'   => $DB_ROW['item_ref'],
+          'nom'   => $DB_ROW['item_nom'],
+          'abbr'  => $DB_ROW['item_abbr'],
+          'coef'  => $DB_ROW['item_coef'],
+          'cart'  => $DB_ROW['item_cart'],
+          'lien'  => $DB_ROW['item_lien'],
+        );
       }
     }
     // Fabrication de l'arbre XML
@@ -148,17 +163,17 @@ class ServeurCommunautaire
     {
       foreach($tab_domaine as $domaine_id => $tab_domaine_info)
       {
-        $arbreXML .= "\t".'<domaine ref="'.$tab_domaine_info['ref'].'" nom="'.html($tab_domaine_info['nom']).'">'."\r\n";
+        $arbreXML .= "\t".'<domaine code="'.$tab_domaine_info['code'].'" ref="'.html($tab_domaine_info['ref']).'" nom="'.html($tab_domaine_info['nom']).'">'."\r\n";
         if(isset($tab_theme[$domaine_id]))
         {
           foreach($tab_theme[$domaine_id] as $theme_id => $tab_theme_info)
           {
-            $arbreXML .= "\t\t".'<theme nom="'.html($tab_theme_info['nom']).'">'."\r\n";
+            $arbreXML .= "\t\t".'<theme ref="'.html($tab_theme_info['ref']).'" nom="'.html($tab_theme_info['nom']).'">'."\r\n";
             if(isset($tab_item[$domaine_id][$theme_id]))
             {
               foreach($tab_item[$domaine_id][$theme_id] as $item_id => $tab_item_info)
               {
-                $arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" nom="'.html($tab_item_info['nom']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'" />'."\r\n";
+                $arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" ref="'.html($tab_item_info['ref']).'" nom="'.html($tab_item_info['nom']).'" abbr="'.html($tab_item_info['abbr']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'" />'."\r\n";
               }
             }
             $arbreXML .= "\t\t".'</theme>'."\r\n";

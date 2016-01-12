@@ -232,7 +232,6 @@ if($BILAN_TYPE=='releve')
   $retroactif               = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
   $only_etat                = $_SESSION['OFFICIEL']['RELEVE_ONLY_ETAT'];
   $only_socle               = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
-  $aff_reference            = $_SESSION['OFFICIEL']['RELEVE_AFF_REFERENCE'];
   $aff_coef                 = $_SESSION['OFFICIEL']['RELEVE_AFF_COEF'];
   $aff_socle                = $_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'];
   $aff_lien                 = 0; // Sans intérêt, l'élève & sa famille n'ayant accès qu'à l'archive pdf

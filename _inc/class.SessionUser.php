@@ -121,11 +121,11 @@ class SessionUser
       switch($mode_connection)
       {
         case 'normal'         : $message = 'Nom d\'utilisateur incorrect !'; break;
-        case 'cas'            : $message = 'Identification réussie mais identifiant CAS "'       .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "'.$login.'".'; break;
-        case 'shibboleth'     : $message = 'Identification réussie mais identifiant Shibboleth "'.$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "'.$login.'".'; break;
-        case 'siecle'         : $message = 'Identification réussie mais identifiant Sconet "'    .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant Sconet associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Sconet] la valeur "'.$login.'".'; break;
-        case 'vecteur_parent' : $message = 'Identification réussie mais compte parent'.                   ' inconnu dans SACoche (base n°'.$BASE.') !<br />Le compte SACoche d\'un responsable légal dont le nom est "'.$parent_nom.'", le prénom est "'.$parent_prenom.'", et ayant la charge d\'un enfant dont l\'identifiant Sconet est "'.$login.'", n\'a pas été trouvé.'; break;
-        case 'gepi'           : $message = 'Identification réussie mais login GEPI "'            .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Gepi] la valeur "'.$login.'".'; break;
+        case 'cas'            : $message = 'Identification réussie mais identifiant CAS "'       .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "' .$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "' .$login.'".'; break;
+        case 'shibboleth'     : $message = 'Identification réussie mais identifiant Shibboleth "'.$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "' .$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "' .$login.'".'; break;
+        case 'siecle'         : $message = 'Identification réussie mais identifiant Sconet "'    .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant Sconet associé à votre compte SACoche est "' .$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Sconet] la valeur "' .$login.'".'; break;
+        case 'vecteur_parent' : $message = 'Identification réussie mais compte parent introuvable dans SACoche !<br />Le compte SACoche d\'un responsable légal dont le nom est "' .$parent_nom.'", le prénom est "' .$parent_prenom.'", et ayant la charge d\'un enfant dont l\'identifiant Sconet est "' .$login.'", n\'a pas été trouvé.'; break;
+        case 'gepi'           : $message = 'Identification réussie mais login GEPI "'            .$login.'" inconnu dans SACoche !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Gepi] la valeur "'.$login.'".'; break;
       }
       return array( FALSE , $message );
     }
@@ -213,7 +213,6 @@ class SessionUser
       'OFFICIEL_RELEVE_POURCENTAGE_ACQUIS',
       'OFFICIEL_RELEVE_CONVERSION_SUR_20',
       'OFFICIEL_RELEVE_CASES_NB',
-      'OFFICIEL_RELEVE_AFF_REFERENCE',
       'OFFICIEL_RELEVE_AFF_COEF',
       'OFFICIEL_RELEVE_AFF_SOCLE',
       'OFFICIEL_RELEVE_AFF_DOMAINE',

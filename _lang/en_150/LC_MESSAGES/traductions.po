@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
 "POT-Creation-Date: 2015-12-16 16:51+0100\n"
-"PO-Revision-Date: 2015-12-18 08:37+0100\n"
+"PO-Revision-Date: 2015-12-16 16:52+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: en_150\n"
@@ -133,9 +133,8 @@ msgstr "National benchmarks stages"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:53
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_etabl_notes_acquis.php:29
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/consultation_codes_couleurs.php:29
-#, fuzzy
 msgid "Codes de notation / États d'acquisition"
-msgstr "Marks codes / acquisition states"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:66
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:53
@@ -191,7 +190,7 @@ msgstr "Emails & subscriptions"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_professeur.php:67
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_switch.php:29
 msgid "Bascule entre comptes"
-msgstr "Switching accounts"
+msgstr ""
 
 # Dans le sens de "langage utilisé par une communauté linguistique", pas de l'organe du corps humain.
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:80
@@ -225,7 +224,7 @@ msgstr "Import / impose login IDs"
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:88
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_evaluation_fichier.php:29
 msgid "Import / Export des évaluations"
-msgstr "Import / Export assessments"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_administrateur.php:89
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\menus/menu_directeur.php:85
@@ -595,22 +594,22 @@ msgstr "Administrator management"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe.php:37
 msgid "Classes (gestion)"
-msgstr "Classes (management)"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe.php:38
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_groupe.php:38
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode.php:38
 msgid "Périodes & classes / groupes"
-msgstr "School terms & classes / groups"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe.php:39
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:38
 msgid "Élèves & classes"
-msgstr "Students & classes"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe.php:40
 msgid "Professeurs & classes"
-msgstr "Teachers & classes"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_classe_gestion.php:29
 msgid "Gérer les classes"
@@ -618,29 +617,29 @@ msgstr "Classe management"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:37
 msgid "Élèves (gestion)"
-msgstr "Students (management)"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:39
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_groupe.php:39
 msgid "Élèves & groupes"
-msgstr "Students & groups"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:40
 msgid "Élèves & langues"
-msgstr "Students & languages"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:41
 msgid "Élèves & parents"
-msgstr "Students & parents"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:42
 msgid "Élèves & photos"
-msgstr "Students & photos"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve.php:43
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_fusion.php:29
 msgid "Fusion de comptes"
-msgstr "Merging of accounts"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_eleve_classe.php:29
 msgid "Affecter les élèves aux classes"
@@ -664,7 +663,7 @@ msgstr "Student photos"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_groupe.php:37
 msgid "Groupes (gestion)"
-msgstr "Groups (management)"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_groupe.php:40
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur.php:38
@@ -682,11 +681,11 @@ msgstr "Legal guardian"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent.php:37
 msgid "Parents (gestion)"
-msgstr "Parents (management)"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent.php:38
 msgid "Parents & adresses"
-msgstr "Parents & addresses"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent.php:39
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_parent_eleve.php:29
@@ -703,7 +702,7 @@ msgstr "Parents management"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode.php:37
 msgid "Périodes (gestion)"
-msgstr "School terms (management)"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode_classe_groupe.php:29
 msgid "Affecter les périodes aux classes & groupes"
@@ -711,11 +710,11 @@ msgstr "Affect school terms to classes & groups"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_periode_gestion.php:29
 msgid "Gérer les périodes"
-msgstr "School terms management"
+msgstr "Periods management"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur.php:37
 msgid "Professeurs / Personnels (gestion)"
-msgstr "Teachers / Staff (management) "
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur.php:39
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_classe.php:29
@@ -724,7 +723,7 @@ msgstr "Teachers & classes / Class teachers"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur.php:40
 msgid "Professeurs & matières / Personnels coordonnateurs"
-msgstr "Teachers & subjects / Coordinator staff"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/administrateur_professeur_matiere.php:29
 msgid "Personnels & matières / Personnels coordonnateurs"
@@ -736,23 +735,23 @@ msgstr "Unsubscribe the school"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:36
 msgid "Étape n°1 : Séries"
-msgstr "Step n°1: Series"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:37
 msgid "Étape n°2 : Épreuves"
-msgstr "Step n°2: Assessments "
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:38
 msgid "Étape n°3 : Notes"
-msgstr "Step n°3: Marks"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:39
 msgid "Étape n°4 : Export Notanet"
-msgstr "Step n°4: Notanet export"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet.php:40
 msgid "Étape n°5 : Fiches brevet"
-msgstr "Step n°5: Brevet files"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/brevet_epreuves.php:29
 msgid "Étape n°2 - Indiquer les référentiels à utiliser et la manière d'en extraire une note"
@@ -812,7 +811,7 @@ msgstr "Homepage news"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:46
 msgid "Évaluations prévues"
-msgstr "Scheduled assessments"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:47
 msgid "Résultats récents"
@@ -883,7 +882,7 @@ msgstr "You are in the %s workspace."
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:137
 msgid "Élève(s) affecté(s) dans une classe associé(s) à votre compte :"
-msgstr "Students affected in a class associated with your account :"
+msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/compte_accueil.php:235
 msgid "Notifications à consulter"

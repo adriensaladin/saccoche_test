@@ -41,9 +41,8 @@ class DB_STRUCTURE_SOCLE extends DB
  */
 public static function DB_recuperer_associations_entrees_socle()
 {
-  $DB_SQL = 'SELECT entree_id , item_nom , matiere_ref , ';
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso ';
+  $DB_SQL = 'SELECT entree_id , item_nom , matiere_ref , niveau_ref , ';
+  $DB_SQL.= 'CONCAT(domaine_ref,theme_ordre,item_ordre) AS item_ref ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -119,9 +118,8 @@ public static function DB_recuperer_arborescence_piliers($liste_pilier_id)
  */
 public static function DB_lister_result_eleve_item( $eleve_id , $entree_id )
 {
-  $DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , matiere_ref , ';
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
+  $DB_SQL = 'SELECT item_id , saisie_note AS note , item_nom , ';
+  $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
   $DB_SQL.= 'matiere_id , '; // Besoin s'il faut filtrer à une langue précise pour la compétence 2
   $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
   $DB_SQL.= 'FROM sacoche_saisie ';
@@ -192,9 +190,8 @@ public static function DB_lister_infos_items( $liste_item_id , $detail )
   $DB_SQL = 'SELECT item_id , ';
   if($detail)
   {
-    $DB_SQL.= 'item_nom , entree_id AS socle_id , matiere_ref , ';
-    $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-    $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
+    $DB_SQL.= 'item_nom , entree_id AS socle_id , ';
+    $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
     $DB_SQL.= 'item_coef , item_cart , item_lien , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
     $DB_SQL.= 'matiere_id , matiere_nb_demandes , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
   }

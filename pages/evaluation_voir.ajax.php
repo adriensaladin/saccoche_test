@@ -142,7 +142,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   foreach($tab_liste_item as $item_id)
   {
     $DB_ROW = $DB_TAB_COMP[$item_id][0];
-    $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_perso'] : $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_auto'] ;
+    $item_ref = $DB_ROW['item_ref'];
     $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
@@ -281,7 +281,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   foreach($tab_liste_item as $item_id)
   {
     $DB_ROW = $DB_TAB_COMP[$item_id][0];
-    $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_perso'] : $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_auto'] ;
+    $item_ref = $DB_ROW['item_ref'];
     $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';

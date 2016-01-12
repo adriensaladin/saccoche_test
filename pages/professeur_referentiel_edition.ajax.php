@@ -37,11 +37,9 @@ $element_id  = (isset($_POST['element']))     ? Clean::entier($_POST['element'])
 $element2_id = (isset($_POST['element2']))    ? Clean::entier($_POST['element2'])    : 0;
 $parent_id   = (isset($_POST['parent']))      ? Clean::entier($_POST['parent'])      : 0;
 $ordre       = (isset($_POST['ordre']))       ? Clean::entier($_POST['ordre'])       : -1;
-$ref         = (isset($_POST['ref']))         ? Clean::texte($_POST['ref'])          : NULL;
-$code        = (isset($_POST['code']))        ? Clean::texte($_POST['code'])         : '';
+$ref         = (isset($_POST['ref']))         ? Clean::texte($_POST['ref'])          : '';
 $nom         = (isset($_POST['nom']))         ? Clean::texte($_POST['nom'])          : '';
 $nom2        = (isset($_POST['nom2']))        ? Clean::texte($_POST['nom2'])         : '';
-$abbr        = (isset($_POST['abbr']))        ? Clean::texte($_POST['abbr'])         : NULL;
 $coef        = (isset($_POST['coef']))        ? Clean::entier($_POST['coef'])        : -1;
 $cart        = (isset($_POST['cart']))        ? Clean::entier($_POST['cart'])        : -1;
 $socle_id    = (isset($_POST['socle']))       ? Clean::entier($_POST['socle'])       : -1;
@@ -54,7 +52,7 @@ $tab_id2 = array_filter($tab_id2,'positif');
 $tab_contexte    = array( 'n1'=>'domaine' , 'n2'=>'theme' , 'n3'=>'item' );
 $tab_granulosite = array( 'referentiel' , 'domaine' , 'theme' );
 
-function notifications_referentiel_edition( $matiere_id , $notification_contenu )
+function notifications_referentiel_edition($matiere_id,$notification_contenu)
 {
   $abonnement_ref = 'referentiel_edition';
   $listing_profs = DB_STRUCTURE_REFERENTIEL::DB_recuperer_autres_professeurs_matiere( $matiere_id, $_SESSION['USER_ID'] );
@@ -94,7 +92,6 @@ if( ($action=='Voir') && $matiere_id )
   $tab_theme   = array();
   $tab_item    = array();
   $niveau_id = 0;
-  $separateur = ' ║ ';
   foreach($DB_TAB as $DB_ROW)
   {
     if( (!is_null($DB_ROW['niveau_id'])) && ($DB_ROW['niveau_id']!=$niveau_id) )
@@ -108,14 +105,12 @@ if( ($action=='Voir') && $matiere_id )
     if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
     {
       $domaine_id = $DB_ROW['domaine_id'];
-      $sep_ref    = ($DB_ROW['domaine_ref']) ? $separateur : '' ;
-      $tab_domaine[$niveau_id][$domaine_id] = '<b>'.html($DB_ROW['domaine_ref']).'</b>'.'<b>'.$sep_ref.'</b>'.'<b>'.$DB_ROW['domaine_code'].'</b>'.'<b>'.$separateur.'</b>'.'<b>'.html($DB_ROW['domaine_nom']).'</b>';
+      $tab_domaine[$niveau_id][$domaine_id] = $DB_ROW['domaine_ref'].' - '.$DB_ROW['domaine_nom'];
     }
     if( (!is_null($DB_ROW['theme_id'])) && ($DB_ROW['theme_id']!=$theme_id) )
     {
       $theme_id = $DB_ROW['theme_id'];
-      $sep_ref  = ($DB_ROW['theme_ref']) ? $separateur : '' ;
-      $tab_theme[$niveau_id][$domaine_id][$theme_id] = '<b>'.html($DB_ROW['theme_ref']).'</b>'.'<b>'.$sep_ref.'</b>'.'<b>'.html($DB_ROW['theme_nom']).'</b>';
+      $tab_theme[$niveau_id][$domaine_id][$theme_id] = $DB_ROW['theme_nom'];
     }
     if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
     {
@@ -130,9 +125,7 @@ if( ($action=='Voir') && $matiere_id )
       $lien_image  = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
       $lien_nom    = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
       $lien_texte  = '<img src="./_img/etat/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
-      $sep_ref     = ($DB_ROW['item_ref'])  ? $separateur : '' ;
-      $sep_abbr    = ($DB_ROW['item_abbr']) ? $separateur : '' ;
-      $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.'<b>'.html($DB_ROW['item_ref']).'</b>'.'<b>'.$sep_ref.'</b>'.'<b>'.html($DB_ROW['item_abbr']).'</b>'.'<b>'.$sep_abbr.'</b>'.'<b>'.html($DB_ROW['item_nom']).'</b>';
+      $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.html($DB_ROW['item_nom']);
     }
   }
   $images_niveau  = '';
@@ -164,21 +157,21 @@ if( ($action=='Voir') && $matiere_id )
       Json::add_str(    '<ul class="ul_n1">'.NL);
       if(isset($tab_domaine[$niveau_id]))
       {
-        foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_html)
+        foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_nom)
         {
-          Json::add_str(      '<li class="li_n1" id="n1_'.$domaine_id.'"><b>'.$domaine_html.'</b>'.$images_domaine.NL);
+          Json::add_str(      '<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.html($domaine_nom).'</span>'.$images_domaine.NL);
           Json::add_str(        '<ul class="ul_n2">'.NL);
           if(isset($tab_theme[$niveau_id][$domaine_id]))
           {
-            foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_html)
+            foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_nom)
             {
-              Json::add_str(          '<li class="li_n2" id="n2_'.$theme_id.'"><b>'.$theme_html.'</b>'.$images_theme.NL);
+              Json::add_str(          '<li class="li_n2" id="n2_'.$theme_id.'"><span>'.html($theme_nom).'</span>'.$images_theme.NL);
               Json::add_str(            '<ul class="ul_n3">'.NL);
               if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
               {
-                foreach($tab_item[$niveau_id][$domaine_id][$theme_id] as $item_id => $item_html)
+                foreach($tab_item[$niveau_id][$domaine_id][$theme_id] as $item_id => $item_nom)
                 {
-                  Json::add_str(              '<li class="li_n3" id="n3_'.$item_id.'"><b>'.$item_html.'</b>'.$images_item.'</li>'.NL);
+                  Json::add_str(              '<li class="li_n3" id="n3_'.$item_id.'"><b>'.$item_nom.'</b>'.$images_item.'</li>'.NL);
                 }
               }
               Json::add_str(            '</ul>'.NL);
@@ -201,18 +194,18 @@ if( ($action=='Voir') && $matiere_id )
 // Ajouter un domaine / un thème / un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matiere_nom && $parent_id && ($code || ($contexte!='n1')) && ($ref!==NULL) && $nom && ( ($abbr!==NULL) || ($contexte!='n3') ) && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
+if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matiere_nom && $parent_id && ($ref || ($contexte!='n1')) && $nom && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
   switch($contexte)
   {
-    case 'n1' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_domaine( $matiere_id , $parent_id /*niveau*/ , $ordre , $code , $ref , $nom ); break;
-    case 'n2' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_theme( $parent_id /*domaine*/ , $ordre ,  $ref , $nom ); break;
-    case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item( $parent_id /*theme*/ , $socle_id , $ordre ,  $ref , $nom , $abbr , $coef , $cart ); break;
+    case 'n1' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_domaine($matiere_id,$parent_id /*niveau*/,$ordre,$ref,$nom); break;
+    case 'n2' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_theme($parent_id /*domaine*/,$ordre,$nom); break;
+    case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item($parent_id /*theme*/,$socle_id,$ordre,$nom,$coef,$cart); break;
   }
   // id des éléments suivants à renuméroter
   if(count($tab_id)) // id des éléments suivants à renuméroter
   {
-    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements( $tab_contexte[$contexte] , $tab_id , '+1' );
+    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id,'+1');
   }
   // Notifications (rendues visibles ultérieurement)
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a ajouté dans le référentiel ['.$matiere_nom.'] :'."\r\n".$tab_contexte[$contexte].' "'.$nom.'"'."\r\n";
@@ -225,13 +218,13 @@ if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matie
 // Renommer un domaine / un thème / un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='edit') && isset($tab_contexte[$contexte]) && $matiere_id && $element_id && ( $code || ($contexte!='n1') ) && ($ref!==NULL) && $nom && ( ($abbr!==NULL) || ($contexte!='n3') ) && $matiere_nom && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
+if( ($action=='edit') && isset($tab_contexte[$contexte]) && $matiere_id && $element_id && ($ref || ($contexte!='n1')) && $nom && $matiere_nom && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
   switch($contexte)
   {
-    case 'n1' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_domaine( $element_id /*domaine*/ , $code , $ref , $nom ); break;
-    case 'n2' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_theme( $element_id /*theme*/ , $ref , $nom ); break;
-    case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item( $element_id /*item*/ , $socle_id , $ref , $nom , $abbr , $coef , $cart ); break;
+    case 'n1' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_domaine($element_id /*domaine*/,$ref,$nom); break;
+    case 'n2' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_theme($element_id /*theme*/,$nom); break;
+    case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item($element_id /*item*/,$socle_id,$nom,$coef,$cart); break;
   }
   if(!$test_modif)
   {
@@ -252,9 +245,9 @@ if( ($action=='del') && isset($tab_contexte[$contexte]) && $matiere_id && $eleme
 {
   switch($contexte)
   {
-    case 'n1' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_domaine( $element_id /*domaine*/ ); break;
-    case 'n2' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_theme( $element_id /*theme*/ ); break;
-    case 'n3' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_item( $element_id /*item*/ ); break;
+    case 'n1' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_domaine($element_id /*domaine*/); break;
+    case 'n2' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_theme($element_id /*theme*/); break;
+    case 'n3' : $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_item($element_id /*item*/); break;
   }
   if(!$test_delete)
   {
@@ -262,7 +255,7 @@ if( ($action=='del') && isset($tab_contexte[$contexte]) && $matiere_id && $eleme
   }
   if(count($tab_id)) // id des éléments suivants à renuméroter
   {
-    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements( $tab_contexte[$contexte] , $tab_id , '-1' );
+    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id,'-1');
   }
   // Log de l'action
   SACocheLog::ajouter('Suppression d\'un élément de référentiel ('.$matiere_nom.' / '.$tab_contexte[$contexte].' / '.$nom.').');
@@ -282,9 +275,9 @@ if( ($action=='move') && isset($tab_contexte[$contexte]) && $matiere_id && $elem
 {
   switch($contexte)
   {
-    case 'n1' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_domaine( $element_id /*domaine*/ , $parent_id /*niveau*/ , $ordre ); break;
-    case 'n2' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_theme( $element_id /*theme*/ , $parent_id /*domaine*/ , $ordre ); break;
-    case 'n3' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_item( $element_id /*item*/ , $parent_id /*theme*/ , $ordre ); break;
+    case 'n1' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_domaine($element_id /*domaine*/,$parent_id /*niveau*/,$ordre); break;
+    case 'n2' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_theme($element_id /*theme*/,$parent_id /*domaine*/,$ordre); break;
+    case 'n3' : $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_item($element_id /*item*/,$parent_id /*theme*/,$ordre); break;
   }
   if(!$test_move)
   {
@@ -292,11 +285,11 @@ if( ($action=='move') && isset($tab_contexte[$contexte]) && $matiere_id && $elem
   }
   if(count($tab_id)) // id des éléments suivants l'emplacement de départ à renuméroter
   {
-    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements( $tab_contexte[$contexte] , $tab_id , '-1' );
+    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id,'-1');
   }
   if(count($tab_id2)) // id des éléments suivants l'emplacement d'arrivée à renuméroter
   {
-    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements( $tab_contexte[$contexte] , $tab_id2 , '+1' );
+    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements($tab_contexte[$contexte],$tab_id2,'+1');
   }
   // Notifications (rendues visibles ultérieurement)
   $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé dans le référentiel ['.$matiere_nom.'] :'."\r\n".$tab_contexte[$contexte].' "'.$nom.'"'."\r\n";
@@ -311,24 +304,24 @@ if( ($action=='move') && isset($tab_contexte[$contexte]) && $matiere_id && $elem
 
 if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_nom && $nom && $nom2 )
 {
-  list($lien_item_degageant,$lien_item_absorbant) = DB_STRUCTURE_REFERENTIEL::DB_recuperer_liens_items_fusionnes( $element_id , $element2_id );
-  $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_item( $element_id , FALSE /*with_notes*/ );
+  list($lien_item_degageant,$lien_item_absorbant) = DB_STRUCTURE_REFERENTIEL::DB_recuperer_liens_items_fusionnes($element_id,$element2_id);
+  $test_delete = DB_STRUCTURE_REFERENTIEL::DB_supprimer_referentiel_item($element_id,FALSE /*with_notes*/);
   if(!$test_delete)
   {
     Json::end( FALSE , 'Élément non trouvé !' );
   }
   if(count($tab_id)) // id des éléments suivants à renuméroter
   {
-    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements( 'item' , $tab_id , '-1' );
+    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_liste_elements('item',$tab_id,'-1');
   }
   // Mettre à jour les références vers l'item absorbant
-  DB_STRUCTURE_REFERENTIEL::DB_fusionner_referentiel_items( $element_id , $element2_id );
+  DB_STRUCTURE_REFERENTIEL::DB_fusionner_referentiel_items($element_id,$element2_id);
   // Mettre à jour si besoin les ressources associées pour l'item absorbant
   if($lien_item_degageant)
   {
     if(!$lien_item_absorbant)
     {
-      DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources( $element2_id , $lien_item_degageant );
+      DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources($element2_id,$lien_item_degageant);
       $lien_retour = $lien_item_degageant;
     }
     else
@@ -363,7 +356,7 @@ if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_n
           }
         }
         $lien_retour = ServeurCommunautaire::fabriquer_liens_ressources( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $element2_id , $nom2 , $objet , serialize($tab_elements) );
-        DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources( $element2_id , $lien_retour );
+        DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_lien_ressources($element2_id,$lien_retour);
       }
       else
       {
@@ -440,13 +433,13 @@ if($action=='action_complementaire')
       Json::end( FALSE , 'Contenu inchangé ou élément items non trouvés !' );
     }
   }
-  // cas 3/4 : deplacer_domaine ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande... ; il pourra y avoir des domaine_code identiques...
+  // cas 3/4 : deplacer_domaine ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande... ; il pourra y avoir des domaine_ref identiques...
   if($action_groupe=='deplacer_domaine')
   {
-    $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_domaine_ordre_max( $matiere_id_final , $objet_id_final ) + 1 ; // objet_id = niveau_id
-    $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_domaine( $objet_id_initial /*domaine_id*/ , $objet_id_final /*niveau_id*/ , $objet_ordre_final /*domaine_ordre*/ , $matiere_id_final /*matiere_id*/ );
+    $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_domaine_ordre_max($matiere_id_final,$objet_id_final) + 1 ; // objet_id = niveau_id
+    $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_domaine($objet_id_initial /*domaine_id*/,$objet_id_final /*niveau_id*/,$objet_ordre_final /*domaine_ordre*/,$matiere_id_final /*matiere_id*/);
     if(!$test_move) { Json::end( FALSE , 'Contenu inchangé ou élément non trouvé !' ); }
-    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_domaines_suivants( $matiere_id_initial /*matiere_id*/ , $parent_id_initial /*niveau_id*/ , $objet_ordre_initial /*ordre_id*/ );
+    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_domaines_suivants($matiere_id_initial /*matiere_id*/,$parent_id_initial /*niveau_id*/,$objet_ordre_initial /*ordre_id*/);
     // Notifications (rendues visibles ultérieurement)
     $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé un domaine vers un référentiel d\'une autre matière :'."\r\n".$groupe_nom_initial.' -> '.$groupe_nom_final."\r\n";
     notifications_referentiel_edition( $matiere_id_initial , $notification_contenu );
@@ -455,10 +448,10 @@ if($action=='action_complementaire')
   // cas 4/4 : deplacer_theme ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande...
   if($action_groupe=='deplacer_theme')
   {
-    $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_theme_ordre_max( $objet_id_final ) + 1 ; // objet_id = domaine_id
-    $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_theme( $objet_id_initial /*theme_id*/ , $objet_id_final /*domaine_id*/ , $objet_ordre_final /*theme_ordre*/ );
+    $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_theme_ordre_max($objet_id_final) + 1 ; // objet_id = domaine_id
+    $test_move = DB_STRUCTURE_REFERENTIEL::DB_deplacer_referentiel_theme($objet_id_initial /*theme_id*/,$objet_id_final /*domaine_id*/,$objet_ordre_final /*theme_ordre*/);
     if(!$test_move) { Json::end( FALSE , 'Contenu inchangé ou élément non trouvé !' ); }
-    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_themes_suivants( $parent_id_initial /*domaine_id*/ , $objet_ordre_initial /*ordre_id*/ );
+    DB_STRUCTURE_REFERENTIEL::DB_renumeroter_referentiel_themes_suivants($parent_id_initial /*domaine_id*/,$objet_ordre_initial /*ordre_id*/);
     // Notifications (rendues visibles ultérieurement)
     $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a déplacé un thème vers un domaine d\'une autre matière :'."\r\n".$groupe_nom_initial.' -> '.$groupe_nom_final."\r\n";
     notifications_referentiel_edition( $matiere_id_initial , $notification_contenu );

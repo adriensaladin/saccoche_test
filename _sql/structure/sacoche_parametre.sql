@@ -125,7 +125,6 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_nombre_exemplaires"                      , "un" ),
 ( "officiel_releve_aff_coef"                         , "0" ),
 ( "officiel_releve_aff_domaine"                      , "0" ),
-( "officiel_releve_aff_reference"                    , "1" ),
 ( "officiel_releve_aff_socle"                        , "1" ),
 ( "officiel_releve_aff_theme"                        , "0" ),
 ( "officiel_releve_appreciation_generale_longueur"   , "400" ),

@@ -62,19 +62,19 @@ $(document).ready
     var objet = false;
     var images = new Array();
     images[1]  = '';
-    images[1] += '<q class="n1_edit" data-action="edit" title="Éditer ce domaine."></q>';
+    images[1] += '<q class="n1_edit" data-action="edit" title="Renommer ce domaine (avec sa référence)."></q>';
     images[1] += '<q class="n1_add"  data-action="add"  title="Ajouter un domaine à la suite."></q>';
     images[1] += '<q class="n1_move" data-action="move" title="Déplacer ce domaine (et renuméroter)."></q>';
     images[1] += '<q class="n1_del"  data-action="del"  title="Supprimer ce domaine ainsi que tout son contenu."></q>';
     images[1] += '<q class="n2_add"  data-action="add"  title="Ajouter un thème au début de ce domaine (et renuméroter)."></q>';
     images[2]  = '';
-    images[2] += '<q class="n2_edit" data-action="edit" title="Éditer ce thème."></q>';
+    images[2] += '<q class="n2_edit" data-action="edit" title="Renommer ce thème."></q>';
     images[2] += '<q class="n2_add"  data-action="add"  title="Ajouter un thème à la suite (et renuméroter)."></q>';
     images[2] += '<q class="n2_move" data-action="move" title="Déplacer ce thème (et renuméroter)."></q>';
     images[2] += '<q class="n2_del"  data-action="del"  title="Supprimer ce thème ainsi que tout son contenu (et renuméroter)."></q>';
     images[2] += '<q class="n3_add"  data-action="add"  title="Ajouter un item au début de ce thème (et renuméroter)."></q>';
     images[3]  = '';
-    images[3] += '<q class="n3_edit" data-action="edit" title="Éditer cet item."></q>';
+    images[3] += '<q class="n3_edit" data-action="edit" title="Renommer, coefficienter, autoriser cet item."></q>';
     images[3] += '<q class="n3_add"  data-action="add"  title="Ajouter un item à la suite (et renuméroter)."></q>';
     images[3] += '<q class="n3_move" data-action="move" title="Déplacer cet item (et renuméroter)."></q>';
     images[3] += '<q class="n3_fus"  data-action="fus"  title="Fusionner avec un autre item (et renuméroter)."></q>';
@@ -157,132 +157,7 @@ $(document).ready
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur l'image pour Ajouter un domaine, ou un thème, ou un item
-// Clic sur l'image pour Éditer un domaine, ou un thème, ou un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function afficher_form_edition( action, objet )
-    {
-      // On récupère le contexte de la demande : n1 ou n2 ou n3
-      var contexte = objet.attr('class').substring(0,2);
-      afficher_masquer_images_action('hide');
-      // On créé le formulaire à valider
-      var new_html = (action=='edit') ? '<div id="referentiel_edit">' : '<li class="li_'+contexte+'">' ;
-      var obj_b = (action=='edit') ? objet.parent().children('b') : false ;
-      switch(contexte)
-      {
-        case 'n1' :  // domaine
-          if(action=='edit')
-          {
-            // on récupère la référence
-            var ref = obj_b.children('b:eq(0)').text();
-            // on récupère le code léttré
-            var code = obj_b.children('b:eq(2)').text();
-            // on récupère le nom
-            var nom = obj_b.children('b:eq(4)').text();
-          }
-          else
-          {
-            var code = ref = nom = '';
-          }
-          // on complète le formulaire
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour remplacer les références automatiques." /> Ref.</i> <input id="f_ref" name="f_ref" size="2" maxlength="3" type="text" value="'+escapeQuote(ref)+'" /> (facultatif)<br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Lettre unique pour les références automatiques" />Code</i> <input id="f_code" name="f_code" size="1" maxlength="1" type="text" value="'+code+'" /><br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Nom du domaine" /> Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,118)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /><br />';
-          var texte = 'ce domaine';
-          break;
-        case 'n2' :  // thème
-          if(action=='edit')
-          {
-            // on récupère la référence
-            var ref = obj_b.children('b:eq(0)').text();
-            // on récupère le nom
-            var nom = obj_b.children('b:eq(2)').text();
-          }
-          else
-          {
-            var ref = nom = '';
-          }
-          // on complète le formulaire
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour remplacer les références automatiques." /> Ref.</i> <input id="f_ref" name="f_ref" size="2" maxlength="3" type="text" value="'+escapeQuote(ref)+'" /> (facultatif)<br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Nom du thème" /> Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /><br />';
-          var texte = 'ce thème';
-          break;
-        case 'n3' :  // item
-          if(action=='edit')
-          {
-            // On récupère le coefficient
-            var adresse = obj_b.children('img:eq(0)').attr('src');
-            var coef = parseInt( adresse.substr(adresse.length-6,2) , 10 );
-            // On récupère l'autorisation de demande
-            var adresse = obj_b.children('img:eq(1)').attr('src');
-            var cart = adresse.substr(adresse.length-7,3);
-            var check1 = (cart=='oui') ? ' checked' : '' ;
-            var check0 = (cart=='non') ? ' checked' : '' ;
-            // On récupère le socle
-            var socle_id  = obj_b.children('img:eq(2)').data('id');
-            var socle_txt = $('label[for=socle_'+socle_id+']').text();
-            // on récupère la référence
-            var ref = obj_b.children('b:eq(0)').text();
-            // on récupère l'abbréviation
-            var abbr = obj_b.children('b:eq(2)').text();
-            // on récupère le nom
-            var nom_texte = obj_b.children('b:eq(4)').text();
-            var nom_longueur = Math.min(10+nom_texte.length,128);
-          }
-          else
-          {
-            var coef = 1;
-            var check1 = ' checked';
-            var check0 = '';
-            var socle_id = 0;
-            var socle_txt = "Hors-socle.";
-            var ref = '';
-            var abbr = '';
-            var nom_texte = '';
-            var nom_longueur = 125;
-          }
-          // On assemble
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour remplacer les références automatiques." /> Ref.</i><input id="f_ref" name="f_ref" size="2" maxlength="3" type="text" value="'+escapeQuote(ref)+'" /> (facultatif)<br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Abbréviation éclairant sur l\'item pour les tableaux PDF à double entrée." /> Abbr.</i><input id="f_abbr" name="f_abbr" size="12" maxlength="15" type="text" value="'+escapeQuote(abbr)+'" /> (facultatif)<br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Nom de l\'item." /> Nom</i><input id="f_nom" name="f_nom" size="'+nom_longueur+'" maxlength="256" type="text" value="'+escapeQuote(nom_texte)+'" /><br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient (nombre entier entre 0 et 20 ; 1 par défaut)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="2" /><br />';
-          new_html += '<i class="tab">Demande</i> <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/etat/cart_oui.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+' /><label for="f_cart0"><img src="./_img/etat/cart_non.png" title="Demande interdite." /></label><br />';
-          var texte = 'cet item';
-          break;
-        default :
-          var texte = '???';
-      }
-      // Fin du formulaire
-      var q_action = (action=='edit') ? 'editer' : 'ajouter' ;
-      var title = (action=='edit') ? 'la modification' : 'l\'ajout' ;
-      new_html += '<i class="tab"></i><q class="valider" data-action="'+q_action+'" title="Valider '+title+' de '+texte+'."></q><q class="annuler" data-action="'+q_action+'" title="Annuler '+title+' de '+texte+'."></q> <label id="ajax_msg">&nbsp;</label>';
-      new_html += (action=='edit') ? '</div>' : '</li>' ;
-      // On insère le formulaire dans la page
-      if(action=='edit')
-      {
-        objet.before(new_html).parent().children('b').hide();
-      }
-      else if(objet.parent().attr('id').substring(0,2)==contexte)
-      {
-        // A ajouter à la suite d'un autre élément de même contexte
-        objet.parent().after(new_html);
-      }
-      else
-      {
-        // A ajouter au début d'un contexte supérieur
-        objet.next().show().prepend(new_html);
-      }
-      // focus
-      if(contexte=='n1')
-      {
-        $('#f_code').focus();
-      }
-      else
-      {
-        $('#f_nom').focus();
-      }
-    }
 
     $('#zone_elaboration_referentiel').on
     (
@@ -290,9 +165,60 @@ $(document).ready
       'q[data-action=add]',
       function()
       {
-        afficher_form_edition( 'add', $(this) );
+        // On récupère le contexte de la demande : n1 ou n2 ou n3
+        contexte = $(this).attr('class').substring(0,2);
+        afficher_masquer_images_action('hide');
+        // On créé le formulaire à valider
+        new_li  = '<li class="li_'+contexte+'">';
+        switch(contexte)
+        {
+          case 'n1' :  // domaine
+            new_li += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="128" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer une lettre référence et un nom de domaine." />';
+            texte = 'ce domaine';
+            break;
+          case 'n2' :  // thème
+            new_li += '<i>Nom</i> <input id="f_nom" name="f_nom" size="100" maxlength="128" type="text" value="" /> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer un nom de thème." />';
+            texte = 'ce thème';
+            break;
+          case 'n3' :  // item
+            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer un nom d\'item." /> Nom</i><input id="f_nom" name="f_nom" size="125" maxlength="256" type="text" value="" /><br />';
+            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="Hors-socle." readonly /><input id="f_socle" name="f_socle" type="hidden" value="0" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
+            new_li += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient facultatif (entier entre 0 et 20)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="1" size="1" maxlength="2" class="sep" />';
+            new_li += '<i>Demande</i> <input id="f_cart1" name="f_cart" type="radio" value="1" checked /><label for="f_cart1"><img src="./_img/etat/cart_oui.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0" /><label for="f_cart0" class="sep"><img src="./_img/etat/cart_non.png" title="Demande interdite." /></label>';
+            new_li += 'Lien <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Utiliser la page &#34;Associer des ressources aux items&#34; pour affecter à l\'item un lien vers des ressources (entraînement, remédiation&hellip;)." class="sep" />';
+            new_li += '<i>Action</i> ';
+            texte = 'cet item';
+            break;
+          default :
+            texte = '???';
+        }
+        new_li += '<q class="valider" data-action="ajouter" title="Valider l\'ajout de '+texte+'."></q><q class="annuler" data-action="ajouter" title="Annuler l\'ajout de '+texte+'."></q> <label id="ajax_msg">&nbsp;</label>';
+        new_li += '</li>';
+        // On insère le formulaire dans la page
+        if($(this).parent().attr('id').substring(0,2)==contexte)
+        {
+          // A ajouter à la suite d'un autre élément de même contexte
+          $(this).parent().after(new_li);
+        }
+        else
+        {
+          // A ajouter au début d'un contexte supérieur
+          $(this).next().show().prepend(new_li);
+        }
+        if(contexte=='n1')
+        {
+          $('#f_ref').focus();
+        }
+        else
+        {
+          $('#f_nom').focus();
+        }
       }
     );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur l'image pour Éditer un domaine, ou un thème, ou un item
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_elaboration_referentiel').on
     (
@@ -300,7 +226,72 @@ $(document).ready
       'q[data-action=edit]',
       function()
       {
-        afficher_form_edition( 'edit', $(this) );
+        // On récupère le contexte de la demande : n1 ou n2 ou n3
+        contexte = $(this).attr('class').substring(0,2);
+        afficher_masquer_images_action('hide');
+        // On créé le formulaire à valider
+        new_div  = '<div id="form_edit">';
+        switch(contexte)
+        {
+          case 'n1' :  // domaine
+            // on récupère la référence et le nom
+            span = $(this).parent().children('span').text();
+            ref = span.charAt(0);
+            nom = span.substring(4);
+            new_div += '<i>Ref.</i> <input id="f_ref" name="f_ref" size="1" maxlength="1" type="text" value="'+ref+'" /> <i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,118)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer une lettre référence et un nom de domaine." />';
+            texte = 'ce domaine';
+            break;
+          case 'n2' :  // thème
+            // On récupère le nom
+            nom = $(this).parent().children('span').text();
+            new_div += '<i>Nom</i> <input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="128" type="text" value="'+escapeQuote(nom)+'" /> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer un nom de thème." />';
+            texte = 'ce thème';
+            break;
+          case 'n3' :  // item
+            // On récupère le nom
+            nom = $(this).parent().children('b').text();
+            // On récupère le coefficient
+            adresse = $(this).parent().children('b').children('img:eq(0)').attr('src');
+            coef = parseInt( adresse.substr(adresse.length-6,2) , 10 );
+            // On récupère l'autorisation de demande
+            adresse = $(this).parent().children('b').children('img:eq(1)').attr('src');
+            cart = adresse.substr(adresse.length-7,3);
+            check1 = (cart=='oui') ? ' checked' : '' ;
+            check0 = (cart=='non') ? ' checked' : '' ;
+            // On récupère le socle
+            socle_id  = $(this).parent().children('b').children('img:eq(2)').data('id');
+            socle_txt = $('label[for=socle_'+socle_id+']').text();
+            // On assemble
+            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Indiquer un nom d\'item." /> Nom</i><input id="f_nom" name="f_nom" size="'+Math.min(10+nom.length,128)+'" maxlength="256" type="text" value="'+escapeQuote(nom)+'" /><br />';
+            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
+            new_div += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient facultatif (entier entre 0 et 20)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="2" class="sep" />';
+            new_div += '<i>Demande</i> <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/etat/cart_oui.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+' /><label for="f_cart0" class="sep"><img src="./_img/etat/cart_non.png" title="Demande interdite." /></label>';
+            new_div += 'Lien <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Utiliser la page &#34;Associer des ressources aux items&#34; pour affecter à l\'item un lien vers des ressources (entraînement, remédiation&hellip;)." class="sep" />';
+            new_div += '<i>Action</i>';
+            texte = 'cet item';
+            break;
+          default :
+            texte = '???';
+        }
+        new_div += '<q class="valider" data-action="editer" title="Valider la modification de '+texte+'."></q><q class="annuler" data-action="editer" title="Annuler la modification de '+texte+'."></q> <label id="ajax_msg">&nbsp;</label>';
+        new_div += '</div>';
+        // On insère le formulaire dans la page
+        if(contexte=='n3')
+        {
+          $(this).before(new_div).parent().children('b').hide();
+        }
+        else
+        {
+          $(this).before(new_div).parent().children('span').hide();
+        }
+        if(contexte=='n1')
+        {
+          $('#f_ref').focus();
+        }
+        else
+        {
+          $('#f_nom').focus();
+        }
       }
     );
 
@@ -315,40 +306,47 @@ $(document).ready
       function()
       {
         // On récupère le contexte de la demande : n1 ou n2 ou n3
-        var contexte = $(this).attr('class').substring(0,2);
+        contexte = $(this).attr('class').substring(0,2);
         afficher_masquer_images_action('hide');
         // On créé le formulaire à valider
         switch(contexte)
         {
           case 'n1' :  // domaine
-            element_nom = $(this).parent().children('b').children('b:eq(4)').text();
-            var alerte = 'Tout le contenu de ce domaine ainsi que tous les résultats des items concernés seront perdus !';
-            var texte1 = 'ce domaine';
-            var texte2 = 'le domaine'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
+            element_nom = $(this).parent().children('span').text();
+            alerte = 'Tout le contenu de ce domaine ainsi que tous les résultats des items concernés seront perdus !';
+            texte1 = 'ce domaine';
+            texte2 = 'le domaine'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
             break;
           case 'n2' :  // thème
-            element_nom = $(this).parent().children('b').children('b:eq(2)').text();
-            var alerte = 'Tout le contenu de ce thème ainsi que les résultats des items concernés seront perdus (et les thèmes suivants seront renumérotés) !';
-            var texte1 = 'ce thème';
-            var texte2 = 'le thème'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
+            element_nom = $(this).parent().children('span').text();
+            alerte = 'Tout le contenu de ce thème ainsi que les résultats des items concernés seront perdus (et les thèmes suivants seront renumérotés) !';
+            texte1 = 'ce thème';
+            texte2 = 'le thème'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
             break;
           case 'n3' :  // item
-            element_nom = $(this).parent().children('b').children('b:eq(2)').text();
-            var alerte = 'Tous les résultats associés seront perdus et les items suivants seront renumérotés !';
-            var texte1 = 'cet item';
-            var texte2 = 'l\'item sélectionné';
+            element_nom = $(this).parent().children('b').text();
+            alerte = 'Tous les résultats associés seront perdus et les items suivants seront renumérotés !';
+            texte1 = 'cet item';
+            texte2 = 'l\'item sélectionné';
             break;
           default :
-            var alerte = '???';
-            var texte1 = '???';
-            var texte2 = '???';
+            alerte = '???';
+            texte1 = '???';
+            texte2 = '???';
         }
         memo_text_delete = texte2;
-        var new_html = '<div id="form_del" class="danger">'+alerte;  // un div.danger est utilisé au lieu du span.danger car un clic sur un span enroule/déroule le contenu
-        new_html += '<q class="valider" data-action="supprimer" title="Valider la suppression de '+texte1+'."></q><q class="annuler" data-action="supprimer" title="Annuler la suppression de '+texte1+'."></q> <label id="ajax_msg">&nbsp;</label>';
-        new_html += '</div>';
+        new_div = '<div id="form_del" class="danger">'+alerte;  // un div.danger est utilisé au lieu du span.danger car un clic sur un span enroule/déroule le contenu
+        new_div += '<q class="valider" data-action="supprimer" title="Valider la suppression de '+texte1+'."></q><q class="annuler" data-action="supprimer" title="Annuler la suppression de '+texte1+'."></q> <label id="ajax_msg">&nbsp;</label>';
+        new_div += '</div>';
         // On insère le formulaire dans la page
-        $(this).before(new_html).parent().children('b').hide();
+        if(contexte=='n3')
+        {
+          $(this).before(new_div).parent().children('b').hide();
+        }
+        else
+        {
+          $(this).before(new_div).parent().children('span').hide();
+        }
       }
     );
 
@@ -364,9 +362,9 @@ $(document).ready
       {
         afficher_masquer_images_action('hide');
         // On ajoute les boutons à cocher
-        var id = $(this).parent().attr('id');
+        id = $(this).parent().attr('id');
         $('#zone_elaboration_referentiel li.li_n3').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n3_fus2" data-action="fus2" title="Valider l\'absorption de l\'item choisi en 1er par celui-ci."></q>');} } );
-        var new_img = '<q class="annuler" data-action="fusionner" title="Annuler la fusion de cet item."></q><label id="ajax_msg">&nbsp;</label>';
+        new_img = '<q class="annuler" data-action="fusionner" title="Annuler la fusion de cet item."></q><label id="ajax_msg">&nbsp;</label>';
         // On insère le formulaire dans la page
         $(this).after(new_img);
       }
@@ -383,22 +381,22 @@ $(document).ready
       function()
       {
         // On récupère le contexte de la demande : n1 ou n2 ou n3
-        var contexte = $(this).attr('class').substring(0,2);
+        contexte = $(this).attr('class').substring(0,2);
         afficher_masquer_images_action('hide');
         // On ajoute les boutons à cocher
-        var id = $(this).parent().attr('id');
+        id = $(this).parent().attr('id');
         switch(contexte)
         {
           case 'n1' :  // domaine
-            $('#zone_elaboration_referentiel li.li_m2').each( function(){ $(this).children('b').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine au début de ce niveau."></q>'); } );
-            $('#zone_elaboration_referentiel li.li_n1').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine à la suite de celui-ci."></q>');} } );
+            $('#zone_elaboration_referentiel li.li_m2').each( function(){ $(this).children('span').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine au début de ce niveau."></q>'); } );
+            $('#zone_elaboration_referentiel li.li_n1').each( function(){ if($(this).attr('id')!=id){$(this).children('span').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine à la suite de celui-ci."></q>');} } );
             break;
           case 'n2' :  // thème
-            $('#zone_elaboration_referentiel li.li_n1').each( function(){ $(this).children('b').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème au début de ce domaine (et renuméroter)."></q>'); } );
-            $('#zone_elaboration_referentiel li.li_n2').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème à la suite de celui-ci."></q>');} } );
+            $('#zone_elaboration_referentiel li.li_n1').each( function(){ $(this).children('span').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème au début de ce domaine (et renuméroter)."></q>'); } );
+            $('#zone_elaboration_referentiel li.li_n2').each( function(){ if($(this).attr('id')!=id){$(this).children('span').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème à la suite de celui-ci."></q>');} } );
             break;
           case 'n3' :  // item
-            $('#zone_elaboration_referentiel li.li_n2').each( function(){ $(this).children('b').after('<q class="n3_move2" data-action="move2" title="Valider le déplacement de l\'item au début de ce thème (et renuméroter)."></q>'); } );
+            $('#zone_elaboration_referentiel li.li_n2').each( function(){ $(this).children('span').after('<q class="n3_move2" data-action="move2" title="Valider le déplacement de l\'item au début de ce thème (et renuméroter)."></q>'); } );
             $('#zone_elaboration_referentiel li.li_n3').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n3_move2" data-action="move2" title="Valider le déplacement de l\'item à la suite de celui-ci."></q>');} } );
             break;
         }
@@ -406,18 +404,18 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            var texte = 'ce domaine';
+            texte = 'ce domaine';
             break;
           case 'n2' :  // thème
-            var texte = 'ce thème';
+            texte = 'ce thème';
             break;
           case 'n3' :  // item
-            var texte = 'cet item';
+            texte = 'cet item';
             break;
           default :
-            var texte = '???';
+            texte = '???';
         }
-        var new_img = '<q class="annuler" data-action="deplacer" title="Annuler le déplacement de '+texte+'."></q><label id="ajax_msg">&nbsp;</label>';
+        new_img = '<q class="annuler" data-action="deplacer" title="Annuler le déplacement de '+texte+'."></q><label id="ajax_msg">&nbsp;</label>';
         // On insère le formulaire dans la page
         $(this).after(new_img);
       }
@@ -434,7 +432,7 @@ $(document).ready
       function()
       {
         // récupérer le nom de l'item et le reporter
-        var item_nom = escapeHtml( entity_convert( $('#f_nom').val() ) );
+        item_nom = escapeHtml( entity_convert( $('#f_nom').val() ) );
         $('#zone_socle_item span.f_nom').html(item_nom);
         // récupérer la relation au socle commun et la cocher
         cocher_socle_item( $('#f_socle').val() );
@@ -453,15 +451,15 @@ $(document).ready
       function()
       {
         // récupérer la relation au socle (id + nom)
-        var socle_id = $("#zone_socle_item input[type=radio]:checked").val();
+        socle_id = $("#zone_socle_item input[type=radio]:checked").val();
         if(isNaN(socle_id))  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
         {
           socle_id = 0;
-          var socle_nom = 'Hors-socle.';
+          socle_nom = 'Hors-socle.';
         }
         else
         {
-          var socle_nom = $("#zone_socle_item input[type=radio]:checked").parent('label').text();
+          socle_nom = $("#zone_socle_item input[type=radio]:checked").parent('label').text();
         }
         // L'envoyer dans le formulaire
         $('#f_socle').val(socle_id);
@@ -486,194 +484,8 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour valider l'ajout d'un domaine, ou d'un thème, ou d'un item
-// Clic sur l'image pour valider l'édition d'un domaine, ou d'un thème, ou d'un item
+// Clic sur l'image pour confirmer l'ajout d'un domaine, ou d'un thème, ou d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function traiter_form_edition( action, objet_parent )
-    {
-      // On récupère le contexte de la demande : n1 ou n2 ou n3
-      var contexte = (action=='edit') ? objet_parent.parent().attr('id').substring(0,2) : objet_parent.attr('class').substring(3,5);
-      // On récupère le code lettré de l'élément (domaine uniquement)
-      if(contexte=='n1')
-      {
-        var code = $('#f_code').val();
-        if(code=='')
-        {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Code lettré manquant !");
-          $('#f_code').focus();
-          return false;
-        }
-        if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(code)==-1)
-        {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Le code doit être une lettre ou un chiffre !");
-          $('#f_code').focus();
-          return false;
-        }
-      }
-      else
-      {
-        var code = '';
-      }
-      // On récupère la référence de l'élément (facultatif)
-      var ref = entity_convert($('#f_ref').val());
-      // On récupère le nom de l'élément
-      var nom = entity_convert($('#f_nom').val());
-      if(nom=='')
-      {
-        $('#ajax_msg').removeAttr('class').addClass('erreur').html("Nom manquant !");
-        $('#f_nom').focus();
-        return false;
-      }
-      // On récupère l'abbréviation, le coefficient, l'autorisation de demande, le lien au socle et le lien de ressources de l'élément (item uniquement)
-      if(contexte=='n3')
-      {
-        var abbr  = $('#f_abbr').val();
-        var coef  = parseInt( $('#f_coef').val() , 10 );
-        var cart  = $("input[name=f_cart]:checked").val();
-        var socle = $('#f_socle').val();
-        if( (isNaN(coef)) || (coef<0) || (coef>20) )
-        {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Le coefficient doit être un nombre entier entre 0 et 20 !");
-          $('#f_coef').focus();
-          return false;
-        }
-        if(isNaN(cart))  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
-        {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Cocher si l'élève peut ou non demander une évaluation !");
-          return false;
-        }
-      }
-      else
-      {
-        var abbr  = '';
-        var coef  = 1;
-        var cart  = 0;
-        var socle = 0;
-      }
-      // Si édition, on récupère l'id de l'élément        concerné (niveau ou domaine ou theme)
-      // Si ajout  , on récupère l'id de l'élément parent concerné (niveau ou domaine ou theme)
-      if(action=='edit')
-      {
-        var get_texte = 'element';
-        var get_value = objet_parent.parent().attr('id').substring(3);
-      }
-      else
-      {
-        var get_texte = 'parent';
-        var get_value = objet_parent.parent().parent().attr('id').substring(3);
-      }
-      // Si ajout,
-      // - [1] on calcule le n° d'ordre de l'élément à partir de la recherche du nb d'éléments précédents pour l'élément parent concerné
-      // - [2] on récupère la liste des éléments suivants dont il faudra augmenter l'ordre
-      if(action=='edit')
-      {
-        var ordre = 0;
-        tab_id = new Array();
-      }
-      else
-      {
-        // [1]
-        var li = objet_parent;
-        var ordre = (contexte=='n3') ? 0 : 1;
-        while(li.prev().length)
-        {
-          li = li.prev();
-          ordre++;
-        }
-        // [2]
-        li = objet_parent;
-        tab_id = new Array();
-        while(li.next().length)
-        {
-          li = li.next();
-          tab_id.push(li.attr('id').substring(3));
-        }
-      }
-      // Envoi des infos en ajax pour le traitement de la demande
-      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+action+'&contexte='+contexte+'&matiere='+matiere_id+'&'+get_texte+'='+get_value+'&ordre='+ordre+'&tab_id='+tab_id+'&code='+code+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&ref='+encodeURIComponent(ref)+'&nom='+encodeURIComponent(nom)+'&abbr='+encodeURIComponent(abbr)+'&matiere_nom='+encodeURIComponent(matiere_nom),
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-          },
-          success : function(responseJSON)
-          {
-            initialiser_compteur();
-            if(responseJSON['statut']==false)
-            {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-            }
-            else
-            {
-              var separateur = ' ║ ';
-              switch(contexte)
-              {
-                case 'n1' :  // domaine
-                  var sep_ref = (ref) ? separateur : '' ;
-                  var texte = '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+code+'</b>' + '<b>'+separateur+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
-                  if(action=='add')
-                  { 
-                    texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)] + '<ul class="ul_n2"></ul>';
-                  }
-                  break;
-                case 'n2' :  // thème
-                  var sep_ref = (ref) ? separateur : '' ;
-                  var texte = '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
-                  if(action=='add')
-                  {
-                    texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)] + '<ul class="ul_n3"></ul>';
-                  }
-                  break;
-                case 'n3' :  // item
-
-                  coef_image   = (coef<10) ? '0'+coef : coef ;
-                  coef_texte   = '<img src="./_img/coef/'+coef_image+'.gif" alt="" title="Coefficient '+coef+'." />';
-                  cart_image   = (cart>0) ? 'oui' : 'non' ;
-                  cart_title   = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
-                  cart_texte   = '<img src="./_img/etat/cart_'+cart_image+'.png" title="'+cart_title+'" />';
-                  socle_image  = (socle>0) ? 'oui' : 'non' ;
-                  socle_title  = $('#f_intitule').val();
-                  socle_texte  = '<img src="./_img/etat/socle_'+socle_image+'.png" alt="" title="'+socle_title+'" data-id="'+socle+'" />';
-                  lien_image   = ( (action=='edit') && (tab_ressources[get_value]) ) ? 'oui' : 'non' ;
-                  lien_title   = ( (action=='edit') && (tab_ressources[get_value]) ) ? tab_ressources[get_value] : 'Absence de ressource.' ;
-                  lien_texte   = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
-                  var sep_ref  = (ref) ? separateur : '' ;
-                  var sep_abbr = (abbr) ? separateur : '' ;
-                  var texte = coef_texte + cart_texte + socle_texte + lien_texte + '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(abbr)+'</b>' + '<b>'+sep_abbr+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
-                  if(action=='add')
-                  {
-                    texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)];
-                    tab_ressources[responseJSON['value']] = '';
-                  }
-                  break;
-                default :
-                  var texte = '???';
-              }
-
-
-              // On met à jour la page
-              if(action=='add')
-              {
-                objet_parent.attr('id',responseJSON['value']).html(texte);
-              }
-              else
-              {
-                objet_parent.parent().children('b').html(texte).show();
-                objet_parent.remove();
-              }
-              afficher_masquer_images_action('show');
-            }
-          }
-        }
-      );
-    }
 
     $('#zone_elaboration_referentiel').on
     (
@@ -681,9 +493,140 @@ $(document).ready
       'q.valider[data-action=ajouter]',
       function()
       {
-        traiter_form_edition( 'add', $(this).parent() );
+        // On récupère le contexte de la demande : n1 ou n2 ou n3
+        contexte = $(this).parent().attr('class').substring(3,5);
+        // On récupère la référence de l'élément (domaine uniquement)
+        if(contexte=='n1')
+        {
+          ref = $('#f_ref').val();
+          if(ref=='')
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Référence manquante !");
+            $('#f_ref').focus();
+            return false;
+          }
+          if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(ref)==-1)
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("La référence doit être une lettre ou un chiffre !");
+            $('#f_ref').focus();
+            return false;
+          }
+        }
+        else
+        {
+          ref = '';
+        }
+        // On récupère le nom de l'élément
+        nom = entity_convert($('#f_nom').val());
+        if(nom=='')
+        {
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Nom manquant !");
+          $('#f_nom').focus();
+          return false;
+        }
+        // On récupère le coefficient, l'autorisation de demande, le lien au socle et le lien de ressources de l'élément (item uniquement)
+        if(contexte=='n3')
+        {
+          coef  = parseInt( $('#f_coef').val() , 10 );
+          cart  = $("input[name=f_cart]:checked").val();
+          socle = $('#f_socle').val();
+          if( (isNaN(coef)) || (coef<0) || (coef>20) )
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Le coefficient doit être un nombre entier entre 0 et 20 !");
+            $('#f_coef').focus();
+            return false;
+          }
+          if(isNaN(cart))  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Cocher si l'élève peut ou non demander une évaluation !");
+            return false;
+          }
+        }
+        else
+        {
+          coef  = 1;
+          cart  = 0;
+          socle = 0;
+        }
+        // On récupère l'id de l'élément parent concerné (niveau ou domaine ou theme)
+        parent_id = $(this).parent().parent().parent().attr('id').substring(3);
+        // On calcule le n° d'ordre de l'élément à partir de la recherche du nb d'éléments précédents pour l'élément parent concerné
+        li = $(this).parent();
+        ordre = (contexte=='n3') ? 0 : 1;
+        while(li.prev().length)
+        {
+          li = li.prev();
+          ordre++;
+        }
+        // On récupère la liste des éléments suivants dont il faudra augmenter l'ordre
+        li = $(this).parent();
+        tab_id = new Array();
+        while(li.next().length)
+        {
+          li = li.next();
+          tab_id.push(li.attr('id').substring(3));
+        }
+        // Envoi des infos en ajax pour le traitement de la demande
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=add'+'&contexte='+contexte+'&matiere='+matiere_id+'&parent='+parent_id+'&ordre='+ordre+'&tab_id='+tab_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
+            dataType : 'json',
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            },
+            success : function(responseJSON)
+            {
+              initialiser_compteur();
+              if(responseJSON['statut']==false)
+              {
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              }
+              else
+              {
+                switch(contexte)
+                {
+                  case 'n1' :  // domaine
+                    texte = '<span>' + ref + ' - ' + escapeHtml(nom) + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n2"></ul>';
+                    break;
+                  case 'n2' :  // thème
+                    texte = '<span>' + escapeHtml(nom) + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n3"></ul>';
+                    break;
+                  case 'n3' :  // item
+                    coef_image  = (coef<10) ? '0'+coef : coef ;
+                    coef_texte  = '<img src="./_img/coef/'+coef_image+'.gif" alt="" title="Coefficient '+coef+'." />';
+                    cart_image  = (cart>0) ? 'oui' : 'non' ;
+                    cart_title  = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
+                    cart_texte  = '<img src="./_img/etat/cart_'+cart_image+'.png" title="'+cart_title+'" />';
+                    socle_image = (socle>0) ? 'oui' : 'non' ;
+                    socle_title = $('#f_intitule').val();
+                    socle_texte = '<img src="./_img/etat/socle_'+socle_image+'.png" alt="" title="'+socle_title+'" data-id="'+socle+'" />';
+                    lien_image  = 'non';
+                    lien_title  = 'Absence de ressource.';
+                    lien_texte  = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
+                    texte = '<b>' + coef_texte + cart_texte + socle_texte + lien_texte + escapeHtml(nom) + '</b>' + images[contexte.charAt(1)];
+                    element_id = responseJSON['value'];
+                    tab_ressources[element_id] = '';
+                    break;
+                  default :
+                    texte = '???';
+                }
+                $('#ajax_msg').parent().attr('id',responseJSON['value']).html(texte);
+                afficher_masquer_images_action('show');
+              }
+            }
+          }
+        );
       }
     );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur l'image pour confirmer l'édition d'un domaine, ou d'un thème, ou d'un item
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_elaboration_referentiel').on
     (
@@ -691,7 +634,111 @@ $(document).ready
       'q.valider[data-action=editer]',
       function()
       {
-        traiter_form_edition( 'edit', $(this).parent() );
+        // On récupère le contexte de la demande : n1 ou n2 ou n3
+        contexte = $(this).parent().parent().attr('id').substring(0,2);
+        // On récupère la référence de l'élément (domaine uniquement)
+        if(contexte=='n1')
+        {
+          ref = $('#f_ref').val();
+          if(ref=='')
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Référence manquante !");
+            $('#f_ref').focus();
+            return false;
+          }
+          if('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'.indexOf(ref)==-1)
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("La référence doit être une lettre ou un chiffre !");
+            $('#f_ref').focus();
+            return false;
+          }
+        }
+        else
+        {
+          ref = '';
+        }
+        // On récupère le nom de l'élément
+        nom = entity_convert($('#f_nom').val());
+        if(nom=='')
+        {
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Nom manquant !");
+          $('#f_nom').focus();
+          return false;
+        }
+        // On récupère le coefficient, le lien au socle (item uniquement)
+        if(contexte=='n3')
+        {
+          coef  = parseInt( $('#f_coef').val() , 10 );
+          cart  = $("input[name=f_cart]:checked").val();
+          socle = $('#f_socle').val();
+          if( (isNaN(coef)) || (coef<0) || (coef>20) )
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Le coefficient doit être un nombre entier entre 0 et 20 !");
+            $('#f_coef').focus();
+            return false;
+          }
+          if(isNaN(cart))  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+          {
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Cocher si l'élève peut ou non demander une évaluation !");
+            return false;
+          }
+        }
+        else
+        {
+          coef  = 1;
+          cart  = 0;
+          socle = 0;
+        }
+        // On récupère l'id de l'élément concerné (domaine ou theme ou item)
+        element_id = $(this).parent().parent().attr('id').substring(3);
+        // Envoi des infos en ajax pour le traitement de la demande
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action=edit'+'&contexte='+contexte+'&matiere='+matiere_id+'&element='+element_id+'&ref='+ref+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&nom='+encodeURIComponent(nom)+'&matiere_nom='+encodeURIComponent(matiere_nom),
+            dataType : 'json',
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            },
+            success : function(responseJSON)
+            {
+              initialiser_compteur();
+              if(responseJSON['statut']==false)
+              {
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              }
+              else
+              {
+                texte = (contexte=='n1') ? ref + ' - ' + escapeHtml(nom) : escapeHtml(nom) ;
+                if(contexte=='n3')
+                {
+                  coef_image  = (coef<10) ? '0'+coef : coef ;
+                  coef_texte  = '<img src="./_img/coef/'+coef_image+'.gif" alt="" title="Coefficient '+coef+'." />';
+                  cart_image  = (cart>0) ? 'oui' : 'non' ;
+                  cart_title  = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
+                  cart_texte  = '<img src="./_img/etat/cart_'+cart_image+'.png" title="'+cart_title+'" />';
+                  socle_image = (socle>0) ? 'oui' : 'non' ;
+                  socle_title = $('#f_intitule').val();
+                  socle_texte = '<img src="./_img/etat/socle_'+socle_image+'.png" alt="" title="'+socle_title+'" data-id="'+socle_id+'" />';
+                  lien_image  = (tab_ressources[element_id]) ? 'oui' : 'non' ;
+                  lien_title  = (tab_ressources[element_id]) ? tab_ressources[element_id] : 'Absence de ressource.' ;
+                  lien_texte  = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
+                  $('#ajax_msg').parent().parent().children('b').html(coef_texte+cart_texte+socle_texte+lien_texte+texte).show();
+                }
+                else
+                {
+                  $('#ajax_msg').parent().parent().children('span').html(texte).show();
+                }
+                $('#ajax_msg').parent().remove();
+                afficher_masquer_images_action('show');
+              }
+            }
+          }
+        );
       }
     );
 

@@ -200,7 +200,7 @@ public static function DB_lister_notifications_a_publier()
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_abonnement USING (user_id,abonnement_ref) ';
   $DB_SQL.= 'LEFT JOIN sacoche_abonnement USING (abonnement_ref) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-  $DB_SQL.= 'WHERE notification_statut="attente" AND notification_date < DATE_SUB( NOW() , INTERVAL 1 HOUR ) AND user_sortie_date>NOW() ';
+  $DB_SQL.= 'WHERE notification_statut="attente" AND DATE_ADD(notification_date,INTERVAL 1 HOUR)<NOW() AND user_sortie_date>NOW() ';
   $DB_SQL.= 'LIMIT 25 ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -518,7 +518,7 @@ public static function DB_supprimer_log_attente( $abonnement_ref , $notification
 public static function DB_supprimer_log_anciens()
 {
   $DB_SQL = 'DELETE FROM sacoche_notification ';
-  $DB_SQL.= 'WHERE notification_statut IN("consultée","envoyée") AND notification_date < DATE_SUB( NOW() , INTERVAL 2 MONTH ) ';
+  $DB_SQL.= 'WHERE notification_statut IN("consultée","envoyée") AND DATE_ADD(notification_date,INTERVAL 2 MONTH)<NOW() ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

@@ -37,18 +37,16 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 100, // effectuée (% actuel)
+    'statut'     => 81, // en attente
     'langue'     => array( 'code' => 'en'  , 'nom' => 'Anglais' ),
     'pays'       => array( 'code' => '150' , 'nom' => 'Europe' ),
     'traducteur' => array(
       array( 'nom' => 'Liouba Leroux'     , 'mail' => 'liouba.leroux@sesamath.net' ),
-      array( 'nom' => 'Ashley Gordon'     , 'mail' => NULL ),
       array( 'nom' => 'James Chaboissier' , 'mail' => 'james.chaboissier@gmail.com' ),
     ),
-    'document'   => 'https://sacoche.sesamath.net/_docs/traduction_en_150_precisions.ods',
   ),
   array(
-    'statut'     => 85, // effectuée (% actuel)
+    'statut'     => 85, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'CO' , 'nom' => 'Colombie' ),
     'traducteur' => array(
@@ -56,7 +54,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 84, // effectuée (% actuel)
+    'statut'     => 84, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'ES' , 'nom' => 'Espagne' ),
     'traducteur' => array(
@@ -64,7 +62,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 84, // effectuée (% actuel)
+    'statut'     => 84, // complète (% effectué)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'MX' , 'nom' => 'Mexique' ),
     'traducteur' => array(
@@ -93,7 +91,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 100, // effectuée (% actuel)
+    'statut'     => 85, // complète (% effectué)
     'langue'     => array( 'code' => 'rcf' , 'nom' => 'Créole réunionnais' ),
     'pays'       => array( 'code' => 'RE'  , 'nom' => 'La Réunion' ),
     'traducteur' => array(
@@ -101,7 +99,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 85, // effectuée (% actuel)
+    'statut'     => 85, // complète (% effectué)
     'langue'     => array( 'code' => 'vi' , 'nom' => 'Vietnamien' ),
     'pays'       => array( 'code' => 'VN' , 'nom' => 'Vietnam' ),
     'traducteur' => array(

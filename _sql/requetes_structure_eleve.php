@@ -193,7 +193,7 @@ public static function DB_lister_derniers_devoirs_eleve_avec_notes_saisies($elev
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_devoir.proprio_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id AND saisie_note!="PA" ';
-  $DB_SQL.= 'AND devoir_date > DATE_SUB( NOW() , INTERVAL :nb_jours DAY ) '.$sql_view ;
+  $DB_SQL.= 'AND DATE_ADD(devoir_date,INTERVAL :nb_jours DAY)>NOW() '.$sql_view ;
   $DB_SQL.= 'GROUP BY devoir_id ';
   $DB_SQL.= 'ORDER BY devoir_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
   $DB_VAR = array(
@@ -262,9 +262,8 @@ public static function DB_lister_derniers_resultats_eleve($eleve_id,$nb_jours)
 {
   $sql_view = 'AND saisie_visible_date<=NOW() '; // Cette fonction n'est appelée qu'avec un profil élève ou parent
   $DB_SQL = 'SELECT item_id , item_nom , saisie_date , saisie_note , ';
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
-  $DB_SQL.= 'matiere_id , niveau_id , matiere_nom, matiere_ref ';
+  $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
+  $DB_SQL.= 'matiere_id , niveau_id , matiere_nom ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
@@ -272,7 +271,7 @@ public static function DB_lister_derniers_resultats_eleve($eleve_id,$nb_jours)
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id ';
-  $DB_SQL.= 'AND saisie_date > DATE_SUB( NOW() , INTERVAL :nb_jours DAY ) '.$sql_view ;
+  $DB_SQL.= 'AND DATE_ADD(saisie_date,INTERVAL :nb_jours DAY)>NOW() '.$sql_view ;
   // Pas de 'GROUP BY item_id ' car le regroupement est effectué avant le tri par date
   $DB_SQL.= 'ORDER BY saisie_date DESC, devoir_id DESC '; // ordre sur devoir_id ajouté pour conserver une logique à l'affichage en cas de plusieurs devoirs effectués le même jour
   $DB_VAR = array(
@@ -292,10 +291,9 @@ public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
 {
   $DB_SQL = 'SELECT item_id, item_nom, entree_id, ';
   $DB_SQL.= 'item_cart, item_lien, ';
-  $DB_SQL.= 'matiere_id, matiere_nb_demandes, matiere_ref , ';
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
-  $DB_SQL.= 'referentiel_calcul_methode, referentiel_calcul_limite, referentiel_calcul_retroactif ';
+  $DB_SQL.= 'matiere_id, matiere_nb_demandes, ';
+  $DB_SQL.= 'referentiel_calcul_methode, referentiel_calcul_limite, referentiel_calcul_retroactif, ';
+  $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
   $DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';

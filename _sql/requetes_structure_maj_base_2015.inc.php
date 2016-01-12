@@ -900,19 +900,19 @@ if( ($version_base_structure_actuelle=='2015-08-16') || ($version_base_structure
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
     DB::close(SACOCHE_STRUCTURE_BD_NAME);
     # On en profite pour supprimer les notifications périmées qui passaient par [sacoche_message] jusqu'en mars 2015.
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "Fiches brevet - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "Relevé d\'évaluations - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "Bulletin scolaire - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "Maîtrise du palier 1 - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "Maîtrise du palier 2 - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "Maîtrise du palier 3 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Fiches brevet - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Relevé d\'évaluations - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Bulletin scolaire - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Maîtrise du palier 1 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Maîtrise du palier 2 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "Maîtrise du palier 3 - %"' );
     // D'autres entrées trouvées, probable reliquat d'un bug...
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "ches brevet - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "levé d\'évaluations - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "lletin scolaire - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "îtrise du palier 1 - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "îtrise du palier 2 - %"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE message_fin_date < DATE_SUB( NOW() , INTERVAL 3 MONTH ) AND message_contenu LIKE "îtrise du palier 3 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "ches brevet - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "levé d\'évaluations - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "lletin scolaire - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "îtrise du palier 1 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "îtrise du palier 2 - %"' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_message WHERE DATE_ADD(message_fin_date,INTERVAL 3 MONTH)<NOW() AND message_contenu LIKE "îtrise du palier 3 - %"' );
     # On récupère les destinataires des messages en cours, ainsi que leur profil, afin de les y transposer
     $DB_SQL = 'SELECT message_id, message_destinataires FROM sacoche_message ';
     $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
@@ -1272,6 +1272,8 @@ if($version_base_structure_actuelle=='2015-10-17')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
     // ajout d'un paramètre
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_only_etat" , "tous" )' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 

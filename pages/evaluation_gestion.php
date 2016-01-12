@@ -452,9 +452,6 @@ Layout::add( 'js_inline_before' , '// ]]>' );
 <?php
 // Fabrication des éléments select du formulaire
 Form::load_choix_memo();
-$check_aff_reference    = (Form::$tab_choix['aff_reference'])    ? ' checked' : '' ;
-$check_aff_coef         = (Form::$tab_choix['aff_coef'])         ? ' checked' : '' ;
-$check_aff_socle        = (Form::$tab_choix['aff_socle'])        ? ' checked' : '' ;
 $check_cart_restriction = (Form::$tab_choix['cart_restriction']) ? ' checked' : '' ;
 $select_cart_detail   = HtmlForm::afficher_select(Form::$tab_select_cart_detail   , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']   /*selection*/ , '' /*optgroup*/ );
 $select_cart_cases_nb = HtmlForm::afficher_select(Form::$tab_select_cart_cases_nb , 'f_cases_nb'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb'] /*selection*/ , '' /*optgroup*/ );
@@ -478,7 +475,6 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
   <div class="toggle hide">
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
     <label class="tab">Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_fond ?> <?php echo $select_marge_min ?><br />
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement pour un choix de détail complet." /> Indications :</label><label for="f_reference"><input type="checkbox" id="f_reference" name="f_reference" value="1"<?php echo $check_aff_reference ?> /> Références</label>&nbsp;&nbsp;&nbsp;<label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label><br />
     <label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_req" name="f_restriction_req" value="1"<?php echo $check_cart_restriction ?> /> <label for="f_restriction_req">Uniquement les items ayant fait l'objet d'une demande d'évaluation (ou dont une note est saisie).</label><br />
     <label class="tab" for="f_detail">Hauteur des blocs :</label><?php echo $select_cart_hauteur ?><br />
   </div>

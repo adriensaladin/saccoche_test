@@ -47,7 +47,6 @@ $date_fin                = (isset($_POST['f_date_fin']))        ? Clean::date_fr
 $retroactif              = (isset($_POST['f_retroactif']))      ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
 $only_etat               = (isset($_POST['f_only_etat']))       ? Clean::texte($_POST['f_only_etat'])              : '';
 $only_socle              = (isset($_POST['f_only_socle']))      ? 1                                                : 0;
-$aff_reference           = (isset($_POST['f_reference']))       ? 1                                                : 0;
 $aff_coef                = (isset($_POST['f_coef']))            ? 1                                                : 0;
 $aff_socle               = (isset($_POST['f_socle']))           ? 1                                                : 0;
 $aff_lien                = (isset($_POST['f_lien']))            ? 1                                                : 0;
@@ -200,7 +199,6 @@ if($besoin_notes)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $lignes_nb = 0;
-$longueur_ref_max = 0;
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , $only_socle , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
 if(!empty($DB_TAB))
 {
@@ -212,52 +210,30 @@ if(!empty($DB_TAB))
     if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
     {
       $domaine_id  = $DB_ROW['domaine_id'];
-      $domaine_ref = ($DB_ROW['domaine_ref']) ? $DB_ROW['domaine_ref'] : $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_code'] ;
-      $tab_domaine[$domaine_id] = array(
-        'domaine_ref'       => $domaine_ref,
-        'domaine_nom'       => $DB_ROW['domaine_nom'],
-        'domaine_nb_lignes' => 2,
-      );
-      $longueur_ref_max = max( $longueur_ref_max , strlen($domaine_ref) );
+      $domaine_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'];
+      $tab_domaine[$domaine_id] = array('domaine_ref'=>$domaine_ref,'domaine_nom'=>$DB_ROW['domaine_nom'],'domaine_nb_lignes'=>2);
       $lignes_nb++;
     }
     if( (!is_null($DB_ROW['theme_id'])) && ($DB_ROW['theme_id']!=$theme_id) )
     {
       $theme_id  = $DB_ROW['theme_id'];
-      $theme_ref = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'] : $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_code'].$DB_ROW['theme_ordre'] ;
+      $theme_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'];
       $first_theme_of_domaine = (isset($tab_theme[$domaine_id])) ? FALSE : TRUE ;
-      $tab_theme[$domaine_id][$theme_id] = array(
-        'theme_ref'       => $theme_ref,
-        'theme_nom'       => $DB_ROW['theme_nom'],
-        'theme_nb_lignes' => 1,
-      );
-      $longueur_ref_max = max( $longueur_ref_max , strlen($theme_ref) );
+      $tab_theme[$domaine_id][$theme_id] = array('theme_ref'=>$theme_ref,'theme_nom'=>$DB_ROW['theme_nom'],'theme_nb_lignes'=>1);
       $lignes_nb++;
     }
     if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
     {
       $item_id = $DB_ROW['item_id'];
-      $item_ref = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
-      $tab_item[$theme_id][$item_id] = array(
-        'item_ref'   => $item_ref,
-        'item_nom'   => $DB_ROW['item_nom'],
-        'item_coef'  => $DB_ROW['item_coef'],
-        'item_cart'  => $DB_ROW['item_cart'],
-        'item_socle' => $DB_ROW['entree_id'],
-        'item_lien'  => $DB_ROW['item_lien'],
-      );
-      $tab_item_synthese[$item_id] = array(
-        'item_ref'  => $DB_ROW['matiere_ref'].'.'.$item_ref,
-        'item_nom'  => $DB_ROW['item_nom'],
-        'item_coef' => $DB_ROW['item_coef']
-      );
+      $item_ref = $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'];
+      $tab_item[$theme_id][$item_id] = array('item_ref'=>$item_ref,'item_nom'=>$DB_ROW['item_nom'],'item_coef'=>$DB_ROW['item_coef'],'item_cart'=>$DB_ROW['item_cart'],'item_socle'=>$DB_ROW['entree_id'],'item_lien'=>$DB_ROW['item_lien']);
+      $tab_item_synthese[$item_id] = array('item_ref'=>$DB_ROW['matiere_ref'].'.'.$item_ref,'item_nom'=>$DB_ROW['item_nom'],'item_coef'=>$DB_ROW['item_coef']);
       $tab_theme[$domaine_id][$theme_id]['theme_nb_lignes']++;
       if($first_theme_of_domaine)
       {
         $tab_domaine[$domaine_id]['domaine_nb_lignes']++;
       }
       $tab_liste_item[] = $item_id;
-      $longueur_ref_max = max( $longueur_ref_max , strlen($item_ref) );
       $lignes_nb++;
     }
   }
@@ -523,10 +499,8 @@ if( $type_generique || $type_individuel )
   $texte_lien_avant = '';
   $texte_lien_apres = '';
   // Les variables $releve_HTML_individuel et $releve_PDF vont contenir les sorties
-  $longueur_ref_max = $aff_reference ? $longueur_ref_max : 0 ;
-  $colspan_th_avant = ($longueur_ref_max) ? ' colspan="2"' : '' ;
-  $colspan_nb_apres = ($colonne_bilan=='non') ? $cases_nb : $cases_nb+1 ;
-  $colspan_th_apres = ($colspan_nb_apres) ? '<th colspan="'.$colspan_nb_apres.'" class="nu"></th>' : '' ;
+  $colspan_nb = ($colonne_bilan=='non') ? $cases_nb : $cases_nb+1 ;
+  $colspan_th = ($colspan_nb) ? '<th colspan="'.$colspan_nb.'" class="nu"></th>' : '' ;
   $msg_socle = ($only_socle) ? ' - Socle uniquement' : '' ;
   $msg_periode = ($besoin_notes) ? ' - '.$texte_periode : '' ;
   $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
@@ -534,7 +508,7 @@ if( $type_generique || $type_individuel )
   $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode).'</h2>'.NL;
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $releve_PDF = new PDF_grille_referentiel( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $fond , $legende );
-  $releve_PDF->initialiser( $cases_nb , $cases_largeur , $lignes_nb , $longueur_ref_max , $colonne_bilan , $colonne_vide , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ , $pages_nb );
+  $releve_PDF->initialiser( $cases_nb , $cases_largeur , $lignes_nb , $colonne_bilan , $colonne_vide , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ , $pages_nb );
   $separation = (count($tab_eleve_infos)>1) ? '<hr />'.NL : '' ;
 
   // Pour chaque élève...
@@ -551,7 +525,7 @@ if( $type_generique || $type_individuel )
       foreach($tab_domaine as $domaine_id => $tab)
       {
         extract($tab);  // $domaine_ref $domaine_nom $domaine_nb_lignes
-        $releve_HTML_individuel .= '<tr><th'.$colspan_th_avant.' class="domaine">'.html($domaine_nom).'</th>'.$colspan_th_apres.'</tr>'.NL;
+        $releve_HTML_individuel .= '<tr><th colspan="2" class="domaine">'.html($domaine_nom).'</th>'.$colspan_th.'</tr>'.NL;
         $releve_PDF->domaine( $domaine_nom , $domaine_nb_lignes );
         // Pour chaque thème...
         if(isset($tab_theme[$domaine_id]))
@@ -559,8 +533,7 @@ if( $type_generique || $type_individuel )
           foreach($tab_theme[$domaine_id] as $theme_id => $tab)
           {
             extract($tab);  // $theme_ref $theme_nom $theme_nb_lignes
-            $th_ref = ($longueur_ref_max) ? '<th>'.$theme_ref.'</th>' : '' ;
-            $releve_HTML_individuel .= '<tr>'.$th_ref.'<th>'.html($theme_nom).'</th>'.$colspan_th_apres.'</tr>'.NL;
+            $releve_HTML_individuel .= '<tr><th>'.$theme_ref.'</th><th>'.html($theme_nom).'</th>'.$colspan_th.'</tr>'.NL;
             $releve_PDF->theme( $theme_ref , $theme_nom , $theme_nb_lignes );
             // Pour chaque item...
             if(isset($tab_item[$theme_id]))
@@ -586,11 +559,10 @@ if( $type_generique || $type_individuel )
                 elseif(!$nb_demandes_autorisees)           { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
                 elseif(!$item_cart)                        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
                 else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
-                $td_ref = ($longueur_ref_max) ? '<td>'.$item_ref.'</td>' : '' ;
-                $releve_HTML_individuel .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
-                $releve_PDF->item( $item_ref , $texte_coef.$texte_socle.$item_nom , $colspan_nb_apres );
+                $releve_HTML_individuel .= '<tr><td>'.$item_ref.'</td><td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
+                $releve_PDF->item( $item_ref , $texte_coef.$texte_socle.$item_nom , $colspan_nb );
                 // Pour chaque case...
-                if($colspan_nb_apres)
+                if($colspan_nb)
                 {
                   for($i=0;$i<$cases_nb;$i++)
                   {
@@ -616,12 +588,12 @@ if( $type_generique || $type_individuel )
                         $td_class = (!$_SESSION['USER_DALTONISME']) ? ' class="prev_date"' : '' ;
                       }
                       $releve_HTML_individuel .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,FALSE).'</td>';
-                      $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , floor(($i+1)/$colspan_nb_apres) /*br*/ , $pdf_bg );
+                      $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , floor(($i+1)/$colspan_nb) /*br*/ , $pdf_bg );
                     }
                     else
                     {
                       $releve_HTML_individuel .= '<td>&nbsp;</td>';
-                      $releve_PDF->Cell( $cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$colspan_nb_apres) , 'C' , TRUE , '' );
+                      $releve_PDF->Cell( $cases_largeur , $releve_PDF->cases_hauteur , '' , 1 , floor(($i+1)/$colspan_nb) , 'C' , TRUE , '' );
                     }
                   }
                   // Case bilan

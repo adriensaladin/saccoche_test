@@ -49,9 +49,8 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id && ($prof_i
   // Récupérer la référence et le nom de l'item
   $DB_ROW = DB_STRUCTURE_DEMANDE::DB_recuperer_item_infos($item_id);
   // Ajout aux flux RSS des profs concernés
-  $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
   $titre = 'Demande retirée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
-  $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' retire sa demande '.$DB_ROW['matiere_ref'].'.'.$item_ref.' "'.$DB_ROW['item_nom'].'".'."\r\n";
+  $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' retire sa demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'".'."\r\n";
   $guid  = 'demande_'.$demande_id.'_del';
   if($prof_id)
   {

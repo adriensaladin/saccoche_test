@@ -37,7 +37,7 @@ class HtmlArborescence
    * 
    * @param tab         $DB_TAB
    * @param bool        $dynamique   arborescence cliquable ou pas (plier/replier)
-   * @param bool        $aff_ref     afficher ou pas les références
+   * @param bool        $reference   afficher ou pas les références
    * @param bool        $aff_coef    affichage des coefficients des items (sous forme d'image)
    * @param bool        $aff_cart    affichage des possibilités de demandes d'évaluation des items (sous forme d'image)
    * @param bool|string $aff_socle   FALSE | 'texte' | 'image' : affichage de la liaison au socle
@@ -46,7 +46,7 @@ class HtmlArborescence
    * @param string      $aff_id_li   vide par défaut, "n3" pour ajouter des id aux li_n3
    * @return string
    */
-  public static function afficher_matiere_from_SQL( $DB_TAB , $dynamique , $aff_ref , $aff_coef , $aff_cart , $aff_socle , $aff_lien , $aff_input , $aff_id_li='' )
+  public static function afficher_matiere_from_SQL($DB_TAB,$dynamique,$reference,$aff_coef,$aff_cart,$aff_socle,$aff_lien,$aff_input,$aff_id_li='')
   {
     $input_all = ($aff_input) ? '<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q>' : '' ;
     $input_texte = '';
@@ -70,7 +70,7 @@ class HtmlArborescence
       if($DB_ROW['matiere_id']!=$matiere_id)
       {
         $matiere_id = $DB_ROW['matiere_id'];
-        $tab_matiere[$matiere_id] = ($aff_ref) ? $DB_ROW['matiere_ref'].' - '.$DB_ROW['matiere_nom'] : $DB_ROW['matiere_nom'] ;
+        $tab_matiere[$matiere_id] = ($reference) ? $DB_ROW['matiere_ref'].' - '.$DB_ROW['matiere_nom'] : $DB_ROW['matiere_nom'] ;
         $niveau_id  = 0;
         $domaine_id = 0;
         $theme_id   = 0;
@@ -79,21 +79,19 @@ class HtmlArborescence
       if( (!is_null($DB_ROW['niveau_id'])) && ($DB_ROW['niveau_id']!=$niveau_id) )
       {
         $niveau_id = $DB_ROW['niveau_id'];
-        $prefixe   = ($aff_ref) ? $DB_ROW['niveau_ref'].' - ' : '' ;
+        $prefixe   = ($reference) ? $DB_ROW['niveau_ref'].' - ' : '' ;
         $tab_niveau[$matiere_id][$niveau_id] = $prefixe.$DB_ROW['niveau_nom'];
       }
       if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
       {
         $domaine_id = $DB_ROW['domaine_id'];
-        $reference  = ($DB_ROW['domaine_ref']) ? $DB_ROW['domaine_ref'] : $DB_ROW['domaine_code'] ;
-        $prefixe    = ($aff_ref) ? $reference.' - ' : '' ;
+        $prefixe   = ($reference) ? $DB_ROW['domaine_ref'].' - ' : '' ;
         $tab_domaine[$matiere_id][$niveau_id][$domaine_id] = $prefixe.$DB_ROW['domaine_nom'];
       }
       if( (!is_null($DB_ROW['theme_id'])) && ($DB_ROW['theme_id']!=$theme_id) )
       {
-        $theme_id  = $DB_ROW['theme_id'];
-        $reference = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'] : $DB_ROW['domaine_code'].$DB_ROW['theme_ordre'] ;
-        $prefixe   = ($aff_ref) ? $reference.' - ' : '' ;
+        $theme_id = $DB_ROW['theme_id'];
+        $prefixe   = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].' - ' : '' ;
         $tab_theme[$matiere_id][$niveau_id][$domaine_id][$theme_id] = $prefixe.$DB_ROW['theme_nom'];
       }
       if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
@@ -135,9 +133,8 @@ class HtmlArborescence
           $label_texte_avant = '<label for="item_'.$item_id.'">';
           $label_texte_apres = '</label>';
         }
-        $reference = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
-        $prefixe   = ($aff_ref) ? $reference.' - ' : '' ;
-        $tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $label_texte_avant.$input_texte.$coef_texte.$cart_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($prefixe.$DB_ROW['item_nom']).$lien_texte_apres.$label_texte_apres;
+        $item_texte = ($reference) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'].' - '.$DB_ROW['item_nom'] : $DB_ROW['item_nom'] ;
+        $tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $label_texte_avant.$input_texte.$coef_texte.$cart_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($item_texte).$lien_texte_apres.$label_texte_apres;
       }
     }
     // Affichage de l'arborescence
@@ -206,7 +203,7 @@ class HtmlArborescence
    * @param bool        $ids         indiquer ou pas les identifiants des éléments (Pxxx / Sxxx / Exxx)
    * @return string
    */
-  public static function afficher_socle_from_SQL( $DB_TAB , $dynamique , $reference , $aff_input , $ids )
+  public static function afficher_socle_from_SQL($DB_TAB,$dynamique,$reference,$aff_input,$ids)
   {
     $input_texte = '';
     $label_texte_avant = '';

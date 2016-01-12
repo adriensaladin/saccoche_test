@@ -179,7 +179,6 @@ if($BILAN_TYPE=='releve')
   $retroactif               = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
   $only_etat                = $_SESSION['OFFICIEL']['RELEVE_ONLY_ETAT'];
   $only_socle               = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
-  $aff_reference            = 0;
   $aff_domaine              = 0;
   $aff_theme                = 0;
   $legende                  = 0;

@@ -277,15 +277,8 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id &
     $test_comptabilise = ($mode=='auto') ? ( !$test_pilier_langue || in_array($DB_ROW['matiere_id'],$tab_langues[$langue]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere) ;
     if($test_comptabilise)
     {
-      $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
       $tab_eval[$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
-      $tab_item[$DB_ROW['item_id']] = array(
-        'item_ref'       => $DB_ROW['matiere_ref'].'.'.$item_ref,
-        'item_nom'       => $DB_ROW['item_nom'],
-        'matiere_id'     => $DB_ROW['matiere_id'],
-        'calcul_methode' => $DB_ROW['calcul_methode'],
-        'calcul_limite'  => $DB_ROW['calcul_limite'],
-      );
+      $tab_item[$DB_ROW['item_id']] = array('item_ref'=>$DB_ROW['item_ref'],'item_nom'=>$DB_ROW['item_nom'],'matiere_id'=>$DB_ROW['matiere_id'],'calcul_methode'=>$DB_ROW['calcul_methode'],'calcul_limite'=>$DB_ROW['calcul_limite']);
     }
   }
   // Elaboration du bilan relatif au socle : tableaux et variables pour mémoriser les infos

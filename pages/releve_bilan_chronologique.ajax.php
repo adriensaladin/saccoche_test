@@ -215,8 +215,8 @@ foreach($DB_TAB as $DB_ROW)
     }
     elseif($objet=='selection')
     {
-      $rubrique_ref = $tab_item[$DB_ROW['item_id']][0]['matiere_ref'].$tab_item[$DB_ROW['item_id']][0]['ref_auto'];
-      $tab_rubrique[ $rubrique_ref ] = $tab_item[$DB_ROW['item_id']][0]['item_nom'];
+      $rubrique_ref = $tab_item[$DB_ROW['item_id']][0]['item_ref'];
+      $tab_rubrique[ $tab_item[$DB_ROW['item_id']][0]['item_ref'] ] = $tab_item[$DB_ROW['item_id']][0]['item_nom'];
     }
     else
     {

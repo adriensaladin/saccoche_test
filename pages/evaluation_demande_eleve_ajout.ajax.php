@@ -135,9 +135,8 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   $demande_id = DB_STRUCTURE_DEMANDE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , $prof_id , $score , 'eleve' /*statut*/ , $message , $demande_doc );
 
   // Ajout aux flux RSS des profs concernés
-  $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
   $titre = 'Demande ajoutée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE);
-  $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' ajoute la demande '.$DB_ROW['matiere_ref'].'.'.$item_ref.' "'.$DB_ROW['item_nom'].'".'."\r\n";
+  $texte = $_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' ajoute la demande '.$DB_ROW['item_ref'].' "'.$DB_ROW['item_nom'].'".'."\r\n";
   $texte.= ($demande_doc) ? 'Document joint : '.$demande_doc."\r\n" : 'Pas de document joint.'."\r\n" ;
   $texte.= ($message)     ? 'Commentaire :'."\r\n".$message."\r\n" : 'Pas de commentaire saisi.'."\r\n" ;
   $guid  = 'demande_'.$demande_id.'_add';

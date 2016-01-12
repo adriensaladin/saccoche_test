@@ -47,7 +47,7 @@ class PDF_grille_referentiel extends PDF
     $this->AddPage($this->orientation , 'A4');
   }
 
-  public function initialiser( $cases_nb , $cases_largeur , $lignes_nb , $longueur_ref_max , $colonne_bilan , $colonne_vide , $aff_anciennete_notation , $aff_etat_acquisition , $pages_nb_methode )
+  public function initialiser( $cases_nb , $cases_largeur , $lignes_nb , $colonne_bilan , $colonne_vide , $aff_anciennete_notation , $aff_etat_acquisition , $pages_nb_methode )
   {
     // On calcule la hauteur de la ligne et la taille de la police pour tout faire rentrer sur une page si possible, un minimum de pages sinon
     $hauteur_dispo_par_page  = $this->page_hauteur_moins_marges ;
@@ -77,7 +77,7 @@ class PDF_grille_referentiel extends PDF
     $this->cases_hauteur     = $this->lignes_hauteur;
     $this->colonne_bilan_largeur = ($colonne_bilan=='non') ? 0 : $cases_largeur ;
     $this->colonne_vide_largeur  = $colonne_vide;
-    $this->reference_largeur = ($longueur_ref_max) ? ceil($longueur_ref_max*1.7) : 0 ;
+    $this->reference_largeur = 10; // valeur fixe
     $this->intitule_largeur  = $this->page_largeur_moins_marges - $this->reference_largeur - ($this->cases_nb * $this->cases_largeur) - $this->colonne_bilan_largeur - $this->colonne_vide_largeur ;
     $this->legende_deja_affichee = FALSE; // On n'est pas certain qu'il y ait la place pour la légende en dernière page, alors on la met dès que possible
     $this->aff_codes_notation      = TRUE;
@@ -92,7 +92,7 @@ class PDF_grille_referentiel extends PDF
   {
     // On prend une nouvelle page PDF pour chaque élève
     $this->AddPage($this->orientation , 'A4');
-    $this->SetXY( $this->marge_gauche , $this->marge_haut );
+    $this->SetXY($this->marge_gauche,$this->marge_haut);
     $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
     // intitulé-structure
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.4);
@@ -111,7 +111,7 @@ class PDF_grille_referentiel extends PDF
       $this->Line($this->page_largeur-$this->marge_droite-75 , $this->marge_haut+2*$this->lignes_hauteur , $this->page_largeur-$this->marge_droite , $this->marge_haut+2*$this->lignes_hauteur);
       $this->choisir_couleur_trait('noir');
     }
-    $this->SetXY( $this->marge_gauche , $this->marge_haut + 2.5*$this->lignes_hauteur );
+    $this->SetXY($this->marge_gauche,$this->marge_haut+2.5*$this->lignes_hauteur);
   }
 
   public function domaine( $domaine_nom , $domaine_nb_lignes )
@@ -124,7 +124,7 @@ class PDF_grille_referentiel extends PDF
       $this->new_page( $hauteur_restante );
     }
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
-    $this->SetXY( $this->reference_largeur + $this->marge_gauche , $this->GetY()+1 );
+    $this->SetXY(15 , $this->GetY()+1);
     $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($domaine_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
   }
 
@@ -139,11 +139,8 @@ class PDF_grille_referentiel extends PDF
     }
     $this->SetFont('Arial' , 'B' , $this->taille_police);
     $this->choisir_couleur_fond('gris_moyen');
-    if($this->reference_largeur)
-    {
-      $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($theme_ref) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , $this->fond );
-    }
-    $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($theme_nom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , $this->fond );
+    $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($theme_ref) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , $this->fond );
+    $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($theme_nom)  , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , $this->fond );
     if($this->colonne_vide_largeur)
     {
       // Ajouter une case vide sur la hauteur du nombre d'items du thème
@@ -160,11 +157,8 @@ class PDF_grille_referentiel extends PDF
   {
     $br = ($colspan_nb) ? 0 : 1 ;
     $this->choisir_couleur_fond('gris_clair');
-    if($this->reference_largeur)
-    {
-      $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($item_ref) , 1 /*bordure*/ ,   0 /*br*/ , 'C' /*alignement*/ , $this->fond );
-    }
-    $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($item_texte) , 1 /*bordure*/ , $br /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($item_ref)   , 1 /*bordure*/ ,   0 /*br*/ , 'C' /*alignement*/ , $this->fond    );
+    $this->CellFit( $this->intitule_largeur  , $this->cases_hauteur , To::pdf($item_texte) , 1 /*bordure*/ , $br /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     $this->choisir_couleur_fond('blanc');
   }
 
@@ -175,7 +169,7 @@ class PDF_grille_referentiel extends PDF
       $ordonnee = $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*$this->legende_nb_lignes*0.9 ;
       if($this->aff_codes_notation)      { $this->afficher_legende( 'codes_notation'      /*type_legende*/ , $ordonnee     /*ordonnée*/ ); }
       if($this->aff_anciennete_notation) { $this->afficher_legende( 'anciennete_notation' /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
-      if($this->aff_etat_acquisition)    { $this->afficher_legende( 'score_bilan'         /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
+      if($this->aff_etat_acquisition)         { $this->afficher_legende( 'score_bilan'         /*type_legende*/ , $this->GetY() /*ordonnée*/ ); }
     }
   }
 

@@ -551,20 +551,14 @@ public static function DB_lister_devoirs_prof_groupe_sans_infos_last($prof_id,$g
  * @param int   $devoir_id
  * @param bool  $with_lien
  * @param bool  $with_coef
- * @param bool  $with_socle
- * @param bool  $with_ref
  * @return array
  */
-public static function DB_lister_devoir_items( $devoir_id , $with_socle , $with_coef , $with_ref , $with_lien )
+public static function DB_lister_devoir_items($devoir_id,$with_lien,$with_coef)
 {
-  $DB_SQL = 'SELECT item_id, ';
-  $DB_SQL.= ($with_socle) ? 'entree_id, '   : '' ;
-  $DB_SQL.= ($with_coef)  ? 'item_coef, '   : '' ;
-  $DB_SQL.= ($with_lien)  ? 'item_lien, '   : '' ;
-  $DB_SQL.= ($with_ref)   ? 'matiere_ref, ' : '' ;
-  $DB_SQL.= ($with_ref)   ? 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto, ' : '' ;
-  $DB_SQL.= ($with_ref)   ? 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso, ' : '' ;
-  $DB_SQL.= 'item_nom ';
+  $DB_SQL = 'SELECT item_id, item_nom, entree_id, ';
+  $DB_SQL.= ($with_lien) ? 'item_lien, ' : '' ;
+  $DB_SQL.= ($with_coef) ? 'item_coef, ' : '' ;
+  $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
   $DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';

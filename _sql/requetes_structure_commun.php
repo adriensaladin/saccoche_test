@@ -193,9 +193,9 @@ public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id
   $DB_SQL = 'SELECT ';
   $DB_SQL.= 'matiere_id, matiere_ref, matiere_nom, ';
   $DB_SQL.= 'niveau_id, niveau_ref, niveau_nom, ';
-  $DB_SQL.= 'domaine_id, domaine_ordre, domaine_code, domaine_ref, domaine_nom, ';
-  $DB_SQL.= 'theme_id, theme_ordre, theme_ref, theme_nom, ';
-  $DB_SQL.= 'item_id, item_ordre, item_ref, item_nom, item_abbr, item_coef, item_cart, item_lien, ';
+  $DB_SQL.= 'domaine_id, domaine_ordre, domaine_ref, domaine_nom, ';
+  $DB_SQL.= 'theme_id, theme_ordre, theme_nom, ';
+  $DB_SQL.= 'item_id, item_ordre, item_nom, item_coef, item_cart, item_lien, ';
   $DB_SQL.= $select_socle_nom;
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= $join_user_matiere;
@@ -225,7 +225,7 @@ public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id
 public static function DB_OPT_arborescence($matiere_id,$niveau_id)
 {
   $longueur_max = 125;
-  $DB_SQL = 'SELECT item_id AS valeur, item_nom AS texte, CONCAT(domaine_id,"_",theme_id) AS optgroup, CONCAT(domaine_nom," || ",theme_nom) AS optgroup_info ';
+  $DB_SQL = 'SELECT item_id AS valeur, CONCAT(domaine_ref,theme_ordre,item_ordre," ",item_nom) AS texte, CONCAT(domaine_id,"_",theme_id) AS optgroup, CONCAT(domaine_nom," || ",theme_nom) AS optgroup_info ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';

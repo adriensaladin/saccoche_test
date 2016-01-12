@@ -147,7 +147,6 @@ if($action=='proposer')
   $retroactif               = 'non';
   $only_etat                = 'tous';
   $only_socle               = 0;
-  $aff_reference            = 0;
   $aff_domaine              = 0;
   $aff_theme                = 0;
   $legende                  = 'non';

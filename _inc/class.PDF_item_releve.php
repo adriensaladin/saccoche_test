@@ -56,7 +56,7 @@ class PDF_item_releve extends PDF
     $this->choisir_couleur_texte('noir');
   }
 
-  public function initialiser( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $longueur_ref_max , $cases_nb , $cases_largeur , $lignes_nb , $eleves_ou_items_nb , $pages_nb_methode )
+  public function initialiser( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $cases_nb , $cases_largeur , $lignes_nb , $eleves_ou_items_nb , $pages_nb_methode )
   {
     $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
     $this->SetAutoPageBreak(FALSE);
@@ -65,7 +65,7 @@ class PDF_item_releve extends PDF
     $this->cases_nb                = $cases_nb;
     $this->cases_largeur           = $cases_largeur;
     $this->colonne_bilan_largeur   = ($aff_etat_acquisition) ? $this->cases_largeur : 0 ;
-    $this->reference_largeur       = ($releve_individuel_format=='eleve') ? ( ($longueur_ref_max) ? ceil($longueur_ref_max*1.7) : 0 ) : 0 ;
+    $this->reference_largeur       = ($releve_individuel_format=='eleve') ? 10 : 0 ; // valeur fixe
     $this->synthese_largeur        = $this->page_largeur_moins_marges - $this->reference_largeur;
     $this->intitule_largeur        = $this->synthese_largeur - ( $this->cases_nb * $this->cases_largeur ) - $this->colonne_bilan_largeur;
     $this->legende_deja_affichee   = FALSE; // Si multimatières, on n'est pas certain qu'il y ait la place pour la légende en dernière page, alors on la met dès que possible
@@ -385,13 +385,10 @@ class PDF_item_releve extends PDF
       $this->rappel_eleve_page();
       $this->SetXY( $this->marge_gauche , $this->GetY() + 2 );
     }
-    if($this->reference_largeur)
-    {
-      list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
-      $this->choisir_couleur_fond('gris_clair');
-      $this->SetFont('Arial' , '' , $this->taille_police*0.8);
-      $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($ref_suite) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , $this->fond );
-    }
+    list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
+    $this->choisir_couleur_fond('gris_clair');
+    $this->SetFont('Arial' , '' , $this->taille_police*0.8);
+    $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($ref_suite) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , $this->fond );
     $this->SetFont('Arial' , '' , $this->taille_police);
     $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($item_texte) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
   }
@@ -415,7 +412,7 @@ class PDF_item_releve extends PDF
   {
     $this->SetFont('Arial' , '' , $this->taille_police);
     $this->choisir_couleur_fond('gris_moyen');
-    if($this->reference_largeur) // Parce que sinon ça ne plait pas à Cell().
+    if($this->releve_format=='eleve') // Parce que sinon $this->reference_largeur = 0 et ça ne plait pas.à Cell().
     {
       $this->Cell( $this->reference_largeur , $this->cases_hauteur , ''                    , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
     }

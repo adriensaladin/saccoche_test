@@ -42,8 +42,7 @@ class DB_STRUCTURE_DEMANDE extends DB
 public static function DB_lister_demandes_eleve($eleve_id)
 {
   $DB_SQL = 'SELECT sacoche_demande.*, ';
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
+  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
   $DB_SQL.= 'item_id , item_nom , item_lien , sacoche_matiere.matiere_id AS matiere_id  , matiere_nom , ';
   $DB_SQL.= 'prof_id , user_genre , user_nom , user_prenom ';
   $DB_SQL.= 'FROM sacoche_demande ';
@@ -54,7 +53,7 @@ public static function DB_lister_demandes_eleve($eleve_id)
   $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_referentiel_domaine.matiere_id=sacoche_matiere.matiere_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_demande.prof_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE eleve_id=:eleve_id ';
-  $DB_SQL.= 'ORDER BY sacoche_demande.matiere_id ASC, niveau_ref ASC, domaine_code ASC, theme_ordre ASC, item_ordre ASC';
+  $DB_SQL.= 'ORDER BY sacoche_demande.matiere_id ASC, niveau_ref ASC, domaine_ref ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array(':eleve_id'=>$eleve_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -73,8 +72,7 @@ public static function DB_lister_demandes_prof( $prof_id , $matiere_id , $listin
   $order_matiere  = ($matiere_id) ? '' : 'matiere_nom ASC, ';
 
   $DB_SQL = 'SELECT sacoche_demande.*, '.$select_matiere;
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
+  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref , ';
   $DB_SQL.= 'item_nom, user_nom, user_prenom, prof_id ';
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -92,7 +90,7 @@ public static function DB_lister_demandes_prof( $prof_id , $matiere_id , $listin
     $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_jointure_user_matiere.matiere_id=sacoche_matiere.matiere_id ';
     $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') AND prof_id IN(0,'.$prof_id.') AND sacoche_jointure_user_matiere.user_id=:prof_id ';
   }
-  $DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ref ASC, domaine_code ASC, theme_ordre ASC, item_ordre ASC';
+  $DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ref ASC, domaine_ref ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array(
     ':matiere_id' => $matiere_id,
     ':prof_id'    => $prof_id,
@@ -217,9 +215,7 @@ public static function DB_recuperer_demandes_autorisees_matiere($matiere_id)
 public static function DB_recuperer_item_infos($item_id)
 {
   $DB_SQL = 'SELECT item_nom, item_cart, ';
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
-  $DB_SQL.= 'matiere_ref ';
+  $DB_SQL.= 'CONCAT(matiere_ref,".",niveau_ref,".",domaine_ref,theme_ordre,item_ordre) AS item_ref ';
   $DB_SQL.= 'FROM sacoche_referentiel_item ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';

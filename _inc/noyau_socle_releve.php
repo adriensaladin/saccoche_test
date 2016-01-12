@@ -165,8 +165,9 @@ if($groupe_id && count($tab_eleve_id))
     $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $listing_item_id , TRUE /*detail*/ );
     foreach($DB_TAB as $DB_ROW)
     {
+      $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
       $tab_item[$DB_ROW['item_id']] = array(
-        'item_ref'            => $DB_ROW['item_ref'],
+        'item_ref'            => $DB_ROW['matiere_ref'].'.'.$item_ref,
         'item_nom'            => $DB_ROW['item_nom'],
         'item_coef'           => $DB_ROW['item_coef'],
         'item_cart'           => $DB_ROW['item_cart'],

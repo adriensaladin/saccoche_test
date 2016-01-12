@@ -39,7 +39,8 @@ if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NU
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_modifier_contenu">DOC : Modifier le contenu des référentiels.</a></span></li>
-  <li><span class="astuce">Pour mettre à jour sur le serveur communautaire un référentiel modifié, utiliser la page [<a href="./index.php?page=professeur_referentiel&amp;section=gestion">créer / paramétrer les référentiels</a>].</span></li>
+  <li><span class="astuce">Pour mettre à jour sur le serveur communautaire un référentiel modifié, utiliser la page [<a href="./index.php?page=professeur_referentiel&amp;section=gestion">Créer / paramétrer les référentiels</a>].</span></li>
+  <li><span class="astuce">Utiliser la page [<a href="./index.php?page=professeur_referentiel&amp;section=ressources">Associer des ressources aux items</a>] pour affecter à l'item un lien vers des ressources (entraînement, remédiation&hellip;).</span></li>
   <li><span class="danger">Retirer des items supprime les résultats associés de tous les élèves !</span></li>
 </ul>
 

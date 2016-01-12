@@ -111,7 +111,7 @@ public static function DB_lister_messages_for_user_destinataire( $user_id , $use
   $DB_SQL.= 'FROM sacoche_message ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_message_destinataire USING (message_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-  $DB_SQL.= 'WHERE user_profil_type=:user_profil_type AND message_debut_date<NOW() AND DATE_ADD(message_fin_date,INTERVAL 1 DAY)>NOW() '; // NOW() renvoie un datetime
+  $DB_SQL.= 'WHERE user_profil_type=:user_profil_type AND message_debut_date<NOW() AND message_fin_date > DATE_SUB( NOW() , INTERVAL 1 DAY ) '; // NOW() renvoie un datetime
   $DB_SQL.= 'AND ( ( destinataire_type="all" ) OR ( destinataire_type="user" AND destinataire_id=:destinataire_id ) '.$WHERE.' ) ';
   $DB_SQL.= 'ORDER BY message_debut_date DESC, message_fin_date ASC';
   $DB_VAR = array(

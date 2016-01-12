@@ -52,7 +52,15 @@ $tab_base_adresse = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_adresses_parents();
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_base_adresse[$DB_ROW['parent_id']] = array( $DB_ROW['adresse_ligne1'] , $DB_ROW['adresse_ligne2'] , $DB_ROW['adresse_ligne3'] , $DB_ROW['adresse_ligne4'] , (int)$DB_ROW['adresse_postal_code'] , $DB_ROW['adresse_postal_libelle'] , $DB_ROW['adresse_pays_nom'] );
+  $tab_base_adresse[$DB_ROW['parent_id']] = array(
+    $DB_ROW['adresse_ligne1'] ,
+    $DB_ROW['adresse_ligne2'] ,
+    $DB_ROW['adresse_ligne3'] ,
+    $DB_ROW['adresse_ligne4'] ,
+    $DB_ROW['adresse_postal_code'] ,
+    $DB_ROW['adresse_postal_libelle'] ,
+    $DB_ROW['adresse_pays_nom'] ,
+  );
 }
 // Pour préparer l'affichage
 $lignes_ajouter   = '';
@@ -79,7 +87,8 @@ foreach($tab_i_fichier_TO_id_base as $i_fichier => $id_base)
     $td_contenu = array();
     for($indice=0 ; $indice<7 ; $indice++)
     {
-      if($tab_users_fichier['adresse'][$i_fichier][$indice]==$tab_base_adresse[$id_base][$indice])
+      // Test === en particulier pour les codes postaux : 7270 != 07270
+      if($tab_users_fichier['adresse'][$i_fichier][$indice] === $tab_base_adresse[$id_base][$indice])
       {
         $td_contenu[] = html($tab_base_adresse[$id_base][$indice]);
       }

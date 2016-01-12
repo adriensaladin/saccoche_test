@@ -60,6 +60,9 @@ $orientation      = (isset($_POST['f_orientation']))      ? Clean::texte($_POST[
 $marge_min        = (isset($_POST['f_marge_min']))        ? Clean::texte($_POST['f_marge_min'])             : '';
 $couleur          = (isset($_POST['f_couleur']))          ? Clean::texte($_POST['f_couleur'])               : '';
 $fond             = (isset($_POST['f_fond']))             ? Clean::texte($_POST['f_fond'])                  : '';
+$aff_reference    = (isset($_POST['f_reference']))        ? 1                                               : 0;
+$aff_coef         = (isset($_POST['f_coef']))             ? 1                                               : 0;
+$aff_socle        = (isset($_POST['f_socle']))            ? 1                                               : 0;
 $cart_restriction = (isset($_POST['f_restriction_req']))  ? TRUE                                            : FALSE;
 $cart_hauteur     = (isset($_POST['f_hauteur']))          ? Clean::texte($_POST['f_hauteur'])               : '';
 $doc_objet        = (isset($_POST['f_doc_objet']))        ? Clean::texte($_POST['f_doc_objet'])             : '';
@@ -753,17 +756,17 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
 if( ($action=='ordonner') && $devoir_id )
 {
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , FALSE /*with_lien*/ );
   if(empty($DB_TAB_COMP))
   {
     Json::end( FALSE , 'Aucun item n\'est associé à cette évaluation !' );
   }
   foreach($DB_TAB_COMP as $DB_ROW)
   {
-    $item_ref = $DB_ROW['item_ref'];
+    $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-    Json::add_str('<li id="i'.$DB_ROW['item_id'].'"><b>'.html($item_ref.$texte_socle.$texte_coef).'</b> - '.html($DB_ROW['item_nom']).'</li>');
+    Json::add_str('<li id="i'.$DB_ROW['item_id'].'"><b>'.html($DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_coef).'</b> - '.html($DB_ROW['item_nom']).'</li>');
   }
    Json::end( TRUE );
 }
@@ -793,7 +796,7 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
 {
   $with_lien = ($action=='voir') ? TRUE : FALSE ;
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , $with_lien , TRUE /*with_coef*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , $with_lien );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // liste des commentaires audio ou texte
@@ -879,13 +882,13 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
   // première colonne (noms items)
   foreach($DB_TAB_COMP as $DB_ROW)
   {
-    $item_ref = $DB_ROW['item_ref'];
+    $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
     $texte_lien_avant = ( ($action=='voir') && ($DB_ROW['item_lien']) ) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ( ($action=='voir') && ($DB_ROW['item_lien']) ) ? '</a>' : '';
-    $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($item_ref.$texte_socle.$texte_coef).$texte_lien_apres.'</b> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-    $tab_comp_id[$DB_ROW['item_id']] = $item_ref;
+    $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_coef).$texte_lien_apres.'</b> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+    $tab_comp_id[$DB_ROW['item_id']] = $DB_ROW['matiere_ref'].'.'.$item_ref;
   }
   // cases centrales...
   $num_colonne = 0;
@@ -1134,7 +1137,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , FALSE /*with_lien*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // Let's go
@@ -1149,10 +1152,11 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
     Json::end( FALSE , 'Aucun élève n\'est associé à cette évaluation !' );
   }
   // liste items
-  foreach($DB_TAB_COMP as $DB_ROW)
+  foreach($DB_TAB_COMP as $key => $DB_ROW)
   {
-    $item_ref = $DB_ROW['item_ref'];
-    $tab_comp_id[$DB_ROW['item_id']] = $item_ref;
+    $DB_TAB_COMP[$key]['item_ref'] = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
+    $tab_comp_id[$DB_ROW['item_id']] = $DB_ROW['matiere_ref'].'.'.$DB_TAB_COMP[$key]['item_ref'];
+    unset( $DB_TAB_COMP[$key]['ref_perso'] , $DB_TAB_COMP[$key]['ref_auto'] );
   }
   // liste élèves
   foreach($DB_TAB_USER as $DB_ROW)
@@ -1223,7 +1227,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
     // première colonne (références items) pour le CSV + dernière colonne (noms items) pour le CSV
     foreach($DB_TAB_COMP as $DB_ROW)
     {
-      $item_ref    = $DB_ROW['item_ref'];
+      $item_ref    = $tab_comp_id[$DB_ROW['item_id']];
       $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
       $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
       $tab_scores[$DB_ROW['item_id']][0] = $DB_ROW['item_id'];
@@ -1278,7 +1282,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
 if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $groupe_id && $date_fr && $description ) // $groupe_nom est aussi transmis
 {
   // liste des items
-  $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , TRUE /*with_lien*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ );
   // Let's go
@@ -1304,9 +1308,10 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
   // noms des items
   foreach($DB_TAB_ITEM as $DB_ROW)
   {
+    $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-    $tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['item_ref'].$texte_socle.$texte_coef , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
+    $tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_coef , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
   }
   // tableaux utiles ou pour conserver les infos
   $tab_init_nominatif = array();
@@ -1532,10 +1537,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
 {
   Form::save_choix('evaluation_cartouche');
   $cart_cases_nb = ($cart_cases_nb==1) ? $cart_cases_nb : $_SESSION['NOMBRE_CODES_NOTATION']+1 ; // 1 ou 5 dans le formulaire initial, mais à adapter en fonction du nombre de codes utilisés
-  $with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE : FALSE ;
-  $with_result = (substr($cart_contenu,9)=='AVEC_result') ? TRUE : FALSE ;
+  $with_nom    = (substr($cart_contenu,0,8)=='AVEC_nom')  ? TRUE  : FALSE ;
+  $with_result = (substr($cart_contenu,9)=='AVEC_result') ? TRUE  : FALSE ;
+  $with_ref    = ($cart_detail=='minimal')                ? TRUE  : $aff_reference ;
+  $with_coef   = ($cart_detail=='minimal')                ? FALSE : $aff_coef ;
+  $with_socle  = ($cart_detail=='minimal')                ? FALSE : $aff_socle ;
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_lien*/ , TRUE /*with_coef*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , $with_socle , $with_coef , $with_ref , FALSE /*with_lien*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // Let's go
@@ -1562,12 +1570,27 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     $tab_user_commentaire[$DB_ROW['user_id']] = NULL;
   }
   // enregistrer refs noms items
+  $longueur_ref_max = 0;
+  $texte_ref   = '';
+  $texte_socle = '';
+  $texte_coef  = '';
   foreach($DB_TAB_COMP as $DB_ROW)
   {
-    $item_ref = $DB_ROW['item_ref'];
-    $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
-    $texte_coef  = '['.$DB_ROW['item_coef'].'] ';
-    $tab_comp_id[$DB_ROW['item_id']] = array($item_ref,$texte_socle.$texte_coef.$DB_ROW['item_nom']);
+    if($with_ref)
+    {
+      $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
+      $longueur_ref_max = max( $longueur_ref_max , strlen($item_ref) );
+      $texte_ref = $DB_ROW['matiere_ref'].'.'.$item_ref;
+    }
+    if($with_socle)
+    {
+      $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ' ;
+    }
+    if($with_coef)
+    {
+      $texte_coef = '['.$DB_ROW['item_coef'].'] ';
+    }
+    $tab_comp_id[$DB_ROW['item_id']] = array($texte_ref,$texte_socle.$texte_coef.$DB_ROW['item_nom']);
   }
   // résultats vierges
   foreach($tab_user_id as $user_id=>$val_user)
@@ -1639,7 +1662,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     $tab_user_nb_items = array_fill_keys( array_keys($tab_user_nb_items) , $item_nb );
   }
   $cartouche_PDF = new PDF_evaluation_cartouche( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $fond , 'oui' /*legende*/ );
-  $cartouche_PDF->initialiser($cart_detail,$item_nb,$cart_cases_nb);
+  $cartouche_PDF->initialiser( $cart_detail , $longueur_ref_max , $item_nb , $cart_cases_nb );
   if($cart_detail=='minimal')
   {
     // dans le cas d'un cartouche minimal...
@@ -1744,17 +1767,18 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     {
       if($tab_user_nb_items[$user_id])
       {
-        $colonnes_nb    = ($cart_cases_nb==1) ? 3 : 2 ;
+        $colonnes_nb    = ($cart_cases_nb==1) ? 2+$aff_reference : 1+$aff_reference ;
         $lignes_comm_nb = ($cart_hauteur=='variable') ? $tab_user_nb_ligne_comm[$user_id] : $lignes_comm_max ;
         $lignes_item_nb = ($cart_hauteur=='variable') ? $tab_user_nb_items[$user_id]      : $item_nb ;
         $lignes_nb      = 1 + 1 + $lignes_item_nb + $lignes_comm_nb ; // marge incluse
         $texte_entete   = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
+        $tex_col_ref    = ($aff_reference) ? 'c|' : '' ;
         if($cart_cases_nb==1)
         {
           // ... avec une case à remplir
           $cartouche_HTM .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
           $cartouche_CSV .= $texte_entete."\r\n";
-          $cartouche_TEX .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|p{2em}|}'."\r\n".'\hline'."\r\n";
+          $cartouche_TEX .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{'.$tex_col_ref.'|l|p{2em}|}'."\r\n".'\hline'."\r\n";
         }
         else
         {
@@ -1768,30 +1792,35 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             $cols_csv .= ($is_note) ? '"'.To::note_sigle($note_code).'"'.$separateur                               : '"autre"'.$separateur;
             $cols_tex .= ($is_note) ? '\begin{tabular}{c}'.To::note_sigle($note_code).'\end{tabular} & '           : '\begin{tabular}{c}autre\end{tabular} ';
           }
+          $csv_sep_ref    = ($aff_reference) ? $separateur : '' ;
+          $tex_sep_ref    = ($aff_reference) ? ' &'        : '' ;
           $cartouche_HTM .= '<table class="bilan"><thead><tr><th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th>'.$cols_htm.'</tr></thead><tbody>';
-          $cartouche_CSV .= $texte_entete.$separateur.$separateur.$cols_csv."\r\n";
-          $cartouche_TEX .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{|c|l|'.str_repeat('p{2em}|',$cart_cases_nb).'}'."\r\n".'\hline'."\r\n";
-          $cartouche_TEX .= ' & & '.$cols_tex.' \\\\'."\r\n".'\hline'."\r\n";
+          $cartouche_CSV .= $texte_entete.$csv_sep_ref.$separateur.$cols_csv."\r\n";
+          $cartouche_TEX .= To::latex($texte_entete)."\r\n".'\begin{center}'."\r\n".'\begin{tabular}{'.$tex_col_ref.'|l|'.str_repeat('p{2em}|',$cart_cases_nb).'}'."\r\n".'\hline'."\r\n";
+          $cartouche_TEX .= ' & '.$tex_sep_ref.$cols_tex.' \\\\'."\r\n".'\hline'."\r\n";
         }
         $cartouche_PDF->entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
         foreach($tab_comp_id as $comp_id=>$tab_val_comp)
         {
           if( ($cart_restriction==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
+            $ref_html  = ($aff_reference) ? '<td>'.html($tab_val_comp[0]).'</td>' : '' ;
+            $ref_csv   = ($aff_reference) ? '"'.$tab_val_comp[0].'"'.$separateur  : '' ;
+            $ref_latex = ($aff_reference) ? To::latex($tab_val_comp[0]).' & '     : '' ;
             $note = ($tab_result[$comp_id][$user_id]!='PA') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             if($cart_cases_nb==1)
             {
               // ... avec une case à remplir
-              $cartouche_HTM .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td><td>'.Html::note_image($note,$date_fr,$description,FALSE).'</td></tr>';
-              $cartouche_CSV .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur.'"'.To::note_sigle($note).'"'."\r\n";
-              $cartouche_TEX .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]).' & '.To::note_sigle($note).' \\\\'."\r\n".'\hline'."\r\n";
+              $cartouche_HTM .= '<tr>'.$ref_html.'<td>'.html($tab_val_comp[1]).'</td><td>'.Html::note_image($note,$date_fr,$description,FALSE).'</td></tr>';
+              $cartouche_CSV .= $ref_csv.'"'.$tab_val_comp[1].'"'.$separateur.'"'.To::note_sigle($note).'"'."\r\n";
+              $cartouche_TEX .= $ref_latex.To::latex($tab_val_comp[1]).' & '.To::note_sigle($note).' \\\\'."\r\n".'\hline'."\r\n";
             }
             else
             {
               // ... avec $cart_cases_nb dont une à cocher
-              $cartouche_HTM .= '<tr><td>'.html($tab_val_comp[0]).'</td><td>'.html($tab_val_comp[1]).'</td>';
-              $cartouche_CSV .= '"'.$tab_val_comp[0].'"'.$separateur.'"'.$tab_val_comp[1].'"'.$separateur;
-              $cartouche_TEX .= To::latex($tab_val_comp[0]).' & '.To::latex($tab_val_comp[1]);
+              $cartouche_HTM .= '<tr>'.$ref_html.'<td>'.html($tab_val_comp[1]).'</td>';
+              $cartouche_CSV .= $ref_csv.'"'.$tab_val_comp[1].'"'.$separateur;
+              $cartouche_TEX .= $ref_latex.To::latex($tab_val_comp[1]);
               foreach($tab_codes as $note_code => $is_note )
               {
                 $colonnes_nb++;

@@ -47,6 +47,7 @@ $releve_moyenne_scores                 = (isset($_POST['f_releve_moyenne_scores'
 $releve_pourcentage_acquis             = (isset($_POST['f_releve_pourcentage_acquis']))             ? 1                                                                : 0;
 $releve_conversion_sur_20              = (isset($_POST['f_releve_conversion_sur_20']))              ? 1                                                                : 0;
 $releve_cases_nb                       = (isset($_POST['f_releve_cases_nb']))                       ? Clean::entier($_POST['f_releve_cases_nb'])                       : 0;
+$releve_aff_reference                  = (isset($_POST['f_releve_aff_reference']))                  ? 1                                                                : 0;
 $releve_aff_coef                       = (isset($_POST['f_releve_aff_coef']))                       ? 1                                                                : 0;
 $releve_aff_socle                      = (isset($_POST['f_releve_aff_socle']))                      ? 1                                                                : 0;
 $releve_aff_domaine                    = (isset($_POST['f_releve_aff_domaine']))                    ? 1                                                                : 0;
@@ -124,6 +125,7 @@ $tab_variables = array(
     'pourcentage_acquis',
     'conversion_sur_20',
     'cases_nb',
+    'aff_reference',
     'aff_coef',
     'aff_socle',
     'aff_domaine',

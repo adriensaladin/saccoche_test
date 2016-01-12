@@ -32,13 +32,13 @@
 class PDF_evaluation_cartouche extends PDF
 {
 
-  public function initialiser( $detail , $item_nb , $cases_nb )
+  public function initialiser( $detail , $longueur_ref_max , $item_nb , $cases_nb )
   {
     $colonne_codes = ($cases_nb==1) ? 0 : 15 ;
     $this->cases_largeur     = ($detail=='minimal') ? ($this->page_largeur_moins_marges - $colonne_codes) / $item_nb : 10 ;
     $this->cases_hauteur     = 5 ;
     $this->cases_nb          = $cases_nb ;
-    $this->reference_largeur = 15 ;
+    $this->reference_largeur = ($longueur_ref_max) ? ceil($longueur_ref_max*1.7) : 0 ;
     $this->intitule_largeur  = ($detail=='minimal') ? 0 : $this->page_largeur_moins_marges - $this->reference_largeur - ($this->cases_largeur*$this->cases_nb) ;
     $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
     $this->AddPage($this->orientation , 'A4');
@@ -159,15 +159,18 @@ class PDF_evaluation_cartouche extends PDF
 
   public function complet_competence( $item_ref , $item_intitule , $note , $cases_nb )
   {
-    $memo_x = $this->GetX();
-    $memo_y = $this->GetY();
-    list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
-    $this->SetFont('Arial' , '' , 7);
-    $this->CellFit( $this->reference_largeur , $this->cases_hauteur/2 , To::pdf($ref_matiere) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
-    $this->CellFit( $this->reference_largeur , $this->cases_hauteur/2 , To::pdf($ref_suite)   , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
-    $this->SetFont('Arial' , '' , 8);
-    $this->SetXY($memo_x , $memo_y);
-    $this->Cell( $this->reference_largeur , $this->cases_hauteur , ''                         , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+    if($this->reference_largeur)
+    {
+      $memo_x = $this->GetX();
+      $memo_y = $this->GetY();
+      list($ref_matiere,$ref_suite) = explode('.',$item_ref,2);
+      $this->SetFont('Arial' , '' , 7);
+      $this->CellFit( $this->reference_largeur , $this->cases_hauteur/2 , To::pdf($ref_matiere) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->reference_largeur , $this->cases_hauteur/2 , To::pdf($ref_suite)   , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->SetFont('Arial' , '' , 8);
+      $this->SetXY($memo_x , $memo_y);
+      $this->Cell( $this->reference_largeur , $this->cases_hauteur , ''                         , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+    }
     $this->CellFit( $this->intitule_largeur  , $this->cases_hauteur , To::pdf($item_intitule) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     if($cases_nb==1)
     {

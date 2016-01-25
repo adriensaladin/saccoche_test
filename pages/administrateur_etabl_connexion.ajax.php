@@ -285,6 +285,8 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   $tab_etabl_coords[] = 'Mel : '.$DB_ROW2['structure_contact_courriel'];
   // référence du connecteur
   $connecteur_ref = $_SESSION['BASE'].' . '.$f_convention_id.' . '.$DB_ROW['connexion_nom'];
+  // Charge les tableaux   $tab_responsable_conventions & $tab_tresorier
+  require(CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions_sacoche_etablissement_coordonnees.php');
   //
   // Imprimer le contrat.
   //
@@ -321,9 +323,10 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
       $contrat_PDF->CellFit( 70 , $hauteur_ligne , To::pdf('Exemplaire à retourner à :') , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*remplissage*/ );
       $contrat_PDF->Rect( 20 , 70+$hauteur_ligne , 70 , $hauteur_ligne*3+2*$marge_bordure , 'DF' );
       $contrat_PDF->SetXY(20+$marge_bordure,70+$hauteur_ligne+$marge_bordure);
-      $contrat_PDF->CellFit( 70-2*$marge_bordure , $hauteur_ligne , To::pdf('M. RINDEL Christophe') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      $contrat_PDF->CellFit( 70-2*$marge_bordure , $hauteur_ligne , To::pdf('32 Résidence la clé des champs') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
-      $contrat_PDF->CellFit( 70-2*$marge_bordure , $hauteur_ligne , To::pdf('80160 Plachy Buyon') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      foreach($tab_responsable_conventions['adresse_postale'] as $ligne)
+      {
+        $contrat_PDF->CellFit( 70-2*$marge_bordure , $hauteur_ligne , To::pdf($ligne) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+      }
     }
     else
     {
@@ -374,7 +377,7 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   }
   // date création
   $facture_PDF->SetXY(14,99);
-  $facture_PDF->CellFit( 70 , $hauteur_ligne , To::pdf('À Erôme, le '.To::date_mysql_to_french($DB_ROW['convention_creation']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
+  $facture_PDF->CellFit( 70 , $hauteur_ligne , To::pdf('À '.$tab_tresorier['ville'].', le '.To::date_mysql_to_french($DB_ROW['convention_creation']).'.') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*remplissage*/ );
   // référence du connecteur
   $facture_PDF->SetFont('Arial','B',$taille_police);
   $facture_PDF->SetXY(17,138);
@@ -420,20 +423,26 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
     $titre = 'Convention connecteur ENT établissement - Documents générés';
     $texte = 'Bonjour '.$DB_ROW2['structure_contact_prenom'].' '.$DB_ROW2['structure_contact_nom'].','."\r\n";
     $texte.= "\r\n";
-    $texte.= 'Vous venez de générer les documents associés à une convention pour un connecteur ENT :'."\r\n";
-    $texte.= 'Référence : '.$connecteur_ref."\r\n";
-    $texte.= 'Établissement : '.$_SESSION['ETABLISSEMENT']['DENOMINATION']."\r\n";
-    $texte.= 'Période : du '.To::date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.To::date_mysql_to_french($DB_ROW['convention_date_fin'])."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'Le contrat est en deux exemplaires.'."\r\n";
-    $texte.= 'L\'un est à retourner signé au président de l\'association (ses coordonnées postales figurent sur le document).'."\r\n";
-    $texte.= 'L\'autre est à conserver par votre établissement.'."\r\n";
-    $texte.= "\r\n";
-    $texte.= 'La facture comporte les coordonnées bancaires de l\'association.'."\r\n";
-    $texte.= 'Votre service gestionnaire peut régler par mandat administratif.'."\r\n";
+    $texte.= 'Vous venez de générer les documents associés à une convention pour un connecteur ENT.'."\r\n";
+    $texte.= '- Référence : '.$connecteur_ref."\r\n";
+    $texte.= '- Établissement : '.$_SESSION['ETABLISSEMENT']['DENOMINATION']."\r\n";
+    $texte.= '- Période : du '.To::date_mysql_to_french($DB_ROW['convention_date_debut']).' au '.To::date_mysql_to_french($DB_ROW['convention_date_fin'])."\r\n";
     $texte.= "\r\n";
     $texte.= 'Ces documents vous resteront accessibles en vous connectant comme administrateur puis en vous rendant dans le menu [Paramétrages établissement] [Mode d\'identification / Connecteur ENT] (cliquer alors sur l\'icône en bout de ligne du tableau).'."\r\n";
     $texte.= URL_DIR_SACOCHE.'?id='.$_SESSION['BASE']."\r\n";
+    $texte.= "\r\n";
+    $texte.= 'Le contrat est en deux exemplaires.'."\r\n";
+    $texte.= 'L\'un est à conserver par votre établissement.'."\r\n";
+    $texte.= 'L\'autre est à retourner signé au responsable des conventions de l\'association :'."\r\n";
+    $texte.= '- soit par courrier postal à l\'adresse'."\r\n";
+    $texte.= implode( ' ; ' , $tab_responsable_conventions['adresse_postale'] )."\r\n";
+    $texte.= '- soit par courriel (scanné, en pièce jointe) à l\'adresse '.$tab_responsable_conventions['courriel']."\r\n";
+    $texte.= "\r\n";
+    $texte.= 'La facture comporte les coordonnées bancaires de l\'association.'."\r\n";
+    $texte.= 'Votre service gestionnaire peut régler par mandat administratif.'."\r\n";
+    $texte.= 'En cas de nécessité particulière notre trésorier est joignable :'."\r\n";
+    $texte.= '- par courriel à l\'adresse '.$tab_tresorier['courriel']."\r\n";
+    $texte.= '- par téléphone (selon disponibilités) au numéro '.$tab_tresorier['tel_portable']."\r\n";
     $texte.= "\r\n";
     if($DB_ROW['convention_date_debut']<TODAY_MYSQL)
     {

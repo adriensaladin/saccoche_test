@@ -59,7 +59,7 @@ public static function DB_recuperer_niveau_groupes($listing_groupe_id)
  * @param string $date_mysql_fin
  * @param int    $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
  * @param int    $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
- * @param int    $with_abbr        1 pour récupérer l'abbréviation éventuelle pour une synthèse, 0 sinon
+ * @param int    $with_abbr        1 pour récupérer l'abréviation éventuelle pour une synthèse, 0 sinon
  * @return array
  */
 public static function DB_recuperer_arborescence_selection( $liste_eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme, $with_abbr = 0 )
@@ -117,7 +117,7 @@ public static function DB_recuperer_arborescence_selection( $liste_eleve_id , $l
  * @param string $date_mysql_fin
  * @param int    $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
  * @param int    $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
- * @param int    $with_abbr        1 pour récupérer l'abbréviation éventuelle pour une synthèse, 0 sinon
+ * @param int    $with_abbr        1 pour récupérer l'abréviation éventuelle pour une synthèse, 0 sinon
  * @return array
  */
 public static function DB_recuperer_arborescence_professeur( $liste_eleve_id , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme, $with_abbr = 0 )
@@ -181,7 +181,7 @@ public static function DB_recuperer_arborescence_professeur( $liste_eleve_id , $
  * @param string $date_mysql_fin
  * @param int    $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
  * @param int    $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
- * @param int    $with_abbr        1 pour récupérer l'abbréviation éventuelle pour une synthèse, 0 sinon
+ * @param int    $with_abbr        1 pour récupérer l'abréviation éventuelle pour une synthèse, 0 sinon
  * @return array
  */
 public static function DB_recuperer_arborescence_bilan( $liste_eleve_id , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme, $with_abbr = 0 )

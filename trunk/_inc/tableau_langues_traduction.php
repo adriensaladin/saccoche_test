@@ -64,7 +64,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 84, // effectuée (% actuel)
+    'statut'     => 100, // effectuée (% actuel)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'MX' , 'nom' => 'Mexique' ),
     'traducteur' => array(

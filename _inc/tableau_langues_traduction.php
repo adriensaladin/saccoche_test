@@ -101,7 +101,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 85, // effectuée (% actuel)
+    'statut'     => 100, // effectuée (% actuel)
     'langue'     => array( 'code' => 'vi' , 'nom' => 'Vietnamien' ),
     'pays'       => array( 'code' => 'VN' , 'nom' => 'Vietnam' ),
     'traducteur' => array(

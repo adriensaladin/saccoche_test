@@ -94,7 +94,7 @@ public static function DB_supprimer_comptes_associes($user_switch_id)
 public static function DB_supprimer_liaisons_obsoletes()
 {
   $nb_sortis = 0;
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // On récupère la liste des users concernés par une liaison
   $DB_SQL = 'SELECT GROUP_CONCAT( SUBSTRING( user_switch_liste, 2 ) SEPARATOR "" ) AS user_liste_virgule ';
@@ -177,7 +177,7 @@ public static function DB_recuperer_et_verifier_listing_comptes_associes($user_i
   if($user_switch_id)
   {
     $user_liste = substr($user_switch_liste,1,-1);
-    // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+    // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
     $DB_SQL = 'SELECT GROUP_CONCAT(user_id ORDER BY user_id ASC SEPARATOR ",") AS user_switch_liste ';
     $DB_SQL.= 'FROM sacoche_user ';

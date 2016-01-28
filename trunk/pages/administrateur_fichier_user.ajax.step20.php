@@ -460,13 +460,33 @@ if( ($import_origine=='sconet') && ($import_profil=='parent') )
   {
     foreach ($xml->DONNEES->ADRESSES->ADRESSE as $adresse)
     {
+      if($adresse->COMMUNE_ETRANGERE)
+      {
+        // Dans le cas d'une adresse à l'étranger, dans SIECLE la saisie est différente et le code postal est concaténé avec le nom de la commune dans le même champ...
+        $pos_espace = strpos( $adresse->COMMUNE_ETRANGERE , ' ' );
+        if( $pos_espace && ($pos_espace<10) )
+        {
+          $codepostal = substr( $adresse->COMMUNE_ETRANGERE , 0 , $pos_espace );
+          $commune = substr( $adresse->COMMUNE_ETRANGERE , $pos_espace+1 );
+        }
+        else
+        {
+          $codepostal = '';
+          $commune = $adresse->COMMUNE_ETRANGERE;
+        }
+      }
+      else
+      {
+        $codepostal = $adresse->CODE_POSTAL;
+        $commune = $adresse->LIBELLE_POSTAL;
+      }
       $tab_adresses[Clean::entier($adresse->attributes()->ADRESSE_ID)] = array(
         Clean::adresse($adresse->LIGNE1_ADRESSE) ,
         Clean::adresse($adresse->LIGNE2_ADRESSE) ,
         Clean::adresse($adresse->LIGNE3_ADRESSE) ,
         Clean::adresse($adresse->LIGNE4_ADRESSE) ,
-        Clean::codepostal($adresse->CODE_POSTAL) ,
-        Clean::commune($adresse->LIBELLE_POSTAL) ,
+        Clean::codepostal($codepostal) ,
+        Clean::commune($commune) ,
         Clean::pays($adresse->LL_PAYS) ,
       );
     }

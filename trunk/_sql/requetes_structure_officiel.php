@@ -256,7 +256,7 @@ public static function DB_recuperer_officiel_assiduite( $periode_id , $eleve_id 
  */
 public static function DB_recuperer_professeurs_eleves_matieres( $classe_id , $liste_eleve_id , $liste_matiere_id )
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // On connait la classe ($classe_id), donc on commence par récupérer les groupes éventuels associés à aux élèves
   $DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT groupe_id SEPARATOR ",") AS sacoche_liste_groupe_id ';

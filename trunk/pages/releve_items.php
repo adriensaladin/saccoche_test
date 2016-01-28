@@ -99,7 +99,9 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
   $class_form_eleve = 'show';
   $class_form_periode = 'hide';
   $class_form_prof = 'hide';
+  $class_form_eval = 'hide';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
+  $select_evaluations = '';
   $is_select_multiple = 1;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
@@ -114,7 +116,9 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $class_form_eleve = 'show';
   $class_form_periode = 'hide';
   $class_form_prof = 'hide';
+  $class_form_eval = 'show';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
+  $select_evaluations = '<span id="f_evaluation" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
   $bouton_modifier_matieres = '<button id="modifier_matiere" type="button" class="form_ajouter">&plusmn;</button>';
   $bouton_modifier_profs = '<button id="modifier_prof" type="button" class="form_ajouter">&plusmn;</button>';
@@ -131,7 +135,9 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
   $class_form_eleve = 'show';
   $class_form_periode = ($auto_select_eleve_num!==FALSE) ? 'show' : 'hide' ;
   $class_form_prof = 'hide';
+  $class_form_eval = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
+  $select_evaluations = '';
   $is_select_multiple = 0; // volontaire
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
@@ -146,7 +152,9 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
   $class_form_eleve = 'hide';
   $class_form_periode = 'show';
   $class_form_prof = 'show';
+  $class_form_eval = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
+  $select_evaluations = '';
   $is_select_multiple = 0;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
@@ -161,7 +169,9 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $class_form_eleve = 'hide';
   $class_form_periode = 'show';
   $class_form_prof = 'show';
+  $class_form_eval = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
+  $select_evaluations = '';
   $is_select_multiple = 0;
 }
 
@@ -171,6 +181,7 @@ $tab_select_objet_releve = array(
     array('valeur' => 'matiere'      , 'texte' => Lang::_("Relevé d'items d'une matière")) ,
     array('valeur' => 'multimatiere' , 'texte' => Lang::_("Relevé d'items pluridisciplinaire")) ,
     array('valeur' => 'selection'    , 'texte' => Lang::_("Relevé d'items sélectionnés")) ,
+    array('valeur' => 'evaluation'   , 'texte' => Lang::_("Relevé d'items d'évaluations sélectionnées")) ,
     array('valeur' => 'professeur'   , 'texte' => Lang::_("Relevé d'items d'un enseignant")) ,
 );
 
@@ -215,7 +226,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
 <form action="#" method="post" id="form_select"><fieldset>
 
   <div>
-    <label class="tab" for="f_objet">Objet :</label><?php echo str_replace( '"selection"' , '"selection"'.$objet_selection , $select_objet_releve); ?>
+    <label class="tab" for="f_objet">Objet :</label><?php echo str_replace( array('"selection"','"evaluation"') , array('"selection"'.$objet_selection,'"evaluation"'.$objet_selection) , $select_objet_releve); ?>
   </div>
 
   <div id="choix_matiere" class="<?php echo $class_form_matiere ?>">
@@ -275,6 +286,12 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
       <label for="f_retroactif_oui"><input type="radio" id="f_retroactif_oui" name="f_retroactif" value="oui"<?php echo $check_retroactif_oui ?> /> oui (sans limite)</label>&nbsp;&nbsp;&nbsp;
       <label for="f_retroactif_annuel"><input type="radio" id="f_retroactif_annuel" name="f_retroactif" value="annuel"<?php echo $check_retroactif_annuel ?> /> de l'année scolaire
   </p>
+
+  <div id="choix_evaluation" class="hide">
+    <p id="zone_evals" class="<?php echo $class_form_eval ?>">
+      <label class="tab" for="f_evaluation">Évaluations :</label><?php echo $select_evaluations ?><label id="ajax_maj_evals">&nbsp;</label>
+    </p>
+  </div>
 
   <div class="toggle">
     <span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>

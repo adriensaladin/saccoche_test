@@ -151,7 +151,7 @@ public static function DB_recuperer_item_popularite( $listing_demande_id , $list
  */
 public static function DB_recuperer_professeurs_eleve_matiere( $eleve_id , $eleve_classe_id , $matiere_id )
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // On connait la classe ($eleve_classe_id), donc on commence par récupérer les groupes éventuels associés à l'élève
   $DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT groupe_id SEPARATOR ",") AS sacoche_liste_groupe_id ';

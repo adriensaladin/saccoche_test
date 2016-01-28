@@ -64,7 +64,7 @@ public static function DB_lister_destinataires_avec_informations( $abonnement_re
  */
 public static function DB_lister_destinataires_listing_id( $abonnement_ref , $listing_id=NULL , $oui_ou_non=TRUE )
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // Go
   $not = ($oui_ou_non) ? '' : 'NOT ' ;
@@ -85,7 +85,7 @@ public static function DB_lister_destinataires_listing_id( $abonnement_ref , $li
  */
 public static function DB_lister_parents_listing_id( $listing_eleves_id )
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // Go
   $DB_SQL = 'SELECT CONVERT( GROUP_CONCAT(DISTINCT parent_id SEPARATOR ",") , CHAR) AS identifiants ';

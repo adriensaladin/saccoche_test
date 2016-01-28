@@ -381,7 +381,7 @@ public static function DB_lister_ids_eleves_professeur($prof_id,$user_join_group
     $requete_id_classes = 'SELECT groupe_id FROM sacoche_groupe WHERE groupe_type=:type1';
     $requete_id_groupes = 'SELECT groupe_id FROM sacoche_groupe WHERE groupe_type=:type2';
   }
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // éléments des deux requêtes
   $sql_select = 'SELECT GROUP_CONCAT(DISTINCT sacoche_user.user_id SEPARATOR ",") AS listing_eleves_id ';
@@ -464,7 +464,7 @@ public static function DB_lister_eleves_devoirs($prof_id,$devoir_info,$date_debu
  */
 public static function DB_lister_devoirs_prof($prof_id,$groupe_id,$date_debut_mysql,$date_fin_mysql)
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // Il faut commencer par lister les ids de devoirs sinon en cas de jointure du prof sur sacoche_jointure_devoir_prof on ne récupère pas la liste des autres profs associés à l'éval.
   $DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT devoir_id SEPARATOR ",") AS devoirs_listing ';
@@ -542,6 +542,35 @@ public static function DB_lister_devoirs_prof_groupe_sans_infos_last($prof_id,$g
     ':type4'          => 'eval',
   );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * lister_devoirs_prof_groupe_sans_infos_last
+ * Pour l'enseignant propriétaire du devoir et les enseignants ayant un accès en modification.
+ *
+ * @param int    $prof_id
+ * @param int    $groupe_id
+ * @return array
+ */
+public static function DB_OPT_eleves_devoirs_prof_groupe($prof_id,$groupe_id)
+{
+  $DB_SQL = 'SELECT devoir_id AS valeur, devoir_info AS texte , devoir_date , groupe_nom ';
+  $DB_SQL.= 'FROM sacoche_devoir ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+  $DB_SQL.= 'WHERE ( sacoche_devoir.proprio_id=:proprio_id OR sacoche_jointure_devoir_prof.prof_id=:prof_id ) ';
+  $DB_SQL.= 'AND ( groupe_id=:groupe_id OR groupe_type=:type4 ) ';
+  $DB_SQL.= 'GROUP BY devoir_id ';
+  $DB_SQL.= 'ORDER BY devoir_date DESC ';
+  $DB_VAR = array(
+    ':proprio_id'     => $prof_id,
+    ':prof_id'        => $prof_id,
+    ':groupe_id'      => $groupe_id,
+    ':jointure_droit' => 'modifier',
+    ':type4'          => 'eval',
+  );
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return !empty($DB_TAB) ? $DB_TAB : 'Aucune évaluation trouvée.' ;
 }
 
 /**

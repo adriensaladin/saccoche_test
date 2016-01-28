@@ -36,16 +36,16 @@ $groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe
 // Le code n'est pas exactement le même pour un administrateur que pour un professeur / directeur / parent.
 
 $tab_types = array(
-    'd' => 'Divers' ,
-    'n' => 'niveau' ,
-    'c' => 'classe' ,
-    'g' => 'groupe' ,
-    'b' => 'besoin' ,
-  ) + array(
-    'Classes' => 'classe' ,
-    'Groupes' => 'groupe' ,
-    'Besoins' => 'besoin' ,
-  ) ;
+  'd' => 'Divers' ,
+  'n' => 'niveau' ,
+  'c' => 'classe' ,
+  'g' => 'groupe' ,
+  'b' => 'besoin' ,
+) + array(
+  'Classes' => 'classe' ,
+  'Groupes' => 'groupe' ,
+  'Besoins' => 'besoin' ,
+);
 
 if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 {

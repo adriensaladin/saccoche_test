@@ -182,7 +182,7 @@ public static function DB_recuperer_referentiel_partage_etat($matiere_id,$niveau
  */
 public static function DB_recuperer_autres_professeurs_matiere($matiere_id,$user_id)
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // Go
   $DB_SQL = 'SELECT CONVERT( GROUP_CONCAT(user_id SEPARATOR ",") , CHAR) AS identifiants ';
@@ -642,7 +642,7 @@ public static function DB_modifier_referentiel_item( $item_id , $socle_id , $ite
  */
 public static function DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , $element , $valeur )
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   // Lister les items concernés
   $DB_SQL = 'SELECT GROUP_CONCAT(item_id SEPARATOR ",") AS listing_item_id ';

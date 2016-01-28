@@ -38,7 +38,7 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 /*
 $type_individuel | $type_synthese | $type_bulletin
-$releve_modele [ matiere | selection | multimatiere | professeur ]
+$releve_modele [ matiere | multimatiere | selection | evaluation | professeur ]
 */
 
 $matiere_et_groupe = ($releve_modele=='matiere') ? $matiere_nom.' - '.$groupe_nom : $groupe_nom ;
@@ -71,8 +71,9 @@ if( ($make_html) || ($make_pdf) )
   $tab_titre_modele = array(
     'matiere'      => '- '.$matiere_nom ,
     'multimatiere' => 'pluridisciplinaire' ,
-    'professeur'   => 'restreint à '.$professeur ,
     'selection'    => 'sélectionnés' ,
+    'evaluation'   => 'd\'évaluations sélectionnées' ,
+    'professeur'   => 'restreint à '.$professeur ,
   );
   $bilan_titre = 'd\'items '.$tab_titre_etat[$only_etat].' '.$tab_titre_modele[$releve_modele];
   $info_ponderation_complete = ($with_coef) ? '(pondérée)' : '(non pondérée)' ;
@@ -126,6 +127,8 @@ $texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision_retroact
 // Récupération de la liste des matières travaillées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// $releve_modele [ matiere | multimatiere | selection | evaluation | professeur ]
+
 if(empty($is_appreciation_groupe))
 {
   if($releve_modele=='matiere')
@@ -141,35 +144,22 @@ if(empty($is_appreciation_groupe))
     $matiere_id = -1;
     list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
   }
-  elseif($releve_modele=='selection')
+  else
   {
-    $liste_items = implode(',',$tab_items);
-    list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $liste_eleve , $liste_items , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
-    // Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
-    if(count($tab_matiere)>1)
+    if($releve_modele=='selection')
     {
-      $matiere_id = 0;
-      $tab_matiere = array(
-        0 => array(
-          'matiere_nom'         => implode(' - ',$tab_matiere),
-          'matiere_nb_demandes' => NULL,
-         )
-       );
+      $liste_items = implode(',',$tab_items);
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $liste_eleve , $liste_items , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
     }
-    else
+    elseif($releve_modele=='evaluation')
     {
-      list($matiere_id,$matiere_nom) = each($tab_matiere);
-      $tab_matiere = array(
-        $matiere_id => array(
-          'matiere_nom'         => $matiere_nom,
-          'matiere_nb_demandes' => NULL,
-         )
-       );
+      $liste_evals = implode(',',$tab_evals);
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_devoirs( $liste_eleve , $liste_evals , $only_socle , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
     }
-  }
-  elseif($releve_modele=='professeur')
-  {
-    list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur( $liste_eleve , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
+    elseif($releve_modele=='professeur')
+    {
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur( $liste_eleve , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
+    }
     // Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
     if(count($tab_matiere)>1)
     {
@@ -210,7 +200,8 @@ else
 $item_nb = count($tab_item_infos);
 if( !$item_nb && !$make_officiel && !$make_brevet ) // Dans le cas d'un bilan officiel, ou d'une récupération pour une fiche brevet, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-  Json::end( FALSE , 'Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !' );
+  $indication_periode = ($releve_modele!='evaluation') ? ' sur la période '.$date_debut.' ~ '.$date_fin : '' ;
+  Json::end( FALSE , 'Aucun item évalué'.$indication_periode.' selon les paramètres choisis !' );
 }
 $liste_item = implode( ',' , array_keys($tab_item_infos) );
 
@@ -274,25 +265,36 @@ $eleve_nb = count( $tab_eleve_infos , COUNT_NORMAL );
 $tab_score_a_garder = array();
 if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde les élèves d'un groupe un à un (il ne faut pas qu'un élève sans rien soit bloquant).
 {
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
-  foreach($DB_TAB as $DB_ROW)
+  if($releve_modele!='evaluation')
   {
-    $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
+    $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_date_last_eleves_items($liste_eleve,$liste_item);
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
+    }
+    $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
+        if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
+    elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
+    else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
+    $onlyprof = ($releve_modele=='professeur') ? $prof_id : FALSE ;
+    $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , $onlyprof , FALSE /*onlynote*/ );
   }
-  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
-      if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
-  elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
-  else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
-  $onlyprof = ($releve_modele=='professeur') ? $prof_id : FALSE ;
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items($liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , $onlyprof , FALSE /*onlynote*/ );
+  else
+  {
+    $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_evals( $liste_eleve , $liste_item , $liste_evals , $matiere_id );
+  }
   foreach($DB_TAB as $DB_ROW)
   {
-    if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
+    if( ($releve_modele=='evaluation') || ($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']]) )
     {
       $retro_item = $tab_item_infos[$DB_ROW['item_id']][0]['calcul_retroactif'];
       if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
       {
-        $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+        $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array(
+          'note' => $DB_ROW['note'],
+          'date' => $DB_ROW['date'],
+          'info' => $DB_ROW['info'],
+        );
         $tab_matiere_item[$DB_ROW['matiere_id']][$DB_ROW['item_id']] = $tab_item_infos[$DB_ROW['item_id']][0]['item_nom'];
       }
     }
@@ -300,7 +302,8 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
 }
 if( !count($tab_eval) && !$make_officiel && !$make_brevet ) // Dans le cas d'un bilan officiel, ou d'une récupération pour une fiche brevet, où l'on regarde les élèves d'un groupe un à un, ce ne doit pas être bloquant.
 {
-  Json::end( FALSE , 'Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !' );
+  $indication_periode = ($releve_modele!='evaluation') ? ' sur la période '.$date_debut.' ~ '.$date_fin : '' ;
+  Json::end( FALSE , 'Aucune évaluation trouvée'.$indication_periode.' selon les paramètres choisis !' );
 }
 $matiere_nb = count( $tab_matiere_item , COUNT_NORMAL ); // 1 si $matiere_id >= 0 précédemment, davantage uniquement si $matiere_id = -1
 

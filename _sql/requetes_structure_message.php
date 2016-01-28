@@ -41,7 +41,7 @@ class DB_STRUCTURE_MESSAGE extends DB
  */
 public static function DB_lister_messages_for_user_auteur($user_id)
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $DB_SQL = 'SELECT message_id, message_debut_date, message_fin_date, message_contenu, ';
   $DB_SQL.= 'GROUP_CONCAT( CONCAT(user_profil_type,"_",destinataire_type,"_",destinataire_id) SEPARATOR ",") AS message_destinataires, ';

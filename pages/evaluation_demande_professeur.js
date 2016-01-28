@@ -344,7 +344,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_maj_select_eval',
-          data : 'f_objet=demande_eval_prof'+'&f_eval_type='+eval_type+'&f_groupe_id='+groupe_id,
+          data : 'eval_type='+eval_type+'&groupe_id='+groupe_id,
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {

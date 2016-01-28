@@ -223,7 +223,7 @@ $(document).ready
             var socle_txt = $('label[for=socle_'+socle_id+']').text();
             // on récupère la référence
             var ref = obj_b.children('b:eq(0)').text();
-            // on récupère l'abréviation
+            // on récupère l'abbréviation
             var abbr = obj_b.children('b:eq(2)').text();
             // on récupère le nom
             var nom_texte = obj_b.children('b:eq(4)').text();
@@ -243,7 +243,7 @@ $(document).ready
           }
           // On assemble
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour remplacer les références automatiques." /> Ref.</i><input id="f_ref" name="f_ref" size="2" maxlength="3" type="text" value="'+escapeQuote(ref)+'" /> (facultatif)<br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Abréviation éclairant sur l\'item pour les tableaux PDF à double entrée." /> Abbr.</i><input id="f_abbr" name="f_abbr" size="12" maxlength="15" type="text" value="'+escapeQuote(abbr)+'" /> (facultatif)<br />';
+          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Abbréviation éclairant sur l\'item pour les tableaux PDF à double entrée." /> Abbr.</i><input id="f_abbr" name="f_abbr" size="12" maxlength="15" type="text" value="'+escapeQuote(abbr)+'" /> (facultatif)<br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Nom de l\'item." /> Nom</i><input id="f_nom" name="f_nom" size="'+nom_longueur+'" maxlength="256" type="text" value="'+escapeQuote(nom_texte)+'" /><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient (nombre entier entre 0 et 20 ; 1 par défaut)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="2" /><br />';
@@ -333,7 +333,7 @@ $(document).ready
             var texte2 = 'le thème'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
             break;
           case 'n3' :  // item
-            element_nom = $(this).parent().children('b').children('b:eq(4)').text();
+            element_nom = $(this).parent().children('b').children('b:eq(2)').text();
             var alerte = 'Tous les résultats associés seront perdus et les items suivants seront renumérotés !';
             var texte1 = 'cet item';
             var texte2 = 'l\'item sélectionné';
@@ -525,7 +525,7 @@ $(document).ready
         $('#f_nom').focus();
         return false;
       }
-      // On récupère l'abréviation, le coefficient, l'autorisation de demande, le lien au socle et le lien de ressources de l'élément (item uniquement)
+      // On récupère l'abbréviation, le coefficient, l'autorisation de demande, le lien au socle et le lien de ressources de l'élément (item uniquement)
       if(contexte=='n3')
       {
         var abbr  = $('#f_abbr').val();
@@ -809,7 +809,7 @@ $(document).ready
         li = $('q.annuler[data-action=fusionner]').parent();
         li_id_depart = li.attr('id');
         element_id  = li_id_depart.substring(3);
-        element_nom = li.children('b').children('b:eq(4)').text();
+        element_nom = li.children('b').text();
         // On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
         tab_id = new Array();
         while(li.next().length)
@@ -822,7 +822,7 @@ $(document).ready
         //
         li_id_arrivee = $(this).parent().attr('id');
         element2_id  = li_id_arrivee.substring(3);
-        element2_nom = $(this).parent().children('b').children('b:eq(4)').text();
+        element2_nom = $(this).parent().children('b').text();
         // Envoi des infos en ajax pour le traitement de la demande
         $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
@@ -878,20 +878,7 @@ $(document).ready
         // On récupère l'id de l'élément concerné (domaine ou theme ou item)
         contexte = li_id_depart.substring(0,2);
         element_id = li_id_depart.substring(3);
-        switch(contexte)
-        {
-          case 'n1' :  // domaine
-            element_nom = li.children('b').children('b:eq(4)').text();
-            break;
-          case 'n2' :  // thème
-            element_nom = li.children('b').children('b:eq(2)').text();
-            break;
-          case 'n3' :  // item
-            element_nom = li.children('b').children('b:eq(4)').text();
-            break;
-          default :
-            element_nom = '';
-        }
+        element_nom = (contexte=='n3') ? li.children('b').text() : li.children('span').text() ;
         // On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
         tab_id = new Array();
         while(li.next().length)

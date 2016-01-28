@@ -421,7 +421,7 @@ public static function DB_compter_eleves_actuels_sans_INE()
  */
 public static function DB_recuperer_brevet_classe_infos($classe_id)
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $DB_SQL = 'SELECT fiche_brevet, groupe_nom, GROUP_CONCAT(user_id SEPARATOR ",") AS listing_user_id ';
   $DB_SQL.= 'FROM sacoche_groupe ';
@@ -499,7 +499,7 @@ public static function DB_recuperer_brevet_saisies_classe($classe_id,$prof_id,$w
  */
 public static function DB_recuperer_brevet_listing_classes_editables()
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT eleve_classe_id SEPARATOR ",") AS listing_classes ';
   $DB_SQL.= 'FROM sacoche_user ';

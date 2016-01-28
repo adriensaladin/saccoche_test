@@ -122,7 +122,7 @@ public static function DB_lister_users_cibles( $listing_user_id , $listing_champ
   }
   elseif($avec_info=='enfant')
   {
-    // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+    // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
     $DB_SQL = 'SELECT '.$listing_champs.',GROUP_CONCAT( CONCAT(groupe_ref," ",enfant.user_nom) SEPARATOR " - ") AS info ';
     $DB_SQL.= 'FROM sacoche_user AS parent ';
@@ -152,7 +152,7 @@ public static function DB_lister_users_cibles( $listing_user_id , $listing_champ
  */
 public static function DB_lister_info_enfants_par_parent($listing_parent_id)
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $DB_SQL = 'SELECT parent.user_id as parent_id, GROUP_CONCAT( CONCAT(groupe_ref," ",enfant.user_nom) SEPARATOR " - ") AS info ';
   $DB_SQL.= 'FROM sacoche_user AS parent ';
@@ -222,7 +222,7 @@ public static function DB_lister_parents_actuels_avec_infos_for_eleve($eleve_id)
     return array();
   }
   $listing_parent_id = implode(',',array_keys($DB_TAB_parents));
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $DB_SQL = 'SELECT parent_id, GROUP_CONCAT( CONCAT(enfant.user_nom," ",enfant.user_prenom," (resp légal ",resp_legal_num,")") SEPARATOR " ; ") AS enfants_liste ';
   $DB_SQL.= 'FROM sacoche_jointure_parent_eleve ';
@@ -302,7 +302,7 @@ public static function DB_lister_users($profil_type,$statut,$liste_champs,$with_
  */
 public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statut,$debut_nom='',$debut_prenom='',$liste_parent_id='',$order_enfant=FALSE)
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
   $order_enfant = ($order_enfant) ? 'eleve.user_nom ASC, ' : '' ;

@@ -65,21 +65,12 @@ $(document).ready
       function()
       {
         // on masque
-        $('#choix_matiere , #choix_multimatiere , #choix_selection , #choix_professeur , #choix_evaluation').hide();
+        $('#choix_matiere , #choix_multimatiere , #choix_selection ,#choix_professeur').hide();
         // on affiche
         objet = $('#f_objet option:selected').val();
         if(objet)
         {
           $('#choix_'+objet).show();
-        }
-        if(objet=='evaluation')
-        {
-          $('#zone_periodes').addClass("hide");
-          charger_evaluations_prof();
-        }
-        else if( $('#f_groupe option:selected').val() )
-        {
-          $('#zone_periodes').removeAttr('class');
         }
         if(objet=='multimatiere')
         {
@@ -258,55 +249,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger tous les évaluations d'un profs, sur un regroupement ou non
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function charger_evaluations_prof()
-    {
-      // Pour un professeur uniquement
-      if(PROFIL_TYPE=='professeur')
-      {
-        $("#f_evaluation").html('');
-        groupe_id = $("#f_groupe option:selected").val();
-        if(groupe_id)
-        {
-          $('#zone_evals').removeAttr('class');
-          $('#ajax_maj_evals').removeAttr('class').addClass('loader').html("En cours&hellip;");
-          $.ajax
-          (
-            {
-              type : 'POST',
-              url : 'ajax.php?page=_maj_select_eval',
-              data : 'f_objet=releve_items'+'&f_groupe_id='+groupe_id,
-              dataType : 'json',
-              error : function(jqXHR, textStatus, errorThrown)
-              {
-                $('#ajax_maj_evals').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-              },
-              success : function(responseJSON)
-              {
-                initialiser_compteur();
-                if(responseJSON['statut']==true)
-                {
-                  $('#ajax_maj_evals').removeAttr('class').html("");
-                  $('#f_evaluation').html(responseJSON['value']);
-                }
-                else
-                {
-                  $('#ajax_maj_evals').removeAttr('class').addClass('alerte').html(responseJSON['value']);
-                }
-              }
-            }
-          );
-        }
-        else
-        {
-          $('#zone_evals').addClass("hide");
-        }
-      }
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Changement de groupe
     // -> desactiver les périodes prédéfinies en cas de groupe de besoin (prof uniquement)
     // -> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
@@ -371,23 +313,15 @@ $(document).ready
             // Rechercher automatiquement la meilleure période
             selectionner_periode_adaptee();
           }
-        }
-        // Afficher la zone de choix des périodes, des enseignants, des évaluations
-        if(typeof(groupe_type)!='undefined')
-        {
-          $('#zone_profs').removeAttr('class');
-          if(objet!='evaluation')
+          // Afficher la zone de choix des périodes et des enseignants
+          if(typeof(groupe_type)!='undefined')
           {
-            $('#zone_periodes').removeAttr('class');
+            $('#zone_periodes , #zone_profs').removeAttr('class');
           }
           else
           {
-            charger_evaluations_prof();
+            $('#zone_periodes , #zone_profs').addClass("hide");
           }
-        }
-        else
-        {
-          $('#zone_periodes , #zone_profs , #zone_evals').addClass("hide");
         }
         // Rechercher automatiquement la liste des profs
         if( (typeof(groupe_type)!='undefined') && (groupe_type!='Besoins') )
@@ -673,7 +607,6 @@ $(document).ready
           f_compet_liste       : { required:function(){return objet=='selection';} },
           f_prof               : { required:function(){return objet=='professeur';} },
           'f_type[]'           : { required:function(){return objet!='multimatiere';} },
-          'f_evaluation[]'     : { required:function(){return objet=='evaluation';} },
           f_individuel_format  : { required:true },
           f_etat_acquisition   : { required:false },
           f_moyenne_scores     : { required:false },
@@ -714,7 +647,6 @@ $(document).ready
           f_compet_liste       : { required:"item(s) manquant(s)" },
           f_prof               : { required:"enseignant manquant" },
           'f_type[]'           : { required:"type(s) manquant(s)" },
-          'f_evaluation[]'     : { required:"évaluation(s) manquante(s)" },
           f_individuel_format  : { required:"choix manquant" },
           f_etat_acquisition   : { },
           f_moyenne_scores     : { },

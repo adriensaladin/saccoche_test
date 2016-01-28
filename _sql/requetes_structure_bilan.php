@@ -51,6 +51,7 @@ public static function DB_recuperer_niveau_groupes($listing_groupe_id)
 /**
  * recuperer_arborescence_selection
  * Retourner l'arborescence des items travaillés et des matières concernées par des élèves selectionnés, pour les items choisis !
+ * Appelé par [ releve_items_selection.ajax.php ]
  *
  * @param string $liste_eleve_id  id des élèves séparés par des virgules
  * @param string $liste_item_id   id des items séparés par des virgules
@@ -58,7 +59,7 @@ public static function DB_recuperer_niveau_groupes($listing_groupe_id)
  * @param string $date_mysql_fin
  * @param int    $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
  * @param int    $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
- * @param int    $with_abbr        1 pour récupérer l'abréviation éventuelle pour une synthèse, 0 sinon
+ * @param int    $with_abbr        1 pour récupérer l'abbréviation éventuelle pour une synthèse, 0 sinon
  * @return array
  */
 public static function DB_recuperer_arborescence_selection( $liste_eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme, $with_abbr = 0 )
@@ -105,64 +106,9 @@ public static function DB_recuperer_arborescence_selection( $liste_eleve_id , $l
 }
 
 /**
- * recuperer_arborescence_devoirs
- * Retourner l'arborescence des items travaillés par des élèves donnés (ou un seul), pour des évaluations données
- *
- * @param string $liste_eleve_id   id des élèves séparés par des virgules ; il peut n'y avoir qu'un id, en particulier si c'est un élève qui demande un bilan
- * @param string $liste_eval_id    id des évaluations séparées par des virgules ; il peut n'y avoir qu'un id
- * @param bool   $only_socle       1 pour ne retourner que les items reliés au socle, 0 sinon
- * @param int    $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
- * @param int    $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
- * @param int    $with_abbr        1 pour récupérer l'abréviation éventuelle pour une synthèse, 0 sinon
- * @return array
- */
-public static function DB_recuperer_arborescence_devoirs( $liste_eleve_id , $liste_eval_id , $only_socle , $aff_domaine , $aff_theme, $with_abbr = 0 )
-{
-  $select_abbr      = ($with_abbr)                  ? 'item_abbr , '                         : '' ;
-  $where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-  $where_evals      = (strpos($liste_eval_id ,',')) ? 'devoir_id IN('.$liste_eval_id.') '    : 'devoir_id='.$liste_eval_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-  $where_niveau     = 'AND niveau_actif=1 ' ;
-  $where_socle      = ($only_socle)                 ? 'AND entree_id !=0 '                   : '' ;
-  switch((string)$aff_domaine.(string)$aff_theme)
-  {
-    case '00' : $item_nom='item_nom'; break;
-    case '10' : $item_nom='CONCAT(domaine_nom," | ",item_nom) AS item_nom'; break;
-    case '01' : $item_nom='CONCAT(theme_nom," | ",item_nom) AS item_nom'; break;
-    case '11' : $item_nom='CONCAT(domaine_nom," | ",theme_nom," | ",item_nom) AS item_nom'; break;
-  }
-  $DB_SQL = 'SELECT item_id , matiere_ref , ';
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
-  $DB_SQL.= $item_nom.' , '.$select_abbr;
-  $DB_SQL.= 'item_coef , item_cart , entree_id AS item_socle , item_lien , matiere_id , matiere_nom , ' ;
-  $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
-  $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'WHERE matiere_active=1 AND '.$where_eleve.' AND '.$where_evals.$where_niveau.$where_socle;
-  $DB_SQL.= 'GROUP BY item_id ';
-  $DB_SQL.= 'ORDER BY matiere_ordre ASC, matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE);
-  // Traiter le résultat de la requête pour en extraire un sous-tableau $tab_matiere
-  $tab_matiere = array();
-  foreach($DB_TAB as $item_id => $tab)
-  {
-    foreach($tab as $key => $DB_ROW)
-    {
-      $tab_matiere[$DB_ROW['matiere_id']] = $DB_ROW['matiere_nom'];
-      unset($DB_TAB[$item_id][$key]['matiere_id'],$DB_TAB[$item_id][$key]['matiere_nom']);
-    }
-  }
-  return array($DB_TAB,$tab_matiere);
-}
-
-/**
  * recuperer_arborescence_professeur
  * Retourner l'arborescence des items travaillés par des élèves donnés (ou un seul), durant une période donnée, par un professeur donné
+ * Appelé par [ releve_items_matiere.ajax.php ] [ releve_items_multimatiere.ajax.php ]
  *
  * @param string $liste_eleve_id   id des élèves séparés par des virgules ; il peut n'y avoir qu'un id, en particulier si c'est un élève qui demande un bilan
  * @param int    $prof_id          id du prof
@@ -171,7 +117,7 @@ public static function DB_recuperer_arborescence_devoirs( $liste_eleve_id , $lis
  * @param string $date_mysql_fin
  * @param int    $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
  * @param int    $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
- * @param int    $with_abbr        1 pour récupérer l'abréviation éventuelle pour une synthèse, 0 sinon
+ * @param int    $with_abbr        1 pour récupérer l'abbréviation éventuelle pour une synthèse, 0 sinon
  * @return array
  */
 public static function DB_recuperer_arborescence_professeur( $liste_eleve_id , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme, $with_abbr = 0 )
@@ -235,7 +181,7 @@ public static function DB_recuperer_arborescence_professeur( $liste_eleve_id , $
  * @param string $date_mysql_fin
  * @param int    $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
  * @param int    $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
- * @param int    $with_abbr        1 pour récupérer l'abréviation éventuelle pour une synthèse, 0 sinon
+ * @param int    $with_abbr        1 pour récupérer l'abbréviation éventuelle pour une synthèse, 0 sinon
  * @return array
  */
 public static function DB_recuperer_arborescence_bilan( $liste_eleve_id , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme, $with_abbr = 0 )
@@ -517,7 +463,7 @@ public static function recuperer_arborescence_items( $liste_item_id )
  */
 public static function DB_recuperer_modes_synthese_inconnu()
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $DB_SQL = 'SELECT GROUP_CONCAT( CONCAT(matiere_nom," / ",niveau_nom) SEPARATOR "§BR§") AS listing ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
@@ -589,32 +535,6 @@ public static function DB_lister_result_eleves_items( $liste_eleve_id , $liste_i
     ':date_fin'   => $date_mysql_fin,
   );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_result_eleves_evals
- * Retourner les résultats pour des élèves donnés, pour des items donnés de devoirs donnés
- *
- * @param string   $liste_eleve_id  id des élèves séparés par des virgules
- * @param string   $liste_item_id   id des items séparés par des virgules
- * @param string   $liste_eval_id   id des devoirs séparés par des virgules
- * @param int      $matiere_id      id de la matière ou 0 si items issus de plusieurs matières
- * @return array
- */
-public static function DB_lister_result_eleves_evals( $liste_eleve_id , $liste_item_id , $liste_eval_id , $matiere_id )
-{
-  $DB_SQL = 'SELECT eleve_id , '.$matiere_id.' AS matiere_id , item_id , ';
-  $DB_SQL.= 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
-  $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE devoir_id IN('.$liste_eval_id.') AND eleve_id IN('.$liste_eleve_id.') AND item_id IN('.$liste_item_id.') AND niveau_actif=1 AND saisie_note!="PA" '; // Pas de "AND saisie_visible_date<=NOW()" car consultation prof uniquement
-  $DB_SQL.= 'ORDER BY matiere_ordre ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC, saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -702,7 +622,7 @@ public static function DB_lister_eleves_cibles( $listing_eleve_id , $eleves_ordr
  */
 public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_user_id)
 {
-  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+  // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
   $DB_SQL = 'SELECT periode_id, periode_nom, GROUP_CONCAT(user_id SEPARATOR "_") AS eleves_listing ';
   $DB_SQL.= 'FROM sacoche_user ';

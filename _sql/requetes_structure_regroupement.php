@@ -499,7 +499,7 @@ public static function DB_modifier_liaison_user_groupe_par_prof( $prof_id , $gro
   // -> on récupère la liste des users actuels déjà associés au groupe (pour la comparer à la liste transmise)
   if($mode!='creer')
   {
-    // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
+    // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaine de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
     $DB_SQL = 'SELECT GROUP_CONCAT(user_id SEPARATOR " ") AS users_listing ';
     $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';

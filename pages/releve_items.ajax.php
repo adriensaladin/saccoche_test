@@ -85,10 +85,8 @@ $highlight_id             = (isset($_POST['f_highlight_id']))       ? Clean::ent
 $tab_eleve = (isset($_POST['f_eleve']))        ? ( (is_array($_POST['f_eleve']))        ? $_POST['f_eleve']        : explode(',',$_POST['f_eleve'])        ) : array() ;
 $tab_type  = (isset($_POST['f_type']))         ? ( (is_array($_POST['f_type']))         ? $_POST['f_type']         : explode(',',$_POST['f_type'])         ) : array() ;
 $tab_items = (isset($_POST['f_compet_liste'])) ? ( (is_array($_POST['f_compet_liste'])) ? $_POST['f_compet_liste'] : explode('_',$_POST['f_compet_liste']) ) : array() ;
-$tab_evals = (isset($_POST['f_evaluation']))   ? ( (is_array($_POST['f_evaluation']))   ? $_POST['f_evaluation']   : explode(',',$_POST['f_evaluation'])   ) : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 $tab_items = array_filter( Clean::map_entier($tab_items) , 'positif' );
-$tab_evals = array_filter( Clean::map_entier($tab_evals) , 'positif' );
 $tab_type  = Clean::map_texte($tab_type);
 
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
@@ -139,21 +137,15 @@ $tab_modele = array(
   'matiere'      => TRUE,
   'multimatiere' => TRUE,
   'selection'    => TRUE,
-  'evaluation'   => TRUE,
   'professeur'   => TRUE,
 );
 
-if( !isset($tab_modele[$releve_modele]) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$only_etat || ( ($releve_modele=='matiere') && ( !$matiere_id || !$matiere_nom ) ) || ( ($releve_modele=='professeur') && !$prof_id ) || ( ($releve_modele=='evaluation') && !count($tab_evals) ) || ( ($releve_modele=='selection') && !count($tab_items) ) || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$eleves_ordre )
+if( !isset($tab_modele[$releve_modele]) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || ( !$periode_id && (!$date_debut || !$date_fin) ) || !$retroactif || !$only_etat || ( ($releve_modele=='matiere') && ( !$matiere_id || !$matiere_nom ) ) || ( ($releve_modele=='professeur') && !$prof_id ) || ( ($releve_modele=='selection') && !count($tab_items) ) || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$eleves_ordre )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 Form::save_choix('releve_items');
-
-if($releve_modele=='evaluation')
-{
-  $retroactif = 'non';
-}
 
 $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
 

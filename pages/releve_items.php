@@ -95,11 +95,11 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
   $tab_profs    = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
   $of_groupe = '';
   $sel_groupe = FALSE;
-  $class_form_type    = 'show';
-  $class_form_eleve   = 'show';
+  $class_form_type = 'show';
+  $class_form_eleve = 'show';
   $class_form_periode = 'hide';
-  $class_form_prof    = 'hide';
-  $class_form_eval    = 'hide';
+  $class_form_prof = 'hide';
+  $class_form_eval = 'hide';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $select_evaluations = '';
   $is_select_multiple = 1;
@@ -112,11 +112,11 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $tab_profs    = array(0=>array('valeur'=>$_SESSION['USER_ID'],'texte'=>To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])));
   $of_groupe = '';
   $sel_groupe = FALSE;
-  $class_form_type    = 'show';
-  $class_form_eleve   = 'show';
+  $class_form_type = 'show';
+  $class_form_eleve = 'show';
   $class_form_periode = 'hide';
-  $class_form_prof    = 'hide';
-  $class_form_eval    = 'show';
+  $class_form_prof = 'hide';
+  $class_form_eval = 'show';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $select_evaluations = '<span id="f_evaluation" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
@@ -131,11 +131,11 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
   $tab_profs    = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
   $of_groupe = '';
   $sel_groupe = $auto_select_classe_id;
-  $class_form_type    = 'hide';
-  $class_form_eleve   = 'show';
+  $class_form_type = 'hide';
+  $class_form_eleve = 'show';
   $class_form_periode = ($auto_select_eleve_num!==FALSE) ? 'show' : 'hide' ;
-  $class_form_prof    = 'hide';
-  $class_form_eval    = 'hide';
+  $class_form_prof = 'hide';
+  $class_form_eval = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $select_evaluations = '';
   $is_select_multiple = 0; // volontaire
@@ -148,11 +148,11 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
   $tab_profs    = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe('classe',$_SESSION['ELEVE_CLASSE_ID']);
   $of_groupe = FALSE;
   $sel_groupe = TRUE;
-  $class_form_type    = 'hide';
-  $class_form_eleve   = 'hide';
+  $class_form_type = 'hide';
+  $class_form_eleve = 'hide';
   $class_form_periode = 'show';
-  $class_form_prof    = 'show';
-  $class_form_eval    = 'hide';
+  $class_form_prof = 'show';
+  $class_form_eval = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
   $select_evaluations = '';
   $is_select_multiple = 0;
@@ -165,11 +165,11 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $tab_profs    = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe('classe',$_SESSION['ELEVE_CLASSE_ID']);
   $of_groupe = FALSE;
   $sel_groupe = TRUE;
-  $class_form_type    = 'hide';
-  $class_form_eleve   = 'hide';
+  $class_form_type = 'hide';
+  $class_form_eleve = 'hide';
   $class_form_periode = 'show';
-  $class_form_prof    = 'show';
-  $class_form_eval    = 'hide';
+  $class_form_prof = 'show';
+  $class_form_eval = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
   $select_evaluations = '';
   $is_select_multiple = 0;

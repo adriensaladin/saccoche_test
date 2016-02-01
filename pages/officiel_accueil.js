@@ -1595,12 +1595,5 @@ $(document).ready
     $('#cadre_photo').on( 'click', '#voir_photo',    function() { charger_photo_eleve(); } );
     $('#cadre_photo').on( 'click', '#masquer_photo', function() { $('#cadre_photo').html('<button id="voir_photo" type="button" class="voir_photo">Photo</button>'); } );
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Élement saisissable / déplaçable
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $( "#cadre_photo" ).draggable({cursor:"move"});
-    $( "#cadre_statut" ).draggable({cursor:"move"});
-
   }
 );

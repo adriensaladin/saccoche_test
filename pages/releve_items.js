@@ -475,12 +475,6 @@ $(document).ready
                 $('#f_eleve option[value='+auto_select_eleve_id+']').prop('selected',true);
                 $('#bouton_valider').click();
                 auto_voir_releve = false;
-                auto_select_eleve_id = false;
-              }
-              else if( !is_multiple && ($('#f_eleve option').length==2) )
-              {
-                // Cas d'un seul élève retourné dans le regroupement (en particulier pour un parent de plusieurs enfants)
-                $('#f_eleve option').eq(1).prop('selected',true);
               }
             }
             else

@@ -39,21 +39,21 @@ INSERT INTO sacoche_brevet_epreuve VALUES
 ("G"     , 110, "Deuxième langue vivante"          , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "327,328,329,330,331,332,333,334,335,336,337,338", NULL, 1, NULL),
 ("G"     , 113, "Option facultative"               , FALSE, TRUE , TRUE , TRUE , 1, "AB,DI"   , "201,6929,202,6923,50,51,74,399,230"             , NULL, 1, NULL),
 ("G"     , 121, "Histoire-géographie"              , TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "406,6926,421"                                   , NULL, 1, NULL),
-("G"     , 122, "Enseignement moral et civique"    , TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "438,414,406,6926,421,6925"                      , NULL, 1, NULL),
+("G"     , 122, "Éducation civique"                , TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "414,406,6926,421,6925"                          , NULL, 1, NULL),
 ("G"     , 130, "Niveau A2 de langue régionale"    , FALSE, FALSE, FALSE, TRUE , 0, "AB,VA,NV", "230,399"                                        , NULL, 1, NULL),
 
 -- Série Professionnelle, sans option
 
-("P"     , 101, "Français"                                         , TRUE , TRUE , FALSE, TRUE , 1, "AB"      , "207,6920"                                                                                       , NULL, 1, NULL),
-("P"     , 102, "Mathématiques"                                    , TRUE , TRUE , FALSE, TRUE , 1, "AB"      , "613,6930"                                                                                       , NULL, 1, NULL),
-("P"     , 103, "Langues vivantes"                                 , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338", NULL, 0, NULL),
-("P"     , 105, "Prévention santé environnement"                   , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "3128,6939"                                                                                      , NULL, 1, NULL),
-("P"     , 106, "Éducation physique et sportive"                   , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "1001,6914"                                                                                      , NULL, 1, NULL),
-("P"     , 107, "Éducation artistique"                             , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "905"                                                                                            , NULL, 0, NULL),
-("P"     , 108, "Sciences et technologie"                          , TRUE , TRUE , FALSE, TRUE , 2, "AB,DI"   , "708,738"                                                                                        , NULL, 0, NULL),
-("P"     , 110, "Découverte professionnelle"                       , TRUE , TRUE , FALSE, TRUE , 3, "AB,DI"   , "50,51,74"                                                                                       , NULL, 1, NULL),
-("P"     , 121, "Histoire-géographie Enseignement moral et civique", TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "438,421,6925,406,6926,414"                                                                      , NULL, 0, NULL),
-("P"     , 130, "Niveau A2 de langue régionale"                    , FALSE, FALSE, FALSE, TRUE , 0, "AB,VA,NV", "230,399"                                                                                        , NULL, 1, NULL),
+("P"     , 101, "Français"                             , TRUE , TRUE , FALSE, TRUE , 1, "AB"      , "207,6920"                                                                                       , NULL, 1, NULL),
+("P"     , 102, "Mathématiques"                        , TRUE , TRUE , FALSE, TRUE , 1, "AB"      , "613,6930"                                                                                       , NULL, 1, NULL),
+("P"     , 103, "Langues vivantes"                     , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338", NULL, 0, NULL),
+("P"     , 105, "Prévention santé environnement"       , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "3128,6939"                                                                                      , NULL, 1, NULL),
+("P"     , 106, "Éducation physique et sportive"       , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "1001,6914"                                                                                      , NULL, 1, NULL),
+("P"     , 107, "Éducation artistique"                 , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "905"                                                                                            , NULL, 0, NULL),
+("P"     , 108, "Sciences et technologie"              , TRUE , TRUE , FALSE, TRUE , 2, "AB,DI"   , "708,738"                                                                                        , NULL, 0, NULL),
+("P"     , 110, "Découverte professionnelle"           , TRUE , TRUE , FALSE, TRUE , 3, "AB,DI"   , "50,51,74"                                                                                       , NULL, 1, NULL),
+("P"     , 121, "Histoire-géographie éducation civique", TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "421,6925,406,6926,414"                                                                          , NULL, 0, NULL),
+("P"     , 130, "Niveau A2 de langue régionale"        , FALSE, FALSE, FALSE, TRUE , 0, "AB,VA,NV", "230,399"                                                                                        , NULL, 1, NULL),
 
 -- Série Professionnelle, option Agricole
 
@@ -64,7 +64,7 @@ INSERT INTO sacoche_brevet_epreuve VALUES
 ("P-Agri", 106, "Éducation physique et sportive"                                              , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "1001,6914"                                      , NULL, 1, NULL),
 ("P-Agri", 107, "Éducation socioculturelle"                                                   , TRUE , TRUE , FALSE, TRUE , 1, "AB,DI"   , "5,6919"                                         , NULL, 1, NULL),
 ("P-Agri", 109, "Technologie, sciences et découverte de la vie professionnelle et des métiers", TRUE , TRUE , FALSE, TRUE , 3, "AB,DI"   , "708,738"                                        , NULL, 0, NULL),
-("P-Agri", 121, "Histoire-géographie Enseignement moral et civique"                           , TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "438,421,6925,406,6926,414"                      , NULL, 0, NULL),
+("P-Agri", 121, "Histoire-géographie éducation civique"                                       , TRUE , TRUE , FALSE, FALSE, 1, "AB"      , "421,6925,406,6926,414"                          , NULL, 0, NULL),
 ("P-Agri", 130, "Niveau A2 de langue régionale"                                               , FALSE, FALSE, FALSE, TRUE , 0, "AB,VA,NV", "230,399"                                        , NULL, 1, NULL);
 
 ALTER TABLE sacoche_brevet_epreuve ENABLE KEYS;

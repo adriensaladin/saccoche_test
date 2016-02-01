@@ -85,7 +85,7 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #cadre_haut   {z-index:   2;position:absolute;left:0;right:0;top:0;height:44px;border-bottom:1px solid #77F;white-space:nowrap;min-width:750px;background:#FFF repeat 0 0 url("data:image/gif;base64,R0lGODdhBAAEAIABANfX/////ywAAAAABAAEAAACBkwAl2h5BQA7");} /* sacoche_fond_cadre_haut */ /* min-width:980px */
 #cadre_bas    {z-index:   1;position:absolute;left:0;right:0;top:40px;bottom:0;padding:4px;background:#FFF}
 #cadre_navig  {z-index:1003;position:fixed;top:1px;right:1px} /* Pour passer au dessus du Plugin jQuery TH Float qui a un z-index de 1000 */
-#cadre_photo  {z-index:1004;position:fixed;top:46px;right:1px;width:100px;text-align:center;background:#FFF;padding:2px;border:1px dashed #77F;display:none}
+#cadre_photo  {z-index:1004;position:fixed;top:46px;right:1px;text-align:center;background:#FFF;padding:2px;border:1px dashed #77F;display:none}
 #cadre_statut {z-index:1004;position:fixed;top:300px;right:10px;width:150px;background:#FFF;padding:0 10px;border:1px dashed #77F} /* top de 300 requis pour l'admin ; 230 suffit pour les autres profils... */
 #cadre_tactile{z-index:1004;position:fixed;top:60px;left:5px;text-align:center;background:#FF9;padding:2px;border:1px solid #AA0;border-radius:3px;display:none}
 
@@ -915,14 +915,6 @@ ul.puce li , #step li.on {list-style:url("data:image/png;base64,iVBORw0KGgoAAAAN
 #sortable_h_note li , #sortable_h_acquis li {list-style-type:none;display:inline-block;vertical-align:top;margin:0.5ex;background:#DDF url(../_img/action_deplacer_h.png) no-repeat top;padding:16px 2px 0 2px;border:1px solid #BBF}
 #sortable_h_acquis li.colorpicker {background:#FFF;padding:0}
 .sortable {margin:0.5ex;background:#EEF;padding:2px;border:1px solid #CCF}
-
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Élement saisissable / déplaçable                                                                    */
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-#cadre_statut{background:#FFF url(../_img/action_deplacer_vh.png) no-repeat top right}
-#cadre_photo{background:#FFF url(../_img/action_deplacer_vh.png) no-repeat right}
-#cadre_tactile{background:#FF9 url(../_img/action_deplacer_vh.png) no-repeat bottom right}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Puces pour masquer ou montrer des options                                                           */

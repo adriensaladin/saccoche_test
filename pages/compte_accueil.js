@@ -34,7 +34,7 @@ $(document).ready
     // Clic sur une image-lien afin d'afficher ou de masquer un élément de la page d'accueil
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('a[href^="#toggle_"]').click
+    $('a[href^=#toggle_]').click
     (
       function()
       {

@@ -30,7 +30,6 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_evaluatio
 
 $action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])       : '';
 $eleve_id   = (isset($_POST['f_eleve']))      ? Clean::entier($_POST['f_eleve'])       : 0;
-$prof_id    = (isset($_POST['f_prof']))       ? Clean::entier($_POST['f_prof'])        : 0;
 $date_debut = (isset($_POST['f_date_debut'])) ? Clean::date_fr($_POST['f_date_debut']) : '';
 $date_fin   = (isset($_POST['f_date_fin']))   ? Clean::date_fr($_POST['f_date_fin'])   : '';
 $devoir_id  = (isset($_POST['f_devoir']))     ? Clean::entier($_POST['f_devoir'])      : 0;
@@ -56,7 +55,7 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
     Json::end( FALSE , 'La date de début est postérieure à la date de fin !' );
   }
   // Lister les évaluations
-  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve( $eleve_id , $prof_id , $date_debut_mysql , $date_fin_mysql , $_SESSION['USER_PROFIL_TYPE'] );
+  $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_devoirs_eleve( $eleve_id , $date_debut_mysql , $date_fin_mysql , $_SESSION['USER_PROFIL_TYPE'] );
   if(empty($DB_TAB))
   {
     Json::end( FALSE , 'Aucune évaluation trouvée sur la période '.$date_debut.' ~ '.$date_fin.' !' );

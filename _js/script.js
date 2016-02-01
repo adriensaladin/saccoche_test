@@ -1077,7 +1077,7 @@ $(document).ready
     $(document).on
     (
       'click',
-      'a[href="#toggle"]',
+      'a[href=#toggle]',
       function()
       {
         var id   = $(this).attr('id').substring(3); // 'to_' + id

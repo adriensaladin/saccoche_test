@@ -283,7 +283,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       }
       $tab_accueil['previsions']['nombre'] += count($DB_TAB);
       $tab_accueil['previsions']['contenu'].= '<ul class="puce p">';
-      $param_eleve_id = ($nb_eleves>1) ? '&amp;eleve_id='.$eleve_id : '' ;
+      $param_eleve_id = ($nb_eleves>1) ? '&amp;eleve_id='.$eleve_id.'&amp;classe_id='.$classe_id : '' ;
       $text_eleve_nom = ($nb_eleves>1) ? html($tab_eleve_info['texte']).' || ' : '' ;
       foreach($DB_TAB as $DB_ROW)
       {
@@ -302,11 +302,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
 if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
 {
   $nb_jours_consideres = 7;
-  $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
+  $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'],'valeur'=>$_SESSION['ELEVE_CLASSE_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
   $nb_eleves = count($tab_eleves);
   foreach($tab_eleves as $tab_eleve_info)
   {
     $eleve_id  = $tab_eleve_info['valeur'];
+    $classe_id = $tab_eleve_info['classe_id'];
     $DB_TAB = DB_STRUCTURE_ELEVE::DB_lister_derniers_devoirs_eleve_avec_notes_saisies( $eleve_id , $nb_jours_consideres );
     if(!empty($DB_TAB))
     {
@@ -316,7 +317,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
       }
       $tab_accueil['resultats']['nombre'] += count($DB_TAB);
       $tab_accueil['resultats']['contenu'].= '<ul class="puce p">';
-      $param_eleve_id = ($nb_eleves>1) ? '&amp;eleve_id='.$eleve_id : '' ;
+      $param_eleve_id = ($nb_eleves>1) ? '&amp;eleve_id='.$eleve_id.'&amp;classe_id='.$classe_id : '' ;
       $text_eleve_nom = ($nb_eleves>1) ? html($tab_eleve_info['texte']).' || ' : '' ;
       foreach($DB_TAB as $DB_ROW)
       {

@@ -163,12 +163,12 @@ if($make_pdf)
   // Quelques valeurs de positionnement ...
   $pdf_coords_session       = array( 'G'=>array(111,18,15,4) , 'P'=>array(103,18,15,4) );
   $pdf_coords_academie      = array( 30  ,29.5,38,3);
-  $pdf_coords_departement   = array( 34  ,33  ,35,3);
+  $pdf_coords_departement   = array( 35  ,33  ,35,3);
   $pdf_coords_etablissement = array( 15  ,42  ,55,3);
-  $pdf_coords_eleve_nom     = array(127  ,28  ,63,3);
-  $pdf_coords_eleve_prenom  = array(131.8,35.2,58,3);
-  $pdf_coords_eleve_date    = array(147.6,42.5,42,3);
-  $pdf_coords_classe_nom    = array(132.5,50  ,57,3);
+  $pdf_coords_eleve_nom     = array(127  ,28  ,64,3);
+  $pdf_coords_eleve_prenom  = array(131.8,35.2,59,3);
+  $pdf_coords_eleve_date    = array(148  ,42.5,43,3);
+  $pdf_coords_classe_nom    = array(132.5,50  ,58,3);
   // Français
   $pdf_coords_epreuve_classe[101] = array( 'G'=>array(56,97.5, 15,13) , 'P'=>array(52,104, 14,13) );
   $pdf_coords_epreuve_eleve[101]  = array( 'G'=>array(71,97.5, 14,13) , 'P'=>array(66,104, 14,13) );
@@ -217,11 +217,11 @@ if($make_pdf)
   $pdf_coords_epreuve_classe[113] = array( 'G'=>array(56,221, 15,13) );
   $pdf_coords_epreuve_eleve[113]  = array( 'G'=>array(71,221, 14,13) );
   $pdf_coords_epreuve_appr[113]   = array( 'G'=>array(85,221,108,13) );
-  // Histoire-géographie || Histoire-géographie éducation civique [pb pour P de partage de la case en 2 sur la fiche]
+  // Histoire-géographie || Histoire-géographie Enseignement moral et civique [pb pour P de partage de la case en 2 sur la fiche]
   $pdf_coords_epreuve_classe[121] = array( 'G'=>array(56,235, 15,7) , 'P'=>array(52,229, 14,13) );
   $pdf_coords_epreuve_eleve[121]  = array( 'G'=>array(71,235, 14,7) , 'P'=>array(66,229, 14,13) );
   $pdf_coords_epreuve_appr[121]   = array( 'G'=>array(85,235,108,7) , 'P'=>array(80,229,113,13) );
-  // Éducation civique
+  // Enseignement moral et civique
   $pdf_coords_epreuve_classe[122] = array( 'G'=>array(56,242, 15,6) );
   $pdf_coords_epreuve_eleve[122]  = array( 'G'=>array(71,242, 14,6) );
   $pdf_coords_epreuve_appr[122]   = array( 'G'=>array(85,242,108,6) );
@@ -233,8 +233,8 @@ if($make_pdf)
   $pdf_coords_epreuve_eleve[CODE_BREVET_EPREUVE_TOTAL] = array( 'G'=>array( 15,72,47,11) , 'P'=>array( 15,77,48,13) );
   $pdf_coords_epreuve_appr[ CODE_BREVET_EPREUVE_TOTAL] = array( 'G'=>array(106,72,86,11) , 'P'=>array(109,77,82,13) );
   // Avis du conseil de classe
-  $pdf_coords_epreuve_case['F'] = array( 'G'=>array(65.5,78.5,2,2) , 'P'=>array(67,84,2,2) );
-  $pdf_coords_epreuve_case['D'] = array( 'G'=>array(65.5,75.5,2,2) , 'P'=>array(67,81,2,2) );
+  $pdf_coords_epreuve_case['F'] = array( 'G'=>array(66,79.0,1.6,1.6) , 'P'=>array(68,84.5,1.6,1.6) );
+  $pdf_coords_epreuve_case['D'] = array( 'G'=>array(66,75.6,1.6,1.6) , 'P'=>array(68,81.1,1.6,1.6) );
   // Précision LV1 || Langues vivantes
   $pdf_coords_precision[103] = array( 'G'=>array(27,132,28,3) , 'P'=>array(22,138,28,3) );
   // Précision LV2

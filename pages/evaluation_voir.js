@@ -35,6 +35,7 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var groupe_id   = 0;
+    var prof_id     = 0;
     var groupe_type = '';
     var nb_caracteres_max = 2000;
 
@@ -72,6 +73,12 @@ $(document).ready
             {
               $('#ajax_maj').removeAttr('class').html("");
               $('#f_eleve').html(responseJSON['value']).parent().show();
+              if($('#f_eleve option').length==2)
+              {
+                // Cas d'un seul élève retourné dans le regroupement (en particulier pour un parent de plusieurs enfants)
+                $('#f_eleve option').eq(1).prop('selected',true);
+                 maj_eval();
+              }
             }
             else
             {
@@ -86,21 +93,96 @@ $(document).ready
     (
       function()
       {
+        groupe_type = $("#f_groupe option:selected").parent().attr('label');
+        // Rechercher automatiquement la liste des profs
+        if( (typeof(groupe_type)!='undefined') && (groupe_type!='Besoins') )
+        {
+          if( (user_profil!='professeur') || (action_prof=='retirer') )
+          {
+            charger_profs_groupe();
+          }
+        }
+        else
+        {
+          afficher_prof_connecte();
+        }
         // Pour un directeur ou un professeur, on met à jour f_eleve
         // Pour un élève ou un parent cette fonction n'est pas appelée puisque son groupe (masqué) ne peut être changé
         $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
+        $("#choix_professeur").hide();
         $('#ajax_msg').removeAttr('class').html('');
         $('#zone_eval_choix').hide();
         groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
-          groupe_type = $("#f_groupe option:selected").parent().attr('label');
           $('#ajax_maj').removeAttr('class').addClass('loader').html("En cours&hellip;");
           maj_eleve(groupe_id,groupe_type);
+          $('#zone_profs').show();
         }
         else
         {
           $('#ajax_maj').removeAttr('class').html("");
+          $('#zone_profs').hide();
+        }
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Charger tous les profs d'une classe (approximativement) ou n'affiche que le prof connecté
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var action_prof = 'ajouter';
+
+    function afficher_prof_connecte()
+    {
+      $('#f_prof').html('<option value="'+user_id+'">'+user_texte+'</option>');
+      $('#modifier_prof').removeAttr('class').addClass('form_ajouter');
+      action_prof = 'ajouter';
+    }
+
+    function charger_profs_groupe()
+    {
+      $('button').prop('disabled',true);
+      prof_id     = $("#f_prof   option:selected").val();
+      groupe_id   = $("#f_groupe option:selected").val();
+      groupe_type = $("#f_groupe option:selected").parent().attr('label');
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page=_maj_select_profs_groupe',
+          data : 'f_prof='+prof_id+'&f_groupe_id='+groupe_id+'&f_groupe_type='+groupe_type+'&f_first=1',
+          dataType : 'json',
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('button').prop('disabled',false);
+          },
+          success : function(responseJSON)
+          {
+            initialiser_compteur();
+            $('button').prop('disabled',false);
+            if(responseJSON['statut']==true)
+            {
+              $('#f_prof').html(responseJSON['value']);
+              $('#modifier_prof').removeAttr('class').addClass('form_retirer');
+              action_prof = 'retirer';
+            }
+          }
+        }
+      );
+    }
+
+    $("#modifier_prof").click
+    (
+      function()
+      {
+        if(action_prof=='retirer')
+        {
+          afficher_prof_connecte();
+        }
+        else if(action_prof=='ajouter')
+        {
+          charger_profs_groupe();
         }
       }
     );
@@ -119,12 +201,14 @@ $(document).ready
         rules :
         {
           f_eleve      : { required:true },
+          f_prof       : { required:false },
           f_date_debut : { required:true , dateITA:true },
           f_date_fin   : { required:true , dateITA:true }
         },
         messages :
         {
           f_eleve      : { required:"élève manquant" },
+          f_prof       : { },
           f_date_debut : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_fin   : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" }
         },
@@ -212,7 +296,7 @@ $(document).ready
     }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation et chargement au changement d'élève (cas d'un parent responsable de plusieurs élèves)
+// Initialisation et chargement au changement d'élève ou de professeur
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function maj_eval()
@@ -229,6 +313,14 @@ $(document).ready
     }
 
     $('#f_eleve').change
+    (
+      function()
+      {
+        maj_eval();
+      }
+    );
+
+    $('#f_prof').change
     (
       function()
       {

@@ -246,6 +246,7 @@ class Form
 
   public static $tab_select_option_first = array(
     'periode_personnalisee' => array( 0 , 'Personnalisée' ),
+    'tous_profs'            => array( 0 , 'Tous les enseignants' ),
     'tous_regroupements'    => array( 0 , 'Tous les regroupements' ),
     'toutes_matieres'       => array( 0 , 'Toutes les matières' ),
     'fiche_generique'       => array( 0 , 'Fiche générique' ),

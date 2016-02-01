@@ -35,43 +35,107 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && (!$_SESSION['NB_ENFANTS']) )
 }
 
 // Réception d'id transmis via un lien en page d'accueil.
-$auto_voir_devoir_id  = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;
-$auto_select_eleve_id = isset($_GET['eleve_id'])  ? Clean::entier($_GET['eleve_id'])  : FALSE ;
-$auto_mode            = isset($_GET['autoeval'])  ? 'saisir'                          : 'voir' ;
+$auto_voir_devoir_id   = isset($_GET['devoir_id']) ? Clean::entier($_GET['devoir_id']) : 'false' ;
+$auto_select_eleve_id  = isset($_GET['eleve_id'])  ? Clean::entier($_GET['eleve_id'])  : FALSE ;
+$auto_select_classe_id = isset($_GET['classe_id']) ? Clean::entier($_GET['classe_id']) : FALSE ;
+$auto_mode             = isset($_GET['autoeval'])  ? 'saisir'                          : 'voir' ;
+
+$bouton_modifier_profs    = '';
 
 // Fabrication des éléments select du formulaire
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
-  $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-  $of_g = ''; $sel_g = FALSE; $class_form_groupe = 'show'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'true';
-  $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+  $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
+  $tab_eleves  = array(); // maj en ajax suivant le choix du groupe
+  $tab_profs   = array( 0 => array( 'valeur'=>0 , 'texte'=>'Tous les enseignants' ) );
+  $of_groupe  = '';
+  $of_eleve   = FALSE;
+  $of_prof    = FALSE;
+  $sel_groupe = FALSE;
+  $sel_eleve  = FALSE;
+  $class_form_eleve = 'show';
+  $class_bloc_eleve = 'hide';
+  $class_form_prof  = 'hide';
+  $js_aff_nom_eleve = 'true';
 }
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
-  $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
-  $of_g = ''; $sel_g = FALSE; $class_form_groupe = 'show'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'true';
-  $select_eleves = '<option></option>'; // maj en ajax suivant le choix du groupe
+  $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
+  $tab_eleves  = array(); // maj en ajax suivant le choix du groupe
+  $tab_profs   = array( 0 => array( 'valeur'=>$_SESSION['USER_ID'] , 'texte'=>To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']) ) );
+  $of_groupe  = '';
+  $of_eleve   = FALSE;
+  $of_prof    = FALSE;
+  $sel_groupe = FALSE;
+  $sel_eleve  = FALSE;
+  $class_form_eleve = 'show';
+  $class_bloc_eleve = 'hide';
+  $class_form_prof  = 'hide';
+  $js_aff_nom_eleve = 'true';
+  $bouton_modifier_profs = '<button id="modifier_prof" type="button" class="form_ajouter">&plusmn;</button>';
 }
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
 {
-  $tab_groupes  = array();
-  $of_g = FALSE; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'show'; $js_aff_nom_eleve = 'true';
-  $select_eleves = HtmlForm::afficher_select($_SESSION['OPT_PARENT_ENFANTS'] , FALSE /*select_nom*/ , '' /*option_first*/ , $auto_select_eleve_id /*selection*/ , '' /*optgroup*/ );
+  if( $auto_select_eleve_id && !$auto_select_classe_id )
+  {
+    // Par exemple via un lien dans un mail de notification (car pour un lien depuis la page d'accueil c'est bon)
+    foreach( $_SESSION['OPT_PARENT_ENFANTS'] as $tab )
+    {
+      if( $tab['valeur'] == $auto_select_eleve_id )
+      {
+        $auto_select_classe_id = $tab['classe_id'];
+        break;
+      }
+    }
+  }
+  $tab_groupes = $_SESSION['OPT_PARENT_CLASSES'];
+  $tab_eleves  = ($auto_select_eleve_id) ? DB_STRUCTURE_COMMUN::DB_OPT_eleves_regroupement( 'classe' , $auto_select_classe_id , 1 /*statut*/ , 'alpha' /*ordre*/ ) : array() ; // maj en ajax suivant le choix du groupe
+  $tab_profs   = ($auto_select_eleve_id) ? DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe('classe',$auto_select_classe_id) : array() ;
+  $of_groupe  = '';
+  $of_eleve   = FALSE;
+  $of_prof    = 'tous_profs';
+  $sel_groupe = $auto_select_classe_id;
+  $sel_eleve  = $auto_select_eleve_id;
+  $class_form_eleve = 'show';
+  $class_bloc_eleve = ($auto_select_eleve_id) ? 'show' : 'hide' ;
+  $class_form_prof  = ($auto_select_eleve_id) ? 'show' : 'hide' ;
+  $js_aff_nom_eleve = 'true';
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
-  $tab_groupes  = array();
-  $of_g = FALSE; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'false';
-  $select_eleves = '<option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option>';
+  $tab_groupes = array( 0 => array( 'valeur'=>$_SESSION['ELEVE_CLASSE_ID'] , 'texte'=>$_SESSION['ELEVE_CLASSE_NOM'] , 'optgroup'=>'classe' ) );
+  $tab_eleves  = array( 0 => array( 'valeur'=>$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'] , 'texte'=>$_SESSION['OPT_PARENT_ENFANTS'][0]['texte'] ) );
+  $tab_profs   = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe('classe',$_SESSION['ELEVE_CLASSE_ID']);
+  $of_groupe  = FALSE;
+  $of_eleve   = '';
+  $of_prof    = 'tous_profs';
+  $sel_groupe = $_SESSION['ELEVE_CLASSE_ID'];
+  $sel_eleve  = $_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'];
+  $class_form_eleve = 'hide';
+  $class_bloc_eleve = 'hide';
+  $class_form_prof  = 'show';
+  $js_aff_nom_eleve = 'false';
 }
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-  $tab_groupes  = array();
-  $of_g = FALSE; $sel_g = FALSE; $class_form_groupe = 'hide'; $class_form_eleve = 'hide'; $js_aff_nom_eleve = 'false';
-  $select_eleves = '<option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option>';
+  $tab_groupes = array( 0 => array( 'valeur'=>$_SESSION['ELEVE_CLASSE_ID'] , 'texte'=>$_SESSION['ELEVE_CLASSE_NOM'] , 'optgroup'=>'classe' ) );
+  $tab_eleves  = array( 0 => array( 'valeur'=>$_SESSION['USER_ID'] , 'texte'=>$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'] ) );
+  $tab_profs   = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe( 'classe' , $_SESSION['ELEVE_CLASSE_ID'] );
+  $of_groupe  = FALSE;
+  $of_eleve   = FALSE;
+  $of_prof    = 'tous_profs';
+  $sel_groupe = $_SESSION['ELEVE_CLASSE_ID'];
+  $sel_eleve  = $_SESSION['USER_ID'];
+  $class_form_eleve = 'hide';
+  $class_bloc_eleve = 'hide';
+  $class_form_prof  = 'show';
+  $js_aff_nom_eleve = 'false';
 }
-$select_groupe = HtmlForm::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , $of_g /*option_first*/ , $sel_g /*selection*/ , 'regroupements' /*optgroup*/ );
+
+$select_groupe     = HtmlForm::afficher_select($tab_groupes , 'f_groupe' /*select_nom*/ , $of_groupe /*option_first*/ , $sel_groupe          /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_eleve      = HtmlForm::afficher_select($tab_eleves  , 'f_eleve' /*select_nom*/  , $of_eleve  /*option_first*/ , $sel_eleve           /*selection*/ ,              '' /*optgroup*/ );
+$select_professeur = HtmlForm::afficher_select($tab_profs   , 'f_prof'   /*select_nom*/ , $of_prof   /*option_first*/ , $_SESSION['USER_ID'] /*selection*/ ,              '' /*optgroup*/ );
 
 $bouton_valider_autoeval = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? '<button id="valider_saisir" type="button" class="valider">Enregistrer les saisies</button>' : '<button type="button" class="valider" disabled>Réservé à l\'élève.</button>' ;
 
@@ -91,18 +155,24 @@ Layout::add( 'js_inline_before' , 'var tab_dates = new Array();' );
 Layout::add( 'js_inline_before' , 'var aff_nom_eleve = '.$js_aff_nom_eleve.';' );
 Layout::add( 'js_inline_before' , 'var auto_voir_devoir_id = '.$auto_voir_devoir_id.';' );
 Layout::add( 'js_inline_before' , 'var auto_mode = "'.$auto_mode.'";' );
+Layout::add( 'js_inline_before' , 'var user_id     = '.$_SESSION['USER_ID'].';' );
+Layout::add( 'js_inline_before' , 'var user_texte  = "'.html(To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])).'";' );
+Layout::add( 'js_inline_before' , 'var user_profil = "'.$_SESSION['USER_PROFIL_TYPE'].'";' );
 ?>
 
 <p class="astuce">Les "évaluations" sont les "blocs-conteneurs" utilisés pour renseigner les résultats <span class="u">de l'année scolaire en cours</span>.</p>
 <hr />
 
 <form action="#" method="post" id="form"><fieldset>
-  <div class="<?php echo $class_form_groupe ?>">
-    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label>
-  </div>
   <div class="<?php echo $class_form_eleve ?>">
-    <label class="tab" for="f_eleve">Élève :</label><select id="f_eleve" name="f_eleve"><?php echo $select_eleves ?></select>
+    <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><label id="ajax_maj">&nbsp;</label><br />
+    <span id="bloc_eleve" class="<?php echo $class_bloc_eleve ?>"><label class="tab" for="f_eleve">Élève :</label><?php echo $select_eleve ?></span>
   </div>
+
+  <div id="zone_profs" class="<?php echo $class_form_prof ?>">
+    <label class="tab" for="f_prof">Enseignant :</label><?php echo $select_professeur ?><?php echo $bouton_modifier_profs ?>
+  </div>
+
   <label class="tab">Période :</label>du <input id="f_date_debut" name="f_date_debut" size="9" type="text" value="<?php echo To::jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q> au <input id="f_date_fin" name="f_date_fin" size="9" type="text" value="<?php echo To::jour_fin_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q><br />
   <span class="tab"></span><input type="hidden" name="f_action" value="Afficher_evaluations" /><button id="actualiser" type="submit" class="actualiser">Actualiser l'affichage.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>

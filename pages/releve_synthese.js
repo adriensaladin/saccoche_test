@@ -276,6 +276,11 @@ $(document).ready
             {
               $('#ajax_maj').removeAttr('class').html("");
               $('#f_eleve').html(responseJSON['value']).parent().show();
+              if( !is_multiple && ($('#f_eleve option').length==2) )
+              {
+                // Cas d'un seul élève retourné dans le regroupement (en particulier pour un parent de plusieurs enfants)
+                $('#f_eleve option').eq(1).prop('selected',true);
+              }
             }
             else
             {

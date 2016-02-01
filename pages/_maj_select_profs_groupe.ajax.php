@@ -30,9 +30,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$prof_id     = (isset($_POST['f_prof']))        ? Clean::entier($_POST['f_prof'])       : 0;
-$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
-$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : '';
+$prof_id      = (isset($_POST['f_prof']))        ? Clean::entier($_POST['f_prof'])       : 0;
+$groupe_id    = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
+$groupe_type  = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : '';
+$option_first = (empty($_POST['f_first']))       ? FALSE                                 : 'tous_profs';
 
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe') ;
 
@@ -43,6 +44,6 @@ if( (!$groupe_id) || (!isset($tab_types[$groupe_type])) )
 
 // Affichage du retour.
 
-Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe($tab_types[$groupe_type],$groupe_id) , FALSE /*select_nom*/ , FALSE /*option_first*/ , $prof_id /*selection*/ , '' /*optgroup*/ , FALSE /*multiple*/ ) );
+Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe($tab_types[$groupe_type],$groupe_id) , FALSE /*select_nom*/ , $option_first , $prof_id /*selection*/ , '' /*optgroup*/ , FALSE /*multiple*/ ) );
 
 ?>

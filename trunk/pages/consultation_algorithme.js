@@ -178,7 +178,7 @@ $(document).ready
         for ( var key in tab_valeur )
         {
           var saisie = $('#'+key).val();
-          var valeur = parseInt(saisie,10)
+          var valeur = parseInt(saisie,10);
           if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
           {
             $('#ajax_msg').removeAttr('class').addClass('erreur').html("Valeur d'un code : valeurs entières requises.").show();
@@ -205,7 +205,7 @@ $(document).ready
         }
         if( nb_sup_100 >= 2 )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Valeur d'un code : un seule valeur dépassant 100 permise.").show();
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Valeur d'un code : une seule valeur dépassant 100 permise.").show();
           $('#'+key).focus();
           return false;
         }
@@ -220,7 +220,7 @@ $(document).ready
         for ( var key in tab_seuil )
         {
           var saisie = $('#'+key).val();
-          var valeur = parseInt(saisie,10)
+          var valeur = parseInt(saisie,10);
           if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
           {
             $('#ajax_msg').removeAttr('class').addClass('erreur').html("Seuil d'acquisition : valeurs entières requises.").show();

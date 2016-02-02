@@ -3124,6 +3124,8 @@ $(document).ready
       {
         view_dates_perso();
         autoperiode = false;
+        // Soumettre le formulaire
+        formulaire_prechoix.submit();
       }
     );
 
@@ -3162,9 +3164,9 @@ $(document).ready
         $("#dates_perso").attr("class","show");
       }
       // Modification automatique du formulaire
-      if(autoperiode)
+      if( (groupe_type=='Classes') || (groupe_type=='Groupes') )
       {
-        if( (groupe_type=='Classes') || (groupe_type=='Groupes') )
+        if(autoperiode)
         {
           // Rechercher automatiquement la meilleure période
           var id_classe = $('#f_aff_classe option:selected').val().substring(1);
@@ -3182,12 +3184,9 @@ $(document).ready
             }
           }
         }
-        // Soumettre le formulaire
-        if(autoperiode)
-        {
-          formulaire_prechoix.submit();
-        }
       }
+      // Soumettre le formulaire
+      formulaire_prechoix.submit();
     }
 
     $('#f_aff_classe').change

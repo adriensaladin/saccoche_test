@@ -136,11 +136,6 @@ if( $step==3 )
 
 if( $step==4 )
 {
-  // Requête ajax malveillante ?!
-  if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
-  {
-    Json::end( FALSE , 'Le fichier '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' existe déjà !');
-  }
   // récupérer et tester le paramètre
   $installation = (isset($_POST['f_installation'])) ? Clean::texte($_POST['f_installation']) : '';
   if( !in_array($installation,array('mono-structure','multi-structures')) )
@@ -180,11 +175,6 @@ if( $step==4 )
 
 if( $step==41 )
 {
-  // Requête ajax malveillante ?!
-  if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
-  {
-    Json::end( FALSE , 'Le fichier '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' existe déjà !');
-  }
   // récupérer et tester les paramètres
   $installation = (isset($_POST['f_installation'])) ? Clean::texte($_POST['f_installation']) : '';
   $denomination = (isset($_POST['f_denomination'])) ? Clean::texte($_POST['f_denomination']) : '';
@@ -320,11 +310,6 @@ if( $step==61 )
   {
     Json::end( FALSE , 'Problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' !' );
   }
-  // Requête ajax malveillante ?!
-  if(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
-  {
-    Json::end( FALSE , 'Le fichier '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).' existe déjà !');
-  }
   // Récupérer les paramètres de connexion
   $BD_host = (isset($_POST['f_host'])) ? Clean::texte($_POST['f_host']) : '';
   $BD_port = (isset($_POST['f_port'])) ? Clean::entier($_POST['f_port']) : 0;
@@ -439,11 +424,6 @@ if( $step==62 )
   if(HEBERGEUR_INSTALLATION!='mono-structure')
   {
     Json::end( FALSE , 'Cette étape est réservée au choix d\'un unique établissement !' );
-  }
-  // Requête ajax malveillante ?!
-  if(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
-  {
-    Json::end( FALSE , 'Le fichier '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).' existe déjà !');
   }
   // Récupérer les paramètres de connexion
   $BD_host = (isset($_POST['f_host'])) ? Clean::texte($_POST['f_host']) : '';

@@ -32,8 +32,8 @@
 require('./_inc/_loader.php');
 
 // Paramètres transmis ; attention à l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/)
-$FICHIER = (isset($_GET['fichier'])) ? Clean::fichier($_GET['fichier']) : '' ; // On ne nettoie pas le caractère "." car le paramètre contient l'extension.
-$DOSSIER = (isset($_GET['auth']))    ? CHEMIN_DOSSIER_LOGINPASS         : CHEMIN_DOSSIER_EXPORT ;
+$FICHIER = (isset($_GET['fichier'])) ? str_replace(array('/','\\',"\0"),'',$_GET['fichier']) : '' ; // On ne nettoie pas le caractère "." car le paramètre contient l'extension.
+$DOSSIER = (isset($_GET['auth']))    ? CHEMIN_DOSSIER_LOGINPASS : CHEMIN_DOSSIER_EXPORT ;
 
 // Vérification de la cohérence des paramètres transmis et de l'existence du fichier concerné
 if(!$FICHIER)

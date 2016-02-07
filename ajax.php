@@ -45,7 +45,7 @@ if(!isset($_GET['page']))
 {
   exit_error( 'Référence manquante' /*titre*/ , 'Référence de page manquante (le paramètre "page" n\'a pas été transmis en GET).' /*contenu*/ );
 }
-$PAGE = Clean::fichier($_GET['page']);
+$PAGE = $_GET['page'];
 
 // Fichier d'informations sur l'hébergement (requis avant la gestion de la session).
 if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))

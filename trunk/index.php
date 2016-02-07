@@ -61,13 +61,13 @@ if(isset($_COOKIE[COOKIE_MEMOGET]))
 }
 
 // Page et section appelées ; normalement transmis en $_GET mais $_POST possibles depuis GEPI
-    if(isset($_GET['page']))     { $PAGE = $_GET['page']; }
-elseif(isset($_POST['page']))    { $PAGE = $_POST['page']; }
+    if(isset($_GET['page']))     { $PAGE = Clean::fichier($_GET['page']); }
+elseif(isset($_POST['page']))    { $PAGE = Clean::fichier($_POST['page']); }
 elseif(isset($_GET['code_mdp'])) { $PAGE = 'public_nouveau_mdp'; }
 elseif(isset($_GET['sso']))      { $PAGE = 'compte_accueil'; }
 else                             { $PAGE = 'public_accueil'; }
-    if(isset($_GET['section']))  { $SECTION = $_GET['section']; }
-elseif(isset($_POST['section'])) { $SECTION = $_POST['section']; }
+    if(isset($_GET['section']))  { $SECTION = Clean::fichier($_GET['section']); }
+elseif(isset($_POST['section'])) { $SECTION = Clean::fichier($_POST['section']); }
 else                             { $SECTION = ''; }
 
 // Fichier d'informations sur l'hébergement (requis avant la gestion de la session).

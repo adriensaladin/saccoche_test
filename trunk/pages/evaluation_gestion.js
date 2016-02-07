@@ -34,19 +34,19 @@ $(document).ready
     // Initialisation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var mode = false;
-    var modification = false;
-    var memo_pilotage = 'clavier';
-    var memo_direction = 'down';
-    var memo_input_id = false;
-    var colonne = 1;
-    var ligne   = 1;
-    var nb_colonnes = 1;
-    var nb_lignes   = 1;
-    var nb_lignes_max = 20;
-    var nb_caracteres_max = 2000;
+    var mode                 = false;
+    var modification         = false;
+    var memo_pilotage        = 'clavier';
+    var memo_direction       = 'down';
+    var memo_input_id        = false;
+    var colonne              = 1;
+    var ligne                = 1;
+    var nb_colonnes          = 1;
+    var nb_lignes            = 1;
+    var nb_lignes_max        = 20;
+    var nb_caracteres_max    = 2000;
     var audio_duree_restante = 0;
-    var $table_saisir_voir = $('#table_saisir_voir');
+    var $table_saisir_voir   = $('#table_saisir_voir');
 
     // tri du tableau (avec jquery.tablesorter.js).
     if(TYPE=='groupe')

@@ -45,7 +45,7 @@ Session::execute();
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
 
 // Paramètre transmis
-$FICHIER = (isset($_GET['fichier'])) ? $_GET['fichier'] : '';
+$FICHIER = (isset($_GET['fichier'])) ? Clean::fichier($_GET['fichier']) : '';
 
 // Extraction des infos
 list( $eleve_id , $bilan_type , $periode_id ) = explode( '_' , $FICHIER) + Array( NULL , NULL , NULL );
@@ -65,7 +65,7 @@ if(!$FICHIER)
 
 if( (!in_array($bilan_type,$tab_types)) || !$periode_id || !$eleve_id )
 {
-  exit_error( 'Paramètre incorrect' /*titre*/ , 'La valeur "'.html($FICHIER).'" transmise n\'est pas conforme.' /*contenu*/ , '' /*lien*/ );
+  exit_error( 'Paramètre incorrect' /*titre*/ , 'La valeur "'.$FICHIER.'" transmise n\'est pas conforme.' /*contenu*/ , '' /*lien*/ );
 }
 
 // Vérifications complémentaires

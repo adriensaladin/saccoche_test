@@ -293,7 +293,7 @@ unset( $tab_csv_format , $tab_saml_param );
  * Orléans-Tours   http://www.ac-orleans-tours.fr/vie_numerique/ent/   https://envole-loiret.ac-orleans-tours.fr/   https://envole-indre.ac-orleans-tours.fr/
  * 
  * https://cas.scolastance.com/cas-asp
- * https://cas.scolastance.com/cas-ent74      http://ent74.scolastance.com/etablissements.aspx
+ * https://cas.scolastance.com/cas-ent74     http://ent74.scolastance.com/etablissements.aspx
  * https://cas.scolastance.com/cas-client    http://client.scolastance.com/etablissements.aspx
  * https://cas.scolastance.com/cas-demo      http://demo.scolastance.com/etablissements.aspx
  */

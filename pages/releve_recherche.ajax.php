@@ -43,7 +43,7 @@ $with_coef     = (isset($_POST['f_with_coef']))     ? 1                         
 // item(s) matière(s)
 $tab_compet_liste = (isset($_POST['f_matiere_items_liste'])) ? explode('_',$_POST['f_matiere_items_liste']) : array() ;
 $tab_compet_liste = Clean::map_entier($tab_compet_liste);
-$compet_liste = implode(',',$tab_compet_liste);
+$compet_liste  = implode(',',$tab_compet_liste);
 $compet_nombre = count($tab_compet_liste);
 
 // item ou pilier socle
@@ -72,7 +72,7 @@ $is_socle_item_validation   = ( ($critere_objet=='socle_item_validation')   && $
 $is_socle_pilier_validation = ( ($critere_objet=='socle_pilier_validation') && $socle_pilier_id && $nb_criteres_valide ) ? TRUE : FALSE ;
 $critere_valide = ( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA || $is_socle_item_pourcentage || $is_socle_item_validation || $is_socle_pilier_validation ) ? TRUE : FALSE ;
 
-$tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
+$tab_types = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 
 if( (!$critere_valide) || (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[$groupe_type])) || (!in_array($mode,array('auto','manuel'))) )
 {
@@ -83,7 +83,7 @@ if( (!$critere_valide) || (!$groupe_id) || (!$groupe_nom) || (!isset($tab_types[
 // Variables pour récupérer les données
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_eleve      = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom)
+$tab_eleve = array();  // [i] => array(eleve_id,eleve_nom,eleve_prenom)
 
 // Tableau des langues
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
@@ -107,6 +107,22 @@ foreach($tab_eleve as $DB_ROW)
   $tab_eleve_langue[$DB_ROW['user_id']] = $DB_ROW['eleve_langue'];
 }
 $liste_eleve = implode(',',$tab_eleve_id);
+
+// Pour un professeur on vérifie que ce sont bien ses élèves
+if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') )
+{
+  $tab_eleves_non_rattaches = array_diff( $tab_eleve_id , $_SESSION['PROF_TAB_ELEVES'] );
+  if(!empty($tab_eleves_non_rattaches))
+  {
+    // On vérifie de nouveau, au cas où l'admin viendrait d'ajouter une affectation
+    $_SESSION['PROF_TAB_ELEVES'] = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur( $_SESSION['USER_ID'] , $_SESSION['USER_JOIN_GROUPES'] , 'array' /*format_retour*/ );
+    $tab_eleves_non_rattaches = array_diff( $tab_eleve_id , $_SESSION['PROF_TAB_ELEVES'] );
+    if(!empty($tab_eleves_non_rattaches))
+    {
+      Json::end( FALSE , 'Élève(s) non rattaché(s) à votre compte enseignant !' );
+    }
+  }
+}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Suite du code un peu en vrac avec des reprises et des adaptations de morceaux existants...

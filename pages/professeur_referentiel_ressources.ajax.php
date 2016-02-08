@@ -129,7 +129,7 @@ Ca va qu'une limite de 500Ko est imposée...
 if( ($action=='Uploader_document') && $matiere_ref )
 {
   // Récupération du fichier
-  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , 500 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , NULL /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , FileSystem::$tab_extensions_interdites , 500 /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
     Json::end( FALSE , $result );

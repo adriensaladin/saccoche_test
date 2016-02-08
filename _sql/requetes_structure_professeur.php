@@ -154,14 +154,20 @@ public static function DB_tester_devoir_ponctuel_prof_by_ids($devoir_id,$prof_id
  */
 public static function DB_compter_demandes_evaluation($prof_id,$user_join_groupes)
 {
-  $listing_eleves_id = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur($prof_id,$user_join_groupes);
-  if(!$listing_eleves_id) return array();
+  $listing_eleves_id = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur( $prof_id , $user_join_groupes , 'string' /*format_retour*/ );
+  if(!$listing_eleves_id)
+  {
+    return array();
+  }
   $DB_SQL = 'SELECT demande_statut, COUNT(demande_id) AS nombre ';
   $DB_SQL.= 'FROM sacoche_demande ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere ON sacoche_demande.matiere_id=sacoche_jointure_user_matiere.matiere_id ';
-  $DB_SQL.= 'WHERE eleve_id IN('.$listing_eleves_id.') AND prof_id IN(0,'.$_SESSION['USER_ID'].') AND sacoche_jointure_user_matiere.user_id=:user_id ';
+  $DB_SQL.= 'WHERE eleve_id IN('.$listing_eleves_id.') AND prof_id IN(0,:prof_id) AND sacoche_jointure_user_matiere.user_id=:user_id ';
   $DB_SQL.= 'GROUP BY demande_statut ';
-  $DB_VAR = array(':user_id'=>$_SESSION['USER_ID']);
+  $DB_VAR = array(
+    ':prof_id' => $_SESSION['USER_ID'],
+    ':user_id' => $_SESSION['USER_ID'],
+  );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE , TRUE);
 }
 
@@ -366,9 +372,10 @@ public static function DB_OPT_lister_eleves_professeur($prof_id,$user_join_group
  *
  * @param int    $user_id
  * @param string $user_join_groupes
- * @return string   liste des ids séparés par des virgules
+ * @param string $format_retour   'string'|'array'
+ * @return string | array
  */
-public static function DB_lister_ids_eleves_professeur($prof_id,$user_join_groupes)
+public static function DB_lister_ids_eleves_professeur( $prof_id , $user_join_groupes , $format_retour )
 {
   // sous-requêtes [http://dev.mysql.com/doc/refman/5.0/fr/subqueries.html]
   if($user_join_groupes=='config')
@@ -410,7 +417,15 @@ public static function DB_lister_ids_eleves_professeur($prof_id,$user_join_group
       $tab_listing_id[] = $DB_ROW['listing_eleves_id'];
     }
   }
-  return implode(',',$tab_listing_id);
+  $listing_eleves_id = implode(',',$tab_listing_id);
+  if($format_retour=='string')
+  {
+    return $listing_eleves_id;
+  }
+  else
+  {
+    return explode( ',' , $listing_eleves_id);
+  }
 }
 
 /**

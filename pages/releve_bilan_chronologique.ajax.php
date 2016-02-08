@@ -86,6 +86,19 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
     }
   }
 }
+if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') )
+{
+  // Pour un professeur on vérifie que c'est bien un de ses élèves
+  if(!in_array($eleve_id, $_SESSION['PROF_TAB_ELEVES']))
+  {
+    // On vérifie de nouveau, au cas où l'admin viendrait d'ajouter une affectation
+    $_SESSION['PROF_TAB_ELEVES'] = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur( $_SESSION['USER_ID'] , $_SESSION['USER_JOIN_GROUPES'] , 'array' /*format_retour*/ );
+    if(!in_array($eleve_id, $_SESSION['PROF_TAB_ELEVES']))
+    {
+      Json::end( FALSE , 'Élève non rattaché à votre compte enseignant !' );
+    }
+  }
+}
 
 $tab_objet = array(
   'matieres'         => "Matières",

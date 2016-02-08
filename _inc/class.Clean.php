@@ -63,7 +63,7 @@ class Clean
    */
   private static function nul($text)
   {
-    return str_replace("\0", "", $text) ;
+    return str_replace("\0", "", $text);
   }
 
   /**

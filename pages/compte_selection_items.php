@@ -101,7 +101,7 @@ Layout::add( 'js_inline_before' , 'var tab_profs = new Array();' );
         $items_texte  = ($items_nombre>1) ? $items_nombre.' items' : ( ($items_nombre) ? '1 item' : 'aucun' ) ;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['selection_item_id'].'">';
-        echo  '<td>'.html($DB_ROW['selection_item_nom']).'</td>';
+        echo  '<td>'.$DB_ROW['selection_item_nom'].'</td>';
         echo  '<td>'.$items_texte.'</td>';
         echo  '<td id="proprio_'.$DB_ROW['proprio_id'].'">'.$profs_nombre.$profs_bulle.'</td>';
         echo  '<td class="nu">';

@@ -41,47 +41,6 @@ $msg_autre  = (isset($_POST['f_msg_autre']))  ? Clean::texte($_POST['f_msg_autre
 $chemin_devoir      = CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
 $url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
 
-// En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
-// Merci @ Mathieu Degrange <Mathieu-Gilbert.Degrange@ac-nice.fr> d'avoir inspecté le code et signalé ce manquement.
-if( $eleve_id && in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')) )
-{
-  // Pour un élève on surcharge avec les données de session
-  if($_SESSION['USER_PROFIL_TYPE']=='eleve')
-  {
-    $eleve_id = $_SESSION['USER_ID'];
-  }
-  // Pour un parent on vérifie que c'est bien un de ses enfants
-  if($_SESSION['USER_PROFIL_TYPE']=='parent')
-  {
-    $is_enfant_legitime = FALSE;
-    foreach($_SESSION['OPT_PARENT_ENFANTS'] as $DB_ROW)
-    {
-      if($DB_ROW['valeur']==$eleve_id)
-      {
-        $is_enfant_legitime = TRUE;
-        break;
-      }
-    }
-    if(!$is_enfant_legitime)
-    {
-      Json::end( FALSE , 'Enfant non rattaché à votre compte parent !' );
-    }
-  }
-}
-if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') )
-{
-  // Pour un professeur on vérifie que c'est bien un de ses élèves
-  if(!in_array($eleve_id, $_SESSION['PROF_TAB_ELEVES']))
-  {
-    // On vérifie de nouveau, au cas où l'admin viendrait d'ajouter une affectation
-    $_SESSION['PROF_TAB_ELEVES'] = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur( $_SESSION['USER_ID'] , $_SESSION['USER_JOIN_GROUPES'] , 'array' /*format_retour*/ );
-    if(!in_array($eleve_id, $_SESSION['PROF_TAB_ELEVES']))
-    {
-      Json::end( FALSE , 'Élève non rattaché à votre compte enseignant !' );
-    }
-  }
-}
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher une liste d'évaluations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

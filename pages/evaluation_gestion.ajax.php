@@ -1972,7 +1972,7 @@ if( ($action=='uploader_document') && $devoir_id && in_array($doc_objet,array('s
   }
   // Récupération du fichier
   $fichier_nom = 'devoir_'.$devoir_id.'_'.$doc_objet.'_'.$_SERVER['REQUEST_TIME'].'.<EXT>'; // pas besoin de le rendre inaccessible -> FileSystem::generer_fin_nom_fichier__date_et_alea() inutilement lourd
-  $result = FileSystem::recuperer_upload( $chemin_devoir /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , FileSystem::$tab_extensions_interdites , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
+  $result = FileSystem::recuperer_upload( $chemin_devoir /*fichier_chemin*/ , $fichier_nom /*fichier_nom*/ , NULL /*tab_extensions_autorisees*/ , array('bat','com','exe','php','zip') /*tab_extensions_interdites*/ , FICHIER_TAILLE_MAX /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
     Json::end( FALSE , $result );

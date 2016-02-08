@@ -137,7 +137,6 @@ if( $step==3 )
 if( $step==4 )
 {
   // Requête ajax malveillante ?!
-  // Merci @ Mathieu Degrange <Mathieu-Gilbert.Degrange@ac-nice.fr> pour son inspection du code.
   if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
   {
     Json::end( FALSE , 'Le fichier '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' existe déjà !');
@@ -182,7 +181,6 @@ if( $step==4 )
 if( $step==41 )
 {
   // Requête ajax malveillante ?!
-  // Merci @ Mathieu Degrange <Mathieu-Gilbert.Degrange@ac-nice.fr> pour son inspection du code.
   if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
   {
     Json::end( FALSE , 'Le fichier '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' existe déjà !');
@@ -323,7 +321,6 @@ if( $step==61 )
     Json::end( FALSE , 'Problème avec le fichier : '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_INSTALL).' !' );
   }
   // Requête ajax malveillante ?!
-  // Merci @ Mathieu Degrange <Mathieu-Gilbert.Degrange@ac-nice.fr> pour son inspection du code.
   if(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
   {
     Json::end( FALSE , 'Le fichier '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).' existe déjà !');
@@ -444,7 +441,6 @@ if( $step==62 )
     Json::end( FALSE , 'Cette étape est réservée au choix d\'un unique établissement !' );
   }
   // Requête ajax malveillante ?!
-  // Merci @ Mathieu Degrange <Mathieu-Gilbert.Degrange@ac-nice.fr> pour son inspection du code.
   if(is_file(CHEMIN_FICHIER_CONFIG_MYSQL))
   {
     Json::end( FALSE , 'Le fichier '.FileSystem::fin_chemin(CHEMIN_FICHIER_CONFIG_MYSQL).' existe déjà !');

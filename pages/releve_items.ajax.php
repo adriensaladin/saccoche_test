@@ -128,21 +128,6 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
     }
   }
 }
-if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') )
-{
-  // Pour un professeur on vérifie que ce sont bien ses élèves
-  $tab_eleves_non_rattaches = array_diff( $tab_eleve , $_SESSION['PROF_TAB_ELEVES'] );
-  if(!empty($tab_eleves_non_rattaches))
-  {
-    // On vérifie de nouveau, au cas où l'admin viendrait d'ajouter une affectation
-    $_SESSION['PROF_TAB_ELEVES'] = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur( $_SESSION['USER_ID'] , $_SESSION['USER_JOIN_GROUPES'] , 'array' /*format_retour*/ );
-    $tab_eleves_non_rattaches = array_diff( $tab_eleve , $_SESSION['PROF_TAB_ELEVES'] );
-    if(!empty($tab_eleves_non_rattaches))
-    {
-      Json::end( FALSE , 'Élève(s) non rattaché(s) à votre compte enseignant !' );
-    }
-  }
-}
 
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;

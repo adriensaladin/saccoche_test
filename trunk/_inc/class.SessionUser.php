@@ -307,6 +307,11 @@ class SessionUser
         $_SESSION['ELEVE_CLASSE_NOM']   = $_SESSION['OPT_PARENT_CLASSES'][0]['texte'];
       }
     }
+    // Récupérer et Enregistrer en session la liste des élèves associés à un professeur non rattaché à tous les élèves.
+    if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') )
+    {
+      $_SESSION['PROF_TAB_ELEVES'] = DB_STRUCTURE_PROFESSEUR::DB_lister_ids_eleves_professeur( $_SESSION['USER_ID'] , $_SESSION['USER_JOIN_GROUPES'] , 'array' /*format_retour*/ );
+    }
     // Récupérer et Enregistrer en session les données associées aux profils utilisateurs d'un établissement, activés ou non.
     if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
     {

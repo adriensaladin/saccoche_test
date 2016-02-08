@@ -33,6 +33,14 @@ class FileSystem
   // Nom du fichier uploadé enregistré
   public static $file_saved_name = '';
 
+  // Tableau avec la liste des extensions interdites classiques
+  public static $tab_extensions_interdites = array(
+    'bat', 'cgi', 'com', 'exe',
+    'php', 'php3','php4', 'php5', 'php6', 'phtml',
+    'pl', 'py','jsp', 'asp', 'sh',
+    'zip',
+  );
+
   // Tableau avec les dossiers à créer lors de l'installation à la racine
   public static $tab_dossier_racine = array(
     '__private/' => CHEMIN_DOSSIER_PRIVATE,
@@ -959,13 +967,17 @@ class FileSystem
     if( (!file_exists($fichier_tmp_chemin)) || (!$fichier_tmp_taille) || ($fichier_tmp_erreur) )
     {
       $alerte_open_basedir = InfoServeur::is_open_basedir() ? ' Variable serveur "open_basedir" mal renseignée ?' : '' ;
-      $alerte_upload_size = ' Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload();
+      $alerte_upload_size  = ' Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload();
       return 'Problème de récupération !'.$alerte_open_basedir.$alerte_upload_size;
     }
-    // Vérification d'une sécurité sur le nom
-    if($fichier_tmp_nom{0}=='.')
+    // Vérification du nom
+    if( $fichier_tmp_nom{0} == '.' )
     {
       return 'Le nom du fichier ne doit pas commencer par un point !';
+    }
+    if( strpos( $fichier_tmp_nom , "\0" ) !== FALSE )
+    {
+      return 'Le nom du fichier ne doit pas contenir le caractère NULL !';
     }
     // Vérification de l'extension
     $extension = strtolower(pathinfo($fichier_tmp_nom,PATHINFO_EXTENSION));
@@ -986,6 +998,11 @@ class FileSystem
         $conseil = (($extension=='jpg')||($extension=='jpeg')) ? ' : réduisez les dimensions de l\'image' : ' : convertissez l\'image au format JPEG' ;
       }
       return 'Le fichier dépasse les '.$taille_maxi.' Ko autorisés'.$conseil.' !';
+    }
+    // Vérification du contenu ; on ne teste pas la balise courte "<?" car sur seulement 2 caractères on risque un faux positif...
+    if( strpos( file_get_contents($fichier_tmp_chemin) , '<?php') !== FALSE )
+    {
+      return 'Le fichier contient du PHP, ce qui est prohibé par sécurité !';
     }
     // On rapatrie le fichier dans l'arborescence SACoche, en en dézippant un fichier précis si demandé
     $fichier_final_nom = ($fichier_final_nom) ? str_replace('.<EXT>','.'.$extension,$fichier_final_nom) : Clean::fichier($fichier_tmp_nom);

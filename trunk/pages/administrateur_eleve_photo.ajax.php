@@ -28,11 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='afficher')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action      = (isset($_POST['f_action']))      ? $_POST['f_action']                    : '';
-$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : ''; // d n c g b
-$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
-$user_id     = (isset($_POST['f_user_id']))     ? Clean::entier($_POST['f_user_id'])    : 0;
-$masque      = (isset($_POST['f_masque']))      ? Clean::texte($_POST['f_masque'])      : '';
+$action      = (isset($_POST['f_action']))      ? $_POST['f_action']                      : '';
+$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::lettres($_POST['f_groupe_type']) : ''; // d n c g b
+$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])    : 0;
+$user_id     = (isset($_POST['f_user_id']))     ? Clean::entier($_POST['f_user_id'])      : 0;
+$masque      = (isset($_POST['f_masque']))      ? Clean::texte($_POST['f_masque'])        : '';
 
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 

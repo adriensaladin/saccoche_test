@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$profil = (isset($_POST['f_profil'])) ? Clean::texte($_POST['f_profil']) : '' ;
-$delai  = (isset($_POST['f_delai']))  ? Clean::entier($_POST['f_delai']) : 0  ;
+$profil = (isset($_POST['f_profil'])) ? Clean::lettres($_POST['f_profil']) : '' ;
+$delai  = (isset($_POST['f_delai']))  ? Clean::entier($_POST['f_delai'])   : 0  ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Choix du délai avant une déconnexion automatique pour inactivité

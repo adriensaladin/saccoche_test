@@ -28,13 +28,13 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
-$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
-$palier_id    = (isset($_POST['f_palier']))       ? Clean::entier($_POST['f_palier'])      : 0;
-$pilier_id    = (isset($_POST['f_pilier']))       ? Clean::entier($_POST['f_pilier'])      : 0;
-$delete_id    = (isset($_POST['delete_id']))      ? Clean::texte($_POST['delete_id'])      : '';
-$groupe_type  = (isset($_POST['f_groupe_type']))  ? Clean::texte($_POST['f_groupe_type'])  : '';
-$eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre']) : '';
+$action       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])        : '';
+$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])         : 0;
+$palier_id    = (isset($_POST['f_palier']))       ? Clean::entier($_POST['f_palier'])       : 0;
+$pilier_id    = (isset($_POST['f_pilier']))       ? Clean::entier($_POST['f_pilier'])       : 0;
+$delete_id    = (isset($_POST['delete_id']))      ? Clean::texte($_POST['delete_id'])       : '';
+$groupe_type  = (isset($_POST['f_groupe_type']))  ? Clean::lettres($_POST['f_groupe_type']) : '';
+$eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre'])  : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier   = (isset($_POST['f_pilier'])) ? ( (is_array($_POST['f_pilier'])) ? $_POST['f_pilier'] : explode(',',$_POST['f_pilier']) ) : array() ;
 $tab_eleve    = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;

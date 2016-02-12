@@ -39,8 +39,9 @@
 /*
  * Attention ! strtr() renvoie n'importe quoi en UTF-8 car il fonctionne octet par octet et non caractère par caractère, or l'UTF-8 est multi-octets...
 */
-define( 'LETTER_CHARS'   , utf8_decode(  '0123456789_abcdefghijklmnopqrstuvwxyz') );
-define( 'FILENAME_CHARS' , utf8_decode('-.0123456789_abcdefghijklmnopqrstuvwxyz') );
+define( 'LETTER_CHARS', utf8_decode('abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ') );
+define( 'LETTER_NUMBER_CHARS', utf8_decode(  '0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') );
+define( 'FILENAME_CHARS'     , utf8_decode('-.0123456789_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ') );
 define( 'LATIN1_LC_CHARS' , utf8_decode('abcdefghijklmnopqrstuvwxyzàáâãäåæçèéêëìíîïñòóôõöœøŕšùúûüýÿžðþ') );
 define( 'LATIN1_UC_CHARS' , utf8_decode('ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÑÒÓÔÕÖŒØŔŠÙÚÛÜÝŸŽÐÞ') );
 define( 'LATIN1_YES_ACCENT' , utf8_decode('ÀÁÂÃÄÅàáâãäåÞþÇçÐðÈÉÊËèéêëÌÍÎÏìíîïÑñÒÓÔÕÖØòóôõöøŔŕŠšßÙÚÛÜùúûüÝŸýÿŽž') );
@@ -146,19 +147,40 @@ class Clean
    * @param string
    * @return string
    */
+  private static function only_letters_numbers($text)
+  {
+    $caracteres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
+    if(strlen($caracteres))
+    {
+      $tab_caracteres = str_split($caracteres);
+      foreach($tab_caracteres as $key => $caractere)
+      {
+        $tab_caracteres[$key] = (strpos(LETTER_NUMBER_CHARS,$caractere)!==FALSE) ? $caractere : '' ;
+      }
+      $caracteres = implode('',$tab_caracteres);
+    }
+    return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($caracteres) : $caracteres ;
+  }
+
+  /**
+   * Ne conserver que les lettres minuscules | chiffres et supprimer le reste
+   *
+   * @param string
+   * @return string
+   */
   private static function only_letters($text)
   {
-    $lettres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
-    if(strlen($lettres))
+    $caracteres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
+    if(strlen($caracteres))
     {
-      $tab_lettres = str_split($lettres);
-      foreach($tab_lettres as $key => $lettre)
+      $tab_caracteres = str_split($caracteres);
+      foreach($tab_caracteres as $key => $caractere)
       {
-        $tab_lettres[$key] = (strpos(LETTER_CHARS,$lettre)!==FALSE) ? $lettre : '' ;
+        $tab_caracteres[$key] = (strpos(LETTER_CHARS,$caractere)!==FALSE) ? $caractere : '' ;
       }
-      $lettres = implode('',$tab_lettres);
+      $caracteres = implode('',$tab_caracteres);
     }
-    return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($lettres) : $lettres ;
+    return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($caracteres) : $caracteres ;
   }
 
   /**
@@ -169,17 +191,17 @@ class Clean
    */
   private static function only_filechars($text)
   {
-    $lettres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
-    if(strlen($lettres))
+    $caracteres = (perso_mb_detect_encoding_utf8($text)) ? utf8_decode($text) : $text ;
+    if(strlen($caracteres))
     {
-      $tab_lettres = str_split($lettres);
-      foreach($tab_lettres as $key => $lettre)
+      $tab_caracteres = str_split($caracteres);
+      foreach($tab_caracteres as $key => $caractere)
       {
-        $tab_lettres[$key] = (strpos(FILENAME_CHARS,$lettre)!==FALSE) ? $lettre : '-' ;
+        $tab_caracteres[$key] = (strpos(FILENAME_CHARS,$caractere)!==FALSE) ? $caractere : '-' ;
       }
-      $lettres = implode('',$tab_lettres);
+      $caracteres = implode('',$tab_caracteres);
     }
-    return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($lettres) : $lettres ;
+    return (perso_mb_detect_encoding_utf8($text)) ? utf8_encode($caracteres) : $caracteres ;
   }
 
   /**
@@ -282,21 +304,22 @@ class Clean
     Le login est davantage nettoyé car il y a un risque d'engendrer des comportements incertains (à l'affichage ou à l'enregistrement) avec les applications externes (pmwiki, phpbb...).
   */
   public static function login($text)        { return str_replace(' ','', Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::symboles( Clean::nul( trim($text) ) ) ) ) ) ); }
-  public static function fichier($text)      { return Clean::only_filechars( Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::nul( trim($text) ) ) ) ) ); }
-  public static function id($text)           { return Clean::only_letters(   Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::nul( trim($text) ) ) ) ) ); }
+  public static function fichier($text)      { return Clean::only_filechars(       Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::nul( trim($text) ) ) ) ) ); }
+  public static function id($text)           { return Clean::only_letters_numbers( Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::nul( trim($text) ) ) ) ) ); }
   public static function param_chemin($text) { return str_replace(array('.','/','\\'),'', Clean::nul( trim($text) ) ); } // Contre l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
   public static function zip_filename($text) { return Clean::fichier(iconv('CP850','UTF-8',$text)); } //  filenames stored in the ZIP archives created on non-Unix systems are encoded in CP850 http://fr.php.net/manual/fr/function.zip-entry-name.php#87130
   public static function password($text)     { return Clean::nul( trim($text) ); }
   public static function ref($text)          { return Clean::perso_strtoupper( Clean::nul( trim($text) ) ); }
+  public static function lettres($text)      { return Clean::only_letters( Clean::nul( trim($text) ) ); }
+  public static function uai($text)          { return Clean::only_letters_numbers( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) ); }
   public static function nom($text)          { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 25); }
-  public static function uai($text)          { return Clean::perso_strtoupper( Clean::nul( trim($text) ) ); }
   public static function prenom($text)       { return Clean::tronquer_chaine( Clean::perso_ucwords( Clean::nul( trim($text) ) ) , 25); }
   public static function structure($text)    { return Clean::perso_ucwords( Clean::nul( trim($text) ) ); }
   public static function adresse($text)      { return Clean::tronquer_chaine( Clean::perso_ucwords( Clean::nul( trim($text) ) ) , 50); }
   public static function codepostal($text)   { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 10); }
   public static function commune($text)      { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 45); }
   public static function pays($text)         { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 35); }
-  public static function code($text)         { return Clean::perso_strtolower( Clean::nul( trim($text) ) ); }
+  public static function code($text)         { return Clean::only_letters_numbers( Clean::perso_strtolower( Clean::nul( trim($text) ) ) ); }
   public static function courriel($text)     { return Clean::perso_strtolower( Clean::accents( Clean::nul( trim($text) ) ) ); }
   public static function appreciation($text) { return Clean::espaces( Clean::lignes( Clean::nul( trim($text) ) ) ); }
   public static function texte($text)        { return Clean::nul( trim($text) ); }

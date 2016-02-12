@@ -33,7 +33,7 @@ $nom      = (isset($_POST['f_nom']))      ? Clean::nom(     $_POST['f_nom']     
 $prenom   = (isset($_POST['f_prenom']))   ? Clean::prenom(  $_POST['f_prenom']  ) : '';
 $courriel = (isset($_POST['f_courriel'])) ? Clean::courriel($_POST['f_courriel']) : '';
 $message  = (isset($_POST['f_message']))  ? Clean::texte(   $_POST['f_message'] ) : '';
-$captcha  = (isset($_POST['f_captcha']))  ? Clean::texte(   $_POST['f_captcha'] ) : '';
+$captcha  = (isset($_POST['f_captcha']))  ? Clean::lettres( $_POST['f_captcha'] ) : '';
 $code     = (isset($_POST['f_code']))     ? Clean::entier(  $_POST['f_code']    ) : 0 ;
 $md5      = (isset($_POST['f_md5']))      ? Clean::login(   $_POST['f_md5']     ) : '';
 

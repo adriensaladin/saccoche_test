@@ -28,8 +28,8 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action = (isset($_POST['f_action'])) ? $_POST['f_action'] : '';
-$profil = (isset($_POST['f_profil'])) ? $_POST['f_profil'] : '';
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])   : '';
+$profil = (isset($_POST['f_profil'])) ? Clean::lettres($_POST['f_profil']) : '';
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_user = (isset($_POST['f_user'])) ? ( (is_array($_POST['f_user'])) ? $_POST['f_user'] : explode(',',$_POST['f_user']) ) : array() ;
 $tab_user = array_filter( Clean::map_entier($tab_user) , 'positif' );

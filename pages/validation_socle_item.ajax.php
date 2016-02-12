@@ -28,15 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='Afficher_bilan')&&($_POST['f_action']!='Afficher_information')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])       : '';
-$palier_id    = (isset($_POST['f_palier']))       ? Clean::entier($_POST['f_palier'])      : 0;
-$pilier_id    = (isset($_POST['f_pilier']))       ? Clean::entier($_POST['f_pilier'])      : 0;
-$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])        : 0;
-$entree_id    = (isset($_POST['f_item']))         ? Clean::entier($_POST['f_item'])        : 0;
-$mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])         : '';
-$langue       = (isset($_POST['langue']))         ? Clean::entier($_POST['langue'])        : 0;
-$groupe_type  = (isset($_POST['f_groupe_type']))  ? Clean::texte($_POST['f_groupe_type'])  : '';
-$eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre']) : '';
+$action       = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])        : '';
+$palier_id    = (isset($_POST['f_palier']))       ? Clean::entier($_POST['f_palier'])       : 0;
+$pilier_id    = (isset($_POST['f_pilier']))       ? Clean::entier($_POST['f_pilier'])       : 0;
+$eleve_id     = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])         : 0;
+$entree_id    = (isset($_POST['f_item']))         ? Clean::entier($_POST['f_item'])         : 0;
+$mode         = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])          : '';
+$langue       = (isset($_POST['langue']))         ? Clean::entier($_POST['langue'])         : 0;
+$groupe_type  = (isset($_POST['f_groupe_type']))  ? Clean::lettres($_POST['f_groupe_type']) : '';
+$eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleves_ordre'])  : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 // De plus pour l'affichage du détail des acquisitions d'un item, f_matiere est transmis comme une chaine concaténée.
 $tab_eleve   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;

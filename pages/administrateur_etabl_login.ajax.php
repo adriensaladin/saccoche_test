@@ -28,10 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$profil = (isset($_POST['f_profil'])) ? Clean::texte($_POST['f_profil']) : '' ;
-$login  = (isset($_POST['f_login']))  ? Clean::texte($_POST['f_login'])  : '' ;
-$mdp    = (isset($_POST['f_mdp']))    ? Clean::entier($_POST['f_mdp'])   : 0  ;
-$birth  = (isset($_POST['f_birth']))  ? Clean::entier($_POST['f_birth']) : -1 ;
+$profil = (isset($_POST['f_profil'])) ? Clean::lettres($_POST['f_profil']) : '' ;
+$login  = (isset($_POST['f_login']))  ? Clean::texte($_POST['f_login'])    : '' ;
+$mdp    = (isset($_POST['f_mdp']))    ? Clean::entier($_POST['f_mdp'])     : 0  ;
+$birth  = (isset($_POST['f_birth']))  ? Clean::entier($_POST['f_birth'])   : -1 ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Choix d'un format de noms d'utilisateurs et/ou de la longueur minimale d'un mot de passe

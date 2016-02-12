@@ -31,13 +31,13 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 $action          = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])         : '';
 $check           = (isset($_POST['f_check']))         ? Clean::entier($_POST['f_check'])         : 0;
 $id              = (isset($_POST['f_id']))            ? Clean::entier($_POST['f_id'])            : 0;
-$id_ent          = (isset($_POST['f_id_ent']))        ? Clean::texte($_POST['f_id_ent'])         : '';
-$id_gepi         = (isset($_POST['f_id_gepi']))       ? Clean::texte($_POST['f_id_gepi'])        : '';
+$id_ent          = (isset($_POST['f_id_ent']))        ? Clean::id_ent($_POST['f_id_ent'])        : '';
+$id_gepi         = (isset($_POST['f_id_gepi']))       ? Clean::id_ent($_POST['f_id_gepi'])       : '';
 $sconet_id       = (isset($_POST['f_sconet_id']))     ? Clean::entier($_POST['f_sconet_id'])     : 0;
 $sconet_num      = (isset($_POST['f_sconet_num']))    ? Clean::entier($_POST['f_sconet_num'])    : 0;
 $reference       = (isset($_POST['f_reference']))     ? Clean::ref($_POST['f_reference'])        : '';
 $profil          = 'ELV';
-$genre           = (isset($_POST['f_genre']))         ? Clean::texte($_POST['f_genre'])          : '';
+$genre           = (isset($_POST['f_genre']))         ? Clean::lettres($_POST['f_genre'])        : '';
 $nom             = (isset($_POST['f_nom']))           ? Clean::nom($_POST['f_nom'])              : '';
 $prenom          = (isset($_POST['f_prenom']))        ? Clean::prenom($_POST['f_prenom'])        : '';
 $birth_date      = (isset($_POST['f_birth_date']))    ? Clean::date_fr($_POST['f_birth_date'])   : '' ;
@@ -50,7 +50,7 @@ $box_password    = (isset($_POST['box_password']))    ? Clean::entier($_POST['bo
 $box_sortie_date = (isset($_POST['box_sortie_date'])) ? Clean::entier($_POST['box_sortie_date']) : 0;
 $courriel        = (isset($_POST['f_courriel']))      ? Clean::courriel($_POST['f_courriel'])    : '';
 $groupe          = (isset($_POST['f_groupe']))        ? Clean::texte($_POST['f_groupe'])         : 'd2' ;
-$groupe_type     = Clean::texte( substr($groupe,0,1) );
+$groupe_type     = Clean::lettres( substr($groupe,0,1) );
 $groupe_id       = Clean::entier( substr($groupe,1) );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -28,16 +28,16 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 $action          = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])         : '';
-$champ_nom       = (isset($_POST['champ_nom']))       ? Clean::texte($_POST['champ_nom'])        : '';
+$champ_nom       = (isset($_POST['champ_nom']))       ? Clean::lettres($_POST['champ_nom'])      : '';
 $champ_val       = (isset($_POST['champ_val']))       ? Clean::texte($_POST['champ_val'])        : '';
 $id              = (isset($_POST['f_id']))            ? Clean::entier($_POST['f_id'])            : 0 ;
-$id_ent          = (isset($_POST['f_id_ent']))        ? Clean::texte($_POST['f_id_ent'])         : '';
-$id_gepi         = (isset($_POST['f_id_gepi']))       ? Clean::texte($_POST['f_id_gepi'])        : '';
+$id_ent          = (isset($_POST['f_id_ent']))        ? Clean::id_ent($_POST['f_id_ent'])        : '';
+$id_gepi         = (isset($_POST['f_id_gepi']))       ? Clean::id_ent($_POST['f_id_gepi'])       : '';
 $sconet_id       = (isset($_POST['f_sconet_id']))     ? Clean::entier($_POST['f_sconet_id'])     : 0 ;
 $sconet_num      = (isset($_POST['f_sconet_num']))    ? Clean::entier($_POST['f_sconet_num'])    : 0 ;
 $reference       = (isset($_POST['f_reference']))     ? Clean::ref($_POST['f_reference'])        : '';
-$profil          = (isset($_POST['f_profil']))        ? Clean::texte($_POST['f_profil'])         : '';
-$genre           = (isset($_POST['f_genre']))         ? Clean::texte($_POST['f_genre'])          : '';
+$profil          = (isset($_POST['f_profil']))        ? Clean::lettres($_POST['f_profil'])       : '';
+$genre           = (isset($_POST['f_genre']))         ? Clean::lettres($_POST['f_genre'])        : '';
 $nom             = (isset($_POST['f_nom']))           ? Clean::nom($_POST['f_nom'])              : '';
 $prenom          = (isset($_POST['f_prenom']))        ? Clean::prenom($_POST['f_prenom'])        : '';
 $login           = (isset($_POST['f_login']))         ? Clean::login($_POST['f_login'])          : '';

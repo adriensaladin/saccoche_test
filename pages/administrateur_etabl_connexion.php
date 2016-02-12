@@ -211,8 +211,8 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
         <th>Nom du service</th>
         <th>Période</th>
         <th>Documents générés</th>
-        <th>Contrat signé</th>
-        <th>Règlement perçu</th>
+        <th>Contrat réceptionné</th>
+        <th>Règlement réceptionné</th>
         <th>Service activé</th>
         <th class="nu"><q class="ajouter" title="Ajouter une convention."></q></th>
       </tr>

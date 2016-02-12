@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
 $BASE       = (isset($_POST['f_base']))       ? Clean::entier($_POST['f_base'])       : 0 ;
-$profil     = (isset($_POST['f_profil']))     ? Clean::texte($_POST['f_profil'])      : '';  // structure | webmestre | partenaire
+$profil     = (isset($_POST['f_profil']))     ? Clean::lettres($_POST['f_profil'])    : '';  // structure | webmestre | partenaire
 $login      = (isset($_POST['f_login']))      ? Clean::login($_POST['f_login'])       : '';
 $password   = (isset($_POST['f_password']))   ? Clean::password($_POST['f_password']) : '';
 $partenaire = (isset($_POST['f_partenaire'])) ? Clean::entier($_POST['f_partenaire']) : 0 ;

@@ -69,7 +69,7 @@ $tab_droits_par_page = array
   'public_contact_admin'                    => $tab_droits_profil_public,
   'public_identifiants_perdus'              => $tab_droits_profil_public,
   'public_installation'                     => $tab_droits_profil_public,
-  'public_logout_SSO'                       => $tab_droits_profil_public,
+  'public_sso_logout'                       => $tab_droits_profil_public,
   'public_nouveau_mdp'                      => $tab_droits_profil_public,
   // Profil élève
   'evaluation_demande_eleve'                => $tab_droits_profil_eleve,
@@ -226,7 +226,7 @@ $tab_droits_par_page = array
   'consultation_referentiel_interne'        => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),
   'releve_pdf'                              => array( 'public'=>0 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),
   // Attention à ce dernier cas ! Il faut inclure "public" car un échange est encore effectué avec ce fichier après enregistrement des données de session...
-  'public_login_SSO'                        => array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),
+  'public_sso_login'                        => array( 'public'=>1 , 'eleve'=>1 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),
 );
 
 ?>

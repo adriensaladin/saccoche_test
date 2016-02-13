@@ -44,7 +44,7 @@ $description      = (isset($_POST['f_description']))      ? Clean::texte($_POST[
 $mode_discret     = (isset($_POST['f_mode_discret']))     ? TRUE                                            : FALSE ;
 $doc_sujet        = (isset($_POST['f_doc_sujet']))        ? Clean::texte($_POST['f_doc_sujet'])             : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
 $doc_corrige      = (isset($_POST['f_doc_corrige']))      ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
-$groupe           = (isset($_POST['f_groupe']))           ? Clean::id($_POST['f_groupe'])                   : '';
+$groupe           = (isset($_POST['f_groupe']))           ? Clean::lettres_chiffres($_POST['f_groupe'])     : '';
 $groupe_nom       = (isset($_POST['f_groupe_nom']))       ? Clean::texte($_POST['f_groupe_nom'])            : '';
 $eleves_ordre     = (isset($_POST['f_eleves_ordre']))     ? Clean::texte($_POST['f_eleves_ordre'])          : '';
 $eleve_id         = (isset($_POST['f_eleve_id']))         ? Clean::entier($_POST['f_eleve_id'])             : 0;
@@ -80,7 +80,7 @@ if(mb_strpos($ref,'_'))
   list($devoir_id,$groupe_temp) = explode('_',$ref,2);
   $devoir_id = Clean::entier($devoir_id);
   // Si "groupe" est transmis en POST (pour Ajouter ou Éditer), il faut le prendre comme référence nouvelle ; sinon, on prend le groupe extrait de "ref"
-  $groupe = ($groupe) ? $groupe : Clean::id($groupe_temp) ;
+  $groupe = ($groupe) ? $groupe : Clean::lettres_chiffres($groupe_temp) ;
 }
 else
 {

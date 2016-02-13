@@ -494,8 +494,8 @@ class Session
     'public_identifiants_perdus',
     // sans objet car pas de formulaire
     'force_download', 
-    'public_login_SSO', 
-    'public_logout_SSO',
+    'public_sso_login', 
+    'public_sso_logout',
     'releve_html',
     'releve_pdf',
     'webservices',

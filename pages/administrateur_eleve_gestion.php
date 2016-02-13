@@ -32,8 +32,8 @@ $TITRE = html(Lang::_("Gérer les élèves"));
 // Pas de passage par la page ajax.php, mais pas besoin ici de protection contre attaques type CSRF
 $groupe      = (isset($_POST['f_groupes']))  ? Clean::texte($_POST['f_groupes']) : '' ;
 $statut      = ($groupe=='d3')               ? 0                                 : 1 ;
-$groupe_type = Clean::lettres( substr($groupe,0,1) );
-$groupe_id   = Clean::entier(  substr($groupe,1) );
+$groupe_type = Clean::texte( substr($groupe,0,1) );
+$groupe_id   = Clean::entier( substr($groupe,1) );
 // Construire et personnaliser le formulaire pour restreindre l'affichage
 $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , TRUE /*tout*/ , TRUE /*ancien*/ ) , 'f_groupes' /*select_nom*/ ,    '' /*option_first*/ , $groupe /*selection*/ , 'regroupements' /*optgroup*/ );
 

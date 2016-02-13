@@ -30,7 +30,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 
 $BASE     = (isset($_POST['f_base']))     ? Clean::entier(  $_POST['f_base']    ) : 0 ;
 $courriel = (isset($_POST['f_courriel'])) ? Clean::courriel($_POST['f_courriel']) : '';
-$captcha  = (isset($_POST['f_captcha']))  ? Clean::lettres( $_POST['f_captcha'] ) : '';
+$captcha  = (isset($_POST['f_captcha']))  ? Clean::texte(   $_POST['f_captcha'] ) : '';
 $user_id  = (isset($_POST['f_user']))     ? Clean::entier(  $_POST['f_user']    ) : 0 ;
 
 if( !$courriel ||  !$user_id || ( (HEBERGEUR_INSTALLATION=='multi-structures') && !$BASE ) )

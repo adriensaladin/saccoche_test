@@ -33,7 +33,7 @@ $action        = (isset($_POST['f_quoi']))          ? Clean::texte($_POST['f_quo
 $matiere_id    = (isset($_POST['f_matiere']))       ? Clean::entier($_POST['f_matiere'])        : 0;
 $matiere_nom   = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_matiere_nom'])     : '';
 $groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier($_POST['f_groupe_id'])      : 0;   // C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
-$groupe_type   = (isset($_POST['f_groupe_type']))   ? Clean::lettres($_POST['f_groupe_type'])   : '';
+$groupe_type   = (isset($_POST['f_groupe_type']))   ? Clean::texte($_POST['f_groupe_type'])     : '';
 $groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])      : '';
 
 $qui           = (isset($_POST['f_qui']))           ? Clean::texte($_POST['f_qui'])             : '';

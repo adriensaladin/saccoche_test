@@ -27,14 +27,14 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$type_export = (isset($_POST['f_type']))        ? Clean::texte($_POST['f_type'])          : '';
-$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::lettres($_POST['f_groupe_type']) : '';
-$groupe_nom  = (isset($_POST['f_groupe_nom']))  ? Clean::texte($_POST['f_groupe_nom'])    : '';
-$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])    : 0;
-$matiere_id  = (isset($_POST['f_matiere']))     ? Clean::entier($_POST['f_matiere'])      : 0;
-$matiere_nom = (isset($_POST['f_matiere_nom'])) ? Clean::texte($_POST['f_matiere_nom'])   : '';
-$palier_id   = (isset($_POST['f_palier']))      ? Clean::entier($_POST['f_palier'])       : 0;
-$palier_nom  = (isset($_POST['f_palier_nom']))  ? Clean::texte($_POST['f_palier_nom'])    : '';
+$type_export = (isset($_POST['f_type']))        ? Clean::texte($_POST['f_type'])        : '';
+$groupe_type = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : '';
+$groupe_nom  = (isset($_POST['f_groupe_nom']))  ? Clean::texte($_POST['f_groupe_nom'])  : '';
+$groupe_id   = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
+$matiere_id  = (isset($_POST['f_matiere']))     ? Clean::entier($_POST['f_matiere'])    : 0;
+$matiere_nom = (isset($_POST['f_matiere_nom'])) ? Clean::texte($_POST['f_matiere_nom']) : '';
+$palier_id   = (isset($_POST['f_palier']))      ? Clean::entier($_POST['f_palier'])     : 0;
+$palier_nom  = (isset($_POST['f_palier_nom']))  ? Clean::texte($_POST['f_palier_nom'])  : '';
 
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 

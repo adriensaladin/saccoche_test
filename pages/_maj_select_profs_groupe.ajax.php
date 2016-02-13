@@ -30,10 +30,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$prof_id      = (isset($_POST['f_prof']))        ? Clean::entier($_POST['f_prof'])         : 0;
-$groupe_id    = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])    : 0;
-$groupe_type  = (isset($_POST['f_groupe_type'])) ? Clean::lettres($_POST['f_groupe_type']) : '';
-$option_first = (empty($_POST['f_first']))       ? FALSE                                   : 'tous_profs';
+$prof_id      = (isset($_POST['f_prof']))        ? Clean::entier($_POST['f_prof'])       : 0;
+$groupe_id    = (isset($_POST['f_groupe_id']))   ? Clean::entier($_POST['f_groupe_id'])  : 0;
+$groupe_type  = (isset($_POST['f_groupe_type'])) ? Clean::texte($_POST['f_groupe_type']) : '';
+$option_first = (empty($_POST['f_first']))       ? FALSE                                 : 'tous_profs';
 
 $tab_types = array('Classes'=>'classe' , 'Groupes'=>'groupe') ;
 

@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Identifiants perdus"; // Pas de traduction car pas de choix de langue à ce niveau.
 
 // Récupération du profil
-$PROFIL = (isset($_GET['profil'])) ? Clean::lettres($_GET['profil']) : '' ;
+$PROFIL = (isset($_GET['profil'])) ? Clean::texte($_GET['profil']) : '' ;
 
 if( !in_array( $PROFIL , array('structure','webmestre','partenaire') ) )
 {

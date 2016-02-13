@@ -167,7 +167,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 </div>
 
 <div id="lien_gepi" class="hide">
-  <p class="astuce">Dans <em>GEPI</em>, l'adresse de <em>SACoche</em> à indiquer (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__gepi">DOC</a></span>) est&nbsp;: <b><?php echo URL_DIR_SACOCHE ?></b></p>
+  <p class="astuce">Dans <em>GEPI</em>, l'adresse de <em>SACoche</em> à indiquer (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__Gepi">DOC</a></span>) est&nbsp;: <b><?php echo URL_DIR_SACOCHE ?></b></p>
 </div>
 
 <div id="info_inacheve" class="hide">
@@ -211,8 +211,8 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
         <th>Nom du service</th>
         <th>Période</th>
         <th>Documents générés</th>
-        <th>Contrat réceptionné</th>
-        <th>Règlement réceptionné</th>
+        <th>Contrat signé</th>
+        <th>Règlement perçu</th>
         <th>Service activé</th>
         <th class="nu"><q class="ajouter" title="Ajouter une convention."></q></th>
       </tr>

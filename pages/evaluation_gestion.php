@@ -28,9 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 // Réception d'id transmis via un lien de [Évaluer un élève à la volée].
-$auto_voir_devoir_id   = isset($_GET['devoir_id'])   ? Clean::entier($_GET['devoir_id'])    : 'false' ;
-$auto_voir_groupe_type = isset($_GET['groupe_type']) ? Clean::lettres($_GET['groupe_type']) : 'E' ;
-$auto_voir_groupe_id   = isset($_GET['groupe_id'])   ? Clean::entier($_GET['groupe_id'])    : 'false' ;
+$auto_voir_devoir_id   = isset($_GET['devoir_id'])   ? Clean::entier($_GET['devoir_id'])  : 'false' ;
+$auto_voir_groupe_type = isset($_GET['groupe_type']) ? Clean::texte($_GET['groupe_type']) : 'E' ;
+$auto_voir_groupe_id   = isset($_GET['groupe_id'])   ? Clean::entier($_GET['groupe_id'])  : 'false' ;
 
 // Réception d'un formulaire depuis un tableau de synthèse bilan
 // Dans ce cas il s'agit d'une évaluation sur une sélection d'élèves.

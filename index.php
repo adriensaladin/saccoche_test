@@ -166,7 +166,7 @@ if(is_file(CHEMIN_FICHIER_CONFIG_INSTALL))
 // Authentification requise par SSO
 if(Session::$_sso_redirect)
 {
-  require(CHEMIN_DOSSIER_PAGES.'public_sso_login.php');
+  require(CHEMIN_DOSSIER_PAGES.'public_login_SSO.php');
   // En cas de redirection pour cause de profil incompatible, il faut vérifier que l'on n'est pas encore identifié avec le mauvais profil.
   if( !Session::verifier_droit_acces($_SESSION['USER_PROFIL_TYPE']) && !Session::verifier_droit_acces('public') )
   {

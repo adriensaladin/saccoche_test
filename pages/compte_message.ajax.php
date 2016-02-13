@@ -33,8 +33,8 @@ if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $action          = (isset($_POST['f_action']))          ? Clean::texte($_POST['f_action'])          : '';
-$profil_type     = (isset($_POST['f_profil_type']))     ? Clean::lettres($_POST['f_profil_type'])   : '';
-$groupe_type     = (isset($_POST['f_groupe_type']))     ? Clean::lettres($_POST['f_groupe_type'])   : ''; // d n c g b
+$profil_type     = (isset($_POST['f_profil_type']))     ? Clean::texte($_POST['f_profil_type'])     : '';
+$groupe_type     = (isset($_POST['f_groupe_type']))     ? Clean::texte($_POST['f_groupe_type'])     : ''; // d n c g b
 $groupe_id       = (isset($_POST['f_groupe_id']))       ? Clean::entier($_POST['f_groupe_id'])      : 0;
 $message_id      = (isset($_POST['f_id']))              ? Clean::entier($_POST['f_id'])             : 0;
 $date_debut_fr   = (isset($_POST['f_debut_date']))      ? Clean::date_fr($_POST['f_debut_date'])    : '';

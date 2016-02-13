@@ -36,7 +36,7 @@ class FileSystem
   // Tableau avec la liste des extensions interdites classiques
   public static $tab_extensions_interdites = array(
     'bat', 'cgi', 'com', 'exe',
-    'php', 'php3','php4', 'php5', 'php6', 'phtml',
+    'php', 'php3','php4', 'php5', 'php6', 'php7', 'phtml',
     'pl', 'py','jsp', 'asp', 'sh',
     'zip',
   );

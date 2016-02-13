@@ -269,9 +269,9 @@ if($action=='import_loginmdp')
   }
   // Observer le contenu du fichier et comparer avec le contenu de la base
   $fcontenu_pdf_tab = array();
-  $lignes_ras = '';
-  $lignes_mod = '';
-  $lignes_pb  = '';
+  $lignes_ras     = '';
+  $lignes_modif   = '';
+  $lignes_doublon = '';
   foreach($tab_users_fichier['login'] as $i_fichier => $login)
   {
     if( ($tab_users_fichier['login'][$i_fichier]=='') && ($tab_users_fichier['mdp'][$i_fichier]=='') )
@@ -311,7 +311,7 @@ if($action=='import_loginmdp')
           // Contenu du fichier à modifier : login non indiqué et mdp différents
           $password = $tab_users_fichier['mdp'][$i_fichier];
           DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>Outil::crypter_mdp($password)) );
-          $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
+          $lignes_modif .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
           $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id_base]."\r\n".'Mot de passe : '.$password;
         }
       }
@@ -333,7 +333,7 @@ if($action=='import_loginmdp')
           // Contenu du fichier à modifier : logins identiques et mdp différents
           $password = $tab_users_fichier['mdp'][$i_fichier];
           DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':password'=>Outil::crypter_mdp($password)) );
-          $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
+          $lignes_modif .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="i">Utilisateur : inchangé</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
           $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$tab_users_base['login'][$id_base]."\r\n".'Mot de passe : '.$password;
         }
       }
@@ -343,14 +343,14 @@ if($action=='import_loginmdp')
         if(in_array($tab_users_fichier['login'][$i_fichier],$tab_users_base['login']))
         {
           // Contenu du fichier à problème : login déjà pris
-          $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td colspan="2">nom d\'utilisateur proposé déjà affecté à un autre utilisateur</td></tr>'.NL;
+          $lignes_doublon .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td colspan="2">nom d\'utilisateur proposé déjà affecté à un autre utilisateur</td></tr>'.NL;
         }
         elseif( ($tab_users_fichier['mdp'][$i_fichier]=='') || (Outil::crypter_mdp($tab_users_fichier['mdp'][$i_fichier])==$tab_users_base['mdp'][$id_base]) )
         {
           // Contenu du fichier à modifier : logins différents et mdp identiques on non imposé
           $login = $tab_users_fichier['login'][$i_fichier];
           DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login) );
-          $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="i">Mot de passe : inchangé</td></tr>'.NL;
+          $lignes_modif .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="i">Mot de passe : inchangé</td></tr>'.NL;
           $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : inchangé';
           $tab_users_base['login'][$id_base] = $login; // Prendre en compte cette modif de login dans les comparaisons futures
         }
@@ -360,7 +360,7 @@ if($action=='import_loginmdp')
           $login = $tab_users_fichier['login'][$i_fichier];
           $password = $tab_users_fichier['mdp'][$i_fichier];
           DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':login'=>$login,':password'=>Outil::crypter_mdp($password)) );
-          $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
+          $lignes_modif .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Utilisateur : '.html($login).'</td><td class="b">Mot de passe : '.html($password).'</td></tr>'.NL;
           $fcontenu_pdf_tab[] = $tab_users_base['info'][$id_base]."\r\n".$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base]."\r\n".'Utilisateur : '.$login."\r\n".'Mot de passe : '.$password;
           $tab_users_base['login'][$id_base] = $login; // Prendre en compte cette modif de login dans les comparaisons futures
         }
@@ -389,18 +389,18 @@ if($action=='import_loginmdp')
   }
   // On complète le bilan et on affiche le retour
   $ligne_vide = '<tr><td colspan="3">Aucun</td></tr>'.NL;
-  if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
-  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
+  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   Json::add_str(  '<li><b>Résultat de l\'analyse et des opérations effectuées :</b></li>'.NL);
   Json::add_str('</ul>'.NL);
   Json::add_str('<table class="p">'.NL);
   Json::add_str(  '<tbody>'.NL);
   Json::add_str(    '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants ont été modifiés.</th></tr>'.NL);
-  Json::add_str(    $lignes_mod);
+  Json::add_str(    $lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants n\'ont pas pu être modifiés.</th></tr>'.NL);
-  Json::add_str(    $lignes_pb);
+  Json::add_str(    $lignes_doublon);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="3">Comptes trouvés dans le fichier dont les identifiants sont inchangés.</th></tr>'.NL);
   Json::add_str(    $lignes_ras);
@@ -485,9 +485,11 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
     $tab_users_base['sconet_num'][$DB_ROW['user_id']] = $DB_ROW['user_sconet_elenoet'];
   }
   // Observer le contenu du fichier et comparer avec le contenu de la base
-  $lignes_ras = '';
-  $lignes_mod = '';
-  $lignes_pb  = '';
+  $lignes_ras     = '';
+  $lignes_modif   = '';
+  $lignes_doublon = '';
+  $lignes_homo    = '';
+  $lignes_inconnu = '';
   foreach($tab_users_fichier['id_gepi'] as $i_fichier => $id_gepi)
   {
     if($tab_users_fichier['id_gepi'][$i_fichier]=='')
@@ -513,12 +515,12 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
         if($nb_homonymes == 0)
         {
           // Contenu du fichier à ignorer : utilisateur non trouvé dans la base
-          $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>nom et prénom non trouvés dans la base</td></tr>'.NL;
+          $lignes_inconnu .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>nom et prénom non trouvés dans la base</td></tr>'.NL;
         }
         elseif($nb_homonymes > 1)
         {
           // Contenu du fichier à ignorer : plusieurs homonymes trouvés dans la base
-          $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>'.NL;
+          $lignes_homo .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>'.NL;
         }
         else
         {
@@ -538,13 +540,13 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
           if(in_array($tab_users_fichier['id_gepi'][$i_fichier],$tab_users_base['id_gepi']))
           {
             // Contenu du fichier à problème : id_gepi déjà pris
-            $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>identifiant de GEPI déjà affecté à un autre utilisateur</td></tr>'.NL;
+            $lignes_doublon .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_gepi'][$i_fichier].']').'</td><td>identifiant de GEPI déjà affecté à un autre utilisateur</td></tr>'.NL;
           }
           else
           {
             // Contenu du fichier à modifier : id_gepi nouveau
             DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':id_gepi'=>$id_gepi) );
-            $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td class="b">Id Gepi : '.html($id_gepi).'</td></tr>'.NL;
+            $lignes_modif .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier]).'</td><td class="b">Id Gepi : '.html($id_gepi).'</td></tr>'.NL;
           }
         }
       }
@@ -552,17 +554,19 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
   }
   // On affiche le retour
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
-  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
+  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
+  if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
+  if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
   Json::add_str('<table class="p">'.NL);
   Json::add_str(  '<tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi a été modifié.</th></tr>'.NL);
-  Json::add_str(    $lignes_mod);
+  Json::add_str(    $lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str(    $lignes_pb);
+  Json::add_str(    $lignes_doublon.$lignes_homo.$lignes_inconnu);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi est inchangé.</th></tr>'.NL);
   Json::add_str(    $lignes_ras);
@@ -676,9 +680,11 @@ if($action=='import_ent')
     $tab_users_base['info'][$DB_ROW['user_id']]      = ($DB_ROW['user_profil_type']=='eleve') ? $DB_ROW['groupe_nom'] : $DB_ROW['user_profil_nom_court_singulier'] ;
   }
   // Observer le contenu du fichier et comparer avec le contenu de la base
-  $lignes_ras = '';
-  $lignes_mod = '';
-  $lignes_pb  = '';
+  $lignes_ras     = '';
+  $lignes_modif   = '';
+  $lignes_homo    = '';
+  $lignes_inconnu = '';
+  $lignes_doublon = '';
   foreach($tab_users_fichier['id_ent'] as $i_fichier => $id_ent)
   {
     if($tab_users_fichier['id_ent'][$i_fichier]=='')
@@ -695,7 +701,7 @@ if($action=='import_ent')
         if($id_base == FALSE)
         {
           // Contenu du fichier à ignorer : utilisateur non trouvé dans la base
-          $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant Sconet '.$tab_users_fichier['id_sconet'][$i_fichier].' non trouvé dans la base</td></tr>'.NL;
+          $lignes_inconnu .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant Sconet '.$tab_users_fichier['id_sconet'][$i_fichier].' non trouvé dans la base</td></tr>'.NL;
         }
         else
         {
@@ -710,13 +716,13 @@ if($action=='import_ent')
             if(in_array($tab_users_fichier['id_ent'][$i_fichier],$tab_users_base['id_ent']))
             {
               // Contenu du fichier à problème : id_ent déjà pris
-              $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>'.NL;
+              $lignes_doublon .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>'.NL;
             }
             else
             {
               // Contenu du fichier à modifier : id_ent nouveau
               DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':id_ent'=>$id_ent) );
-              $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>'.NL;
+              $lignes_modif .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>'.NL;
             }
           }
         }
@@ -731,12 +737,12 @@ if($action=='import_ent')
         if($nb_homonymes == 0)
         {
           // Contenu du fichier à ignorer : utilisateur non trouvé dans la base
-          $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>nom et prénom non trouvés dans la base</td></tr>'.NL;
+          $lignes_inconnu .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>nom et prénom non trouvés dans la base</td></tr>'.NL;
         }
         elseif($nb_homonymes > 1)
         {
           // Contenu du fichier à ignorer : plusieurs homonymes trouvés dans la base
-          $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>'.NL;
+          $lignes_homo .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>'.NL;
         }
         else
         {
@@ -752,13 +758,13 @@ if($action=='import_ent')
             if(in_array($tab_users_fichier['id_ent'][$i_fichier],$tab_users_base['id_ent']))
             {
               // Contenu du fichier à problème : id_ent déjà pris
-              $lignes_pb .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>'.NL;
+              $lignes_doublon .= '<tr><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ['.$tab_users_fichier['id_ent'][$i_fichier].']').'</td><td>identifiant d\'ENT déjà affecté à un autre utilisateur</td></tr>'.NL;
             }
             else
             {
               // Contenu du fichier à modifier : id_ent nouveau
               DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':id_ent'=>$id_ent) );
-              $lignes_mod .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>'.NL;
+              $lignes_modif .= '<tr class="new"><td>'.html($tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$tab_users_base['info'][$id_base].')').'</td><td class="b">Id ENT : '.html($id_ent).'</td></tr>'.NL;
             }
           }
         }
@@ -767,17 +773,19 @@ if($action=='import_ent')
   }
   // On affiche le retour
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
-  if(empty($lignes_mod    )) { $lignes_mod     = $ligne_vide; }
-  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
+  if(empty($lignes_doublon)) { $lignes_inconnu = $ligne_vide; }
+  if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
+  if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
   Json::add_str('<table class="p">'.NL);
   Json::add_str(  '<tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT a été modifié.</th></tr>'.NL);
-  Json::add_str(    $lignes_mod);
+  Json::add_str(    $lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str(    $lignes_pb);
+  Json::add_str(    $lignes_doublon.$lignes_homo.$lignes_inconnu);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
   Json::add_str(    $lignes_ras);
@@ -821,7 +829,8 @@ if($action=='COPY_id_lcs_TO_id_ent')
   // Pour chaque user de la base, rechercher son uid dans le LCS
   $lignes_ras     = '';
   $lignes_modif   = '';
-  $lignes_pb      = '';
+  $lignes_erreur  = '';
+  $lignes_doublon = '';
   $lignes_inconnu = ''; // de SACoche non trouvé dans LCS
   foreach($DB_TAB as $DB_ROW)
   {
@@ -846,7 +855,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
       if($code_erreur)
       {
         // Contenu de SACoche à problème : retour erroné du LCS
-        $lignes_pb .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non trouvé : erreur LCS n°'.html($code_erreur).'</td></tr>'.NL;
+        $lignes_erreur .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>non trouvé : erreur LCS n°'.html($code_erreur).'</td></tr>'.NL;
       }
       elseif(count($tab_valeurs_retournees)==0)
       {
@@ -858,7 +867,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
       {
         // Contenu de SACoche à problème : plusieurs réponses retournées par le LCS
         $identifiant = ($DB_ROW['user_profil_type']=='eleve') ? $DB_ROW['user_sconet_elenoet'] : $DB_ROW['user_sconet_id'] ;
-        $lignes_pb .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>Identifiant '.html($identifiant).' trouvé plusieurs fois dans le LCS</td></tr>'.NL;
+        $lignes_doublon .= '<tr><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'].' ['.$DB_ROW['user_id_ent'].']').'</td><td>Identifiant '.html($identifiant).' trouvé plusieurs fois dans le LCS</td></tr>'.NL;
       }
       else
       {
@@ -881,7 +890,8 @@ if($action=='COPY_id_lcs_TO_id_ent')
   // On affiche le bilan
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
+  if(empty($lignes_erreur )) { $lignes_erreur  = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
@@ -891,7 +901,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
   Json::add_str($lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str($lignes_pb);
+  Json::add_str($lignes_doublon.$lignes_erreur);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans le LCS dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
   Json::add_str($lignes_ras);
@@ -1000,7 +1010,8 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
   // Observer le contenu de l'ENT et comparer avec le contenu de la base
   $lignes_ras     = '';
   $lignes_modif   = '';
-  $lignes_pb      = '';
+  $lignes_homo    = '';
+  $lignes_doublon = '';
   $lignes_inconnu = ''; // de SACoche non trouvé dans l'ENT
   $lignes_reste   = ''; // de l'ENT non trouvé dans SACoche
   foreach($tab_users_base['id_ent'] as $user_id => $id_ent_SACoche)
@@ -1018,7 +1029,7 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
     elseif($nb_homonymes > 1)
     {
       // Contenu de SACoche à problème : plusieurs homonymes trouvés dans l'ENT
-      $lignes_pb .= '<tr><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ['.$id_ent_SACoche.']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>'.NL;
+      $lignes_homo .= '<tr><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ['.$id_ent_SACoche.']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>'.NL;
     }
     else
     {
@@ -1035,7 +1046,7 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
         if(in_array($id_ent_ENT,$tab_users_base['id_ent']))
         {
           // Contenu de SACoche à problème : id_ent déjà pris
-          $lignes_pb .= '<tr><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ['.$id_ent_SACoche.']').'</td><td>identifiant d\'ENT ['.html($id_ent_ENT).'] déjà affecté à un autre utilisateur</td></tr>'.NL;
+          $lignes_doublon .= '<tr><td>'.html($tab_users_base['nom'][$user_id].' '.$tab_users_base['prenom'][$user_id].' ['.$id_ent_SACoche.']').'</td><td>identifiant d\'ENT ['.html($id_ent_ENT).'] déjà affecté à un autre utilisateur</td></tr>'.NL;
         }
         else
         {
@@ -1057,7 +1068,8 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
   // On affiche le bilan
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
+  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   if(empty($lignes_reste  )) { $lignes_reste   = $ligne_vide; }
@@ -1068,7 +1080,7 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
   Json::add_str($lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str($lignes_pb);
+  Json::add_str($lignes_doublon.$lignes_homo);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
   Json::add_str($lignes_ras);
@@ -1149,7 +1161,8 @@ if($action=='COPY_id_laclasse_TO_id_ent')
   // Observer le contenu de l'ENT et comparer avec le contenu de la base
   $lignes_ras     = '';
   $lignes_modif   = '';
-  $lignes_pb      = '';
+  $lignes_homo    = '';
+  $lignes_doublon = '';
   $lignes_inconnu = ''; // de SACoche non trouvé dans l'ENT
   $lignes_reste   = ''; // de l'ENT non trouvé dans SACoche
   // Pour chaque user SACoche ...
@@ -1176,7 +1189,7 @@ if($action=='COPY_id_laclasse_TO_id_ent')
       elseif($nb_homonymes > 1)
       {
         // Contenu de SACoche à problème : plusieurs homonymes trouvés dans l'ENT
-        $lignes_pb .= '<tr><td>'.html($tab_profils[$tab_users_base['profil'][$i_base]].' | '.$tab_users_base['nom'][$i_base].' '.$tab_users_base['prenom'][$i_base].' ['.$id_ent_SACoche.']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>'.NL;
+        $lignes_homo .= '<tr><td>'.html($tab_profils[$tab_users_base['profil'][$i_base]].' | '.$tab_users_base['nom'][$i_base].' '.$tab_users_base['prenom'][$i_base].' ['.$id_ent_SACoche.']').'</td><td>homonymes trouvés dans la base : traiter ce cas manuellement</td></tr>'.NL;
       }
       else
       {
@@ -1197,7 +1210,7 @@ if($action=='COPY_id_laclasse_TO_id_ent')
         if(in_array($id_ent_ENT,$tab_users_base['id_ent']))
         {
           // Contenu de SACoche à problème : id_ent déjà pris
-          $lignes_pb .= '<tr><td>'.html($tab_profils[$tab_users_base['profil'][$i_base]].' | '.$tab_users_base['nom'][$i_base].' '.$tab_users_base['prenom'][$i_base].' ['.$id_ent_SACoche.']').'</td><td>identifiant d\'ENT ['.html($id_ent_ENT).'] déjà affecté à un autre utilisateur</td></tr>'.NL;
+          $lignes_doublon .= '<tr><td>'.html($tab_profils[$tab_users_base['profil'][$i_base]].' | '.$tab_users_base['nom'][$i_base].' '.$tab_users_base['prenom'][$i_base].' ['.$id_ent_SACoche.']').'</td><td>identifiant d\'ENT ['.html($id_ent_ENT).'] déjà affecté à un autre utilisateur</td></tr>'.NL;
         }
         else
         {
@@ -1219,7 +1232,8 @@ if($action=='COPY_id_laclasse_TO_id_ent')
   // On affiche le bilan
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_pb     )) { $lignes_pb      = $ligne_vide; }
+  if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
+  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   if(empty($lignes_reste  )) { $lignes_reste   = $ligne_vide; }
@@ -1230,7 +1244,7 @@ if($action=='COPY_id_laclasse_TO_id_ent')
   Json::add_str($lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str($lignes_pb);
+  Json::add_str($lignes_doublon.$lignes_homo);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
   Json::add_str($lignes_ras);

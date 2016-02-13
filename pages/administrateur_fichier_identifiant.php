@@ -109,7 +109,7 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
 
   <fieldset id="fieldset_import_id_lcs" class="hide">
     <hr />
-    <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__LCS">DOC : Intégration de SACoche dans un LCS</a></span></p>
+    <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification__lcs">DOC : Intégration de SACoche dans un LCS</a></span></p>
     <?php
     if(IS_HEBERGEMENT_SESAMATH)
     {
@@ -265,7 +265,7 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
     <hr />
     <h3>En important un fichier</h3>
     <ul class="puce">
-      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_identifiant_Gepi_SACoche">DOC : Import des identifiants de Gepi dans SACoche.</a></span></li>
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_identifiant_gepi_sacoche">DOC : Import des identifiants de Gepi dans SACoche.</a></span></li>
       <li>Importer le fichier <b>base_professeur_gepi.csv</b> issu de Gepi : <button id="import_gepi_profs" type="button" class="fichier_import">Parcourir...</button></li>
       <li>Importer le fichier <b>base_responsable_gepi.csv</b> issu de Gepi : <button id="import_gepi_parents" type="button" class="fichier_import">Parcourir...</button></li>
       <li>Importer le fichier <b>base_eleve_gepi.csv</b> issu de Gepi : <button id="import_gepi_eleves" type="button" class="fichier_import">Parcourir...</button></li>

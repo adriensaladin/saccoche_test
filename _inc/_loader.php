@@ -870,13 +870,9 @@ function exit_error( $titre , $contenu , $lien='accueil' )
   {
     Cookie::effacer(COOKIE_MEMOGET);
   }
-  if( SACoche == 'ajax' )
+  if( in_array( SACoche , array('ajax','appel_externe') ) )
   {
     Json::end( FALSE , str_replace('<br />',' ',$contenu) );
-  }
-  elseif( SACoche == 'appel_externe' )
-  {
-    exit( $contenu ); // Erreur ...
   }
   else
   {

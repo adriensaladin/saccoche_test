@@ -120,7 +120,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_items">DOC : Synthèse d'items.</a></span></div>
-<div class="astuce">Un administrateur ou un directeur doit préalablement choisir l'ordre d'affichage des matières (<span class="manuel"><a href="index.php?page=documentation__support_administrateur__gestion_releves_bilans#toggle_ordre_matieres">DOC</a></span>) et le type de synthèse adapté à chaque référentiel (<span class="manuel"><a href="index.php?page=documentation__support_administrateur__gestion_releves_bilans#toggle_type_synthese">DOC</a></span>).</div>
+<div class="astuce">Un administrateur ou un directeur doit préalablement choisir l'ordre d'affichage des matières (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_releves_bilans#toggle_ordre_matieres">DOC</a></span>) et le type de synthèse adapté à chaque référentiel (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_releves_bilans#toggle_type_synthese">DOC</a></span>).</div>
 <?php
 $nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
 $s = ($nb_inconnu>1) ? 's' : '' ;

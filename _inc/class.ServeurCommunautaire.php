@@ -285,7 +285,7 @@ class ServeurCommunautaire
   public static function Sesamath_afficher_formulaire_geo1()
   {
     $tab_post = array();
-    $tab_post['fichier']      = 'sesamath_afficher_formulaire_geo';
+    $tab_post['fichier']      = 'Sesamath_afficher_formulaire_geo';
     $tab_post['etape']        = 1;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
     return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
@@ -300,7 +300,7 @@ class ServeurCommunautaire
   public static function Sesamath_afficher_formulaire_geo2($geo1)
   {
     $tab_post = array();
-    $tab_post['fichier']      = 'sesamath_afficher_formulaire_geo';
+    $tab_post['fichier']      = 'Sesamath_afficher_formulaire_geo';
     $tab_post['etape']        = 2;
     $tab_post['geo1']         = $geo1;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
@@ -317,7 +317,7 @@ class ServeurCommunautaire
   public static function Sesamath_afficher_formulaire_geo3($geo1,$geo2)
   {
     $tab_post = array();
-    $tab_post['fichier']      = 'sesamath_afficher_formulaire_geo';
+    $tab_post['fichier']      = 'Sesamath_afficher_formulaire_geo';
     $tab_post['etape']        = 3;
     $tab_post['geo1']         = $geo1;
     $tab_post['geo2']         = $geo2;
@@ -334,7 +334,7 @@ class ServeurCommunautaire
   public static function Sesamath_lister_structures_by_commune($geo3)
   {
     $tab_post = array();
-    $tab_post['fichier']      = 'sesamath_lister_structures';
+    $tab_post['fichier']      = 'Sesamath_lister_structures';
     $tab_post['methode']      = 'commune';
     $tab_post['geo3']         = $geo3;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
@@ -350,7 +350,7 @@ class ServeurCommunautaire
   public static function Sesamath_recuperer_structure_by_UAI($uai)
   {
     $tab_post = array();
-    $tab_post['fichier']      = 'sesamath_lister_structures';
+    $tab_post['fichier']      = 'Sesamath_lister_structures';
     $tab_post['methode']      = 'UAI';
     $tab_post['uai']          = $uai;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible

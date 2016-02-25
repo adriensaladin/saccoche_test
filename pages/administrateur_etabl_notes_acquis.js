@@ -655,7 +655,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_symbole);
         return false;
       }
-    );
+    ); 
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_symbole(jqXHR, textStatus, errorThrown)

@@ -350,7 +350,7 @@ class Html
     $etat    = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;
     $bulle   = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.html($tab_infos['info']).'"' ;
     $colspan = ($colspan) ? ' colspan="'.$colspan.'"' : '' ; // État de validation d'un pilier dans un colspan
-    $class   = ($detail) ? ' class="hc V'.$tab_infos['etat'].'"' : ( ( ($etat_pilier==1) && ($tab_infos['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? '' : ' class="V'.$tab_infos['etat'].'"' ) ; // État de validation d'un item à indiquer comme inutile si le pilier est validé
+    $class   = ($detail) ? ' class="hc v'.$tab_infos['etat'].'"' : ( ( ($etat_pilier==1) && ($tab_infos['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? '' : ' class="v'.$tab_infos['etat'].'"' ) ; // État de validation d'un item à indiquer comme inutile si le pilier est validé
     $texte   = ($detail) ? ( ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ) : '' ;
     return '<'.$type_cellule.$colspan.$class.$bulle.'>'.$texte.'</'.$type_cellule.'>';
   }

@@ -141,7 +141,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_logo);
         return false;
       }
-    );
+    ); 
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_logo(jqXHR, textStatus, errorThrown)
@@ -221,7 +221,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions);
         return false;
       }
-    );
+    ); 
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)

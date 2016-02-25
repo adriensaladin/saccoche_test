@@ -362,7 +362,7 @@ $(document).ready
           return false;
         }
       }
-    );
+    ); 
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)

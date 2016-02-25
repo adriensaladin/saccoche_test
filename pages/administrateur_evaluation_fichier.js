@@ -252,7 +252,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_import);
         return false;
       }
-    );
+    ); 
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_import(jqXHR, textStatus, errorThrown)

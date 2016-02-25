@@ -880,9 +880,30 @@ function testMail(adresse)
 function test_uai_format(value)
 {
   var uai = value.toUpperCase();
-  var RegExp_Ramsese = /^[0-9]{7}[ABCDEFGHJKLMNPRSTUVWXYZ]{1}$/ ;
-  var RegExp_Rhodes  = /^[0-9]{6}X[ABCDEFGHJKLMNPRSTUVWXYZ]{1}$/ ;
-  return RegExp_Ramsese.test(uai) || RegExp_Rhodes.test(uai);
+  if(uai.length!=8)
+  {
+    return false;
+  }
+  else
+  {
+    var uai_fin = uai.substring(7,8);
+    if((uai_fin<"A")||(uai_fin>"Z"))
+    {
+      return false;
+    }
+    else
+    {
+      for(i=0;i<7;i++)
+      {
+        var t = uai.substring(i,i+1);
+        if((t<"0")||(t>"9"))
+        {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
 }
 jQuery.validator.addMethod
 (
@@ -891,28 +912,19 @@ jQuery.validator.addMethod
     return this.optional(element) || test_uai_format(value) ;
   }
   , "il faut 7 chiffres suivis d'une lettre"
-);
+); 
 
 // Méthode pour vérifier la clef de contrôle du numéro UAI
 function test_uai_clef(value)
 {
   var uai = value.toUpperCase();
-  if( uai.substring(6,7) != 'X' )
-  {
-    // Base RAMSESE (établissement du système éducatif français) : 7 chiffres suivis d'une lettre de contrôle basée sur le modulo 23 du nombre
-    var uai_nombre = uai.substring(0,7);
-    var reste = uai_nombre%23;
-  }
-  else
-  {
-    // Base RHODES (organismes de détachement hors éducation) : 6 chiffres suivis du caractère "X" puis d'une lettre de contrôle basée sur le modulo 23 du ( nombre * 8 + 1 )
-    var uai_nombre = uai.substring(0,6);
-    var reste = (uai_nombre*8+1)%23;
-  }
-  var uai_lettre = uai.substring(7,8);
-  var alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
-  var clef = alphabet.substring(reste,reste+1);
-  return (clef==uai_lettre) ? true : false ;
+  var uai_valide = true;
+  var uai_nombre = uai.substring(0,7);
+  var uai_fin = uai.substring(7,8);
+  alphabet = "ABCDEFGHJKLMNPRSTUVWXYZ";
+  reste = uai_nombre-(23*Math.floor(uai_nombre/23));
+  clef = alphabet.substring(reste,reste+1);;
+  return (clef==uai_fin) ? true : false ;
 }
 jQuery.validator.addMethod
 (
@@ -921,7 +933,7 @@ jQuery.validator.addMethod
     return this.optional(element) || test_uai_clef(value) ;
   }
   , "clef de contrôle incompatible"
-);
+); 
 
 // Méthode pour valider les dates de la forme jj/mm/aaaa (trouvé dans le zip du plugin, corrige en plus un bug avec Safari)
 function test_dateITA(value)
@@ -962,7 +974,7 @@ jQuery.validator.addMethod
     return this.optional(element) || (value.match(new RegExp(param))) ;
   }
   , "élément manquant"
-);
+); 
 
 /**
  * Ajout d'une méthode pour tester la syntaxe d'un domaine
@@ -978,7 +990,7 @@ jQuery.validator.addMethod
     return this.optional(element) || test_domaine(value) ;
   }
   , "élément manquant"
-);
+); 
 
 /**
  * Ajout d'une alerte dans le DOM sans jQuery.
@@ -1745,7 +1757,7 @@ $(document).ready
                     $(this).ajaxSubmit(ajaxOptions_demande_evaluation);
                     return false;
                   }
-                );
+                ); 
                 // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
                 function retour_form_erreur_demande_evaluation(jqXHR, textStatus, errorThrown)
                 {

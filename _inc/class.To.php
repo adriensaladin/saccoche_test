@@ -32,7 +32,7 @@ class To
   // Méthodes publiques
   // //////////////////////////////////////////////////
 
-  /**
+  /*
    * Convertir l'utf-8 en windows-1252 pour compatibilité avec FPDF
    * 
    * @param string
@@ -44,7 +44,7 @@ class To
     return mb_convert_encoding($text,'Windows-1252','UTF-8');
   }
 
-  /**
+  /*
    * Convertir l'utf-8 en windows-1252 pour un export CSV compatible avec Ooo et Word.
    * 
    * @param string
@@ -56,7 +56,7 @@ class To
     return mb_convert_encoding($text,'Windows-1252','UTF-8');
   }
 
-  /**
+  /*
    * Convertir un contenu en UTF-8 si besoin ; à effectuer en particulier pour les imports tableur.
    * Remarque : si on utilise utf8_encode() ou mb_convert_encoding() sans le paramètre 'Windows-1252' ça pose des pbs pour '’' 'Œ' 'œ' etc.
    * 

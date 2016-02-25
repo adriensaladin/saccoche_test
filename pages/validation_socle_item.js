@@ -299,7 +299,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions0);
         return false;
       }
-    );
+    ); 
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi0(formData, jqForm, options)

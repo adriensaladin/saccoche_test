@@ -327,7 +327,7 @@ $(document).ready
           return false;
         }
       }
-    );
+    ); 
 
     // Fonction précédent le traitement du formulaire (avec jquery.form.js)
     function action_form_avant_serialize(jqForm, options)

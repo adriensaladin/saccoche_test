@@ -135,7 +135,7 @@ if( ($action=='delete_logo') && $logo )
 // Enregistrer le nouveau fichier de paramètres
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='enregistrer') && ( !$uai || Outil::tester_UAI($uai) ) && $denomination && $nom && $prenom && $courriel )
+if( ($action=='enregistrer') && $denomination && $nom && $prenom && $courriel )
 {
   // Vérifier le domaine du serveur mail seulement en mode multi-structures car ce peut être sinon une installation sur un serveur local non ouvert sur l'extérieur.
   if(HEBERGEUR_INSTALLATION=='multi-structures')

@@ -196,7 +196,7 @@ if( $step==41 )
   $prenom       = (isset($_POST['f_prenom']))       ? Clean::prenom($_POST['f_prenom'])      : '';
   $courriel     = (isset($_POST['f_courriel']))     ? Clean::courriel($_POST['f_courriel'])  : '';
   $password     = (isset($_POST['f_password1']))    ? Clean::password($_POST['f_password1']) : '';
-  if( !in_array($installation,array('mono-structure','multi-structures')) || ( $uai && !Outil::tester_UAI($uai) ) || !$denomination || !$nom || !$prenom || !$courriel || !$password )
+  if( !in_array($installation,array('mono-structure','multi-structures')) || !$denomination || !$nom || !$prenom || !$courriel || !$password )
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }

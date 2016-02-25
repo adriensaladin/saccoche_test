@@ -820,7 +820,7 @@ $(document).ready
           $(this).ajaxSubmit(ajaxOptions_ressource);
           return false;
         }
-      );
+      ); 
 
     }
 

@@ -63,7 +63,7 @@ $geo_ordre_format   = '%0'.$geo_ordre_longueur.'u';
 // Ajouter un nouvel établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomination && ( !$uai || Outil::tester_UAI($uai) ) && $contact_nom && $contact_prenom && $contact_courriel && $date_fr )
+if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomination && $contact_nom && $contact_prenom && $contact_courriel && $date_fr )
 {
   // Vérifier que le n° de base est disponible (si imposé)
   if($base_id)

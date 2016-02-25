@@ -380,7 +380,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_saisie_deportee);
         return false;
       }
-    );
+    ); 
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_saisie_deportee(jqXHR, textStatus, errorThrown)

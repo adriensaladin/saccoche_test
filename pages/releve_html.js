@@ -66,7 +66,7 @@ $(document).ready
         var action = $('#f_action option:selected').val();
         if(action=='evaluer_items_perso')
         {
-          $('#form_synthese input[name=id_req\\[\\]]').css('display',display_mode);
+          $('#form_synthese input[name=id_req\\[\\]]').css('display',display_mode); 
           $('#span_submit').show(0);
         }
         else if(action=='evaluer_items_commun')

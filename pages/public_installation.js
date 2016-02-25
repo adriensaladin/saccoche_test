@@ -280,7 +280,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_info_heberg);
         return false;
       }
-    ); 
+    );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_info_heberg_avant_envoi(formData, jqForm, options)
@@ -447,7 +447,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_param_mysql);
         return false;
       }
-    ); 
+    );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_param_mysql_avant_envoi(formData, jqForm, options)

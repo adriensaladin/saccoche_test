@@ -20,7 +20,7 @@ Autoload
 L'autoload de SimpleSAMLphp (./_lib/SimpleSAMLphp/lib/_autoload.php)
 n'est pas chargé de façon simple par un unique appel de classe.
 
-Du coup on l'inclut directement dans les 2 fichiers concernés (public_log*_SSO.php).
+Du coup on l'inclut directement dans les 2 fichiers concernés (public_sso_log*.php).
 
 Par ailleurs, lors du passage de SimpleSAMLphp de la version 1.11.0 à 1.12.0
 l'autoload de SimpleSAMLphp s'est complexifié : @see ./SimpleSAMLphp/vendor/composer/

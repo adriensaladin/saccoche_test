@@ -88,7 +88,7 @@ if( ($action=='Afficher_form_geo3') && ($geo1>0) && ($geo2>0) )
 // Afficher le résultat de la recherche de structure, soit à partir du n°UAI soit à partir du code de commune
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
+if( ($action=='Afficher_structures') && ( ($geo3>0) || Outil::tester_UAI($uai) ) )
 {
   $retour = ($geo3) ? ServeurCommunautaire::Sesamath_lister_structures_by_commune($geo3) : ServeurCommunautaire::Sesamath_recuperer_structure_by_UAI($uai) ;
   Json::end( TRUE , $retour );
@@ -100,6 +100,10 @@ if( ($action=='Afficher_structures') && ( ($geo3>0) || ($uai!='') ) )
 
 if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
 {
+  if( $sesamath_uai && !Outil::tester_UAI($sesamath_uai) )
+  {
+    Json::end( FALSE , 'Erreur avec le numéro UAI transmis !' );
+  }
   $result = ServeurCommunautaire::Sesamath_enregistrer_structure($sesamath_id,$sesamath_key);
   if($result!=='ok')
   {

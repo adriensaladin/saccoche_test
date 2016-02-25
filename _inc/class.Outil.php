@@ -133,18 +133,21 @@ class Outil
    */
   public static function tester_UAI($uai)
   {
-    // Il faut 7 chiffres suivis d'une lettre.
-    if(!preg_match('#^[0-9]{7}[a-zA-Z]{1}$#',$uai))
-    {
-      return FALSE;
-    }
-    // Il faut vérifier la clef de contrôle.
-    $uai_nombre = substr($uai,0,7);
-    $uai_lettre = substr($uai,-1);
-    $reste = $uai_nombre - (23*floor($uai_nombre/23));
     $alphabet = 'ABCDEFGHJKLMNPRSTUVWXYZ';
-    $clef = substr($alphabet,$reste,1);
-    return ($clef==$uai_lettre) ? TRUE : FALSE;
+    $uai_lettre = substr($uai, -1);
+    // Base RAMSESE (établissement du système éducatif français) : 7 chiffres suivis d'une lettre de contrôle basée sur le modulo 23 du nombre
+    if (preg_match('#^[0-9]{7}['.$alphabet.']{1}$#', $uai))
+    {
+      $reste = substr($uai, 0, 7) % 23 ;
+      return ( $uai_lettre == substr($alphabet, $reste, 1) ) ? TRUE : FALSE ;
+    }
+    // Base RHODES (organismes de détachement hors éducation) : 6 chiffres suivis du caractère "X" puis d'une lettre de contrôle basée sur le modulo 23 du ( nombre * 8 + 1 )
+    if (preg_match('#^[0-9]{6}X['.$alphabet.']{1}$#', $uai))
+    {
+      $reste = (substr($uai, 0, 6) * 8 + 1 ) % 23 ;
+      return ( $uai_lettre == substr($alphabet, $reste, 1) ) ? TRUE : FALSE ;
+    }
+    return FALSE ;
   }
 
   /**

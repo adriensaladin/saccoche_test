@@ -126,7 +126,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_sesamath);
         return false;
       }
-    ); 
+    );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_sesamath(formData, jqForm, options)
@@ -216,7 +216,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_contact);
         return false;
       }
-    ); 
+    );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_contact(formData, jqForm, options)
@@ -333,7 +333,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_etablissement);
         return false;
       }
-    ); 
+    );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_etablissement(formData, jqForm, options)
@@ -963,7 +963,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_logo);
         return false;
       }
-    ); 
+    );
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_logo(jqXHR, textStatus, errorThrown)

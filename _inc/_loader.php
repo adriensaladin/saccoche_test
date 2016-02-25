@@ -29,7 +29,7 @@
 // Fonctions non disponibles en PHP 5.1
 // ============================================================================
 
-/*
+/**
  * La fonction error_get_last() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
  * @see http://fr.php.net/manual/fr/function.error-get-last.php#103539
  */
@@ -61,7 +61,7 @@ if(!function_exists('error_get_last'))
   }
 }
 
-/*
+/**
  * La fonction array_fill_keys() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
  */
 if(!function_exists('array_fill_keys'))
@@ -72,7 +72,7 @@ if(!function_exists('array_fill_keys'))
   }
 }
 
-/*
+/**
  * La fonction json_encode() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
  * @see http://www.php.net/json_encode
  * @see http://json.org/json-fr.html
@@ -158,7 +158,7 @@ if (!function_exists('json_encode'))
   }
 }
 
-/*
+/**
  * Le paramètre PATHINFO_FILENAME de la fonction pathinfo() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, traiter ce cas si besoin.
  */
 function pathinfo_filename($file)
@@ -177,7 +177,7 @@ function pathinfo_filename($file)
   }
 }
 
-/*
+/**
  * La fonction str_getcsv() n'est disponible que depuis PHP 5.3 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
  * @see http://us2.php.net/manual/fr/function.str-getcsv.php#111577
  */
@@ -667,9 +667,9 @@ define('SERVEUR_GUIDE_ADMIN'    ,SERVEUR_PROJET.'/?page=guide_admin');   // URL 
 define('SERVEUR_GUIDE_RENTREE'  ,SERVEUR_PROJET.'/?page=guide_rentree'); // URL de la page "Guide de changement d'année (administrateur de SACoche)"
 define('SERVEUR_NEWS'           ,SERVEUR_PROJET.'/?page=news');          // URL de la page "Historique des nouveautés"
 define('SERVEUR_RSS'            ,SERVEUR_PROJET.'/_rss/rss.xml');        // URL du fichier comportant le flux RSS
-define('SERVEUR_RESS_HTML'      ,SERVEUR_PROJET.'/__ress_html/');        // URL du dossier avec les pags de ressources associées aux items
+define('SERVEUR_RESS_HTML'      ,SERVEUR_PROJET.'/__ress_html/');        // URL du dossier avec les pages de ressources associées aux items
 
-define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');    // URL de la page expliquant les Conventions ENT
+define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');    // URL de la page expliquant les conventions ENT
 
 // ============================================================================
 // Autres constantes diverses... et parfois importantes !
@@ -735,7 +735,7 @@ define('SORTIE_DEFAUT_MYSQL' ,'9999-12-31');
 // Avec 144 (12x12), au format 2/3 ça donne  96/144 et au format 3/4 ça donne 108/144 ; c'est un choix intermédiaire.
 // Avec 120 (12x10), au format 2/3 ça donne  80/120 et au format 3/4 ça donne  90/120 ; c'est un peu petit à l'écran.
 define('PHOTO_DIMENSION_MAXI',144);
-// Le format jpeg est le plus adapté aux photos ; un facteur 90 Permet un gain de poids significatif (>50% par rapport à 100), pour une perte de qualité minime.
+// Le format jpeg est le plus adapté aux photos ; un facteur 90 permet un gain de poids significatif (>50% par rapport à 100), pour une perte de qualité minime.
 // Avec une dimension maxi imposée de 180 pixels, on arrive à 8~9 Ko par photo par élève dans la base (en comptant le base64_encode).
 // Avec une dimension maxi imposée de 144 pixels, on arrive à 6~7 Ko par photo par élève dans la base (en comptant le base64_encode).
 // Avec une dimension maxi imposée de 120 pixels, on arrive à 4~5 Ko par photo par élève dans la base (en comptant le base64_encode).
@@ -841,7 +841,7 @@ function perso_mb_detect_encoding_utf8($text)
   return (mb_detect_encoding($text.' ','auto',TRUE)=='UTF-8');
 }
 
-/*
+/**
  * Convertir les caractères spéciaux (&"'<>) en entité HTML afin d'éviter des problèmes d'affichage (INPUT, SELECT, TEXTAREA, XML, ou simple texte HTML valide...).
  * Pour que les retours à la ligne soient convertis en <br /> il faut coupler cette fontion à la fonction nl2br()
  * 
@@ -854,7 +854,7 @@ function html($text)
   return (perso_mb_detect_encoding_utf8($text)) ? htmlspecialchars($text,ENT_COMPAT,'UTF-8') : utf8_encode(htmlspecialchars($text,ENT_COMPAT)) ;
 }
 
-/*
+/**
  * Afficher une page HTML minimale (mais aux couleurs de SACoche) avec un message explicatif et un lien adapté éventuel.
  * 
  * @param string $titre     titre de la page
@@ -915,7 +915,7 @@ function exit_error( $titre , $contenu , $lien='accueil' )
   }
 }
 
-/*
+/**
  * Rediriger le navigateur.
  * 
  * @param string $adresse   URL de la page vers laquelle rediriger

@@ -97,7 +97,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_csv);
         return false;
       }
-    ); 
+    );
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_csv(jqXHR, textStatus, errorThrown)
@@ -277,7 +277,7 @@ $(document).ready
         },
         submit  : function(event, value, message, formVals) {
           if(value) {
-            event.preventDefault(); 
+            event.preventDefault();
             $.prompt.goToState('etape_2');
             return false;
           }

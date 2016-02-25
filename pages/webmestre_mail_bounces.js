@@ -81,7 +81,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_1);
         return false;
       }
-    ); 
+    );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_1(formData, jqForm, options)
@@ -169,7 +169,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_2);
         return false;
       }
-    ); 
+    );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_2(formData, jqForm, options)

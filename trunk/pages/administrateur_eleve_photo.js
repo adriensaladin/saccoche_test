@@ -165,7 +165,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_photos);
         return false;
       }
-    ); 
+    );
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_photos(jqXHR, textStatus, errorThrown)
@@ -252,7 +252,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_photo);
         return false;
       }
-    ); 
+    );
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_photo(jqXHR, textStatus, errorThrown)

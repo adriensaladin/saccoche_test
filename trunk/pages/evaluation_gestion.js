@@ -1934,7 +1934,7 @@ $(document).ready
           return false;
         }
       }
-    ); 
+    );
 
     // Fonction précédent le traitement du formulaire (avec jquery.form.js)
     function action_form_avant_serialize(jqForm, options)
@@ -2080,7 +2080,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_importer_scores);
         return false;
       }
-    ); 
+    );
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_importer_scores(jqXHR, textStatus, errorThrown)
@@ -2208,7 +2208,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_document);
         return false;
       }
-    ); 
+    );
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_document(jqXHR, textStatus, errorThrown)
@@ -3251,7 +3251,7 @@ $(document).ready
         $(this).ajaxSubmit(ajaxOptions_prechoix);
         return false;
       }
-    ); 
+    );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi_prechoix(formData, jqForm, options)

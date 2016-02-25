@@ -70,13 +70,14 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
   $BASE = (isset($_GET['base']))    ? Clean::entier($_GET['base']) : $BASE ;
   // Test si UAI d'établissement transmis dans l'URL
   // Nouveauté 07/2014 : pouvoir passer l'UAI de l'établissement comme valeur du paramètre SSO
-  $trans_UAI = (isset($_GET['uai'])) ? Clean::uai($_GET['uai']) : ( Outil::tester_UAI($_GET['sso']) ? Clean::uai($_GET['sso']) : NULL ) ;
-  $BASE = ($trans_UAI) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI($trans_UAI) : $BASE ;
+  $UAI = (isset($_GET['uai'])) ? Clean::uai($_GET['uai']) : Clean::uai($_GET['sso']) ;
+  $is_UAI = Outil::tester_UAI($UAI);
+  $BASE = ($is_UAI) ? DB_WEBMESTRE_PUBLIC::DB_recuperer_structure_id_base_for_UAI($UAI) : $BASE ;
   if(!$BASE)
   {
-    if($trans_UAI)
+    if($is_UAI)
     {
-      exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis '.$trans_UAI.' n\'est pas référencé sur cette installation de SACoche : vérifiez son exactitude et si cet établissement est bien inscrit sur ce serveur.' /*contenu*/ );
+      exit_error( 'Paramètre incorrect' /*titre*/ , 'Le numéro UAI transmis '.$UAI.' n\'est pas référencé sur cette installation de SACoche : vérifiez son exactitude et si cet établissement est bien inscrit sur ce serveur.' /*contenu*/ );
     }
     else
     {

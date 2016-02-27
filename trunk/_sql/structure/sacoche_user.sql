@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS sacoche_user;
 
 -- Attention : pas d`apostrophes dans les lignes commentées sinon on peut obtenir un bug d`analyse dans la classe pdo de SebR : "SQLSTATE[HY093]: Invalid parameter number: no parameters were bound ..."
 -- Attention : pour un champ DATE ou DATETIME, DEFAULT NOW() ne fonctionne qu`à partir de MySQL 5.6.5
--- Attention : pour un champ DATE ou DATETIME, MySQL à partir de 5.7.8 est par défaut en mode strict, avec NO_ZERO_DATE qui interdit les valeurs en dehors de 1000-01-01 00:00:00 à 9999-12-31 23:59:59
+-- Attention : pour un champ DATE ou DATETIME, la configuration NO_ZERO_DATE (incluse dans le mode strict de MySQL 5.7.4 à 5.7.7), interdit les valeurs en dehors de 1000-01-01 00:00:00 à 9999-12-31 23:59:59
 
 CREATE TABLE sacoche_user (
   user_id             MEDIUMINT(8)            UNSIGNED                NOT NULL AUTO_INCREMENT,
@@ -21,7 +21,7 @@ CREATE TABLE sacoche_user (
   user_langue         VARCHAR(6)              COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   user_daltonisme     TINYINT(1)              UNSIGNED                NOT NULL DEFAULT 0,
   user_connexion_date DATETIME                                                 DEFAULT NULL,
-  user_sortie_date    DATE                                                     DEFAULT NULL,
+  user_sortie_date    DATE                                            NOT NULL DEFAULT "9999-12-31" COMMENT "Une valeur NULL par défaut compliquerait les requêtes (il faudrait tester NULL || > NOW ).",
   eleve_classe_id     MEDIUMINT(8)            UNSIGNED                NOT NULL DEFAULT 0,
   eleve_langue        TINYINT(3)              UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue choisie pour le socle.",
   eleve_brevet_serie  VARCHAR(6)              COLLATE utf8_unicode_ci NOT NULL DEFAULT "X" COMMENT "Série du brevet pour Notanet.",

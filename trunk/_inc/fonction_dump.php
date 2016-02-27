@@ -134,6 +134,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
       {
         case 'sacoche_image'           : $nb_lignes_maxi_for_table = $nb_lignes_maxi/100; break;
         case 'sacoche_user'            : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  4; break;
+        case 'sacoche_notification'    : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  4; break;
         case 'sacoche_officiel_saisie' : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  2; break;
         default                        : $nb_lignes_maxi_for_table = $nb_lignes_maxi;
       }

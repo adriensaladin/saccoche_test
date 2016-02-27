@@ -1,6 +1,9 @@
 DROP TABLE IF EXISTS sacoche_notification;
 
+-- Attention : pas d`apostrophes dans les lignes commentées sinon on peut obtenir un bug d`analyse dans la classe pdo de SebR : "SQLSTATE[HY093]: Invalid parameter number: no parameters were bound ..."
 -- Attention : pas de valeur par défaut possible pour les champs TEXT et BLOB
+-- Attention : pour un champ DATE ou DATETIME, DEFAULT NOW() ne fonctionne qu`à partir de MySQL 5.6.5
+-- Attention : pour un champ DATE ou DATETIME, MySQL à partir de 5.7.8 est par défaut en mode strict, avec NO_ZERO_DATE qui interdit les valeurs en dehors de 1000-01-01 00:00:00 à 9999-12-31 23:59:59
 
 CREATE TABLE sacoche_notification (
   notification_id         INT(10)                                             UNSIGNED                NOT NULL AUTO_INCREMENT,
@@ -8,7 +11,7 @@ CREATE TABLE sacoche_notification (
   abonnement_ref          VARCHAR(30)                                         COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   notification_attente_id MEDIUMINT(8)                                        UNSIGNED                         DEFAULT NULL   COMMENT "En cas de modification, pour retrouver une notification non encore envoyée ; passé à NULL une fois la notification envoyée.",
   notification_statut     ENUM("attente","consultable","consultée","envoyée") COLLATE utf8_unicode_ci NOT NULL DEFAULT "attente",
-  notification_date       DATETIME                                                                             DEFAULT NULL ,
+  notification_date       DATETIME                                                                             DEFAULT NULL   COMMENT "Ne vaut normalement jamais NULL.",
   notification_contenu    TEXT                                                COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (notification_id),
   KEY user_id (user_id),

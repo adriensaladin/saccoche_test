@@ -101,7 +101,7 @@ public static function DB_lister_structures_id()
  * @param int         $geo_id            id d'une zone géographique si restriction à une zone (tout si rien ou 0 transmis)
  * @return array
  */
-public static function DB_lister_structures($listing_base_id=FALSE,$geo_id=0)
+public static function DB_lister_structures( $listing_base_id=FALSE , $geo_id=0 )
 {
   $DB_SQL = 'SELECT * ';
   $DB_SQL.= 'FROM sacoche_structure ';
@@ -186,7 +186,7 @@ public static function DB_tester_structure_Id($base_id)
  * @param int    $geo_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-public static function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
+public static function DB_tester_zone_nom( $geo_nom , $geo_id=FALSE )
 {
   $DB_SQL = 'SELECT geo_id ';
   $DB_SQL.= 'FROM sacoche_geo ';
@@ -206,7 +206,7 @@ public static function DB_tester_zone_nom($geo_nom,$geo_id=FALSE)
  * @param int    $base_id       inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-public static function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
+public static function DB_tester_structure_UAI( $structure_uai , $base_id=FALSE )
 {
   $DB_SQL = 'SELECT sacoche_base ';
   $DB_SQL.= 'FROM sacoche_structure ';
@@ -226,7 +226,7 @@ public static function DB_tester_structure_UAI($structure_uai,$base_id=FALSE)
  * @param string $geo_nom
  * @return int
  */
-public static function DB_ajouter_zone($geo_ordre,$geo_nom)
+public static function DB_ajouter_zone( $geo_ordre , $geo_nom )
 {
   $DB_SQL = 'INSERT INTO sacoche_geo( geo_ordre, geo_nom) ';
   $DB_SQL.= 'VALUES(                 :geo_ordre,:geo_nom)';
@@ -252,7 +252,7 @@ public static function DB_ajouter_zone($geo_ordre,$geo_nom)
  * @param string $inscription_date   Pour forcer la date d'inscription, par exemple en cas de transfert de bases académiques (facultatif).
  * @return int
  */
-public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date=0)
+public static function DB_ajouter_structure( $base_id , $geo_id , $structure_uai , $localisation , $denomination , $contact_nom , $contact_prenom , $contact_courriel , $inscription_date=NULL )
 {
   $chaine_date = ($inscription_date) ? ':inscription_date' : 'NOW()' ;
   if($base_id==0)
@@ -267,7 +267,6 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
       ':contact_nom'      => $contact_nom,
       ':contact_prenom'   => $contact_prenom,
       ':contact_courriel' => $contact_courriel,
-      ':inscription_date' => $inscription_date,
     );
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
     $base_id = DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
@@ -285,7 +284,6 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
       ':contact_nom'      => $contact_nom,
       ':contact_prenom'   => $contact_prenom,
       ':contact_courriel' => $contact_courriel,
-      ':inscription_date' => $inscription_date,
     );
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   }
@@ -303,7 +301,7 @@ public static function DB_ajouter_structure($base_id,$geo_id,$structure_uai,$loc
  * @param string $connecteurs
  * @return int
  */
-public static function DB_ajouter_partenaire_conventionne($denomination,$nom,$prenom,$courriel,$password_crypte,$connecteurs)
+public static function DB_ajouter_partenaire_conventionne( $denomination , $nom , $prenom , $courriel , $password_crypte , $connecteurs )
 {
   $DB_SQL = 'INSERT INTO sacoche_partenaire(partenaire_denomination,partenaire_nom,partenaire_prenom,partenaire_courriel,partenaire_password,partenaire_connecteurs) ';
   $DB_SQL.= 'VALUES(                                  :denomination,          :nom,          :prenom,          :courriel,   :password_crypte,          :connecteurs)';
@@ -328,7 +326,7 @@ public static function DB_ajouter_partenaire_conventionne($denomination,$nom,$pr
  * @param string $BD_pass
  * @return void
  */
-public static function DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name,$BD_user,$BD_pass)
+public static function DB_ajouter_base_structure_et_user_mysql( $base_id , $BD_name , $BD_user , $BD_pass )
 {
   // Créer la base de données de la structure
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'CREATE DATABASE sac_base_'.$base_id );
@@ -347,7 +345,7 @@ public static function DB_ajouter_base_structure_et_user_mysql($base_id,$BD_name
  * @param string $parametre_valeur
  * @return void
  */
-public static function DB_modifier_parametre($parametre_nom,$parametre_valeur)
+public static function DB_modifier_parametre( $parametre_nom , $parametre_valeur )
 {
   $DB_SQL = 'UPDATE sacoche_parametre ';
   $DB_SQL.= 'SET parametre_valeur=:parametre_valeur ';
@@ -372,7 +370,7 @@ public static function DB_modifier_parametre($parametre_nom,$parametre_valeur)
  * @param string $contact_courriel
  * @return void
  */
-public static function DB_modifier_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel)
+public static function DB_modifier_structure( $base_id , $geo_id , $structure_uai , $localisation , $denomination , $contact_nom , $contact_prenom , $contact_courriel )
 {
   $DB_SQL = 'UPDATE sacoche_structure ';
   $DB_SQL.= 'SET geo_id=:geo_id, structure_uai=:structure_uai, structure_localisation=:localisation, structure_denomination=:denomination, ';
@@ -402,7 +400,7 @@ public static function DB_modifier_structure($base_id,$geo_id,$structure_uai,$lo
  * @param string $connecteurs
  * @return int
  */
-public static function DB_modifier_partenaire_conventionne($partenaire_id,$denomination,$nom,$prenom,$courriel,$connecteurs)
+public static function DB_modifier_partenaire_conventionne( $partenaire_id , $denomination , $nom , $prenom , $courriel , $connecteurs )
 {
   $DB_SQL = 'UPDATE sacoche_partenaire ';
   $DB_SQL.= 'SET partenaire_denomination=:denomination, partenaire_nom=:nom, partenaire_prenom=:prenom, partenaire_courriel=:courriel, partenaire_connecteurs=:connecteurs ';
@@ -425,7 +423,7 @@ public static function DB_modifier_partenaire_conventionne($partenaire_id,$denom
  * @param string  $password_crypte
  * @return void
  */
-public static function DB_modifier_partenaire_conventionne_mdp($partenaire_id,$password_crypte)
+public static function DB_modifier_partenaire_conventionne_mdp( $partenaire_id , $password_crypte )
 {
   $DB_SQL = 'UPDATE sacoche_partenaire ';
   $DB_SQL.= 'SET partenaire_password=:password_crypte ';
@@ -445,7 +443,7 @@ public static function DB_modifier_partenaire_conventionne_mdp($partenaire_id,$p
  * @param string $geo_nom
  * @return void
  */
-public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
+public static function DB_modifier_zone( $geo_id , $geo_ordre , $geo_nom )
 {
   $DB_SQL = 'UPDATE sacoche_geo ';
   $DB_SQL.= 'SET geo_ordre=:geo_ordre, geo_nom=:geo_nom ';
@@ -466,7 +464,7 @@ public static function DB_modifier_zone($geo_id,$geo_ordre,$geo_nom)
  * @param string date_mysql
  * @return void
  */
-public static function DB_modifier_convention_date($convention_id,$objet,$date_mysql)
+public static function DB_modifier_convention_date( $convention_id , $objet , $date_mysql )
 {
   $DB_SQL = 'UPDATE sacoche_convention ';
   $DB_SQL.= 'SET convention_'.$objet.'=:date_mysql ';
@@ -485,7 +483,7 @@ public static function DB_modifier_convention_date($convention_id,$objet,$date_m
  * @param int activation_etat
  * @return void
  */
-public static function DB_modifier_convention_activation($convention_id,$activation_etat)
+public static function DB_modifier_convention_activation( $convention_id , $activation_etat )
 {
   $DB_SQL = 'UPDATE sacoche_convention ';
   $DB_SQL.= 'SET convention_activation=:activation_etat ';
@@ -504,7 +502,7 @@ public static function DB_modifier_convention_activation($convention_id,$activat
  * @param string commentaire
  * @return void
  */
-public static function DB_modifier_convention_commentaire($convention_id,$commentaire)
+public static function DB_modifier_convention_commentaire( $convention_id , $commentaire )
 {
   $DB_SQL = 'UPDATE sacoche_convention ';
   $DB_SQL.= 'SET convention_commentaire=:commentaire ';
@@ -557,7 +555,7 @@ public static function DB_supprimer_structure($BASE)
  * @param string $BD_user
  * @return void
  */
-public static function DB_supprimer_base_structure_et_user_mysql($BD_name,$BD_user)
+public static function DB_supprimer_base_structure_et_user_mysql( $BD_name , $BD_user )
 {
   // Supprimer la base associée à la structure
   DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'DROP DATABASE '.$BD_name );

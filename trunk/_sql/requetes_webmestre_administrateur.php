@@ -42,7 +42,7 @@ class DB_WEBMESTRE_ADMINISTRATEUR extends DB
  * @param string $contact_courriel
  * @return void
  */
-public static function DB_modifier_contact_infos($base_id,$contact_nom,$contact_prenom,$contact_courriel)
+public static function DB_modifier_contact_infos( $base_id , $contact_nom , $contact_prenom , $contact_courriel )
 {
   $DB_SQL = 'UPDATE sacoche_structure ';
   $DB_SQL.= 'SET structure_contact_nom=:contact_nom, structure_contact_prenom=:contact_prenom, structure_contact_courriel=:contact_courriel ';
@@ -95,7 +95,7 @@ public static function DB_lister_conventions_structure($base_id)
  * @param string $convention_date_debut
  * @return int
  */
-public static function DB_tester_convention_precise($base_id,$connexion_nom,$convention_date_debut)
+public static function DB_tester_convention_precise( $base_id , $connexion_nom , $convention_date_debut )
 {
   $DB_SQL = 'SELECT convention_id ';
   $DB_SQL.= 'FROM sacoche_convention ';
@@ -117,10 +117,10 @@ public static function DB_tester_convention_precise($base_id,$connexion_nom,$con
  * @param string $convention_date_fin
  * @return int
  */
-public static function DB_ajouter_convention($base_id,$connexion_nom,$convention_date_debut,$convention_date_fin)
+public static function DB_ajouter_convention( $base_id , $connexion_nom , $convention_date_debut , $convention_date_fin )
 {
-  $DB_SQL = 'INSERT INTO sacoche_convention(sacoche_base,connexion_nom,convention_date_debut,convention_date_fin,convention_creation,convention_signature,convention_paiement,convention_activation,convention_mail_renouv,convention_commentaire) ';
-  $DB_SQL.= 'VALUES(:base_id,:connexion_nom,:convention_date_debut,:convention_date_fin,NOW(),:convention_signature,:convention_paiement,:convention_activation,:convention_mail_renouv,:convention_commentaire)';
+  $DB_SQL = 'INSERT INTO sacoche_convention(sacoche_base, connexion_nom, convention_date_debut, convention_date_fin,convention_creation, convention_signature, convention_paiement, convention_activation, convention_mail_renouv, convention_commentaire) ';
+  $DB_SQL.= 'VALUES(                            :base_id,:connexion_nom,:convention_date_debut,:convention_date_fin,              NOW(),:convention_signature,:convention_paiement,:convention_activation,:convention_mail_renouv,:convention_commentaire)';
   $DB_VAR = array(
     ':base_id'                => $base_id,
     ':connexion_nom'          => $connexion_nom,

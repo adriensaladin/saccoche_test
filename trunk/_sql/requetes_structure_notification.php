@@ -286,7 +286,7 @@ public static function DB_ajouter_log_visible( $user_id , $abonnement_ref , $not
  * @param int      $user_id
  * @param string   $abonnement_ref
  * @param string   $notification_attente_id
- * @param string   $notification_date         éventuellement NULL
+ * @param string   $notification_date         éventuellement NULL -> NOW() dans ce cas
  * @param string   $notification_contenu
  * @return void
  */
@@ -312,7 +312,7 @@ public static function DB_ajouter_log_attente( $user_id , $abonnement_ref , $not
  * Est appelé par DB_modifier_log_attente().
  *
  * @param int      $notification_id
- * @param string   $notification_date   éventuellement NULL
+ * @param string   $notification_date   éventuellement NULL -> NOW() dans ce cas
  * @param string   $notification_contenu
  * @return void
  */
@@ -336,7 +336,7 @@ public static function DB_remplacer_log_attente( $notification_id , $notificatio
  * Est appelé par DB_modifier_log_attente().
  *
  * @param int      $notification_id
- * @param string   $notification_date   éventuellement NULL
+ * @param string   $notification_date   éventuellement NULL -> NOW() dans ce cas
  * @param string   $contenu_supplementaire
  * @param bool     $sep   Si $mode_maj='compléter', présence d'une séparation ou pas
  * @return void
@@ -362,7 +362,7 @@ public static function DB_completer_log_attente( $notification_id , $notificatio
  * @param int      $user_id
  * @param string   $abonnement_ref
  * @param string   $notification_attente_id
- * @param string   $notification_date         éventuellement NULL
+ * @param string   $notification_date         éventuellement NULL -> NOW() dans ce cas
  * @param string   $notification_contenu
  * @param string   $mode_maj   'remplacer' | 'compléter'
  * @param bool     $sep   Si $mode_maj='compléter', présence d'une séparation ou pas
@@ -426,7 +426,7 @@ public static function DB_modifier_statut( $notification_id , $user_id , $notifi
  * Modifier la date de notifications en attente dépendantes de la date de visibilité d'un devoir
  *
  * @param int      $devoir_id
- * @param string   $notification_date   éventuellement NULL
+ * @param string   $notification_date   éventuellement NULL -> NOW() dans ce cas
  * @return void
  */
 public static function DB_modifier_attente_date_devoir( $devoir_id , $notification_date )

@@ -210,21 +210,37 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
     }
   }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2014-06-19 => 2015-02-22
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2014-06-19 => 2015-02-22
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($version_base_webmestre_actuelle=='2014-06-19')
-{
-  // Actualisation date de version
-  $version_base_webmestre_actuelle = '2015-02-22';
-  DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
-  // suppression du champ [partenaire_tentative_date] de la table [sacoche_partenaire]
-  if(empty($reload_sacoche_partenaire))
+  if($version_base_webmestre_actuelle=='2014-06-19')
   {
-    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_partenaire DROP partenaire_tentative_date ' );
+    // Actualisation date de version
+    $version_base_webmestre_actuelle = '2015-02-22';
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
+    // suppression du champ [partenaire_tentative_date] de la table [sacoche_partenaire]
+    if(empty($reload_sacoche_partenaire))
+    {
+      DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_partenaire DROP partenaire_tentative_date ' );
+    }
   }
-}
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // MAJ 2015-02-22 => 2016-02-27
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  if($version_base_webmestre_actuelle=='2015-02-22')
+  {
+    // Actualisation date de version
+    $version_base_webmestre_actuelle = '2016-02-27';
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_webmestre_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Modification des champs DATE car en mode SQL strict des valeurs telles 0000-00-00 ne sont pas tolérées
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_structure CHANGE structure_inscription_date structure_inscription_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention CHANGE convention_date_debut convention_date_debut DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention CHANGE convention_date_fin   convention_date_fin   DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
+    DB::query(SACOCHE_WEBMESTRE_BD_NAME , 'ALTER TABLE sacoche_convention CHANGE convention_creation   convention_creation   DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
+  }
 
 }
 

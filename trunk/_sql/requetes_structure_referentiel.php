@@ -277,8 +277,8 @@ public static function DB_tester_referentiel($matiere_id,$niveau_id)
  */
 public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
 {
-  $DB_SQL = 'INSERT INTO sacoche_referentiel ';
-  $DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage_etat,:partage_date,:calcul_methode,:calcul_limite,:calcul_retroactif,:mode_synthese,:information)';
+  $DB_SQL = 'INSERT INTO sacoche_referentiel( matiere_id, niveau_id,referentiel_partage_etat,referentiel_partage_date,referentiel_calcul_methode,referentiel_calcul_limite,referentiel_calcul_retroactif,referentiel_mode_synthese,referentiel_information) ';
+  $DB_SQL.= 'VALUES                         (:matiere_id,:niveau_id,           :partage_etat,           :partage_date,           :calcul_methode,           :calcul_limite,           :calcul_retroactif,           :mode_synthese,           :information)';
   $DB_VAR = array(
     ':matiere_id'        => $matiere_id,
     ':niveau_id'         => $niveau_id,

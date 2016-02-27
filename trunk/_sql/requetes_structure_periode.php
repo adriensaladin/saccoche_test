@@ -131,7 +131,7 @@ public static function DB_tester_periode_nom($periode_nom,$periode_id=FALSE)
  * @param string $periode_nom
  * @return int
  */
-public static function DB_ajouter_periode($periode_ordre,$periode_nom)
+public static function DB_ajouter_periode( $periode_ordre , $periode_nom )
 {
   $DB_SQL = 'INSERT INTO sacoche_periode(periode_ordre,periode_nom) ';
   $DB_SQL.= 'VALUES(:periode_ordre,:periode_nom)';
@@ -151,7 +151,7 @@ public static function DB_ajouter_periode($periode_ordre,$periode_nom)
  * @param string $periode_nom
  * @return void
  */
-public static function DB_modifier_periode($periode_id,$periode_ordre,$periode_nom)
+public static function DB_modifier_periode( $periode_id , $periode_ordre , $periode_nom )
 {
   $DB_SQL = 'UPDATE sacoche_periode ';
   $DB_SQL.= 'SET periode_ordre=:periode_ordre,periode_nom=:periode_nom ';
@@ -174,7 +174,7 @@ public static function DB_modifier_periode($periode_id,$periode_ordre,$periode_n
  * @param string $date_fin_mysql   date de fin au format mysql (facultatif : obligatoire uniquement si $etat=TRUE)
  * @return void
  */
-public static function DB_modifier_liaison_groupe_periode($groupe_id,$periode_id,$etat,$date_debut_mysql='',$date_fin_mysql='')
+public static function DB_modifier_liaison_groupe_periode( $groupe_id , $periode_id , $etat , $date_debut_mysql=NULL , $date_fin_mysql=NULL )
 {
   if($etat)
   {

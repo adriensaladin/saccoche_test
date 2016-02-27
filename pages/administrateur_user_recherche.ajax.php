@@ -71,7 +71,7 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
       $_SESSION['tmp'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_singulier'];
       // Formater la date
       $date_mysql  = $DB_ROW['user_sortie_date'];
-      $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
+      $date_sortie = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
       // Afficher une ligne du tableau
       Json::add_str('<tr id="id_'.$DB_ROW['user_id'].'">');
       Json::add_str(  '<td>'.html($DB_ROW['user_id_ent']).'</td>');
@@ -85,7 +85,7 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
       Json::add_str(  '<td>'.html($DB_ROW['user_prenom']).'</td>');
       Json::add_str(  '<td>'.html($DB_ROW['user_login']).'</td>');
       Json::add_str(  '<td>'.html($DB_ROW['user_email']).'</td>');
-      Json::add_str(  '<td>'.$date_affich.'</td>');
+      Json::add_str(  '<td>'.$date_sortie.'</td>');
       Json::add_str(  '<td class="nu">');
       Json::add_str(    '<q class="modifier" title="Modifier cet utilisateur."></q>');
       Json::add_str(  '</td>');

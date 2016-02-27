@@ -92,9 +92,6 @@ if(empty($_POST['f_afficher']))
     $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures( FALSE /*listing_base_id*/ , $geo_id );
     foreach($DB_TAB as $DB_ROW)
     {
-      // Formater la date
-      $date_mysql  = $DB_ROW['structure_inscription_date'];
-      $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
       // Afficher une ligne du tableau
       $img = (LockAcces::tester_blocage('webmestre',$DB_ROW['sacoche_base'])===NULL) ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
       echo'<tr id="id_'.$DB_ROW['sacoche_base'].'">';
@@ -104,7 +101,7 @@ if(empty($_POST['f_afficher']))
       echo  '<td class="label"><i>'.sprintf($geo_ordre_format,$DB_ROW['geo_ordre']).'</i>'.html($DB_ROW['geo_nom']).'<br />'.html($DB_ROW['structure_localisation']).'</td>';
       echo  '<td class="label">'.html($DB_ROW['structure_denomination']).'<br />'.html($DB_ROW['structure_uai']).'</td>';
       echo  '<td class="label"><span>'.html($DB_ROW['structure_contact_nom']).'</span> <span>'.html($DB_ROW['structure_contact_prenom']).'</span><div>'.html($DB_ROW['structure_contact_courriel']).'</div></td>';
-      echo  '<td class="label">'.$date_affich.'</td>';
+      echo  '<td class="label">'.To::date_mysql_to_french($DB_ROW['structure_inscription_date']).'</td>';
       echo  '<td class="nu">';
       echo    '<q class="modifier" title="Modifier cet établissement."></q>';
       echo    '<q class="initialiser_mdp" title="Générer un nouveau mdp d\'un admin."></q>';

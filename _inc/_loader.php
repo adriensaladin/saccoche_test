@@ -726,7 +726,6 @@ define('VERSION_BASE_WEBMESTRE', file_get_contents(CHEMIN_DOSSIER_SQL.'VERSION_B
 // dates
 define('TODAY_FR'    ,date("d/m/Y"));
 define('TODAY_MYSQL' ,date("Y-m-d"));
-define('SORTIE_DEFAUT_FR'    ,'31/12/9999'); // inutilisé
 define('SORTIE_DEFAUT_MYSQL' ,'9999-12-31');
 
 // Dimension maxi d'une photo redimensionnée (en pixels) ; utilisé aussi dans le style.css : .photo {min-height:180px} (144+36)

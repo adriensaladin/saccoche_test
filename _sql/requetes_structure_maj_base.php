@@ -304,7 +304,7 @@ class DB_STRUCTURE_MAJ_BASE extends DB
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $version_from = '2015-10-16i';
-    $version_to   = ''; // à modifier si autre traitement ultérieur
+    $version_to   = '2016-02-27a'; // à modifier si autre traitement ultérieur
 
     if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==$version_from)
     {
@@ -313,6 +313,50 @@ class DB_STRUCTURE_MAJ_BASE extends DB
         $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
         DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_saisie SET saisie_note="4" WHERE saisie_note="VV" ' );
+        return;
+      }
+      else
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+      }
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement 2016-02-27a
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $version_from = '2016-02-27a';
+    $version_to   = '2016-02-27b';
+
+    if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==$version_from)
+    {
+      if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_date saisie_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
+        return;
+      }
+      else
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+      }
+    }
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement 2016-02-27b
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $version_from = '2016-02-27b';
+    $version_to   = ''; // à modifier si autre traitement ultérieur
+
+    if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==$version_from)
+    {
+      if($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE']==DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire())
+      {
+        $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = $version_to;
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_to.'" WHERE parametre_nom="version_base_maj_complementaire"' );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_visible_date saisie_visible_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
         return;
       }
       else

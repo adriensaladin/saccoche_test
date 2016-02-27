@@ -94,22 +94,22 @@ if($version_base_structure_actuelle=='2016-02-01')
     {
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_user_pilier CHANGE validation_pilier_date validation_pilier_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
     }
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message CHANGE message_debut_date message_debut_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message CHANGE message_fin_date   message_fin_date   DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_date devoir_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." , CHANGE devoir_visible_date devoir_visible_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_message CHANGE message_debut_date message_debut_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." , CHANGE message_fin_date message_fin_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_notification CHANGE notification_date notification_date DATETIME DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_fichier CHANGE fichier_date_generation fichier_date_generation DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_date         saisie_date         DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_visible_date saisie_visible_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_date         devoir_date         DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_devoir CHANGE devoir_visible_date devoir_visible_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel CHANGE referentiel_partage_date referentiel_partage_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel SET referentiel_partage_date=NULL WHERE referentiel_partage_date="0000-00-00"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_sortie_date user_sortie_date DATE DEFAULT NULL ' );
-    // sacoche_user.sql
-    // SELECT NULL > NOW() AS test_sup , NULL < NOW() AS test_inf
-    // SELECT NULL > DATE_SUB(NOW(),INTERVAL 3 YEAR) AS test_sup , NULL < DATE_SUB(NOW(),INTERVAL 3 YEAR) AS test_inf
-    // NOT NULL DEFAULT "9999-12-31"
-    // SORTIE_DEFAUT_MYSQL
+    // Pour la table sacoche_saisie , un UPDATE quand il y a plus d'un million de lignes dépasse très largement le max_execution_time de PHP
+    // Solution : on reporte via plusieurs appels ajax qui seront appelés depuis la page d'accueil du compte
+    $nb_notes = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT COUNT(*) FROM sacoche_saisie ' );
+    if($nb_notes<100000)
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_saisie CHANGE saisie_date saisie_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." , CHANGE saisie_visible_date saisie_visible_date DATE DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL." ' );
+    }
+    else
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'a" WHERE parametre_nom="version_base_maj_complementaire" AND parametre_valeur="" ' );
+    }
   }
 }
 

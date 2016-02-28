@@ -151,12 +151,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
     Json::end( FALSE , $reponse );
   }
   // Tout s'est bien passé si on arrive jusque là...
-  $tab_modifs = array(
-    ':partage_etat' => $partage,
-    ':partage_date' => TODAY_MYSQL,
-    ':information'  => $information,
-  )
-  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , $tab_modifs );
+  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_etat'=>$partage,':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
   $tab_partage = array(
     'oui' => '<img title="Référentiel partagé sur le serveur communautaire (MAJ le ◄DATE►)." alt="" src="./_img/etat/partage_oui.gif" />',
@@ -193,11 +188,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
     Json::end( FALSE , $reponse );
   }
   // Tout s'est bien passé si on arrive jusque là...
-  $tab_modifs = array(
-    ':partage_date' => TODAY_MYSQL,
-    ':information'  => $information,
-  )
-  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , $tab_modifs );
+  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':partage_date'=>TODAY_MYSQL,':information'=>$information) );
   // Retour envoyé
   Json::end( TRUE , '<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.Html::date_texte(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />' );
 }
@@ -311,12 +302,7 @@ if( ($action=='calculer') && $matiere_id && $niveau_id && $matiere_nom && $nivea
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
-  $tab_modifs = array(
-    ':calcul_methode'    => $methode,
-    ':calcul_limite'     => $limite,
-    ':calcul_retroactif' => $retroactif,
-  )
-  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , $tab_modifs );
+  $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':calcul_methode'=>$methode,':calcul_limite'=>$limite,':calcul_retroactif'=>$retroactif) );
       if($retroactif=='non')    { $texte_retroactif = '(sur la période)';       }
   elseif($retroactif=='oui')    { $texte_retroactif = '(rétroactivement)';      }
   elseif($retroactif=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }

@@ -108,7 +108,7 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , reference , profil , genre , nom , prenom , login , courriel , sortie_date_fr , check )
+    function afficher_form_gestion( mode , id , id_ent , id_gepi , sconet_id , reference , profil , genre , nom , prenom , login , courriel , date_fr , check )
     {
       var tab_genre = { '' : 'I' , 'M.' : 'M' , 'Mme' : 'F' };
       var opt_genre = ( typeof(tab_genre[genre]) !== 'undefined' ) ? tab_genre[genre] : 'I' ;
@@ -133,7 +133,7 @@ $(document).ready
       var texte_box  = (mode=='modifier') ? "inchangé" : "aléatoire" ;
       $('#f_password').val('').parent().hide(0);
       $('#box_password').prop('checked',true).next().show(0).html(texte_box);
-      if(sortie_date_fr=='-')
+      if(date_fr=='-')
       {
         $('#box_date').prop('checked',true).next().show(0);
         $('#f_sortie_date').val(input_date).parent().hide(0);
@@ -141,7 +141,7 @@ $(document).ready
       else
       {
         $('#box_date').prop('checked',false).next().hide(0);
-        $('#f_sortie_date').val(sortie_date_fr).parent().show(0);
+        $('#f_sortie_date').val(date_fr).parent().show(0);
       }
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " un utilisateur");
@@ -159,7 +159,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*reference*/ , 'ENS' /*profil*/ , '' /*genre*/ , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ , '-' /*sortie_date_fr*/ , '' /*check*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*id_ent*/ , '' /*id_gepi*/ , '' /*sconet_id*/ , '' /*reference*/ , 'ENS' /*profil*/ , '' /*genre*/ , '' /*nom*/ , '' /*prenom*/ , '' /*login*/ , '' /*couriel*/ , '-' /*date_fr*/ , '' /*check*/ );
     };
 
     /**
@@ -172,19 +172,19 @@ $(document).ready
       var objet_tr   = $(this).parent().parent();
       var objet_tds  = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
-      var id             = objet_tr.attr('id').substring(3);
-      var check          = Number(objet_tds.eq(0).children('input').is(':checked'));
-      var id_ent         = objet_tds.eq( 1).html();
-      var id_gepi        = objet_tds.eq( 2).html();
-      var sconet_id      = objet_tds.eq( 3).html();
-      var reference      = objet_tds.eq( 4).html();
-      var profil         = objet_tds.eq( 5).html();
-      var genre          = objet_tds.eq( 6).html();
-      var nom            = objet_tds.eq( 7).html();
-      var prenom         = objet_tds.eq( 8).html();
-      var login          = objet_tds.eq( 9).html();
-      var courriel       = objet_tds.eq(11).html();
-      var sortie_date_fr = objet_tds.eq(12).html();
+      var id         = objet_tr.attr('id').substring(3);
+      var check      = Number(objet_tds.eq(0).children('input').is(':checked'));
+      var id_ent     = objet_tds.eq( 1).html();
+      var id_gepi    = objet_tds.eq( 2).html();
+      var sconet_id  = objet_tds.eq( 3).html();
+      var reference  = objet_tds.eq( 4).html();
+      var profil     = objet_tds.eq( 5).html();
+      var genre      = objet_tds.eq( 6).html();
+      var nom        = objet_tds.eq( 7).html();
+      var prenom     = objet_tds.eq( 8).html();
+      var login      = objet_tds.eq( 9).html();
+      var courriel   = objet_tds.eq(11).html();
+      var date_fr    = objet_tds.eq(12).html();
       // Retirer une éventuelle balise image présente dans profil
       position_image = profil.indexOf('<');
       if (position_image!=-1)
@@ -198,7 +198,7 @@ $(document).ready
         login = login.substring(0,position_image-1);
       }
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , unescapeHtml(reference) , profil , unescapeHtml(genre) , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) , sortie_date_fr , check );
+      afficher_form_gestion( mode , id , unescapeHtml(id_ent) , unescapeHtml(id_gepi) , sconet_id , unescapeHtml(reference) , profil , unescapeHtml(genre) , unescapeHtml(nom) , unescapeHtml(prenom) , unescapeHtml(login) , unescapeHtml(courriel) , date_fr , check );
     };
 
     /**

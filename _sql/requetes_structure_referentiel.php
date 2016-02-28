@@ -277,8 +277,8 @@ public static function DB_tester_referentiel($matiere_id,$niveau_id)
  */
 public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
 {
-  $DB_SQL = 'INSERT INTO sacoche_referentiel( matiere_id, niveau_id,referentiel_partage_etat,referentiel_partage_date,referentiel_calcul_methode,referentiel_calcul_limite,referentiel_calcul_retroactif,referentiel_mode_synthese,referentiel_information) ';
-  $DB_SQL.= 'VALUES                         (:matiere_id,:niveau_id,           :partage_etat,           :partage_date,           :calcul_methode,           :calcul_limite,           :calcul_retroactif,           :mode_synthese,           :information)';
+  $DB_SQL = 'INSERT INTO sacoche_referentiel ';
+  $DB_SQL.= 'VALUES(:matiere_id,:niveau_id,:partage_etat,:partage_date,:calcul_methode,:calcul_limite,:calcul_retroactif,:mode_synthese,:information)';
   $DB_VAR = array(
     ':matiere_id'        => $matiere_id,
     ':niveau_id'         => $niveau_id,
@@ -899,10 +899,9 @@ public static function DB_fusionner_referentiel_items($item_id_degageant,$item_i
  */
 public static function DB_renumeroter_referentiel_liste_elements($element_champ,$tab_elements_id,$operation)
 {
-  $min_value = ($element_champ=='item') ? 0 : 1 ;
   $listing_elements_id = implode(',',$tab_elements_id);
   $DB_SQL = 'UPDATE sacoche_referentiel_'.$element_champ.' ';
-  $DB_SQL.= 'SET '.$element_champ.'_ordre = GREATEST( '.$element_champ.'_ordre'.$operation.' , '.$min_value.' ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
+  $DB_SQL.= 'SET '.$element_champ.'_ordre = GREATEST( '.$element_champ.'_ordre'.$operation.' , 0 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
   $DB_SQL.= 'WHERE '.$element_champ.'_id IN('.$listing_elements_id.') ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -918,7 +917,7 @@ public static function DB_renumeroter_referentiel_liste_elements($element_champ,
 public static function DB_renumeroter_referentiel_domaines_suivants($matiere_id,$niveau_id,$ordre_id)
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
-  $DB_SQL.= 'SET domaine_ordre = GREATEST( domaine_ordre-1 , 1 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
+  $DB_SQL.= 'SET domaine_ordre = GREATEST( domaine_ordre-1 , 0 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id AND domaine_ordre>:ordre_id ';
   $DB_VAR = array(
     ':matiere_id' => $matiere_id,
@@ -938,7 +937,7 @@ public static function DB_renumeroter_referentiel_domaines_suivants($matiere_id,
 public static function DB_renumeroter_referentiel_themes_suivants($domaine_id,$ordre_id)
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_theme ';
-  $DB_SQL.= 'SET theme_ordre = GREATEST( theme_ordre-1 , 1 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
+  $DB_SQL.= 'SET theme_ordre = GREATEST( theme_ordre-1 , 0 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
   $DB_SQL.= 'WHERE domaine_id=:domaine_id AND theme_ordre>:ordre_id ';
   $DB_VAR = array(
     ':domaine_id' => $domaine_id,

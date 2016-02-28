@@ -200,8 +200,8 @@ foreach($DB_TAB as $DB_ROW)
     $class       = (isset($tab_password[$DB_ROW['user_id']])) ? ' class="new"' : '' ;
     $td_password = (isset($tab_password[$DB_ROW['user_id']])) ? '<td class="new">'.html($tab_password[$DB_ROW['user_id']]).'</td>' : '<td class="i">champ crypté</td>' ;
     $champ = ($import_profil=='eleve') ? $DB_ROW['groupe_ref'] : $DB_ROW['user_profil_nom_court_singulier'] ;
-    $date_sortie = ($DB_ROW['user_sortie_date']!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($DB_ROW['user_sortie_date']) : '-' ;
-    $lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_sconet_id']).'</td><td>'.html($DB_ROW['user_sconet_elenoet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$date_sortie.'</td></tr>'.NL;
+    $date_affich = ($DB_ROW['user_sortie_date']!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($DB_ROW['user_sortie_date']) : '-' ;
+    $lignes .= '<tr'.$class.'><td>'.html($DB_ROW['user_sconet_id']).'</td><td>'.html($DB_ROW['user_sconet_elenoet']).'</td><td>'.html($DB_ROW['user_reference']).'</td><td>'.html($champ).'</td><td>'.html($DB_ROW['user_nom']).'</td><td>'.html($DB_ROW['user_prenom']).'</td><td'.$class.'>'.html($DB_ROW['user_login']).'</td>'.$td_password.'<td>'.$date_affich.'</td></tr>'.NL;
   }
 }
 $s_debut_actuel = ($nb_debut_actuel>1) ? 's' : '';

@@ -98,7 +98,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
       {
         // Formater la date
         $date_mysql  = $DB_ROW['user_sortie_date'];
-        $date_sortie = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
+        $date_affich = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['user_id'].'">';
         echo  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['user_id'].'" /></td>';
@@ -113,7 +113,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="label i">champ crypté</td>';
         echo  '<td class="label">'.html($DB_ROW['user_email']).'</td>';
-        echo  '<td class="label">'.$date_sortie.'</td>';
+        echo  '<td class="label">'.$date_affich.'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier ce personnel."></q>';
         echo  '</td>';

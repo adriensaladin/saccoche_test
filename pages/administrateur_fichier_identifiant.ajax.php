@@ -774,7 +774,7 @@ if($action=='import_ent')
   // On affiche le retour
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
+  if(empty($lignes_doublon)) { $lignes_inconnu = $ligne_vide; }
   if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
   if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }

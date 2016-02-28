@@ -241,7 +241,7 @@ if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'<'))
 }
 
 // Modules PHP requis
-define('PHP_LISTE_EXTENSIONS' , ' curl , dom , gd , mbstring , PDO , pdo_mysql , session , zip , zlib '); // respecter le séparateur " , "
+define('PHP_LISTE_EXTENSIONS' , ' curl , dom , gd , mbstring , mysql , PDO , pdo_mysql , session , zip , zlib '); // respecter le séparateur " , "
 
 // Vérifier la présence des modules nécessaires
 $tab_extensions_chargees = get_loaded_extensions();
@@ -726,6 +726,7 @@ define('VERSION_BASE_WEBMESTRE', file_get_contents(CHEMIN_DOSSIER_SQL.'VERSION_B
 // dates
 define('TODAY_FR'    ,date("d/m/Y"));
 define('TODAY_MYSQL' ,date("Y-m-d"));
+define('SORTIE_DEFAUT_FR'    ,'31/12/9999'); // inutilisé
 define('SORTIE_DEFAUT_MYSQL' ,'9999-12-31');
 
 // Dimension maxi d'une photo redimensionnée (en pixels) ; utilisé aussi dans le style.css : .photo {min-height:180px} (144+36)
@@ -865,8 +866,7 @@ function exit_error( $titre , $contenu , $lien='accueil' )
 {
   // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd.
   // C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
-  // COOKIE_MEMOGET peut ne pas être encore défini si sortie au début du loader.
-  if( defined('URL_DIR_SACOCHE') && isset($_COOKIE[COOKIE_MEMOGET]) )
+  if(isset($_COOKIE[COOKIE_MEMOGET]))
   {
     Cookie::effacer(COOKIE_MEMOGET);
   }
@@ -880,7 +880,7 @@ function exit_error( $titre , $contenu , $lien='accueil' )
   }
   else
   {
-    // URL_DIR_SACOCHE peut ne pas être encore défini si sortie au début du loader.
+    // URL_DIR_SACOCHE peut ne pas être encore définie si sortie au début du loader.
     if(defined('URL_DIR_SACOCHE'))
     {
       $chemin = URL_DIR_SACOCHE;

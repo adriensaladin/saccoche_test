@@ -285,8 +285,7 @@ public static function DB_recuperer_professeurs_eleves_matieres( $classe_id , $l
  * @param array  $tab_eleve_id
  * @param bool   $with_periode_nom   FALSE par défaut
  * @param string $only_profil_non_vu   '' par défaut ; 'parent' | 'eleve' sinon
- * @return array    array( [eleve_id] => array( 0 => array( 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) ) )
- *               OU array( array( 'user_id' , 'officiel_type', 'periode_id' , 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) )
+ * @return array   array( [eleve_id] => array( 0 => array( 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) ) ) OU array( array( 'user_id' , 'officiel_type', 'periode_id' , 'fichier_date_generation' , 'fichier_date_consultation_eleve' , 'fichier_date_consultation_parent' ) )
  */
 public static function DB_lister_bilan_officiel_fichiers( $officiel_type , $periode_id , $tab_eleve_id , $with_periode_nom=FALSE , $only_profil_non_vu='' )
 {

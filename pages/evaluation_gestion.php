@@ -386,6 +386,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
   }
   ?>
   <p id="alerte_items" class="fluo"><span class="danger b">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants déjà saisis !</span></p>
+  <p id="info_items" class="fluo"><span class="astuce b">Cette évaluation comporte des items ne faisant pas partie des référentiels qui vous sont rattachés.<br />Ces items (ici invisibles) seront conservés lors de la validation des items ci-dessus.</span></p>
   <div><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></div>
   <hr />
   <p>

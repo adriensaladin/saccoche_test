@@ -290,7 +290,11 @@ unset( $tab_csv_format , $tab_saml_param );
 /**
  * Reliquats
  * 
- * Orléans-Tours   http://www.ac-orleans-tours.fr/vie_numerique/ent/   https://envole-loiret.ac-orleans-tours.fr/   https://envole-indre.ac-orleans-tours.fr/
+ * Orléans-Tours   http://www.ac-orleans-tours.fr/vie_numerique/ent/                                     https://envole-loiret.ac-orleans-tours.fr/
+ *                 http://www.ac-orleans-tours.fr/vie_numerique/ecole_numerique_2nd_degre/ent/envole/    https://envole-indre.ac-orleans-tours.fr/
+ *                                                                                                       https://envole-cher.ac-orleans-tours.fr/
+ *                                                                                                       https://envole-loir-et-cher.ac-orleans-tours.fr/
+ *                                                                                                       https://envole-eure-et-loir.ac-orleans-tours.fr/
  * 
  * https://cas.scolastance.com/cas-asp
  * https://cas.scolastance.com/cas-ent74     http://ent74.scolastance.com/etablissements.aspx

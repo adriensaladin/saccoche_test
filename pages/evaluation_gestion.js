@@ -47,6 +47,7 @@ $(document).ready
     var nb_caracteres_max    = 2000;
     var audio_duree_restante = 0;
     var $table_saisir_voir   = $('#table_saisir_voir');
+    var item_reste           = { "liste" : '' , "nombre" : 0 };
 
     // tri du tableau (avec jquery.tablesorter.js).
     if(TYPE=='groupe')
@@ -437,9 +438,12 @@ $(document).ready
     {
       // Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier" ou "dupliquer").
       $('#f_selection_items option:first').prop('selected',true);
-      cocher_matieres_items( $('#f_compet_liste').val() );
+      item_reste = cocher_matieres_items( $('#f_compet_liste').val() );
       if(mode=='modifier') {$('#alerte_items').show();}
       else                 {$('#alerte_items').hide();}
+      // En cas d'évaluation partagée où tous les profs ne sont pas tous reliés aux référentiels concernés
+      if(item_reste.nombre) {$('#info_items').show();}
+      else                  {$('#info_items').hide();}
       // Afficher la zone
       $.fancybox( { 'href':'#zone_matieres_items' , onStart:function(){$('#zone_matieres_items').css("display","block");} , onClosed:function(){$('#zone_matieres_items').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
       $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
@@ -890,6 +894,12 @@ $(document).ready
             nombre++;
           }
         );
+        // En cas d'évaluation partagée où tous les profs ne sont pas tous reliés aux référentiels concernés
+        if(item_reste.nombre)
+        {
+          liste += item_reste.liste+'_';
+          nombre += item_reste.nombre;
+        }
         var compet_liste  = liste.substring(0,liste.length-1);
         var compet_nombre = (nombre==0) ? 'aucun' : ( (nombre>1) ? nombre+' items' : nombre+' item' ) ;
         $('#f_compet_liste').val(compet_liste);
@@ -970,7 +980,7 @@ $(document).ready
     (
       function()
       {
-        cocher_matieres_items( $("#f_selection_items").val() );
+        item_reste = cocher_matieres_items( $("#f_selection_items").val() );
       }
     );
 

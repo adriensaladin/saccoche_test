@@ -856,7 +856,7 @@ li.li_m2 {background:transparent url(../_img/folder/folder_m2.png) no-repeat top
 li.li_n1 {background:transparent url(../_img/folder/folder_n1.png) no-repeat top left;color:#F00}  /* referentiel_domaine ; socle_pilier */
 li.li_n2 {background:transparent url(../_img/folder/folder_n2.png) no-repeat top left;color:#D0C}  /* referentiel_theme ; socle_section */
 li.li_n3 {background:transparent url(../_img/folder/folder_n3.png) no-repeat top left;color:#70F}  /* referentiel_item ; socle_entree */
-#zone_matieres_items , #zone_socle_item , #zone_eleve , #zone_ressources {min-width:800px;min-height:3000px;padding-right:20px}  /* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' (si modif du contenu sans redimensionnement de la fenêtre) , prévoir un minimum au départ */
+#zone_matieres_items , #zone_socle_item , #zone_eleve , #zone_ressources {min-width:800px;min-height:1000px;padding-right:20px}  /* pour le fancybox qui ne se redimensionne pas en largeur, et qui n'ajoute pas le scrolling automatiquement en hauteur malgré l'appel 'scrolling' à 'yes' , prévoir un minimum au départ */
 #zone_upload {min-width:600px;min-height:300px}  /* pour le fancybox qui se montre radin en place allouée */
 
 li.li_n1 b{font-weight:normal}

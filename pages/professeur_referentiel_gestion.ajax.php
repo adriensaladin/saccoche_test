@@ -155,7 +155,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
     ':partage_etat' => $partage,
     ':partage_date' => TODAY_MYSQL,
     ':information'  => $information,
-  );
+  )
   $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , $tab_modifs );
   // Retour envoyé
   $tab_partage = array(
@@ -196,7 +196,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
   $tab_modifs = array(
     ':partage_date' => TODAY_MYSQL,
     ':information'  => $information,
-  );
+  )
   $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , $tab_modifs );
   // Retour envoyé
   Json::end( TRUE , '<img title="Référentiel partagé sur le serveur communautaire (MAJ le '.Html::date_texte(TODAY_MYSQL).')." alt="" src="./_img/etat/partage_oui.gif" />' );
@@ -315,7 +315,7 @@ if( ($action=='calculer') && $matiere_id && $niveau_id && $matiere_nom && $nivea
     ':calcul_methode'    => $methode,
     ':calcul_limite'     => $limite,
     ':calcul_retroactif' => $retroactif,
-  );
+  )
   $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , $tab_modifs );
       if($retroactif=='non')    { $texte_retroactif = '(sur la période)';       }
   elseif($retroactif=='oui')    { $texte_retroactif = '(rétroactivement)';      }

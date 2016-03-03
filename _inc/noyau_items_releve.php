@@ -675,7 +675,7 @@ if($type_individuel)
    * ********************************
    * Cas d'une présentation par élève
    * ********************************
-   * Usage le plus courant, le seul envisagé et disponible pendant des années.
+   * Usage le plus courante, le seul envisagé et disponible pendant des années.
    * Un bilan officiel est toujours présenté par élève.
    */
   if($releve_individuel_format=='eleve')
@@ -1472,7 +1472,6 @@ if($type_synthese)
   {
     foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
     {
-      extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_id_gepi
       $valeur1 = (isset($tab_moyenne_scores_eleve[$matiere_id][$eleve_id])) ? $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] : FALSE ;
       $valeur2 = (isset($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id])) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] : FALSE ;
       $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,TRUE,FALSE);

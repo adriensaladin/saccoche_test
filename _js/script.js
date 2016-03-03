@@ -303,11 +303,10 @@ function imprimer(contenu)
  * Fonction pour afficher et cocher une liste d'items donnés
  *
  * @param string matieres_items_liste : ids séparés par des underscores
- * @return [liste,nombre] des éventuels items restants
+ * @return void
  */
 function cocher_matieres_items(matieres_items_liste)
 {
-  var tab_id_reliquat = new Array();
   var $zone_matieres_items = $('#zone_matieres_items');
   // Replier tout sauf le plus haut niveau
   $zone_matieres_items.find('ul').css("display","none");
@@ -335,21 +334,7 @@ function cocher_matieres_items(matieres_items_liste)
         $item_id.closest('ul.ul_n1').css("display","block");  // le domaine
         $item_id.closest('ul.ul_m2').css("display","block");  // le niveau
       }
-      else
-      {
-        tab_id_reliquat.push(tab_id[i]);
-      }
     }
-  }
-  // En cas d'évaluation partagée où tous les profs ne sont pas tous reliés aux référentiels concernés
-  var reliquat_nombre = tab_id_reliquat.length;
-  if(reliquat_nombre)
-  {
-    return { "liste" : tab_id_reliquat.join("_") , "nombre" : reliquat_nombre };
-  }
-  else
-  {
-    return { "liste" : '' , "nombre" : 0 };
   }
 }
 

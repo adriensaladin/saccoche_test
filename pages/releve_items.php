@@ -89,8 +89,7 @@ $bouton_modifier_matieres = '';
 
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
-  $objet_selection  = '';
-  $objet_evaluation = ' disabled';
+  $objet_selection = '';
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
   $tab_matieres = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
   $tab_profs    = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
@@ -107,8 +106,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 }
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
-  $objet_selection  = '';
-  $objet_evaluation = '';
+  $objet_selection = '';
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
   $tab_profs    = array(0=>array('valeur'=>$_SESSION['USER_ID'],'texte'=>To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])));
@@ -127,8 +125,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
 {
-  $objet_selection  = ' disabled';
-  $objet_evaluation = ' disabled';
+  $objet_selection = ' disabled';
   $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
   $tab_profs    = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
@@ -145,8 +142,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
-  $objet_selection  = ' disabled';
-  $objet_evaluation = ' disabled';
+  $objet_selection = ' disabled';
   $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
   $tab_profs    = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe('classe',$_SESSION['ELEVE_CLASSE_ID']);
@@ -163,8 +159,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 }
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
-  $objet_selection  = ' disabled';
-  $objet_evaluation = ' disabled';
+  $objet_selection = ' disabled';
   $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
   $tab_profs    = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe('classe',$_SESSION['ELEVE_CLASSE_ID']);
@@ -231,7 +226,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
 <form action="#" method="post" id="form_select"><fieldset>
 
   <div>
-    <label class="tab" for="f_objet">Objet :</label><?php echo str_replace( array('"selection"','"evaluation"') , array('"selection"'.$objet_selection,'"evaluation"'.$objet_evaluation) , $select_objet_releve); ?>
+    <label class="tab" for="f_objet">Objet :</label><?php echo str_replace( array('"selection"','"evaluation"') , array('"selection"'.$objet_selection,'"evaluation"'.$objet_selection) , $select_objet_releve); ?>
   </div>
 
   <div id="choix_matiere" class="<?php echo $class_form_matiere ?>">

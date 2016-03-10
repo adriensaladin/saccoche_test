@@ -231,7 +231,7 @@ $(document).ready
             else
             {
               var s2016_txt = '';
-              var tab_id = s2016_id.split(',');
+              var tab_id = s2016_id.toString().split(',');
               for(i in tab_id)
               {
                 s2016_txt += tab_socle[tab_id[i]]+' | ';
@@ -747,7 +747,7 @@ $(document).ready
                   else
                   {
                     s2016_title = '';
-                    var tab_id = socle2016.split(',');
+                    var tab_id = socle2016.toString().split(',');
                     for(i in tab_id)
                     {
                       s2016_title += tab_socle[tab_id[i]]+'<br />';

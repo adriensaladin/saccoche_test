@@ -112,18 +112,17 @@ class ServeurCommunautaire
    * 
    * Remarque : les ordres des domaines / thèmes / items ne sont pas transmis car il sont déduits par leur position dans l'arborescence.
    * 
-   * @param array  $DB_TAB
+   * @param array  $DB_TAB_referentiel
    * @param array  $DB_TAB_socle2016
    * @return string
    */
-  public static function exporter_arborescence_to_XML( $DB_TAB , $DB_TAB_socle2016 )
+  public static function exporter_arborescence_to_XML( $DB_TAB_referentiel , $DB_TAB_socle2016 )
   {
     // Un 1er traitement pour les liaisons au socle commun
     $tab_item_socle2016 = array();
-    $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiels_matiere($matiere_id);
-    if(!empty($DB_TAB))
+    if(!empty($DB_TAB_socle2016))
     {
-      foreach($DB_TAB as $DB_ROW)
+      foreach($DB_TAB_socle2016 as $DB_ROW)
       {
         $tab_item_socle2016[$DB_ROW['item_id']][] = array(
           'cycle'      => $DB_ROW['socle_cycle_id'],
@@ -131,14 +130,14 @@ class ServeurCommunautaire
         );
       }
     }
-    // Traiter le retour SQL : on remplit les tableaux suivants.
+    // 2ème traitement pour le référentiel en lui-même
     $tab_domaine = array();
     $tab_theme   = array();
     $tab_item    = array();
     $domaine_id = 0;
     $theme_id   = 0;
     $item_id    = 0;
-    foreach($DB_TAB as $DB_ROW)
+    foreach($DB_TAB_referentiel as $DB_ROW)
     {
       if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
       {

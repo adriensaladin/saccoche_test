@@ -133,7 +133,7 @@ if(empty($is_appreciation_groupe))
 {
   if($releve_modele=='matiere')
   {
-    $tab_item_infos = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ ) ;
+    $tab_item_infos = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ ) ;
       $tab_matiere[$matiere_id] = array(
         'matiere_nom'         => $matiere_nom,
         'matiere_nb_demandes' => DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id),
@@ -142,23 +142,23 @@ if(empty($is_appreciation_groupe))
   elseif($releve_modele=='multimatiere')
   {
     $matiere_id = -1;
-    list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
+    list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ );
   }
   else
   {
     if($releve_modele=='selection')
     {
       $liste_items = implode(',',$tab_items);
-      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $liste_eleve , $liste_items , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $liste_eleve , $liste_items , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ );
     }
     elseif($releve_modele=='evaluation')
     {
       $liste_evals = implode(',',$tab_evals);
-      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_devoirs( $liste_eleve , $liste_evals , $only_socle , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_devoirs( $liste_eleve , $liste_evals , $only_socle , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ );
     }
     elseif($releve_modele=='professeur')
     {
-      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur( $liste_eleve , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abbr*/ );
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur( $liste_eleve , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ );
     }
     // Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
     if(count($tab_matiere)>1)
@@ -215,7 +215,7 @@ foreach($tab_item_infos as $item_id => $tab)
   unset( $tab_item_infos[$item_id][0]['matiere_ref'] , $tab_item_infos[$item_id][0]['ref_perso'] , $tab_item_infos[$item_id][0]['ref_auto'] );
   if($type_synthese)
   {
-    $tab_item_infos[$item_id][0]['item_abbr'] = ($tab[0]['item_abbr']) ? $tab[0]['matiere_ref'].'.'.$tab[0]['item_abbr'] : $tab[0]['matiere_ref'].'.'.$item_ref ;
+    $tab_item_infos[$item_id][0]['item_abrev'] = ($tab[0]['item_abrev']) ? $tab[0]['matiere_ref'].'.'.$tab[0]['item_abrev'] : $tab[0]['matiere_ref'].'.'.$item_ref ;
   }
 }
 $longueur_ref_max = $aff_reference ? $longueur_ref_max : 0 ;
@@ -374,7 +374,7 @@ if(empty($is_appreciation_groupe))
             // Pour chaque item...
             foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
             {
-              extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abbr)
+              extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
               // calcul du bilan de l'item
               $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
               if( ($only_etat=='tous') || OutilBilan::tester_acquisition( $score , $only_etat ) )
@@ -757,7 +757,7 @@ if($type_individuel)
                   // Pour chaque item...
                   foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
                   {
-                    extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abbr)
+                    extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
                     // cases référence et nom
                     if($aff_coef)
                     {
@@ -1146,7 +1146,7 @@ if($type_individuel)
         // Pour chaque item...
         foreach($tab_matiere_item[$matiere_id] as $item_id => $item_nom)
         {
-          extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abbr)
+          extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
           if($aff_coef)
           {
             $texte_coef = '['.$item_coef.'] ';
@@ -1367,9 +1367,9 @@ if($type_synthese)
     {
       foreach($tab_item as $item_id=>$item_nom)
       {
-        extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abbr)
-        $releve_PDF->ligne_tete_cellule_corps($item_abbr);
-        $releve_HTML_table_head .= '<th title="'.html(html($item_nom)).'"><img alt="'.html($item_abbr).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;item='.urlencode($item_abbr).'&amp;size=8" /></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+        extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
+        $releve_PDF->ligne_tete_cellule_corps($item_abrev);
+        $releve_HTML_table_head .= '<th title="'.html(html($item_nom)).'"><img alt="'.html($item_abrev).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;item='.urlencode($item_abrev).'&amp;size=8" /></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
       }
     }
   }
@@ -1424,9 +1424,9 @@ if($type_synthese)
     {
       foreach($tab_item as $item_id=>$item_nom)
       {
-        extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abbr)
-        $releve_PDF->ligne_corps_cellule_debut($item_abbr);
-        $entete = '<td title="'.html(html($item_nom)).'">'.html($item_abbr).'</td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+        extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
+        $releve_PDF->ligne_corps_cellule_debut($item_abrev);
+        $entete = '<td title="'.html(html($item_nom)).'">'.html($item_abrev).'</td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
         $releve_HTML_table_body .= '<tr>'.$entete;
         foreach($tab_eleve_infos as $eleve_id => $tab_eleve)  // Pour chaque élève...
         {
@@ -1457,13 +1457,13 @@ if($type_synthese)
     {
       foreach($tab_item as $item_id=>$item_nom)
       {
-        extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abbr)
+        extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
         $valeur1 = $tab_moyenne_scores_item[$item_id];
         $valeur2 = $tab_pourcentage_acquis_item[$item_id];
         $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,TRUE,FALSE);
         $releve_HTML_table_foot1 .= Html::td_score($valeur1,'score','%');
         $releve_HTML_table_foot2 .= Html::td_score($valeur2,'score','%');
-        $row_entete   .= ($repeter_entete) ? '<th class="hc" title="'.html(html($item_nom)).'"><img alt="'.html($item_abbr).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;item='.urlencode($item_abbr).'&amp;size=8" /></th>' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+        $row_entete   .= ($repeter_entete) ? '<th class="hc" title="'.html(html($item_nom)).'"><img alt="'.html($item_abrev).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;item='.urlencode($item_abrev).'&amp;size=8" /></th>' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
         $row_checkbox .= ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
       }
     }

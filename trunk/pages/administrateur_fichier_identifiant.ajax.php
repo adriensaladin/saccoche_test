@@ -554,22 +554,21 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
   }
   // On affiche le retour
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  $ligne_probleme = $lignes_doublon.$lignes_homo.$lignes_inconnu;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
-  if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
-  if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
+  if(empty($ligne_probleme)) { $ligne_probleme = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
   Json::add_str('<table class="p">'.NL);
   Json::add_str(  '<tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi a été modifié.</th></tr>'.NL);
-  Json::add_str(    $lignes_modif);
+  Json::add_str($lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str(    $lignes_doublon.$lignes_homo.$lignes_inconnu);
+  Json::add_str($ligne_probleme);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant Gepi est inchangé.</th></tr>'.NL);
-  Json::add_str(    $lignes_ras);
+  Json::add_str($lignes_ras);
   Json::add_str(  '</tbody>'.NL);
   Json::add_str('</table>'.NL);
   Json::end( TRUE );
@@ -682,9 +681,9 @@ if($action=='import_ent')
   // Observer le contenu du fichier et comparer avec le contenu de la base
   $lignes_ras     = '';
   $lignes_modif   = '';
+  $lignes_doublon = '';
   $lignes_homo    = '';
   $lignes_inconnu = '';
-  $lignes_doublon = '';
   foreach($tab_users_fichier['id_ent'] as $i_fichier => $id_ent)
   {
     if($tab_users_fichier['id_ent'][$i_fichier]=='')
@@ -773,22 +772,21 @@ if($action=='import_ent')
   }
   // On affiche le retour
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  $ligne_probleme = $lignes_doublon.$lignes_homo.$lignes_inconnu;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
-  if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
-  if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
+  if(empty($ligne_probleme)) { $ligne_probleme = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
   Json::add_str('<table class="p">'.NL);
   Json::add_str(  '<tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT a été modifié.</th></tr>'.NL);
-  Json::add_str(    $lignes_modif);
+  Json::add_str($lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str(    $lignes_doublon.$lignes_homo.$lignes_inconnu);
+  Json::add_str($ligne_probleme);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes trouvés dans le fichier dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
-  Json::add_str(    $lignes_ras);
+  Json::add_str($lignes_ras);
   Json::add_str(  '</tbody>'.NL);
   Json::add_str('</table>'.NL);
   Json::end( TRUE );
@@ -829,8 +827,8 @@ if($action=='COPY_id_lcs_TO_id_ent')
   // Pour chaque user de la base, rechercher son uid dans le LCS
   $lignes_ras     = '';
   $lignes_modif   = '';
-  $lignes_erreur  = '';
   $lignes_doublon = '';
+  $lignes_erreur  = '';
   $lignes_inconnu = ''; // de SACoche non trouvé dans LCS
   foreach($DB_TAB as $DB_ROW)
   {
@@ -889,9 +887,9 @@ if($action=='COPY_id_lcs_TO_id_ent')
   }
   // On affiche le bilan
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  $ligne_probleme = $lignes_doublon.$lignes_erreur;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
-  if(empty($lignes_erreur )) { $lignes_erreur  = $ligne_vide; }
+  if(empty($ligne_probleme)) { $ligne_probleme = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   Json::add_str('<ul class="puce"><li><b>Résultat de l\'analyse et des opérations effectuées :</b></li></ul>'.NL);
@@ -901,7 +899,7 @@ if($action=='COPY_id_lcs_TO_id_ent')
   Json::add_str($lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str($lignes_doublon.$lignes_erreur);
+  Json::add_str($ligne_probleme);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans le LCS dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
   Json::add_str($lignes_ras);
@@ -1010,8 +1008,8 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
   // Observer le contenu de l'ENT et comparer avec le contenu de la base
   $lignes_ras     = '';
   $lignes_modif   = '';
-  $lignes_homo    = '';
   $lignes_doublon = '';
+  $lignes_homo    = '';
   $lignes_inconnu = ''; // de SACoche non trouvé dans l'ENT
   $lignes_reste   = ''; // de l'ENT non trouvé dans SACoche
   foreach($tab_users_base['id_ent'] as $user_id => $id_ent_SACoche)
@@ -1067,9 +1065,9 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
   }
   // On affiche le bilan
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  $ligne_probleme = $lignes_doublon.$lignes_homo;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
-  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
+  if(empty($ligne_probleme)) { $ligne_probleme = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   if(empty($lignes_reste  )) { $lignes_reste   = $ligne_vide; }
@@ -1080,7 +1078,7 @@ if( isset($NEXT_RecupUsersBase_CompareUsersENT_PrintBilan) )
   Json::add_str($lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str($lignes_doublon.$lignes_homo);
+  Json::add_str($ligne_probleme);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
   Json::add_str($lignes_ras);
@@ -1161,8 +1159,8 @@ if($action=='COPY_id_laclasse_TO_id_ent')
   // Observer le contenu de l'ENT et comparer avec le contenu de la base
   $lignes_ras     = '';
   $lignes_modif   = '';
-  $lignes_homo    = '';
   $lignes_doublon = '';
+  $lignes_homo    = '';
   $lignes_inconnu = ''; // de SACoche non trouvé dans l'ENT
   $lignes_reste   = ''; // de l'ENT non trouvé dans SACoche
   // Pour chaque user SACoche ...
@@ -1231,9 +1229,9 @@ if($action=='COPY_id_laclasse_TO_id_ent')
   }
   // On affiche le bilan
   $ligne_vide = '<tr><td colspan="2">Aucun</td></tr>'.NL;
+  $ligne_probleme = $lignes_doublon.$lignes_homo;
   if(empty($lignes_modif  )) { $lignes_modif   = $ligne_vide; }
-  if(empty($lignes_homo   )) { $lignes_homo    = $ligne_vide; }
-  if(empty($lignes_doublon)) { $lignes_doublon = $ligne_vide; }
+  if(empty($ligne_probleme)) { $ligne_probleme = $ligne_vide; }
   if(empty($lignes_ras    )) { $lignes_ras     = $ligne_vide; }
   if(empty($lignes_inconnu)) { $lignes_inconnu = $ligne_vide; }
   if(empty($lignes_reste  )) { $lignes_reste   = $ligne_vide; }
@@ -1244,7 +1242,7 @@ if($action=='COPY_id_laclasse_TO_id_ent')
   Json::add_str($lignes_modif);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT n\'a pas pu être modifié.</th></tr>'.NL);
-  Json::add_str($lignes_doublon.$lignes_homo);
+  Json::add_str($ligne_probleme);
   Json::add_str(  '</tbody><tbody>'.NL);
   Json::add_str(    '<tr><th colspan="2">Comptes SACoche trouvés dans l\'ENT dont l\'identifiant ENT est inchangé.</th></tr>'.NL);
   Json::add_str($lignes_ras);

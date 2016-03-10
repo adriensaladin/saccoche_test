@@ -336,6 +336,7 @@ if($connexion_mode=='cas')
     phpCAS::forceAuthentication();
     // A partir de là, l'utilisateur est forcément authentifié sur son CAS.
     // Récupérer l'identifiant (login ou numéro interne...) de l'utilisateur authentifié pour le traiter dans l'application
+    // Transmis via la balise <cas:user></cas:user>
     $id_ENT = phpCAS::getUser();
     // Pour mettre fin au ob_start() ; cas 1/2 où il n'y a pas eu d'erreur.
     ob_end_clean();

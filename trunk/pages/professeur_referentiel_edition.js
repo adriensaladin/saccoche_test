@@ -125,7 +125,7 @@ $(document).ready
                   function()
                   {
                     id2 = $(this).attr('id').substring(3);
-                    titre = $(this).children('b').children('img:eq(3)').attr('title');
+                    titre = $(this).children('b').children('img:eq(4)').attr('title');
                     tab_ressources[id2] = (titre=='Absence de ressource.') ? '' : titre ;
                   }
                 );
@@ -212,40 +212,57 @@ $(document).ready
           {
             // On récupère le coefficient
             var adresse = obj_b.children('img:eq(0)').attr('src');
-            var coef = parseInt( adresse.substr(adresse.length-6,2) , 10 );
+            var coef    = parseInt( adresse.substr(adresse.length-6,2) , 10 );
             // On récupère l'autorisation de demande
             var adresse = obj_b.children('img:eq(1)').attr('src');
-            var cart = adresse.substr(adresse.length-7,3);
-            var check1 = (cart=='oui') ? ' checked' : '' ;
-            var check0 = (cart=='non') ? ' checked' : '' ;
+            var cart    = adresse.substr(adresse.length-7,3);
+            var check1  = (cart=='oui') ? ' checked' : '' ;
+            var check0  = (cart=='non') ? ' checked' : '' ;
             // On récupère le socle
             var socle_id  = obj_b.children('img:eq(2)').data('id');
             var socle_txt = $('label[for=socle_'+socle_id+']').text();
+            // On récupère le socle 2016
+            var s2016_id  = obj_b.children('img:eq(3)').data('id');
+            if(!s2016_id)
+            {
+              var s2016_txt = 'Hors-socle 2016.';
+            }
+            else
+            {
+              var s2016_txt = '';
+              var tab_id = s2016_id.split(',');
+              for(i in tab_id)
+              {
+                s2016_txt += tab_socle[tab_id[i]]+' | ';
+              }
+              s2016_txt = s2016_txt.substring(0,s2016_txt.length-3);
+            }
             // on récupère la référence
-            var ref = obj_b.children('b:eq(0)').text();
+            var ref   = obj_b.children('b:eq(0)').text();
             // on récupère l'abréviation
-            var abbr = obj_b.children('b:eq(2)').text();
+            var abrev = obj_b.children('b:eq(2)').text();
             // on récupère le nom
-            var nom_texte = obj_b.children('b:eq(4)').text();
+            var nom_texte    = obj_b.children('b:eq(4)').text();
             var nom_longueur = Math.min(10+nom_texte.length,128);
           }
           else
           {
-            var coef = 1;
+            var coef   = 1;
             var check1 = ' checked';
             var check0 = '';
-            var socle_id = 0;
+            var socle_id  = 0;
             var socle_txt = "Hors-socle.";
-            var ref = '';
-            var abbr = '';
-            var nom_texte = '';
+            var ref   = '';
+            var abrev = '';
+            var nom_texte    = '';
             var nom_longueur = 125;
           }
           // On assemble
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour remplacer les références automatiques." /> Ref.</i><input id="f_ref" name="f_ref" size="2" maxlength="3" type="text" value="'+escapeQuote(ref)+'" /> (facultatif)<br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Abréviation éclairant sur l\'item pour les tableaux PDF à double entrée." /> Abbr.</i><input id="f_abbr" name="f_abbr" size="12" maxlength="15" type="text" value="'+escapeQuote(abbr)+'" /> (facultatif)<br />';
+          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Abréviation éclairant sur l\'item pour les tableaux PDF à double entrée." /> Abrev.</i><input id="f_abrev" name="f_abrev" size="12" maxlength="15" type="text" value="'+escapeQuote(abrev)+'" /> (facultatif)<br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Nom de l\'item." /> Nom</i><input id="f_nom" name="f_nom" size="'+nom_longueur+'" maxlength="256" type="text" value="'+escapeQuote(nom_texte)+'" /><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
+          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun 2016." /> S.2016</i><input id="f_intitule2016" name="f_intitule2016" size="75" maxlength="75" type="text" value="'+s2016_txt+'" readonly /><input id="f_socle2016" name="f_socle2016" type="hidden" value="'+s2016_id+'" /><q class="choisir_socle" title="Sélectionner un item du socle commun 2016."></q><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient (nombre entier entre 0 et 20 ; 1 par défaut)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="2" /><br />';
           new_html += '<i class="tab">Demande</i> <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/etat/cart_oui.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+' /><label for="f_cart0"><img src="./_img/etat/cart_non.png" title="Demande interdite." /></label><br />';
           var texte = 'cet item';
@@ -445,6 +462,27 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur l'image pour afficher les items du socle 2016
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#zone_elaboration_referentiel').on
+    (
+      'click',
+      'q.choisir_socle',
+      function()
+      {
+        // récupérer le nom de l'item et le reporter
+        var item_nom = escapeHtml( entity_convert( $('#f_nom').val() ) );
+        $('#zone_socle2016_composante span.f_nom').html(item_nom);
+        // récupérer la relation au socle commun et la cocher
+        cocher_socle2016_composantes( $('#f_socle2016').val() );
+        // montrer le cadre
+        $.fancybox( { 'href':'#zone_socle2016_composante' , onStart:function(){$('#zone_socle2016_composante').css("display","block");} , onClosed:function(){$('#zone_socle2016_composante').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+        objet = 'choisir_socle2016';
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour confirmer la relation au socle d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -473,10 +511,60 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur le bouton pour confirmer les relations au socle 2016 d'un item
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#choisir_socle2016_valider').click
+    (
+      function()
+      {
+        // récupérer les relations au socle (id + nom du premier si plusieurs)
+        var socle_id = '';
+        var socle_nom = '';
+        $("#zone_socle2016_composante input[type=checkbox]:checked").each
+        (
+          function()
+          {
+            socle_id += $(this).val() + ',';
+            socle_nom += tab_socle[$(this).val()] + ' | ';
+          }
+        );
+        if(!socle_id)
+        {
+          socle_nom = 'Hors-socle 2016.';
+        }
+        else
+        {
+          socle_id = socle_id.substring(0,socle_id.length-1);
+          socle_nom = socle_nom.substring(0,socle_nom.length-3);
+        }
+        // L'envoyer dans le formulaire
+        $('#f_socle2016').val(socle_id);
+        $('#f_intitule2016').val(socle_nom);
+        // masquer le cadre
+        $.fancybox.close();
+        objet = 'editer';
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour Annuler le choix dans le socle
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#choisir_socle_annuler').click
+    (
+      function()
+      {
+        $.fancybox.close();
+        objet = 'editer';
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur le bouton pour Annuler le choix dans le socle 2016
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#choisir_socle2016_annuler').click
     (
       function()
       {
@@ -525,13 +613,14 @@ $(document).ready
         $('#f_nom').focus();
         return false;
       }
-      // On récupère l'abréviation, le coefficient, l'autorisation de demande, le lien au socle et le lien de ressources de l'élément (item uniquement)
+      // On récupère l'abréviation, le coefficient, l'autorisation de demande, le lien au socle, les liens au socle 2016 et le lien de ressources de l'élément (item uniquement)
       if(contexte=='n3')
       {
-        var abbr  = $('#f_abbr').val();
+        var abrev = $('#f_abrev').val();
         var coef  = parseInt( $('#f_coef').val() , 10 );
         var cart  = $("input[name=f_cart]:checked").val();
         var socle = $('#f_socle').val();
+        var socle2016 = $('#f_socle2016').val();
         if( (isNaN(coef)) || (coef<0) || (coef>20) )
         {
           $('#ajax_msg').removeAttr('class').addClass('erreur').html("Le coefficient doit être un nombre entier entre 0 et 20 !");
@@ -546,10 +635,11 @@ $(document).ready
       }
       else
       {
-        var abbr  = '';
+        var abrev = '';
         var coef  = 1;
         var cart  = 0;
         var socle = 0;
+        var socle2016 = '';
       }
       // Si édition, on récupère l'id de l'élément        concerné (niveau ou domaine ou theme)
       // Si ajout  , on récupère l'id de l'élément parent concerné (niveau ou domaine ou theme)
@@ -597,7 +687,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+action+'&contexte='+contexte+'&matiere='+matiere_id+'&'+get_texte+'='+get_value+'&ordre='+ordre+'&tab_id='+tab_id+'&code='+code+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&ref='+encodeURIComponent(ref)+'&nom='+encodeURIComponent(nom)+'&abbr='+encodeURIComponent(abbr)+'&matiere_nom='+encodeURIComponent(matiere_nom),
+          data : 'csrf='+CSRF+'&f_action='+action+'&contexte='+contexte+'&matiere='+matiere_id+'&'+get_texte+'='+get_value+'&ordre='+ordre+'&tab_id='+tab_id+'&code='+code+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&socle2016='+socle2016+'&ref='+encodeURIComponent(ref)+'&nom='+encodeURIComponent(nom)+'&abrev='+encodeURIComponent(abrev)+'&matiere_nom='+encodeURIComponent(matiere_nom),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -633,20 +723,36 @@ $(document).ready
                   break;
                 case 'n3' :  // item
 
-                  coef_image   = (coef<10) ? '0'+coef : coef ;
-                  coef_texte   = '<img src="./_img/coef/'+coef_image+'.gif" alt="" title="Coefficient '+coef+'." />';
-                  cart_image   = (cart>0) ? 'oui' : 'non' ;
-                  cart_title   = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
-                  cart_texte   = '<img src="./_img/etat/cart_'+cart_image+'.png" title="'+cart_title+'" />';
-                  socle_image  = (socle>0) ? 'oui' : 'non' ;
-                  socle_title  = $('#f_intitule').val();
-                  socle_texte  = '<img src="./_img/etat/socle_'+socle_image+'.png" alt="" title="'+socle_title+'" data-id="'+socle+'" />';
-                  lien_image   = ( (action=='edit') && (tab_ressources[get_value]) ) ? 'oui' : 'non' ;
-                  lien_title   = ( (action=='edit') && (tab_ressources[get_value]) ) ? tab_ressources[get_value] : 'Absence de ressource.' ;
-                  lien_texte   = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
-                  var sep_ref  = (ref) ? separateur : '' ;
-                  var sep_abbr = (abbr) ? separateur : '' ;
-                  var texte = coef_texte + cart_texte + socle_texte + lien_texte + '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(abbr)+'</b>' + '<b>'+sep_abbr+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
+                  coef_image    = (coef<10) ? '0'+coef : coef ;
+                  coef_texte    = '<img src="./_img/coef/'+coef_image+'.gif" alt="" title="Coefficient '+coef+'." />';
+                  cart_image    = (cart>0) ? 'oui' : 'non' ;
+                  cart_title    = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
+                  cart_texte    = '<img src="./_img/etat/cart_'+cart_image+'.png" title="'+cart_title+'" />';
+                  socle_image   = (socle>0) ? 'oui' : 'non' ;
+                  socle_title   = $('#f_intitule').val();
+                  socle_texte   = '<img src="./_img/etat/socle_'+socle_image+'.png" alt="" title="'+socle_title+'" data-id="'+socle+'" />';
+                  s2016_image   = (socle2016) ? 'oui' : 'non' ;
+                  if( !socle2016 || socle2016.indexOf(',')==-1)
+                  {
+                    s2016_title   = $('#f_intitule2016').val();
+                  }
+                  else
+                  {
+                    s2016_title = '';
+                    var tab_id = socle2016.split(',');
+                    for(i in tab_id)
+                    {
+                      s2016_title += tab_socle[tab_id[i]]+'<br />';
+                    }
+                    s2016_title = s2016_title.substring(0,s2016_title.length-6);
+                  }
+                  s2016_texte   = '<img src="./_img/etat/socle_'+s2016_image+'.png" alt="" title="'+s2016_title+'" data-id="'+socle2016+'" />';
+                  lien_image    = ( (action=='edit') && (tab_ressources[get_value]) ) ? 'oui' : 'non' ;
+                  lien_title    = ( (action=='edit') && (tab_ressources[get_value]) ) ? tab_ressources[get_value] : 'Absence de ressource.' ;
+                  lien_texte    = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
+                  var sep_ref   = (ref) ? separateur : '' ;
+                  var sep_abrev = (abrev) ? separateur : '' ;
+                  var texte = coef_texte + cart_texte + socle_texte + s2016_texte + lien_texte + '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(abrev)+'</b>' + '<b>'+sep_abrev+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
                   if(action=='add')
                   {
                     texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)];
@@ -1088,11 +1194,13 @@ $(document).ready
         if(e.which==13)  // touche entrée
         {
           if(objet=='choisir_compet') {$('#choisir_socle_valider').click();}
+          else if(objet=='choisir_socle2016') {$('#choisir_socle2016_valider').click();}
           else {$('#zone_elaboration_referentiel q.valider').click();}
         }
         else if(e.which==27)  // touche escape
         {
           if(objet=='choisir_compet') {$('#choisir_socle_annuler').click();}
+          else if(objet=='choisir_socle2016') {$('#choisir_socle2016_annuler').click();}
           else {$('#zone_elaboration_referentiel q.annuler').click();}
         }
         return false;

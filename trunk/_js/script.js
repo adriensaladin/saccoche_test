@@ -486,7 +486,7 @@ function cocher_socle2016_composantes(listing_socle_id)
   // Cocher ce qui doit l'être (initialisation)
   if(listing_socle_id)
   {
-    var tab_socle_id = listing_socle_id.split(',');
+    var tab_socle_id = listing_socle_id.toString().split(',');
     for(i in tab_socle_id)
     {
       var $socle_id = $('#socle2016_'+tab_socle_id[i]);
@@ -540,7 +540,7 @@ function cocher_eleves(eleve_liste)
 /**
  * Fonction pour cocher une liste de matières données
  *
- * @param matiere_liste : ids séparés par des virgules
+ * @param matiere_liste : ids séparés par des underscores
  * @return void
  */
 function cocher_matieres(matiere_liste)

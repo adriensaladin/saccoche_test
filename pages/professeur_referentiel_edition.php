@@ -190,3 +190,29 @@ else
   </form>
 </div>
 
+<div id="zone_socle2016_composante" class="arbre_dynamique hide">
+  <h2>Relation au socle 2016</h2>
+  <div class="travaux">Interface en prévision de la réforme entrant en vigueur en septembre 2016.</div>
+  <div class="astuce">
+    <div class="fluo">
+      On peut ici relier ses items aux composantes du nouveau socle.<br />
+      Nouveauté : on peut relier un même item disciplinaire à plusieurs composantes du socle.<br />
+      Ces affectations sont d'ores et déjà conservées lors du partage ou de la récupération d'un référentiel.<br />
+      Les liaisons à l'ancien socle seront supprimées lors d'une mise à jour au courant de l'été 2016.
+    </div>
+  </div>
+  <form action="#" method="post">
+    <p>
+      <label class="tab">Item disciplinaire :</label><span class="f_nom i"></span><br />
+      <label class="tab">Socle 2016 :</label>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>).<br />
+      <span class="tab"></span><button id="choisir_socle2016_valider" type="button" class="valider">Valider le choix effectué.</button> <button id="choisir_socle2016_annuler" type="button" class="annuler">Annuler.</button>
+    </p>
+    <?php
+    // Affichage de la liste des composantes du socle
+    list($string_html,$string_js) = HtmlArborescence::afficher_socle2016();
+    echo $string_html;
+    Layout::add( 'js_inline_before' , $string_js );
+    ?>
+  </form>
+</div>
+

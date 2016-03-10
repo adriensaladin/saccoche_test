@@ -195,7 +195,7 @@ public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id
   $DB_SQL.= 'niveau_id, niveau_ref, niveau_nom, ';
   $DB_SQL.= 'domaine_id, domaine_ordre, domaine_code, domaine_ref, domaine_nom, ';
   $DB_SQL.= 'theme_id, theme_ordre, theme_ref, theme_nom, ';
-  $DB_SQL.= 'item_id, item_ordre, item_ref, item_nom, item_abbr, item_coef, item_cart, item_lien, ';
+  $DB_SQL.= 'item_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien, ';
   $DB_SQL.= $select_socle_nom;
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= $join_user_matiere;
@@ -258,7 +258,7 @@ public static function DB_OPT_arborescence($matiere_id,$niveau_id)
 /**
  * recuperer_arborescence_palier
  *
- * @param int   $palier_id (facultatif ; les paliers de l'établissement sinon
+ * @param int   $palier_id (facultatif ; les paliers de l'établissement sinon)
  * @return array
  */
 public static function DB_recuperer_arborescence_palier($palier_id=FALSE)
@@ -270,6 +270,35 @@ public static function DB_recuperer_arborescence_palier($palier_id=FALSE)
   $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
   $DB_SQL.= ($palier_id) ? 'WHERE palier_id='.$palier_id.' ' : 'WHERE palier_actif=1 ' ;
   $DB_SQL.= 'ORDER BY pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * recuperer_socle2016_cycles
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_recuperer_socle2016_cycles()
+{
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_socle_cycle ';
+  $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * recuperer_socle2016_arborescence
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_recuperer_socle2016_arborescence()
+{
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_socle_domaine ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_domaine_id) ';
+  $DB_SQL.= 'ORDER BY socle_domaine_ordre ASC, socle_composante_ordre ASC';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

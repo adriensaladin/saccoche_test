@@ -83,6 +83,57 @@ public static function DB_OPT_lister_elements_referentiels_prof( $prof_id , $gra
 }
 
 /**
+ * recuperer_socle2016_for_referentiels_matiere
+ *
+ * @param int $matiere_id
+ * @return array
+ */
+public static function DB_recuperer_socle2016_for_referentiels_matiere($matiere_id)
+{
+  $DB_SQL = 'SELECT item_id, socle_cycle_id, socle_composante_id, socle_cycle_nom, socle_composante_nom ';
+  $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_cycle USING (socle_cycle_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_composante_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_domaine USING (socle_domaine_id) ';
+  $DB_SQL.= 'WHERE matiere_id=:matiere_id AND socle_cycle_id IS NOT NULL '; // on peut aussi utiliser INNER JOIN
+  $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC, socle_domaine_ordre ASC, socle_composante_ordre ASC';
+  $DB_VAR = array(':matiere_id'=>$matiere_id);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * recuperer_socle2016_for_referentiel_matiere_niveau
+ *
+ * @param int  $matiere_id
+ * @param int  $niveau_id
+ * @param bool $with_nom    avec ou pas le nom des cycles et composantes
+ * @return array
+ */
+public static function DB_recuperer_socle2016_for_referentiel_matiere_niveau( $matiere_id , $niveau_id , $with_nom )
+{
+  $select_noms = ($with_nom)   ? ', socle_cycle_nom, socle_composante_nom ' : '' ;
+  $DB_SQL = 'SELECT item_id, socle_cycle_id, socle_composante_id '.$select_noms;
+  $DB_SQL.= 'FROM sacoche_referentiel ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_cycle USING (socle_cycle_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_composante_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_socle_domaine USING (socle_domaine_id) ';
+  $DB_SQL.= 'WHERE matiere_id=:matiere_id AND socle_cycle_id IS NOT NULL '; // on peut aussi utiliser INNER JOIN
+  $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC, socle_domaine_ordre ASC, socle_composante_ordre ASC';
+  $DB_VAR = array(
+    ':matiere_id' => $matiere_id,
+    ':niveau_id'  => $niveau_id,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * recuperer_referentiels_domaines
  *
  * @param void
@@ -103,7 +154,7 @@ public static function DB_recuperer_referentiels_domaines()
  * @param string $listing_niveau_id
  * @return array
  */
-public static function DB_recuperer_referentiels_domaines_cibles($listing_matiere_id,$listing_niveau_id)
+public static function DB_recuperer_referentiels_domaines_cibles( $listing_matiere_id , $listing_niveau_id )
 {
   $DB_SQL = 'SELECT matiere_id, niveau_id, domaine_id, domaine_nom ';
   $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
@@ -180,7 +231,7 @@ public static function DB_recuperer_referentiel_partage_etat($matiere_id,$niveau
  * @param int    $user_id
  * @return string
  */
-public static function DB_recuperer_autres_professeurs_matiere($matiere_id,$user_id)
+public static function DB_recuperer_autres_professeurs_matiere( $matiere_id , $user_id )
 {
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
@@ -202,7 +253,7 @@ public static function DB_recuperer_autres_professeurs_matiere($matiere_id,$user
  * @param int    $niveau_id
  * @return int
  */
-public static function DB_recuperer_domaine_ordre_max($matiere_id,$niveau_id)
+public static function DB_recuperer_domaine_ordre_max( $matiere_id , $niveau_id )
 {
   $DB_SQL = 'SELECT MAX(domaine_ordre) ';
   $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
@@ -236,7 +287,7 @@ public static function DB_recuperer_theme_ordre_max($domaine_id)
  * @param int    $item_id_absorbant
  * @return array
  */
-public static function DB_recuperer_liens_items_fusionnes($item_id_degageant,$item_id_absorbant)
+public static function DB_recuperer_liens_items_fusionnes( $item_id_degageant , $item_id_absorbant )
 {
   $DB_SQL = 'SELECT item_lien ';
   $DB_SQL.= 'FROM sacoche_referentiel_item ';
@@ -255,7 +306,7 @@ public static function DB_recuperer_liens_items_fusionnes($item_id_degageant,$it
  * @param int    $niveau_id
  * @return int
  */
-public static function DB_tester_referentiel($matiere_id,$niveau_id)
+public static function DB_tester_referentiel( $matiere_id , $niveau_id )
 {
   $DB_SQL = 'SELECT matiere_id ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
@@ -275,7 +326,7 @@ public static function DB_tester_referentiel($matiere_id,$niveau_id)
  * @param string $partage_etat
  * @return void
  */
-public static function DB_ajouter_referentiel($matiere_id,$niveau_id,$partage_etat)
+public static function DB_ajouter_referentiel( $matiere_id , $niveau_id , $partage_etat )
 {
   $DB_SQL = 'INSERT INTO sacoche_referentiel( matiere_id, niveau_id,referentiel_partage_etat,referentiel_partage_date,referentiel_calcul_methode,referentiel_calcul_limite,referentiel_calcul_retroactif,referentiel_mode_synthese,referentiel_information) ';
   $DB_SQL.= 'VALUES                         (:matiere_id,:niveau_id,           :partage_etat,           :partage_date,           :calcul_methode,           :calcul_limite,           :calcul_retroactif,           :mode_synthese,           :information)';
@@ -344,34 +395,39 @@ public static function DB_ajouter_referentiel_theme( $domaine_id , $theme_ordre 
 }
 
 /**
- * Ajouter un item dans un référentiel (le lien de ressources est géré ultérieurement ; le numéro d'ordre des autres items impactés est modifié ailleurs)
+ * Ajouter un item dans un référentiel (les liaisons au socle 2016 sont gérées ici ; le lien de ressources est géré ultérieurement ; le numéro d'ordre des autres items impactés est modifié ailleurs)
  *
  * @param int    $theme_id
  * @param int    $socle_id
  * @param int    $item_ordre
  * @param string $item_ref
  * @param string $item_nom
- * @param string $item_abbr
+ * @param string $item_abrev
  * @param int    $item_coef
  * @param int    $item_cart
+ * @param array  $tab_socle2016
  * @return int
  */
-public static function DB_ajouter_referentiel_item( $theme_id , $socle_id , $item_ordre , $item_ref , $item_nom , $item_abbr , $item_coef , $item_cart )
+public static function DB_ajouter_referentiel_item( $theme_id , $socle_id , $item_ordre , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $tab_socle2016 )
 {
-  $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abbr, item_coef, item_cart) ';
-  $DB_SQL.= 'VALUES                              (:theme_id,:socle_id ,:item_ordre,:item_ref,:item_nom,:item_abbr,:item_coef,:item_cart)';
+  $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart) ';
+  $DB_SQL.= 'VALUES                              (:theme_id,:socle_id ,:item_ordre,:item_ref,:item_nom,:item_abrev,:item_coef,:item_cart)';
   $DB_VAR = array(
     ':theme_id'   => $theme_id,
     ':socle_id'   => $socle_id,
     ':item_ordre' => $item_ordre,
     ':item_ref'   => $item_ref,
     ':item_nom'   => $item_nom,
-    ':item_abbr'  => $item_abbr,
+    ':item_abrev' => $item_abrev,
     ':item_coef'  => $item_coef,
     ':item_cart'  => $item_cart,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+  $item_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+  // Liaisons au socle
+  DB_STRUCTURE_REFERENTIEL::DB_modifier_liaison_item_socle2016( $item_id , $tab_socle2016 , 'ajouter' );
+  // Retour
+  return $item_id;
 }
 
 /**
@@ -383,7 +439,7 @@ public static function DB_ajouter_referentiel_item( $theme_id , $socle_id , $ite
  * @param int    $matiere_id   uniquement pour un déplacement vers une autre matière
  * @return int   test si déplacement effectué (0|1)
  */
-public static function DB_deplacer_referentiel_domaine($domaine_id,$niveau_id,$domaine_ordre,$matiere_id=0)
+public static function DB_deplacer_referentiel_domaine( $domaine_id , $niveau_id , $domaine_ordre , $matiere_id=0 )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
   $DB_SQL.= 'SET niveau_id=:niveau_id, domaine_ordre=:domaine_ordre ';
@@ -407,7 +463,7 @@ public static function DB_deplacer_referentiel_domaine($domaine_id,$niveau_id,$d
  * @param int    $theme_ordre
  * @return int   test si déplacement effectué (0|1)
  */
-public static function DB_deplacer_referentiel_theme($theme_id,$domaine_id,$theme_ordre)
+public static function DB_deplacer_referentiel_theme( $theme_id , $domaine_id , $theme_ordre )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_theme ';
   $DB_SQL.= 'SET domaine_id=:domaine_id, theme_ordre=:theme_ordre ';
@@ -429,7 +485,7 @@ public static function DB_deplacer_referentiel_theme($theme_id,$domaine_id,$them
  * @param int    $item_ordre
  * @return int   test si déplacement effectué (0|1)
  */
-public static function DB_deplacer_referentiel_item($item_id,$theme_id,$item_ordre)
+public static function DB_deplacer_referentiel_item( $item_id , $theme_id , $item_ordre )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
   $DB_SQL.= 'SET theme_id=:theme_id, item_ordre=:item_ordre ';
@@ -453,7 +509,7 @@ public static function DB_deplacer_referentiel_item($item_id,$theme_id,$item_ord
  * @param int    $niveau_id
  * @return void
  */
-public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$niveau_id)
+public static function DB_importer_arborescence_from_XML( $arbreXML , $matiere_id , $niveau_id )
 {
   // décortiquer l'arbre XML
   $xml = new DOMDocument;
@@ -506,24 +562,42 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
         $item_socle = $item_xml -> getAttribute('socle');
         $item_ref   = $item_xml -> getAttribute('ref');
         $item_nom   = $item_xml -> getAttribute('nom');
-        $item_abbr  = $item_xml -> getAttribute('abbr');
+        $item_abrev = $item_xml -> getAttribute('abrev');
         $item_coef  = $item_xml -> getAttribute('coef');
         $item_cart  = $item_xml -> getAttribute('cart');
         $item_lien  = $item_xml -> getAttribute('lien');
-        $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abbr, item_coef, item_cart, item_lien) ';
-        $DB_SQL.= 'VALUES                              (:theme   ,:socle    ,     :ordre,     :ref,     :nom,     :abbr,     :coef,     :cart,     :lien)';
+        $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien) ';
+        $DB_SQL.= 'VALUES                              (:theme   ,:socle    ,     :ordre,     :ref,     :nom,     :abrev,     :coef,     :cart,     :lien)';
         $DB_VAR = array(
           ':theme' => $theme_id,
           ':socle' => $item_socle,
           ':ordre' => $item_ordre,
           ':ref'   => $item_ref,
           ':nom'   => $item_nom,
-          ':abbr'  => $item_abbr,
+          ':abrev' => $item_abrev,
           ':coef'  => $item_coef,
           ':cart'  => $item_cart,
           ':lien'  => $item_lien,
         );
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+        $item_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+        // On passe en revue les liaisons au socle 2016 des items...
+        $socle_liste = $item_xml -> getElementsByTagName('socle');
+        $socle_nb = $socle_liste -> length;
+        for($socle_ordre=0; $socle_ordre<$socle_nb; $socle_ordre++)
+        {
+          $socle_xml           = $socle_liste -> item($socle_ordre);
+          $socle_cycle_id      = $socle_xml -> getAttribute('cycle');
+          $socle_composante_id = $socle_xml -> getAttribute('composante');
+          $DB_SQL = 'INSERT INTO sacoche_jointure_referentiel_socle( item_id, socle_cycle_id, socle_composante_id) ';
+          $DB_SQL.= 'VALUES                                        (:item_id,:socle_cycle_id,:socle_composante_id)';
+          $DB_VAR = array(
+            ':item_id'             => $item_id,
+            ':socle_cycle_id'      => $socle_cycle_id,
+            ':socle_composante_id' => $socle_composante_id,
+          );
+          DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+        }
       }
     }
   }
@@ -532,12 +606,12 @@ public static function DB_importer_arborescence_from_XML($arbreXML,$matiere_id,$
 /**
  * Modifier les caractéristiques d'un référentiel (juste ses paramètres, pas le contenu de son arborescence)
  *
- * @param int     $matiere_id
- * @param int     $niveau_id
- * @param array   array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val , ':calcul_retroactif'=>$val , ':mode_synthese'=>$val , ':information'=>$information );
- * @return int    nb de lignes modifiées (0|1)
+ * @param int    $matiere_id
+ * @param int    $niveau_id
+ * @param array  array(':partage_etat'=>$val, ':partage_date'=>$val , ':calcul_methode'=>$val , ':calcul_limite'=>$val , ':calcul_retroactif'=>$val , ':mode_synthese'=>$val , ':information'=>$information );
+ * @return int   nb de lignes modifiées (0|1)
  */
-public static function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
+public static function DB_modifier_referentiel( $matiere_id , $niveau_id , $DB_VAR )
 {
   $tab_set = array();
   foreach($DB_VAR as $key => $val)
@@ -556,11 +630,11 @@ public static function DB_modifier_referentiel($matiere_id,$niveau_id,$DB_VAR)
 /**
  * Modifier les caractéristiques d'un domaine d'un référentiel
  *
- * @param int     $domaine_id
- * @param string  $domaine_code
- * @param string  $domaine_ref
- * @param string  $domaine_nom
- * @return int   nb de lignes modifiées (0|1)
+ * @param int    $domaine_id
+ * @param string $domaine_code
+ * @param string $domaine_ref
+ * @param string $domaine_nom
+ * @return bool  si ligne modifiée
  */
 public static function DB_modifier_referentiel_domaine( $domaine_id , $domaine_code , $domaine_ref , $domaine_nom )
 {
@@ -574,17 +648,17 @@ public static function DB_modifier_referentiel_domaine( $domaine_id , $domaine_c
     ':domaine_nom'  => $domaine_nom,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+  return (bool)DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**
  * Modifier les caractéristiques d'un thème d'un référentiel
  *
- * @param int     $theme_id
- * @param string  $theme_ref
- * @param string  $theme_ref
- * @param string  $theme_nom
- * @return int   nb de lignes modifiées (0|1)
+ * @param int    $theme_id
+ * @param string $theme_ref
+ * @param string $theme_ref
+ * @param string $theme_nom
+ * @return bool  si ligne modifiée
  */
 public static function DB_modifier_referentiel_theme( $theme_id , $theme_ref , $theme_nom )
 {
@@ -597,47 +671,133 @@ public static function DB_modifier_referentiel_theme( $theme_id , $theme_ref , $
     ':theme_nom' => $theme_nom,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+  return (bool)DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**
  * Modifier les caractéristiques d'un item d'un référentiel (hors déplacement ; le lien de ressources est modifié ailleurs)
  *
- * @param int     $item_id
- * @param int     $socle_id
- * @param string  $item_ref
- * @param string  $item_nom
- * @param string  $item_abbr
- * @param int     $item_coef
- * @param int     $item_cart
- * @return int   nb de lignes modifiées (0|1)
+ * @param int    $item_id
+ * @param int    $socle_id
+ * @param string $item_ref
+ * @param string $item_nom
+ * @param string $item_abrev
+ * @param int    $item_coef
+ * @param int    $item_cart
+ * @param array  $tab_socle2016
+ * @return bool  si ligne(s) modifiée(s)
  */
-public static function DB_modifier_referentiel_item( $item_id , $socle_id , $item_ref , $item_nom , $item_abbr , $item_coef , $item_cart )
+public static function DB_modifier_referentiel_item( $item_id , $socle_id , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $tab_socle2016 )
 {
+  // On récupère les liaisons au socle pour comparer
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
-  $DB_SQL.= 'SET entree_id=:socle_id, item_ref=:item_ref, item_nom=:item_nom, item_abbr=:item_abbr, item_coef=:item_coef, item_cart=:item_cart ';
+  $DB_SQL.= 'SET entree_id=:socle_id, item_ref=:item_ref, item_nom=:item_nom, item_abrev=:item_abrev, item_coef=:item_coef, item_cart=:item_cart ';
   $DB_SQL.= 'WHERE item_id=:item_id ';
   $DB_VAR = array(
-    ':item_id'   => $item_id,
-    ':socle_id'  => $socle_id,
-    ':item_ref'  => $item_ref,
-    ':item_nom'  => $item_nom,
-    ':item_abbr' => $item_abbr,
-    ':item_coef' => $item_coef,
-    ':item_cart' => $item_cart,
+    ':item_id'    => $item_id,
+    ':socle_id'   => $socle_id,
+    ':item_ref'   => $item_ref,
+    ':item_nom'   => $item_nom,
+    ':item_abrev' => $item_abrev,
+    ':item_coef'  => $item_coef,
+    ':item_cart'  => $item_cart,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) || DB_STRUCTURE_REFERENTIEL::DB_modifier_liaison_item_socle2016( $item_id , $tab_socle2016 , 'modifier' ) ;
+}
+
+/**
+ * modifier_liaison_item_socle2016
+ *
+ * @param int    $item_id
+ * @param array  $tab_liaisons   tableau [socle_id]
+ * @param string $mode        'ajouter' | 'modifier'
+ * @return bool  si ligne(s) modifiée(s)
+ */
+public static function DB_modifier_liaison_item_socle2016( $item_id , $tab_liaisons , $mode )
+{
+  // Ajout
+  if($mode=='ajouter')
+  {
+    if(!empty($tab_liaisons))
+    {
+      return FALSE;
+    }
+    $DB_SQL = 'INSERT INTO sacoche_jointure_referentiel_socle( item_id, socle_cycle_id, socle_composante_id) ';
+    $DB_SQL.= 'VALUES                                        (:item_id,:socle_cycle_id,:socle_composante_id)';
+    foreach($tab_liaisons as $socle_id)
+    {
+      $cycle_id      = floor($socle_id/100);
+      $composante_id = $socle_id - $cycle_id*100;
+      $DB_VAR = array(
+        ':item_id'             => $item_id,
+        ':socle_cycle_id'      => $cycle_id,
+        ':socle_composante_id' => $composante_id,
+      );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+    }
+    return TRUE;
+  }
+  // Modif
+  elseif($mode=='modifier')
+  {
+    // On récupère la liste des liaisons déjà présentes
+    $DB_SQL = 'SELECT CONCAT(socle_cycle_id,socle_composante_id) AS socle_id ';
+    $DB_SQL.= 'FROM sacoche_jointure_referentiel_socle ';
+    $DB_SQL.= 'WHERE item_id=:item_id ';
+    $DB_VAR = array(':item_id'=>$item_id);
+    $tab_old_liaisons = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+    // On compare
+    $tab_liaisons_a_ajouter = array_diff( $tab_liaisons , $tab_old_liaisons );
+    $tab_liaisons_a_retirer = array_diff( $tab_old_liaisons , $tab_liaisons );
+    // On ajoute si besoin
+    $nb_ajouts = count($tab_liaisons_a_ajouter);
+    if($nb_ajouts)
+    {
+      $DB_SQL = 'INSERT INTO sacoche_jointure_referentiel_socle( item_id, socle_cycle_id, socle_composante_id) ';
+      $DB_SQL.= 'VALUES                                        (:item_id,:socle_cycle_id,:socle_composante_id)';
+      foreach($tab_liaisons_a_ajouter as $socle_id)
+      {
+        $cycle_id      = floor($socle_id/100);
+        $composante_id = $socle_id - $cycle_id*100;
+        $DB_VAR = array(
+          ':item_id'             => $item_id,
+          ':socle_cycle_id'      => $cycle_id,
+          ':socle_composante_id' => $composante_id,
+        );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+      }
+    }
+    // On retire si besoin
+    $nb_retraits = count($tab_liaisons_a_retirer);
+    if($nb_retraits)
+    {
+      $DB_SQL = 'DELETE FROM sacoche_jointure_referentiel_socle ';
+      $DB_SQL.= 'WHERE item_id=:item_id AND socle_cycle_id=:socle_cycle_id AND socle_composante_id=:socle_composante_id ';
+      foreach($tab_liaisons_a_retirer as $liaison_infos)
+      {
+        $cycle_id      = floor($socle_id/100);
+        $composante_id = $socle_id - $cycle_id*100;
+        $DB_VAR = array(
+          ':item_id'             => $item_id,
+          ':socle_cycle_id'      => $cycle_id,
+          ':socle_composante_id' => $composante_id,
+        );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+      }
+    }
+    return $nb_ajouts || $nb_retraits;
+  }
 }
 
 /**
  * Modifier une propriété d'un ensemble d'items de référentiel
  *
- * @param string   $granulosite   'referentiel' | 'domaine' | 'theme'
- * @param int     $matiere_id
- * @param int     $objet_id       id du niveau ou du domaine ou du thème
- * @param string  $element        'coef' | 'cart'
- * @param int     $valeur         0~20 | 0~1
+ * @param string $granulosite   'referentiel' | 'domaine' | 'theme'
+ * @param int    $matiere_id
+ * @param int    $objet_id       id du niveau ou du domaine ou du thème
+ * @param string $element        'coef' | 'cart'
+ * @param int    $valeur         0~20 | 0~1
  * @return int   nb de lignes modifiées
  */
 public static function DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , $element , $valeur )
@@ -685,11 +845,11 @@ public static function DB_modifier_referentiel_items( $granulosite , $matiere_id
 /**
  * Modifier le lien de vers des ressources d'un item d'un référentiel
  *
- * @param int     $item_id
- * @param string  $item_lien
+ * @param int    $item_id
+ * @param string $item_lien
  * @return void
  */
-public static function DB_modifier_referentiel_lien_ressources($item_id,$item_lien)
+public static function DB_modifier_referentiel_lien_ressources( $item_id , $item_lien )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
   $DB_SQL.= 'SET item_lien=:item_lien ';
@@ -704,11 +864,11 @@ public static function DB_modifier_referentiel_lien_ressources($item_id,$item_li
 /**
  * Modifier le nb de demandes d'évaluations autorisées pour les référentiels d'une matière donnée
  *
- * @param int   $matiere_id
- * @param int   $matiere_nb_demandes
+ * @param int    $matiere_id
+ * @param int    $matiere_nb_demandes
  * @return void
  */
-public static function DB_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_demandes)
+public static function DB_modifier_matiere_nb_demandes( $matiere_id , $matiere_nb_demandes )
 {
   $DB_SQL = 'UPDATE sacoche_matiere ';
   $DB_SQL.= 'SET matiere_nb_demandes=:matiere_nb_demandes ';
@@ -723,17 +883,18 @@ public static function DB_modifier_matiere_nb_demandes($matiere_id,$matiere_nb_d
 /**
  * Supprimer un référentiel (avec son contenu et ce qui en dépend)
  *
- * @param int $matiere_id
- * @param int $niveau_id
+ * @param int    $matiere_id
+ * @param int    $niveau_id
  * @return void
  */
-public static function DB_supprimer_referentiel_matiere_niveau($matiere_id,$niveau_id)
+public static function DB_supprimer_referentiel_matiere_niveau( $matiere_id , $niveau_id )
 {
-  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
@@ -754,10 +915,11 @@ public static function DB_supprimer_referentiel_matiere_niveau($matiere_id,$nive
  */
 public static function DB_supprimer_referentiel_domaine($domaine_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
@@ -776,9 +938,10 @@ public static function DB_supprimer_referentiel_domaine($domaine_id)
  */
 public static function DB_supprimer_referentiel_theme($theme_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel_theme ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
@@ -798,10 +961,10 @@ public static function DB_supprimer_referentiel_theme($theme_id)
  * @param bool   $with_notes   TRUE par défaut, FALSE dans le cas d'une fusion d'items (étudié ensuite par une autre fonction)
  * @return int
  */
-public static function DB_supprimer_referentiel_item($item_id,$with_notes=TRUE)
+public static function DB_supprimer_referentiel_item( $item_id , $with_notes=TRUE )
 {
-  // Supprimer l'item à fusionner et les demandes d'évaluations associées
-  $DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_demande, sacoche_jointure_selection_item';
+  // Supprimer l'item et les demandes d'évaluations associées et les liaisons au socle associées
+  $DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_demande, sacoche_jointure_selection_item, sacoche_jointure_referentiel_socle';
   // Dans le cas d'une fusion, PAS ENCORE les jointures aux devoirs ni les saisies
   $DB_SQL.= ($with_notes) ? ', sacoche_jointure_devoir_item, sacoche_saisie ' : ' ' ;
   $DB_SQL.= 'FROM sacoche_referentiel_item ';
@@ -825,7 +988,7 @@ public static function DB_supprimer_referentiel_item($item_id,$with_notes=TRUE)
  * @param int    $item_id_absorbant
  * @return void
  */
-public static function DB_fusionner_referentiel_items($item_id_degageant,$item_id_absorbant)
+public static function DB_fusionner_referentiel_items( $item_id_degageant , $item_id_absorbant )
 {
   $DB_VAR = array(
     ':item_id_degageant' => $item_id_degageant,
@@ -897,7 +1060,7 @@ public static function DB_fusionner_referentiel_items($item_id_degageant,$item_i
  * @param string   $operation     '+1' | '-1' 
  * @return void
  */
-public static function DB_renumeroter_referentiel_liste_elements($element_champ,$tab_elements_id,$operation)
+public static function DB_renumeroter_referentiel_liste_elements( $element_champ , $tab_elements_id , $operation )
 {
   $min_value = ($element_champ=='item') ? 0 : 1 ;
   $listing_elements_id = implode(',',$tab_elements_id);
@@ -915,7 +1078,7 @@ public static function DB_renumeroter_referentiel_liste_elements($element_champ,
  * @param int   ordre_id
  * @return void
  */
-public static function DB_renumeroter_referentiel_domaines_suivants($matiere_id,$niveau_id,$ordre_id)
+public static function DB_renumeroter_referentiel_domaines_suivants( $matiere_id , $niveau_id , $ordre_id )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_domaine ';
   $DB_SQL.= 'SET domaine_ordre = GREATEST( domaine_ordre-1 , 1 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante
@@ -935,7 +1098,7 @@ public static function DB_renumeroter_referentiel_domaines_suivants($matiere_id,
  * @param int   ordre_id
  * @return void
  */
-public static function DB_renumeroter_referentiel_themes_suivants($domaine_id,$ordre_id)
+public static function DB_renumeroter_referentiel_themes_suivants( $domaine_id , $ordre_id )
 {
   $DB_SQL = 'UPDATE sacoche_referentiel_theme ';
   $DB_SQL.= 'SET theme_ordre = GREATEST( theme_ordre-1 , 1 ) '; // GREATEST() car il arrive qu'il y ait des pb de numérotation et affecter -1 plante

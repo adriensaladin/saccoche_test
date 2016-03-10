@@ -178,19 +178,19 @@ if( ($action=='Voir') && $matiere_id )
   {
     foreach($tab_niveau as $niveau_id => $niveau_nom)
     {
-      Json::add_str(  '<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau.NL);
+      Json::add_str(  '<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau.NL); // span pour permettre un déploiement au clic
       Json::add_str(    '<ul class="ul_n1">'.NL);
       if(isset($tab_domaine[$niveau_id]))
       {
         foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_html)
         {
-          Json::add_str(      '<li class="li_n1" id="n1_'.$domaine_id.'"><b>'.$domaine_html.'</b>'.$images_domaine.NL);
+          Json::add_str(      '<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.$domaine_html.'</span>'.$images_domaine.NL); // span pour permettre un déploiement au clic
           Json::add_str(        '<ul class="ul_n2">'.NL);
           if(isset($tab_theme[$niveau_id][$domaine_id]))
           {
             foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_html)
             {
-              Json::add_str(          '<li class="li_n2" id="n2_'.$theme_id.'"><b>'.$theme_html.'</b>'.$images_theme.NL);
+              Json::add_str(          '<li class="li_n2" id="n2_'.$theme_id.'"><span>'.$theme_html.'</span>'.$images_theme.NL); // span pour permettre un déploiement au clic
               Json::add_str(            '<ul class="ul_n3">'.NL);
               if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
               {

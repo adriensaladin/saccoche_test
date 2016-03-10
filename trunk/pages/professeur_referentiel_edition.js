@@ -125,7 +125,7 @@ $(document).ready
                   function()
                   {
                     id2 = $(this).attr('id').substring(3);
-                    titre = $(this).children('b').children('img:eq(4)').attr('title');
+                    titre = $(this).children('span').children('img:eq(4)').attr('title');
                     tab_ressources[id2] = (titre=='Absence de ressource.') ? '' : titre ;
                   }
                 );
@@ -164,21 +164,22 @@ $(document).ready
     {
       // On récupère le contexte de la demande : n1 ou n2 ou n3
       var contexte = objet.attr('class').substring(0,2);
+      var conteneur = (contexte=='n3') ? 'b' : 'span' ;
       afficher_masquer_images_action('hide');
       // On créé le formulaire à valider
-      var new_html = (action=='edit') ? '<div id="referentiel_edit">' : '<li class="li_'+contexte+'">' ;
-      var obj_b = (action=='edit') ? objet.parent().children('b') : false ;
+      var new_html      = (action=='edit') ? '<div id="referentiel_edit">' : '<li class="li_'+contexte+'">' ;
+      var obj_conteneur = (action=='edit') ? objet.parent().children(conteneur) : false ;
       switch(contexte)
       {
         case 'n1' :  // domaine
           if(action=='edit')
           {
             // on récupère la référence
-            var ref = obj_b.children('b:eq(0)').text();
+            var ref = obj_conteneur.children('b:eq(0)').text();
             // on récupère le code léttré
-            var code = obj_b.children('b:eq(2)').text();
+            var code = obj_conteneur.children('b:eq(2)').text();
             // on récupère le nom
-            var nom = obj_b.children('b:eq(4)').text();
+            var nom = obj_conteneur.children('b:eq(4)').text();
           }
           else
           {
@@ -194,9 +195,9 @@ $(document).ready
           if(action=='edit')
           {
             // on récupère la référence
-            var ref = obj_b.children('b:eq(0)').text();
+            var ref = obj_conteneur.children('b:eq(0)').text();
             // on récupère le nom
-            var nom = obj_b.children('b:eq(2)').text();
+            var nom = obj_conteneur.children('b:eq(2)').text();
           }
           else
           {
@@ -211,18 +212,18 @@ $(document).ready
           if(action=='edit')
           {
             // On récupère le coefficient
-            var adresse = obj_b.children('img:eq(0)').attr('src');
+            var adresse = obj_conteneur.children('img:eq(0)').attr('src');
             var coef    = parseInt( adresse.substr(adresse.length-6,2) , 10 );
             // On récupère l'autorisation de demande
-            var adresse = obj_b.children('img:eq(1)').attr('src');
+            var adresse = obj_conteneur.children('img:eq(1)').attr('src');
             var cart    = adresse.substr(adresse.length-7,3);
             var check1  = (cart=='oui') ? ' checked' : '' ;
             var check0  = (cart=='non') ? ' checked' : '' ;
             // On récupère le socle
-            var socle_id  = obj_b.children('img:eq(2)').data('id');
+            var socle_id  = obj_conteneur.children('img:eq(2)').data('id');
             var socle_txt = $('label[for=socle_'+socle_id+']').text();
             // On récupère le socle 2016
-            var s2016_id  = obj_b.children('img:eq(3)').data('id');
+            var s2016_id  = obj_conteneur.children('img:eq(3)').data('id');
             if(!s2016_id)
             {
               var s2016_txt = 'Hors-socle 2016.';
@@ -238,11 +239,11 @@ $(document).ready
               s2016_txt = s2016_txt.substring(0,s2016_txt.length-3);
             }
             // on récupère la référence
-            var ref   = obj_b.children('b:eq(0)').text();
+            var ref   = obj_conteneur.children('b:eq(0)').text();
             // on récupère l'abréviation
-            var abrev = obj_b.children('b:eq(2)').text();
+            var abrev = obj_conteneur.children('b:eq(2)').text();
             // on récupère le nom
-            var nom_texte    = obj_b.children('b:eq(4)').text();
+            var nom_texte    = obj_conteneur.children('b:eq(4)').text();
             var nom_longueur = Math.min(10+nom_texte.length,128);
           }
           else
@@ -252,6 +253,8 @@ $(document).ready
             var check0 = '';
             var socle_id  = 0;
             var socle_txt = "Hors-socle.";
+            var s2016_id  = '';
+            var s2016_txt = 'Hors-socle 2016.';
             var ref   = '';
             var abrev = '';
             var nom_texte    = '';
@@ -278,7 +281,7 @@ $(document).ready
       // On insère le formulaire dans la page
       if(action=='edit')
       {
-        objet.before(new_html).parent().children('b').hide();
+        objet.before(new_html).parent().children(conteneur).hide();
       }
       else if(objet.parent().attr('id').substring(0,2)==contexte)
       {
@@ -338,19 +341,22 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            element_nom = $(this).parent().children('b').children('b:eq(4)').text();
+            var conteneur = 'span';
+            element_nom = $(this).parent().children(conteneur).children('b:eq(4)').text();
             var alerte = 'Tout le contenu de ce domaine ainsi que tous les résultats des items concernés seront perdus !';
             var texte1 = 'ce domaine';
             var texte2 = 'le domaine'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
             break;
           case 'n2' :  // thème
-            element_nom = $(this).parent().children('b').children('b:eq(2)').text();
+            var conteneur = 'span';
+            element_nom = $(this).parent().children(conteneur).children('b:eq(2)').text();
             var alerte = 'Tout le contenu de ce thème ainsi que les résultats des items concernés seront perdus (et les thèmes suivants seront renumérotés) !';
             var texte1 = 'ce thème';
             var texte2 = 'le thème'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
             break;
           case 'n3' :  // item
-            element_nom = $(this).parent().children('b').children('b:eq(4)').text();
+            var conteneur = 'b';
+            element_nom = $(this).parent().children(conteneur).children('b:eq(4)').text();
             var alerte = 'Tous les résultats associés seront perdus et les items suivants seront renumérotés !';
             var texte1 = 'cet item';
             var texte2 = 'l\'item sélectionné';
@@ -365,7 +371,7 @@ $(document).ready
         new_html += '<q class="valider" data-action="supprimer" title="Valider la suppression de '+texte1+'."></q><q class="annuler" data-action="supprimer" title="Annuler la suppression de '+texte1+'."></q> <label id="ajax_msg">&nbsp;</label>';
         new_html += '</div>';
         // On insère le formulaire dans la page
-        $(this).before(new_html).parent().children('b').hide();
+        $(this).before(new_html).parent().children(conteneur).hide();
       }
     );
 
@@ -407,12 +413,12 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            $('#zone_elaboration_referentiel li.li_m2').each( function(){ $(this).children('b').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine au début de ce niveau."></q>'); } );
-            $('#zone_elaboration_referentiel li.li_n1').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine à la suite de celui-ci."></q>');} } );
+            $('#zone_elaboration_referentiel li.li_m2').each( function(){ $(this).children('span').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine au début de ce niveau."></q>'); } );
+            $('#zone_elaboration_referentiel li.li_n1').each( function(){ if($(this).attr('id')!=id){$(this).children('span').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine à la suite de celui-ci."></q>');} } );
             break;
           case 'n2' :  // thème
-            $('#zone_elaboration_referentiel li.li_n1').each( function(){ $(this).children('b').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème au début de ce domaine (et renuméroter)."></q>'); } );
-            $('#zone_elaboration_referentiel li.li_n2').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème à la suite de celui-ci."></q>');} } );
+            $('#zone_elaboration_referentiel li.li_n1').each( function(){ $(this).children('span').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème au début de ce domaine (et renuméroter)."></q>'); } );
+            $('#zone_elaboration_referentiel li.li_n2').each( function(){ if($(this).attr('id')!=id){$(this).children('span').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème à la suite de celui-ci."></q>');} } );
             break;
           case 'n3' :  // item
             $('#zone_elaboration_referentiel li.li_n2').each( function(){ $(this).children('b').after('<q class="n3_move2" data-action="move2" title="Valider le déplacement de l\'item au début de ce thème (et renuméroter)."></q>'); } );
@@ -706,23 +712,25 @@ $(document).ready
               switch(contexte)
               {
                 case 'n1' :  // domaine
+                  var conteneur = 'span';
                   var sep_ref = (ref) ? separateur : '' ;
                   var texte = '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+code+'</b>' + '<b>'+separateur+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
                   if(action=='add')
                   { 
-                    texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)] + '<ul class="ul_n2"></ul>';
+                    texte = '<span>' + texte + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n2"></ul>';
                   }
                   break;
                 case 'n2' :  // thème
+                  var conteneur = 'span';
                   var sep_ref = (ref) ? separateur : '' ;
                   var texte = '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
                   if(action=='add')
                   {
-                    texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)] + '<ul class="ul_n3"></ul>';
+                    texte = '<span>' + texte + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n3"></ul>';
                   }
                   break;
                 case 'n3' :  // item
-
+                  var conteneur = 'b';
                   coef_image    = (coef<10) ? '0'+coef : coef ;
                   coef_texte    = '<img src="./_img/coef/'+coef_image+'.gif" alt="" title="Coefficient '+coef+'." />';
                   cart_image    = (cart>0) ? 'oui' : 'non' ;
@@ -760,10 +768,9 @@ $(document).ready
                   }
                   break;
                 default :
+                  var conteneur = '???';
                   var texte = '???';
               }
-
-
               // On met à jour la page
               if(action=='add')
               {
@@ -771,7 +778,7 @@ $(document).ready
               }
               else
               {
-                objet_parent.parent().children('b').html(texte).show();
+                objet_parent.parent().children(conteneur).html(texte).show();
                 objet_parent.remove();
               }
               afficher_masquer_images_action('show');
@@ -987,10 +994,10 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            element_nom = li.children('b').children('b:eq(4)').text();
+            element_nom = li.children('span').children('b:eq(4)').text();
             break;
           case 'n2' :  // thème
-            element_nom = li.children('b').children('b:eq(2)').text();
+            element_nom = li.children('span').children('b:eq(2)').text();
             break;
           case 'n3' :  // item
             element_nom = li.children('b').children('b:eq(4)').text();

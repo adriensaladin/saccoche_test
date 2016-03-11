@@ -255,7 +255,7 @@ Layout::add( 'js_inline_before' , 'var DUREE_AUTORISEE   = '.$_SESSION['USER_DUR
 Layout::add( 'js_inline_before' , 'var DUREE_AFFICHEE    = '.$_SESSION['USER_DUREE_INACTIVITE'].';' );
 Layout::add( 'js_inline_before' , 'var DECONNEXION_REDIR = "'.((isset($_SESSION['DECONNEXION_ADRESSE_REDIRECTION'])) ? html($_SESSION['DECONNEXION_ADRESSE_REDIRECTION']) : '').'";' );
 Layout::add( 'js_inline_before' , 'var BASE_MAJ_DECALEE  = '.((empty($_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])) ? 'false' : 'true').';' );
-Layout::add( 'js_inline_before' , 'var isMobile          = 1;' );
+Layout::add( 'js_inline_before' , 'var isMobile          = '.(int)$_SESSION['BROWSER']['mobile'].';' );
 
 // Affichage
 $body_class = ($_SESSION['BROWSER']['mobile']) ? 'touch' : 'mouse' ;

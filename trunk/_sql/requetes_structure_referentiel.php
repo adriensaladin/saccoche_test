@@ -964,10 +964,11 @@ public static function DB_supprimer_referentiel_theme($theme_id)
 public static function DB_supprimer_referentiel_item( $item_id , $with_notes=TRUE )
 {
   // Supprimer l'item et les demandes d'évaluations associées et les liaisons au socle associées
-  $DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_demande, sacoche_jointure_selection_item, sacoche_jointure_referentiel_socle';
+  $DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_demande, sacoche_jointure_selection_item';
   // Dans le cas d'une fusion, PAS ENCORE les jointures aux devoirs ni les saisies
   $DB_SQL.= ($with_notes) ? ', sacoche_jointure_devoir_item, sacoche_saisie ' : ' ' ;
   $DB_SQL.= 'FROM sacoche_referentiel_item ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= ($with_notes) ? 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ' : '' ;
   $DB_SQL.= ($with_notes) ? 'LEFT JOIN sacoche_saisie USING (item_id) ' : '' ;

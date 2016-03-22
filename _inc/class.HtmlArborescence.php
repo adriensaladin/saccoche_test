@@ -303,7 +303,7 @@ class HtmlArborescence
   /**
    * Retourner une liste HTML ordonnée de l'arborescence du socle 2016.
    * 
-   * @return array(string_html,string_js)
+   * @return array(string_html,string_js,string_select)
    */
   public static function afficher_socle2016()
   {
@@ -331,8 +331,9 @@ class HtmlArborescence
     // Affichage de l'arborescence
     $span_avant = '<span>';
     $span_apres = '</span>';
-    $retour_html = '<ul class="ul_m1">'.NL;
-    $retour_js = 'var tab_socle = new Array();';
+    $retour_html   = '<ul class="ul_m1">'.NL;
+    $retour_js     = 'var tab_socle = new Array();';
+    $retour_select = '<option value="">&nbsp;</option>';
     foreach($tab_cycle as $cycle_id => $cycle_texte)
     {
       $retour_html .= '<li class="li_m1">'.$span_avant.$cycle_texte.$span_apres.NL;
@@ -347,8 +348,9 @@ class HtmlArborescence
           $input_texte       = '<input id="socle2016_'.$input_id.'" name="f_socle2016" type="checkbox" value="'.$input_id.'" /> ';
           $label_texte_avant = '<label for="socle2016_'.$input_id.'">';
           $label_texte_apres = '</label>';
-          $retour_html .= '<li class="li_n2">'.$label_texte_avant.$input_texte.$composante_texte.$label_texte_apres.'</li>'.NL;
-          $retour_js .= 'tab_socle['.$input_id.']="Cycle '.$cycle_id.' - '.$composante_texte.'";';
+          $retour_html   .= '<li class="li_n2">'.$label_texte_avant.$input_texte.$composante_texte.$label_texte_apres.'</li>'.NL;
+          $retour_js     .= 'tab_socle['.$input_id.']="Cycle '.$cycle_id.' - '.$composante_texte.'";';
+          $retour_select .= '<option value="'.$input_id.'">Cycle '.$cycle_id.' - Domaine '.$domaine_texte.' - '.$composante_texte.'</option>';
         }
         $retour_html .= '</ul>'.NL;
         $retour_html .= '</li>'.NL;
@@ -357,7 +359,7 @@ class HtmlArborescence
       $retour_html .= '</li>'.NL;
     }
     $retour_html .= '</ul>'.NL;
-    return array( $retour_html , $retour_js );
+    return array( $retour_html , $retour_js , $retour_select );
   }
 
 }

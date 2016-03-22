@@ -28,8 +28,10 @@ INSERT INTO sacoche_socle_composante VALUES
 (41, 4, 1, NULL, "Démarches scientifiques"),
 (42, 4, 2, NULL, "Conception, création, réalisation"),
 (43, 4, 3, NULL, "Responsabilités individuelles et collectives"),
+(44, 4, 4, NULL, "Connaissances à mobiliser"),
 (51, 5, 1, NULL, "L'espace et le temps"),
 (52, 5, 2, NULL, "Organisations et représentations du monde"),
-(53, 5, 3, NULL, "Invention, élaboration, production");
+(53, 5, 3, NULL, "Invention, élaboration, production"),
+(54, 5, 4, NULL, "Connaissances à mobiliser");
 
 ALTER TABLE sacoche_socle_composante ENABLE KEYS;

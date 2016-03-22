@@ -410,29 +410,32 @@ if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_n
 if($action=='action_complementaire')
 {
   // Récupération des données
-  $action_groupe       = (isset($_POST['select_action_groupe']))                     ? Clean::texte($_POST['select_action_groupe'])                     : '';
-  $granulosite         = (isset($_POST['select_action_groupe_modifier_objet']))      ? Clean::texte($_POST['select_action_groupe_modifier_objet'])      : '';
-  $modifier_id         = (isset($_POST['select_action_groupe_modifier_id']))         ? Clean::texte($_POST['select_action_groupe_modifier_id'])         : '';
-  $modifier_coef       = (isset($_POST['select_action_groupe_modifier_coef']))       ? Clean::entier($_POST['select_action_groupe_modifier_coef'])      : -1;
-  $modifier_cart       = (isset($_POST['select_action_groupe_modifier_cart']))       ? Clean::entier($_POST['select_action_groupe_modifier_cart'])      : -1;
-  $deplacer_id_initial = (isset($_POST['select_action_groupe_deplacer_id_initial'])) ? Clean::texte($_POST['select_action_groupe_deplacer_id_initial']) : '';
-  $deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? Clean::texte($_POST['select_action_groupe_deplacer_id_final'])   : '';
-  $groupe_nom_initial  = (isset($_POST['groupe_nom_initial']))                       ? Clean::texte($_POST['groupe_nom_initial'])                       : '';
-  $groupe_nom_final    = (isset($_POST['groupe_nom_final']))                         ? Clean::texte($_POST['groupe_nom_final'])                         : '';
+  $action_groupe       = (isset($_POST['select_action_groupe']))                     ? Clean::texte($_POST['select_action_groupe'])                      : '';
+  $granulosite         = (isset($_POST['select_action_groupe_modifier_objet']))      ? Clean::texte($_POST['select_action_groupe_modifier_objet'])       : '';
+  $modifier_id         = (isset($_POST['select_action_groupe_modifier_id']))         ? Clean::texte($_POST['select_action_groupe_modifier_id'])          : '';
+  $modifier_coef       = (isset($_POST['select_action_groupe_modifier_coef']))       ? Clean::entier($_POST['select_action_groupe_modifier_coef'])       : -1;
+  $modifier_cart       = (isset($_POST['select_action_groupe_modifier_cart']))       ? Clean::entier($_POST['select_action_groupe_modifier_cart'])       : -1;
+  $modifier_socle_mode = (isset($_POST['select_action_groupe_modifier_socle_mode'])) ? Clean::entier($_POST['select_action_groupe_modifier_socle_mode']) : -1;
+  $modifier_socle_val  = (isset($_POST['select_action_groupe_modifier_socle_val']))  ? Clean::entier($_POST['select_action_groupe_modifier_socle_val'])  : -1;
+  $deplacer_id_initial = (isset($_POST['select_action_groupe_deplacer_id_initial'])) ? Clean::texte($_POST['select_action_groupe_deplacer_id_initial'])  : '';
+  $deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? Clean::texte($_POST['select_action_groupe_deplacer_id_final'])    : '';
+  $groupe_nom_initial  = (isset($_POST['groupe_nom_initial']))                       ? Clean::texte($_POST['groupe_nom_initial'])                        : '';
+  $groupe_nom_final    = (isset($_POST['groupe_nom_final']))                         ? Clean::texte($_POST['groupe_nom_final'])                          : '';
   list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = Clean::map_entier(explode('_',$modifier_id))         + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
   list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = Clean::map_entier(explode('_',$deplacer_id_initial)) + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
   list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = Clean::map_entier(explode('_',$deplacer_id_final))   + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
   // Vérification des données
-  $tab_action_groupe   = array('modifier_coefficient','modifier_panier','deplacer_domaine','deplacer_theme');
-  $test1 = ( ($action_groupe=='modifier_coefficient') && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($parent_id) && ($objet_id) && ($objet_ordre) && ($modifier_coef!=-1) ) ? TRUE : FALSE ;
-  $test2 = ( ($action_groupe=='modifier_panier')      && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($objet_id) && ($objet_ordre) && ($modifier_cart!=-1) ) ? TRUE : FALSE ;
-  $test3 = ( ($action_groupe=='deplacer_domaine')     && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
-  $test4 = ( ($action_groupe=='deplacer_theme')       && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
-  if( (!in_array($action_groupe,$tab_action_groupe)) || ( (!$test1) && (!$test2) && (!$test3) && (!$test4) ) )
+  $tab_action_groupe   = array('modifier_coefficient','modifier_panier','modifier_socle2016','deplacer_domaine','deplacer_theme');
+  $test_coef    = ( ($action_groupe=='modifier_coefficient') && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($parent_id) && ($objet_id) && ($objet_ordre) && ($modifier_coef!=-1) ) ? TRUE : FALSE ;
+  $test_panier  = ( ($action_groupe=='modifier_panier')      && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($objet_id) && ($objet_ordre) && ($modifier_cart!=-1) ) ? TRUE : FALSE ;
+  $test_socle   = ( ($action_groupe=='modifier_socle2016')   && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($objet_id) && ($objet_ordre) && ($modifier_socle_mode!=-1) && ($modifier_socle_val!=-1) ) ? TRUE : FALSE ;
+  $test_domaine = ( ($action_groupe=='deplacer_domaine')     && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
+  $test_theme   = ( ($action_groupe=='deplacer_theme')       && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
+  if( (!in_array($action_groupe,$tab_action_groupe)) || ( !$test_coef && !$test_panier && !$test_socle && !$test_domaine && !$test_theme ) )
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
-  // cas 1/4 : modifier_coefficient
+  // cas modifier_coefficient
   if($action_groupe=='modifier_coefficient')
   {
     $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'coef' , $modifier_coef );
@@ -442,10 +445,10 @@ if($action=='action_complementaire')
     }
     else
     {
-      Json::end( FALSE , 'Contenu inchangé ou élément items non trouvés !' );
+      Json::end( FALSE , 'Contenu inchangé ou items non trouvés !' );
     }
   }
-  // cas 2/4 : modifier_panier
+  // cas modifier_panier
   if($action_groupe=='modifier_panier')
   {
     $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'cart' , $modifier_cart );
@@ -455,10 +458,23 @@ if($action=='action_complementaire')
     }
     else
     {
-      Json::end( FALSE , 'Contenu inchangé ou élément items non trouvés !' );
+      Json::end( FALSE , 'Contenu inchangé ou items non trouvés !' );
     }
   }
-  // cas 3/4 : deplacer_domaine ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande... ; il pourra y avoir des domaine_code identiques...
+  // cas modifier_socle2016
+  if($action_groupe=='modifier_socle2016')
+  {
+    $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'socle2016' , $modifier_socle_val , $modifier_socle_mode );
+    if($test_modif)
+    {
+      Json::end( TRUE , 'Demande réalisée !' );
+    }
+    else
+    {
+      Json::end( FALSE , 'Contenu inchangé ou items non trouvés !' );
+    }
+  }
+  // cas deplacer_domaine ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande... ; il pourra y avoir des domaine_code identiques...
   if($action_groupe=='deplacer_domaine')
   {
     $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_domaine_ordre_max( $matiere_id_final , $objet_id_final ) + 1 ; // objet_id = niveau_id
@@ -470,7 +486,7 @@ if($action=='action_complementaire')
     notifications_referentiel_edition( $matiere_id_initial , $notification_contenu );
     Json::end( TRUE , 'Demande réalisée !' );
   }
-  // cas 4/4 : deplacer_theme ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande...
+  // cas deplacer_theme ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande...
   if($action_groupe=='deplacer_theme')
   {
     $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_theme_ordre_max( $objet_id_final ) + 1 ; // objet_id = domaine_id

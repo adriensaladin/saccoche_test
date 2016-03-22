@@ -1255,21 +1255,19 @@ $(document).ready
     {
       var action_groupe = $('#select_action_groupe_choix option:selected').val();
       $('#bouton_valider_groupe').prop('disabled',true);
+      $('#groupe_modifier_avertissement , #select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val , #select_action_groupe_deplacer_id_initial , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').css("display","none"); // hide(0) ne donne rien si appelé par initialiser_action_groupe()...
       if(!action_groupe)
       {
-        $('#groupe_modifier_avertissement , #select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_deplacer_id_initial , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').css("display","none"); // hide(0) ne donne rien si appelé par initialiser_action_groupe()...
         $('#ajax_msg_groupe').removeAttr('class').html('');
       }
-      else if( (action_groupe=='modifier_coefficient') || (action_groupe=='modifier_panier') )
+      else if( (action_groupe=='modifier_coefficient') || (action_groupe=='modifier_panier') || (action_groupe=='modifier_socle2016') )
       {
-        $('#select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_deplacer_id_initial , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').hide(0);
         $('#select_action_groupe_modifier_objet option:first').prop('selected',true);
         $('#select_action_groupe_modifier_objet').show(0);
         $('#ajax_msg_groupe').removeAttr('class').html('');
       }
       else if( (action_groupe=='deplacer_domaine') || (action_groupe=='deplacer_theme') )
       {
-        $('#select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').hide(0);
         $('#groupe_modifier_avertissement').show(0);
         $('#select_action_groupe_deplacer_id_initial').html('<option value="">&nbsp;</option>');
         lister_options_select( action_groupe.substring(9) , 'select_action_groupe_deplacer_id_initial' , 0 );
@@ -1290,9 +1288,9 @@ $(document).ready
       {
         var modifier_objet = $('#select_action_groupe_modifier_objet option:selected').val();
         $('#bouton_valider_groupe').prop('disabled',true);
+        $('#select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val').hide(0);
         if(!modifier_objet)
         {
-          $('#select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart').hide(0);
           $('#ajax_msg_groupe').removeAttr('class').html('');
         }
         else
@@ -1312,22 +1310,28 @@ $(document).ready
         $('#bouton_valider_groupe').prop('disabled',true);
         if(!modifier_id)
         {
-          $('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart').hide(0);
+          $('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val').hide(0);
           $('#ajax_msg_groupe').removeAttr('class').html('');
         }
         else
         {
           if(action_groupe=='modifier_coefficient')
           {
-            $('#select_action_groupe_modifier_cart').hide(0);
+            $('#select_action_groupe_modifier_cart , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val').hide(0);
             $('#select_action_groupe_modifier_coef option:first').prop('selected',true);
             $('#select_action_groupe_modifier_coef').show(0);
           }
           else if(action_groupe=='modifier_panier')
           {
-            $('#select_action_groupe_modifier_coef').hide(0);
+            $('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val').hide(0);
             $('#select_action_groupe_modifier_cart option:first').prop('selected',true);
             $('#select_action_groupe_modifier_cart').show(0);
+          }
+          else if(action_groupe=='modifier_socle2016')
+          {
+            $('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart, #select_action_groupe_modifier_socle_val').hide(0);
+            $('#select_action_groupe_modifier_socle_mode option:first').prop('selected',true);
+            $('#select_action_groupe_modifier_socle_mode').show(0);
           }
         }
       }
@@ -1361,6 +1365,22 @@ $(document).ready
       }
     );
 
+    $("#select_action_groupe_modifier_socle_mode").change
+    (
+      function()
+      {
+        if(!$('#select_action_groupe_modifier_socle_mode option:selected').val())
+        {
+          $('#select_action_groupe_modifier_socle_val').hide(0);
+        }
+        else
+        {
+          $('#select_action_groupe_modifier_socle_val option:first').prop('selected',true);
+          $('#select_action_groupe_modifier_socle_val').show(0);
+        }
+      }
+    );
+
     $("#select_action_groupe_modifier_coef").change
     (
       function()
@@ -1377,6 +1397,16 @@ $(document).ready
       {
         var modifier_cart = $('#select_action_groupe_modifier_cart option:selected').val();
         var etat_desactive = (modifier_cart==='') ? true : false ;
+        $('#bouton_valider_groupe').prop('disabled',etat_desactive);
+      }
+    );
+
+    $("#select_action_groupe_modifier_socle_val").change
+    (
+      function()
+      {
+        var modifier_socle = $('#select_action_groupe_modifier_socle_val option:selected').val();
+        var etat_desactive = (modifier_socle==='') ? true : false ;
         $('#bouton_valider_groupe').prop('disabled',etat_desactive);
       }
     );

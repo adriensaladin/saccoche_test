@@ -148,4 +148,23 @@ if($version_base_structure_actuelle=='2016-02-27')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2016-03-10 => 2016-03-22
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2016-03-10')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2016-03-22';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // ajout de 2 composante du socle table [sacoche_socle_composante]
+    if(empty($reload_sacoche_socle_composante))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_socle_composante VALUES (44, 4, 4, NULL, "Connaissances à mobiliser"), (54, 5, 4, NULL, "Connaissances à mobiliser") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_socle_composante ORDER BY socle_composante_id' );
+    }
+  }
+}
+
 ?>

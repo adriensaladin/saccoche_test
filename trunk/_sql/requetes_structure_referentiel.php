@@ -796,11 +796,12 @@ public static function DB_modifier_liaison_item_socle2016( $item_id , $tab_liais
  * @param string $granulosite   'referentiel' | 'domaine' | 'theme'
  * @param int    $matiere_id
  * @param int    $objet_id       id du niveau ou du domaine ou du thème
- * @param string $element        'coef' | 'cart'
- * @param int    $valeur         0~20 | 0~1
+ * @param string $element        'coef' | 'cart' | 'socle2016'
+ * @param int    $valeur         0~20   | 0~1    | 211~454
+ * @param int    $mode           NULL   | NULL   | 0~1
  * @return int   nb de lignes modifiées
  */
-public static function DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , $element , $valeur )
+public static function DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , $element , $valeur , $mode=NULL )
 {
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
@@ -834,11 +835,43 @@ public static function DB_modifier_referentiel_items( $granulosite , $matiere_id
   {
     return 0;
   }
-  $DB_SQL = 'UPDATE sacoche_referentiel_item ';
-  $DB_SQL.= 'SET item_'.$element.'=:valeur ';
-  $DB_SQL.= 'WHERE item_id IN('.$listing_item_id.') ';
-  $DB_VAR = array(':valeur'=>$valeur);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  if( ($element=='coef') || ($element=='cart') )
+  {
+    $DB_SQL = 'UPDATE sacoche_referentiel_item ';
+    $DB_SQL.= 'SET item_'.$element.'=:valeur ';
+    $DB_SQL.= 'WHERE item_id IN('.$listing_item_id.') ';
+    $DB_VAR = array(':valeur'=>$valeur);
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
+  elseif($element=='socle2016')
+  {
+    $cycle_id      = floor($valeur/100);
+    $composante_id = $valeur - $cycle_id*100;
+    $DB_VAR = array(
+      ':socle_cycle_id'      => $cycle_id,
+      ':socle_composante_id' => $composante_id,
+    );
+    // retirer des liaisons
+    if($mode==0)
+    {
+      $DB_SQL = 'DELETE FROM sacoche_jointure_referentiel_socle ';
+      $DB_SQL.= 'WHERE item_id IN('.$listing_item_id.') AND socle_cycle_id=:socle_cycle_id AND socle_composante_id=:socle_composante_id ';
+    }
+    // ajouter des liaisons
+    else if($mode==1)
+    {
+      $tab_values = array();
+      $tab_items = explode( ',' , $listing_item_id );
+      foreach($tab_items as $item_id)
+      {
+        $tab_values[] = '('.$item_id.',:socle_cycle_id,:socle_composante_id)';
+      }
+      // INSERT IGNORE est moins bien pour la gestion d'erreurs, mais mieux ici qu'un REPLACE qui effectue DELETE + INSERT donc renvoie toujours des modifs même si au final il n'y en a pas eu...
+      $DB_SQL = 'INSERT IGNORE INTO sacoche_jointure_referentiel_socle( item_id, socle_cycle_id, socle_composante_id) ';
+      $DB_SQL.= 'VALUES '.implode( ',' , $tab_values );
+    }
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
 

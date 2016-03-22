@@ -137,8 +137,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
       $s = ($nb_item>1) ? 's' : '' ;
       Json::end( FALSE , 'Référentiel avec '.$nb_item.' item'.$s.' : son partage n\'apparaît pas pertinent.' );
     }
-    $DB_TAB_socle2016 = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiel_matiere_niveau( $matiere_id , $niveau_id , FALSE /*with_nom*/ );
-    $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML( $DB_TAB , $DB_TAB_socle2016 );
+    $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
     $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
   }
   else
@@ -186,8 +185,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
     $s = ($nb_item>1) ? 's' : '' ;
     Json::end( FALSE , 'Référentiel avec '.$nb_item.' item'.$s.' : son partage n\'apparaît pas pertinent.' );
   }
-  $DB_TAB_socle2016 = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiel_matiere_niveau( $matiere_id , $niveau_id , FALSE /*with_nom*/ );
-  $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML( $DB_TAB , $DB_TAB_socle2016 );
+  $arbreXML = ServeurCommunautaire::exporter_arborescence_to_XML($DB_TAB);
   $reponse  = ServeurCommunautaire::envoyer_arborescence_XML( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $arbreXML , $information );
   // Analyse de la réponse retournée par le serveur de partage
   if($reponse!='ok')

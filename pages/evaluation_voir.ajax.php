@@ -189,11 +189,10 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
     $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? OutilBilan::calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
-    if($_SESSION['USER_PROFIL_TYPE']=='parent')    { $texte_demande_eval = '<q class="demander_non" title="Les demandes d\'évaluations s\'effectuent depuis un compte élève."></q>'; }
-    elseif($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
-    elseif(!$DB_ROW['matiere_nb_demandes'])        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
-    elseif(!$DB_ROW['item_cart'])                  { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
-    else                                           { $texte_demande_eval = '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$tab_scores[$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>'; }
+    if($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
+    elseif(!$DB_ROW['matiere_nb_demandes'])    { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
+    elseif(!$DB_ROW['item_cart'])              { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
+    else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$tab_scores[$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>'; }
     $tab_affich[$item_id] = '<td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_demande_eval.'</td>';
   }
   // récupérer les saisies et les ajouter

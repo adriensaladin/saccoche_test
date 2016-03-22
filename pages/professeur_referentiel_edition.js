@@ -125,7 +125,7 @@ $(document).ready
                   function()
                   {
                     id2 = $(this).attr('id').substring(3);
-                    titre = $(this).children('span').children('img:eq(4)').attr('title');
+                    titre = $(this).children('b').children('img:eq(3)').attr('title');
                     tab_ressources[id2] = (titre=='Absence de ressource.') ? '' : titre ;
                   }
                 );
@@ -164,22 +164,21 @@ $(document).ready
     {
       // On récupère le contexte de la demande : n1 ou n2 ou n3
       var contexte = objet.attr('class').substring(0,2);
-      var conteneur = (contexte=='n3') ? 'b' : 'span' ;
       afficher_masquer_images_action('hide');
       // On créé le formulaire à valider
-      var new_html      = (action=='edit') ? '<div id="referentiel_edit">' : '<li class="li_'+contexte+'">' ;
-      var obj_conteneur = (action=='edit') ? objet.parent().children(conteneur) : false ;
+      var new_html = (action=='edit') ? '<div id="referentiel_edit">' : '<li class="li_'+contexte+'">' ;
+      var obj_b = (action=='edit') ? objet.parent().children('b') : false ;
       switch(contexte)
       {
         case 'n1' :  // domaine
           if(action=='edit')
           {
             // on récupère la référence
-            var ref = obj_conteneur.children('b:eq(0)').text();
+            var ref = obj_b.children('b:eq(0)').text();
             // on récupère le code léttré
-            var code = obj_conteneur.children('b:eq(2)').text();
+            var code = obj_b.children('b:eq(2)').text();
             // on récupère le nom
-            var nom = obj_conteneur.children('b:eq(4)').text();
+            var nom = obj_b.children('b:eq(4)').text();
           }
           else
           {
@@ -195,9 +194,9 @@ $(document).ready
           if(action=='edit')
           {
             // on récupère la référence
-            var ref = obj_conteneur.children('b:eq(0)').text();
+            var ref = obj_b.children('b:eq(0)').text();
             // on récupère le nom
-            var nom = obj_conteneur.children('b:eq(2)').text();
+            var nom = obj_b.children('b:eq(2)').text();
           }
           else
           {
@@ -212,60 +211,41 @@ $(document).ready
           if(action=='edit')
           {
             // On récupère le coefficient
-            var adresse = obj_conteneur.children('img:eq(0)').attr('src');
-            var coef    = parseInt( adresse.substr(adresse.length-6,2) , 10 );
+            var adresse = obj_b.children('img:eq(0)').attr('src');
+            var coef = parseInt( adresse.substr(adresse.length-6,2) , 10 );
             // On récupère l'autorisation de demande
-            var adresse = obj_conteneur.children('img:eq(1)').attr('src');
-            var cart    = adresse.substr(adresse.length-7,3);
-            var check1  = (cart=='oui') ? ' checked' : '' ;
-            var check0  = (cart=='non') ? ' checked' : '' ;
+            var adresse = obj_b.children('img:eq(1)').attr('src');
+            var cart = adresse.substr(adresse.length-7,3);
+            var check1 = (cart=='oui') ? ' checked' : '' ;
+            var check0 = (cart=='non') ? ' checked' : '' ;
             // On récupère le socle
-            var socle_id  = obj_conteneur.children('img:eq(2)').data('id');
+            var socle_id  = obj_b.children('img:eq(2)').data('id');
             var socle_txt = $('label[for=socle_'+socle_id+']').text();
-            // On récupère le socle 2016
-            var s2016_id  = obj_conteneur.children('img:eq(3)').data('id');
-            if(!s2016_id)
-            {
-              var s2016_txt = 'Hors-socle 2016.';
-            }
-            else
-            {
-              var s2016_txt = '';
-              var tab_id = s2016_id.toString().split(',');
-              for(i in tab_id)
-              {
-                s2016_txt += tab_socle[tab_id[i]]+' | ';
-              }
-              s2016_txt = s2016_txt.substring(0,s2016_txt.length-3);
-            }
             // on récupère la référence
-            var ref   = obj_conteneur.children('b:eq(0)').text();
+            var ref = obj_b.children('b:eq(0)').text();
             // on récupère l'abréviation
-            var abrev = obj_conteneur.children('b:eq(2)').text();
+            var abbr = obj_b.children('b:eq(2)').text();
             // on récupère le nom
-            var nom_texte    = obj_conteneur.children('b:eq(4)').text();
+            var nom_texte = obj_b.children('b:eq(4)').text();
             var nom_longueur = Math.min(10+nom_texte.length,128);
           }
           else
           {
-            var coef   = 1;
+            var coef = 1;
             var check1 = ' checked';
             var check0 = '';
-            var socle_id  = 0;
+            var socle_id = 0;
             var socle_txt = "Hors-socle.";
-            var s2016_id  = '';
-            var s2016_txt = 'Hors-socle 2016.';
-            var ref   = '';
-            var abrev = '';
-            var nom_texte    = '';
+            var ref = '';
+            var abbr = '';
+            var nom_texte = '';
             var nom_longueur = 125;
           }
           // On assemble
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour remplacer les références automatiques." /> Ref.</i><input id="f_ref" name="f_ref" size="2" maxlength="3" type="text" value="'+escapeQuote(ref)+'" /> (facultatif)<br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Abréviation éclairant sur l\'item pour les tableaux PDF à double entrée." /> Abrev.</i><input id="f_abrev" name="f_abrev" size="12" maxlength="15" type="text" value="'+escapeQuote(abrev)+'" /> (facultatif)<br />';
+          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Abréviation éclairant sur l\'item pour les tableaux PDF à double entrée." /> Abbr.</i><input id="f_abbr" name="f_abbr" size="12" maxlength="15" type="text" value="'+escapeQuote(abbr)+'" /> (facultatif)<br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Nom de l\'item." /> Nom</i><input id="f_nom" name="f_nom" size="'+nom_longueur+'" maxlength="256" type="text" value="'+escapeQuote(nom_texte)+'" /><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun 2016." /> S.2016</i><input id="f_intitule2016" name="f_intitule2016" size="75" maxlength="75" type="text" value="'+s2016_txt+'" readonly /><input id="f_socle2016" name="f_socle2016" type="hidden" value="'+s2016_id+'" /><q class="choisir_socle" title="Sélectionner un item du socle commun 2016."></q><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient (nombre entier entre 0 et 20 ; 1 par défaut)." /> Coef.</i><input id="f_coef" name="f_coef" type="text" value="'+coef+'" size="1" maxlength="2" /><br />';
           new_html += '<i class="tab">Demande</i> <input id="f_cart1" name="f_cart" type="radio" value="1"'+check1+' /><label for="f_cart1"><img src="./_img/etat/cart_oui.png" title="Demande possible." /></label> <input id="f_cart0" name="f_cart" type="radio" value="0"'+check0+' /><label for="f_cart0"><img src="./_img/etat/cart_non.png" title="Demande interdite." /></label><br />';
           var texte = 'cet item';
@@ -281,7 +261,7 @@ $(document).ready
       // On insère le formulaire dans la page
       if(action=='edit')
       {
-        objet.before(new_html).parent().children(conteneur).hide();
+        objet.before(new_html).parent().children('b').hide();
       }
       else if(objet.parent().attr('id').substring(0,2)==contexte)
       {
@@ -341,22 +321,19 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            var conteneur = 'span';
-            element_nom = $(this).parent().children(conteneur).children('b:eq(4)').text();
+            element_nom = $(this).parent().children('b').children('b:eq(4)').text();
             var alerte = 'Tout le contenu de ce domaine ainsi que tous les résultats des items concernés seront perdus !';
             var texte1 = 'ce domaine';
             var texte2 = 'le domaine'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
             break;
           case 'n2' :  // thème
-            var conteneur = 'span';
-            element_nom = $(this).parent().children(conteneur).children('b:eq(2)').text();
+            element_nom = $(this).parent().children('b').children('b:eq(2)').text();
             var alerte = 'Tout le contenu de ce thème ainsi que les résultats des items concernés seront perdus (et les thèmes suivants seront renumérotés) !';
             var texte1 = 'ce thème';
             var texte2 = 'le thème'+' &laquo;&nbsp;'+matiere_nom+'&nbsp;||&nbsp;'+element_nom+'&nbsp;&raquo;';
             break;
           case 'n3' :  // item
-            var conteneur = 'b';
-            element_nom = $(this).parent().children(conteneur).children('b:eq(4)').text();
+            element_nom = $(this).parent().children('b').children('b:eq(4)').text();
             var alerte = 'Tous les résultats associés seront perdus et les items suivants seront renumérotés !';
             var texte1 = 'cet item';
             var texte2 = 'l\'item sélectionné';
@@ -371,7 +348,7 @@ $(document).ready
         new_html += '<q class="valider" data-action="supprimer" title="Valider la suppression de '+texte1+'."></q><q class="annuler" data-action="supprimer" title="Annuler la suppression de '+texte1+'."></q> <label id="ajax_msg">&nbsp;</label>';
         new_html += '</div>';
         // On insère le formulaire dans la page
-        $(this).before(new_html).parent().children(conteneur).hide();
+        $(this).before(new_html).parent().children('b').hide();
       }
     );
 
@@ -413,12 +390,12 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            $('#zone_elaboration_referentiel li.li_m2').each( function(){ $(this).children('span').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine au début de ce niveau."></q>'); } );
-            $('#zone_elaboration_referentiel li.li_n1').each( function(){ if($(this).attr('id')!=id){$(this).children('span').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine à la suite de celui-ci."></q>');} } );
+            $('#zone_elaboration_referentiel li.li_m2').each( function(){ $(this).children('b').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine au début de ce niveau."></q>'); } );
+            $('#zone_elaboration_referentiel li.li_n1').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n1_move2" data-action="move2" title="Valider le déplacement du domaine à la suite de celui-ci."></q>');} } );
             break;
           case 'n2' :  // thème
-            $('#zone_elaboration_referentiel li.li_n1').each( function(){ $(this).children('span').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème au début de ce domaine (et renuméroter)."></q>'); } );
-            $('#zone_elaboration_referentiel li.li_n2').each( function(){ if($(this).attr('id')!=id){$(this).children('span').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème à la suite de celui-ci."></q>');} } );
+            $('#zone_elaboration_referentiel li.li_n1').each( function(){ $(this).children('b').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème au début de ce domaine (et renuméroter)."></q>'); } );
+            $('#zone_elaboration_referentiel li.li_n2').each( function(){ if($(this).attr('id')!=id){$(this).children('b').after('<q class="n2_move2" data-action="move2" title="Valider le déplacement du thème à la suite de celui-ci."></q>');} } );
             break;
           case 'n3' :  // item
             $('#zone_elaboration_referentiel li.li_n2').each( function(){ $(this).children('b').after('<q class="n3_move2" data-action="move2" title="Valider le déplacement de l\'item au début de ce thème (et renuméroter)."></q>'); } );
@@ -468,27 +445,6 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur l'image pour afficher les items du socle 2016
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_elaboration_referentiel').on
-    (
-      'click',
-      'q.choisir_socle',
-      function()
-      {
-        // récupérer le nom de l'item et le reporter
-        var item_nom = escapeHtml( entity_convert( $('#f_nom').val() ) );
-        $('#zone_socle2016_composante span.f_nom').html(item_nom);
-        // récupérer la relation au socle commun et la cocher
-        cocher_socle2016_composantes( $('#f_socle2016').val() );
-        // montrer le cadre
-        $.fancybox( { 'href':'#zone_socle2016_composante' , onStart:function(){$('#zone_socle2016_composante').css("display","block");} , onClosed:function(){$('#zone_socle2016_composante').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
-        objet = 'choisir_socle2016';
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour confirmer la relation au socle d'un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -517,60 +473,10 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le bouton pour confirmer les relations au socle 2016 d'un item
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#choisir_socle2016_valider').click
-    (
-      function()
-      {
-        // récupérer les relations au socle (id + nom du premier si plusieurs)
-        var socle_id = '';
-        var socle_nom = '';
-        $("#zone_socle2016_composante input[type=checkbox]:checked").each
-        (
-          function()
-          {
-            socle_id += $(this).val() + ',';
-            socle_nom += tab_socle[$(this).val()] + ' | ';
-          }
-        );
-        if(!socle_id)
-        {
-          socle_nom = 'Hors-socle 2016.';
-        }
-        else
-        {
-          socle_id = socle_id.substring(0,socle_id.length-1);
-          socle_nom = socle_nom.substring(0,socle_nom.length-3);
-        }
-        // L'envoyer dans le formulaire
-        $('#f_socle2016').val(socle_id);
-        $('#f_intitule2016').val(socle_nom);
-        // masquer le cadre
-        $.fancybox.close();
-        objet = 'editer';
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour Annuler le choix dans le socle
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#choisir_socle_annuler').click
-    (
-      function()
-      {
-        $.fancybox.close();
-        objet = 'editer';
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Clic sur le bouton pour Annuler le choix dans le socle 2016
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#choisir_socle2016_annuler').click
     (
       function()
       {
@@ -619,14 +525,13 @@ $(document).ready
         $('#f_nom').focus();
         return false;
       }
-      // On récupère l'abréviation, le coefficient, l'autorisation de demande, le lien au socle, les liens au socle 2016 et le lien de ressources de l'élément (item uniquement)
+      // On récupère l'abréviation, le coefficient, l'autorisation de demande, le lien au socle et le lien de ressources de l'élément (item uniquement)
       if(contexte=='n3')
       {
-        var abrev = $('#f_abrev').val();
+        var abbr  = $('#f_abbr').val();
         var coef  = parseInt( $('#f_coef').val() , 10 );
         var cart  = $("input[name=f_cart]:checked").val();
         var socle = $('#f_socle').val();
-        var socle2016 = $('#f_socle2016').val();
         if( (isNaN(coef)) || (coef<0) || (coef>20) )
         {
           $('#ajax_msg').removeAttr('class').addClass('erreur').html("Le coefficient doit être un nombre entier entre 0 et 20 !");
@@ -641,11 +546,10 @@ $(document).ready
       }
       else
       {
-        var abrev = '';
+        var abbr  = '';
         var coef  = 1;
         var cart  = 0;
         var socle = 0;
-        var socle2016 = '';
       }
       // Si édition, on récupère l'id de l'élément        concerné (niveau ou domaine ou theme)
       // Si ajout  , on récupère l'id de l'élément parent concerné (niveau ou domaine ou theme)
@@ -693,7 +597,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+action+'&contexte='+contexte+'&matiere='+matiere_id+'&'+get_texte+'='+get_value+'&ordre='+ordre+'&tab_id='+tab_id+'&code='+code+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&socle2016='+socle2016+'&ref='+encodeURIComponent(ref)+'&nom='+encodeURIComponent(nom)+'&abrev='+encodeURIComponent(abrev)+'&matiere_nom='+encodeURIComponent(matiere_nom),
+          data : 'csrf='+CSRF+'&f_action='+action+'&contexte='+contexte+'&matiere='+matiere_id+'&'+get_texte+'='+get_value+'&ordre='+ordre+'&tab_id='+tab_id+'&code='+code+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&ref='+encodeURIComponent(ref)+'&nom='+encodeURIComponent(nom)+'&abbr='+encodeURIComponent(abbr)+'&matiere_nom='+encodeURIComponent(matiere_nom),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -712,55 +616,37 @@ $(document).ready
               switch(contexte)
               {
                 case 'n1' :  // domaine
-                  var conteneur = 'span';
                   var sep_ref = (ref) ? separateur : '' ;
                   var texte = '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+code+'</b>' + '<b>'+separateur+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
                   if(action=='add')
                   { 
-                    texte = '<span>' + texte + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n2"></ul>';
+                    texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)] + '<ul class="ul_n2"></ul>';
                   }
                   break;
                 case 'n2' :  // thème
-                  var conteneur = 'span';
                   var sep_ref = (ref) ? separateur : '' ;
                   var texte = '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
                   if(action=='add')
                   {
-                    texte = '<span>' + texte + '</span>' + images[contexte.charAt(1)] + '<ul class="ul_n3"></ul>';
+                    texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)] + '<ul class="ul_n3"></ul>';
                   }
                   break;
                 case 'n3' :  // item
-                  var conteneur = 'b';
-                  coef_image    = (coef<10) ? '0'+coef : coef ;
-                  coef_texte    = '<img src="./_img/coef/'+coef_image+'.gif" alt="" title="Coefficient '+coef+'." />';
-                  cart_image    = (cart>0) ? 'oui' : 'non' ;
-                  cart_title    = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
-                  cart_texte    = '<img src="./_img/etat/cart_'+cart_image+'.png" title="'+cart_title+'" />';
-                  socle_image   = (socle>0) ? 'oui' : 'non' ;
-                  socle_title   = $('#f_intitule').val();
-                  socle_texte   = '<img src="./_img/etat/socle_'+socle_image+'.png" alt="" title="'+socle_title+'" data-id="'+socle+'" />';
-                  s2016_image   = (socle2016) ? 'oui' : 'non' ;
-                  if( !socle2016 || socle2016.indexOf(',')==-1)
-                  {
-                    s2016_title   = $('#f_intitule2016').val();
-                  }
-                  else
-                  {
-                    s2016_title = '';
-                    var tab_id = socle2016.toString().split(',');
-                    for(i in tab_id)
-                    {
-                      s2016_title += tab_socle[tab_id[i]]+'<br />';
-                    }
-                    s2016_title = s2016_title.substring(0,s2016_title.length-6);
-                  }
-                  s2016_texte   = '<img src="./_img/etat/socle_'+s2016_image+'.png" alt="" title="'+s2016_title+'" data-id="'+socle2016+'" />';
-                  lien_image    = ( (action=='edit') && (tab_ressources[get_value]) ) ? 'oui' : 'non' ;
-                  lien_title    = ( (action=='edit') && (tab_ressources[get_value]) ) ? tab_ressources[get_value] : 'Absence de ressource.' ;
-                  lien_texte    = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
-                  var sep_ref   = (ref) ? separateur : '' ;
-                  var sep_abrev = (abrev) ? separateur : '' ;
-                  var texte = coef_texte + cart_texte + socle_texte + s2016_texte + lien_texte + '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(abrev)+'</b>' + '<b>'+sep_abrev+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
+
+                  coef_image   = (coef<10) ? '0'+coef : coef ;
+                  coef_texte   = '<img src="./_img/coef/'+coef_image+'.gif" alt="" title="Coefficient '+coef+'." />';
+                  cart_image   = (cart>0) ? 'oui' : 'non' ;
+                  cart_title   = (cart>0) ? 'Demande possible.' : 'Demande interdite.' ;
+                  cart_texte   = '<img src="./_img/etat/cart_'+cart_image+'.png" title="'+cart_title+'" />';
+                  socle_image  = (socle>0) ? 'oui' : 'non' ;
+                  socle_title  = $('#f_intitule').val();
+                  socle_texte  = '<img src="./_img/etat/socle_'+socle_image+'.png" alt="" title="'+socle_title+'" data-id="'+socle+'" />';
+                  lien_image   = ( (action=='edit') && (tab_ressources[get_value]) ) ? 'oui' : 'non' ;
+                  lien_title   = ( (action=='edit') && (tab_ressources[get_value]) ) ? tab_ressources[get_value] : 'Absence de ressource.' ;
+                  lien_texte   = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
+                  var sep_ref  = (ref) ? separateur : '' ;
+                  var sep_abbr = (abbr) ? separateur : '' ;
+                  var texte = coef_texte + cart_texte + socle_texte + lien_texte + '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(abbr)+'</b>' + '<b>'+sep_abbr+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
                   if(action=='add')
                   {
                     texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)];
@@ -768,9 +654,10 @@ $(document).ready
                   }
                   break;
                 default :
-                  var conteneur = '???';
                   var texte = '???';
               }
+
+
               // On met à jour la page
               if(action=='add')
               {
@@ -778,7 +665,7 @@ $(document).ready
               }
               else
               {
-                objet_parent.parent().children(conteneur).html(texte).show();
+                objet_parent.parent().children('b').html(texte).show();
                 objet_parent.remove();
               }
               afficher_masquer_images_action('show');
@@ -994,10 +881,10 @@ $(document).ready
         switch(contexte)
         {
           case 'n1' :  // domaine
-            element_nom = li.children('span').children('b:eq(4)').text();
+            element_nom = li.children('b').children('b:eq(4)').text();
             break;
           case 'n2' :  // thème
-            element_nom = li.children('span').children('b:eq(2)').text();
+            element_nom = li.children('b').children('b:eq(2)').text();
             break;
           case 'n3' :  // item
             element_nom = li.children('b').children('b:eq(4)').text();
@@ -1201,13 +1088,11 @@ $(document).ready
         if(e.which==13)  // touche entrée
         {
           if(objet=='choisir_compet') {$('#choisir_socle_valider').click();}
-          else if(objet=='choisir_socle2016') {$('#choisir_socle2016_valider').click();}
           else {$('#zone_elaboration_referentiel q.valider').click();}
         }
         else if(e.which==27)  // touche escape
         {
           if(objet=='choisir_compet') {$('#choisir_socle_annuler').click();}
-          else if(objet=='choisir_socle2016') {$('#choisir_socle2016_annuler').click();}
           else {$('#zone_elaboration_referentiel q.annuler').click();}
         }
         return false;
@@ -1255,19 +1140,21 @@ $(document).ready
     {
       var action_groupe = $('#select_action_groupe_choix option:selected').val();
       $('#bouton_valider_groupe').prop('disabled',true);
-      $('#groupe_modifier_avertissement , #select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val , #select_action_groupe_deplacer_id_initial , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').css("display","none"); // hide(0) ne donne rien si appelé par initialiser_action_groupe()...
       if(!action_groupe)
       {
+        $('#groupe_modifier_avertissement , #select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_deplacer_id_initial , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').css("display","none"); // hide(0) ne donne rien si appelé par initialiser_action_groupe()...
         $('#ajax_msg_groupe').removeAttr('class').html('');
       }
-      else if( (action_groupe=='modifier_coefficient') || (action_groupe=='modifier_panier') || (action_groupe=='modifier_socle2016') )
+      else if( (action_groupe=='modifier_coefficient') || (action_groupe=='modifier_panier') )
       {
+        $('#select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_deplacer_id_initial , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').hide(0);
         $('#select_action_groupe_modifier_objet option:first').prop('selected',true);
         $('#select_action_groupe_modifier_objet').show(0);
         $('#ajax_msg_groupe').removeAttr('class').html('');
       }
       else if( (action_groupe=='deplacer_domaine') || (action_groupe=='deplacer_theme') )
       {
+        $('#select_action_groupe_modifier_objet , #select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_deplacer_explication , #select_action_groupe_deplacer_id_final').hide(0);
         $('#groupe_modifier_avertissement').show(0);
         $('#select_action_groupe_deplacer_id_initial').html('<option value="">&nbsp;</option>');
         lister_options_select( action_groupe.substring(9) , 'select_action_groupe_deplacer_id_initial' , 0 );
@@ -1288,9 +1175,9 @@ $(document).ready
       {
         var modifier_objet = $('#select_action_groupe_modifier_objet option:selected').val();
         $('#bouton_valider_groupe').prop('disabled',true);
-        $('#select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val').hide(0);
         if(!modifier_objet)
         {
+          $('#select_action_groupe_modifier_id , #select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart').hide(0);
           $('#ajax_msg_groupe').removeAttr('class').html('');
         }
         else
@@ -1310,28 +1197,22 @@ $(document).ready
         $('#bouton_valider_groupe').prop('disabled',true);
         if(!modifier_id)
         {
-          $('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val').hide(0);
+          $('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart').hide(0);
           $('#ajax_msg_groupe').removeAttr('class').html('');
         }
         else
         {
           if(action_groupe=='modifier_coefficient')
           {
-            $('#select_action_groupe_modifier_cart , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val').hide(0);
+            $('#select_action_groupe_modifier_cart').hide(0);
             $('#select_action_groupe_modifier_coef option:first').prop('selected',true);
             $('#select_action_groupe_modifier_coef').show(0);
           }
           else if(action_groupe=='modifier_panier')
           {
-            $('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_socle_mode, #select_action_groupe_modifier_socle_val').hide(0);
+            $('#select_action_groupe_modifier_coef').hide(0);
             $('#select_action_groupe_modifier_cart option:first').prop('selected',true);
             $('#select_action_groupe_modifier_cart').show(0);
-          }
-          else if(action_groupe=='modifier_socle2016')
-          {
-            $('#select_action_groupe_modifier_coef , #select_action_groupe_modifier_cart, #select_action_groupe_modifier_socle_val').hide(0);
-            $('#select_action_groupe_modifier_socle_mode option:first').prop('selected',true);
-            $('#select_action_groupe_modifier_socle_mode').show(0);
           }
         }
       }
@@ -1365,22 +1246,6 @@ $(document).ready
       }
     );
 
-    $("#select_action_groupe_modifier_socle_mode").change
-    (
-      function()
-      {
-        if(!$('#select_action_groupe_modifier_socle_mode option:selected').val())
-        {
-          $('#select_action_groupe_modifier_socle_val').hide(0);
-        }
-        else
-        {
-          $('#select_action_groupe_modifier_socle_val option:first').prop('selected',true);
-          $('#select_action_groupe_modifier_socle_val').show(0);
-        }
-      }
-    );
-
     $("#select_action_groupe_modifier_coef").change
     (
       function()
@@ -1397,16 +1262,6 @@ $(document).ready
       {
         var modifier_cart = $('#select_action_groupe_modifier_cart option:selected').val();
         var etat_desactive = (modifier_cart==='') ? true : false ;
-        $('#bouton_valider_groupe').prop('disabled',etat_desactive);
-      }
-    );
-
-    $("#select_action_groupe_modifier_socle_val").change
-    (
-      function()
-      {
-        var modifier_socle = $('#select_action_groupe_modifier_socle_val option:selected').val();
-        var etat_desactive = (modifier_socle==='') ? true : false ;
         $('#bouton_valider_groupe').prop('disabled',etat_desactive);
       }
     );

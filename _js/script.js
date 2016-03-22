@@ -460,47 +460,6 @@ function cocher_socle_item(socle_item_id)
 var cocher_socle_item_first_appel = true;
 
 /**
- * Fonction pour afficher et cocher des items du socle 2016
- *
- * @param listing_socle_id
- * @return void
- */
-function cocher_socle2016_composantes(listing_socle_id)
-{
-  var $zone_socle2016_composante = $('#zone_socle2016_composante');
-  // Replier tout sauf le plus haut niveau la 1e fois ; ensuite on laisse aussi volontairement ouvert ce qui a pu l'être précédemment
-  if(cocher_socle2016_composante_first_appel)
-  {
-    $zone_socle2016_composante.find('ul').css("display","none");
-    $zone_socle2016_composante.find('ul.ul_m1').css("display","block");
-    cocher_socle2016_composante_first_appel = false;
-  }
-  // Décocher tout
-  $zone_socle2016_composante.find('input[type=checkbox]').each
-  (
-    function()
-    {
-      this.checked = false;
-    }
-  );
-  // Cocher ce qui doit l'être (initialisation)
-  if(listing_socle_id)
-  {
-    var tab_socle_id = listing_socle_id.toString().split(',');
-    for(i in tab_socle_id)
-    {
-      var $socle_id = $('#socle2016_'+tab_socle_id[i]);
-      $socle_id.prop('checked',true);
-      $socle_id.closest('ul.ul_n2').css("display","block");  // le domaine
-      $socle_id.closest('ul.ul_n1').css("display","block");  // le cycle
-    }
-    $socle_id.focus();
-  }
-}
-
-var cocher_socle2016_composante_first_appel = true;
-
-/**
  * Fonction pour afficher et cocher une liste d'élèves donnés
  *
  * @param prof_liste : ids séparés par des underscores
@@ -540,7 +499,7 @@ function cocher_eleves(eleve_liste)
 /**
  * Fonction pour cocher une liste de matières données
  *
- * @param matiere_liste : ids séparés par des underscores
+ * @param matiere_liste : ids séparés par des virgules
  * @return void
  */
 function cocher_matieres(matiere_liste)

@@ -298,11 +298,10 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                         $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
                         $texte_lien_apres = ($item_lien) ? '</a>' : '';
                       }
-                      if($_SESSION['USER_PROFIL_TYPE']=='parent')    { $texte_demande_eval = '<q class="demander_non" title="Les demandes d\'évaluations s\'effectuent depuis un compte élève."></q>'; }
-                      elseif($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
-                      elseif(!$matiere_nb_demandes)                  { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
-                      elseif(!$item_cart)                            { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
-                      else                                           { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
+                      if($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
+                      elseif(!$matiere_nb_demandes)              { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
+                      elseif(!$item_cart)                        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
+                      else                                       { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
                       $tab_infos_socle_eleve[$socle_id][$eleve_id][] = '<span class="pourcentage A'.$indice.'">'.$score.'%</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
                     }
                     // on enregistre les infos

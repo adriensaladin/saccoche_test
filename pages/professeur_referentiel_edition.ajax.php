@@ -41,7 +41,7 @@ $ref         = (isset($_POST['ref']))         ? Clean::texte($_POST['ref'])     
 $code        = (isset($_POST['code']))        ? Clean::texte($_POST['code'])         : '';
 $nom         = (isset($_POST['nom']))         ? Clean::texte($_POST['nom'])          : '';
 $nom2        = (isset($_POST['nom2']))        ? Clean::texte($_POST['nom2'])         : '';
-$abrev       = (isset($_POST['abrev']))       ? Clean::texte($_POST['abrev'])        : NULL;
+$abbr        = (isset($_POST['abbr']))        ? Clean::texte($_POST['abbr'])         : NULL;
 $coef        = (isset($_POST['coef']))        ? Clean::entier($_POST['coef'])        : -1;
 $cart        = (isset($_POST['cart']))        ? Clean::entier($_POST['cart'])        : -1;
 $socle_id    = (isset($_POST['socle']))       ? Clean::entier($_POST['socle'])       : -1;
@@ -50,8 +50,6 @@ $tab_id = (isset($_POST['tab_id'])) ? Clean::map_entier(explode(',',$_POST['tab_
 $tab_id = array_filter($tab_id,'positif');
 $tab_id2 = (isset($_POST['tab_id2'])) ? Clean::map_entier(explode(',',$_POST['tab_id2'])) : array() ;
 $tab_id2 = array_filter($tab_id2,'positif');
-$tab_socle2016 = (isset($_POST['socle2016'])) ? Clean::map_entier(explode(',',$_POST['socle2016'])) : array() ;
-$tab_socle2016 = array_filter($tab_socle2016,'positif');
 
 $tab_contexte    = array( 'n1'=>'domaine' , 'n2'=>'theme' , 'n3'=>'item' );
 $tab_granulosite = array( 'referentiel' , 'domaine' , 'theme' );
@@ -90,18 +88,6 @@ if( ($action=='lister_options') && in_array($granulosite,$tab_granulosite) )
 
 if( ($action=='Voir') && $matiere_id )
 {
-  // Une 1ère requête pour les liaisons au socle commun
-  $tab_item_socle2016 = array();
-  $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiels_matiere($matiere_id);
-  if(!empty($DB_TAB))
-  {
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_item_socle2016[$DB_ROW['item_id']]['id' ][] = $DB_ROW['socle_cycle_id'].$DB_ROW['socle_composante_id'];
-      $tab_item_socle2016[$DB_ROW['item_id']]['nom'][] = html($DB_ROW['socle_cycle_nom'].' - '.$DB_ROW['socle_composante_nom']);
-    }
-  }
-  // On passe aux réféentiels
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
   $tab_niveau  = array();
   $tab_domaine = array();
@@ -141,16 +127,12 @@ if( ($action=='Voir') && $matiere_id )
       $socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
       $socle_nom   = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
       $socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" data-id="'.$DB_ROW['entree_id'].'" />';
-      $s2016_image = isset($tab_item_socle2016[$item_id]) ? 'oui' : 'non' ;
-      $s2016_id    = isset($tab_item_socle2016[$item_id]) ? implode(',',$tab_item_socle2016[$item_id]['id']) : '' ;
-      $s2016_nom   = isset($tab_item_socle2016[$item_id]) ? implode('<br />',$tab_item_socle2016[$item_id]['nom']) : 'Hors-socle 2016.' ;
-      $s2016_texte = '<img src="./_img/etat/socle_'.$s2016_image.'.png" alt="" title="'.$s2016_nom.'" data-id="'.$s2016_id.'" />';
       $lien_image  = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
       $lien_nom    = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
       $lien_texte  = '<img src="./_img/etat/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
-      $sep_ref     = ($DB_ROW['item_ref'])   ? $separateur : '' ;
-      $sep_abrev   = ($DB_ROW['item_abrev']) ? $separateur : '' ;
-      $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$s2016_texte.$lien_texte.'<b>'.html($DB_ROW['item_ref']).'</b>'.'<b>'.$sep_ref.'</b>'.'<b>'.html($DB_ROW['item_abrev']).'</b>'.'<b>'.$sep_abrev.'</b>'.'<b>'.html($DB_ROW['item_nom']).'</b>';
+      $sep_ref     = ($DB_ROW['item_ref'])  ? $separateur : '' ;
+      $sep_abbr    = ($DB_ROW['item_abbr']) ? $separateur : '' ;
+      $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$lien_texte.'<b>'.html($DB_ROW['item_ref']).'</b>'.'<b>'.$sep_ref.'</b>'.'<b>'.html($DB_ROW['item_abbr']).'</b>'.'<b>'.$sep_abbr.'</b>'.'<b>'.html($DB_ROW['item_nom']).'</b>';
     }
   }
   $images_niveau  = '';
@@ -178,19 +160,19 @@ if( ($action=='Voir') && $matiere_id )
   {
     foreach($tab_niveau as $niveau_id => $niveau_nom)
     {
-      Json::add_str(  '<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau.NL); // span pour permettre un déploiement au clic
+      Json::add_str(  '<li class="li_m2" id="m2_'.$niveau_id.'"><span>'.html($niveau_nom).'</span>'.$images_niveau.NL);
       Json::add_str(    '<ul class="ul_n1">'.NL);
       if(isset($tab_domaine[$niveau_id]))
       {
         foreach($tab_domaine[$niveau_id] as $domaine_id => $domaine_html)
         {
-          Json::add_str(      '<li class="li_n1" id="n1_'.$domaine_id.'"><span>'.$domaine_html.'</span>'.$images_domaine.NL); // span pour permettre un déploiement au clic
+          Json::add_str(      '<li class="li_n1" id="n1_'.$domaine_id.'"><b>'.$domaine_html.'</b>'.$images_domaine.NL);
           Json::add_str(        '<ul class="ul_n2">'.NL);
           if(isset($tab_theme[$niveau_id][$domaine_id]))
           {
             foreach($tab_theme[$niveau_id][$domaine_id] as $theme_id => $theme_html)
             {
-              Json::add_str(          '<li class="li_n2" id="n2_'.$theme_id.'"><span>'.$theme_html.'</span>'.$images_theme.NL); // span pour permettre un déploiement au clic
+              Json::add_str(          '<li class="li_n2" id="n2_'.$theme_id.'"><b>'.$theme_html.'</b>'.$images_theme.NL);
               Json::add_str(            '<ul class="ul_n3">'.NL);
               if(isset($tab_item[$niveau_id][$domaine_id][$theme_id]))
               {
@@ -219,13 +201,13 @@ if( ($action=='Voir') && $matiere_id )
 // Ajouter un domaine / un thème / un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matiere_nom && $parent_id && ($code || ($contexte!='n1')) && ($ref!==NULL) && $nom && ( ($abrev!==NULL) || ($contexte!='n3') ) && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
+if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matiere_nom && $parent_id && ($code || ($contexte!='n1')) && ($ref!==NULL) && $nom && ( ($abbr!==NULL) || ($contexte!='n3') ) && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
   switch($contexte)
   {
     case 'n1' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_domaine( $matiere_id , $parent_id /*niveau*/ , $ordre , $code , $ref , $nom ); break;
     case 'n2' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_theme( $parent_id /*domaine*/ , $ordre ,  $ref , $nom ); break;
-    case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item( $parent_id /*theme*/ , $socle_id , $ordre ,  $ref , $nom , $abrev , $coef , $cart , $tab_socle2016 ); break;
+    case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item( $parent_id /*theme*/ , $socle_id , $ordre ,  $ref , $nom , $abbr , $coef , $cart ); break;
   }
   // id des éléments suivants à renuméroter
   if(count($tab_id)) // id des éléments suivants à renuméroter
@@ -240,16 +222,16 @@ if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matie
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Modifier un domaine / un thème / un item
+// Renommer un domaine / un thème / un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='edit') && isset($tab_contexte[$contexte]) && $matiere_id && $element_id && ( $code || ($contexte!='n1') ) && ($ref!==NULL) && $nom && ( ($abrev!==NULL) || ($contexte!='n3') ) && $matiere_nom && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
+if( ($action=='edit') && isset($tab_contexte[$contexte]) && $matiere_id && $element_id && ( $code || ($contexte!='n1') ) && ($ref!==NULL) && $nom && ( ($abbr!==NULL) || ($contexte!='n3') ) && $matiere_nom && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
   switch($contexte)
   {
     case 'n1' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_domaine( $element_id /*domaine*/ , $code , $ref , $nom ); break;
     case 'n2' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_theme( $element_id /*theme*/ , $ref , $nom ); break;
-    case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item( $element_id /*item*/ , $socle_id , $ref , $nom , $abrev , $coef , $cart , $tab_socle2016 ); break;
+    case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item( $element_id /*item*/ , $socle_id , $ref , $nom , $abbr , $coef , $cart ); break;
   }
   if(!$test_modif)
   {
@@ -410,32 +392,29 @@ if( ($action=='fus') && $element_id && $element2_id && $matiere_id && $matiere_n
 if($action=='action_complementaire')
 {
   // Récupération des données
-  $action_groupe       = (isset($_POST['select_action_groupe']))                     ? Clean::texte($_POST['select_action_groupe'])                      : '';
-  $granulosite         = (isset($_POST['select_action_groupe_modifier_objet']))      ? Clean::texte($_POST['select_action_groupe_modifier_objet'])       : '';
-  $modifier_id         = (isset($_POST['select_action_groupe_modifier_id']))         ? Clean::texte($_POST['select_action_groupe_modifier_id'])          : '';
-  $modifier_coef       = (isset($_POST['select_action_groupe_modifier_coef']))       ? Clean::entier($_POST['select_action_groupe_modifier_coef'])       : -1;
-  $modifier_cart       = (isset($_POST['select_action_groupe_modifier_cart']))       ? Clean::entier($_POST['select_action_groupe_modifier_cart'])       : -1;
-  $modifier_socle_mode = (isset($_POST['select_action_groupe_modifier_socle_mode'])) ? Clean::entier($_POST['select_action_groupe_modifier_socle_mode']) : -1;
-  $modifier_socle_val  = (isset($_POST['select_action_groupe_modifier_socle_val']))  ? Clean::entier($_POST['select_action_groupe_modifier_socle_val'])  : -1;
-  $deplacer_id_initial = (isset($_POST['select_action_groupe_deplacer_id_initial'])) ? Clean::texte($_POST['select_action_groupe_deplacer_id_initial'])  : '';
-  $deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? Clean::texte($_POST['select_action_groupe_deplacer_id_final'])    : '';
-  $groupe_nom_initial  = (isset($_POST['groupe_nom_initial']))                       ? Clean::texte($_POST['groupe_nom_initial'])                        : '';
-  $groupe_nom_final    = (isset($_POST['groupe_nom_final']))                         ? Clean::texte($_POST['groupe_nom_final'])                          : '';
+  $action_groupe       = (isset($_POST['select_action_groupe']))                     ? Clean::texte($_POST['select_action_groupe'])                     : '';
+  $granulosite         = (isset($_POST['select_action_groupe_modifier_objet']))      ? Clean::texte($_POST['select_action_groupe_modifier_objet'])      : '';
+  $modifier_id         = (isset($_POST['select_action_groupe_modifier_id']))         ? Clean::texte($_POST['select_action_groupe_modifier_id'])         : '';
+  $modifier_coef       = (isset($_POST['select_action_groupe_modifier_coef']))       ? Clean::entier($_POST['select_action_groupe_modifier_coef'])      : -1;
+  $modifier_cart       = (isset($_POST['select_action_groupe_modifier_cart']))       ? Clean::entier($_POST['select_action_groupe_modifier_cart'])      : -1;
+  $deplacer_id_initial = (isset($_POST['select_action_groupe_deplacer_id_initial'])) ? Clean::texte($_POST['select_action_groupe_deplacer_id_initial']) : '';
+  $deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? Clean::texte($_POST['select_action_groupe_deplacer_id_final'])   : '';
+  $groupe_nom_initial  = (isset($_POST['groupe_nom_initial']))                       ? Clean::texte($_POST['groupe_nom_initial'])                       : '';
+  $groupe_nom_final    = (isset($_POST['groupe_nom_final']))                         ? Clean::texte($_POST['groupe_nom_final'])                         : '';
   list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = Clean::map_entier(explode('_',$modifier_id))         + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
   list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = Clean::map_entier(explode('_',$deplacer_id_initial)) + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
   list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = Clean::map_entier(explode('_',$deplacer_id_final))   + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
   // Vérification des données
-  $tab_action_groupe   = array('modifier_coefficient','modifier_panier','modifier_socle2016','deplacer_domaine','deplacer_theme');
-  $test_coef    = ( ($action_groupe=='modifier_coefficient') && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($parent_id) && ($objet_id) && ($objet_ordre) && ($modifier_coef!=-1) ) ? TRUE : FALSE ;
-  $test_panier  = ( ($action_groupe=='modifier_panier')      && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($objet_id) && ($objet_ordre) && ($modifier_cart!=-1) ) ? TRUE : FALSE ;
-  $test_socle   = ( ($action_groupe=='modifier_socle2016')   && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($objet_id) && ($objet_ordre) && ($modifier_socle_mode!=-1) && ($modifier_socle_val!=-1) ) ? TRUE : FALSE ;
-  $test_domaine = ( ($action_groupe=='deplacer_domaine')     && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
-  $test_theme   = ( ($action_groupe=='deplacer_theme')       && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
-  if( (!in_array($action_groupe,$tab_action_groupe)) || ( !$test_coef && !$test_panier && !$test_socle && !$test_domaine && !$test_theme ) )
+  $tab_action_groupe   = array('modifier_coefficient','modifier_panier','deplacer_domaine','deplacer_theme');
+  $test1 = ( ($action_groupe=='modifier_coefficient') && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($parent_id) && ($objet_id) && ($objet_ordre) && ($modifier_coef!=-1) ) ? TRUE : FALSE ;
+  $test2 = ( ($action_groupe=='modifier_panier')      && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($objet_id) && ($objet_ordre) && ($modifier_cart!=-1) ) ? TRUE : FALSE ;
+  $test3 = ( ($action_groupe=='deplacer_domaine')     && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
+  $test4 = ( ($action_groupe=='deplacer_theme')       && $matiere_id_initial && $parent_id_initial && $objet_id_initial && $objet_ordre_initial && $parent_id_final && $matiere_id_final && $objet_id_final && $objet_ordre_final && $groupe_nom_initial && $groupe_nom_final ) ? TRUE : FALSE ;
+  if( (!in_array($action_groupe,$tab_action_groupe)) || ( (!$test1) && (!$test2) && (!$test3) && (!$test4) ) )
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
-  // cas modifier_coefficient
+  // cas 1/4 : modifier_coefficient
   if($action_groupe=='modifier_coefficient')
   {
     $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'coef' , $modifier_coef );
@@ -445,10 +424,10 @@ if($action=='action_complementaire')
     }
     else
     {
-      Json::end( FALSE , 'Contenu inchangé ou items non trouvés !' );
+      Json::end( FALSE , 'Contenu inchangé ou élément items non trouvés !' );
     }
   }
-  // cas modifier_panier
+  // cas 2/4 : modifier_panier
   if($action_groupe=='modifier_panier')
   {
     $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'cart' , $modifier_cart );
@@ -458,23 +437,10 @@ if($action=='action_complementaire')
     }
     else
     {
-      Json::end( FALSE , 'Contenu inchangé ou items non trouvés !' );
+      Json::end( FALSE , 'Contenu inchangé ou élément items non trouvés !' );
     }
   }
-  // cas modifier_socle2016
-  if($action_groupe=='modifier_socle2016')
-  {
-    $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_items( $granulosite , $matiere_id , $objet_id , 'socle2016' , $modifier_socle_val , $modifier_socle_mode );
-    if($test_modif)
-    {
-      Json::end( TRUE , 'Demande réalisée !' );
-    }
-    else
-    {
-      Json::end( FALSE , 'Contenu inchangé ou items non trouvés !' );
-    }
-  }
-  // cas deplacer_domaine ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande... ; il pourra y avoir des domaine_code identiques...
+  // cas 3/4 : deplacer_domaine ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande... ; il pourra y avoir des domaine_code identiques...
   if($action_groupe=='deplacer_domaine')
   {
     $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_domaine_ordre_max( $matiere_id_final , $objet_id_final ) + 1 ; // objet_id = niveau_id
@@ -486,7 +452,7 @@ if($action=='action_complementaire')
     notifications_referentiel_edition( $matiere_id_initial , $notification_contenu );
     Json::end( TRUE , 'Demande réalisée !' );
   }
-  // cas deplacer_theme ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande...
+  // cas 4/4 : deplacer_theme ; il pourra rester des associations items/matières obsolète dans la table sacoche_demande...
   if($action_groupe=='deplacer_theme')
   {
     $objet_ordre_final = DB_STRUCTURE_REFERENTIEL::DB_recuperer_theme_ordre_max( $objet_id_final ) + 1 ; // objet_id = domaine_id

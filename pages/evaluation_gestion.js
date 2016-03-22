@@ -1467,7 +1467,7 @@ $(document).ready
     {
       var findme = '.'+touche_code+'.';
       var endroit_report_note = 'cellule';
-      if( keycode_search.indexOf(findme) != -1 )
+      if(keycode_search.indexOf(findme)!=-1)
       {
         // Une touche d'item a été pressée
         switch (touche_code)
@@ -1618,10 +1618,6 @@ $(document).ready
             $("td#td_"+memo_input_id).removeAttr('class').addClass("td_clavier").children("div").remove();
             $("input#"+memo_input_id).show();
             memo_input_id = false;
-            if(nb_lignes>nb_lignes_max)
-            {
-              $table_saisir_voir.stickyTableHeaders('destroy');
-            }
           }
           else
           {
@@ -1632,10 +1628,6 @@ $(document).ready
             var valeur = $(this).children("input").val();
             $(this).children("input").hide();
             $(this).removeAttr('class').addClass("td_souris").append( $("#td_souris_container").html() ).find("img[alt="+valeur+"]").addClass("on");
-            if(nb_lignes>nb_lignes_max)
-            {
-              $table_saisir_voir.stickyTableHeaders();
-            }
           }
         }
       }

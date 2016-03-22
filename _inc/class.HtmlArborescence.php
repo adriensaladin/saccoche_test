@@ -199,11 +199,11 @@ class HtmlArborescence
   /**
    * Retourner une liste HTML ordonnée de l'arborescence d'un référentiel socle à partir d'une requête SQL transmise.
    * 
-   * @param array $DB_TAB
-   * @param bool  $dynamique   arborescence cliquable ou pas (plier/replier)
-   * @param bool  $reference   afficher ou pas les références
-   * @param bool  $aff_input   affichage ou pas des input radio avec label
-   * @param bool  $ids         indiquer ou pas les identifiants des éléments (Pxxx / Sxxx / Exxx)
+   * @param tab         $DB_TAB
+   * @param bool        $dynamique   arborescence cliquable ou pas (plier/replier)
+   * @param bool        $reference   afficher ou pas les références
+   * @param bool        $aff_input   affichage ou pas des input radio avec label
+   * @param bool        $ids         indiquer ou pas les identifiants des éléments (Pxxx / Sxxx / Exxx)
    * @return string
    */
   public static function afficher_socle_from_SQL( $DB_TAB , $dynamique , $reference , $aff_input , $ids )
@@ -215,7 +215,7 @@ class HtmlArborescence
     $tab_palier  = array();
     $tab_pilier  = array();
     $tab_section = array();
-    $tab_entree  = array();
+    $tab_entree   = array();
     $palier_id = 0;
     foreach($DB_TAB as $DB_ROW)
     {
@@ -298,68 +298,6 @@ class HtmlArborescence
     }
     $retour .= '</ul>'.NL;
     return $retour;
-  }
-
-  /**
-   * Retourner une liste HTML ordonnée de l'arborescence du socle 2016.
-   * 
-   * @return array(string_html,string_js,string_select)
-   */
-  public static function afficher_socle2016()
-  {
-    // On remplit les tableaux suivants à partir des requêtes SQL
-    $tab_cycle      = array();
-    $tab_domaine    = array();
-    $tab_composante = array();
-    // 1) Cycles
-    $DB_TAB_Cycles = DB_STRUCTURE_COMMUN::DB_recuperer_socle2016_cycles();
-    foreach($DB_TAB_Cycles as $DB_ROW)
-    {
-      $cycle_id = $DB_ROW['socle_cycle_id'];
-      $tab_cycle[$cycle_id] = html($DB_ROW['socle_cycle_nom']).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html($DB_ROW['socle_cycle_description']).'" />';
-    }
-    // 2) Domaines et composantes
-    $DB_TAB_Socle = DB_STRUCTURE_COMMUN::DB_recuperer_socle2016_arborescence();
-    $domaine_id = 0;
-    foreach($DB_TAB_Socle as $DB_ROW)
-    {
-      $domaine_id    = $DB_ROW['socle_domaine_id'];
-      $composante_id = $DB_ROW['socle_composante_id'];
-      $tab_domaine[$domaine_id] = html($DB_ROW['socle_domaine_ordre'].' '.$DB_ROW['socle_domaine_nom']);
-      $tab_composante[$domaine_id][$composante_id] = html($DB_ROW['socle_composante_nom']);
-    }
-    // Affichage de l'arborescence
-    $span_avant = '<span>';
-    $span_apres = '</span>';
-    $retour_html   = '<ul class="ul_m1">'.NL;
-    $retour_js     = 'var tab_socle = new Array();';
-    $retour_select = '<option value="">&nbsp;</option>';
-    foreach($tab_cycle as $cycle_id => $cycle_texte)
-    {
-      $retour_html .= '<li class="li_m1">'.$span_avant.$cycle_texte.$span_apres.NL;
-      $retour_html .= '<ul class="ul_n1">'.NL;
-      foreach($tab_domaine as $domaine_id => $domaine_texte)
-      {
-        $retour_html .= '<li class="li_n1">'.$span_avant.$domaine_texte.$span_apres.NL;
-        $retour_html .= '<ul class="ul_n2">'.NL;
-        foreach($tab_composante[$domaine_id] as $composante_id => $composante_texte)
-        {
-          $input_id = $cycle_id.$composante_id;
-          $input_texte       = '<input id="socle2016_'.$input_id.'" name="f_socle2016" type="checkbox" value="'.$input_id.'" /> ';
-          $label_texte_avant = '<label for="socle2016_'.$input_id.'">';
-          $label_texte_apres = '</label>';
-          $retour_html   .= '<li class="li_n2">'.$label_texte_avant.$input_texte.$composante_texte.$label_texte_apres.'</li>'.NL;
-          $retour_js     .= 'tab_socle['.$input_id.']="Cycle '.$cycle_id.' - '.$composante_texte.'";';
-          $retour_select .= '<option value="'.$input_id.'">Cycle '.$cycle_id.' - Domaine '.$domaine_texte.' - '.$composante_texte.'</option>';
-        }
-        $retour_html .= '</ul>'.NL;
-        $retour_html .= '</li>'.NL;
-      }
-      $retour_html .= '</ul>'.NL;
-      $retour_html .= '</li>'.NL;
-    }
-    $retour_html .= '</ul>'.NL;
-    return array( $retour_html , $retour_js , $retour_select );
   }
 
 }

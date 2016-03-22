@@ -112,32 +112,19 @@ class ServeurCommunautaire
    * 
    * Remarque : les ordres des domaines / thèmes / items ne sont pas transmis car il sont déduits par leur position dans l'arborescence.
    * 
-   * @param array  $DB_TAB_referentiel
-   * @param array  $DB_TAB_socle2016
+   * @param tab  $DB_TAB
    * @return string
    */
-  public static function exporter_arborescence_to_XML( $DB_TAB_referentiel , $DB_TAB_socle2016 )
+  public static function exporter_arborescence_to_XML($DB_TAB)
   {
-    // Un 1er traitement pour les liaisons au socle commun
-    $tab_item_socle2016 = array();
-    if(!empty($DB_TAB_socle2016))
-    {
-      foreach($DB_TAB_socle2016 as $DB_ROW)
-      {
-        $tab_item_socle2016[$DB_ROW['item_id']][] = array(
-          'cycle'      => $DB_ROW['socle_cycle_id'],
-          'composante' => $DB_ROW['socle_composante_id'],
-        );
-      }
-    }
-    // 2ème traitement pour le référentiel en lui-même
+    // Traiter le retour SQL : on remplit les tableaux suivants.
     $tab_domaine = array();
     $tab_theme   = array();
     $tab_item    = array();
     $domaine_id = 0;
     $theme_id   = 0;
     $item_id    = 0;
-    foreach($DB_TAB_referentiel as $DB_ROW)
+    foreach($DB_TAB as $DB_ROW)
     {
       if( (!is_null($DB_ROW['domaine_id'])) && ($DB_ROW['domaine_id']!=$domaine_id) )
       {
@@ -163,7 +150,7 @@ class ServeurCommunautaire
           'socle' => $DB_ROW['entree_id'],
           'ref'   => $DB_ROW['item_ref'],
           'nom'   => $DB_ROW['item_nom'],
-          'abrev' => $DB_ROW['item_abrev'],
+          'abbr'  => $DB_ROW['item_abbr'],
           'coef'  => $DB_ROW['item_coef'],
           'cart'  => $DB_ROW['item_cart'],
           'lien'  => $DB_ROW['item_lien'],
@@ -186,15 +173,7 @@ class ServeurCommunautaire
             {
               foreach($tab_item[$domaine_id][$theme_id] as $item_id => $tab_item_info)
               {
-                $arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" ref="'.html($tab_item_info['ref']).'" nom="'.html($tab_item_info['nom']).'" abrev="'.html($tab_item_info['abrev']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'">'."\r\n";
-                if(isset($tab_item_socle2016[$item_id]))
-                {
-                  foreach($tab_item_socle2016[$item_id] as $tab_socle_info)
-                  {
-                    $arbreXML .= "\t\t\t\t".'<socle cycle="'.$tab_socle_info['cycle'].'" composante="'.$tab_socle_info['composante'].'" />'."\r\n";
-                  }
-                }
-                $arbreXML .= "\t\t\t".'</item>'."\r\n";
+                $arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" ref="'.html($tab_item_info['ref']).'" nom="'.html($tab_item_info['nom']).'" abbr="'.html($tab_item_info['abbr']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'" />'."\r\n";
               }
             }
             $arbreXML .= "\t\t".'</theme>'."\r\n";

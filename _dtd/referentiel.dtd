@@ -28,18 +28,14 @@
  */
 -->
 <!--
- @see http://www.w3schools.com/xml/xml_dtd_elements.asp
  @see http://www.w3schools.com/xml/xml_dtd_attributes.asp
 -->
 
 <!ELEMENT arbre (domaine*)>
-<!ELEMENT domaine (theme*)>
-<!ELEMENT theme (item*)>
-<!ELEMENT item (socle*)>
-<!ELEMENT socle EMPTY>
-
 <!ATTLIST arbre id NMTOKEN #FIXED "SACoche">
+<!ELEMENT domaine (theme*)>
 <!ATTLIST domaine code NMTOKEN #REQUIRED ref CDATA #IMPLIED nom CDATA #REQUIRED>
+<!ELEMENT theme (item*)>
 <!ATTLIST theme ref CDATA #IMPLIED nom CDATA #REQUIRED>
-<!ATTLIST item ref CDATA #IMPLIED nom CDATA #REQUIRED abrev CDATA #IMPLIED socle NMTOKEN #REQUIRED coef NMTOKEN #REQUIRED cart NMTOKEN #REQUIRED lien CDATA #REQUIRED>
-<!ATTLIST socle cycle NMTOKEN #REQUIRED composante NMTOKEN #REQUIRED>
+<!ELEMENT item EMPTY>
+<!ATTLIST item ref CDATA #IMPLIED nom CDATA #REQUIRED abbr CDATA #IMPLIED socle NMTOKEN #REQUIRED coef NMTOKEN #REQUIRED cart NMTOKEN #REQUIRED lien CDATA #REQUIRED>

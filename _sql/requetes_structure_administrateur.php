@@ -1583,15 +1583,6 @@ public static function DB_corriger_anomalies()
   $DB_SQL.= 'WHERE user_id IS NULL ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Jointures utilisateur/abonnement notifications' );
-  // Jointures item/socle associées à un item supprimé ou un élément de socle inexistant ...
-  $DB_SQL = 'DELETE sacoche_jointure_referentiel_socle ';
-  $DB_SQL.= 'FROM sacoche_jointure_referentiel_socle ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_cycle USING (socle_cycle_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_composante_id) ';
-  $DB_SQL.= 'WHERE ( (sacoche_referentiel_item.item_id IS NULL) OR (sacoche_socle_cycle.socle_cycle_id IS NULL) OR (sacoche_socle_composante.socle_composante_id IS NULL) ) ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Jointures item/socle' );
   // Jointures devoir/item associées à un devoir ou un item supprimé...
   $DB_SQL = 'DELETE sacoche_jointure_devoir_item ';
   $DB_SQL.= 'FROM sacoche_jointure_devoir_item ';

@@ -35,8 +35,6 @@ if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NU
   echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_REFERENTIEL'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-
-list( $socle2016_html , $socle2016_js , $socle2016_select ) = HtmlArborescence::afficher_socle2016();
 ?>
 
 <ul class="puce">
@@ -104,7 +102,6 @@ else
           .'<option value="">&nbsp;</option>'
           .'<option value="modifier_coefficient">Modifier tous les coefficients des items</option>'
           .'<option value="modifier_panier">Modifier toutes les autorisations de demandes d\'évaluation</option>'
-          .'<option value="modifier_socle2016">Modifier toutes les liaisons au socle 2016 des items</option>'
           .'<option value="deplacer_domaine">Déplacer tout le domaine</option>'
           .'<option value="deplacer_theme">Déplacer tout le thème</option>'
         .'</select>'.NL;
@@ -144,12 +141,6 @@ else
           .'<option value="1">à "oui"</option>'
           .'<option value="0">à "non"</option>'
         .'</select>'.NL;
-    echo'<select id="select_action_groupe_modifier_socle_mode" name="select_action_groupe_modifier_socle_mode" class="hide">'
-          .'<option value="">&nbsp;</option>'
-          .'<option value="1">en y ajoutant</option>'
-          .'<option value="0">en y enlevant</option>'
-        .'</select>'.NL;
-    echo'<select id="select_action_groupe_modifier_socle_val" name="select_action_groupe_modifier_socle_val" class="hide">'.$socle2016_select.'</select>'.NL;
     echo'<select id="select_action_groupe_deplacer_id_initial" name="select_action_groupe_deplacer_id_initial" class="hide"></select>'.NL;
     echo'<select id="select_action_deplacer_explication" name="select_action_deplacer_explication" class="hide">'
           .'<option value="deplacer_domaine">vers le référentiel (d\'une autre matière)</option>'
@@ -195,34 +186,6 @@ else
     {
       echo'<span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span>'.NL;
     }
-    ?>
-  </form>
-</div>
-
-<div id="zone_socle2016_composante" class="arbre_dynamique hide">
-  <h2>Relation au socle 2016</h2>
-  <div class="travaux">Interface en prévision de la réforme entrant en vigueur en septembre 2016.</div>
-  <div class="astuce">
-    <div class="fluo">
-      On peut ici relier ses items aux composantes du nouveau socle.<br />
-      Nouveauté : on peut relier un même item disciplinaire à plusieurs composantes du socle.<br />
-      Ces affectations sont d'ores et déjà conservées lors du partage ou de la récupération d'un référentiel.<br />
-      Les liaisons à l'ancien socle seront supprimées lors d'une mise à jour au courant de l'été 2016.
-    </div>
-  </div>
-  <form action="#" method="post">
-    <p>
-      <label class="tab">Item disciplinaire :</label><span class="f_nom i"></span><br />
-      <label class="tab">Socle 2016 :</label>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>).<br />
-      <span class="tab"></span><button id="choisir_socle2016_valider" type="button" class="valider">Valider le choix effectué.</button> <button id="choisir_socle2016_annuler" type="button" class="annuler">Annuler.</button>
-    </p>
-    <p>
-      <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__documents_officiels__socle2016">DOC : Contenu des composantes du socle.</a></span>
-    </p>
-    <?php
-    // Affichage de la liste des composantes du socle
-    echo $socle2016_html;
-    Layout::add( 'js_inline_before' , $socle2016_js );
     ?>
   </form>
 </div>

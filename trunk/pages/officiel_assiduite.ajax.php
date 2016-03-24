@@ -374,10 +374,10 @@ if( in_array($action,array('traitement_import_sconet','traitement_import_siecle'
 if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
 {
   // liste des élèves
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $groupe_id , 'alpha' /*eleves_ordre*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 2 /*actuels_et_anciens*/ , 'classe' , $groupe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_nom,user_prenom' /*champs*/ , $periode_id );
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
+    Json::end( FALSE , 'Aucun élève évalué trouvé dans ce regroupement !' );
   }
   $tab_eleves = array();
   foreach($DB_TAB as $DB_ROW)

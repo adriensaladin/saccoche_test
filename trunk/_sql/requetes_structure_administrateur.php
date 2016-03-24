@@ -1026,6 +1026,7 @@ public static function DB_supprimer_referentiels_niveau($niveau_id)
 /**
  * Supprimer les devoirs sans les saisies associées (utilisé uniquement dans le cadre d'un nettoyage annuel ; les groupes de types 'besoin' et 'eval' sont supprimés dans un second temps)
  *
+ * @param void
  * @return void
  */
 public static function DB_supprimer_devoirs_sans_saisies()
@@ -1042,6 +1043,7 @@ public static function DB_supprimer_devoirs_sans_saisies()
 /**
  * Supprimer les reliquats de marqueurs d'évaluations dans les devoirs (utilisé uniquement dans le cadre d'un nettoyage annuel)
  *
+ * @param void
  * @return void
  */
 public static function DB_supprimer_saisies_marqueurs()
@@ -1049,6 +1051,24 @@ public static function DB_supprimer_saisies_marqueurs()
   $DB_SQL = 'DELETE FROM sacoche_saisie ';
   $DB_SQL.= 'WHERE saisie_note="PA" ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * Supprimer les reliquats de marqueurs d'évaluations dans les devoirs (utilisé uniquement dans le cadre d'un nettoyage annuel)
+ *
+ * @param int    $user_id
+ * @param string $sortie_date_mysql
+ * @return void
+ */
+public static function DB_supprimer_user_saisies_absences_apres_sortie( $user_id , $sortie_date_mysql )
+{
+  $DB_SQL = 'DELETE FROM sacoche_saisie ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND saisie_date>=:saisie_date AND saisie_note IN ("","AB","DI","NE","NF","NN","NR","PA") ';
+  $DB_VAR = array(
+    ':eleve_id'    =>$user_id,
+    ':saisie_date' =>$sortie_date_mysql,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

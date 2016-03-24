@@ -110,7 +110,7 @@ public static function DB_recuperer_table_structure($table_nom)
  * @param int    $limit_nombre
  * @return array
  */
-public static function DB_recuperer_table_donnees($table_nom,$limit_depart,$limit_nombre)
+public static function DB_recuperer_table_donnees( $table_nom , $limit_depart , $limit_nombre )
 {
   $DB_SQL = 'SELECT * ';
   $DB_SQL.= 'FROM '.$table_nom.' ';
@@ -153,7 +153,7 @@ public static function DB_recuperer_version_MySQL()
  * @param int    $periode_id   id de la période
  * @return array
  */
-public static function DB_recuperer_dates_periode($groupe_id,$periode_id)
+public static function DB_recuperer_dates_periode( $groupe_id , $periode_id )
 {
   $DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin ';
   $DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
@@ -178,7 +178,7 @@ public static function DB_recuperer_dates_periode($groupe_id,$periode_id)
  * @param bool $socle_nom    avec ou pas le nom des items du socle associés
  * @return array
  */
-public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id,$only_socle,$only_item,$socle_nom)
+public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $niveau_id , $only_socle , $only_item , $socle_nom )
 {
   $select_socle_nom  = ($socle_nom)   ? 'entree_id,entree_nom ' : 'entree_id ' ;
   $join_user_matiere = ($prof_id)     ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
@@ -222,7 +222,7 @@ public static function DB_recuperer_arborescence($prof_id,$matiere_id,$niveau_id
  * @param int  $niveau_id
  * @return array
  */
-public static function DB_OPT_arborescence($matiere_id,$niveau_id)
+public static function DB_OPT_arborescence( $matiere_id , $niveau_id )
 {
   $longueur_max = 125;
   $DB_SQL = 'SELECT item_id AS valeur, item_nom AS texte, CONCAT(domaine_id,"_",theme_id) AS optgroup, CONCAT(domaine_nom," || ",theme_nom) AS optgroup_info ';
@@ -389,21 +389,22 @@ public static function DB_lister_identite_coordonnateurs_par_matiere()
  * lister_users_regroupement
  *
  * @param string $profil_type   eleve | parent | professeur | personnel | directeur | administrateur
- * @param int    $statut        1 pour actuel, 0 pour ancien
+ * @param int    $statut        1 pour actuels, 0 pour anciens, 2 pour tout le monde
  * @param string $groupe_type   all | sdf | niveau | classe | groupe | besoin
  * @param int    $groupe_id     id du niveau ou de la classe ou du groupe
  * @param string $eleves_ordre  valeur parmi [alpha] [classe]
  * @param string $champs        par défaut user_id,user_nom,user_prenom
+ * @param int    $periode_id    id de la période dans le cas où on récupère tous les élèves ayant une évaluation sur la période
  * @return array
  */
-public static function DB_lister_users_regroupement($profil_type,$statut,$groupe_type,$groupe_id,$eleves_ordre,$champs='user_id,user_nom,user_prenom')
+public static function DB_lister_users_regroupement( $profil_type , $statut , $groupe_type , $groupe_id , $eleves_ordre , $champs='user_id,user_nom,user_prenom' , $periode_id=NULL )
 {
   $as      = ($profil_type!='parent') ? '' : ' AS enfant' ;
   $prefixe = ($profil_type!='parent') ? 'sacoche_user.' : 'enfant.' ;
-  $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
+  $test_date_sortie = ($statut==1) ? 'AND '.$prefixe.'user_sortie_date>NOW()' : ( ($statut==0) ? 'AND '.$prefixe.'user_sortie_date<NOW()' : '' ) ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
   $from  = 'FROM sacoche_user'.$as.' ' ; // Peut être modifié ensuite (requête optimisée si on commence par une autre table)
   $ljoin = '';
-  $where = 'WHERE sacoche_user_profil.user_profil_type=:profil_type AND '.$prefixe.$test_date_sortie.' ';
+  $where = 'WHERE sacoche_user_profil.user_profil_type=:profil_type '.$test_date_sortie.' ';
   $group = ($profil_type!='parent') ? 'GROUP BY user_id ' : 'GROUP BY parent.user_id ' ;
   $order = 'ORDER BY '.$prefixe.'user_nom ASC, '.$prefixe.'user_prenom ASC'; // Peut être modifié ensuite (si besoin de tri des élèves par classe d'origine)
   if(in_array($profil_type,array('directeur','administrateur')))
@@ -502,6 +503,18 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
         }
         break;
     }
+    if( ($statut==2) && ($profil_type=='eleve') && in_array($groupe_type,array('classe','groupe')) && $periode_id )
+    {
+      // On restreint aux élèves ayant été évalués !
+      $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
+      if(!empty($DB_ROW))
+      {
+        $date_mysql_debut = $DB_ROW['jointure_date_debut'];
+        $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
+        $ljoin .= 'LEFT JOIN sacoche_saisie ON sacoche_user.user_id=sacoche_saisie.eleve_id ';
+        $where .= 'AND saisie_date>="'.$date_mysql_debut.'" AND saisie_date<="'.$date_mysql_fin.'" ';
+      }
+    }
   }
   if($profil_type=='parent')
   {
@@ -528,15 +541,42 @@ public static function DB_lister_users_regroupement($profil_type,$statut,$groupe
  *
  * @param int   $classe_id
  * @param int   $groupe_id
+ * @param int   $statut        1 pour actuels, 0 pour anciens, 2 pour tout le monde
+ * @param int   $periode_id    id de la période dans le cas où on récupère tous les élèves ayant une évaluation sur la période
  * @return array
  */
-public static function DB_lister_eleves_classe_et_groupe($classe_id,$groupe_id)
+public static function DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_id , $statut , $periode_id=NULL )
 {
+  $join_saisie = $where_sortie_date =$where_saisie_date =  $groupby = '' ;
+  if($statut==1)
+  {
+    $where_sortie_date = 'AND user_sortie_date>NOW() '; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
+  }
+  else if($statut==0)
+  {
+    $where_sortie_date = 'AND user_sortie_date<NOW() '; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
+  }
+  else if( ($statut==2) && $periode_id )
+  {
+    // On restreint aux élèves ayant été évalués !
+    $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
+    if(!empty($DB_ROW))
+    {
+      $date_mysql_debut = $DB_ROW['jointure_date_debut'];
+      $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
+      $join_saisie = 'LEFT JOIN sacoche_saisie ON sacoche_user.user_id=sacoche_saisie.eleve_id ';
+      $where_saisie_date = 'AND saisie_date>="'.$date_mysql_debut.'" AND saisie_date<="'.$date_mysql_fin.'" ';
+      $groupby = 'GROUP BY user_id ';
+    }
+  }
   $DB_SQL = 'SELECT user_id, user_nom, user_prenom ';
   $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE groupe_id=:groupe AND eleve_classe_id=:classe AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
+  $DB_SQL.= $join_saisie;
+  $DB_SQL.= 'WHERE groupe_id=:groupe AND eleve_classe_id=:classe AND user_profil_type=:profil_type ';
+  $DB_SQL.= $where_sortie_date.$where_saisie_date;
+  $DB_SQL.= $groupby;
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
   $DB_VAR = array(
     ':groupe'      => $groupe_id,
@@ -602,7 +642,7 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  * @param string      $user_id_gepi    facultatif
  * @return int
  */
-public static function DB_ajouter_utilisateur($user_sconet_id,$user_sconet_elenoet,$user_reference,$user_profil_sigle,$user_genre,$user_nom,$user_prenom,$user_naissance_date,$user_email,$user_email_origine,$user_login,$password_crypte,$eleve_classe_id=0,$user_id_ent='',$user_id_gepi='')
+public static function DB_ajouter_utilisateur( $user_sconet_id , $user_sconet_elenoet , $user_reference , $user_profil_sigle , $user_genre , $user_nom , $user_prenom , $user_naissance_date , $user_email , $user_email_origine , $user_login , $password_crypte , $eleve_classe_id=0 , $user_id_ent='' , $user_id_gepi='' )
 {
   $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_email_origine, user_login, user_password,   eleve_classe_id, user_id_ent, user_id_gepi) ';
   $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_genre,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_email_origine,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
@@ -657,7 +697,7 @@ public static function DB_modifier_parametres($tab_parametres)
  * @param mixed  $champ_val
  * @return void
  */
-public static function DB_modifier_user_parametre($user_id,$champ_nom,$champ_val)
+public static function DB_modifier_user_parametre( $user_id , $champ_nom , $champ_val )
 {
   $user_email_origine = ($champ_val) ? 'user' : '' ;
   $set_email_origine  = ($champ_nom=='user_email') ? ', user_email_origine=:mail_origine ' : '' ;
@@ -680,7 +720,7 @@ public static function DB_modifier_user_parametre($user_id,$champ_nom,$champ_val
  * @param string $password_nouveau_crypte
  * @return bool   TRUE si ok | FALSE si le mot de passe actuel est incorrect.
  */
-public static function DB_modifier_mdp_utilisateur($user_id,$password_ancien_crypte,$password_nouveau_crypte)
+public static function DB_modifier_mdp_utilisateur( $user_id , $password_ancien_crypte , $password_nouveau_crypte )
 {
   // Tester si l'ancien mot de passe correspond à celui enregistré
   $DB_SQL = 'SELECT user_id ';
@@ -1373,7 +1413,7 @@ public static function DB_OPT_directeurs_etabl()
  * @param int    $groupe_id     facultatif ; id du niveau ou de la classe ou du groupe
  * @return array|string
  */
-public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
+public static function DB_OPT_professeurs_etabl( $groupe_type='all' , $groupe_id=0 )
 {
   $select = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
   $where  = 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() ';
@@ -1429,7 +1469,7 @@ public static function DB_OPT_professeurs_etabl($groupe_type='all',$groupe_id=0)
  * @param int    $groupe_id     id de la classe ou du groupe
  * @return array
  */
-public static function DB_OPT_profs_groupe($groupe_type,$groupe_id)
+public static function DB_OPT_profs_groupe( $groupe_type , $groupe_id )
 {
   $DB_SQL = 'SELECT prof.user_id AS valeur, prof.user_genre AS prof_genre, prof.user_nom AS prof_nom, prof.user_prenom AS prof_prenom ';
   switch ($groupe_type)
@@ -1496,7 +1536,7 @@ public static function DB_OPT_professeurs_directeurs_etabl($statut)
  * @param int    $groupe_id     facultatif ; id du niveau ou de la classe ou du groupe
  * @return array|string
  */
-public static function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_id=0)
+public static function DB_OPT_parents_etabl( $statut , $groupe_type='all' , $groupe_id=0 )
 {
   $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
   $select = 'SELECT parent.user_id AS valeur, CONCAT(parent.user_nom," ",parent.user_prenom," (",parent.user_login,")") AS texte ';
@@ -1558,7 +1598,7 @@ public static function DB_OPT_parents_etabl($statut,$groupe_type='all',$groupe_i
  * @param string $eleves_ordre   valeur parmi [alpha] [classe]
  * @return array|string
  */
-public static function DB_OPT_eleves_regroupement($groupe_type,$groupe_id,$statut,$eleves_ordre)
+public static function DB_OPT_eleves_regroupement( $groupe_type , $groupe_id , $statut , $eleves_ordre )
 {
   $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
   if($_SESSION['USER_PROFIL_TYPE']=='parent')

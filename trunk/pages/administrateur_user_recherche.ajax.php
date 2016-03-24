@@ -194,6 +194,11 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
     ':sortie_date' => $sortie_date_mysql,
   );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
+  // En cas de sortie d'un élève, retirer les notes AB etc ultérieures à cette date de sortie, afin d'éviter des bulletins totalement vides
+  if( ($profil=='ELV') && !$box_sortie_date )
+  {
+    DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_user_saisies_absences_apres_sortie( $id , $sortie_date_mysql );
+  }
   // Mettre à jour aussi éventuellement la session
   if($id==$_SESSION['USER_ID'])
   {

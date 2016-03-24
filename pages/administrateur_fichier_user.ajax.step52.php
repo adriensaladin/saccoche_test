@@ -70,9 +70,15 @@ if(count($tab_del))
   {
     if( isset($tab_memo_analyse['retirer'][$id_base]) )
     {
+      $sortie_date_mysql = $tab_memo_analyse['retirer'][$id_base];
       // Mettre à jour l'enregistrement
-      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':sortie_date'=>$tab_memo_analyse['retirer'][$id_base]) );
+      DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_base , array(':sortie_date'=>$sortie_date_mysql) );
       $nb_del++;
+      // En cas de sortie d'un élève, retirer les notes AB etc ultérieures à cette date de sortie, afin d'éviter des bulletins totalement vides
+      if($profil_type=='eleve')
+      {
+        DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_user_saisies_absences_apres_sortie( $id_base , $sortie_date_mysql );
+      }
     }
   }
 }

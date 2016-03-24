@@ -308,11 +308,6 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['enfant'][$genre]) &&
     ':sortie_date' => $sortie_date_mysql,
   );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
-  // En cas de sortie d'un élève, retirer les notes AB etc ultérieures à cette date de sortie, afin d'éviter des bulletins totalement vides
-  if(!$box_sortie_date)
-  {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_user_saisies_absences_apres_sortie( $id , $sortie_date_mysql );
-  }
   // Afficher le retour
   $checked = ($check) ? ' checked' : '' ;
   Json::add_str('<td class="nu"><input type="checkbox" name="f_ids" value="'.$id.'"'.$checked.' /></td>');

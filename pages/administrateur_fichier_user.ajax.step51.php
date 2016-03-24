@@ -296,10 +296,9 @@ Json::add_str(    '<tr><th colspan="2">Utilisateurs à ajouter (absents de la ba
 Json::add_str(    $lignes_ajouter);
 Json::add_str(  '</tbody>'.NL);
 // Cas [3] et [7]
-$texte_explication  = ($import_profil=='eleve') ? ' ou sans classe affectée' : ( ($import_profil=='parent') ? ' ou sans enfant actuel' : '' ) ;
-$lien_documentation = ($import_profil=='eleve') ? ' <br /><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_departs#toggle_eleves_sortants">DOC : Cas d\'un élève sortant en cours de période</a></span>' : '' ;
+$texte = ($import_profil=='eleve') ? ' ou sans classe affectée' : ( ($import_profil=='parent') ? ' ou sans enfant actuel' : '' ) ;
 Json::add_str(  '<tbody>'.NL);
-Json::add_str(    '<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte_explication.')<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q>'.$lien_documentation.'</th></tr>'.NL);
+Json::add_str(    '<tr><th colspan="2">Utilisateurs à retirer (absents du fichier'.$texte.')<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
 Json::add_str(    $lignes_retirer);
 Json::add_str(  '</tbody>'.NL);
 // Cas [5]

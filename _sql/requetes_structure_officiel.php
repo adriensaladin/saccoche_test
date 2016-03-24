@@ -362,10 +362,8 @@ public static function DB_lister_adresses_parents_for_enfants($listing_user_id)
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON enfant.user_id=sacoche_jointure_parent_eleve.eleve_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS parent ON sacoche_jointure_parent_eleve.parent_id=parent.user_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_parent_adresse USING (parent_id) ';
-  // Pas de restriction sur parent.user_sortie_date car on édite aussi des bulletins à des élèves sortis en cours de période
-  // A priori un responsable retiré car n'ayant plus de lien avec l'enfant a non seulement une date de sortie mais aussi sa jointure sacoche_jointure_parent_eleve retirée donc il n'est pas censé être récupéré ici
-  $DB_SQL.= 'WHERE enfant.user_id IN ('.$listing_user_id.') ';
-  $DB_SQL.= 'ORDER BY eleve_id ASC, parent.user_sortie_date DESC, resp_legal_num ASC '; // On ne gardera ensuite que les 2 premiers résultats par enfant
+  $DB_SQL.= 'WHERE enfant.user_id IN ('.$listing_user_id.') AND parent.user_sortie_date>NOW() ';
+  $DB_SQL.= 'ORDER BY eleve_id ASC, resp_legal_num ASC ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL, TRUE);
 }
 

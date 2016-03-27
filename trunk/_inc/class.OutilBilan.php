@@ -35,16 +35,14 @@ class OutilBilan
   /**
    * Déterminer l'état d'acquisition d'un item au vu du score transmis.
    * 
-   * @param int   $score
-   * @param array $tab_acquis_seuil   facultatif (par défaut les valeurs en session, sauf pour une simulation)
+   * @param int    $score
+   * @param array  $tab_acquis_seuil   facultatif (par défaut les valeurs en session, sauf pour une simulation)
+   * @param array  $SESSION_ACQUIS     pour surcharger une éventuelle valeur de session via l'impression d'une archive
    * @return int
    */
-  public static function determiner_etat_acquisition( $score , $tab_acquis_seuil=NULL )
+  public static function determiner_etat_acquisition( $score , $tab_acquis_seuil=NULL , $SESSION_ACQUIS=NULL )
   {
-    if(is_null($tab_acquis_seuil))
-    {
-      $tab_acquis_seuil = $_SESSION['ACQUIS'];
-    }
+    $tab_acquis_seuil = (is_null($tab_acquis_seuil)) ? ( ($SESSION_ACQUIS==NULL) ? $_SESSION['ACQUIS'] : $SESSION_ACQUIS ) : $tab_acquis_seuil ;
     $score = min($score,100);
     foreach( $tab_acquis_seuil as $acquis_id => $tab_acquis_info )
     {
@@ -59,17 +57,19 @@ class OutilBilan
    * Tester si l'acquisition d'un item correspond à l'attente au vu du score transmis.
    * 
    * @param int    $score
-   * @param string $etat_attendu   'acquis' | 'non_acquis'
+   * @param string $etat_attendu     'acquis' | 'non_acquis'
+   * @param array  $SESSION_ACQUIS   pour surcharger une éventuelle valeur de session via l'impression d'une archive
    * @return bool
    */
-  public static function tester_acquisition( $score , $etat_attendu )
+  public static function tester_acquisition( $score , $etat_attendu , $SESSION_ACQUIS=NULL )
   {
     if($score === FALSE)
     {
       return FALSE;
     }
     $score = min($score,100);
-    foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+    $SESSION_ACQUIS = ($SESSION_ACQUIS==NULL) ? $_SESSION['ACQUIS'] : $SESSION_ACQUIS ;
+    foreach( $SESSION_ACQUIS as $acquis_id => $tab_acquis_info )
     {
       if( ($score<=$tab_acquis_info['SEUIL_MAX']) && ($score>=$tab_acquis_info['SEUIL_MIN']) )
       {
@@ -81,16 +81,18 @@ class OutilBilan
   /**
    * Compter le nb d'états d'acquisition de chaque catégorie à partir d'un tableau de scores transmis.
    * 
-   * @param array $tab_score
+   * @param array  $tab_score
+   * @param array  $SESSION_ACQUIS   pour surcharger une éventuelle valeur de session via l'impression d'une archive
    * @return array
    */
-  public static function compter_nombre_acquisitions_par_etat( $tab_score )
+  public static function compter_nombre_acquisitions_par_etat( $tab_score , $SESSION_ACQUIS=NULL )
   {
-    $tab_result = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 );
+    $SESSION_ACQUIS = ($SESSION_ACQUIS==NULL) ? $_SESSION['ACQUIS'] : $SESSION_ACQUIS ;
+    $tab_result = array_fill_keys( array_keys($SESSION_ACQUIS) , 0 );
     foreach( $tab_score as $score )
     {
       $score = min($score,100);
-      foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+      foreach( $SESSION_ACQUIS as $acquis_id => $tab_acquis_info )
       {
         if( ($score<=$tab_acquis_info['SEUIL_MAX']) && ($score>=$tab_acquis_info['SEUIL_MIN']) )
         {
@@ -105,14 +107,16 @@ class OutilBilan
   /**
    * Calculer le pourcentage d'acquisition des items à partir de l'état d'acquisition de chacun d'eux 
    * 
-   * @param array $tab_acquis
-   * @param int   $nb_items
+   * @param array  $tab_acquis
+   * @param int    $nb_items
+   * @param array  $SESSION_ACQUIS   pour surcharger une éventuelle valeur de session via l'impression d'une archive
    * @return int
    */
-  public static function calculer_pourcentage_acquisition_items( $tab_acquis , $nb_items )
+  public static function calculer_pourcentage_acquisition_items( $tab_acquis , $nb_items , $SESSION_ACQUIS=NULL )
   {
     $total = 0;
-    foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+    $SESSION_ACQUIS = ($SESSION_ACQUIS==NULL) ? $_SESSION['ACQUIS'] : $SESSION_ACQUIS ;
+    foreach( $SESSION_ACQUIS as $acquis_id => $tab_acquis_info )
     {
       $acquis_nb = $tab_acquis[$acquis_id];
       $total += $acquis_nb * $tab_acquis_info['VALEUR'] ;
@@ -123,13 +127,15 @@ class OutilBilan
   /**
    * Afficher le nb d'états d'acquisition de chaque catégorie à partir du nombre d'items acquis de chaque catégorie.
    * 
-   * @param array $tab_acquis
+   * @param array  $tab_acquis
+   * @param array  $SESSION_ACQUIS   pour surcharger une éventuelle valeur de session via l'impression d'une archive
    * @return string
    */
-  public static function afficher_nombre_acquisitions_par_etat( $tab_acquis )
+  public static function afficher_nombre_acquisitions_par_etat( $tab_acquis , $SESSION_ACQUIS=NULL )
   {
     $tab_texte = array();
-    foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+    $SESSION_ACQUIS = ($SESSION_ACQUIS==NULL) ? $_SESSION['ACQUIS'] : $SESSION_ACQUIS ;
+    foreach( $SESSION_ACQUIS as $acquis_id => $tab_acquis_info )
     {
       $tab_texte[] = $tab_acquis[$acquis_id].$tab_acquis_info['SIGLE'];
     }
@@ -139,6 +145,8 @@ class OutilBilan
 
   /**
    * Calculer le score d'un item, à partir des notes transmises et des paramètres de calcul.
+   * 
+   * N'est pas appelé depuis une classe PDF donc pas besoin de surcharge de $_SESSION['NOTE']
    * 
    * @param array  $tab_devoirs      $tab_devoirs[$i]['note'] = note
    * @param string $calcul_methode   'geometrique' / 'arithmetique' / 'classique' / 'moyenne' / 'bestof'

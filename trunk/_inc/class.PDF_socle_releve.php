@@ -85,7 +85,7 @@ class PDF_socle_releve extends PDF
           list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $eleve_genre , $date_naissance ) = $tab_infos_entete;
           $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
           // Bloc adresse en positionnement contraint
-          if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
+          if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
           {
             list( $bloc_droite_hauteur , $bloc_gauche_largeur_restante ) = $this->officiel_bloc_adresse_position_contrainte_et_pliures($tab_adresse);
             $this->SetXY( $this->marge_gauche , $this->marge_haut );
@@ -94,8 +94,8 @@ class PDF_socle_releve extends PDF
           $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : 80 ;
           $bloc_etabl_hauteur = $this->officiel_bloc_etablissement( $tab_etabl_coords , $tab_etabl_logo , $bloc_etabl_largeur );
           // Bloc titres
-          $alerte_archive = (($tab_adresse==='archive')&&($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
-          if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
+          $alerte_archive = (($tab_adresse==='archive')&&($this->SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
+          if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
           {
             // En dessous du bloc établissement
             $bloc_titre_largeur = $bloc_etabl_largeur ;
@@ -115,7 +115,7 @@ class PDF_socle_releve extends PDF
           // Date de naissance + Tag date heure initiales (sous le bloc titres dans toutes les situations)
           $this->officiel_ligne_tag( $eleve_genre , $date_naissance , $eleve_INE , $tag_date_heure_initiales , $bloc_titre_largeur );
           // Bloc adresse en positionnement libre
-          if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
+          if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
           {
           $bloc_adresse_largeur = $bloc_titre_largeur - 10; // Pour avoir un petit décalage par rapport au bloc titre
             $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_adresse_largeur , $this->marge_haut+$bloc_titre_hauteur+4 );
@@ -210,8 +210,8 @@ class PDF_socle_releve extends PDF
       }
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
       $this->SetXY( $this->page_largeur-$this->marge_droite-50 , max($this->marge_haut,$this->GetY()-2*$this->cases_hauteur) ); // Soit c'est une nouvelle page, soit il ne faut pas se mettre en haut de la page
-      $this->Cell( 50 , $this->cases_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
-      $this->Cell( 50 , $this->cases_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom)   , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+      $this->Cell( 50 , $this->cases_hauteur , To::pdf($this->SESSION['ETABLISSEMENT_DENOMINATION']) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+      $this->Cell( 50 , $this->cases_hauteur , To::pdf($this->eleve_nom.' '.$this->eleve_prenom)     , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     }
   }
 
@@ -271,7 +271,7 @@ class PDF_socle_releve extends PDF
   public function appreciation_rubrique($tab_saisie)
   {
     $this->SetXY( $this->marge_gauche + $this->retrait_pourcentage , $this->GetY() );
-    $this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $this->item_largeur , $this->cases_hauteur , 'socle' , $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_LONGUEUR'] );
+    $this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $this->item_largeur , $this->cases_hauteur , 'socle' );
   }
 
   public function appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_pp_et_message_et_legende )

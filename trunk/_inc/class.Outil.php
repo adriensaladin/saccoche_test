@@ -249,7 +249,7 @@ class Outil
    * @param int    $matiere_coord_or_groupe_pp_connu   si le droit comporte une restriction aux coordonnateurs matières | professeurs principaux, on peut déja connaitre et transmettre l'info (soit pour au moins une matière | classe, soit pour une matière | classe donnée)
    * @param int    $matiere_id_or_groupe_id_a_tester   si le droit comporte une restriction aux coordonnateurs matières | professeurs principaux, et si $matiere_coord_or_groupe_pp_connu n'est pas transmis, on peut chercher si le droit est bon soit pour une matière | classe donnée, soit pour au moins une matière | classe
    * @param string $forcer_profil_sigle                pour forcer à tester un profil donné au lieu du profil de l'utilisateur
-   * @param string $forcer_profil_type                pour forcer à tester un profil donné au lieu du profil de l'utilisateur
+   * @param string $forcer_profil_type                 pour forcer à tester un profil donné au lieu du profil de l'utilisateur
    * @return bool
    */
   public static function test_user_droit_specifique( $listing_droits_sigles , $matiere_coord_or_groupe_pp_connu=NULL , $matiere_id_or_groupe_id_a_tester=0 , $forcer_profil_sigle=NULL , $forcer_profil_type=NULL )
@@ -274,7 +274,7 @@ class Outil
   }
 
   /**
-   * Tester si on a un droit d'accès spécifique
+   * Afficher les profils ayant un droit d'accès spécifique
    *
    * @param string $listing_droits_sigles
    * @param string $format   "li" | "br"

@@ -32,6 +32,8 @@ class FileSystem
   public static $file_upload_name = '';
   // Nom du fichier uploadé enregistré
   public static $file_saved_name = '';
+  // Compter le nombre de fichiers supprimés lors d'un nettoyage automatique
+  private static $nb_suppression = 0;
 
   // Tableau avec la liste des extensions interdites classiques
   public static $tab_extensions_interdites = array(
@@ -304,7 +306,7 @@ class FileSystem
   {
     if( (!$verif_exist) || is_file($fichier) )
     {
-      @unlink($fichier); // @ car dans de rares cas le fichier est simultanément supprimé par un autre appel à effacer_fichiers_temporaires()
+      FileSystem::$nb_suppression += @unlink($fichier); // @ car dans de rares cas le fichier est simultanément supprimé par un autre appel à effacer_fichiers_temporaires()
     }
   }
 
@@ -332,7 +334,7 @@ class FileSystem
           FileSystem::supprimer_fichier($chemin_contenu);
         }
       }
-      rmdir($dossier);
+      FileSystem::$nb_suppression += rmdir($dossier);
     }
   }
 
@@ -346,7 +348,7 @@ class FileSystem
    * @param bool     $calc_md5           TRUE par défaut, FALSE si le fichier est son MD5
    * @return void
    */
-  public static function analyser_dossier($dossier,$longueur_prefixe,$indice,$with_first_dir=FALSE,$calc_md5=TRUE)
+  public static function analyser_dossier( $dossier , $longueur_prefixe , $indice , $with_first_dir=FALSE , $calc_md5=TRUE )
   {
     $tab_contenu = FileSystem::lister_contenu_dossier_sources_publiques($dossier);
     $ds = (substr($dossier,-1)==DS) ? '' : DS ;
@@ -355,7 +357,7 @@ class FileSystem
       $chemin_contenu = $dossier.$ds.$contenu;
       if(is_dir($chemin_contenu))
       {
-        FileSystem::analyser_dossier($chemin_contenu,$longueur_prefixe,$indice,$with_first_dir,$calc_md5);
+        FileSystem::analyser_dossier( $chemin_contenu , $longueur_prefixe , $indice , $with_first_dir , $calc_md5 );
       }
       else
       {
@@ -376,9 +378,9 @@ class FileSystem
    * @param string   $fichier_chemin_final
    * @return bool
    */
-  public static function deplacer_fichier($fichier_chemin_origine,$fichier_chemin_final)
+  public static function deplacer_fichier( $fichier_chemin_origine , $fichier_chemin_final )
   {
-    return rename($fichier_chemin_origine , $fichier_chemin_final);
+    return rename( $fichier_chemin_origine , $fichier_chemin_final );
   }
 
   /**
@@ -392,7 +394,7 @@ class FileSystem
   public static function ecrire_fichier( $fichier_chemin , $fichier_contenu , $file_append=0 )
   {
     @umask(FileSystem::systeme_umask());
-    $test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu,$file_append);
+    $test_ecriture = @file_put_contents( $fichier_chemin , $fichier_contenu , $file_append );
     if($test_ecriture===FALSE)
     {
       exit('Problème lors de l\'écriture du fichier '.FileSystem::fin_chemin($fichier_chemin).' !');
@@ -407,7 +409,7 @@ class FileSystem
    * @param string   $objet_PDF
    * @return TRUE
    */
-  public static function ecrire_sortie_PDF($fichier_chemin,$objet_PDF)
+  public static function ecrire_sortie_PDF( $fichier_chemin , $objet_PDF )
   {
     @umask(FileSystem::systeme_umask());
     $objet_PDF->Output('F',$fichier_chemin);
@@ -421,10 +423,10 @@ class FileSystem
    * @param string   $fichier_contenu
    * @return bool
    */
-  public static function ecrire_fichier_si_possible($fichier_chemin,$fichier_contenu)
+  public static function ecrire_fichier_si_possible( $fichier_chemin , $fichier_contenu )
   {
     @umask(FileSystem::systeme_umask());
-    $test_ecriture = @file_put_contents($fichier_chemin,$fichier_contenu);
+    $test_ecriture = @file_put_contents( $fichier_chemin , $fichier_contenu );
     return ($test_ecriture===FALSE) ? FALSE : TRUE ;
   }
 
@@ -435,7 +437,7 @@ class FileSystem
    * @param bool     $obligatoire      Facultatif, TRUE par défaut.
    * @return bool
    */
-  public static function ecrire_fichier_index($dossier_chemin,$obligatoire=TRUE)
+  public static function ecrire_fichier_index( $dossier_chemin , $obligatoire=TRUE )
   {
     $ds = (substr($dossier_chemin,-1)==DS) ? '' : DS ;
     $fichier_chemin  = $dossier_chemin.$ds.'index.htm';
@@ -565,7 +567,7 @@ class FileSystem
       $fichier_contenu.= 'define('.$quote.$constante_nom.$quote.$espaces.','.var_export((string)$constante_valeur,TRUE).');'.NL;
     }
     $fichier_contenu.= '?>'.NL;
-    FileSystem::ecrire_fichier(CHEMIN_FICHIER_CONFIG_INSTALL,$fichier_contenu);
+    FileSystem::ecrire_fichier( CHEMIN_FICHIER_CONFIG_INSTALL , $fichier_contenu );
     return TRUE;
   }
 
@@ -579,7 +581,7 @@ class FileSystem
    * @param string $BD_pass
    * @return void
    */
-  public static function fabriquer_fichier_connexion_base($base_id,$BD_host,$BD_port,$BD_name,$BD_user,$BD_pass)
+  public static function fabriquer_fichier_connexion_base( $base_id , $BD_host , $BD_port , $BD_name , $BD_user , $BD_pass )
   {
     if( (HEBERGEUR_INSTALLATION=='multi-structures') && ($base_id>0) )
     {
@@ -607,7 +609,7 @@ class FileSystem
     $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_USER\',\''.$BD_user.'\');  // Nom d\'utilisateur'.NL;
     $fichier_contenu .= 'define(\'SACOCHE_'.$prefixe.'_BD_PASS\',\''.$BD_pass.'\');  // Mot de passe'.NL;
     $fichier_contenu .= '?>'.NL;
-    FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+    FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
   }
 
   /**
@@ -616,29 +618,36 @@ class FileSystem
    * @param string $fichier_nom
    * @param string $thead
    * @param string $tbody
+   * @param string $tfoot
    * @return void
    */
-  public static function fabriquer_fichier_rapport($fichier_nom,$thead,$tbody)
+  public static function fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody , $tfoot=NULL )
   {
     $fichier_chemin  = CHEMIN_DOSSIER_EXPORT.$fichier_nom;
     $fichier_contenu = '<!DOCTYPE html>'.NL;
     $fichier_contenu.= '<html lang="fr">'.NL;
     $fichier_contenu.=   '<head>'.NL;
     $fichier_contenu.=     '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.NL;
-    $fichier_contenu.=     '<style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style>'.NL;
+    $fichier_contenu.=     '<style type="text/css">body{font-family:monospace;font-size:8pt}table{border-collapse:collapse}thead,tfoot{background:#CCC;font-weight:bold;text-align:center}td{border:solid 1px black;padding:2px;white-space:nowrap}.v{color:green}.r{color:red}.b{color:blue}</style>'.NL;
     $fichier_contenu.=   '</head>'.NL;
     $fichier_contenu.=   '<body>'.NL;
     $fichier_contenu.=     '<table>'.NL;
     $fichier_contenu.=       '<thead>'.NL;
     $fichier_contenu.=         $thead.NL;
     $fichier_contenu.=       '</thead>'.NL;
+    if($tfoot)
+    {
+      $fichier_contenu.=     '<tfoot>'.NL;
+      $fichier_contenu.=       $tfoot.NL;
+      $fichier_contenu.=     '</tfoot>'.NL;
+    }
     $fichier_contenu.=       '<tbody>'.NL;
     $fichier_contenu.=         $tbody.NL;
     $fichier_contenu.=       '</tbody>'.NL;
     $fichier_contenu.=     '</table>'.NL;
     $fichier_contenu.=   '</body>'.NL;
     $fichier_contenu.= '</html>'.NL;
-    FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+    FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
   }
 
   /**
@@ -650,7 +659,7 @@ class FileSystem
    * @param string $partenaire_message
    * @return void
    */
-  public static function fabriquer_fichier_partenaire_message($partenaire_id,$partenaire_logo_actuel_filename,$partenaire_adresse_web,$partenaire_message)
+  public static function fabriquer_fichier_partenaire_message( $partenaire_id , $partenaire_logo_actuel_filename , $partenaire_adresse_web , $partenaire_message )
   {
     $fichier_chemin = CHEMIN_DOSSIER_PARTENARIAT.'info_'.$_SESSION['USER_ID'].'.php';
     $fichier_contenu  = '<?php'.NL;
@@ -659,7 +668,7 @@ class FileSystem
     $fichier_contenu .= '$partenaire_adresse_web          = "'.html($partenaire_adresse_web).'";'.NL;
     $fichier_contenu .= '$partenaire_message              = "'.html($partenaire_message).'";'.NL;
     $fichier_contenu .= '?>'.NL;
-    FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+    FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
   }
 
   /**
@@ -683,7 +692,7 @@ class FileSystem
     $clef = uniqid().md5('grain_de_poivre'.mt_rand());
     $fichier_chemin = CHEMIN_DOSSIER_LOGINPASS.$clef.'.txt';
     $fichier_contenu = serialize($tableau_retour_infos_user);
-    FileSystem::ecrire_fichier($fichier_chemin,$fichier_contenu);
+    FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
     return $clef;
   }
 
@@ -723,15 +732,13 @@ class FileSystem
   }
 
   /**
-   * Nettoyer les fichiers temporaires
-   * Fonction appeler lors d'une nouvelle connexion d'un utilisateur d'un établissement (pas mis en page d'accueil sinon c'est appelé trop souvent)
+   * Vérifier que des sous-dossiers ajoutés ultétieurement existent
    * 
-   * @param int       $BASE
+   * @param int    $BASE
    * @return void
    */
-  public static function nettoyer_fichiers_temporaires($BASE)
+  public static function verifier_existence_dossiers($BASE)
   {
-    // On verifie que certains sous-dossiers existent :
     $tab_sous_dossier = array(
       CHEMIN_DOSSIER_DEVOIR ,      // n'a été ajouté qu'en mars 2012,
       CHEMIN_DOSSIER_DEVOIR.$BASE.DS ,
@@ -746,21 +753,46 @@ class FileSystem
       if(!is_dir($sous_dossier))
       {
         FileSystem::creer_dossier($sous_dossier);
-        FileSystem::ecrire_fichier($sous_dossier.'index.htm','Circulez, il n\'y a rien à voir par ici !');
+        FileSystem::ecrire_fichier( $sous_dossier.'index.htm' , "Circulez, il n'y a rien à voir par ici !" );
       }
     }
+  }
+
+  /**
+   * Nettoyer les fichiers temporaires commun à tous les établissements
+   * Fonction appeler lors d'une nouvelle connexion d'un utilisateur d'un établissement (pas mis en page d'accueil sinon c'est appelé trop souvent)
+   * 
+   * @param void
+   * @return void
+   */
+  public static function nettoyer_fichiers_temporaires_commun()
+  {
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT    ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP      ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT    ,   1440,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 jour  + sous-dossiers temporaires d'un zip avec procédure interrompue
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP       , 219000     ); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
+  }
+
+  /**
+   * Nettoyer les fichiers temporaires d'un établissement
+   * Fonction appeler lors d'une nouvelle connexion d'un utilisateur d'un établissement (pas mis en page d'accueil sinon c'est appelé trop souvent)
+   * 
+   * @param int    $BASE
+   * @return int   nombre de fichiers ou dossiers supprimés
+   */
+  public static function nettoyer_fichiers_temporaires_etablissement($BASE)
+  {
     $nb_mois = (defined('FICHIER_DUREE_CONSERVATION')) ? FICHIER_DUREE_CONSERVATION : 12 ; // Une fois tous les devoirs ont été supprimés sans raison claire : nettoyage simultané avec une mise à jour ?
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS      ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT         ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP           ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT         ,   1440,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 jour  + sous-dossiers temporaires d'un zip avec procédure interrompue
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP            , 219000     ); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800     ); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000     ); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_SYMBOLE.$BASE  , 481800     ); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600     ); // Nettoyer ce dossier des fichiers antérieurs à  1 an
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE   ,  43800*$nb_mois); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
+    $duree = 43800*$nb_mois;
+    FileSystem::$nb_suppression = 0;
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_SYMBOLE.$BASE  , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à  1 an
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE   , $duree); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
+    return FileSystem::$nb_suppression;
   }
 
   /**
@@ -896,7 +928,7 @@ class FileSystem
    * @param bool     $use_ZipArchive   FALSE permet de nettoyer les noms des fichiers extraits : à préférer donc
    * @return int     code d'erreur (0 si RAS)
    */
-  public static function unzip($chemin_fichier_zip,$dossier_dezip,$use_ZipArchive)
+  public static function unzip( $chemin_fichier_zip , $dossier_dezip , $use_ZipArchive )
   {
     // Utiliser la classe ZipArchive http://fr.php.net/manual/fr/class.ziparchive.php (PHP 5 >= 5.2.0, PECL zip >= 1.1.0)
     if($use_ZipArchive)
@@ -1008,7 +1040,7 @@ class FileSystem
     $fichier_final_nom = ($fichier_final_nom) ? str_replace('.<EXT>','.'.$extension,$fichier_final_nom) : Clean::fichier($fichier_tmp_nom);
     if( ($extension!='zip') || ($filename_in_zip===NULL) )
     {
-      if(!move_uploaded_file($fichier_tmp_chemin,$fichier_final_chemin.$fichier_final_nom))
+      if(!move_uploaded_file( $fichier_tmp_chemin , $fichier_final_chemin.$fichier_final_nom ))
       {
         return 'Le fichier n\'a pas pu être enregistré sur le serveur.';
       }
@@ -1040,7 +1072,7 @@ class FileSystem
    * @param int    $decimals (facultatif)
    * @return string
    */
-  public static function afficher_fichier_taille($fichier_chemin, $decimals = 1)
+  public static function afficher_fichier_taille( $fichier_chemin , $decimals = 1 )
   {
     $bytes = filesize($fichier_chemin);
     $size_unit = ' KMGTP';

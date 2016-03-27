@@ -637,10 +637,6 @@ $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL_TYPE']=='profe
 if($type_individuel)
 {
   $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
-  // Pour un relevé officiel on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-  $forcer_profil_sigle = ($make_officiel) ? 'TUT'    : NULL ;
-  $forcer_profil_type  = ($make_officiel) ? 'parent' : NULL ;
-  Html::$afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
   if($make_html)
   {
     $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;
@@ -853,7 +849,7 @@ if($type_individuel)
                     // affichage du bilan de l'item
                     if($aff_etat_acquisition)
                     {
-                      if($make_html) { $releve_HTML_table_body .= Html::td_score( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 'score' , '' /*pourcent*/ , '' /*checkbox_val*/ ).'</tr>'.NL; }
+                      if($make_html) { $releve_HTML_table_body .= Html::td_score($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],'score','' /*pourcent*/ ,'' /*checkbox_val*/ ,$make_officiel).'</tr>'.NL; }
                       if($make_pdf)  { $releve_PDF->afficher_score_bilan( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 1 /*br*/ ); }
                     }
                     else
@@ -1267,7 +1263,7 @@ if($type_individuel)
               // affichage du bilan de l'item
               if($aff_etat_acquisition)
               {
-                if($make_html) { $releve_HTML_table_body .= Html::td_score( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 'score' , '' /*pourcent*/ , '' /*checkbox_val*/ ).'</tr>'.NL; }
+                if($make_html) { $releve_HTML_table_body .= Html::td_score($tab_score_eleve_item[$eleve_id][$matiere_id][$item_id],'score','' /*pourcent*/ ,'' /*checkbox_val*/ ,$make_officiel).'</tr>'.NL; }
                 if($make_pdf)  { $releve_PDF->afficher_score_bilan( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 1 /*br*/ ); }
               }
               else
@@ -1349,7 +1345,6 @@ if($type_individuel)
 
 if($type_synthese)
 {
-  Html::$afficher_score = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']);
   $releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
   $releve_HTML_synthese .= $affichage_direct ? '' : '<h1>Bilan '.$bilan_titre.'</h1>'.NL;
   $releve_HTML_synthese .= '<h2>'.html($matiere_et_groupe).'</h2>'.NL;
@@ -1361,8 +1356,8 @@ if($type_synthese)
   // On définit l'orientation la plus adaptée
   $orientation_auto = ( ( ($eleve_nb>$item_nb) && ($tableau_synthese_format=='eleve') ) || ( ($item_nb>$eleve_nb) && ($tableau_synthese_format=='item') ) ) ? 'portrait' : 'landscape' ;
   $releve_PDF = new PDF_item_tableau( $make_officiel , $orientation_auto , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , 'oui' /*legende*/ );
-  $releve_PDF->initialiser( $eleve_nb , $item_nb , $tableau_synthese_format );
-  $releve_PDF->entete( $bilan_titre , $matiere_et_groupe , $texte_periode );
+  $releve_PDF->initialiser($eleve_nb,$item_nb,$tableau_synthese_format);
+  $releve_PDF->entete($bilan_titre,$matiere_et_groupe,$texte_periode);
   // 1ère ligne
   $releve_PDF->ligne_tete_cellule_debut();
   $th = ($tableau_synthese_format=='eleve') ? 'Élève' : 'Item' ;
@@ -1418,7 +1413,7 @@ if($type_synthese)
       }
       $valeur1 = (isset($tab_moyenne_scores_eleve[$matiere_id][$eleve_id])) ? $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] : FALSE ;
       $valeur2 = (isset($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id])) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] : FALSE ;
-      $releve_PDF->ligne_corps_cellules_fin( $valeur1 , $valeur2 , FALSE , TRUE );
+      $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,FALSE,TRUE);
       $col_entete   = ($repeter_entete) ? $entete : '' ;
       $col_checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$eleve_id.'" /></td>' : '' ;
       $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$col_entete.$col_checkbox.'</tr>'.NL;
@@ -1443,7 +1438,7 @@ if($type_synthese)
         }
         $valeur1 = $tab_moyenne_scores_item[$item_id];
         $valeur2 = $tab_pourcentage_acquis_item[$item_id];
-        $releve_PDF->ligne_corps_cellules_fin( $valeur1 , $valeur2 , FALSE , TRUE );
+        $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,FALSE,TRUE);
         $col_entete   = ($repeter_entete) ? $entete : '' ;
         $col_checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_item[]" value="'.$item_id.'" /></td>' : '' ;
         $releve_HTML_table_body .= '<td class="nu">&nbsp;</td>'.Html::td_score($valeur1,$tableau_tri_mode,'%').Html::td_score($valeur2,$tableau_tri_mode,'%').$col_entete.$col_checkbox.'</tr>'.NL;
@@ -1466,7 +1461,7 @@ if($type_synthese)
         extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
         $valeur1 = $tab_moyenne_scores_item[$item_id];
         $valeur2 = $tab_pourcentage_acquis_item[$item_id];
-        $releve_PDF->ligne_corps_cellules_fin( $valeur1 , $valeur2 , TRUE , FALSE );
+        $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,TRUE,FALSE);
         $releve_HTML_table_foot1 .= Html::td_score($valeur1,'score','%');
         $releve_HTML_table_foot2 .= Html::td_score($valeur2,'score','%');
         $row_entete   .= ($repeter_entete) ? '<th class="hc" title="'.html(html($item_nom)).'"><img alt="'.html($item_abrev).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;item='.urlencode($item_abrev).'&amp;size=8" /></th>' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
@@ -1481,7 +1476,7 @@ if($type_synthese)
       extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_id_gepi
       $valeur1 = (isset($tab_moyenne_scores_eleve[$matiere_id][$eleve_id])) ? $tab_moyenne_scores_eleve[$matiere_id][$eleve_id] : FALSE ;
       $valeur2 = (isset($tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id])) ? $tab_pourcentage_acquis_eleve[$matiere_id][$eleve_id] : FALSE ;
-      $releve_PDF->ligne_corps_cellules_fin( $valeur1 , $valeur2 , TRUE , FALSE );
+      $releve_PDF->ligne_corps_cellules_fin($valeur1,$valeur2,TRUE,FALSE);
       $releve_HTML_table_foot1 .= Html::td_score($valeur1,'score','%');
       $releve_HTML_table_foot2 .= Html::td_score($valeur2,'score','%');
       $row_entete   .= ($repeter_entete) ? '<th class="hc"><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=8" /></th>' : '' ;
@@ -1490,7 +1485,7 @@ if($type_synthese)
   }
   // les deux dernières cases (moyenne des moyennes)
   $colspan  = ($tableau_synthese_format=='eleve') ? $item_nb : $eleve_nb ;
-  $releve_PDF->ligne_corps_cellules_fin( $moyenne_moyenne_scores , $moyenne_pourcentage_acquis , TRUE , TRUE );
+  $releve_PDF->ligne_corps_cellules_fin($moyenne_moyenne_scores,$moyenne_pourcentage_acquis,TRUE,TRUE);
   $releve_HTML_table_foot1 .= '<th class="nu">&nbsp;</th>'.Html::td_score($moyenne_moyenne_scores,'score','%').'<th class="nu">&nbsp;</th>'.$entete_vide.$checkbox_vide.'</tr>'.NL;
   $releve_HTML_table_foot2 .= '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.Html::td_score($moyenne_pourcentage_acquis,'score','%').$entete_vide.$checkbox_vide.'</tr>'.NL;
   $row_entete   .= ($repeter_entete)     ? '<th class="nu">&nbsp;</th><th class="nu">&nbsp;</th><th class="nu">&nbsp;</th>'.$entete_vide.$checkbox_vide.'</tr>'.NL : '' ;

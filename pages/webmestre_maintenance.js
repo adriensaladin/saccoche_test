@@ -340,9 +340,9 @@ $(document).ready
 // Etapes de maj des bases des établissements
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var step_maj = 1;
+    var step = 1;
 
-    function maj_bases_etabl_etape(step_maj)
+    function maj_bases_etape(step)
     {
       // Appel en ajax
       $.ajax
@@ -350,7 +350,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=maj_bases_etabl'+'&step_maj='+step_maj,
+          data : 'csrf='+CSRF+'&f_action=maj_bases_etabl'+'&step='+step,
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -365,9 +365,9 @@ $(document).ready
             }
             else if(responseJSON['value']=='continuer')
             {
-              step_maj++;
-              $('#ajax_maj_bases_etabl').removeAttr('class').addClass('loader').html('Mise à jour en cours : étape ' + step_maj + '...');
-              maj_bases_etabl_etape(step_maj);
+              step++;
+              $('#ajax_maj_bases_etabl').removeAttr('class').addClass('loader').html('Mise à jour en cours : étape ' + step + '...');
+              maj_bases_etape(step);
             }
             else
             {
@@ -386,9 +386,9 @@ $(document).ready
       function()
       {
         $('#bouton_maj_bases_etabl').prop('disabled',true);
-        step_maj = 1;
+        step = 1;
         $('#ajax_maj_bases_etabl').removeAttr('class').addClass('loader').html('Mise à jour en cours : initialisation...');
-        maj_bases_etabl_etape(step_maj);
+        maj_bases_etape(step);
       }
     );
 
@@ -398,73 +398,7 @@ $(document).ready
       '#a_reprise',
       function()
       {
-        maj_bases_etabl_etape(step_maj);
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Etapes de nettoyage des fichiers temporaires des établissements
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var step_clean = 1;
-
-    function clean_file_temp_etape(step_clean)
-    {
-      // Appel en ajax
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=clean_file_temp'+'&step_clean='+step_clean,
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_clean_file_temp').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus)+' <a id="a_reprise" href="#">Reprendre la procédure.</a>');
-          },
-          success : function(responseJSON)
-          {
-            initialiser_compteur();
-            if(responseJSON['statut']==false)
-            {
-              $('#ajax_clean_file_temp').removeAttr('class').addClass('alerte').html(responseJSON['value']+'<a id="a_reprise" href="#">Reprendre la procédure.</a>');
-            }
-            else if(responseJSON['value']=='continuer')
-            {
-              step_clean++;
-              $('#ajax_clean_file_temp').removeAttr('class').addClass('loader').html('Nettoyage en cours : étape ' + step_clean + '...');
-              clean_file_temp_etape(step_clean);
-            }
-            else
-            {
-              var adresse_rapport = responseJSON['value'];
-              $.fancybox( { 'href':adresse_rapport , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-              $('#ajax_clean_file_temp').removeAttr('class').addClass('valide').html('Nettoyage des fichiers terminé.');
-              $('#bouton_clean_file_temp').prop('disabled',false);
-            }
-          }
-        }
-      );
-    }
-
-    $('#bouton_clean_file_temp').click
-    (
-      function()
-      {
-        $('#bouton_clean_file_temp').prop('disabled',true);
-        step_clean = 1;
-        $('#ajax_clean_file_temp').removeAttr('class').addClass('loader').html('Nettoyage en cours : initialisation...');
-        clean_file_temp_etape(step_clean);
-      }
-    );
-
-    $('#ajax_clean_file_temp').on
-    (
-      'click',
-      '#a_reprise',
-      function()
-      {
-        clean_file_temp_etape(step_clean);
+        maj_bases_etape(step);
       }
     );
 

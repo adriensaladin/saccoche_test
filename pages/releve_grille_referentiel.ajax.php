@@ -548,8 +548,7 @@ if( $type_generique || $type_individuel )
   $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>'.$bilan_titre.'</h1>'.NL;
   $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode).'</h2>'.NL;
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
-  $ETABLISSEMENT_NOM = $_SESSION['ETABLISSEMENT']['DENOMINATION'];
-  $releve_PDF = new PDF_grille_referentiel( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $fond , $legende , $ETABLISSEMENT_NOM );
+  $releve_PDF = new PDF_grille_referentiel( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $fond , $legende );
   $releve_PDF->initialiser( $cases_nb , $cases_largeur , $lignes_nb , $longueur_ref_max , $colonne_bilan , $colonne_vide , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ , $pages_nb );
   $separation = (count($tab_eleve_infos)>1) ? '<hr />'.NL : '' ;
 

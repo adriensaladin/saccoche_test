@@ -416,34 +416,34 @@ if($action=='verif_file_appli_etape5')
 // Étape de mise à jour forcée des bases des établissements
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$step_maj = (isset($_POST['step_maj'])) ? Clean::entier($_POST['step_maj']) : 0 ; // Numéro de l'étape
+$step = (isset($_POST['step'])) ? Clean::entier($_POST['step']) : 0 ;  // Numéro de l'étape
 
-if( ($action=='maj_bases_etabl') && $step_maj )
+if( ($action=='maj_bases_etabl') && $step )
 {
   // 1. Liste des bases
-  if($step_maj==1)
+  if($step==1)
   {
     // Récupérer les ids des structures
-    $_SESSION['tmp']['maj_bases_etabl'] = array(
+    $_SESSION['tmp'] = array(
       'base_id' => array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() ),
       'rapport' => array(),
     );
     Json::end( TRUE , 'continuer' );
   }
   // n. Étape suivante
-  elseif(!empty($_SESSION['tmp']['maj_bases_etabl']['base_id']))
+  elseif(!empty($_SESSION['tmp']['base_id']))
   {
-    $base_id = current($_SESSION['tmp']['maj_bases_etabl']['base_id']);
+    $base_id = current($_SESSION['tmp']['base_id']);
     DBextra::charger_parametres_mysql_supplementaires($base_id);
     $version_base = DB_STRUCTURE_MAJ_BASE::DB_version_base();
-    if(empty($_SESSION['tmp']['maj_bases_etabl']['rapport'][$base_id]))
+    if(empty($_SESSION['tmp']['rapport'][$base_id]))
     {
-      $_SESSION['tmp']['maj_bases_etabl']['rapport'][$base_id] = $version_base;
+      $_SESSION['tmp']['rapport'][$base_id] = $version_base;
     }
     // base déjà à jour
-    if($_SESSION['tmp']['maj_bases_etabl']['rapport'][$base_id] == VERSION_BASE_STRUCTURE)
+    if($_SESSION['tmp']['rapport'][$base_id] == VERSION_BASE_STRUCTURE)
     {
-      array_shift($_SESSION['tmp']['maj_bases_etabl']['base_id']);
+      array_shift($_SESSION['tmp']['base_id']);
       Json::end( TRUE , 'continuer' );
     }
     // on lance la maj "classique"
@@ -465,7 +465,7 @@ if( ($action=='maj_bases_etabl') && $step_maj )
     {
       // Débloquer l'application
       LockAcces::debloquer_application('automate',$base_id);
-      array_shift($_SESSION['tmp']['maj_bases_etabl']['base_id']);
+      array_shift($_SESSION['tmp']['base_id']);
       Json::end( TRUE , 'continuer' );
     }
     elseif($maj_classique)
@@ -480,7 +480,7 @@ if( ($action=='maj_bases_etabl') && $step_maj )
       if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
       {
         LockAcces::debloquer_application('automate',$base_id);
-        array_shift($_SESSION['tmp']['maj_bases_etabl']['base_id']);
+        array_shift($_SESSION['tmp']['base_id']);
       }
       Json::end( TRUE , 'continuer' );
     }
@@ -491,67 +491,16 @@ if( ($action=='maj_bases_etabl') && $step_maj )
     // Rapport
     $thead = '<tr><td>Mise à jour forcée des bases - '.date('d/m/Y H:i:s').'</td></tr>';
     $tbody = '';
-    foreach($_SESSION['tmp']['maj_bases_etabl']['rapport'] as $base_id => $version_base)
+    foreach($_SESSION['tmp']['rapport'] as $base_id => $version_base)
     {
       $tbody .= ($version_base==VERSION_BASE_STRUCTURE) ? '<tr><td class="b">Base n°'.$base_id.' déjà à jour.</td></tr>' : '<tr><td class="v">Base n°'.$base_id.' mise à jour depuis la version '.$version_base.'.</td></tr>' ;
     }
     // Enregistrement du rapport
-    $fichier_rapport = 'rapport_maj_bases_etabl_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+    $fichier_rapport = 'rapport_maj_bases_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
     FileSystem::fabriquer_fichier_rapport( $fichier_rapport , $thead , $tbody );
     $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
     // retour
-    unset($_SESSION['tmp']['maj_bases_etabl']);
-    Json::end( TRUE , $fichier_chemin );
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape de nettoyage des fichiers temporaires des établissements
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$step_clean = (isset($_POST['step_clean'])) ? Clean::entier($_POST['step_clean']) : 0 ; // Numéro de l'étape
-
-if( ($action=='clean_file_temp') && $step_clean )
-{
-  // 1. Liste des bases
-  if($step_clean==1)
-  {
-    // Récupérer les ids des structures
-    $_SESSION['tmp']['clean_file_temp'] = array(
-      'base_id' => array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() ),
-      'rapport' => array(),
-    );
-    Json::end( TRUE , 'continuer' );
-  }
-  // n. Étape suivante
-  elseif(!empty($_SESSION['tmp']['clean_file_temp']['base_id']))
-  {
-    $base_id = current($_SESSION['tmp']['clean_file_temp']['base_id']);
-    $_SESSION['tmp']['clean_file_temp']['rapport'][$base_id] = FileSystem::nettoyer_fichiers_temporaires_etablissement($base_id);
-    array_shift($_SESSION['tmp']['clean_file_temp']['base_id']);
-    Json::end( TRUE , 'continuer' );
-  }
-  // n. Dernière étape
-  else
-  {
-    // Rapport
-    $thead = '<tr><td>Nettoyage forcé des fichiers temporaires - '.date('d/m/Y H:i:s').'</td></tr>';
-    $tbody = '';
-    $total = 0;
-    foreach($_SESSION['tmp']['clean_file_temp']['rapport'] as $base_id => $nb_suppression)
-    {
-      $total += $nb_suppression;
-      $s = ($nb_suppression>1) ? 's' : '' ;
-      $tbody .= ($nb_suppression) ? '<tr><td class="v">Base n°'.$base_id.' &rarr; '.$nb_suppression.' fichier'.$s.' / dossier'.$s.' supprimé'.$s.'.</td></tr>' : '<tr><td class="b">Base n°'.$base_id.' &rarr; rien à signaler.</td></tr>' ;
-    }
-    $s = ($total>1) ? 's' : '' ;
-    $tfoot = '<tr><td>'.$total.' fichier'.$s.' / dossier'.$s.' supprimé'.$s.'</td></tr>';
-    // Enregistrement du rapport
-    $fichier_rapport = 'rapport_clean_file_temp_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
-    FileSystem::fabriquer_fichier_rapport( $fichier_rapport , $thead , $tbody , $tfoot );
-    $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
-    // retour
-    unset($_SESSION['tmp']['clean_file_temp']);
+    unset($_SESSION['tmp']);
     Json::end( TRUE , $fichier_chemin );
   }
 }

@@ -434,14 +434,12 @@ class PDF extends FPDF
   // Attributs de la classe (équivalents des "variables")
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // Pour les valeur de la session courante ou celles enregistrées lors d'un bilan officiel antérieur
-  private $SESSION = array();
   // Couleurs de fond
   private $tab_couleur       = array();
   private $tab_choix_couleur = array();
   // Lettres utilisées en remplacement des images Lomer pour du noir et blanc
   private $tab_lettre = array();
-  // Valeurs principales pour la mise en page PDF
+  // Valeurs des marges principales pour la mise en page PDF
   private $officiel      = NULL;
   private $orientation   = '';
   private $couleur       = 'oui';
@@ -466,7 +464,6 @@ class PDF extends FPDF
   private $releve_modele   = '';
   private $releve_format   = '';
   private $synthese_modele = '';
-  private $afficher_score  = NULL;
   // idem
   private $cases_nb              = 0;
   private $cases_largeur         = 0;
@@ -508,7 +505,7 @@ class PDF extends FPDF
   // Tous les paramètres doivent avoir des valeurs par défaut pour ne pas poser de soucis en cas d'instanciation depuis une autre classe (FPDF_TPL ou PDFMerger par exemple).
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function __construct( $officiel=NULL , $orientation='portrait' , $marge_gauche=5 , $marge_droite=5 , $marge_haut=5 , $marge_bas=12 , $couleur='oui' , $fond='gris' , $legende='oui' , $filigrane=NULL , $session_archive=array() )
+  public function __construct( $officiel=NULL , $orientation='portrait' , $marge_gauche=5 , $marge_droite=5 , $marge_haut=5 , $marge_bas=12 , $couleur='oui' , $fond='gris' , $legende='oui' , $filigrane=NULL )
   {
     // Register var stream protocol => Voir MemImage()
     if (in_array('var', stream_get_wrappers()))
@@ -525,16 +522,6 @@ class PDF extends FPDF
     $this->fond        = ($fond=='gris') ? TRUE : FALSE ;
     $this->legende     = ($legende=='oui') ? 1 : 0 ;
     $this->filigrane   = $filigrane;
-    // Valeurs de session utilisées
-    $tab_clefs = array( 'OFFICIEL' , 'ACQUIS' , 'VALID' , 'NOTE' , 'NOTE_ACTIF' , 'NOMBRE_CODES_NOTATION' , 'DROIT_VOIR_SCORE_BILAN' , 'ENVELOPPE' , 'ETABLISSEMENT_DENOMINATION' );
-    foreach( $tab_clefs as $CLEF )
-    {
-      $this->SESSION[$CLEF] = ( $officiel && isset($session_archive[$CLEF]) ) ? $session_archive[$CLEF] : ( isset($_SESSION[$CLEF]) ? $_SESSION[$CLEF] : NULL ) ;
-    }
-    // Pour un bilan officiel on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-    $forcer_profil_sigle  = ($this->officiel) ? 'TUT'    : NULL ;
-    $forcer_profil_type   = ($this->officiel) ? 'parent' : NULL ;
-    $this->afficher_score = Outil::test_user_droit_specifique( $this->SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
     // Déclaration de la police pour la rendre disponible même si non présente sur le serveur
     $this->AddFont('Arial','' ,'arial.php');
     $this->AddFont('Arial','B','arialbd.php');
@@ -569,7 +556,7 @@ class PDF extends FPDF
     $this->tab_couleur['noir']       = array('r'=>  0,'v'=>  0,'b'=>  0);
     $this->tab_couleur['rougevif']   = array('r'=>255,'v'=>  0,'b'=>  0);
     // Couleurs des états d'acquisition ; il faut convertir l'hexadécimal en RVB décimal
-    foreach( $this->SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+    foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
     {
       $r = hexdec(substr($tab_acquis_info['COULEUR'],1,2));
       $v = hexdec(substr($tab_acquis_info['COULEUR'],3,2));
@@ -581,7 +568,7 @@ class PDF extends FPDF
       $this->tab_couleur['A'.$acquis_id.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
     }
     // Couleurs des états de validation ; il faut convertir l'hexadécimal en RVB décimal
-    foreach( $this->SESSION['VALID'] as $valid_etat => $tab_valid_info )
+    foreach( $_SESSION['VALID'] as $valid_etat => $tab_valid_info )
     {
       $r = hexdec(substr($tab_valid_info['COULEUR'],1,2));
       $v = hexdec(substr($tab_valid_info['COULEUR'],3,2));
@@ -593,9 +580,9 @@ class PDF extends FPDF
       $this->tab_couleur['V'.$valid_etat.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
     }
     // Lettres utilisées en remplacement des images Lomer pour du noir et blanc
-    foreach( $this->SESSION['NOTE_ACTIF'] as $note_id )
+    foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
     {
-      $this->tab_lettre[$note_id] = $this->SESSION['NOTE'][$note_id]['SIGLE'];
+      $this->tab_lettre[$note_id] = $_SESSION['NOTE'][$note_id]['SIGLE'];
     }
     $this->tab_lettre['PA'] = '.....';
     // Les dimensions d'une image (photo, signature) sont données en pixels, et il faut les convertir en mm.
@@ -749,11 +736,11 @@ class PDF extends FPDF
   }
   else
   {
-    $this->choisir_couleur_fond('A'.OutilBilan::determiner_etat_acquisition($tab_infos['%'],NULL,$this->SESSION['ACQUIS']).$this->couleur);
+    $this->choisir_couleur_fond('A'.OutilBilan::determiner_etat_acquisition($tab_infos['%']).$this->couleur);
     if($affich=='detail')
     {
       $this->SetFont('Arial' , $gras , $this->taille_police);
-      $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.OutilBilan::afficher_nombre_acquisitions_par_etat($tab_infos,$this->SESSION['ACQUIS']).')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.OutilBilan::afficher_nombre_acquisitions_par_etat($tab_infos).')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
     elseif($affich=='pourcentage')
     {
@@ -773,16 +760,18 @@ class PDF extends FPDF
 
   public function afficher_score_bilan( $score , $br )
   {
+    // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
+    $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
     if($score===FALSE)
     {
-      $affichage = ($this->afficher_score) ? '-' : '' ;
+      $affichage = ($afficher_score) ? '-' : '' ;
       $this->choisir_couleur_fond('blanc');
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
     else
     {
-      $this->choisir_couleur_fond('A'.OutilBilan::determiner_etat_acquisition($score,NULL,$this->SESSION['ACQUIS']).$this->couleur);
-      $affichage = ($this->afficher_score) ? $score : '' ;
+      $this->choisir_couleur_fond('A'.OutilBilan::determiner_etat_acquisition($score).$this->couleur);
+      $affichage = ($afficher_score) ? $score : '' ;
       $this->SetFont('Arial' , '' , $this->taille_police-2);
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       $this->SetFont('Arial' , '' , $this->taille_police);
@@ -803,8 +792,8 @@ class PDF extends FPDF
     {
       $this->choisir_couleur_fond('A'.$acquis_id.$this->couleur);
       $largeur_case = $largeur*$nb/$total ;
-          if(  $avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $nb.' '.$this->SESSION['ACQUIS'][$acquis_id]['SIGLE']; }
-      elseif( !$avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $this->SESSION['ACQUIS'][$acquis_id]['SIGLE']; }
+          if(  $avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $nb.' '.$_SESSION['ACQUIS'][$acquis_id]['SIGLE']; }
+      elseif( !$avec_texte_nombre &&  $avec_texte_code ) { $texte_complet = $_SESSION['ACQUIS'][$acquis_id]['SIGLE']; }
       elseif( !$avec_texte_nombre && !$avec_texte_code ) { $texte_complet = ''; }
       elseif(  $avec_texte_nombre && !$avec_texte_code ) { $texte_complet = $nb; }
       $texte = ( (strlen($texte_complet)<$largeur_case) || !$avec_texte_nombre || !$avec_texte_code ) ? $texte_complet : $nb ;
@@ -931,11 +920,11 @@ class PDF extends FPDF
     {
       // Le texte des codes de notation étant personnalisable, il peut falloir condenser en largeur...
       $texte = 'Codes d\'évaluation :';
-      foreach( $this->SESSION['NOTE_ACTIF'] as $note_id )
+      foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
       {
-        $texte .= $espace.$this->SESSION['NOTE'][$note_id]['LEGENDE'];
+        $texte .= $espace.$_SESSION['NOTE'][$note_id]['LEGENDE'];
       }
-      $boites_nb = $this->SESSION['NOMBRE_CODES_NOTATION'];
+      $boites_nb = $_SESSION['NOMBRE_CODES_NOTATION'];
       foreach($this->tab_legende_notes_speciales_nombre as $note => $nombre)
       {
         if($nombre)
@@ -958,14 +947,14 @@ class PDF extends FPDF
       $memo_taille_police = $this->taille_police;
       $this->taille_police = $size; // On est obligé de le changer provisoirement car, si impression N&B, afficher_note_lomer() l'utilise
       $this->calculer_dimensions_images($case_largeur,$case_hauteur);
-      foreach( $this->SESSION['NOTE_ACTIF'] as $note_id )
+      foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
       {
-        $texte = $this->SESSION['NOTE'][$note_id]['LEGENDE'];
+        $texte = $_SESSION['NOTE'][$note_id]['LEGENDE'];
         $largeur = $this->GetStringWidth($texte)*$ratio*1.1;
         $this->Write($hauteur , $espace_mini , '');
         $this->afficher_note_lomer($note_id, 1 /*border*/ , 0 /*br*/ );
         $this->CellFit( $largeur , $hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-        $texte .= $espace.$this->SESSION['NOTE'][$note_id]['LEGENDE'];
+        $texte .= $espace.$_SESSION['NOTE'][$note_id]['LEGENDE'];
       }
       foreach($this->tab_legende_notes_speciales_nombre as $note => $nombre)
       {
@@ -1005,12 +994,14 @@ class PDF extends FPDF
     // Afficher la légende des scores bilan
     if($type_legende=='score_bilan')
     {
+      // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
+      $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , (bool)$this->officiel /*forcer_parent*/ );
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
-      foreach( $this->SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+      foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
-        $texte_seuil = ($this->afficher_score) ? $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'] : '' ;
+        $texte_seuil = ($afficher_score) ? $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'] : '' ;
         $this->Write($hauteur , $espace , '');
         $this->choisir_couleur_fond('A'.$acquis_id.$this->couleur);
         $this->Cell(2*$case_largeur , $case_hauteur , To::pdf($texte_seuil) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
@@ -1023,7 +1014,7 @@ class PDF extends FPDF
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('États d\'acquisitions :') , '');
       $this->SetFont('Arial' , '' , $size);
-      foreach( $this->SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+      foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
         $this->Write($hauteur , $espace , '');
         $couleur_fond = (!$force_nb) ? 'A'.$acquis_id.$this->couleur : 'blanc' ;
@@ -1039,7 +1030,7 @@ class PDF extends FPDF
       $indication_position = ($this->orientation=='portrait') ? ' (à gauche)' : '' ;
       $this->Write($hauteur , To::pdf('Pourcentages d\'items acquis'.$indication_position.' :') , '');
       $this->SetFont('Arial' , '' , $size);
-      foreach( $this->SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+      foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
         $texte = $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'];
         $this->Write($hauteur , $espace , '');
@@ -1054,7 +1045,7 @@ class PDF extends FPDF
       $indication_position = ($this->orientation=='portrait') ? ' (à droite)' : '' ;
       $this->Write($hauteur , To::pdf('États de validation'.$indication_position.' :') , '');
       $this->SetFont('Arial' , '' , $size);
-      foreach($this->SESSION['VALID'] as $valid_etat => $tab_valid_info)
+      foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
       {
         $this->Write($hauteur , $espace , '');
         $this->choisir_couleur_fond('V'.$valid_etat.$this->couleur);
@@ -1074,7 +1065,7 @@ class PDF extends FPDF
     {
       return;
     }
-    else if($this->officiel===FALSE)
+    if($this->officiel===FALSE)
     {
       $initiales = To::texte_identite( $_SESSION['USER_NOM'] , FALSE , $_SESSION['USER_PRENOM'] , TRUE , $_SESSION['USER_GENRE'] );
       $texte = 'Généré le '.date("d/m/Y \à H\hi\m\i\\n").' par '.$initiales.' ('.$_SESSION['USER_PROFIL_NOM_COURT'].') avec SACoche [ '.SERVEUR_PROJET.' ] version '.VERSION_PROG.'.';
@@ -1238,8 +1229,8 @@ class PDF extends FPDF
     // Placer les marques des pliures
     $longueur_tiret = 1; // <= 5
     $this->SetLineWidth(0.1);
-    $enveloppe_hauteur = $this->SESSION['ENVELOPPE']['VERTICAL_HAUT'] + $this->SESSION['ENVELOPPE']['VERTICAL_MILIEU'] + $this->SESSION['ENVELOPPE']['VERTICAL_BAS'] ;
-    $enveloppe_largeur = $this->SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] + $this->SESSION['ENVELOPPE']['HORIZONTAL_MILIEU'] + $this->SESSION['ENVELOPPE']['HORIZONTAL_DROITE'] ;
+    $enveloppe_hauteur = $_SESSION['ENVELOPPE']['VERTICAL_HAUT'] + $_SESSION['ENVELOPPE']['VERTICAL_MILIEU'] + $_SESSION['ENVELOPPE']['VERTICAL_BAS'] ;
+    $enveloppe_largeur = $_SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] + $_SESSION['ENVELOPPE']['HORIZONTAL_MILIEU'] + $_SESSION['ENVELOPPE']['HORIZONTAL_DROITE'] ;
     $jeu_minimum    = 2 ;
     $jeu_horizontal = $enveloppe_largeur - $this->page_largeur - $jeu_minimum ;
     $jeu_vertical   = $jeu_minimum ;
@@ -1251,13 +1242,13 @@ class PDF extends FPDF
     $this->Line( $this->page_largeur-$this->marge_droite , $ligne1_y , $this->page_largeur-$this->marge_droite+$longueur_tiret , $ligne1_y );
     $jeu_vertical -= 1 ; // Le pliage est manuel donc imparfait et il y a l'épaisseur du papier ;)
     // Déterminer et dessiner l'emplacement du bloc adresse
-    $interieur_coin_hg_x = $this->SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] ;
+    $interieur_coin_hg_x = $_SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] ;
     $exterieur_coin_hg_x = $interieur_coin_hg_x - $jeu_horizontal ;
-    $interieur_coin_bd_x = $this->page_largeur - $this->SESSION['ENVELOPPE']['HORIZONTAL_DROITE'] ;
+    $interieur_coin_bd_x = $this->page_largeur - $_SESSION['ENVELOPPE']['HORIZONTAL_DROITE'] ;
     $exterieur_coin_bd_x = $interieur_coin_bd_x + $jeu_horizontal ;
-    $interieur_coin_bd_y = $ligne1_y - $this->SESSION['ENVELOPPE']['VERTICAL_BAS'] ;
+    $interieur_coin_bd_y = $ligne1_y - $_SESSION['ENVELOPPE']['VERTICAL_BAS'] ;
     $exterieur_coin_bd_y = $interieur_coin_bd_y + $jeu_vertical ;
-    $exterieur_coin_hg_y = max( $interieur_coin_bd_y - $this->SESSION['ENVELOPPE']['VERTICAL_MILIEU'] , 5 ) ;
+    $exterieur_coin_hg_y = max( $interieur_coin_bd_y - $_SESSION['ENVELOPPE']['VERTICAL_MILIEU'] , 5 ) ;
     $interieur_coin_hg_y = $exterieur_coin_hg_y + $jeu_vertical ;
     $exterieur_largeur = $exterieur_coin_bd_x - $exterieur_coin_hg_x ;
     $exterieur_hauteur = $exterieur_coin_bd_y - $exterieur_coin_hg_y ;
@@ -1288,9 +1279,8 @@ class PDF extends FPDF
     return array($bloc_hauteur,$bloc_gauche_largeur_restante) ;
   }
 
-  public function officiel_bloc_appreciation_intermediaire( $tab_saisie , $bloc_largeur , $ligne_hauteur , $bilan_type , $cadre_hauteur=0 )
+  public function officiel_bloc_appreciation_intermediaire( $tab_saisie , $bloc_largeur , $ligne_hauteur , $bilan_type , $nb_caracteres_maxi , $cadre_hauteur=0 )
   {
-    $nb_caracteres_maxi = $this->SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR'];
     // Récupération des données des appréciations
     if($bilan_type!='bulletin')
     {
@@ -1359,16 +1349,16 @@ class PDF extends FPDF
     if($moyenne_generale_eleve!==NULL)
     {
       $largeur_note = 10;
-      $texte = ($this->SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? 'Moyenne générale élève (classe) :' : 'Moyenne générale élève :' ;
+      $texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? 'Moyenne générale élève (classe) :' : 'Moyenne générale élève :' ;
       $this->SetFont('Arial' , '' , $this->taille_police);
-      $largueur_texte = ($this->SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? $largeur-2*$largeur_note : $largeur-$largeur_note ;
+      $largueur_texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? $largeur-2*$largeur_note : $largeur-$largeur_note ;
       $this->Cell( $largueur_texte , $ligne_hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
-      $moyenne_generale_eleve = ($moyenne_generale_eleve!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_generale_eleve,1,',','') : round($moyenne_generale_eleve*5).'%' ) : '-' ;
+      $moyenne_generale_eleve = ($moyenne_generale_eleve!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_generale_eleve,1,',','') : round($moyenne_generale_eleve*5).'%' ) : '-' ;
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
       $this->Cell( $largeur_note , $ligne_hauteur , To::pdf($moyenne_generale_eleve) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
-      if($this->SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
+      if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
       {
-        $moyenne_generale_classe = ($moyenne_generale_classe!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_generale_classe,1,',','') : round($moyenne_generale_classe*5).'%' ) : '-' ;
+        $moyenne_generale_classe = ($moyenne_generale_classe!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_generale_classe,1,',','') : round($moyenne_generale_classe*5).'%' ) : '-' ;
         $this->SetFont('Arial' , '' , $this->taille_police*0.8);
         $this->Cell( $largeur_note , $ligne_hauteur , To::pdf('('.$moyenne_generale_classe.')') , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
       }

@@ -164,7 +164,7 @@ class PDF_item_releve extends PDF
         list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $eleve_genre , $date_naissance ) = $tab_infos_entete;
         $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
         // Bloc adresse en positionnement contraint
-        if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
+        if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
         {
           list( $bloc_droite_hauteur , $bloc_gauche_largeur_restante ) = $this->officiel_bloc_adresse_position_contrainte_et_pliures($tab_adresse);
           $this->SetXY( $this->marge_gauche , $this->marge_haut );
@@ -173,8 +173,8 @@ class PDF_item_releve extends PDF
         $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : 80 ;
         $bloc_etabl_hauteur = $this->officiel_bloc_etablissement( $tab_etabl_coords , $tab_etabl_logo , $bloc_etabl_largeur );
         // Bloc titres
-        $alerte_archive = (($tab_adresse==='archive')&&($this->SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
-        if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
+        $alerte_archive = (($tab_adresse==='archive')&&($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
+        if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
         {
           // En dessous du bloc établissement
           $bloc_titre_largeur = $bloc_etabl_largeur ;
@@ -194,7 +194,7 @@ class PDF_item_releve extends PDF
         // Date de naissance + Tag date heure initiales (sous le bloc titres dans toutes les situations)
         $this->officiel_ligne_tag( $eleve_genre , $date_naissance , $eleve_INE , $tag_date_heure_initiales , $bloc_titre_largeur );
         // Bloc adresse en positionnement libre
-        if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
+        if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
         {
           $bloc_adresse_largeur = $bloc_titre_largeur - 10; // Pour avoir un petit décalage par rapport au bloc titre
           $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_adresse_largeur , $this->marge_haut+$bloc_titre_hauteur+4 );
@@ -240,8 +240,8 @@ class PDF_item_releve extends PDF
       // Intitulé (dont éventuellement matière) / structure
       $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-      $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                       , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-      $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->SESSION['ETABLISSEMENT_DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                     , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
       // Période / Classe - élève
       $this->SetFont('Arial' , '' , $this->taille_police);
       $this->CellFit($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
@@ -267,8 +267,8 @@ class PDF_item_releve extends PDF
     // Intitulé (dont éventuellement matière) / structure
     $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-    $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                       , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->SESSION['ETABLISSEMENT_DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+    $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf('Bilan '.$texte_format)                     , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     // Période / Classe
     $this->SetFont('Arial' , '' , $this->taille_police);
     $this->CellFit($largeur_demi_page , $this->taille_police*0.8 , To::pdf($texte_periode) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
@@ -354,7 +354,7 @@ class PDF_item_releve extends PDF
   public function appreciation_rubrique($tab_saisie)
   {
     $this->SetXY( $this->marge_gauche + $this->reference_largeur , $this->GetY() );
-    $this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $this->synthese_largeur , $this->lignes_hauteur , 'releve' );
+    $this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $this->synthese_largeur , $this->lignes_hauteur , 'releve' , $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR'] );
   }
 
   public function appreciation_generale( $prof_id , $tab_infos , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_pp_et_message_et_legende )

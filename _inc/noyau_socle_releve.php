@@ -491,7 +491,7 @@ if($make_pdf)
 {
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $releve_PDF = new PDF_socle_releve( $make_officiel , 'portrait' /*orientation*/ , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ );
-  $releve_PDF->initialiser( $test_affichage_Pourcentage , $test_affichage_Validation );
+  $releve_PDF->initialiser($test_affichage_Pourcentage,$test_affichage_Validation);
   $break  = ($memo_demande=='palier') ? FALSE : TRUE ;
 }
 

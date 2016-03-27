@@ -113,7 +113,7 @@ class PDF_item_synthese extends PDF
         list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $eleve_genre , $date_naissance ) = $tab_infos_entete;
         $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
         // Bloc adresse en positionnement contraint
-        if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
+        if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
         {
           list( $bloc_droite_hauteur , $bloc_gauche_largeur_restante ) = $this->officiel_bloc_adresse_position_contrainte_et_pliures($tab_adresse);
           $this->SetXY( $this->marge_gauche , $this->marge_haut );
@@ -122,8 +122,8 @@ class PDF_item_synthese extends PDF
         $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : 80 ;
         $bloc_etabl_hauteur = $this->officiel_bloc_etablissement( $tab_etabl_coords , $tab_etabl_logo , $bloc_etabl_largeur );
         // Bloc titres
-        $alerte_archive = (($tab_adresse==='archive')&&($this->SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
-        if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
+        $alerte_archive = (($tab_adresse==='archive')&&($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
+        if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
         {
           // En dessous du bloc établissement
           $bloc_titre_largeur = $bloc_etabl_largeur ;
@@ -143,7 +143,7 @@ class PDF_item_synthese extends PDF
         // Date de naissance + Tag date heure initiales (sous le bloc titres dans toutes les situations)
         $this->officiel_ligne_tag( $eleve_genre , $date_naissance , $eleve_INE , $tag_date_heure_initiales , $bloc_titre_largeur );
         // Bloc adresse en positionnement libre
-        if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
+        if( (is_array($tab_adresse)) && ($_SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre') )
         {
           $bloc_adresse_largeur = $bloc_titre_largeur - 10; // Pour avoir un petit décalage par rapport au bloc titre
           $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_adresse_largeur , $this->marge_haut+$bloc_titre_hauteur+4 );
@@ -181,8 +181,8 @@ class PDF_item_synthese extends PDF
       // Intitulé (dont éventuellement matière) / structure
       $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-      $this->Cell( $largeur_demi_page , $this->lignes_hauteur , To::pdf('Synthèse '.$texte_format)                    , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-      $this->Cell( $largeur_demi_page , $this->lignes_hauteur , To::pdf($this->SESSION['ETABLISSEMENT_DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+      $this->Cell( $largeur_demi_page , $this->lignes_hauteur , To::pdf('Synthèse '.$texte_format)                  , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      $this->Cell( $largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
       // Période / Classe - élève
       $memo_y = $this->GetY();
       $this->SetFont('Arial' , '' , $this->taille_police);
@@ -245,30 +245,30 @@ class PDF_item_synthese extends PDF
       $this->choisir_couleur_fond($couleur_fond);
       $this->CellFit( $demi_largeur , $this->lignes_hauteur*2 , To::pdf($matiere_nom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , $this->fond );
       // Moyenne élève (éventuelle) et moyenne classe (éventuelle)
-      if($this->SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
+      if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
       {
-        $nb_lignes_hauteur = 2 - $this->SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'] ;
+        $nb_lignes_hauteur = 2 - $_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'] ;
         $largeur_note = 10;
         $this->Rect( $this->GetX() , $this->GetY() , $demi_largeur , $this->lignes_hauteur*$nb_lignes_hauteur , 'D' /* DrawFill */ );
-        $texte = ($this->SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? 'Moyenne élève (classe) :' : 'Moyenne élève :' ;
+        $texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? 'Moyenne élève (classe) :' : 'Moyenne élève :' ;
         $this->SetFont('Arial' , '' , $this->taille_police);
-        $largueur_texte = ($this->SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? $demi_largeur-2*$largeur_note : $demi_largeur-$largeur_note ;
+        $largueur_texte = ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']) ? $demi_largeur-2*$largeur_note : $demi_largeur-$largeur_note ;
         $this->Cell( $largueur_texte , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
-        $moyenne_eleve = ($moyenne_eleve!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_eleve,1,',','') : ($moyenne_eleve*5).'%' ) : '-' ;
+        $moyenne_eleve = ($moyenne_eleve!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_eleve,1,',','') : ($moyenne_eleve*5).'%' ) : '-' ;
         $this->SetFont('Arial' , 'B' , $this->taille_police*1.25);
         $this->Cell( $largeur_note , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
-        if($this->SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
+        if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'])
         {
-          $moyenne_classe = ($moyenne_classe!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_classe,1,',','') : round($moyenne_classe*5).'%' ) : '-' ;
+          $moyenne_classe = ($moyenne_classe!==NULL) ? ( ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($moyenne_classe,1,',','') : round($moyenne_classe*5).'%' ) : '-' ;
           $this->SetFont('Arial' , '' , $this->taille_police*0.8);
           $this->Cell( $largeur_note , $this->lignes_hauteur*$nb_lignes_hauteur , To::pdf('('.$moyenne_classe.')') , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
         }
         $this->SetXY($this->marge_gauche + $demi_largeur , $this->GetY() + $this->lignes_hauteur*$nb_lignes_hauteur );
       }
       // Proportions acquis matière
-      if($this->SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'])
+      if($_SESSION['OFFICIEL']['BULLETIN_BARRE_ACQUISITIONS'])
       {
-        $nb_lignes_hauteur = 2 - $this->SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ;
+        $nb_lignes_hauteur = 2 - $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ;
         $this->SetFont('Arial' , '' , $this->taille_police);
         $this->afficher_proportion_acquis( $demi_largeur , $this->lignes_hauteur*$nb_lignes_hauteur , $tab_infos_matiere , $total , $avec_texte_nombre , $avec_texte_code );
       }
@@ -283,7 +283,7 @@ class PDF_item_synthese extends PDF
     $largeur_diagramme = ($this->officiel) ? 20 : 40 ;
     $this->SetFont('Arial' , '' , $this->taille_police*0.8);
     $this->afficher_proportion_acquis( $largeur_diagramme , $hauteur_ligne , $tab_infos_synthese , $total,$avec_texte_nombre , $avec_texte_code );
-    $intitule_synthese_largeur = ( ($this->officiel) && ($this->SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) ) ? ( $this->page_largeur_moins_marges ) / 2 - $largeur_diagramme : $this->page_largeur_moins_marges - $largeur_diagramme ;
+    $intitule_synthese_largeur = ( ($this->officiel) && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) ) ? ( $this->page_largeur_moins_marges ) / 2 - $largeur_diagramme : $this->page_largeur_moins_marges - $largeur_diagramme ;
     // Intitulé synthèse
     $this->SetFont('Arial' , '' , $this->taille_police);
     $couleur_fond = ($this->couleur=='oui') ? 'gris_clair' : 'blanc' ; // Forcer un fonc blanc en cas d'impression en niveau de gris sinon c'est très confus
@@ -301,7 +301,7 @@ class PDF_item_synthese extends PDF
     {
       unset($tab_saisie[0]); // la note
       $memo_y = $this->GetY();
-      $this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $demi_largeur , $this->lignes_hauteur , 'bulletin' , $cadre_hauteur );
+      $this->officiel_bloc_appreciation_intermediaire( $tab_saisie , $demi_largeur , $this->lignes_hauteur , 'bulletin' , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'] , $cadre_hauteur );
       $this->SetXY( $this->marge_gauche , $memo_y + $cadre_hauteur );
     }
     else

@@ -132,23 +132,6 @@ else
   </p>
 </fieldset></form>
 
-<hr />
-
-<h2>Forcer la suppression de fichiers temporaires obsolètes</h2>
-
-<form action="#" method="post" id="form_clean_file_temp"><fieldset>
-  <p class="astuce">
-    Les fichiers temporaires obsolètes de chaque établissement sont supprimés lors de la connexion d'un utilisateur.<br />
-    Forcer leur suppression ne sert qu'à faire le ménage pour les établissements sans connexion prolongée.
-  </p>
-  <p class="danger">
-    Il est donc inutile de lancer cette procédure régulièrement, une fois par an suffit !
-  </p>
-  <p>
-    <span class="tab"></span><button id="bouton_clean_file_temp" type="button" class="parametre">Forcer la maj des bases établissements.</button><label id="ajax_clean_file_temp">&nbsp;</label>
-  </p>
-</fieldset></form>
-
 <?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>
 
 <hr />

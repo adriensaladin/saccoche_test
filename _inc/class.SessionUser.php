@@ -639,11 +639,8 @@ class SessionUser
     {
       // On écrit un marqueur
       FileSystem::ecrire_fichier($fichier_lock,'');
-      // On vérifie que des sous-dossiers ajoutés ultétieurement existent
-      FileSystem::verifier_existence_dossiers($_SESSION['BASE']);
       // On efface les fichiers temporaires obsolètes
-      FileSystem::nettoyer_fichiers_temporaires_commun();
-      FileSystem::nettoyer_fichiers_temporaires_etablissement($_SESSION['BASE']);
+      FileSystem::nettoyer_fichiers_temporaires($_SESSION['BASE']);
       // On rend visibles les notifications en attente et on supprime les notifications obsolètes
       Sesamail::envoyer_notifications();
       DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_anciens();

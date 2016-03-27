@@ -96,8 +96,8 @@ class PDF_grille_referentiel extends PDF
     $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
     // intitulé-structure
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.4);
-    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($bilan_titre)                                 , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($this->SESSION['ETABLISSEMENT_DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($bilan_titre)                               , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->Cell($largeur_demi_page , $this->lignes_hauteur , To::pdf($_SESSION['ETABLISSEMENT']['DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     // matière-niveau-élève
     $this->CellFit($largeur_demi_page , $this->lignes_hauteur , To::pdf($matiere_nom.' - Niveau '.$niveau_nom) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     if($eleve_id)

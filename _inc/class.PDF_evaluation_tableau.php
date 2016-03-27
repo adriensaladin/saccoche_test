@@ -123,7 +123,7 @@ class PDF_evaluation_tableau extends PDF
   public function repartition_quantitative_initialiser($item_nb)
   {
     $cases_hauteur_maximum   = 20;
-    $cases_nombre = ($_SESSION['NOMBRE_CODES_NOTATION']+1);
+    $cases_nombre = ($this->SESSION['NOMBRE_CODES_NOTATION']+1);
     $this->cases_largeur     = 30 - ($cases_nombre * 2.5) ;
     $this->reference_largeur = $this->page_largeur_moins_marges - ( $cases_nombre * $this->cases_largeur);
     $this->etiquette_hauteur = 10; // valeur fixe
@@ -179,7 +179,7 @@ class PDF_evaluation_tableau extends PDF
 
   public function repartition_nominative_initialiser($lignes_nb)
   {
-    $cases_nombre = ($_SESSION['NOMBRE_CODES_NOTATION']+1);
+    $cases_nombre = ($this->SESSION['NOMBRE_CODES_NOTATION']+1);
     $this->cases_largeur     = 60 - ($cases_nombre * 5) ;
     $this->reference_largeur = $this->page_largeur_moins_marges - ( $cases_nombre * $this->cases_largeur);
     $this->etiquette_hauteur = 10; // valeur fixe

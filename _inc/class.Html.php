@@ -52,6 +52,9 @@ class Html
     'enfant' => array( 'I'=>'' , 'M'=>'Masculin' , 'F'=>'Féminin' ) ,
     'adulte' => array( 'I'=>'' , 'M'=>'M.'       , 'F'=>'Mme'     ) ,
   );
+  
+  // A renseigner une fois au début mais pas à chaque appel de Html::td_score();
+  public static $afficher_score = NULL;
 
   // //////////////////////////////////////////////////
   // Méthodes publiques
@@ -158,21 +161,23 @@ class Html
    * @param string    $methode_tri    'score' | 'etat'
    * @param string    $pourcent       '%' | ''
    * @param string    $checkbox_val   pour un éventuel checkbox
-   * @param bool      $make_officiel  TRUE pour un bulletin
    * @return string
    */
-  public static function td_score( $score , $methode_tri , $pourcent='' , $checkbox_val=''  , $make_officiel=FALSE )
+  public static function td_score( $score , $methode_tri , $pourcent='' , $checkbox_val='' )
   {
-    // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-    $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
-    $checkbox = ($checkbox_val) ? ' <input type="checkbox" name="id_req[]" value="'.$checkbox_val.'" />' : '' ;
-   if($score===FALSE)
+    if( Html::$afficher_score === NULL )
     {
-      $affichage = ($afficher_score) ? '-' : '' ;
+      // En cas de bilan officiel, doit être déterminé avant
+      Html::$afficher_score = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']);
+    }
+    $checkbox = ($checkbox_val) ? ' <input type="checkbox" name="id_req[]" value="'.$checkbox_val.'" />' : '' ;
+    if($score===FALSE)
+    {
+      $affichage = (Html::$afficher_score) ? '-' : '' ;
       return '<td class="hc">'.$affichage.$checkbox.'</td>';
     }
     $class = 'A'.OutilBilan::determiner_etat_acquisition($score);
-    $affichage = ($afficher_score) ? $score.$pourcent : '' ;
+    $affichage = (Html::$afficher_score) ? $score.$pourcent : '' ;
     $tri = ($methode_tri=='score') ? sprintf("%03u",$score) : Html::$tab_tri_etat[$class] ;  // le sprintf et le tab_tri_etat servent pour le tri du tableau
     return '<td class="hc '.$class.'"><i>'.$tri.'</i>'.$affichage.$checkbox.'</td>';
   }
@@ -236,12 +241,15 @@ class Html
     // légende scores bilan
     if($score_bilan)
     {
-      // Pour un bulletin on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-      $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $make_officiel /*forcer_parent*/ );
+      if( Html::$afficher_score === NULL )
+      {
+        // En cas de bilan officiel, doit être déterminé avant
+        Html::$afficher_score = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']);
+      }
       $retour .= '<div><b>États d\'acquisitions :</b>';
       foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
-        $texte_seuil = ($afficher_score) ? $_SESSION['ACQUIS'][$acquis_id]['SEUIL_MIN'].' à '.$_SESSION['ACQUIS'][$acquis_id]['SEUIL_MAX'] : '' ;
+        $texte_seuil = (Html::$afficher_score) ? $_SESSION['ACQUIS'][$acquis_id]['SEUIL_MIN'].' à '.$_SESSION['ACQUIS'][$acquis_id]['SEUIL_MAX'] : '' ;
         $retour .= '<span class="cadre A'.$acquis_id.'">'.$texte_seuil.'</span>'.html($_SESSION['ACQUIS'][$acquis_id]['LEGENDE']);
       }
       $retour .= '</div>'.NL;

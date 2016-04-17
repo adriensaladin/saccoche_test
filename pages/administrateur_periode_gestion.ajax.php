@@ -30,26 +30,42 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 
 $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])    : 0;
-$nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])    : '';
 $ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre']) : 0;
+$nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])    : '';
+$lsun   = (isset($_POST['f_lsun']))   ? Clean::texte($_POST['f_lsun'])   : NULL;
+
+$tab_periode_lsun = array(
+  ''   => '-',
+  'T1' => 'Trimestre 1/3',
+  'T2' => 'Trimestre 2/3',
+  'T3' => 'Trimestre 3/3',
+  'S1' => 'Semestre 1/2',
+  'S2' => 'Semestre 2/2',
+);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter une nouvelle période / Dupliquer une pédiode existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
+if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom && isset($tab_periode_lsun[$lsun]) )
 {
   // Vérifier que le nom de la période est disponible
   if( DB_STRUCTURE_PERIODE::DB_tester_periode_nom($nom) )
   {
     Json::end( FALSE , 'Nom déjà utilisé !' );
   }
+  // Vérifier que le type LSUN de la période est disponible
+  if( $lsun && DB_STRUCTURE_PERIODE::DB_tester_periode_lsun($lsun) )
+  {
+    Json::end( FALSE , 'Type LSUN déjà utilisé !' );
+  }
   // Insérer l'enregistrement
-  $periode_id = DB_STRUCTURE_PERIODE::DB_ajouter_periode($ordre,$nom);
+  $periode_id = DB_STRUCTURE_PERIODE::DB_ajouter_periode( $ordre , $nom , $lsun );
   // Afficher le retour
   Json::add_str('<tr id="id_'.$periode_id.'" class="new">');
   Json::add_str(  '<td>'.$ordre.'</td>');
   Json::add_str(  '<td>'.html($nom).'</td>');
+  Json::add_str(  '<td>'.$tab_periode_lsun[$lsun].'</td>');
   Json::add_str(  '<td class="nu">');
   Json::add_str(    '<q class="modifier" title="Modifier cette période."></q>');
   Json::add_str(    '<q class="dupliquer" title="Dupliquer cette période."></q>');
@@ -63,18 +79,24 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom )
 // Modifier une période existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $ordre && $nom )
+if( ($action=='modifier') && $id && $ordre && $nom && isset($tab_periode_lsun[$lsun]) )
 {
   // Vérifier que le nom de la période est disponible
-  if( DB_STRUCTURE_PERIODE::DB_tester_periode_nom($nom,$id) )
+  if( DB_STRUCTURE_PERIODE::DB_tester_periode_nom( $nom , $id ) )
   {
     Json::end( FALSE , 'Nom déjà utilisé !' );
   }
+  // Vérifier que le type LSUN de la période est disponible
+  if( $lsun && DB_STRUCTURE_PERIODE::DB_tester_periode_lsun( $lsun , $id ) )
+  {
+    Json::end( FALSE , 'Type LSUN déjà utilisé !' );
+  }
   // Mettre à jour l'enregistrement
-  DB_STRUCTURE_PERIODE::DB_modifier_periode($id,$ordre,$nom);
+  DB_STRUCTURE_PERIODE::DB_modifier_periode( $id , $ordre , $nom , $lsun );
   // Afficher le retour
   Json::add_str('<td>'.$ordre.'</td>');
   Json::add_str('<td>'.html($nom).'</td>');
+  Json::add_str('<td>'.$tab_periode_lsun[$lsun].'</td>');
   Json::add_str('<td class="nu">');
   Json::add_str(  '<q class="modifier" title="Modifier cette période."></q>');
   Json::add_str(  '<q class="dupliquer" title="Dupliquer cette période."></q>');

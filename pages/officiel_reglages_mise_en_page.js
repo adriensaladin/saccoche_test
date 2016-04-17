@@ -70,8 +70,6 @@ $(document).ready
       'f_marge_droite'      : 'positionnement',
       'f_marge_haut'        : 'positionnement',
       'f_marge_bas'         : 'positionnement',
-      'f_archive_ajout_message_copie'      : 'archive',
-      'f_archive_retrait_tampon_signature' : 'archive',
       'f_tampon_signature' : 'signature'
     };
     // Alerter sur la nécessité de valider

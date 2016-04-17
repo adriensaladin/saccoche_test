@@ -26,199 +26,22 @@
  */
 
 // ============================================================================
-// Fonctions non disponibles en PHP 5.1
-// ============================================================================
-
-/**
- * La fonction error_get_last() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
- * @see http://fr.php.net/manual/fr/function.error-get-last.php#103539
- */
-if(!function_exists('error_get_last'))
-{
-  set_error_handler(
-      create_function(
-        '$errno,$errstr,$errfile,$errline,$errcontext',
-        '
-          global $__error_get_last_retval__;
-          $__error_get_last_retval__ = array(
-            \'type\'    => $errno,
-            \'message\' => $errstr,
-            \'file\'    => $errfile,
-            \'line\'    => $errline,
-          );
-          return NULL;
-        '
-      )
-  );
-  function error_get_last()
-  {
-    global $__error_get_last_retval__;
-    if( !isset($__error_get_last_retval__) )
-    {
-      return NULL;
-    }
-    return $__error_get_last_retval__;
-  }
-}
-
-/**
- * La fonction array_fill_keys() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
- */
-if(!function_exists('array_fill_keys'))
-{
-  function array_fill_keys($tab_clefs,$valeur)
-  {
-    return array_combine( $tab_clefs , array_fill(0,count($tab_clefs),$valeur) );
-  }
-}
-
-/**
- * La fonction json_encode() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
- * @see http://www.php.net/json_encode
- * @see http://json.org/json-fr.html
- * Rmq : Un souci a été rencontré sur un serveur FreeBSD : fonction json_encode() indéfinie alors qu'un phpinfo() du PHP 5.6.11 indiquait json chargé !
- * Il a fallu explicitement installer le paquet "php56-json" existant dans les dépôts de FreeBSD...
- * @see http://php.net/manual/fr/json.installation.php
- */
-if (!function_exists('json_encode'))
-{
-  function json_encode( $data )
-  {
-    switch ($type = gettype($data))
-    {
-      case 'object':
-      case 'array':
-        $islist = is_array($data) && ( empty($data) || array_keys($data) === range(0,count($data)-1) );
-        if( $islist )
-        {
-          return '[' . implode(',', array_map('json_encode', $data) ) . ']';
-        }
-        else
-        {
-          $items = Array();
-          foreach( $data as $key => $value )
-          {
-            $items[] = json_encode('"'.$key.'"') . ':' . json_encode($value);
-          }
-          return '{' . implode(',', $items) . '}';
-        }
-      case 'string':
-        # Escape non-printable or Non-ASCII characters.
-        # I also put the \\ character first, as suggested in comments on the 'addclashes' page.
-        $string = '"' . addcslashes($data, "\\\"\n\r\t/" . chr(8) . chr(12)) . '"';
-        $json   = '';
-        $len    = strlen($string);
-        # Convert UTF-8 to Hexadecimal Codepoints.
-        for( $i = 0; $i < $len; $i++ )
-        {
-          $char = $string[$i];
-          # Single byte
-          $c1 = ord($char);
-          if( $c1 <128 )
-          {
-            $json .= ($c1 > 31) ? $char : sprintf("\\u%04x", $c1);
-            continue;
-          }
-          # Double byte
-          $c2 = ord($string[++$i]);
-          if ( ($c1 & 32) === 0 )
-          {
-            $json .= sprintf("\\u%04x", ($c1 - 192) * 64 + $c2 - 128);
-            continue;
-          }
-          # Triple byte
-          $c3 = ord($string[++$i]);
-          if( ($c1 & 16) === 0 )
-          {
-            $json .= sprintf("\\u%04x", (($c1 - 224) <<12) + (($c2 - 128) << 6) + ($c3 - 128));
-            continue;
-          }
-          # Quadruple byte
-          $c4 = ord($string[++$i]);
-          if( ($c1 & 8 ) === 0 )
-          {
-            $u = (($c1 & 15) << 2) + (($c2>>4) & 3) - 1;
-            $w1 = (54<<10) + ($u<<6) + (($c2 & 15) << 2) + (($c3>>4) & 3);
-            $w2 = (55<<10) + (($c3 & 15)<<6) + ($c4-128);
-            $json .= sprintf("\\u%04x\\u%04x", $w1, $w2);
-          }
-        }
-        return $json;
-      case 'boolean':
-      case 'integer':
-      case 'double':
-      case 'float':
-      case 'NULL':
-        // Remarque : avec le type float il semble y avoir le même problème qu'avec serialize() : voir http://fr2.php.net/manual/fr/function.serialize.php#85988
-        return strtolower(var_export( $data, TRUE ));
-      default:
-        // Not supported
-        return '';
-    }
-  }
-}
-
-/**
- * Le paramètre PATHINFO_FILENAME de la fonction pathinfo() n'est disponible que depuis PHP 5.2 ; SACoche n'exigeant que PHP 5.1 minimum, traiter ce cas si besoin.
- */
-function pathinfo_filename($file)
-{
-  if(defined('PATHINFO_FILENAME'))
-  {
-    return pathinfo($file,PATHINFO_FILENAME);
-  }
-  else
-  {
-    $position_filename  = strrpos($file,'/');
-    $position_filename  = ($position_filename!==FALSE) ? $position_filename+1 : 0 ;
-    $position_extension = strrpos($file,'.');
-    $filename_length    = ($position_extension!==FALSE) ? $position_extension - $position_filename : strlen($file) ;
-    return substr($file,$position_filename,$filename_length);
-  }
-}
-
-/**
- * La fonction str_getcsv() n'est disponible que depuis PHP 5.3 ; SACoche n'exigeant que PHP 5.1 minimum, la définir si besoin.
- * @see http://us2.php.net/manual/fr/function.str-getcsv.php#111577
- */
-if (!function_exists('str_getcsv'))
-{
-  function str_getcsv($input, $delimiter = ',', $enclosure = '"')
-  {
-
-    if( ! preg_match("/[$enclosure]/", $input) )
-    {
-      return (array)preg_replace(array("/^\\s*/", "/\\s*$/"), '', explode($delimiter, $input));
-    }
-    $token = "##"; $token2 = "::"; //alternate tokens "\034\034", "\035\035", "%%";
-    $t1 = preg_replace(
-      array("/\\\[$enclosure]/", "/$enclosure{2}/", "/[$enclosure]\\s*[$delimiter]\\s*[$enclosure]\\s*/", "/\\s*[$enclosure]\\s*/"),
-      array($token2, $token2, $token, $token),
-      trim(trim(trim($input),$enclosure))
-    );
-    $a = explode($token, $t1);
-    foreach($a as $k=>$v)
-    {
-      $v = str_replace( $delimiter.$delimiter , $delimiter.' '.$delimiter , $v ); // Patch perso sinon les colonnes vides disparaissent
-      if ( preg_match("/^{$delimiter}/", $v) || preg_match("/{$delimiter}$/", $v) )
-      {
-        $a[$k] = trim($v, $delimiter); $a[$k] = preg_replace("/$delimiter/", "$token", $a[$k]);
-      }
-    }
-    $a = explode($token, implode($token, $a));
-    return (array)preg_replace(array("/^\\s/", "/\\s$/", "/$token2/"), array('', '', $enclosure), $a);
-  }
-}
-
-// ============================================================================
 // Constante SACoche - Atteste l'appel de ce fichier avant inclusion d'une autre page & permet de connaître le nom du script initial.
 // ============================================================================
 
-define( 'SACoche', pathinfo_filename($_SERVER['SCRIPT_NAME']) );
+if(defined('PATHINFO_FILENAME'))
+{
+  define( 'SACoche', pathinfo( $_SERVER['SCRIPT_NAME'] , PATHINFO_FILENAME ) );
+}
+else
+{
+  // Pour eviter une erreur fatale d'entrée, le paramètre PATHINFO_FILENAME de la fonction pathinfo() n'étant disponible que depuis PHP 5.2.
+  define( 'SACoche', substr( pathinfo( $_SERVER['SCRIPT_NAME'] , PATHINFO_BASENAME ) , 0 , - strlen( pathinfo( $_SERVER['SCRIPT_NAME'] , PATHINFO_EXTENSION ) ) - 1 ) );
+}
 if(SACoche=='_loader') {exit('Ce fichier ne peut être appelé directement !');}
 
 // ============================================================================
-// Config PHP - Versions PHP & MySQL - Modules PHP
+// Configuration PHP
 // ============================================================================
 
 // CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé
@@ -226,31 +49,6 @@ if(SACoche=='_loader') {exit('Ce fichier ne peut être appelé directement !');}
 // Tous les fichiers étant en UTF-8, et le code prévu pour manipuler des données en UTF-8, changer le CHARSET serait assez hasardeux pour ne pas dire risqué...
 define('CHARSET','utf-8');
 define('NL',PHP_EOL);
-
-// Version PHP & MySQL requises et conseillées
-// Attention : ne pas mettre de ".0" (par exemple "5.0") car version_compare() considère que 5 < 5.0 (@see http://fr.php.net/version_compare)
-define('PHP_VERSION_MINI_REQUISE'     ,'5.1');
-define('PHP_VERSION_MINI_CONSEILLEE'  ,'5.4'); // PHP 5.2 n'est plus supporté depuis le 16 décembre 2010. PHP 5.3 ne reçoit plus de correctifs de sécurité depuis le 14 août 2014.
-define('MYSQL_VERSION_MINI_REQUISE'   ,'5.1');
-define('MYSQL_VERSION_MINI_CONSEILLEE','5.5'); // MySQL 5.1 n'est plus supporté depuis le 31 décembre 2013. MySQL 5.5 est stable depuis octobre 2010.
-
-// Vérifier la version de PHP
-if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'<'))
-{
-  exit_error( 'PHP trop ancien' /*titre*/ , 'Version de PHP utilisée sur ce serveur : '.PHP_VERSION.'<br />Version de PHP requise au minimum : '.PHP_VERSION_MINI_REQUISE /*contenu*/ );
-}
-
-// Modules PHP requis
-define('PHP_LISTE_EXTENSIONS' , ' curl , dom , gd , mbstring , PDO , pdo_mysql , session , zip , zlib '); // respecter le séparateur " , "
-
-// Vérifier la présence des modules nécessaires
-$tab_extensions_chargees = get_loaded_extensions();
-$tab_extensions_requises = explode( ' , ' , trim(PHP_LISTE_EXTENSIONS) );
-$tab_extensions_manquantes = array_diff( $tab_extensions_requises , $tab_extensions_chargees );
-if(count($tab_extensions_manquantes))
-{
-  exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : <b>'.implode($tab_extensions_manquantes,' ; ').'</b>.<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
-}
 
 // Définir le décalage horaire par défaut de toutes les fonctions date/heure
 // La fonction date_default_timezone_set() est disponible depuis PHP 5.1 ; on a été stoppé avant si ce n'est pas le cas.
@@ -275,6 +73,47 @@ if(get_magic_quotes_gpc())
   array_walk_recursive($_POST   ,'tab_stripslashes');
   array_walk_recursive($_REQUEST,'tab_stripslashes');
 }
+
+// ============================================================================
+// Versions PHP & MySQL requises
+// ============================================================================
+
+// Version PHP & MySQL requises et conseillées
+// @see commentaire() in ./_inc/class.InfoServeur.php
+// Attention : ne pas mettre de ".0" (par exemple "5.0") car version_compare() considère que 5 < 5.0 (@see http://fr.php.net/version_compare)
+define('PHP_VERSION_MINI_PRE_REQUISE' ,'5.1'); // PHP 5.1 et PHP 5.2 tolérées jusqu'en avril 2016, mais cela devenait trop lourd à gérer (besoin de json_decode).
+define('PHP_VERSION_MINI_REQUISE'     ,'5.3');
+define('PHP_VERSION_MINI_CONSEILLEE'  ,'5.4');
+define('MYSQL_VERSION_MINI_REQUISE'   ,'5.1');
+define('MYSQL_VERSION_MINI_CONSEILLEE','5.5');
+
+// Vérifier la version de PHP
+if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'<'))
+{
+  // Il se peut que la version indiquée soit plus récente que ce qui est indiquée ; un test de présence de éléments nouveaux utilisés évite de se faire avoir.
+  if( version_compare(PHP_VERSION,PHP_VERSION_MINI_PRE_REQUISE,'<') || !function_exists('array_fill_keys') || !function_exists('error_get_last') || !function_exists('json_decode') || !function_exists('json_encode') || !function_exists('str_getcsv') || !defined('PATHINFO_FILENAME') || !defined('PHP_ROUND_HALF_DOWN') )
+  {
+    exit_error( 'PHP trop ancien' /*titre*/ , 'Version de PHP utilisée sur ce serveur : '.PHP_VERSION.'<br />Version de PHP requise au minimum : '.PHP_VERSION_MINI_REQUISE /*contenu*/ );
+  }
+}
+
+// ============================================================================
+// Modules PHP requis
+// ============================================================================
+
+define('PHP_LISTE_EXTENSIONS' , ' curl , dom , gd , json , mbstring , PDO , pdo_mysql , session , zip , zlib '); // respecter le séparateur " , "
+
+// Vérifier la présence des modules nécessaires
+$tab_extensions_chargees = get_loaded_extensions();
+$tab_extensions_requises = explode( ' , ' , trim(PHP_LISTE_EXTENSIONS) );
+$tab_extensions_manquantes = array_diff( $tab_extensions_requises , $tab_extensions_chargees );
+if(count($tab_extensions_manquantes))
+{
+  exit_error( 'PHP incomplet' /*titre*/ , 'Module(s) PHP manquant(s) : <b>'.implode($tab_extensions_manquantes,' ; ').'</b>.<br />Ce serveur n\'a pas la configuration minimale requise.' /*contenu*/ );
+}
+// Rmq : Un souci a été rencontré sur un serveur FreeBSD : fonction json_encode() indéfinie alors qu'un phpinfo() du PHP 5.6.11 indiquait json chargé !
+// Il a fallu explicitement installer le paquet "php56-json" existant dans les dépôts de FreeBSD...
+// @see http://php.net/manual/fr/json.installation.php
 
 // ============================================================================
 // Chemins dans le système de fichiers du serveur (pour des manipulations de fichiers locaux)

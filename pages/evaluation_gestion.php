@@ -373,6 +373,8 @@ Layout::add( 'js_inline_before' , '// ]]>' );
   <div>Tout déployer / contracter :<q class="deployer_m1"></q><q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
   <?php
+  // Sur une installation avec seulement 32 Mo de mémoire il arrive que la simple récupération de l'arborescence complète dépasse cette limite !
+  Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
   // Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $_SESSION['USER_ID'] , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
   if(empty($DB_TAB))

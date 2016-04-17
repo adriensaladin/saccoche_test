@@ -387,11 +387,11 @@ $(document).ready
       }
       else if(mois_actuel < mois_bascule)
       {
-        var affichage = (obj_date.getFullYear()-1)+'/'+obj_date.getFullYear();
+        var affichage = (obj_date.getFullYear()-1)+' / '+obj_date.getFullYear();
       }
       else
       {
-        var affichage = obj_date.getFullYear()+'/'+(obj_date.getFullYear()+1);
+        var affichage = obj_date.getFullYear()+' / '+(obj_date.getFullYear()+1);
       }
       $('#span_simulation').html(affichage);
     }
@@ -445,6 +445,56 @@ $(document).ready
       }
     );
 
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire form_chefetabl
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Alerter sur la nécessité de valider
+    $("#f_chefetabl").change
+    (
+      function()
+      {
+        $('#ajax_msg_chefetabl').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
+      }
+    );
+
+    $('#bouton_valider_chefetabl').click
+    (
+      function()
+      {
+        $("#bouton_valider_chefetabl").prop('disabled',true);
+        $('#ajax_msg_chefetabl').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_chefetabl='+$('#f_chefetabl option:selected').val(),
+            dataType : 'json',
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $("#bouton_valider_chefetabl").prop('disabled',false);
+              $('#ajax_msg_chefetabl').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              return false;
+            },
+            success : function(responseJSON)
+            {
+              initialiser_compteur();
+              $("#bouton_valider_chefetabl").prop('disabled',false);
+              if(responseJSON['statut']==true)
+              {
+                $('#ajax_msg_chefetabl').removeAttr('class').addClass('valide').html("Choix enregistré !");
+              }
+              else
+              {
+                $('#ajax_msg_chefetabl').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              }
+              return false;
+            }
+          }
+        );
+      }
+    );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Traitement du formulaire form_langue

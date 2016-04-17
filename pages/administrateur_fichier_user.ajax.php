@@ -92,6 +92,8 @@ $fichier_dest = 'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE
 // Quelques fonctions utiles
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
+
 function load_fichier($nom)
 {
   global $import_origine,$import_profil;
@@ -150,9 +152,14 @@ function afficher_etapes($import_origine,$import_profil)
   return $puces;
 }
 
-function aff_champ($profil,$type,$val)
+function aff_champ( $profil , $type , $val )
 {
-  if($type!='genre')
+  global $tab_langues;
+  if( ($type=='lv1') || ($type=='lv2') )
+  {
+    return $tab_langues[$val]['texte'];
+  }
+  else if($type!='genre')
   {
     return html($val);
   }

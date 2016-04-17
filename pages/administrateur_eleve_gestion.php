@@ -99,6 +99,7 @@ else
       <th>Login</th>
       <th>Mot de passe</th>
       <th>Courriel</th>
+      <th>Origine</th>
       <th>Date sortie</th>
       <th class="nu"><q class="ajouter" title="Ajouter un élève."></q></th>
     </tr>
@@ -106,7 +107,7 @@ else
   <tbody>
     <?php
     // Lister les élèves
-    $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_login, user_email, user_sortie_date' ;
+    $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_login, user_email, user_sortie_date, eleve_uai_origine' ;
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , $statut /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
     if(!empty($DB_TAB))
     {
@@ -131,6 +132,7 @@ else
         echo  '<td class="label">'.html($DB_ROW['user_login']).'</td>';
         echo  '<td class="label i">champ crypté</td>';
         echo  '<td class="label">'.html($DB_ROW['user_email']).'</td>';
+        echo  '<td class="label">'.html($DB_ROW['eleve_uai_origine']).'</td>';
         echo  '<td class="label">'.$date_sortie.'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier cet élève."></q>';
@@ -140,7 +142,7 @@ else
     }
     else
     {
-      echo'<tr class="vide"><td class="nu" colspan="14"></td><td class="nu"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="15"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -174,6 +176,7 @@ else
     <label class="tab" for="f_password">Mot de passe :</label><input id="box_password" name="box_password" value="1" type="checkbox" checked /> <label for="box_password">aléatoire | inchangé</label><span><input id="f_password" name="f_password" size="<?php echo (PASSWORD_LONGUEUR_MAX-5) ?>" maxlength="<?php echo PASSWORD_LONGUEUR_MAX ?>" type="text" value="" /></span>
   </p>
   <p>
+    <label class="tab" for="f_uai_origine">UAI origine <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Code de l'établissement où l'élève était scolarisé auparavant." /> :</label><input id="f_uai_origine" name="f_uai_origine" type="text" value="" size="8" maxlength="8" /><br />
     <label class="tab" for="f_sortie_date">Date de sortie :</label><input id="box_sortie_date" name="box_sortie_date" value="1" type="checkbox" /> <label for="box_sortie_date">sans objet</label><span><input id="f_sortie_date" name="f_sortie_date" size="8" type="text" value="" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span>
   </p>
   <p>

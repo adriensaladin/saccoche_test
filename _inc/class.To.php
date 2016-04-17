@@ -275,6 +275,33 @@ class To
     }
   }
 
+  /**
+   * Renvoyer l'année scolaire en cours.
+   *
+   * @param string   $format   'texte' | 'code'
+   * @return string
+   */
+  public static function annee_scolaire($format)
+  {
+    $sep = ($format=='code') ? '-' : ' / ' ;
+    $txt = ($format=='code') ? '' : 'Année scolaire ' ;
+    $mois_actuel    = date('n');
+    $annee_actuelle = date('Y');
+    $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'];
+    if($mois_bascule==1)
+    {
+      return $txt.$annee_actuelle;
+    }
+    else if($mois_actuel < $mois_bascule)
+    {
+      return $txt.($annee_actuelle-1).$sep.$annee_actuelle;
+    }
+    else
+    {
+      return $txt.$annee_actuelle.$sep.($annee_actuelle+1);
+    }
+  }
+
 }
 
 ?>

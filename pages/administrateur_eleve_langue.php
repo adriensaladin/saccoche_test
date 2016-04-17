@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Choisir la langue étrangère pour le socle commun"));
+$TITRE = html(Lang::_("Choisir la langue étrangère pour le socle commun / Affecter les LV pour le LSUN"));
 
 if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
@@ -37,6 +37,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit
 }
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
+// A REMPLACER À TERME PAR
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
 // Fonction adaptant le tableau pour un affichage dans un formulaire de type select avec des groupes d'options suivant que ces langues soient ou non enseignées dans l'établissement
 function OPT_langues($tab_langues)
 {
@@ -71,6 +73,8 @@ $select_langue = HtmlForm::afficher_select(OPT_langues($tab_langues) , 'f_langue
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_choisir_langue">DOC : Choisir la langue étrangère pour le socle commun</a></span></p>
 
+<div class="travaux">Affectations LV1 / LV2 ajoutées en prévision de la réforme entrant en vigueur en septembre 2016.</div>
+
 <hr />
 
 <form action="#" method="post" id="form_select">
@@ -81,6 +85,13 @@ $select_langue = HtmlForm::afficher_select(OPT_langues($tab_langues) , 'f_langue
       <span id="f_eleve" class="select_multiple"></span>
     </td>
     <td class="nu" style="width:20em">
+      <b>Objet :</b><br />
+      <select id="f_objet" name="f_objet">
+        <option value=""></option>
+        <option value="langue">socle</option>
+        <option value="lv1">LV1</option>
+        <option value="lv2">LV2</option>
+      </select><p />
       <b>Langue :</b><br />
       <?php echo $select_langue; ?>
     </td>

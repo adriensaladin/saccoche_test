@@ -118,22 +118,6 @@ if( ($action=='positionnement') && $infos_responsables && $horizontal_gauche && 
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire form_mise_en_page, partie "archive"
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='archive')
-{
-  $tab_parametres = array();
-  $tab_parametres['officiel_archive_ajout_message_copie']      = $archive_ajout_message_copie;
-  $tab_parametres['officiel_archive_retrait_tampon_signature'] = $archive_retrait_tampon_signature;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-  // On modifie aussi la session
-  $_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE']      = $archive_ajout_message_copie ;
-  $_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'] = $archive_retrait_tampon_signature ;
-  Json::end( TRUE );
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Traitement du formulaire form_mise_en_page, partie "signature"
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

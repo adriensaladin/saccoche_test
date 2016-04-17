@@ -674,6 +674,10 @@ if($type_individuel)
   {
     // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
     $releve_PDF = new PDF_item_releve( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ );
+    if($make_officiel)
+    {
+      $tab_archive['user'][0][] = array( '__construct' , array( $make_officiel , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , 'oui' /*couleur*/ , $fond , $legende , !empty($is_test_impression) /*filigrane*/ , $tab_archive['session'] ) );
+    }
   }
   /*
    * ********************************
@@ -703,6 +707,7 @@ if($type_individuel)
       }
       foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
       {
+        $is_archive = ( ($make_officiel) && ($numero_tirage==0) && empty($is_test_impression) ) ? TRUE : FALSE ;
         // Si cet élève a été évalué...
         if(isset($tab_eval[$eleve_id]))
         {
@@ -711,6 +716,12 @@ if($type_individuel)
           if($make_csv)  { $releve_CSV .= "\r\n\r\n".$eleve_nom.' '.$eleve_prenom.$csv_head."\r\n"; }
           if($make_pdf)
           {
+            if($is_archive)
+            {
+              $tab_archive['user'][$eleve_id]['image_md5'] = array();
+              $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $longueur_ref_max , $cases_nb , $cases_largeur , $lignes_nb , 1 /*eleve_nb*/ , $pages_nb ) );
+            }
+            //  A RETIRER UNE FOIS LA GESTION DES ARCHIVES MIGREES CAR DEJA GÉRÉ CI-DESSUS
             if( ($make_officiel) && ($couleur=='non') )
             {
               // Le réglage ne semble pertinent que pour les exemplaires que l'établissement destine à l'impression.
@@ -719,8 +730,37 @@ if($type_individuel)
               $releve_PDF->__set('couleur',$couleur_tirage);
             }
             $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
-            $tab_infos_entete = (!$make_officiel) ? array( $bilan_titre , $texte_periode , $groupe_nom ) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
+            $tab_infos_entete = (!$make_officiel) ?
+              array(
+                'bilan_titre'   => $bilan_titre ,
+                'texte_periode' => $texte_periode ,
+                'groupe_nom'    => $groupe_nom ,
+              ) :
+              array(
+                'tab_etabl_coords'          => $tab_etabl_coords ,
+                'tab_etabl_logo'            => $tab_etabl_logo ,
+                'etabl_coords_bloc_hauteur' => $etabl_coords_bloc_hauteur ,
+                'tab_bloc_titres'           => $tab_bloc_titres ,
+                'tab_adresse'               => $tab_adresse ,
+                'tag_date_heure_initiales'  => $tag_date_heure_initiales ,
+                'eleve_genre'               => $eleve_genre ,
+                'date_naissance'            => $date_naissance ,
+              ) ;
             $releve_PDF->entete_format_eleve( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes );
+            if($is_archive)
+            {
+              if(!empty($tab_etabl_logo))
+              {
+                // On remplace l'image par son md5
+                $image_contenu = $tab_etabl_logo['contenu'];
+                $image_md5     = md5($image_contenu);
+                $tab_archive['image'][$image_md5] = $image_contenu;
+                $tab_archive['user'][$eleve_id]['image_md5'][] = $image_md5;
+                $tab_infos_entete['tab_etabl_logo']['contenu'] = $image_md5;
+              }
+              $tab_archive['user'][$eleve_id][] = array( 'entete_format_eleve' , array( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes ) );
+            }
+            //  A RETIRER UNE FOIS LA GESTION DES ARCHIVES MIGREES CAR DEJA GÉRÉ CI-DESSUS
           }
           // Pour chaque matiere...
           foreach($tab_matiere as $matiere_id => $tab)
@@ -736,7 +776,9 @@ if($type_individuel)
                   $item_matiere_nb = count($tab_eval[$eleve_id][$matiere_id]);
                   if( ($make_pdf) && ($releve_modele!='matiere') )
                   {
-                    $releve_PDF->transdisciplinaire_ligne_matiere( $matiere_nom , $item_matiere_nb+$aff_moyenne_scores+$aff_pourcentage_acquis /*lignes_nb*/ );
+                    $matiere_lignes_nb = $item_matiere_nb + $aff_moyenne_scores + $aff_pourcentage_acquis ;
+                    $releve_PDF->transdisciplinaire_ligne_matiere( $matiere_nom , $matiere_lignes_nb );
+                    if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'transdisciplinaire_ligne_matiere' , array( $matiere_nom , $matiere_lignes_nb ) ); }
                   }
                   if($make_html)
                   {
@@ -793,7 +835,9 @@ if($type_individuel)
                     }
                     if($make_pdf)
                     {
-                      $releve_PDF->debut_ligne_item( $item_ref , $texte_coef.$texte_socle.$item_nom );
+                      $item_texte = $texte_coef.$texte_socle.$item_nom;
+                      $releve_PDF->debut_ligne_item( $item_ref , $item_texte );
+                      if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'debut_ligne_item' , array( $item_ref , $item_texte ) ); }
                     }
                     // cases d'évaluations
                     $devoirs_nb = count($tab_devoirs);
@@ -823,11 +867,13 @@ if($type_individuel)
                             }
                             if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
                             if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
+                            if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'afficher_note_lomer' , array( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ) ); }
                           }
                           else
                           {
                             if($make_html) { $releve_HTML_table_body .= '<td>&nbsp;</td>'; }
                             if($make_pdf)  { $releve_PDF->afficher_note_lomer( '' /*note*/ , 1 /*border*/ , 0 /*br*/ ); }
+                            if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'afficher_note_lomer' , array( '' /*note*/ , 1 /*border*/ , 0 /*br*/ ) ); }
                           }
                         }
                         // il y a plus d'évaluations que de cases à remplir : on ne prend que les dernières (décalage d'indice)
@@ -847,6 +893,7 @@ if($type_individuel)
                           }
                           if($make_html) { $releve_HTML_table_body .= '<td'.$td_class.'>'.Html::note_image($note,$date,$info,TRUE).'</td>'; }
                           if($make_pdf)  { $releve_PDF->afficher_note_lomer( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ); }
+                          if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'afficher_note_lomer' , array( $note , 1 /*border*/ , 0 /*br*/ , $pdf_bg ) ); }
                         }
                       }
                     }
@@ -855,11 +902,13 @@ if($type_individuel)
                     {
                       if($make_html) { $releve_HTML_table_body .= Html::td_score( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 'score' , '' /*pourcent*/ , '' /*checkbox_val*/ ).'</tr>'.NL; }
                       if($make_pdf)  { $releve_PDF->afficher_score_bilan( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 1 /*br*/ ); }
+                      if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'afficher_score_bilan' , array( $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] , 1 /*br*/ ) ); }
                     }
                     else
                     {
                       if($make_html) { $releve_HTML_table_body .= '</tr>'.NL; }
-                      if($make_pdf)  { $releve_PDF->SetXY( $releve_PDF->marge_gauche , $releve_PDF->GetY()+$releve_PDF->cases_hauteur ); }
+                      if($make_pdf)  { $releve_PDF->passage_ligne_suivante(); }
+                      if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'passage_ligne_suivante' , array() ); }
                     }
                   }
                   if($make_html)
@@ -885,6 +934,7 @@ if($type_individuel)
                       }
                       if($make_html) { $releve_HTML_table_foot .= '<tr>'.$tfoot_td_nu.'<td colspan="'.$bilan_colspan.'">Moyenne '.$info_ponderation_complete.' des scores d\'acquisitions : '.$texte_bilan.'</td></tr>'.NL; }
                       if($make_pdf)  { $releve_PDF->ligne_synthese('Moyenne '.$info_ponderation_complete.' des scores d\'acquisitions : '.$texte_bilan); }
+                      if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'ligne_synthese' , array( 'Moyenne '.$info_ponderation_complete.' des scores d\'acquisitions : '.$texte_bilan ) ); }
                       if($make_csv)  { $releve_CSV .= $separateur.$pourcentage; }
                     }
                     // ... un pour le nombre d'items considérés acquis ou pas
@@ -903,6 +953,7 @@ if($type_individuel)
                       }
                       if($make_html) { $releve_HTML_table_foot .= '<tr>'.$tfoot_td_nu.'<td colspan="'.$bilan_colspan.'">Pourcentage d\'items acquis '.$texte_bilan.'</td></tr>'.NL; }
                       if($make_pdf)  { $releve_PDF->ligne_synthese('Pourcentage d\'items acquis '.$texte_bilan); }
+                      if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'ligne_synthese' , array( 'Pourcentage d\'items acquis '.$texte_bilan ) ); }
                       if($make_csv)  { $releve_CSV .= $separateur.$pourcentage; }
                     }
                   }
@@ -981,6 +1032,7 @@ if($type_individuel)
                 if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']) && (isset($tab_saisie[$eleve_id][$matiere_id])) )
                 {
                   $releve_PDF->appreciation_rubrique( $tab_saisie[$eleve_id][$matiere_id] );
+                  if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'appreciation_rubrique' , array( $tab_saisie[$eleve_id][$matiere_id] ) ); }
                 }
               }
             }
@@ -1043,7 +1095,7 @@ if($type_individuel)
           {
             if($is_appreciation_generale_enregistree)
             {
-              if( (($numero_tirage==0)&&($_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'])) || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id_appreciation_generale]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id_appreciation_generale]) ) )
+              if( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id_appreciation_generale]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id_appreciation_generale]) ) )
               {
                 $tab_image_tampon_signature = NULL;
               }
@@ -1054,9 +1106,23 @@ if($type_individuel)
             }
             else
             {
-              $tab_image_tampon_signature = ( (($numero_tirage>0)||(!$_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'])) && (in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon'))) ) ? $tab_signature[0] : NULL;
+              $tab_image_tampon_signature = in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon')) ? $tab_signature[0] : NULL;
             }
-            $releve_PDF->appreciation_generale( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_prof_principal+$nb_lignes_supplementaires+$nb_lignes_legendes );
+            $nb_lignes_assiduite_et_pp_et_message_et_legende = $nb_lignes_assiduite+$nb_lignes_prof_principal+$nb_lignes_supplementaires+$nb_lignes_legendes;
+            $releve_PDF->appreciation_generale( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_pp_et_message_et_legende );
+            if($is_archive)
+            {
+              if(!empty($tab_image_tampon_signature))
+              {
+                // On remplace l'image par son md5
+                $image_contenu = $tab_image_tampon_signature['contenu'];
+                $image_md5     = md5($image_contenu);
+                $tab_archive['image'][$image_md5] = $image_contenu;
+                $tab_archive['user'][$eleve_id]['image_md5'][] = $image_md5;
+                $tab_image_tampon_signature['contenu'] = $image_md5;
+              }
+              $tab_archive['user'][$eleve_id][] = array( 'appreciation_generale' , array( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite_et_pp_et_message_et_legende ) );
+            }
           }
           $tab_pdf_lignes_additionnelles = array();
           // Relevé de notes - Absences et retard
@@ -1092,6 +1158,7 @@ if($type_individuel)
           if(count($tab_pdf_lignes_additionnelles))
           {
             $releve_PDF->afficher_lignes_additionnelles($tab_pdf_lignes_additionnelles);
+            if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'afficher_lignes_additionnelles' , array( $tab_pdf_lignes_additionnelles ) ); }
           }
           // Relevé de notes - Date de naissance
           if( ($make_officiel) && ($date_naissance) && ( ($make_html) || ($make_graph) ) )
@@ -1103,11 +1170,13 @@ if($type_individuel)
           {
             if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel , FALSE /*force_nb*/ , $highlight_id ); }
             if($make_pdf)  { $releve_PDF->legende(); }
+            if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'legende' , array() ); }
           }
           // Indiquer a posteriori le nombre de pages par élève
           if($make_pdf)
           {
             $page_nb = $releve_PDF->reporter_page_nb();
+            if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'reporter_page_nb' , array() ); }
             if( !empty($page_parite) && ($page_nb%2) )
             {
               $releve_PDF->ajouter_page_blanche();

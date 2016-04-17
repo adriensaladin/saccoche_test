@@ -107,6 +107,21 @@ foreach($tab_ip_variable as $option_value => $option_texte)
   $options_ip_variable .= '<option value="'.$option_value.'"'.$selected.'>'.$option_texte.'</option>';
 }
 
+// Formulaire SELECT pour le chef d'établissement
+$options_chefetabl = '<option value="0"></option>';
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'directeur' , 1 /*statut*/ , 'user_id,user_nom,user_prenom' , FALSE /*with_classe*/ );
+if(!empty($DB_TAB))
+{
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $selected = ($DB_ROW['user_id']==$_SESSION['ETABLISSEMENT']['CHEF_ID']) ? ' selected' : '' ;
+    $options_chefetabl .= '<option value="'.$DB_ROW['user_id'].'"'.$selected.'>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
+  }
+}
+else
+{
+  $options_chefetabl .= '<option value="0" disabled>Aucun personnel actif de profil "directeur" n\'est enregistré !</option>';
+}
 ?>
 
 <div id="div_instance">
@@ -177,6 +192,19 @@ foreach($tab_ip_variable as $option_value => $option_texte)
     <p><label class="tab" for="f_logo">Uploader image :</label><input type="hidden" name="f_action" value="upload_logo" /><input id="f_logo" type="file" name="userfile" /><button id="bouton_choisir_logo" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_logo">&nbsp;</label></p>
   </form>
   <ul class="puce" id="puce_logo"><?php echo $li_logo ?></ul>
+
+  <form action="#" method="post" id="form_chefetabl">
+    <hr />
+    <h2>Chef d'établissement</h2>
+    <p class="astuce">
+      En collège, pour établir les bilans périodiques et attestations du <em>LSUN</em>, il est requis de désigner le chef d'établissement.<br />
+      En dehors de ce cas précis, ce n'est pas nécessaire au fonctionnement de <em>SACoche</em>.
+    </p>
+    <p>
+      <label class="tab" for="f_chefetabl">Principal(e) :</label><select id="f_chefetabl" name="f_chefetabl"><?php echo $options_chefetabl; ?></select><br />
+      <span class="tab"></span><button id="bouton_valider_chefetabl" type="button" class="parametre">Valider.</button><label id="ajax_msg_chefetabl">&nbsp;</label>
+    </p>
+  </form>
 
   <form action="#" method="post" id="form_annee_scolaire">
     <hr />

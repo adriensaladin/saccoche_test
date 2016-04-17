@@ -37,27 +37,32 @@ $tab_liens_id_base = load_fichier('liens_id_base');
 $tab_i_classe_TO_id_base  = $tab_liens_id_base['classes'];
 $tab_i_groupe_TO_id_base  = $tab_liens_id_base['groupes'];
 $tab_i_fichier_TO_id_base = $tab_liens_id_base['users'];
-// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / genre / nom / prenom / birth_date / courriel / classe / groupes / matieres / adresse / enfant
+// On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / genre / nom / prenom / birth_date / courriel / uai_origine / lv1 / lv2 / classe / groupes / matieres / adresse / enfant
 $tab_users_fichier = load_fichier('users');
 // On récupère le fichier avec les classes : $tab_classes_fichier['ref'] : i -> ref ; $tab_classes_fichier['nom'] : i -> nom ; $tab_classes_fichier['niveau'] : i -> niveau
 $tab_classes_fichier = load_fichier('classes');
-// On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / genre / nom / prenom / birth_date / courriel / email_origine / statut / classe / adresse
-$tab_users_base                 = array();
-$tab_users_base['sconet_id'   ] = array();
-$tab_users_base['sconet_num'  ] = array();
-$tab_users_base['reference'   ] = array();
-$tab_users_base['profil_sigle'] = array();
-$tab_users_base['genre'       ] = array();
-$tab_users_base['nom'         ] = array();
-$tab_users_base['prenom'      ] = array();
-$tab_users_base['birth_date'  ] = array();
-$tab_users_base['courriel'    ] = array();
-$tab_users_base['sortie'      ] = array();
-$tab_users_base['classe'      ] = array();
-$tab_users_base['adresse'     ] = array();
+// On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / genre / nom / prenom / birth_date / courriel / email_origine / uai_origine / lv1 / lv2 / statut / classe / adresse
+$tab_users_base                  = array();
+$tab_users_base['sconet_id'    ] = array();
+$tab_users_base['sconet_num'   ] = array();
+$tab_users_base['reference'    ] = array();
+$tab_users_base['profil_sigle' ] = array();
+$tab_users_base['genre'        ] = array();
+$tab_users_base['nom'          ] = array();
+$tab_users_base['prenom'       ] = array();
+$tab_users_base['birth_date'   ] = array();
+$tab_users_base['courriel'     ] = array();
+$tab_users_base['email_origine'] = array();
+$tab_users_base['uai_origine'  ] = array();
+$tab_users_base['lv1'          ] = array();
+$tab_users_base['lv2'          ] = array();
+$tab_users_base['sortie'       ] = array();
+$tab_users_base['classe'       ] = array();
+$tab_users_base['adresse'      ] = array();
 $profil_type = ($import_profil!='professeur') ? $import_profil : array('professeur','directeur') ;
 $with_classe = ($import_profil=='eleve') ? TRUE : FALSE ;
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_genre,user_nom,user_prenom,user_naissance_date,user_email,user_email_origine,user_sortie_date' /*liste_champs*/ , $with_classe , FALSE /*tri_statut*/ );
+$liste_champs = 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_genre,user_nom,user_prenom,user_naissance_date,user_email,user_email_origine,user_sortie_date,eleve_uai_origine,eleve_lv1,eleve_lv2';
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $profil_type , 2 /*actuels_et_anciens*/ , $liste_champs , $with_classe , FALSE /*tri_statut*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_users_base['sconet_id'    ][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];
@@ -70,6 +75,9 @@ foreach($DB_TAB as $DB_ROW)
   $tab_users_base['birth_date'   ][$DB_ROW['user_id']] = To::date_mysql_to_french($DB_ROW['user_naissance_date']);
   $tab_users_base['courriel'     ][$DB_ROW['user_id']] = $DB_ROW['user_email'] ;
   $tab_users_base['email_origine'][$DB_ROW['user_id']] = $DB_ROW['user_email_origine'] ;
+  $tab_users_base['uai_origine'  ][$DB_ROW['user_id']] = $DB_ROW['eleve_uai_origine'] ;
+  $tab_users_base['lv1'          ][$DB_ROW['user_id']] = $DB_ROW['eleve_lv1'];
+  $tab_users_base['lv2'          ][$DB_ROW['user_id']] = $DB_ROW['eleve_lv2'];
   $tab_users_base['sortie'       ][$DB_ROW['user_id']] = $DB_ROW['user_sortie_date'] ;
   $tab_users_base['classe'       ][$DB_ROW['user_id']] = ($import_profil=='eleve') ? $DB_ROW['groupe_ref'] : '' ;
 }
@@ -131,14 +139,17 @@ foreach($tab_indices_fichier as $i_fichier)
     $id_classe = ( ($import_profil=='eleve') && isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]]) ) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
     $email_origine = ($tab_users_fichier['courriel'][$i_fichier]) ? 'admin' : '' ;
     $tab_users_ajouter[$i_fichier] = array(
-      'sconet_id'     => $tab_users_fichier['sconet_id' ][$i_fichier] ,
-      'sconet_num'    => $tab_users_fichier['sconet_num'][$i_fichier] ,
-      'reference'     => $tab_users_fichier['reference' ][$i_fichier] ,
-      'genre'         => $tab_users_fichier['genre'     ][$i_fichier] ,
-      'nom'           => $tab_users_fichier['nom'       ][$i_fichier] ,
-      'prenom'        => $tab_users_fichier['prenom'    ][$i_fichier] ,
-      'courriel'      => $tab_users_fichier['courriel'  ][$i_fichier] ,
+      'sconet_id'     => $tab_users_fichier['sconet_id'   ][$i_fichier] ,
+      'sconet_num'    => $tab_users_fichier['sconet_num'  ][$i_fichier] ,
+      'reference'     => $tab_users_fichier['reference'   ][$i_fichier] ,
+      'genre'         => $tab_users_fichier['genre'       ][$i_fichier] ,
+      'nom'           => $tab_users_fichier['nom'         ][$i_fichier] ,
+      'prenom'        => $tab_users_fichier['prenom'      ][$i_fichier] ,
+      'courriel'      => $tab_users_fichier['courriel'    ][$i_fichier] ,
       'email_origine' => $email_origine ,
+      'uai_origine'   => $tab_users_fichier['uai_origine' ][$i_fichier] ,
+      'lv1'           => $tab_users_fichier['lv1'         ][$i_fichier] ,
+      'lv2'           => $tab_users_fichier['lv2'         ][$i_fichier] ,
       'profil_sigle'  => $tab_users_fichier['profil_sigle'][$i_fichier] ,
       'classe'        => $id_classe
     );
@@ -166,8 +177,30 @@ foreach($tab_indices_fichier as $i_fichier)
     // On compare les données de 2 enregistrements pour voir si des choses ont été modifiées
     $td_modif = '';
     $nb_modif = 0;
-    $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id'=>'Id Sconet' , 'sconet_num'=>'n° Sconet' , 'reference'=>'Référence' , 'genre'=>'Genre' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'birth_date'=>'Date Naiss.' , 'courriel'=>'Courriel' , 'classe'=>'Classe' )
-                                            : array( 'sconet_id'=>'Id Sconet' , 'reference'=>'Référence' , 'profil_sigle'=>'Profil' , 'genre'=>'Civilité' , 'nom'=>'Nom' , 'prenom'=>'Prénom' , 'courriel'=>'Courriel' ) ;
+    $tab_champs = ($import_profil=='eleve')
+                ? array(
+                    'sconet_id'   => 'Id Sconet' ,
+                    'sconet_num'  => 'n° Sconet' ,
+                    'reference'   => 'Référence' ,
+                    'genre'       => 'Genre' ,
+                    'nom'         => 'Nom' ,
+                    'prenom'      => 'Prénom' ,
+                    'birth_date'  => 'Date Naiss.' ,
+                    'courriel'    => 'Courriel' ,
+                    'uai_origine' => 'Origine' ,
+                    'lv1'         => 'LV1' ,
+                    'lv2'         => 'LV2' ,
+                    'classe'      => 'Classe' ,
+                  )
+                : array(
+                    'sconet_id'     => 'Id Sconet' ,
+                    'reference'     => 'Référence' ,
+                    'profil_sigle'  => 'Profil' ,
+                    'genre'         => 'Civilité' ,
+                    'nom'           => 'Nom' ,
+                    'prenom'        => 'Prénom' ,
+                    'courriel'      => 'Courriel' ,
+                  );
     foreach($tab_champs as $champ_ref => $champ_aff)
     {
       if($champ_ref=='classe')
@@ -175,7 +208,7 @@ foreach($tab_indices_fichier as $i_fichier)
         $id_classe = (isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]])) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
         $tab_users_fichier[$champ_ref][$i_fichier] = ($id_classe) ? $tab_classes_fichier['ref'][$tab_users_fichier['classe'][$i_fichier]] : '' ;
       }
-      if($champ_ref=='courriel')
+      else if($champ_ref=='courriel')
       {
         $test_saisie_user  = ($tab_users_base['email_origine'][$id_base]=='user') && Outil::test_user_droit_specifique( $_SESSION['DROIT_MODIFIER_EMAIL'] , NULL , 0 , $tab_users_fichier['profil_sigle'][$i_fichier] , NULL ) ;
         $test_saisie_admin = ($tab_users_base['email_origine'][$id_base]=='admin') && $tab_users_base[$champ_ref][$id_base] && !$tab_users_fichier[$champ_ref][$i_fichier] ;
@@ -185,7 +218,23 @@ foreach($tab_indices_fichier as $i_fichier)
           $tab_users_base[$champ_ref][$id_base] = $tab_users_fichier[$champ_ref][$i_fichier];
         }
       }
-      if($tab_users_base[$champ_ref][$id_base]!=$tab_users_fichier[$champ_ref][$i_fichier])
+      else if($champ_ref=='uai_origine')
+      {
+        // N'est renseigné que pour un import SIECLE et si élève pas déjà scolarisé dans cet établissement précédemment : on n'écrase pas la valeur en BDD dans les autres cas.
+        if( !$tab_users_fichier[$champ_ref][$i_fichier] )
+        {
+          $tab_users_fichier[$champ_ref][$i_fichier] = $tab_users_base[$champ_ref][$id_base];
+        }
+      }
+      else if( ($champ_ref=='lv1') || ($champ_ref=='lv2') )
+      {
+        // N'est renseigné que pour un import SIECLE : on n'écrase pas la valeur en BDD dans les autres cas.
+        if( !$tab_users_fichier[$champ_ref][$i_fichier] || ($tab_users_fichier[$champ_ref][$i_fichier]==100) )
+        {
+          $tab_users_fichier[$champ_ref][$i_fichier] = $tab_users_base[$champ_ref][$id_base];
+        }
+      }
+      if( ($tab_users_base[$champ_ref][$id_base]!=$tab_users_fichier[$champ_ref][$i_fichier]) )
       {
         $td_modif .= ' || <b>'.$champ_aff.' : '.aff_champ($import_profil,$champ_ref,$tab_users_base[$champ_ref][$id_base]).' &rarr; '.aff_champ($import_profil,$champ_ref,$tab_users_fichier[$champ_ref][$i_fichier]).'</b>';
         $tab_users_modifier[$id_base][$champ_ref] = ($champ_ref!='classe') ? $tab_users_fichier[$champ_ref][$i_fichier] : $id_classe ;
@@ -271,10 +320,18 @@ if(count($tab_users_base['sconet_id']))
 }
 unset($_SESSION['tmp']['date_sortie']);
 // On enregistre
-$tab_memo_analyse = array('modifier'=>$tab_users_modifier,'ajouter'=>$tab_users_ajouter,'retirer'=>$tab_users_retirer);
+$tab_memo_analyse = array(
+  'modifier' => $tab_users_modifier,
+  'ajouter'  => $tab_users_ajouter,
+  'retirer'  => $tab_users_retirer,
+);
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
 // On enregistre (tableau mis à jour)
-$tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
+$tab_liens_id_base = array(
+  'classes' => $tab_i_classe_TO_id_base,
+  'groupes' => $tab_i_groupe_TO_id_base,
+  'users'   => $tab_i_fichier_TO_id_base,
+);
 FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 // On affiche
 Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label></p>'.NL);

@@ -36,9 +36,6 @@ $check_courriel     = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMEN
 $check_url          = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'url'))          ? ' checked' : '' ;
 $check_logo         = (mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] ,'logo'))         ? ' checked' : '' ;
 
-$check_archive_ajout_message_copie      = ($_SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])      ? ' checked' : '' ;
-$check_archive_retrait_tampon_signature = ($_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE']) ? ' checked' : '' ;
-
 $options_infos_responsables = '<option value="non">ne pas indiquer les coordonnées des responsables</option><option value="oui_libre">indiquer les coordonnées des responsables, emplacement libre</option><option value="oui_force">indiquer les coordonnées des responsables, emplacement forcé (enveloppe à fenêtre)</option>';
 $options_infos_responsables = str_replace( '"'.$_SESSION['OFFICIEL']['INFOS_RESPONSABLES'].'"' , '"'.$_SESSION['OFFICIEL']['INFOS_RESPONSABLES'].'" selected' , $options_infos_responsables );
 
@@ -146,15 +143,6 @@ $li_signatures = ($li_signatures) ? $li_signatures : '<li id="sgn_none">Aucun fi
   </p>
   <p>
     <span class="tab"></span><button id="bouton_valider_positionnement" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_positionnement">&nbsp;</label>
-  </p>
-  <hr />
-  <h2>Archives consultables</h2>
-  <p>
-    <label class="tab">&nbsp;</label><label for="f_archive_ajout_message_copie"><input type="checkbox" id="f_archive_ajout_message_copie" name="f_archive_ajout_message_copie" value="1"<?php echo $check_archive_ajout_message_copie ?> /> ajout de la mention <i>&laquo;&nbsp;Copie partielle pour information. Seul l'original fait foi.&nbsp;&raquo;</i></label><br />
-    <label class="tab">&nbsp;</label><label for="f_archive_retrait_tampon_signature"><input type="checkbox" id="f_archive_retrait_tampon_signature" name="f_archive_retrait_tampon_signature" value="1"<?php echo $check_archive_retrait_tampon_signature ?> /> ne pas faire figurer le tampon de l'établissement ni de signature utilisateur</label>&nbsp;&nbsp;&nbsp;
-  </p>
-  <p>
-    <span class="tab"></span><button id="bouton_valider_archive" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_archive">&nbsp;</label>
   </p>
   <hr />
   <h2>Tampon &amp; Signatures</h2>

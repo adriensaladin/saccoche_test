@@ -58,6 +58,9 @@ $tab_users_fichier['adresse']      = array(); // Avec id sconet_id // Adresse du
 $tab_users_fichier['enfant']       = array(); // Avec id sconet_id // Liste des élèves rattachés
 $tab_users_fichier['birth_date']   = array();
 $tab_users_fichier['courriel']     = array();
+$tab_users_fichier['uai_origine']  = array();
+$tab_users_fichier['lv1']          = array();
+$tab_users_fichier['lv2']          = array();
 
 // Pour récupérer les données des classes et des groupes
 $tab_classes_fichier['ref']    = array();
@@ -352,6 +355,7 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
   if( ($xml->DONNEES) && ($xml->DONNEES->ELEVES) && ($xml->DONNEES->ELEVES->ELEVE) )
   {
     $tab_genre = array( 0=>'I' , 1=>'M' , 2=>'F' );
+    $tab_structure_origine = array();
     foreach ($xml->DONNEES->ELEVES->ELEVE as $eleve)
     {
       $i_fichier = Clean::entier($eleve->attributes()->ELEVE_ID);
@@ -362,6 +366,29 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
       }
       else
       {
+        $uai_origine = '';
+        if($eleve->SCOLARITE_AN_DERNIER)
+        {
+          $scolarite_an_dernier = $eleve->SCOLARITE_AN_DERNIER;
+          if($scolarite_an_dernier->CODE_RNE)
+          {
+            $code_rne = Clean::uai($scolarite_an_dernier->CODE_RNE);
+            if( $code_rne != $_SESSION['WEBMESTRE_UAI'] )
+            {
+              $uai_origine = $code_rne;
+              $denomination = ( $scolarite_an_dernier->SIGLE && !empty($scolarite_an_dernier->DENOM_COMPL) ) // Le test !empty() est obligatoire, sinon ça renvoie un objet SimpleXMLElement équivalent à TRUE même pour une chaine vide
+                              ? Clean::ref($scolarite_an_dernier->SIGLE).' '.Clean::structure($scolarite_an_dernier->DENOM_COMPL)
+                              : ( ($scolarite_an_dernier->DENOM_PRINC) ? Clean::structure($scolarite_an_dernier->DENOM_PRINC) : '' ) ;
+              $localisation = ($scolarite_an_dernier->LL_COMMUNE_INSEE) ? Clean::ref($scolarite_an_dernier->LL_COMMUNE_INSEE) : '' ; // Pas Clean::commune() car limitée à 45 caract.
+              $courriel     = ($scolarite_an_dernier->MEL) ? Clean::courriel($scolarite_an_dernier->MEL) : '' ;
+              $tab_structure_origine[$uai_origine] = array(
+                'denomination' => $denomination,
+                'localisation' => $localisation,
+                'courriel'     => $courriel,
+              );
+            }
+          }
+        }
         $tab_users_fichier['sconet_id'   ][$i_fichier] = $i_fichier;
         $tab_users_fichier['sconet_num'  ][$i_fichier] = Clean::entier($eleve->attributes()->ELENOET);
         $tab_users_fichier['reference'   ][$i_fichier] = Clean::ref($eleve->ID_NATIONAL);
@@ -371,9 +398,40 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
         $tab_users_fichier['prenom'      ][$i_fichier] = Clean::prenom($eleve->PRENOM);
         $tab_users_fichier['birth_date'  ][$i_fichier] = Clean::texte($eleve->DATE_NAISS);
         $tab_users_fichier['courriel'    ][$i_fichier] = Clean::courriel($eleve->MEL);
+        $tab_users_fichier['uai_origine' ][$i_fichier] = $uai_origine;
+        $tab_users_fichier['lv1'         ][$i_fichier] = 100;
+        $tab_users_fichier['lv2'         ][$i_fichier] = 100;
         $tab_users_fichier['classe'      ][$i_fichier] = '';
         $tab_users_fichier['groupe'      ][$i_fichier] = array();
         $tab_users_fichier['niveau'      ][$i_fichier] = Clean::ref($eleve->CODE_MEF);
+      }
+    }
+    // On ajoute les structures d'origine sans attendre davantage.
+    if( !empty($tab_structure_origine) )
+    {
+      foreach ($tab_structure_origine as $uai_origine => $tab)
+      {
+        DB_STRUCTURE_ADMINISTRATEUR::DB_remplacer_structure_origine( $uai_origine , $tab['denomination'] , $tab['localisation'] , $tab['courriel'] );
+      }
+    }
+  }
+  //
+  // On passe les options en revue pour renseigner LV1 / LV2
+  //
+  if( ($xml->DONNEES) && ($xml->DONNEES->OPTIONS) && ($xml->DONNEES->OPTIONS->OPTION) )
+  {
+    foreach ($xml->DONNEES->OPTIONS->OPTION as $options_eleve)
+    {
+      $i_fichier = Clean::entier($options_eleve->attributes()->ELEVE_ID);
+      foreach ($options_eleve->OPTIONS_ELEVE as $option)
+      {
+        $option_code = Clean::entier($option->CODE_MATIERE);
+        $langue_code = floor($option_code/100);
+        $langue_num  = $option_code % 10;
+        if( isset($tab_users_fichier['sconet_id'][$i_fichier]) && isset($tab_code_bcn_to_pays[$langue_code]) && ( ($langue_num==1) || ($langue_num==2) ) )
+        {
+          $tab_users_fichier['lv'.$langue_num][$i_fichier] = $tab_code_bcn_to_pays[$langue_code];
+        }
       }
     }
   }
@@ -696,6 +754,9 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
         $tab_users_fichier['prenom'      ][] = Clean::prenom($prenom);
         $tab_users_fichier['birth_date'  ][] = Clean::texte($birth_date);
         $tab_users_fichier['courriel'    ][] = Clean::courriel($courriel);
+        $tab_users_fichier['uai_origine' ][] = '';
+        $tab_users_fichier['lv1'         ][] = 100;
+        $tab_users_fichier['lv2'         ][] = 100;
         // classe
         $classe_ref = mb_substr(Clean::ref($classe),0,8);
         $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
@@ -1376,6 +1437,9 @@ switch($import_origine.'+'.$import_profil)
       $tab_users_fichier['sconet_num'],
       $tab_users_fichier['reference'],
       $tab_users_fichier['profil_sigle'],
+      $tab_users_fichier['uai_origine'],
+      $tab_users_fichier['lv1'],
+      $tab_users_fichier['lv2'],
       $tab_users_fichier['classe'],
       $tab_users_fichier['groupe']
     );

@@ -519,7 +519,21 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         $releve_PDF->__set('couleur',$couleur_tirage);
       }
       $eleve_nb_lignes  = $tab_nb_lignes_total_eleve[$eleve_id] + $nb_lignes_appreciation_generale_avec_intitule + $nb_lignes_assiduite + $nb_lignes_prof_principal + $nb_lignes_supplementaires;
-      $tab_infos_entete = (!$make_officiel) ? array($titre1,$titre2) : array($tab_etabl_coords,$tab_etabl_logo,$etabl_coords__bloc_hauteur,$tab_bloc_titres,$tab_adresse,$tag_date_heure_initiales,$eleve_genre,$date_naissance) ;
+      $tab_infos_entete = (!$make_officiel) ?
+        array(
+          'titre'      => $titre1 ,
+          'palier_nom' => $titre2 ,
+        ) :
+        array(
+          'tab_etabl_coords'          => $tab_etabl_coords ,
+          'tab_etabl_logo'            => $tab_etabl_logo ,
+          'etabl_coords_bloc_hauteur' => $etabl_coords_bloc_hauteur ,
+          'tab_bloc_titres'           => $tab_bloc_titres ,
+          'tab_adresse'               => $tab_adresse ,
+          'tag_date_heure_initiales'  => $tag_date_heure_initiales ,
+          'eleve_genre'               => $eleve_genre ,
+          'date_naissance'            => $date_naissance ,
+        ) ;
       $releve_PDF->entete( $tab_infos_entete , $break , $eleve_id , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes );
     }
     if($make_html)
@@ -735,7 +749,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       {
         if($is_appreciation_generale_enregistree)
         {
-          if( (($numero_tirage==0)&&($_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'])) || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id_appreciation_generale]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id_appreciation_generale]) ) )
+          if( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='sans') || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='tampon') && (!$tab_signature[0]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') && (!$tab_signature[$prof_id_appreciation_generale]) ) || ( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') && (!$tab_signature[0]) && (!$tab_signature[$prof_id_appreciation_generale]) ) )
           {
             $tab_image_tampon_signature = NULL;
           }
@@ -746,7 +760,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         }
         else
         {
-          $tab_image_tampon_signature = ( (($numero_tirage>0)||(!$_SESSION['OFFICIEL']['ARCHIVE_RETRAIT_TAMPON_SIGNATURE'])) && (in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon'))) ) ? $tab_signature[0] : NULL;
+          $tab_image_tampon_signature = in_array($_SESSION['OFFICIEL']['TAMPON_SIGNATURE'],array('tampon','signature_ou_tampon')) ? $tab_signature[0] : NULL;
         }
         $releve_PDF->appreciation_generale( $prof_id_appreciation_generale , $tab_appreciation_generale , $tab_image_tampon_signature , $nb_lignes_appreciation_generale_avec_intitule , $nb_lignes_assiduite+$nb_lignes_prof_principal+$nb_lignes_supplementaires+$nb_lignes_legendes );
       }

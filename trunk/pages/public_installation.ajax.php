@@ -529,7 +529,7 @@ if( $step==7 )
       DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
       // Insérer un compte administrateur dans la base de la structure
       $password = Outil::fabriquer_mdp();
-      $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , WEBMESTRE_COURRIEL , 'user' /*user_email_origine*/ , 'admin' /*login*/ , Outil::crypter_mdp($password) , 0 /*classe_id*/ , '' /*id_ent*/ , '' /*id_gepi*/ );
+      $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , WEBMESTRE_COURRIEL , 'user' /*user_email_origine*/ , 'admin' /*login*/ , Outil::crypter_mdp($password) );
       // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
       DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'contact_externe' , 'accueil' );
       // Affichage du retour

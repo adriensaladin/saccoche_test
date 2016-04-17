@@ -166,7 +166,7 @@ class SessionUser
   {
     // Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
     $DB_TAB_PARAM = DB_STRUCTURE_PUBLIC::DB_lister_parametres();
-    $tab_type_entier  = array(
+    $tab_type_entier = array(
       'SESAMATH_ID',
       'MOIS_BASCULE_ANNEE_SCOLAIRE',
       'DROIT_ELEVE_DEMANDES',
@@ -179,11 +179,10 @@ class SessionUser
       'ENVELOPPE_VERTICAL_HAUT',
       'ENVELOPPE_VERTICAL_MILIEU',
       'ENVELOPPE_VERTICAL_BAS',
+      'ETABLISSEMENT_CHEF_ID',
       'ETABLISSEMENT_IP_VARIABLE',
       'NOMBRE_CODES_NOTATION',
       'NOMBRE_ETATS_ACQUISITION',
-      'OFFICIEL_ARCHIVE_AJOUT_MESSAGE_COPIE',
-      'OFFICIEL_ARCHIVE_RETRAIT_TAMPON_SIGNATURE',
       'OFFICIEL_BULLETIN_ONLY_SOCLE',
       'OFFICIEL_BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR',
       'OFFICIEL_BULLETIN_APPRECIATION_RUBRIQUE_REPORT',

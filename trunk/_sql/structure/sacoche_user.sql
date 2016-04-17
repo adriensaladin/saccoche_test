@@ -7,7 +7,7 @@ DROP TABLE IF EXISTS sacoche_user;
 CREATE TABLE sacoche_user (
   user_id             MEDIUMINT(8)            UNSIGNED                NOT NULL AUTO_INCREMENT,
   user_sconet_id      MEDIUMINT(8)            UNSIGNED                NOT NULL DEFAULT 0   COMMENT "ELEVE.ELEVE.ID pour un élève ; INDIVIDU_ID pour un prof ; PERSONNE_ID pour un parent",
-  user_sconet_elenoet SMALLINT(5)             UNSIGNED                NOT NULL DEFAULT 0   COMMENT "ELENOET pour un élève (entre 2000 et 5000 ; parfois appelé n° GEP avec un 0 devant). Ce champ sert aussi pour un import Factos.",
+  user_sconet_elenoet SMALLINT(5)             UNSIGNED                NOT NULL DEFAULT 0   COMMENT "ELENOET pour un élève (entre 2000 et 5000 ; parfois appelé n° GEP avec un 0 devant). Ce champ sert aussi pour un import Factos (élèves et parents).",
   user_reference      CHAR(11)                COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Dans Sconet, ID_NATIONAL pour un élève (pour un prof ce pourrait être le NUMEN mais il n'est pas renseigné et il faudrait deux caractères de plus). Ce champ sert aussi pour un import tableur.",
   user_profil_sigle   CHAR(3)                 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Nomenclature issue de la BCN (table n_fonction_filiere) et de user_profils SDET.",
   user_genre          ENUM("I","M","F")       COLLATE utf8_unicode_ci NOT NULL DEFAULT "I" COMMENT "Indéterminé / Masculin / Féminin",
@@ -24,6 +24,9 @@ CREATE TABLE sacoche_user (
   user_sortie_date    DATE                                            NOT NULL DEFAULT "9999-12-31" COMMENT "Une valeur NULL par défaut compliquerait les requêtes (il faudrait tester NULL || > NOW ).",
   eleve_classe_id     MEDIUMINT(8)            UNSIGNED                NOT NULL DEFAULT 0,
   eleve_langue        TINYINT(3)              UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue choisie pour le socle.",
+  eleve_lv1           TINYINT(3)              UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue vivante 1 pour LSUN.",
+  eleve_lv2           TINYINT(3)              UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue vivante 2 pour LSUN.",
+  eleve_uai_origine   CHAR(8)                 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Pour un envoi de documents officiels à l'établissement d'origine.",
   eleve_brevet_serie  VARCHAR(6)              COLLATE utf8_unicode_ci NOT NULL DEFAULT "X" COMMENT "Série du brevet pour Notanet.",
   user_id_ent         VARCHAR(63)             COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",
   user_id_gepi        VARCHAR(63)             COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Login de l'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin.",

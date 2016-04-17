@@ -667,6 +667,28 @@ public static function DB_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$re
 }
 
 /**
+ * remplacer_structure_origine
+ *
+ * @param string $uai
+ * @param string $denomination
+ * @param string $localisation
+ * @param string $courriel
+ * @return void
+ */
+public static function DB_remplacer_structure_origine( $uai , $denomination , $localisation , $courriel )
+{
+  $DB_SQL = 'REPLACE INTO sacoche_structure_origine(structure_uai, structure_denomination, structure_localisation, structure_courriel) ';
+  $DB_SQL.= 'VALUES(                               :structure_uai,:structure_denomination,:structure_localisation,:structure_courriel)';
+  $DB_VAR = array(
+    ':structure_uai'          => $uai,
+    ':structure_denomination' => $denomination,
+    ':structure_localisation' => $localisation,
+    ':structure_courriel'     => $courriel,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * Dupliquer pour tous les utilisateurs une série d'identifiants vers un autre champ (exemples : id_gepi=id_ent | id_gepi=login | id_ent=id_gepi | id_ent=login )
  *
  * @param string $champ_depart
@@ -743,7 +765,10 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':classe'        : $tab_set[] = 'eleve_classe_id='    .$key; break;
       case ':elv_classe'    : $tab_set[] = 'eleve_classe_id='    .$key; break;
       case ':elv_langue'    : $tab_set[] = 'eleve_langue='       .$key; break;
+      case ':lv1'           : $tab_set[] = 'eleve_lv1='          .$key; break;
+      case ':lv2'           : $tab_set[] = 'eleve_lv2='          .$key; break;
       case ':elv_brevet'    : $tab_set[] = 'eleve_brevet_serie=' .$key; break;
+      case ':uai_origine'   : $tab_set[] = 'eleve_uai_origine='  .$key; break;
       case ':id_ent'        : $tab_set[] = 'user_id_ent='        .$key; break;
       case ':id_gepi'       : $tab_set[] = 'user_id_gepi='       .$key; break;
       case ':param_accueil' : $tab_set[] = 'user_param_accueil=' .$key; break;
@@ -772,7 +797,7 @@ public static function DB_modifier_user($user_id,$DB_VAR)
  * @param bool    $statut
  * @return void
  */
-public static function DB_modifier_users_statut($tab_user_id,$statut)
+public static function DB_modifier_users_statut( $tab_user_id , $statut )
 {
   $date = ($statut) ? 'DEFAULT' : 'NOW()' ;
   $DB_SQL = 'UPDATE sacoche_user ';
@@ -782,16 +807,17 @@ public static function DB_modifier_users_statut($tab_user_id,$statut)
 }
 
 /**
- * Modifier la langue du socle pour une liste d'élèves
+ * Modifier une langue pour une liste d'élèves
  *
+ * @param string $objet   langue | lv1 | lv2
  * @param string $listing_user_id
  * @param int    $langue
  * @return void
  */
-public static function DB_modifier_user_langue($listing_user_id,$langue)
+public static function DB_modifier_user_langue( $objet , $listing_user_id , $langue )
 {
   $DB_SQL = 'UPDATE sacoche_user ';
-  $DB_SQL.= 'SET eleve_langue=:langue ';
+  $DB_SQL.= 'SET eleve_'.$objet.'=:langue ';
   $DB_SQL.= 'WHERE user_id IN('.$listing_user_id.') ';
   $DB_VAR = array(':langue'=>$langue);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -804,7 +830,7 @@ public static function DB_modifier_user_langue($listing_user_id,$langue)
  * @param int    $palier_actif   (0/1)
  * @return void
  */
-public static function DB_modifier_palier($palier_id,$palier_actif)
+public static function DB_modifier_palier( $palier_id , $palier_actif )
 {
   $DB_SQL = 'UPDATE sacoche_socle_palier ';
   $DB_SQL.= 'SET palier_actif=:palier_actif ';
@@ -825,7 +851,7 @@ public static function DB_modifier_palier($palier_id,$palier_actif)
  * @param string   $etat         nouvel état
  * @return int     0 ou 1 si modifié
  */
-public static function DB_modifier_bilan_officiel($groupe_id,$periode_id,$champ,$etat)
+public static function DB_modifier_bilan_officiel( $groupe_id , $periode_id , $champ , $etat )
 {
   $DB_SQL = 'UPDATE sacoche_jointure_groupe_periode ';
   $DB_SQL.= 'SET '.$champ.'=:etat ';
@@ -847,7 +873,7 @@ public static function DB_modifier_bilan_officiel($groupe_id,$periode_id,$champ,
  * @param mixed    $valeur
  * @return void
  */
-public static function DB_modifier_profil_parametre($profil_sigle,$champ,$valeur)
+public static function DB_modifier_profil_parametre( $profil_sigle , $champ , $valeur )
 {
   $DB_SQL = 'UPDATE sacoche_user_profil ';
   $DB_SQL.= 'SET '.$champ.'=:valeur ';
@@ -987,7 +1013,7 @@ public static function DB_modifier_parametre_acquis_seuils( $acquis_id , $acquis
  * @param int    $champ_val   $matiere_id  | $niveau_id
  * @return void
  */
-public static function DB_supprimer_referentiels($champ_nom,$champ_val)
+public static function DB_supprimer_referentiels( $champ_nom , $champ_val )
 {
   $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
@@ -1156,7 +1182,7 @@ public static function DB_supprimer_jointures_parents_for_eleves($listing_eleve_
  * @param string $user_profil_sigle
  * @return void
  */
-public static function DB_supprimer_utilisateur($user_id,$user_profil_sigle)
+public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
 {
   $user_profil_type = $_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$user_profil_sigle];
   $DB_VAR = array(':user_id'=>$user_id);
@@ -1314,7 +1340,7 @@ public static function DB_optimiser_tables_structure()
  * @param int   $user_id_actuel
  * @return bool
  */
-public static function DB_fusionner_donnees_comptes_eleves($user_id_ancien,$user_id_actuel)
+public static function DB_fusionner_donnees_comptes_eleves( $user_id_ancien , $user_id_actuel )
 {
   $tab_table_champ = array(
     'sacoche_saisie'                   => 'eleve_id' ,

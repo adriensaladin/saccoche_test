@@ -132,11 +132,13 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
       // $nb_lignes_maxi est prévu pour "sacoche_saisie" qui comporte beaucoup de lignes, mais les tables avec des champs longs deviennent lourdes avec moins de lignes
       switch($DB_ROW['Name'])
       {
-        case 'sacoche_image'           : $nb_lignes_maxi_for_table = $nb_lignes_maxi/100; break;
-        case 'sacoche_user'            : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  4; break;
-        case 'sacoche_notification'    : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  4; break;
-        case 'sacoche_officiel_saisie' : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  2; break;
-        default                        : $nb_lignes_maxi_for_table = $nb_lignes_maxi;
+        case 'sacoche_officiel_archive_image' : $nb_lignes_maxi_for_table = $nb_lignes_maxi/500; break;
+        case 'sacoche_officiel_archive'       : $nb_lignes_maxi_for_table = $nb_lignes_maxi/200; break;
+        case 'sacoche_image'                  : $nb_lignes_maxi_for_table = $nb_lignes_maxi/100; break;
+        case 'sacoche_user'                   : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  4; break;
+        case 'sacoche_notification'           : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  4; break;
+        case 'sacoche_officiel_saisie'        : $nb_lignes_maxi_for_table = $nb_lignes_maxi/  2; break;
+        default                               : $nb_lignes_maxi_for_table = $nb_lignes_maxi;
       }
       $nombre_boucles = max( ceil($DB_ROW['Rows']/$nb_lignes_maxi_for_table) , 1 ); // Parcourir au moins une fois la boucle pour une table sans enregistrement
       for($numero_boucle=0 ; $numero_boucle<$nombre_boucles ; $numero_boucle++)

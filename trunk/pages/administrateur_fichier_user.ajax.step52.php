@@ -139,7 +139,12 @@ if(count($tab_add))
         $tab_memo_analyse['ajouter'][$i_fichier]['email_origine'],
         $login,
         Outil::crypter_mdp($password),
-        $tab_memo_analyse['ajouter'][$i_fichier]['classe']
+        '', // id_ent
+        '', // id_gepi
+        $tab_memo_analyse['ajouter'][$i_fichier]['classe'],
+        $tab_memo_analyse['ajouter'][$i_fichier]['uai_origine'],
+        $tab_memo_analyse['ajouter'][$i_fichier]['lv1'],
+        $tab_memo_analyse['ajouter'][$i_fichier]['lv2']
       );
       if($import_profil=='professeur')
       {
@@ -166,8 +171,9 @@ if(count($tab_mod))
   foreach($tab_mod as $id_base)
   {
     // Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement... idem pour l'adresse mail...
-    $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'genre' , 'nom' , 'prenom' , 'birth_date' , 'courriel' , 'email_origine' )
-                                            : array( 'sconet_id' , 'reference' , 'profil_sigle' , 'genre' , 'nom' , 'prenom' , 'courriel' , 'email_origine' ) ;
+    $tab_champs = ($import_profil=='eleve')
+                ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'genre' , 'nom' , 'prenom' , 'birth_date' , 'courriel' , 'email_origine' , 'uai_origine' , 'lv1' , 'lv2' )
+                : array( 'sconet_id' , 'reference' , 'profil_sigle' , 'genre' , 'nom' , 'prenom' , 'courriel' , 'email_origine' ) ;
     $DB_VAR  = array();
     foreach($tab_champs as $champ_ref)
     {

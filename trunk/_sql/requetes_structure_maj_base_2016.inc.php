@@ -167,4 +167,76 @@ if($version_base_structure_actuelle=='2016-03-10')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2016-03-22 => 2016-04-17
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2016-03-22')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2016-04-17';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // retrait de 2 paramètres
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN ( "officiel_archive_retrait_tampon_signature","officiel_archive_ajout_message_copie" )' );
+    // ajout d'un paramètre
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_chef_id" , "0" )' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
+    // ajout de champs à la table [sacoche_user]
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD eleve_lv1 TINYINT(3) UNSIGNED NOT NULL DEFAULT 100 COMMENT "Langue vivante 1 pour LSUN." AFTER eleve_langue' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD eleve_lv2 TINYINT(3) UNSIGNED NOT NULL DEFAULT 100 COMMENT "Langue vivante 2 pour LSUN." AFTER eleve_lv1' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD eleve_uai_origine CHAR(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Pour un envoi de documents officiels à l\'établissement d\'origine." AFTER eleve_lv2' );
+    // ajout d'un champ à la table [sacoche_periode]
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_periode ADD periode_lsun VARCHAR(2) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "T1 | T2 | T3 | S1 | S2 ; période officielle utilisable pour le LSUN." AFTER periode_nom' );
+    // nouvelle table [sacoche_officiel_archive]
+    $reload_sacoche_officiel_archive = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_officiel_archive.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // nouvelle table [sacoche_officiel_archive_image]
+    $reload_sacoche_officiel_archive_image = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_officiel_archive_image.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // nouvelle table [sacoche_structure_origine]
+    $reload_sacoche_structure_origine = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_structure_origine.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // ajout d'un champ (matiere_code) prérempli à la table sacoche_matiere
+    if(empty($reload_sacoche_matiere))
+    {
+      // récupération des informations sur les matières
+      $DB_TAB_communes    = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre FROM sacoche_matiere WHERE matiere_active=1 AND matiere_id<='.ID_MATIERE_PARTAGEE_MAX);
+      $DB_TAB_specifiques = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT * FROM sacoche_matiere WHERE matiere_id>'.ID_MATIERE_PARTAGEE_MAX);
+      // rechargement de la table sacoche_matiere
+      $reload_sacoche_matiere = TRUE;
+      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_matiere.sql');
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes ); // Attention, sur certains LCS ça bloque au dela de 40 instructions MySQL (mais un INSERT multiple avec des milliers de lignes ne pose pas de pb).
+      DB::close(SACOCHE_STRUCTURE_BD_NAME);
+      // on remet en place les matières partagées
+      foreach($DB_TAB_communes as $DB_ROW)
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_active=1, matiere_nb_demandes='.$DB_ROW['matiere_nb_demandes'].', matiere_ordre='.$DB_ROW['matiere_ordre'].' WHERE matiere_id='.$DB_ROW['matiere_id'] );
+      }
+      // on remet en place les matières spécifiques
+      foreach($DB_TAB_specifiques as $DB_ROW)
+      {
+        $DB_SQL = 'INSERT INTO sacoche_matiere(matiere_id, matiere_active, matiere_usuelle, matiere_famille_id, matiere_nb_demandes, matiere_ordre, matiere_code, matiere_ref, matiere_nom) ';
+        $DB_SQL.= 'VALUES(:matiere_id, :matiere_active, 0, 0, :matiere_nb_demandes, :matiere_ordre, 0, :matiere_ref, :matiere_nom) ';
+        $DB_VAR = array(
+          ':matiere_id'          => $DB_ROW['matiere_id'],
+          ':matiere_active'      => $DB_ROW['matiere_active'],
+          ':matiere_nb_demandes' => $DB_ROW['matiere_nb_demandes'],
+          ':matiere_ordre'       => $DB_ROW['matiere_ordre'],
+          ':matiere_ref'         => $DB_ROW['matiere_ref'],
+          ':matiere_nom'         => $DB_ROW['matiere_nom'],
+        );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+      }
+    }
+  }
+}
+
 ?>

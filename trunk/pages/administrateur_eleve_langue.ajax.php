@@ -29,12 +29,21 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $action = (isset($_POST['f_action'])) ? $_POST['f_action']                : '';
+$objet  = (isset($_POST['f_objet']))  ? $_POST['f_objet']                 : '';
 $langue = (isset($_POST['f_langue'])) ? Clean::entier($_POST['f_langue']) : 0 ;
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
+// A REMPLACER À TERME PAR
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
+
+$tab_objet = array(
+  'langue' => 'choix socle',
+  'lv1' => 'affectation LV1',
+  'lv2' => 'affectation LV2',
+);
 
 //
 // Modifier des associations
@@ -42,6 +51,10 @@ require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
 
 if($action=='associer')
 {
+  if(!isset($tab_objet[$objet]))
+  {
+    Json::end( FALSE , 'Objet "'.$objet.'" inattendu !' );
+  }
   // liste des élèves
   $listing_user_id = implode(',',$tab_eleve);
   if(!$listing_user_id)
@@ -54,7 +67,7 @@ if($action=='associer')
     Json::end( FALSE , 'Langue non transmise ou non reconnue !' );
   }
   // go
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_langue($listing_user_id,$langue);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_langue( $objet , $listing_user_id , $langue );
 }
 
 //
@@ -74,10 +87,13 @@ foreach($DB_TAB as $DB_ROW)
   $tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_langue,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_langue,eleve_lv1,eleve_lv2,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/drapeau/'.$DB_ROW['eleve_langue'].'.gif" alt="" title="'.$tab_langues[$DB_ROW['eleve_langue']]['texte'].'" /> '.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+  $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/drapeau/'.$DB_ROW['eleve_langue'].'.gif" alt="" title="'.$tab_objet['langue'].'<br />'.$tab_langues[$DB_ROW['eleve_langue']]['texte'].'" /> '
+                                         . '<img src="./_img/drapeau/'.$DB_ROW['eleve_lv1'].'.gif" alt="" title="'.$tab_objet['lv1'].'<br />'.$tab_langues[$DB_ROW['eleve_lv1']]['texte'].'" /> '
+                                         . '<img src="./_img/drapeau/'.$DB_ROW['eleve_lv2'].'.gif" alt="" title="'.$tab_objet['lv2'].'<br />'.$tab_langues[$DB_ROW['eleve_lv2']]['texte'].'" /> '
+                                         . html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
 // Assemblage du tableau résultant
 $TH = array();

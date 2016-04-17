@@ -92,7 +92,7 @@ Layout::add( 'js_inline_before' , 'tab_select["f_retroactif"] = "'.$_SESSION['CA
 $tab_notes = array();
 foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
 {
-  $tab_notes[] = '<label class="tab mini" for="N'.$note_id.'">saisie <img alt="" src="'.$_SESSION['NOTE'][$note_id]['FICHIER'].'" /> :</label><input type="text" class="hc" size="3" maxlength="3" id="N'.$note_id.'" name="N'.$note_id.'" value="'.$_SESSION['NOTE'][$note_id]['VALEUR'].'" />';
+  $tab_notes[] = '<label class="tab mini" for="N'.$note_id.'">saisie <img alt="" src="'.$_SESSION['NOTE'][$note_id]['FICHIER'].'" /> :</label><input class="hc" type="number" min="0" max="200" id="N'.$note_id.'" name="N'.$note_id.'" value="'.$_SESSION['NOTE'][$note_id]['VALEUR'].'" />';
   Layout::add( 'js_inline_before' , 'tab_valeur["N'.$note_id.'"] = '.$_SESSION['NOTE'][$note_id]['VALEUR'].';' );
 }
 
@@ -100,7 +100,7 @@ foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
 $tab_acquis = array();
 foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
 {
-  $tab_acquis[] = '<label class="tab mini" for="vide">état <span class="A'.$acquis_id.'">&nbsp;'.$tab_acquis_info['SIGLE'].'&nbsp;</span> :</label><input type="text" class="hc" size="3" maxlength="3" id="A'.$acquis_id.'min" name="A'.$acquis_id.'min" value="'.$tab_acquis_info['SEUIL_MIN'].'" /> ~ <input type="text" class="hc" size="3" maxlength="3" id="A'.$acquis_id.'max" name="A'.$acquis_id.'max" value="'.$tab_acquis_info['SEUIL_MAX'].'" />';
+  $tab_acquis[] = '<label class="tab mini" for="vide">état <span class="A'.$acquis_id.'">&nbsp;'.$tab_acquis_info['SIGLE'].'&nbsp;</span> :</label><input class="hc" type="number" min="0" max="100" id="A'.$acquis_id.'min" name="A'.$acquis_id.'min" value="'.$tab_acquis_info['SEUIL_MIN'].'" /> ~ <input class="hc" type="number" min="0" max="100" id="A'.$acquis_id.'max" name="A'.$acquis_id.'max" value="'.$tab_acquis_info['SEUIL_MAX'].'" />';
   Layout::add( 'js_inline_before' , 'tab_seuil["A'.$acquis_id.'min"] = '.$tab_acquis_info['SEUIL_MIN'].';' );
   Layout::add( 'js_inline_before' , 'tab_seuil["A'.$acquis_id.'max"] = '.$tab_acquis_info['SEUIL_MAX'].';' );
 }

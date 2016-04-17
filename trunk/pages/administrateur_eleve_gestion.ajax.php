@@ -49,6 +49,7 @@ $box_login       = (isset($_POST['box_login']))       ? Clean::entier($_POST['bo
 $box_password    = (isset($_POST['box_password']))    ? Clean::entier($_POST['box_password'])    : 0;
 $box_sortie_date = (isset($_POST['box_sortie_date'])) ? Clean::entier($_POST['box_sortie_date']) : 0;
 $courriel        = (isset($_POST['f_courriel']))      ? Clean::courriel($_POST['f_courriel'])    : '';
+$uai_origine     = (isset($_POST['f_uai_origine']))   ? Clean::uai($_POST['f_uai_origine'])      : '';
 $groupe          = (isset($_POST['f_groupe']))        ? Clean::texte($_POST['f_groupe'])         : 'd2' ;
 $groupe_type     = Clean::lettres( substr($groupe,0,1) );
 $groupe_id       = Clean::entier( substr($groupe,1) );
@@ -154,7 +155,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['enfant'][$genre]) && $nom &&
   }
   $user_email_origine = ($courriel) ? 'admin' : '' ;
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , $sconet_num , $reference , $profil , $genre , $nom , $prenom , $birth_date_mysql , $courriel , $user_email_origine , $login , Outil::crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( $sconet_id , $sconet_num , $reference , $profil , $genre , $nom , $prenom , $birth_date_mysql , $courriel , $user_email_origine , $login , Outil::crypter_mdp($password) , $id_ent , $id_gepi , 0 /*eleve_classe_id*/ , $uai_origine );
   // Il peut (déjà !) falloir lui affecter une date de sortie...
   if($box_sortie_date)
   {
@@ -187,6 +188,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['enfant'][$genre]) && $nom &&
   Json::add_str(  '<td class="label new">'.html($login).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à relever le login généré !" /></td>');
   Json::add_str(  '<td class="label new">'.html($password).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>');
   Json::add_str(  '<td class="label">'.html($courriel).'</td>');
+  Json::add_str(  '<td class="label">'.html($uai_origine).'</td>');
   Json::add_str(  '<td class="label">'.$sortie_date.'</td>');
   Json::add_str(  '<td class="nu">');
   Json::add_str(    '<q class="modifier" title="Modifier cet élève."></q>');
@@ -305,6 +307,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['enfant'][$genre]) &&
     ':courriel'    => $courriel,
     ':id_ent'      => $id_ent,
     ':id_gepi'     => $id_gepi,
+    ':uai_origine' => $uai_origine,
     ':sortie_date' => $sortie_date_mysql,
   );
   DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id , $tab_donnees );
@@ -328,6 +331,7 @@ if( ($action=='modifier') && $id && isset(Html::$tab_genre['enfant'][$genre]) &&
   Json::add_str('<td class="label">'.html($login).'</td>');
   Json::add_str( ($box_password) ? '<td class="label i">champ crypté</td>' : '<td class="label new">'.$password.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pensez à noter le mot de passe !" /></td>');
   Json::add_str('<td class="label">'.html($courriel).'</td>');
+  Json::add_str('<td class="label">'.html($uai_origine).'</td>');
   Json::add_str('<td class="label">'.$sortie_date.'</td>');
   Json::add_str('<td class="nu">');
   Json::add_str(  '<q class="modifier" title="Modifier cet élève."></q>');

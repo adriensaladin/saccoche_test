@@ -278,6 +278,61 @@ public static function DB_recuperer_professeurs_eleves_matieres( $classe_id , $l
 }
 
 /**
+ * lister_officiel_archive
+ *
+ * Doit progressivement remplacer DB_lister_bilan_officiel_fichiers()
+ *
+ * @param string $structure_uai
+ * @param string $annee_scolaire rien pour toutes les années
+ * @param string $archive_type   rien pour tous les types
+ * @param string $archive_ref    rien pour toutes les références
+ * @param int    $periode_id     0 pour toutes les périodes
+ * @param array  $tab_eleve_id
+ * @param bool   $with_periode_nom   FALSE par défaut
+ * @param string $only_profil_non_vu   '' par défaut ; 'parent' | 'eleve' sinon
+ * @return array    array( [eleve_id] => array( 0 => array( 'archive_date_generation' , 'archive_date_consultation_eleve' , 'archive_date_consultation_parent' ) ) )
+ *               OU array( array( 'user_id' , '...' , 'archive_date_generation' , 'archive_date_consultation_eleve' , 'archive_date_consultation_parent' ) )
+ */
+public static function DB_lister_officiel_archive( $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $tab_eleve_id , $with_periode_nom=FALSE , $only_profil_non_vu='' )
+{
+  $champ_consultation = 'archive_date_consultation_'.$only_profil_non_vu;
+  // select
+  $select_etabl   = ($structure_uai)     ? '' : 'structure_uai, structure_denomination, ' ;
+  $select_annee   = ($annee_scolaire)    ? '' : 'annee_scolaire, ' ;
+  $select_type    = ($archive_type)      ? '' : 'archive_type, ' ;
+  $select_ref     = ($archive_ref)       ? '' : 'archive_ref, ' ;
+  $select_periode = ($periode_id)        ? '' : 'periode_id, periode_nom, ' ;
+  $select_per_nom = (!$with_periode_nom) ? '' : 'periode_nom, ' ;
+  // where
+  $where_etabl    = ($structure_uai)      ? 'structure_uai=:structure_uai AND '   : '' ;
+  $where_annee    = ($annee_scolaire)     ? 'annee_scolaire=:annee_scolaire AND ' : '' ;
+  $where_type     = ($archive_type)       ? 'archive_type=:archive_type AND '     : '' ;
+  $where_ref      = ($archive_ref)        ? 'archive_ref=:archive_ref AND '       : '' ;
+  $where_periode  = ($periode_id)         ? 'periode_id=:periode_id AND '         : '' ;
+  $where_profil   = ($only_profil_non_vu) ? $champ_consultation.' IS NULL AND '   : '' ;
+  // order
+  $order_type     = (!$archive_type)   ? 'archive_type ASC, '   : '' ;
+  $order_ref      = (!$archive_ref)    ? 'archive_ref ASC, '    : '' ;
+  $order_annee    = (!$annee_scolaire) ? 'annee_scolaire ASC, ' : '' ;
+  $order_periode  = (!$periode_id)     ? 'periode_id ASC, '     : '' ;
+  // key
+  $key_eleve_id   = ($structure_uai && $annee_scolaire && $archive_type && $archive_ref && $periode_id) ? TRUE : FALSE ;
+  // on assemble
+  $DB_SQL = 'SELECT user_id , '.$select_etabl.$select_annee.$select_type.$select_ref.$select_periode.$select_per_nom.'archive_date_generation, archive_date_consultation_eleve, archive_date_consultation_parent ';
+  $DB_SQL.= 'FROM sacoche_officiel_archive ';
+  $DB_SQL.= 'WHERE '.$where_etabl.$where_annee.$where_type.$where_ref.$where_periode.$where_profil.'user_id IN ('.implode(',',$tab_eleve_id).') ';
+  $DB_SQL.= 'ORDER BY '.$order_type.$order_ref.$order_annee.$order_periode.'user_id ASC ';
+  $DB_VAR = array(
+    ':structure_uai'  => $structure_uai,
+    ':annee_scolaire' => $annee_scolaire,
+    ':archive_type'   => $archive_type,
+    ':archive_ref'    => $archive_ref,
+    ':periode_id'     => $periode_id,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, $key_eleve_id);
+}
+
+/**
  * lister_bilan_officiel_fichiers
  *
  * @param string $officiel_type  rien pour tous les types
@@ -370,6 +425,105 @@ public static function DB_lister_adresses_parents_for_enfants($listing_user_id)
 }
 
 /**
+ * ajouter_officiel_archive_image
+ *
+ * @param string  $image_md5
+ * @param string  $image_contenu
+ * @return void
+ */
+public static function DB_ajouter_officiel_archive_image( $image_md5 , $image_contenu )
+{
+  $DB_SQL = 'REPLACE INTO sacoche_officiel_archive_image(archive_image_md5, archive_image_contenu) ';
+  $DB_SQL.= 'VALUES                                     (       :image_md5,        :image_contenu) ';
+  $DB_VAR = array(
+    ':image_md5'     => $image_md5,
+    ':image_contenu' => $image_contenu,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * ajouter_officiel_archive
+ *
+ * Doit progressivement remplacer DB_ajouter_bilan_officiel_fichier()
+ *
+ * @param int     $user_id
+ * @param string  $structure_uai
+ * @param string  $annee_scolaire
+ * @param string  $archive_type
+ * @param string  $archive_ref
+ * @param int     $periode_id
+ * @param string  $periode_nom
+ * @param string  $structure_denomination
+ * @param string  $sacoche_version
+ * @param string  $archive_contenu
+ * @param array   $tab_image_md5
+ * @return void
+ */
+public static function DB_ajouter_officiel_archive( $user_id , $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $periode_nom , $structure_denomination , $sacoche_version , $archive_contenu , $tab_image_md5 )
+{
+  $tab_image_md5 = $tab_image_md5 + array_fill(0,3,NULL);
+  $DB_SQL = 'INSERT INTO sacoche_officiel_archive( user_id, structure_uai, annee_scolaire, archive_type, archive_ref, periode_id, periode_nom, structure_denomination, sacoche_version, archive_date_generation, archive_contenu, archive_md5_image1, archive_md5_image2, archive_md5_image3) ';
+  $DB_SQL.= 'VALUES                              (:user_id,:structure_uai,:annee_scolaire,:archive_type,:archive_ref,:periode_id,:periode_nom,:structure_denomination,:sacoche_version, NOW()                  ,:archive_contenu,:archive_md5_image1,:archive_md5_image2,:archive_md5_image3) ';
+  $DB_VAR = array(
+    ':user_id'                => $user_id,
+    ':structure_uai'          => $structure_uai,
+    ':annee_scolaire'         => $annee_scolaire,
+    ':archive_type'           => $archive_type,
+    ':archive_ref'            => $archive_ref,
+    ':periode_id'             => $periode_id,
+    ':periode_nom'            => $periode_nom,
+    ':structure_denomination' => $structure_denomination,
+    ':sacoche_version'        => $sacoche_version,
+    ':archive_contenu'        => $archive_contenu,
+    ':archive_md5_image1'     => $tab_image_md5[0],
+    ':archive_md5_image2'     => $tab_image_md5[1],
+    ':archive_md5_image3'     => $tab_image_md5[2],
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_officiel_archive
+ *
+ * @param int     $user_id
+ * @param string  $structure_uai
+ * @param string  $annee_scolaire
+ * @param string  $archive_type
+ * @param string  $archive_ref
+ * @param int     $periode_id
+ * @param string  $periode_nom
+ * @param string  $structure_denomination
+ * @param string  $sacoche_version
+ * @param string  $archive_contenu
+ * @param array   $tab_image_md5
+ * @return void
+ */
+public static function DB_modifier_officiel_archive( $user_id , $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $periode_nom , $structure_denomination , $sacoche_version , $archive_contenu , $tab_image_md5 )
+{
+  $tab_image_md5 = $tab_image_md5 + array_fill(0,3,NULL);
+  $DB_SQL = 'UPDATE sacoche_officiel_archive ';
+  $DB_SQL.= 'SET periode_nom=:periode_nom , structure_denomination=:structure_denomination , sacoche_version=:sacoche_version , archive_contenu=:archive_contenu , archive_md5_image1=:archive_md5_image1 , archive_md5_image2=:archive_md5_image2 , archive_md5_image3=:archive_md5_image3 ';
+  $DB_SQL.= 'WHERE user_id=:user_id AND structure_uai=:structure_uai AND annee_scolaire=:annee_scolaire AND archive_type=:archive_type AND archive_ref=:archive_ref AND periode_id=:periode_id ';
+  $DB_VAR = array(
+    ':user_id'                => $user_id,
+    ':structure_uai'          => $structure_uai,
+    ':annee_scolaire'         => $annee_scolaire,
+    ':archive_type'           => $archive_type,
+    ':archive_ref'            => $archive_ref,
+    ':periode_id'             => $periode_id,
+    ':periode_nom'            => $periode_nom,
+    ':structure_denomination' => $structure_denomination,
+    ':sacoche_version'        => $sacoche_version,
+    ':archive_contenu'        => $archive_contenu,
+    ':archive_md5_image1'     => $tab_image_md5[0],
+    ':archive_md5_image2'     => $tab_image_md5[1],
+    ':archive_md5_image3'     => $tab_image_md5[2],
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * ajouter_bilan_officiel_fichier
  *
  * @param int     $user_id
@@ -395,7 +549,7 @@ public static function DB_ajouter_bilan_officiel_fichier( $user_id , $officiel_t
  * @param int     $user_id
  * @param string  $officiel_type
  * @param int     $periode_id
- * @param string  $champ   "generation" | "consultation_eleve" | "consultation_parent"
+ * @param string  $champ   "consultation_eleve" | "consultation_parent"
  * @return void
  */
 public static function DB_modifier_bilan_officiel_fichier_date( $user_id , $officiel_type , $periode_id , $champ )

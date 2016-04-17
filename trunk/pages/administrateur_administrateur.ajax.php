@@ -109,7 +109,7 @@ if( ($action=='ajouter') && isset(Html::$tab_genre['adulte'][$genre]) && $nom &&
   }
   $user_email_origine = ($courriel) ? 'admin' : '' ;
   // Insérer l'enregistrement
-  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , Outil::crypter_mdp($password) , 0 /*eleve_classe_id*/ , $id_ent , $id_gepi );
+  $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*sconet_num*/ , '' /*reference*/ , $profil , $genre , $nom , $prenom , NULL /*user_naissance_date*/ , $courriel , $user_email_origine , $login , Outil::crypter_mdp($password) , $id_ent , $id_gepi );
   // Pour les admins, abonnement obligatoire aux contacts effectués depuis la page d'authentification
   DB_STRUCTURE_NOTIFICATION::DB_ajouter_abonnement( $user_id , 'contact_externe' , 'accueil' );
   // Afficher le retour

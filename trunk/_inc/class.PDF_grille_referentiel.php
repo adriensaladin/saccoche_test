@@ -67,7 +67,7 @@ class PDF_grille_referentiel extends PDF
       $coef_retrait = ($pages_nb_methode=='optimise') ? 0.1 : 0.2 ;
       $hauteur_ligne_calcule -= $nb_pages*$coef_retrait; // Tenter de contrebalancer un peu le pb des thèmes non coupés
     }
-    $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
+    $this->lignes_hauteur = round( $hauteur_ligne_calcule , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
     $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
     $this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
     $this->taille_police  = min ( $this->taille_police , 10 ) ;

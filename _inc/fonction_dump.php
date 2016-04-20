@@ -76,7 +76,7 @@ Néanmoins, plusieurs autres pistes peuvent toujours être explorées :
  * D'une part, pour une restauration de secours via phpmyadmin, on risque de dépasser le temps d'exécution autorisé par PHP.
  * D'autre part, si la chaine dépasse 1Mo, soit environ 1 million de caractères, lors de l'INSERT multiple ça ne passe plus, même en utilisant mysql_query().
  * -> C'est dû au "max_allowed_packet = 1M" présent dans le my.ini
- * D'où le plafond à 10000 lignes.
+ * D'où un plafond initialement fixé à 10000 lignes.
  * Enfin, les tests ont montrés qu'il fallait aussi adapter la valeur en fonction de la variable serveur memory_limit.
  * -> pour 16Mo ça coince à partir de 7000 lignes
  * -> pour  8Mo ça coince à partir de 2800 lignes
@@ -95,6 +95,7 @@ function determiner_nombre_lignes_maxi_par_paquet()
 /**
  * formater_valeur
  * Fonction utilisée avec array_map() pour ajouter des guillemets autour des contenus textes et échapper ceux éventuellement présents, ainsi que pour traiter le cas de NULL.
+ * 2ème str_replace() combiné à cause de chaines json où les " sont déjà échappés...
  * Tester is_numeric() est inutile, la classe DB renvoyant des chaines même pour des valeurs numériques.
  *
  * @param string $val
@@ -103,7 +104,7 @@ function determiner_nombre_lignes_maxi_par_paquet()
 
 function formater_valeur($val)
 {
-  return (is_null($val)) ? 'NULL' : '"'.str_replace('"','\"',$val).'"' ;
+  return (is_null($val)) ? 'NULL' : '"'.str_replace('\\\"','\"',str_replace('"','\"',$val)).'"' ;
 }
 
 /**
@@ -187,7 +188,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
         $fichier_contenu .= 'ALTER TABLE '.$TableNom.' ENABLE KEYS;'."\r\n";
       }
       // Enregistrer le fichier
-      $fichier_sql_nom = 'dump_'.$TableNom.'_'.sprintf("%03u",$NumeroBoucle).'.sql';
+      $fichier_sql_nom = 'dump_'.$TableNom.'_'.sprintf("%04u",$NumeroBoucle).'.sql';
       FileSystem::ecrire_fichier($dossier_temp.$fichier_sql_nom,$fichier_contenu);
     }
     if($etape>0)
@@ -256,8 +257,8 @@ function verifier_taille_requetes($fichier_taille_maximale)
 
 function version_base_fichier_svg($dossier)
 {
-  // Le fichier a changé de nom à compter du 18/08/2011
-  $fichier_contenu = (is_file($dossier.'dump_sacoche_parametre_000.sql')) ? file_get_contents($dossier.'dump_sacoche_parametre_000.sql') : file_get_contents($dossier.'dump_sacoche_parametre_0.sql') ;
+  // Le fichier a changé de nom ("_0.sql") à compter du 18/08/2011 ("_000.sql") puis du 19/04/2015 ("_0000.sql").
+  $fichier_contenu = is_file($dossier.'dump_sacoche_parametre_0000.sql') ? file_get_contents($dossier.'dump_sacoche_parametre_0000.sql') : file_get_contents($dossier.'dump_sacoche_parametre_000.sql') ;
   $position_debut = mb_strpos($fichier_contenu,'"version_base"') + 16;
   return mb_substr($fichier_contenu,$position_debut,10);
 }

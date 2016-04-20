@@ -278,9 +278,71 @@ public static function DB_recuperer_professeurs_eleves_matieres( $classe_id , $l
 }
 
 /**
+ * recuperer_officiel_archive_avec_infos
+ *
+ * @param string $listing_eleve
+ * @param string $structure_uai  rien pour toutes les structures
+ * @param string $annee_scolaire rien pour toutes les années
+ * @param string $listing_type
+ * @param string $listing_ref
+ * @param int    $periode_id     0 pour toutes les périodes
+ * @param string $uai_origine    rien pour tous les établissements d'origine
+ * @return array( $DB_TAB_Archives , $DB_TAB_Images )
+ */
+public static function DB_recuperer_officiel_archive_avec_infos( $listing_eleve , $structure_uai , $annee_scolaire , $listing_type , $listing_ref , $periode_id , $uai_origine )
+{
+  // where
+  $where_etabl    = (!$structure_uai)  ? '' : 'AND sacoche_officiel_archive.structure_uai=:structure_uai ';
+  $where_annee    = (!$annee_scolaire) ? '' : 'AND annee_scolaire=:annee_scolaire ';
+  $where_periode  = (!$periode_id)     ? '' : 'AND periode_id=:periode_id ';
+  $where_origine  = (!$uai_origine)    ? '' : 'AND sacoche_user.eleve_uai_origine=:uai_origine ';
+  // join
+  $join_origine   = (!$uai_origine)    ? '' : 'LEFT JOIN sacoche_structure_origine ON sacoche_user.eleve_uai_origine=sacoche_structure_origine.structure_uai ';
+  // on assemble
+  $DB_SQL = 'SELECT sacoche_officiel_archive.*, user_nom, user_prenom, ';
+  $DB_SQL.= 'image1.archive_image_contenu AS image1_contenu, image2.archive_image_contenu AS image2_contenu, image3.archive_image_contenu AS image3_contenu ';
+  $DB_SQL.= 'FROM sacoche_officiel_archive ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) '.$join_origine;
+  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image1 ON archive_md5_image1=image1.archive_image_md5 ';
+  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image2 ON archive_md5_image2=image2.archive_image_md5 ';
+  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image3 ON archive_md5_image3=image3.archive_image_md5 ';
+  $DB_SQL.= 'WHERE user_id IN ('.$listing_eleve.') AND archive_type IN('.$listing_type.') AND archive_ref IN('.$listing_ref.') ';
+  $DB_SQL.= $where_etabl.$where_annee.$where_periode.$where_origine;
+  $DB_SQL.= 'ORDER BY archive_type ASC, archive_ref ASC, annee_scolaire ASC, periode_id ASC, user_nom ASC , user_prenom ASC ';
+  $DB_VAR = array(
+    ':structure_uai'  => $structure_uai,
+    ':annee_scolaire' => $annee_scolaire,
+    ':periode_id'     => $periode_id,
+    ':uai_origine'    => $uai_origine,
+  );
+  $DB_TAB_Archives = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  // On récupère le contenu des images à part pour ne pas multiplier leur volume par le nombre de bilans
+  $tab_md5 = $DB_TAB_Images = array();
+  if(!empty($DB_TAB_Archives))
+  {
+    foreach($DB_TAB_Archives as $DB_ROW)
+    {
+      $tab_md5[$DB_ROW['archive_md5_image1']] = $DB_ROW['archive_md5_image1'];
+      $tab_md5[$DB_ROW['archive_md5_image2']] = $DB_ROW['archive_md5_image2'];
+      $tab_md5[$DB_ROW['archive_md5_image3']] = $DB_ROW['archive_md5_image3'];
+    }
+    unset($tab_md5[NULL]);
+    if(!empty($tab_md5))
+    {
+      $DB_SQL = 'SELECT archive_image_md5, archive_image_contenu ';
+      $DB_SQL.= 'FROM sacoche_officiel_archive_image ';
+      $DB_SQL.= 'WHERE archive_image_md5 IN ("'.implode('","',$tab_md5).'") ';
+      $DB_TAB_Images = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE);
+      unset($tab_md5);
+    }
+  }
+  return array($DB_TAB_Archives,$DB_TAB_Images);
+}
+
+/**
  * lister_officiel_archive
  *
- * Doit progressivement remplacer DB_lister_bilan_officiel_fichiers()
+ * TODO Doit progressivement remplacer DB_lister_bilan_officiel_fichiers()
  *
  * @param string $structure_uai
  * @param string $annee_scolaire rien pour toutes les années
@@ -288,21 +350,15 @@ public static function DB_recuperer_professeurs_eleves_matieres( $classe_id , $l
  * @param string $archive_ref    rien pour toutes les références
  * @param int    $periode_id     0 pour toutes les périodes
  * @param array  $tab_eleve_id
- * @param bool   $with_periode_nom   FALSE par défaut
+ * @param bool   $with_infos
  * @param string $only_profil_non_vu   '' par défaut ; 'parent' | 'eleve' sinon
  * @return array    array( [eleve_id] => array( 0 => array( 'archive_date_generation' , 'archive_date_consultation_eleve' , 'archive_date_consultation_parent' ) ) )
  *               OU array( array( 'user_id' , '...' , 'archive_date_generation' , 'archive_date_consultation_eleve' , 'archive_date_consultation_parent' ) )
  */
-public static function DB_lister_officiel_archive( $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $tab_eleve_id , $with_periode_nom=FALSE , $only_profil_non_vu='' )
+public static function DB_lister_officiel_archive( $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $tab_eleve_id , $with_infos , $only_profil_non_vu='' )
 {
   $champ_consultation = 'archive_date_consultation_'.$only_profil_non_vu;
-  // select
-  $select_etabl   = ($structure_uai)     ? '' : 'structure_uai, structure_denomination, ' ;
-  $select_annee   = ($annee_scolaire)    ? '' : 'annee_scolaire, ' ;
-  $select_type    = ($archive_type)      ? '' : 'archive_type, ' ;
-  $select_ref     = ($archive_ref)       ? '' : 'archive_ref, ' ;
-  $select_periode = ($periode_id)        ? '' : 'periode_id, periode_nom, ' ;
-  $select_per_nom = (!$with_periode_nom) ? '' : 'periode_nom, ' ;
+  $select         = (!$with_infos) ? 'sacoche_officiel_archive.* ' : 'user_id, archive_date_generation, archive_date_consultation_eleve, archive_date_consultation_parent ' ;
   // where
   $where_etabl    = ($structure_uai)      ? 'structure_uai=:structure_uai AND '   : '' ;
   $where_annee    = ($annee_scolaire)     ? 'annee_scolaire=:annee_scolaire AND ' : '' ;
@@ -318,7 +374,7 @@ public static function DB_lister_officiel_archive( $structure_uai , $annee_scola
   // key
   $key_eleve_id   = ($structure_uai && $annee_scolaire && $archive_type && $archive_ref && $periode_id) ? TRUE : FALSE ;
   // on assemble
-  $DB_SQL = 'SELECT user_id , '.$select_etabl.$select_annee.$select_type.$select_ref.$select_periode.$select_per_nom.'archive_date_generation, archive_date_consultation_eleve, archive_date_consultation_parent ';
+  $DB_SQL = 'SELECT '.$select;
   $DB_SQL.= 'FROM sacoche_officiel_archive ';
   $DB_SQL.= 'WHERE '.$where_etabl.$where_annee.$where_type.$where_ref.$where_periode.$where_profil.'user_id IN ('.implode(',',$tab_eleve_id).') ';
   $DB_SQL.= 'ORDER BY '.$order_type.$order_ref.$order_annee.$order_periode.'user_id ASC ';

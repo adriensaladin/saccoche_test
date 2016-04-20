@@ -386,7 +386,7 @@ class Clean
   }
 
   /*
-    Pour array_filter().
+    Pour les tableaux
   */
   public static function map_entier($array)
   {

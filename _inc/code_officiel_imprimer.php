@@ -196,7 +196,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
     unset($_SESSION['tmp']['tab_archive']['image']);
     // Récupérer les bilans déjà existants pour savoir s'il faut faire un INSERT ou un UPDATE (sinon, un REPLACE efface les dates de consultation)
     $annee_scolaire = To::annee_scolaire('code');
-    $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_archive( $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/ , $BILAN_TYPE /*archive_ref*/ , $periode_id , array_keys($_SESSION['tmp']['tab_pages_decoupe_pdf']) /*tab_eleve_id*/ );
+    $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_archive( $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/ , $BILAN_TYPE /*archive_ref*/ , $periode_id , array_keys($_SESSION['tmp']['tab_pages_decoupe_pdf']) /*tab_eleve_id*/ , FALSE /*with_infos*/ );
     $tab_notif = array();
     foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
     {

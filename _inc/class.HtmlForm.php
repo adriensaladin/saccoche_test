@@ -58,7 +58,7 @@ class HtmlForm
    * @param bool              $multiple     TRUE si transmis pour forcer un faux select multiple
    * @return string
    */
-  public static function afficher_select( $DB_TAB , $select_nom , $option_first , $selection , $optgroup='' , $multiple=FALSE )
+  public static function afficher_select($DB_TAB,$select_nom,$option_first,$selection,$optgroup='',$multiple=FALSE)
   {
     // On commence par la 1ère option
     if($option_first===FALSE)
@@ -144,7 +144,7 @@ class HtmlForm
    * @param bool      $tab_groupe_niveau    charger ou non "tab_groupe_niveau"  pour les jointures groupes/niveaux
    * @return void     alimente Layout::$tab_js_inline[]
    */
-  public static function fabriquer_tab_js_jointure_groupe( $tab_groupes , $tab_groupe_periode , $tab_groupe_niveau )
+  public static function fabriquer_tab_js_jointure_groupe($tab_groupes,$tab_groupe_periode,$tab_groupe_niveau)
   {
     Layout::add( 'js_inline_before' , 'var tab_groupe_periode = new Array();' );
     Layout::add( 'js_inline_before' , 'var tab_groupe_niveau  = new Array();' );
@@ -287,7 +287,7 @@ class HtmlForm
    * @param array   $tab_options
    * @return string
    */
-  public static function afficher_select_collegues( $only_profs , $tab_options )
+  public static function afficher_select_collegues($only_profs , $tab_options)
   {
     $affichage = '';
     // Affichage de la liste des professeurs

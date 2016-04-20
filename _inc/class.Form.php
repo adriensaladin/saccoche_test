@@ -238,10 +238,6 @@ class Form
       2 => 'item du socle',
       3 => 'compétence du socle',
     ),
-    'officiel_type' => array(
-      'sacoche' => 'SACoche',
-      'lsun'    => 'LSUN',
-    ),
     // complété à partir de la base si besoin (contenu dynamique)
     'zones_geo'  => array(), 
     'continents' => array(),
@@ -249,21 +245,17 @@ class Form
   );
 
   public static $tab_select_option_first = array(
-    'periode_personnalisee' => array( 0   , 'Personnalisée' ),
-    'tous_profs'            => array( 0   , 'Tous les enseignants' ),
-    'tous_regroupements'    => array( 0   , 'Tous les regroupements' ),
-    'toutes_annees'         => array( 0   , 'Toutes les années' ),
-    'toutes_periodes'       => array( 0   , 'Toutes les périodes' ),
-    'toutes_matieres'       => array( 0   , 'Toutes les matières' ),
-    'toutes_archives'       => array( 0   , 'Toutes les archives officielles' ),
-    'toutes_structures'     => array( '-' , 'Toutes structures d\'origine' ),
-    'fiche_generique'       => array( 0   , 'Fiche générique' ),
-    'tampon_structure'      => array( 0   , 'Tampon de l\'établissement' ),
-    'structures_partage'    => array( 0   , 'Toutes les structures partageant au moins un référentiel' ),
+    'periode_personnalisee' => array( 0 , 'Personnalisée' ),
+    'tous_profs'            => array( 0 , 'Tous les enseignants' ),
+    'tous_regroupements'    => array( 0 , 'Tous les regroupements' ),
+    'toutes_matieres'       => array( 0 , 'Toutes les matières' ),
+    'fiche_generique'       => array( 0 , 'Fiche générique' ),
+    'tampon_structure'      => array( 0 , 'Tampon de l\'établissement' ),
+    'structures_partage'    => array( 0 , 'Toutes les structures partageant au moins un référentiel' ),
     // inutilisé
-    'tous_niveaux'          => array( 0   , 'Tous les niveaux' ),
-    'tous_piliers'          => array( 0   , 'Toutes les compétences' ),
-    'tous_domaines'         => array( 0   , 'Tous les domaines' ),
+    'tous_niveaux'          => array( 0 , 'Tous les niveaux' ),
+    'tous_piliers'          => array( 0 , 'Toutes les compétences' ),
+    'tous_domaines'         => array( 0 , 'Tous les domaines' ),
     // complété à partir de la base si besoin (car indice variable)
     'matieres_famille'      => array(), 
     'niveaux_famille'       => array(),

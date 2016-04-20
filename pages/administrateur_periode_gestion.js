@@ -37,7 +37,7 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{3:{sorter:false}} });
+    $('#table_action').tablesorter({ headers:{2:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[0,0],[1,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
@@ -46,13 +46,12 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , ordre , nom , lsun_texte )
+    function afficher_form_gestion( mode , id , ordre , nom )
     {
       $('#f_action').val(mode);
       $('#f_id').val(id);
       $('#f_ordre').val(ordre);
       $('#f_nom').val(nom);
-      $('#f_lsun').html(select_lsun.replace('>'+lsun_texte,' selected>'+lsun_texte));
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " une période");
       if(mode!='supprimer')
@@ -80,7 +79,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*ordre*/ , '' /*nom*/ , '-' /*lsun_texte*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*ordre*/ , '' /*nom*/ );
     };
 
     /**
@@ -96,9 +95,8 @@ $(document).ready
       var id         = objet_tr.attr('id').substring(3);
       var ordre      = objet_tds.eq(0).html();
       var nom        = objet_tds.eq(1).html();
-      var lsun_texte = objet_tds.eq(2).html();
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , ordre , unescapeHtml(nom) , lsun_texte /* volontairement sans unescapeHtml() */ );
+      afficher_form_gestion( mode , id , ordre , unescapeHtml(nom) );
     };
 
     /**
@@ -112,10 +110,9 @@ $(document).ready
       // Récupérer les informations de la ligne concernée
       var ordre      = objet_tds.eq(0).html();
       var nom        = objet_tds.eq(1).html();
-      var lsun_texte = objet_tds.eq(2).html();
       ordre++;
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , ordre , unescapeHtml(nom) , lsun_texte /* volontairement sans unescapeHtml() */ );
+      afficher_form_gestion( mode , '' /*id*/ , ordre , unescapeHtml(nom) );
     };
 
     /**
@@ -131,7 +128,7 @@ $(document).ready
       var id         = objet_tr.attr('id').substring(3);
       var nom        = objet_tds.eq(1).html();
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , '' /*ordre*/ , unescapeHtml(nom) , '-' /*lsun_texte*/ );
+      afficher_form_gestion( mode , id , '' /*ordre*/ , unescapeHtml(nom) );
     };
 
     /**
@@ -189,15 +186,13 @@ $(document).ready
       {
         rules :
         {
-          f_ordre : { required:true  , digits:true , range:[1,99] },
-          f_nom   : { required:true  , maxlength:40 },
-          f_lsun  : { required:false }
+          f_ordre : { required:true , digits:true , range:[1,99] },
+          f_nom   : { required:true , maxlength:40 }
         },
         messages :
         {
           f_ordre : { required:"ordre manquant" , digits:"nombre entier requis" , range:"nombre entre 1 et 99" },
-          f_nom   : { required:"nom manquant" , maxlength:"40 caractères maximum" },
-          f_lsun  : { }
+          f_nom   : { required:"nom manquant" , maxlength:"40 caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",

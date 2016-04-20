@@ -27,29 +27,9 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Gérer les périodes"));
-
-$tab_periode_lsun = array(
-  ''   => '-',
-  'T1' => 'Trimestre 1/3',
-  'T2' => 'Trimestre 2/3',
-  'T3' => 'Trimestre 3/3',
-  'S1' => 'Semestre 1/2',
-  'S2' => 'Semestre 2/2',
-);
-
-$select_lsun = '';
-foreach($tab_periode_lsun as $lsun_value => $lsun_texte)
-{
-  $select_lsun .= '<option value="'.$lsun_value.'">'.$lsun_texte.'</option>';
-}
-
-// Javascript
-Layout::add( 'js_inline_before' , 'var select_lsun="'.str_replace('"','\"',$select_lsun).'";' );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span></p>
-
-<div class="travaux">Type LSUN ajouté en prévision de la réforme entrant en vigueur en septembre 2016.</div>
 
 <hr />
 
@@ -58,7 +38,6 @@ Layout::add( 'js_inline_before' , 'var select_lsun="'.str_replace('"','\"',$sele
     <tr>
       <th>Ordre</th>
       <th>Nom</th>
-      <th>Type LSUN</th>
       <th class="nu"><q class="ajouter" title="Ajouter une période."></q></th>
     </tr>
   </thead>
@@ -74,7 +53,6 @@ Layout::add( 'js_inline_before' , 'var select_lsun="'.str_replace('"','\"',$sele
         echo'<tr id="id_'.$DB_ROW['periode_id'].'">';
         echo  '<td>'.$DB_ROW['periode_ordre'].'</td>';
         echo  '<td>'.html($DB_ROW['periode_nom']).'</td>';
-        echo  '<td>'.$tab_periode_lsun[$DB_ROW['periode_lsun']].'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier cette période."></q>';
         echo    '<q class="dupliquer" title="Dupliquer cette période."></q>';
@@ -85,7 +63,7 @@ Layout::add( 'js_inline_before' , 'var select_lsun="'.str_replace('"','\"',$sele
     }
     else
     {
-      echo'<tr class="vide"><td class="nu" colspan="3"></td><td class="nu"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="2"></td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -95,9 +73,8 @@ Layout::add( 'js_inline_before' , 'var select_lsun="'.str_replace('"','\"',$sele
   <h2>Ajouter | Modifier | Dupliquer | Supprimer une période</h2>
   <div id="gestion_edit">
     <p>
-      <label class="tab" for="f_ordre">Ordre :</label><input id="f_ordre" name="f_ordre" value="" type="number" min="1" max="99" /><br />
-      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="40" maxlength="40" /><br />
-      <label class="tab" for="f_lsun">Type LSUN <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Le LSUN requière de connaître le numéro et le nombre de bilans périodiques.<br />En dehors de ce cas précis, ce n'est pas nécessaire au fonctionnement de <em>SACoche</em>." /> :</label><select id="f_lsun" name="f_lsun"><?php echo $select_lsun ?></select>
+      <label class="tab" for="f_ordre">Ordre :</label><input id="f_ordre" name="f_ordre" type="text" value="" size="5" maxlength="2" /><br />
+      <label class="tab" for="f_nom">Nom :</label><input id="f_nom" name="f_nom" type="text" value="" size="40" maxlength="40" />
     </p>
   </div>
   <div id="gestion_delete">

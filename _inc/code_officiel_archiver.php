@@ -511,7 +511,19 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
   $mois_actuel    = date('n');
   $annee_actuelle = date('Y');
   $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'];
-  $annee_affichee = To::annee_scolaire('texte');
+  $annee_affichee = 'Année scolaire ';
+  if($mois_bascule==1)
+  {
+    $annee_affichee .= $annee_actuelle;
+  }
+  else if($mois_actuel < $mois_bascule)
+  {
+    $annee_affichee .= ($annee_actuelle-1).'/'.$annee_actuelle;
+  }
+  else
+  {
+    $annee_affichee .= $annee_actuelle.'/'.($annee_actuelle+1);
+  }
   // Tag date heure initiales (code repris de [code_officiel_imprimer.php] )
   $tag_date_heure_initiales = date('d/m/Y H:i').' '.To::texte_identite($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
   // Fabrication du PDF

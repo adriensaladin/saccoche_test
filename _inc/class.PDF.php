@@ -526,7 +526,6 @@ class PDF extends FPDF
     $this->legende     = ($legende=='oui') ? 1 : 0 ;
     $this->filigrane   = $filigrane;
     // Valeurs de session utilisées
-    // Peuvent être surchargées lors de l'impression d'une archive d'un bilan officiel (sauf les 2 derniers qui ne sont pas utilisés dans cette situation).
     $tab_clefs = array( 'OFFICIEL' , 'ACQUIS' , 'VALID' , 'NOTE' , 'NOTE_ACTIF' , 'NOMBRE_CODES_NOTATION' , 'DROIT_VOIR_SCORE_BILAN' , 'ENVELOPPE' , 'ETABLISSEMENT_DENOMINATION' );
     foreach( $tab_clefs as $CLEF )
     {
@@ -639,7 +638,7 @@ class PDF extends FPDF
     $rapport_hauteur = $espace_hauteur / 10 ;
     $centrage     = ($rapport_largeur<$rapport_hauteur) ? 'hauteur' : 'largeur';
     $rapport_coef = ($centrage=='hauteur') ? $rapport_largeur : $rapport_hauteur ;
-    $rapport_coef = min( round( $rapport_coef , 1 , PHP_ROUND_HALF_DOWN ) , 0.4 ) ; // valeur approchée au dixième près par défaut
+    $rapport_coef = min( floor($rapport_coef*10)/10 , 0.4 ) ;  // A partir de PHP 5.3 on peut utiliser l'option PHP_ROUND_HALF_DOWN de round()
     $this->lomer_image_largeur = floor(20*$rapport_coef) ;
     $this->lomer_image_hauteur = floor(10*$rapport_coef) ;
   }
@@ -871,7 +870,7 @@ class PDF extends FPDF
 
   private function afficher_image( $largeur_bloc , $hauteur_autorisee , $tab_image , $img_objet /* signature | logo | logo_seul */ )
   {
-    extract( $tab_image , EXTR_PREFIX_ALL , 'img' ); // $img_contenu , $img_format , $img_largeur , $img_hauteur
+    list($img_contenu,$img_format,$img_largeur,$img_hauteur) = $tab_image;
     $img_largeur *= $this->coef_conv_pixel_to_mm;
     $img_hauteur *= $this->coef_conv_pixel_to_mm;
     $coef_ratio_largeur = ($img_objet=='signature') ? 2 : min( $img_largeur/$img_hauteur , 2 ) ;
@@ -884,7 +883,7 @@ class PDF extends FPDF
     $retrait_x = ($img_objet=='signature') ? max($hauteur_autorisee,$img_largeur)       : $img_largeur  ;
     $img_pos_x = ($img_objet=='signature') ? $this->GetX() + $largeur_bloc - $retrait_x : $this->GetX() ;
     $img_pos_y = $this->GetY() + ( $hauteur_autorisee - $img_hauteur ) / 2 ;
-    $this->MemImage( base64_decode($img_contenu) , $img_pos_x , $img_pos_y , $img_largeur , $img_hauteur , strtoupper($img_format) );
+    $this->MemImage($img_contenu,$img_pos_x,$img_pos_y,$img_largeur,$img_hauteur,strtoupper($img_format));
     return $retrait_x;
   }
 
@@ -1171,22 +1170,27 @@ class PDF extends FPDF
     return $hauteur_bloc;
   }
 
-  public function officiel_bloc_titres( $tab_bloc_titres , $bloc_largeur )
+  public function officiel_bloc_titres( $tab_bloc_titres , $alerte_archive , $bloc_largeur )
   {
     $taille_police = 10 ;
     $ligne_hauteur = $taille_police*0.4 ;
-    $bloc_hauteur = 4*$ligne_hauteur ;
+    $bloc_hauteur = ($alerte_archive) ? 4*$ligne_hauteur : 3*$ligne_hauteur ;
     $this->SetFont('Arial' , 'B' , $taille_police);
     $tab_bloc_titres[2] = $this->eleve_nom.' '.$this->eleve_prenom.' ('.$tab_bloc_titres[2].')';
     $this->choisir_couleur_fond('gris_clair');
     $DrawFill = ($this->fond) ? 'DF' : 'D' ;
     $this->Rect( $this->GetX() , $this->GetY() , $bloc_largeur , $bloc_hauteur , $DrawFill );
-    $this->SetXY( $this->GetX() , $this->GetY() + 0.5*$ligne_hauteur );
     foreach($tab_bloc_titres as $ligne_titre)
     {
       $this->CellFit( $bloc_largeur , $ligne_hauteur , To::pdf($ligne_titre) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
     }
-    $this->SetXY( $this->GetX() , $this->GetY() + 0.5*$ligne_hauteur );
+    if($alerte_archive)
+    {
+      // Ligne d'avertissement
+      $this->choisir_couleur_texte('rougevif');
+      $this->CellFit( $bloc_largeur , $ligne_hauteur , To::pdf('Copie partielle pour information. Seul l\'original fait foi.') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->choisir_couleur_texte('noir');
+    }
     return $bloc_hauteur;
   }
 
@@ -1343,7 +1347,7 @@ class PDF extends FPDF
     $memoX = $this->GetX();
     $memoY = $this->GetY();
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.4);
-    $this->Write( $ligne_hauteur , To::pdf('Appréciation générale / Conseils') );
+    $this->Write( $ligne_hauteur , To::pdf('Appréciation générale') );
     if($prof_info)
     {
       $this->SetFont('Arial' , '' , $this->taille_police);

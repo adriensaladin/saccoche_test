@@ -134,7 +134,7 @@ else
 
 <hr />
 
-<h2>Forcer la suppression des fichiers temporaires obsolètes</h2>
+<h2>Forcer la suppression de fichiers temporaires obsolètes</h2>
 
 <form action="#" method="post" id="form_clean_file_temp"><fieldset>
   <p class="astuce">
@@ -145,7 +145,7 @@ else
     Il est donc inutile de lancer cette procédure régulièrement, une fois par an suffit !
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_clean_file_temp" type="button" class="parametre">Forcer cette suppression.</button><label id="ajax_clean_file_temp">&nbsp;</label>
+    <span class="tab"></span><button id="bouton_clean_file_temp" type="button" class="parametre">Forcer la maj des bases établissements.</button><label id="ajax_clean_file_temp">&nbsp;</label>
   </p>
 </fieldset></form>
 

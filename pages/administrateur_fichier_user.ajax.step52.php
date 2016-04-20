@@ -125,10 +125,6 @@ if(count($tab_add))
       }
       // Attention à la date de naissance, définie seulement pour les élèves
       $birth_date = empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ? NULL : To::date_french_to_mysql($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ;
-      // Attention aux LV, définies seulement pour les élèves
-      $eleve_uai = empty($tab_memo_analyse['ajouter'][$i_fichier]['uai_origine']) ? ''  : $tab_memo_analyse['ajouter'][$i_fichier]['uai_origine'] ;
-      $eleve_lv1 = empty($tab_memo_analyse['ajouter'][$i_fichier]['lv1'])         ? 100 : $tab_memo_analyse['ajouter'][$i_fichier]['lv1'] ;
-      $eleve_lv2 = empty($tab_memo_analyse['ajouter'][$i_fichier]['lv2'])         ? 100 : $tab_memo_analyse['ajouter'][$i_fichier]['lv2'] ;
       // Ajouter l'utilisateur
       $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur(
         $tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'],
@@ -143,12 +139,7 @@ if(count($tab_add))
         $tab_memo_analyse['ajouter'][$i_fichier]['email_origine'],
         $login,
         Outil::crypter_mdp($password),
-        '', // id_ent
-        '', // id_gepi
-        $tab_memo_analyse['ajouter'][$i_fichier]['classe'],
-        $eleve_uai,
-        $eleve_lv1,
-        $eleve_lv2
+        $tab_memo_analyse['ajouter'][$i_fichier]['classe']
       );
       if($import_profil=='professeur')
       {
@@ -175,9 +166,8 @@ if(count($tab_mod))
   foreach($tab_mod as $id_base)
   {
     // Il peut théoriquement subsister un conflit de sconet_id pour des users ayant même reference, et réciproquement... idem pour l'adresse mail...
-    $tab_champs = ($import_profil=='eleve')
-                ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'genre' , 'nom' , 'prenom' , 'birth_date' , 'courriel' , 'email_origine' , 'uai_origine' , 'lv1' , 'lv2' )
-                : array( 'sconet_id' , 'reference' , 'profil_sigle' , 'genre' , 'nom' , 'prenom' , 'courriel' , 'email_origine' ) ;
+    $tab_champs = ($import_profil=='eleve') ? array( 'sconet_id' , 'sconet_num' , 'reference' , 'classe' , 'genre' , 'nom' , 'prenom' , 'birth_date' , 'courriel' , 'email_origine' )
+                                            : array( 'sconet_id' , 'reference' , 'profil_sigle' , 'genre' , 'nom' , 'prenom' , 'courriel' , 'email_origine' ) ;
     $DB_VAR  = array();
     foreach($tab_champs as $champ_ref)
     {

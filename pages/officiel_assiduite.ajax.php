@@ -410,7 +410,7 @@ if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
     {
       $nb_absence = $nb_absence_nj = $nb_retard = $nb_retard_nj = '' ;
     }
-    Json::add_str('<tr id="tr_'.$user_id.'"><td>'.html($user_nom_prenom).'</td><td><input type="number" min="0" max="255" id="td1_'.$user_id.'" value="'.$nb_absence.'" /></td><td><input type="number" min="0" max="255" id="td2_'.$user_id.'" value="'.$nb_absence_nj.'" /></td><td><input type="number" min="0" max="255" id="td3_'.$user_id.'" value="'.$nb_retard.'" /></td><td><input type="number" min="0" max="255" id="td4_'.$user_id.'" value="'.$nb_retard_nj.'" /></td></tr>');
+    Json::add_str('<tr id="tr_'.$user_id.'"><td>'.html($user_nom_prenom).'</td><td><input type="text" size="3" maxlength="3" id="td1_'.$user_id.'" value="'.$nb_absence.'" /></td><td><input type="text" size="3" maxlength="3" id="td2_'.$user_id.'" value="'.$nb_absence_nj.'" /></td><td><input type="text" size="3" maxlength="3" id="td3_'.$user_id.'" value="'.$nb_retard.'" /></td><td><input type="text" size="3" maxlength="3" id="td4_'.$user_id.'" value="'.$nb_retard_nj.'" /></td></tr>');
   }
   Json::end( TRUE );
 }

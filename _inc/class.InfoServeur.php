@@ -85,29 +85,8 @@ class InfoServeur
   {
     switch($sujet)
     {
-      case 'version_php'                    : return "Version ".PHP_VERSION_MINI_REQUISE." ou ultérieure requise.<br \>Version ".PHP_VERSION_MINI_CONSEILLEE." ou ultérieure conseillée.<br \>PHP 5.1 n'est plus supporté depuis le 24/08/2006.<br />PHP 5.2 n'est plus supporté depuis le 06/01/2011.<br \>PHP 5.3 n'est plus supporté depuis le 14/08/2014.<br \>PHP 5.4 et PHP 5.5 ne reçoivent plus que des correctifs de sécurité.";
-      /*
-      PHP 5.1 (24/11/2005) n'est plus supporté depuis le 24/08/2006.            @see http://www.php.net/releases/ & http://php.net/eol.php
-      PHP 5.2 (02/11/2006) n'est plus supporté depuis le 06/01/2011.            @see http://www.php.net/releases/ & http://php.net/eol.php
-      PHP 5.3 (30/06/2009) n'est plus supporté depuis le 14/08/2014.            @see http://www.php.net/releases/ & http://php.net/eol.php
-      PHP 5.4 (01/03/2012) ne reçoit plus que des correctifs de sécurité.       @see http://www.php.net/releases/ & https://fr.wikipedia.org/wiki/PHP
-      PHP 5.5 (20/06/2013) ne reçoit plus que des correctifs de sécurité.       @see http://www.php.net/releases/ & https://fr.wikipedia.org/wiki/PHP
-      PHP 5.6 (28/08/2014) et PHP 7.0 (03/12/2015) sont les versions actuelles. @see http://www.php.net/releases/ & https://fr.wikipedia.org/wiki/PHP
-      */
-      case 'version_mysql'                  : return "Version ".MYSQL_VERSION_MINI_REQUISE." ou ultérieure requise.<br \>Version ".MYSQL_VERSION_MINI_CONSEILLEE." ou ultérieure conseillée.<br \>MySQL 5.0 est stable depuis le 15/04/2008 (5.0.19).<br \>MySQL 5.1 est stable depuis le 30/06/2009 (5.1.16).<br \>MySQL 5.2 est stable depuis le 30/06/2010 (5.2.25).<br \>MySQL 5.5 est stable depuis le 03/12/2010 (5.5.8).<br \>MySQL 5.6 est stable depuis le 05/02/2013 (5.6.10).<br \>MySQL 5.7 est stable depuis le 21/10/2015 (5.7.9).";
-      /*
-      Le support de MySQL dépend des systèmes.            @see https://www.mysql.com/support/supportedplatforms/database.html
-      MySQL 5.0 est stable depuis le 15/04/2008 (5.0.19). @see https://dev.mysql.com/doc/relnotes/workbench/en/changes-5-0.html
-      MySQL 5.1 est stable depuis le 30/06/2009 (5.1.16). @see https://dev.mysql.com/doc/relnotes/workbench/en/changes-5-1.html
-      MySQL 5.2 est stable depuis le 30/06/2010 (5.2.25). @see https://dev.mysql.com/doc/relnotes/workbench/en/changes-5-2.html
-      MySQL 5.5 est stable depuis le 03/12/2010 (5.5.8).  @see https://dev.mysql.com/doc/relnotes/mysql/5.5/en/
-      MySQL 5.6 est stable depuis le 05/02/2013 (5.6.10). @see https://dev.mysql.com/doc/relnotes/mysql/5.6/en/
-      MySQL 5.7 est stable depuis le 21/10/2015 (5.7.9).  @see https://dev.mysql.com/doc/relnotes/mysql/5.7/en/
-      MySQL 6.0 est stable depuis le 12/08/2013 (6.0.6).  @see https://dev.mysql.com/doc/relnotes/workbench/en/changes-6-0.html
-      MySQL 6.1 est stable depuis le 31/03/2014 (6.1.4).  @see https://dev.mysql.com/doc/relnotes/workbench/en/changes-6-1.html
-      MySQL 6.2 est stable depuis le 23/09/2014 (6.2.3).  @see https://dev.mysql.com/doc/relnotes/workbench/en/changes-6-2.html
-      MySQL 6.3 est stable depuis le 23/04/2015 (6.3.3).  @see https://dev.mysql.com/doc/relnotes/workbench/en/changes-6-3.html
-      */
+      case 'version_php'                    : return "Version ".PHP_VERSION_MINI_REQUISE." ou ultérieure requise.<br \>Version ".PHP_VERSION_MINI_CONSEILLEE." ou ultérieure conseillée.<br \>PHP 5.2 n'est plus supporté depuis le 16 décembre 2010.<br \>PHP 5.3 ne reçoit plus de correctifs de sécurité depuis le 14 août 2014.";
+      case 'version_mysql'                  : return "Version ".MYSQL_VERSION_MINI_REQUISE." ou ultérieure requise.<br \>Version ".MYSQL_VERSION_MINI_CONSEILLEE." ou ultérieure conseillée.<br \>MySQL 5.1 n'est plus supporté depuis le 31 décembre 2013.<br \>MySQL 5.5 est stable depuis octobre 2010.";
       case 'version_sacoche_prog'           : return "Dernière version disponible : ".InfoServeur::SACoche_version_dispo();
       case 'version_sacoche_base_structure' : return InfoServeur::info_base_complement('structure')."Version attendue : ".VERSION_BASE_STRUCTURE;
       case 'version_sacoche_base_webmestre' : return InfoServeur::info_base_complement('webmestre')."Version attendue : ".VERSION_BASE_WEBMESTRE;
@@ -296,9 +275,8 @@ class InfoServeur
   private static function max_execution_time()
   {
     $val = ini_get('max_execution_time');
-    if( (!$val) || ($val>=30) ) { $couleur = 'vert'; } elseif($val>=15) { $couleur = 'jaune'; } else { $couleur = 'rouge'; }
     $val = ($val) ? $val.'s' : '<b>&infin;</b>' ;
-    return InfoServeur::cellule_coloree_centree( $val , $couleur );
+    return InfoServeur::cellule_centree( $val );
   }
 
   /**
@@ -314,9 +292,8 @@ class InfoServeur
   private static function memory_limit()
   {
     $val = ini_get('memory_limit');
-    if( ($val==-1) || ($val>=128) ) { $couleur = 'vert'; } elseif($val>=64) { $couleur = 'jaune'; } else { $couleur = 'rouge'; }
     $val = ($val!=-1) ? $val : '<b>&infin;</b>' ;
-    return InfoServeur::cellule_coloree_centree( $val , $couleur );
+    return InfoServeur::cellule_centree( $val );
   }
 
   /**

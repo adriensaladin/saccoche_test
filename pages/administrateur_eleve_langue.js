@@ -114,21 +114,10 @@ $(document).ready
     (
       function()
       {
-        var f_objet  = $('#f_objet option:selected').val();
         var f_langue = $('#f_langue option:selected').val();
-        if(!$("#f_eleve input:checked").length)
+        if( !$("#f_eleve input:checked").length || !f_langue )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez au moins un élève !");
-          return false;
-        }
-        else if(!f_objet)
-        {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez l'objet !");
-          return false;
-        }
-        else if(!f_langue)
-        {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez une langue !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez dans les deux listes !");
           return false;
         }
         $('#form_select button').prop('disabled',true);
@@ -147,7 +136,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=associer'+'&f_objet='+f_objet+'&f_langue='+f_langue+'&f_eleve='+tab_eleve,
+            data : 'csrf='+CSRF+'&f_action=associer'+'&f_langue='+f_langue+'&f_eleve='+tab_eleve,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

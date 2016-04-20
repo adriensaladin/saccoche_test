@@ -185,39 +185,6 @@ if($ACTION=='initialiser')
 
 if( ($ACTION=='imprimer') && ($etape==2) )
 {
-  /* NOUVELLE METHODE */
-  if(in_array($BILAN_TYPE,array('releve','bulletin')))
-  {
-    // Enregistrement des images nécessaires
-    foreach($_SESSION['tmp']['tab_archive']['image'] as $image_md5 => $image_contenu)
-    {
-      DB_STRUCTURE_OFFICIEL::DB_ajouter_officiel_archive_image( $image_md5 , $image_contenu );
-    }
-    unset($_SESSION['tmp']['tab_archive']['image']);
-    // Récupérer les bilans déjà existants pour savoir s'il faut faire un INSERT ou un UPDATE (sinon, un REPLACE efface les dates de consultation)
-    $annee_scolaire = To::annee_scolaire('code');
-    $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_archive( $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/ , $BILAN_TYPE /*archive_ref*/ , $periode_id , array_keys($_SESSION['tmp']['tab_pages_decoupe_pdf']) /*tab_eleve_id*/ , FALSE /*with_infos*/ );
-    $tab_notif = array();
-    foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
-    {
-      $tab_image_md5 = $_SESSION['tmp']['tab_archive']['user'][$eleve_id]['image_md5'];
-      unset($_SESSION['tmp']['tab_archive']['user'][$eleve_id]['image_md5']);
-      $tab_contenu = array_merge( $_SESSION['tmp']['tab_archive']['user'][0] , $_SESSION['tmp']['tab_archive']['user'][$eleve_id] );
-      $archive_contenu = json_encode($tab_contenu);
-      if(!isset($DB_TAB[$eleve_id]))
-      {
-        DB_STRUCTURE_OFFICIEL::DB_ajouter_officiel_archive( $eleve_id , $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/, $BILAN_TYPE /*archive_ref*/ , $periode_id , $periode_nom , $_SESSION['WEBMESTRE_DENOMINATION'] , VERSION_PROG , $archive_contenu , $tab_image_md5 );
-        $tab_notif[$eleve_id] = $eleve_id;
-      }
-      else
-      {
-        // On ne met pas à jour la date de génération pour conserver la date supposée du conseil de classe et éviter des malentendus ; la date de dernière impression reste archivée en petit sous le bloc titre.
-        DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_archive( $eleve_id , $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/, $BILAN_TYPE /*archive_ref*/ , $periode_id , $periode_nom , $_SESSION['WEBMESTRE_DENOMINATION'] , VERSION_PROG , $archive_contenu , $tab_image_md5 );
-      }
-    }
-  }
-  unset($_SESSION['tmp']['tab_archive']);
-  /* FIN NOUVELLE METHODE */
   Erreur500::prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
   // Récupérer les bilans déjà existants pour savoir s'il faut faire un INSERT ou un UPDATE (sinon, un REPLACE efface les dates de consultation)
   $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( $BILAN_TYPE , $periode_id , array_keys($_SESSION['tmp']['tab_pages_decoupe_pdf']) );
@@ -232,7 +199,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
     }
     else
     {
-      // On ne met plus à jour la date de génération pour conserver la date supposée du conseil de classe et éviter des malentendus ; la date de dernière impression reste archivée en petit sous le bloc titre.
+      DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_fichier_date( $eleve_id , $BILAN_TYPE , $periode_id , 'generation' );
     }
     $fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
     unset($_SESSION['tmp']['tab_pages_decoupe_pdf'][$eleve_id][0]);
@@ -383,12 +350,7 @@ if($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']!='sans')
   $DB_TAB = DB_STRUCTURE_IMAGE::DB_lister_images( $listing_prof_id , 'signature' );
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_signature[$DB_ROW['user_id']] = array(
-      'contenu' => $DB_ROW['image_contenu'] ,
-      'format'  => $DB_ROW['image_format']  ,
-      'largeur' => $DB_ROW['image_largeur'] ,
-      'hauteur' => $DB_ROW['image_hauteur'] ,
-    );
+    $tab_signature[$DB_ROW['user_id']] = array( base64_decode($DB_ROW['image_contenu']) , $DB_ROW['image_format'] , $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] );
   }
 }
 
@@ -468,12 +430,7 @@ if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'logo'))
   $DB_ROW = DB_STRUCTURE_IMAGE::DB_recuperer_image( 0 /*user_id*/ , 'logo' );
   if(!empty($DB_ROW))
   {
-    $tab_etabl_logo = array(
-      'contenu' => $DB_ROW['image_contenu'] ,
-      'format'  => $DB_ROW['image_format']  ,
-      'largeur' => $DB_ROW['image_largeur'] ,
-      'hauteur' => $DB_ROW['image_hauteur'] ,
-    );
+    $tab_etabl_logo = array( base64_decode($DB_ROW['image_contenu']) , $DB_ROW['image_format'] , $DB_ROW['image_largeur'] , $DB_ROW['image_hauteur'] );
     $logo_hauteur = 7;
   }
 }
@@ -507,11 +464,26 @@ if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'url'))
 {
   if($_SESSION['ETABLISSEMENT']['URL']) { $tab_etabl_coords['url'] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
 }
-$etabl_coords_bloc_hauteur = 0.75 + ( max( count($tab_etabl_coords) , $logo_hauteur ) * 0.75 ) ;
+$etabl_coords__bloc_hauteur = 0.75 + ( max( count($tab_etabl_coords) , $logo_hauteur ) * 0.75 ) ;
 
 // Bloc des titres du document
 
-$tab_bloc_titres = array( 0 => $tab_types[$BILAN_TYPE]['titre'] , 1 => To::annee_scolaire('texte').' - '.$periode_nom , 2 =>$classe_nom );
+$mois_actuel    = date('n');
+$annee_actuelle = date('Y');
+$mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'];
+if($mois_bascule==1)
+{
+  $annee_affichee = $annee_actuelle;
+}
+else if($mois_actuel < $mois_bascule)
+{
+  $annee_affichee = ($annee_actuelle-1).'/'.$annee_actuelle;
+}
+else
+{
+  $annee_affichee = $annee_actuelle.'/'.($annee_actuelle+1);
+}
+$tab_bloc_titres = array( 0 => $tab_types[$BILAN_TYPE]['titre'] , 1 => 'Année scolaire '.$annee_affichee.' - '.$periode_nom , 2 =>$classe_nom );
 
 // Tag date heure initiales
 
@@ -522,6 +494,7 @@ $tag_date_heure_initiales = date('d/m/Y H:i').' '.To::texte_identite($_SESSION['
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+$tab_pages_decoupe_pdf = array();
 $make_officiel = TRUE;
 $make_brevet   = FALSE;
 $make_action   = 'imprimer';
@@ -529,21 +502,6 @@ $make_html     = FALSE;
 $make_pdf      = TRUE;
 $make_csv      = FALSE;
 $make_graph    = FALSE;
-
-$tab_pages_decoupe_pdf = array();
-$tab_archive = array(
-  'image'   => array(),
-  'user'    => array(),
-  'session' => array(
-    'OFFICIEL'               => $_SESSION['OFFICIEL'],
-    'ACQUIS'                 => $_SESSION['ACQUIS'],
-    'VALID'                  => $_SESSION['VALID'],
-    'NOTE'                   => $_SESSION['NOTE'],
-    'NOTE_ACTIF'             => $_SESSION['NOTE_ACTIF'],
-    'NOMBRE_CODES_NOTATION'  => $_SESSION['NOMBRE_CODES_NOTATION'],
-    'DROIT_VOIR_SCORE_BILAN' => $_SESSION['DROIT_VOIR_SCORE_BILAN'],
-  ),
-);
 
 if($BILAN_TYPE=='releve')
 {
@@ -656,7 +614,7 @@ elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage du résultat (pas grand chose, car la découpe du PDF intervient lors d'appels ajax ultérieurs, sauf s'il s'agissait d'un test d'impression auquel cas le filigrane a déjà été ajouté et on s'arrête là
+// Affichage du résultat (pas grand chose, car la découpe du PDF intervient lors d'appels ajax ultérieurs, sauf s'il s'agissait d'un test d'impression auquel cas on ajoute un filigrane et on s'arrête là)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if(empty($is_test_impression))
@@ -666,8 +624,6 @@ if(empty($is_test_impression))
     $indication_pariode = in_array($BILAN_TYPE,array('releve','bulletin')) ? ' sur la période '.$date_debut.' ~ '.$date_fin : '' ; // Pour le socle, on ne passe normalement pas par ici, mais bon, ceinture + bretelles ;)
     Json::end( FALSE , 'Aucune donnée trouvée pour le ou les élèves concernés'.$indication_pariode.' !' );
   }
-  unset($tab_archive['session']);
-  $_SESSION['tmp']['tab_archive'] = $tab_archive;
   $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
   $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
   Json::end( TRUE );

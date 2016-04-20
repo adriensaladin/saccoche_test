@@ -74,7 +74,7 @@ class PDF_item_synthese extends PDF
       $lignes_nb_moyen_eleve      = $lignes_nb_tous_eleves / $eleves_nb ;
       $lignes_nb_calcule_par_page = $eleves_nb_par_page * $lignes_nb_moyen_eleve ; // $lignes_nb/$nb_page_calcule ne va pas car un élève peut alors être considéré à cheval sur 2 pages
       $hauteur_ligne_calcule      = $hauteur_dispo_par_page / $lignes_nb_calcule_par_page ;
-      $this->lignes_hauteur = round( $hauteur_ligne_calcule , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
+      $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
       $this->lignes_hauteur = min ( $this->lignes_hauteur , 7.5 ) ;
       // On s'occupe aussi maintenant de la taille de la police
       $this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
@@ -110,7 +110,7 @@ class PDF_item_synthese extends PDF
       if($this->officiel)
       {
         // Ecrire l'en-tête (qui ne dépend pas de la taille de la police calculée ensuite) et récupérer la place requise par cet en-tête.
-        extract($tab_infos_entete); // $tab_etabl_coords , $tab_etabl_logo , $etabl_coords_bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $eleve_genre , $date_naissance
+        list( $tab_etabl_coords , $tab_etabl_logo , $etabl_coords__bloc_hauteur , $tab_bloc_titres , $tab_adresse , $tag_date_heure_initiales , $eleve_genre , $date_naissance ) = $tab_infos_entete;
         $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
         // Bloc adresse en positionnement contraint
         if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
@@ -119,23 +119,24 @@ class PDF_item_synthese extends PDF
           $this->SetXY( $this->marge_gauche , $this->marge_haut );
         }
         // Bloc établissement
-        $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : $this->page_largeur_moins_marges / 2 ;
+        $bloc_etabl_largeur = (isset($bloc_gauche_largeur_restante)) ? $bloc_gauche_largeur_restante : 80 ;
         $bloc_etabl_hauteur = $this->officiel_bloc_etablissement( $tab_etabl_coords , $tab_etabl_logo , $bloc_etabl_largeur );
         // Bloc titres
+        $alerte_archive = (($tab_adresse==='archive')&&($this->SESSION['OFFICIEL']['ARCHIVE_AJOUT_MESSAGE_COPIE'])) ? TRUE : FALSE ;
         if( (is_array($tab_adresse)) && ($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_force') )
         {
           // En dessous du bloc établissement
           $bloc_titre_largeur = $bloc_etabl_largeur ;
           $this->SetXY( $this->marge_gauche , $this->GetY() + 2 );
-          $bloc_titre_hauteur = $this->officiel_bloc_titres( $tab_bloc_titres , $bloc_titre_largeur );
+          $bloc_titre_hauteur = $this->officiel_bloc_titres( $tab_bloc_titres , $alerte_archive , $bloc_titre_largeur );
           $bloc_gauche_hauteur = $bloc_etabl_hauteur + 2 + $bloc_titre_hauteur + 2 ;
         }
         else
         {
           // En haut à droite, modulo la place pour le texte indiquant le nombre de pages
-          $bloc_titre_largeur = $this->page_largeur_moins_marges / 2;
+          $bloc_titre_largeur = 100;
           $this->SetXY( $this->page_largeur-$this->marge_droite-$bloc_titre_largeur , $this->marge_haut+4 );
-          $bloc_titre_hauteur = $this->officiel_bloc_titres( $tab_bloc_titres , $bloc_titre_largeur) + 6;
+          $bloc_titre_hauteur = $this->officiel_bloc_titres( $tab_bloc_titres , $alerte_archive , $bloc_titre_largeur) + 6;
           $bloc_gauche_hauteur = $bloc_etabl_hauteur ;
           $bloc_droite_hauteur = $bloc_titre_hauteur ; // temporaire, au cas où il n'y aurait pas d'adresse à ajouter
         }
@@ -168,19 +169,19 @@ class PDF_item_synthese extends PDF
         $hauteur_ligne_calcule = $nb_pages*$hauteur_dispo_par_page / ($lignes_nb+$lignes_rabe) ;
       }
       while($hauteur_ligne_calcule < $hauteur_ligne_minimale);
-      $this->lignes_hauteur = round( $hauteur_ligne_calcule , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
+      $this->lignes_hauteur = floor($hauteur_ligne_calcule*10)/10 ; // round($hauteur_ligne_calcule,1,PHP_ROUND_HALF_DOWN) à partir de PHP 5.3
       $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
       $this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
       $this->taille_police  = min ( $this->taille_police , 10 ) ;
     }
     if(!$this->officiel)
     {
-      extract($tab_infos_entete); // $bilan_titre , $texte_periode , $texte_precision , $groupe_nom
-      $this->doc_titre = 'Synthèse '.$bilan_titre.' - '.$texte_periode;
+      list( $texte_format , $texte_periode , $texte_precision , $groupe_nom ) = $tab_infos_entete;
+      $this->doc_titre = 'Synthèse '.$texte_format.' - '.$texte_periode;
       // Intitulé (dont éventuellement matière) / structure
       $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
       $this->SetFont('Arial' , 'B' , $this->taille_police*1.5);
-      $this->Cell( $largeur_demi_page , $this->lignes_hauteur , To::pdf('Synthèse '.$bilan_titre)                     , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      $this->Cell( $largeur_demi_page , $this->lignes_hauteur , To::pdf('Synthèse '.$texte_format)                    , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
       $this->Cell( $largeur_demi_page , $this->lignes_hauteur , To::pdf($this->SESSION['ETABLISSEMENT_DENOMINATION']) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
       // Période / Classe - élève
       $memo_y = $this->GetY();

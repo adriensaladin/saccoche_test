@@ -637,18 +637,15 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  * @param string      $user_email_origine
  * @param string      $user_login
  * @param string      $password_crypte
- * @param string      $user_id_ent  facultatif
- * @param string      $user_id_gepi facultatif
- * @param int         $eleve_classe_id   facultatif, 0 si pas de classe ou profil non élève
- * @param string      $eleve_uai_origine facultatif, '' sinon
- * @param int         $eleve_lv1         facultatif, 100 si pas de LV ou profil non élève
- * @param int         $eleve_lv2         facultatif, 100 si pas de LV ou profil non élève
+ * @param int         $eleve_classe_id facultatif, 0 si pas de classe ou profil non élève
+ * @param string      $user_id_ent     facultatif
+ * @param string      $user_id_gepi    facultatif
  * @return int
  */
-public static function DB_ajouter_utilisateur( $user_sconet_id , $user_sconet_elenoet , $user_reference , $user_profil_sigle , $user_genre , $user_nom , $user_prenom , $user_naissance_date , $user_email , $user_email_origine , $user_login , $password_crypte , $user_id_ent='' , $user_id_gepi='' , $eleve_classe_id=0 , $eleve_uai_origine='' , $eleve_lv1=100 , $eleve_lv2=100 )
+public static function DB_ajouter_utilisateur( $user_sconet_id , $user_sconet_elenoet , $user_reference , $user_profil_sigle , $user_genre , $user_nom , $user_prenom , $user_naissance_date , $user_email , $user_email_origine , $user_login , $password_crypte , $eleve_classe_id=0 , $user_id_ent='' , $user_id_gepi='' )
 {
-  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_email_origine, user_login, user_password,   eleve_classe_id, eleve_lv1, eleve_lv2, eleve_uai_origine, user_id_ent, user_id_gepi) ';
-  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_genre,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_email_origine,:user_login,:password_crypte,:eleve_classe_id,:eleve_lv1,:eleve_lv2,:eleve_uai_origine,:user_id_ent,:user_id_gepi)';
+  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_email_origine, user_login, user_password,   eleve_classe_id, user_id_ent, user_id_gepi) ';
+  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_genre,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_email_origine,:user_login,:password_crypte,:eleve_classe_id,:user_id_ent,:user_id_gepi)';
   $DB_VAR = array(
     ':user_sconet_id'      => $user_sconet_id,
     ':user_sconet_elenoet' => $user_sconet_elenoet,
@@ -663,9 +660,6 @@ public static function DB_ajouter_utilisateur( $user_sconet_id , $user_sconet_el
     ':user_login'          => $user_login,
     ':password_crypte'     => $password_crypte,
     ':eleve_classe_id'     => $eleve_classe_id,
-    ':eleve_lv1'           => $eleve_lv1,
-    ':eleve_lv2'           => $eleve_lv2,
-    ':eleve_uai_origine'   => $eleve_uai_origine,
     ':user_id_ent'         => $user_id_ent,
     ':user_id_gepi'        => $user_id_gepi,
   );
@@ -1678,68 +1672,6 @@ public static function DB_OPT_enfants_parent($parent_id)
   $DB_VAR = array( ':parent_id' => $parent_id );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève affecté dans une classe n\'est associé à votre compte !' ;
-}
-
-/**
- * Retourner un tableau [valeur texte] des années scolaires des bilans officiels archivés
- *
- * @param void
- * @return array
- */
-public static function DB_OPT_officiel_archive_annee()
-{
-  $DB_SQL = 'SELECT DISTINCT annee_scolaire AS valeur, annee_scolaire AS texte ';
-  $DB_SQL.= 'FROM sacoche_officiel_archive ';
-  $DB_SQL.= 'ORDER BY annee_scolaire DESC ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * Retourner un tableau [valeur texte] des années scolaires des bilans officiels archivés
- * TODO : A TERME IL FAUDRA REPENSER UNE SELECTION SUR L'ETABLISSEMENT EN AMONT (SI PLUSIEURS ETABLISSEMENTS ALORS PAS DE CHOIX DE PERIODE)
- *
- * @param string $annee_scolaire
- * @return array
- */
-public static function DB_OPT_officiel_periode($annee_scolaire)
-{
-  $DB_SQL = 'SELECT DISTINCT periode_id AS valeur, periode_nom AS texte ';
-  $DB_SQL.= 'FROM sacoche_officiel_archive ';
-  $DB_SQL.= 'WHERE annee_scolaire=:annee_scolaire ';
-  $DB_SQL.= 'ORDER BY periode_id ASC ';
-  $DB_VAR = array( ':annee_scolaire' => $annee_scolaire );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Retourner un tableau [valeur texte optgroup] des types et références de bilans officiels archivés
- * TODO : A TERME IL FAUDRA TRIER SUR archive_ref ET PREVOIR UN TEXTE PLUS PRESENTABLE
- *
- * @param void
- * @return array
- */
-public static function DB_OPT_officiel_archive_type_ref()
-{
-  $DB_SQL = 'SELECT DISTINCT CONCAT(archive_type,"_",archive_ref) AS valeur, CONCAT(archive_type," ",archive_ref) AS texte, archive_type AS optgroup ';
-  $DB_SQL.= 'FROM sacoche_officiel_archive ';
-  $DB_SQL.= 'ORDER BY archive_type DESC ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * Retourner un tableau [valeur texte] des structures d'origines connues
- *
- * @param string $listing_eleve_id
- * @return array
- */
-public static function DB_OPT_structure_origine($listing_eleve_id)
-{
-  $DB_SQL = 'SELECT DISTINCT structure_uai AS valeur, CONCAT( SUBSTRING(structure_uai,1,3) , " - " , structure_localisation , " - " , structure_denomination ) AS texte ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'INNER JOIN sacoche_structure_origine ON sacoche_user.eleve_uai_origine = sacoche_structure_origine.structure_uai '; // Pour éviter les élèves sans établissement d'origine renseigné
-  $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') ';
-  $DB_SQL.= 'ORDER BY texte ASC ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 }

@@ -1680,5 +1680,67 @@ public static function DB_OPT_enfants_parent($parent_id)
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élève affecté dans une classe n\'est associé à votre compte !' ;
 }
 
+/**
+ * Retourner un tableau [valeur texte] des années scolaires des bilans officiels archivés
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_OPT_officiel_archive_annee()
+{
+  $DB_SQL = 'SELECT DISTINCT annee_scolaire AS valeur, annee_scolaire AS texte ';
+  $DB_SQL.= 'FROM sacoche_officiel_archive ';
+  $DB_SQL.= 'ORDER BY annee_scolaire DESC ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * Retourner un tableau [valeur texte] des années scolaires des bilans officiels archivés
+ * TODO : A TERME IL FAUDRA REPENSER UNE SELECTION SUR L'ETABLISSEMENT EN AMONT (SI PLUSIEURS ETABLISSEMENTS ALORS PAS DE CHOIX DE PERIODE)
+ *
+ * @param string $annee_scolaire
+ * @return array
+ */
+public static function DB_OPT_officiel_periode($annee_scolaire)
+{
+  $DB_SQL = 'SELECT DISTINCT periode_id AS valeur, periode_nom AS texte ';
+  $DB_SQL.= 'FROM sacoche_officiel_archive ';
+  $DB_SQL.= 'WHERE annee_scolaire=:annee_scolaire ';
+  $DB_SQL.= 'ORDER BY periode_id ASC ';
+  $DB_VAR = array( ':annee_scolaire' => $annee_scolaire );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Retourner un tableau [valeur texte optgroup] des types et références de bilans officiels archivés
+ * TODO : A TERME IL FAUDRA TRIER SUR archive_ref ET PREVOIR UN TEXTE PLUS PRESENTABLE
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_OPT_officiel_archive_type_ref()
+{
+  $DB_SQL = 'SELECT DISTINCT CONCAT(archive_type,"_",archive_ref) AS valeur, CONCAT(archive_type," ",archive_ref) AS texte, archive_type AS optgroup ';
+  $DB_SQL.= 'FROM sacoche_officiel_archive ';
+  $DB_SQL.= 'ORDER BY archive_type DESC ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * Retourner un tableau [valeur texte] des structures d'origines connues
+ *
+ * @param string $listing_eleve_id
+ * @return array
+ */
+public static function DB_OPT_structure_origine($listing_eleve_id)
+{
+  $DB_SQL = 'SELECT DISTINCT structure_uai AS valeur, CONCAT( SUBSTRING(structure_uai,1,3) , " - " , structure_localisation , " - " , structure_denomination ) AS texte ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'INNER JOIN sacoche_structure_origine ON sacoche_user.eleve_uai_origine = sacoche_structure_origine.structure_uai '; // Pour éviter les élèves sans établissement d'origine renseigné
+  $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') ';
+  $DB_SQL.= 'ORDER BY texte ASC ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
 }
 ?>

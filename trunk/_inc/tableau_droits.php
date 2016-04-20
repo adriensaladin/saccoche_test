@@ -169,6 +169,8 @@ $tab_droits_par_page = array
   'partenaire_parametrages' => $tab_droits_profil_partenaire,
   'partenaire_statistiques' => $tab_droits_profil_partenaire,
   // Profil professeur | directeur | administrateur
+  '_maj_select_officiel_periode'            => $tab_droits_profil_prof_dir_admin,
+  '_maj_select_structure_origine'           => $tab_droits_profil_prof_dir_admin,
   'administrateur_eleve_langue'             => $tab_droits_profil_prof_dir_admin,
   'officiel'                                => $tab_droits_profil_prof_dir_admin,
   'officiel_accueil'                        => $tab_droits_profil_prof_dir_admin,
@@ -202,6 +204,7 @@ $tab_droits_par_page = array
   'officiel_reglages_format_synthese'       => $tab_droits_profil_dir_admin,
   'officiel_reglages_mise_en_page'          => $tab_droits_profil_dir_admin,
   'officiel_reglages_configuration'         => $tab_droits_profil_dir_admin,
+  'officiel_reglages_voir_archives'         => $tab_droits_profil_dir_admin,
   'validation_socle_fichier'                => $tab_droits_profil_dir_admin,
   // Profil élève | parent | professeur | directeur
   '_maj_select_piliers'                     => $tab_droits_profil_eleve_parent_prof_dir,

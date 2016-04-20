@@ -125,6 +125,10 @@ if(count($tab_add))
       }
       // Attention à la date de naissance, définie seulement pour les élèves
       $birth_date = empty($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ? NULL : To::date_french_to_mysql($tab_memo_analyse['ajouter'][$i_fichier]['birth_date']) ;
+      // Attention aux LV, définies seulement pour les élèves
+      $eleve_uai = empty($tab_memo_analyse['ajouter'][$i_fichier]['uai_origine']) ? ''  : $tab_memo_analyse['ajouter'][$i_fichier]['uai_origine'] ;
+      $eleve_lv1 = empty($tab_memo_analyse['ajouter'][$i_fichier]['lv1'])         ? 100 : $tab_memo_analyse['ajouter'][$i_fichier]['lv1'] ;
+      $eleve_lv2 = empty($tab_memo_analyse['ajouter'][$i_fichier]['lv2'])         ? 100 : $tab_memo_analyse['ajouter'][$i_fichier]['lv2'] ;
       // Ajouter l'utilisateur
       $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur(
         $tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'],
@@ -142,9 +146,9 @@ if(count($tab_add))
         '', // id_ent
         '', // id_gepi
         $tab_memo_analyse['ajouter'][$i_fichier]['classe'],
-        $tab_memo_analyse['ajouter'][$i_fichier]['uai_origine'],
-        $tab_memo_analyse['ajouter'][$i_fichier]['lv1'],
-        $tab_memo_analyse['ajouter'][$i_fichier]['lv2']
+        $eleve_uai,
+        $eleve_lv1,
+        $eleve_lv2
       );
       if($import_profil=='professeur')
       {

@@ -33,10 +33,11 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFI
 {
   $SOUS_MENU = '';
   $tab_sous_menu = array(
-    'reglages_ordre_matieres'  => Lang::_("Ordre d'affichage des matières"),
-    'reglages_format_synthese' => Lang::_("Format de synthèse par référentiel"),
-    'reglages_configuration'   => Lang::_("Configuration des bilans officiels"),
-    'reglages_mise_en_page'    => Lang::_("Mise en page des bilans officiels"),
+    'reglages_ordre_matieres'   => Lang::_("Ordre d'affichage des matières"),
+    'reglages_format_synthese'  => Lang::_("Format de synthèse par référentiel"),
+    'reglages_configuration'    => Lang::_("Configuration des bilans officiels"),
+    'reglages_mise_en_page'     => Lang::_("Mise en page des bilans officiels"),
+    'reglages_voir_archives'    => Lang::_("Archives des bilans officiels"),
   );
   foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
   {

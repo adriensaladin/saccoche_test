@@ -30,7 +30,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 
 $action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
-$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
+$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Exporter un fichier de validations

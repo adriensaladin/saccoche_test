@@ -721,7 +721,7 @@ if($type_individuel)
               $tab_archive['user'][$eleve_id]['image_md5'] = array();
               $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $releve_modele , $releve_individuel_format , $aff_etat_acquisition , $aff_anciennete_notation , $longueur_ref_max , $cases_nb , $cases_largeur , $lignes_nb , 1 /*eleve_nb*/ , $pages_nb ) );
             }
-            //  A RETIRER UNE FOIS LA GESTION DES ARCHIVES MIGREES CAR DEJA GÉRÉ CI-DESSUS
+            //  TODO : A RETIRER UNE FOIS LA GESTION DES ARCHIVES MIGREES CAR DEJA GÉRÉ CI-DESSUS
             if( ($make_officiel) && ($couleur=='non') )
             {
               // Le réglage ne semble pertinent que pour les exemplaires que l'établissement destine à l'impression.
@@ -760,7 +760,6 @@ if($type_individuel)
               }
               $tab_archive['user'][$eleve_id][] = array( 'entete_format_eleve' , array( $pages_nb , $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $eleve_nb_lignes ) );
             }
-            //  A RETIRER UNE FOIS LA GESTION DES ARCHIVES MIGREES CAR DEJA GÉRÉ CI-DESSUS
           }
           // Pour chaque matiere...
           foreach($tab_matiere as $matiere_id => $tab)

@@ -50,8 +50,8 @@ $echelle           = (isset($_POST['f_echelle']))           ? Clean::texte($_POS
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_matiere = (isset($_POST['f_matieres']))     ? ( (is_array($_POST['f_matieres']))     ? $_POST['f_matieres']     : explode(',',$_POST['f_matieres'])     ) : array() ;
 $tab_items   = (isset($_POST['f_compet_liste'])) ? ( (is_array($_POST['f_compet_liste'])) ? $_POST['f_compet_liste'] : explode('_',$_POST['f_compet_liste']) ) : array() ;
-$tab_matiere = array_filter( Clean::map_entier($tab_matiere) , 'positif' );
-$tab_items   = array_filter( Clean::map_entier($tab_items)   , 'positif' );
+$tab_matiere = array_filter( Clean::map('entier',$tab_matiere) , 'positif' );
+$tab_items   = array_filter( Clean::map('entier',$tab_items)   , 'positif' );
 $liste_matiere_id = implode(',',$tab_matiere);
 $liste_item_id    = implode(',',$tab_items);
 

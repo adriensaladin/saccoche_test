@@ -32,7 +32,7 @@ $action = (isset($_POST['f_action'])) ? $_POST['f_action']              : '';
 $serie  = (isset($_POST['f_serie']))  ? Clean::texte($_POST['f_serie']) : '' ;
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
-$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
+$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
 
 // Lister les séries de Brevet
 $tab_brevet_series = array();

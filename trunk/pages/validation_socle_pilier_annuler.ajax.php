@@ -38,8 +38,8 @@ $eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleve
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_pilier   = (isset($_POST['f_pilier'])) ? ( (is_array($_POST['f_pilier'])) ? $_POST['f_pilier'] : explode(',',$_POST['f_pilier']) ) : array() ;
 $tab_eleve    = (isset($_POST['f_eleve']))  ? ( (is_array($_POST['f_eleve']))  ? $_POST['f_eleve']  : explode(',',$_POST['f_eleve'])  ) : array() ;
-$tab_pilier   = array_filter( Clean::map_entier($tab_pilier) , 'positif' );
-$tab_eleve    = array_filter( Clean::map_entier($tab_eleve)  , 'positif' );
+$tab_pilier   = array_filter( Clean::map('entier',$tab_pilier) , 'positif' );
+$tab_eleve    = array_filter( Clean::map('entier',$tab_eleve)  , 'positif' );
 
 $listing_eleve_id = implode(',',$tab_eleve);
 

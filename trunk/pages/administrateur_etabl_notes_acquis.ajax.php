@@ -40,8 +40,8 @@ if( ($action=='save_notes') && isset($_POST['notes_actif']) && isset($_POST['not
   // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
   $tab_notes_actif = is_array($_POST['notes_actif']) ? $_POST['notes_actif'] : explode(',',$_POST['notes_actif']);
   $tab_notes_ordre = is_array($_POST['notes_ordre']) ? $_POST['notes_ordre'] : explode(',',$_POST['notes_ordre']);
-  $tab_notes_actif = array_intersect ( array_filter( Clean::map_entier($tab_notes_actif) , 'positif' ) , array(1,2,3,4,5,6) );
-  $tab_notes_ordre = array_intersect ( array_filter( Clean::map_entier($tab_notes_ordre) , 'positif' ) , array(1,2,3,4,5,6) );
+  $tab_notes_actif = array_intersect ( array_filter( Clean::map('entier',$tab_notes_actif) , 'positif' ) , array(1,2,3,4,5,6) );
+  $tab_notes_ordre = array_intersect ( array_filter( Clean::map('entier',$tab_notes_ordre) , 'positif' ) , array(1,2,3,4,5,6) );
   $nombre_codes_notation = count($tab_notes_actif);
   if( ( $nombre_codes_notation < 2 ) || ( count($tab_notes_ordre) != 6 ) )
   {
@@ -99,8 +99,8 @@ if( ($action=='save_acquis') && isset($_POST['acquis_actif']) && isset($_POST['a
   // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
   $tab_acquis_actif = is_array($_POST['acquis_actif']) ? $_POST['acquis_actif'] : explode(',',$_POST['acquis_actif']);
   $tab_acquis_ordre = is_array($_POST['acquis_ordre']) ? $_POST['acquis_ordre'] : explode(',',$_POST['acquis_ordre']);
-  $tab_acquis_actif = array_intersect ( array_filter( Clean::map_entier($tab_acquis_actif) , 'positif' ) , array(1,2,3,4,5,6) );
-  $tab_acquis_ordre = array_intersect ( array_filter( Clean::map_entier($tab_acquis_ordre) , 'positif' ) , array(1,2,3,4,5,6) );
+  $tab_acquis_actif = array_intersect ( array_filter( Clean::map('entier',$tab_acquis_actif) , 'positif' ) , array(1,2,3,4,5,6) );
+  $tab_acquis_ordre = array_intersect ( array_filter( Clean::map('entier',$tab_acquis_ordre) , 'positif' ) , array(1,2,3,4,5,6) );
   $nombre_etats_acquisition = count($tab_acquis_actif);
   if( ( $nombre_etats_acquisition < 2 ) || ( count($tab_acquis_ordre) != 6 ) )
   {

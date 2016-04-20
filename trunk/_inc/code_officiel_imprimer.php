@@ -41,10 +41,10 @@ $etape       = (isset($_POST['f_etape']))       ? Clean::entier($_POST['f_etape'
 $page_parite = (isset($_POST['f_parite']))      ? Clean::entier($_POST['f_parite'])     : 0;
 // Autres chaines spécifiques...
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) ) , 'positif' );
+$tab_pilier_id  = array_filter( Clean::map('entier', explode(',',$listing_piliers) ) , 'positif' );
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 $listing_eleves = (isset($_POST['f_listing_eleves']))  ? $_POST['f_listing_eleves']  : '' ;
-$tab_eleve_id   = array_filter( Clean::map_entier( explode(',',$listing_eleves) )  , 'positif' );
+$tab_eleve_id   = array_filter( Clean::map('entier', explode(',',$listing_eleves) )  , 'positif' );
 $liste_eleve_id = implode(',',$tab_eleve_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;

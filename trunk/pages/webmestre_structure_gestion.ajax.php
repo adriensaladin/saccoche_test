@@ -276,7 +276,7 @@ if( ($action=='supprimer') && $base_id )
 
 if( ($action=='supprimer') && $listing_base_id )
 {
-  $tab_base_id = array_filter( Clean::map_entier( explode(',',$listing_base_id) ) , 'positif' );
+  $tab_base_id = array_filter( Clean::map('entier', explode(',',$listing_base_id) ) , 'positif' );
   foreach($tab_base_id as $base_id)
   {
     Webmestre::supprimer_multi_structure($base_id);

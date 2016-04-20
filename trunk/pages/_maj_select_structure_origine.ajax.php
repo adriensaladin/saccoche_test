@@ -31,7 +31,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
 $tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
-$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
+$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
 
 if( empty($tab_eleve) )
 {

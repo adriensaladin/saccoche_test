@@ -37,7 +37,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit
 }
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
-// A REMPLACER À TERME PAR
+// TODO : A REMPLACER À TERME PAR
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
 // Fonction adaptant le tableau pour un affichage dans un formulaire de type select avec des groupes d'options suivant que ces langues soient ou non enseignées dans l'établissement
 function OPT_langues($tab_langues)

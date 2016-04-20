@@ -38,7 +38,7 @@ $groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0
 $etape     = (isset($_POST['f_etape']))  ? Clean::entier($_POST['f_etape'])  : 0;
 // Autres chaines spécifiques...
 $listing_eleves = (isset($_POST['f_listing_eleves']))  ? $_POST['f_listing_eleves']  : '' ;
-$tab_eleve_id   = array_filter( Clean::map_entier( explode(',',$listing_eleves) )  , 'positif' );
+$tab_eleve_id   = array_filter( Clean::map('entier', explode(',',$listing_eleves) )  , 'positif' );
 $liste_eleve_id = implode(',',$tab_eleve_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;

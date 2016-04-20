@@ -46,11 +46,11 @@ $coef        = (isset($_POST['coef']))        ? Clean::entier($_POST['coef'])   
 $cart        = (isset($_POST['cart']))        ? Clean::entier($_POST['cart'])        : -1;
 $socle_id    = (isset($_POST['socle']))       ? Clean::entier($_POST['socle'])       : -1;
 
-$tab_id = (isset($_POST['tab_id'])) ? Clean::map_entier(explode(',',$_POST['tab_id'])) : array() ;
+$tab_id = (isset($_POST['tab_id'])) ? Clean::map('entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
-$tab_id2 = (isset($_POST['tab_id2'])) ? Clean::map_entier(explode(',',$_POST['tab_id2'])) : array() ;
+$tab_id2 = (isset($_POST['tab_id2'])) ? Clean::map('entier',explode(',',$_POST['tab_id2'])) : array() ;
 $tab_id2 = array_filter($tab_id2,'positif');
-$tab_socle2016 = (isset($_POST['socle2016'])) ? Clean::map_entier(explode(',',$_POST['socle2016'])) : array() ;
+$tab_socle2016 = (isset($_POST['socle2016'])) ? Clean::map('entier',explode(',',$_POST['socle2016'])) : array() ;
 $tab_socle2016 = array_filter($tab_socle2016,'positif');
 
 $tab_contexte    = array( 'n1'=>'domaine' , 'n2'=>'theme' , 'n3'=>'item' );
@@ -80,7 +80,7 @@ function notifications_referentiel_edition( $matiere_id , $notification_contenu 
 
 if( ($action=='lister_options') && in_array($granulosite,$tab_granulosite) )
 {
-  $listing_id_matieres_autorisees = (isset($_POST['id_matieres'])) ? implode(',',Clean::map_entier(explode(',',$_POST['id_matieres']))) : '0' ;
+  $listing_id_matieres_autorisees = (isset($_POST['id_matieres'])) ? implode(',',Clean::map('entier',explode(',',$_POST['id_matieres']))) : '0' ;
   Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_REFERENTIEL::DB_OPT_lister_elements_referentiels_prof( $_SESSION['USER_ID'] , $granulosite , $listing_id_matieres_autorisees ) , FALSE /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ ) );
 }
 
@@ -421,9 +421,9 @@ if($action=='action_complementaire')
   $deplacer_id_final   = (isset($_POST['select_action_groupe_deplacer_id_final']))   ? Clean::texte($_POST['select_action_groupe_deplacer_id_final'])    : '';
   $groupe_nom_initial  = (isset($_POST['groupe_nom_initial']))                       ? Clean::texte($_POST['groupe_nom_initial'])                        : '';
   $groupe_nom_final    = (isset($_POST['groupe_nom_final']))                         ? Clean::texte($_POST['groupe_nom_final'])                          : '';
-  list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = Clean::map_entier(explode('_',$modifier_id))         + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
-  list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = Clean::map_entier(explode('_',$deplacer_id_initial)) + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
-  list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = Clean::map_entier(explode('_',$deplacer_id_final))   + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
+  list($matiere_id        ,$parent_id        ,$objet_id        ,$objet_ordre        ) = Clean::map('entier',explode('_',$modifier_id))         + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
+  list($matiere_id_initial,$parent_id_initial,$objet_id_initial,$objet_ordre_initial) = Clean::map('entier',explode('_',$deplacer_id_initial)) + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
+  list($matiere_id_final  ,$parent_id_final  ,$objet_id_final  ,$objet_ordre_final  ) = Clean::map('entier',explode('_',$deplacer_id_final))   + array_fill(0,4,0); // Evite des NOTICE en initialisant les valeurs manquantes
   // Vérification des données
   $tab_action_groupe   = array('modifier_coefficient','modifier_panier','modifier_socle2016','deplacer_domaine','deplacer_theme');
   $test_coef    = ( ($action_groupe=='modifier_coefficient') && (in_array($granulosite,$tab_granulosite)) && ($matiere_id) && ($parent_id) && ($objet_id) && ($objet_ordre) && ($modifier_coef!=-1) ) ? TRUE : FALSE ;

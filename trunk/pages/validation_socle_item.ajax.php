@@ -42,9 +42,9 @@ $eleves_ordre = (isset($_POST['f_eleves_ordre'])) ? Clean::texte($_POST['f_eleve
 $tab_eleve   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
 $tab_domaine = (isset($_POST['f_domaine'])) ? ( (is_array($_POST['f_domaine'])) ? $_POST['f_domaine'] : explode(',',$_POST['f_domaine']) ) : array() ;
 $tab_matiere = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
-$tab_eleve   = array_filter( Clean::map_entier($tab_eleve)   , 'positif' );
-$tab_domaine = array_filter( Clean::map_entier($tab_domaine) , 'positif' );
-$tab_matiere = array_filter( Clean::map_entier($tab_matiere) , 'positif' );
+$tab_eleve   = array_filter( Clean::map('entier',$tab_eleve)   , 'positif' );
+$tab_domaine = array_filter( Clean::map('entier',$tab_domaine) , 'positif' );
+$tab_matiere = array_filter( Clean::map('entier',$tab_matiere) , 'positif' );
 
 $listing_eleve_id   = implode(',',$tab_eleve);
 $listing_domaine_id = implode(',',$tab_domaine);

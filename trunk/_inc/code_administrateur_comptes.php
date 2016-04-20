@@ -32,7 +32,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $action     = (isset($_POST['f_action']))     ? $_POST['f_action']     : '';
 $listing_id = (isset($_POST['f_listing_id'])) ? $_POST['f_listing_id'] : '';
 
-$tab_user_id = array_filter( Clean::map_entier( explode(',',$listing_id) ) , 'positif' );
+$tab_user_id = array_filter( Clean::map('entier', explode(',',$listing_id) ) , 'positif' );
 $nb_user = count($tab_user_id);
 
 if( !$nb_user )

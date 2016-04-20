@@ -50,9 +50,9 @@ $eleves_ordre  = (isset($_POST['f_eleves_ordre']))  ? Clean::texte($_POST['f_ele
 $tab_pilier_id  = (isset($_POST['f_pilier']))  ? ( (is_array($_POST['f_pilier']))  ? $_POST['f_pilier']  : explode(',',$_POST['f_pilier'])  ) : array() ;
 $tab_eleve_id   = (isset($_POST['f_eleve']))   ? ( (is_array($_POST['f_eleve']))   ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
 $tab_matiere_id = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
-$tab_pilier_id  = array_filter( Clean::map_entier($tab_pilier_id)  , 'positif' );
-$tab_eleve_id   = array_filter( Clean::map_entier($tab_eleve_id)   , 'positif' );
-$tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' );
+$tab_pilier_id  = array_filter( Clean::map('entier',$tab_pilier_id)  , 'positif' );
+$tab_eleve_id   = array_filter( Clean::map('entier',$tab_eleve_id)   , 'positif' );
+$tab_matiere_id = array_filter( Clean::map('entier',$tab_matiere_id) , 'positif' );
 
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))

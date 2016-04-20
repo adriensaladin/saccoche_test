@@ -33,10 +33,10 @@ $objet  = (isset($_POST['f_objet']))  ? $_POST['f_objet']                 : '';
 $langue = (isset($_POST['f_langue'])) ? Clean::entier($_POST['f_langue']) : 0 ;
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
-$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
+$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
-// A REMPLACER À TERME PAR
+// TODO : A REMPLACER À TERME PAR
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
 
 $tab_objet = array(

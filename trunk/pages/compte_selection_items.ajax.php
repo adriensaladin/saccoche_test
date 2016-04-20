@@ -35,7 +35,7 @@ $origine       = (isset($_POST['f_origine'])) ? Clean::texte($_POST['f_origine']
 
 // Contrôler la liste des items transmis
 $tab_items = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-$tab_items = Clean::map_entier($tab_items);
+$tab_items = Clean::map('entier',$tab_items);
 $tab_items = array_filter($tab_items,'positif');
 $nb_items = count($tab_items);
 

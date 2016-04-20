@@ -30,7 +30,7 @@ if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='afficher_parents')
 
 $action         = (isset($_POST['f_action']))     ? $_POST['f_action']                 : '';
 $eleve_id       = (isset($_POST['f_eleve_id']))   ? Clean::entier($_POST['f_eleve_id']) : 0 ;
-$tab_parents_id = (isset($_POST['f_parents_id'])) ? Clean::map_entier( explode(',','0,'.$_POST['f_parents_id']) ) : array() ; // On ajoute "0," pour que les ids soient indexés sur 1;2;3;4 ($resp_legal_num)
+$tab_parents_id = (isset($_POST['f_parents_id'])) ? Clean::map('entier', explode(',','0,'.$_POST['f_parents_id']) ) : array() ; // On ajoute "0," pour que les ids soient indexés sur 1;2;3;4 ($resp_legal_num)
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Modifier la liste des parents d'un élève

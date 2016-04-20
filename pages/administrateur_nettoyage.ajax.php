@@ -117,6 +117,8 @@ if($action=='purger')
   DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_jointures_items_obsoletes();
   // Retirer les sélections d'items sans item
   DB_STRUCTURE_SELECTION_ITEM::DB_supprimer_selections_items_obsoletes();
+  // Supprimer les images d'archives officielles devenues inutiles (à lancer après la suppression des anciens élèves)
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_officiel_archive_image();
   // Supprimer les demandes d'évaluations, ainsi que les reliquats de marqueurs de notes
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_demandes_evaluation();
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies_marqueurs();

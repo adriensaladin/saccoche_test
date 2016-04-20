@@ -98,7 +98,7 @@ $socle_legende                        = (isset($_POST['f_socle_legende']))      
 
 // Liste de matières transmises
 $tab_matieres = (isset($_POST['f_matiere_liste']))  ? explode('_',$_POST['f_matiere_liste'])  : array() ;
-$tab_matieres = Clean::map_entier($tab_matieres);
+$tab_matieres = Clean::map('entier',$tab_matieres);
 $tab_matieres = array_filter($tab_matieres,'positif');
 $bulletin_moyenne_exception_matieres = implode(',',$tab_matieres);
 

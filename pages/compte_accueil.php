@@ -334,7 +334,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
 // [reussites] - Items récents les mieux réussis (élèves / parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER
+// TODO : PARTIE PROF A DEVELOPPER
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
 {
@@ -443,7 +443,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','eleve')))
 // [saisies] - Notes à saisir (prof) ou auto-évaluations en cours (élèves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER
+// TODO : PARTIE PROF A DEVELOPPER
 
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
@@ -466,7 +466,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 // [officiel] - Bilans officiels ouverts à la saisie (prof) ou à consulter (élèves / parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER - PARTIE PROF A DEVELOPPER
+// TODO : PARTIE PROF A DEVELOPPER
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
 {

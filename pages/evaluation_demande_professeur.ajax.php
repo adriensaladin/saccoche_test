@@ -64,9 +64,9 @@ if(count($tab_ids))
     $tab_item_id[]    = $tab_id[2];
     $tab_user_item[]  = (int)$tab_id[1].'x'.(int)$tab_id[2];
   }
-  $tab_demande_id = array_filter( Clean::map_entier($tab_demande_id)            ,'positif');
-  $tab_user_id    = array_filter( Clean::map_entier(array_unique($tab_user_id)) ,'positif');
-  $tab_item_id    = array_filter( Clean::map_entier(array_unique($tab_item_id)) ,'positif');
+  $tab_demande_id = array_filter( Clean::map('entier',$tab_demande_id)            ,'positif');
+  $tab_user_id    = array_filter( Clean::map('entier',array_unique($tab_user_id)) ,'positif');
+  $tab_item_id    = array_filter( Clean::map('entier',array_unique($tab_item_id)) ,'positif');
 }
 $nb_demandes = count($tab_demande_id);
 $nb_users    = count($tab_user_id);

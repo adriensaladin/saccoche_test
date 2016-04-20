@@ -95,7 +95,6 @@ function determiner_nombre_lignes_maxi_par_paquet()
 /**
  * formater_valeur
  * Fonction utilisée avec array_map() pour ajouter des guillemets autour des contenus textes et échapper ceux éventuellement présents, ainsi que pour traiter le cas de NULL.
- * 2ème str_replace() combiné à cause de chaines json où les " sont déjà échappés...
  * Tester is_numeric() est inutile, la classe DB renvoyant des chaines même pour des valeurs numériques.
  *
  * @param string $val
@@ -104,7 +103,21 @@ function determiner_nombre_lignes_maxi_par_paquet()
 
 function formater_valeur($val)
 {
-  return (is_null($val)) ? 'NULL' : '"'.str_replace('\\\"','\"',str_replace('"','\"',$val)).'"' ;
+  if(is_null($val))
+  {
+    return 'NULL';
+  }
+  else if(ctype_digit($val))
+  {
+    return $val;
+  }
+  else
+  {
+    // Il faut échapper les \ (qui sinon disparaissent lors de la restauration) et les " (puisque la chaîne est entourée de ").
+    $tab_bad = array(   '\\' ,   '"' );
+    $tab_bon = array( '\\\\' , '\\"' );
+    return '"'.str_replace($tab_bad,$tab_bon,$val).'"';
+  }
 }
 
 /**

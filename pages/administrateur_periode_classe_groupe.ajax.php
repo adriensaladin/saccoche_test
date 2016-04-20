@@ -34,8 +34,8 @@ $date_fin   = (isset($_POST['f_date_fin']))   ? Clean::date_fr($_POST['f_date_fi
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_select_periodes        = (isset($_POST['select_periodes']))        ? ( (is_array($_POST['select_periodes']))        ? $_POST['select_periodes']        : explode(',',$_POST['select_periodes'])        ) : array() ;
 $tab_select_classes_groupes = (isset($_POST['select_classes_groupes'])) ? ( (is_array($_POST['select_classes_groupes'])) ? $_POST['select_classes_groupes'] : explode(',',$_POST['select_classes_groupes']) ) : array() ;
-$tab_select_periodes        = array_filter( Clean::map_entier($tab_select_periodes)        , 'positif' );
-$tab_select_classes_groupes = array_filter( Clean::map_entier($tab_select_classes_groupes) , 'positif' );
+$tab_select_periodes        = array_filter( Clean::map('entier',$tab_select_periodes)        , 'positif' );
+$tab_select_classes_groupes = array_filter( Clean::map('entier',$tab_select_classes_groupes) , 'positif' );
 
 $tab_groupe    = array();
 $tab_periode   = array();

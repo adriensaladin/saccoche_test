@@ -38,7 +38,7 @@ $tab_i_classe_TO_id_base  = $tab_liens_id_base['classes'];
 $tab_i_groupe_TO_id_base  = $tab_liens_id_base['groupes'];
 $tab_i_fichier_TO_id_base = $tab_liens_id_base['users'];
 // Récupérer les éléments postés
-$tab_del = (!empty($_POST['f_del'])) ? Clean::map_entier(explode(',',$_POST['f_del'])) : array() ;
+$tab_del = (!empty($_POST['f_del'])) ? Clean::map('entier',explode(',',$_POST['f_del'])) : array() ;
 $tab_add = array();
 $tab_tmp = (!empty($_POST['f_add'])) ? explode(',',$_POST['f_add']) : array() ;
 if(count($tab_tmp))

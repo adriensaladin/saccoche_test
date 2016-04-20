@@ -388,14 +388,9 @@ class Clean
   /*
     Pour les tableaux
   */
-  public static function map_entier($array)
+  public static function map($function,$array)
   {
-    return array_map( 'intval' , $array );
-  }
-
-  public static function map_texte($array)
-  {
-    return array_map( 'trim' , $array );
+    return array_map( array('Clean',$function) , $array );
   }
 
 }

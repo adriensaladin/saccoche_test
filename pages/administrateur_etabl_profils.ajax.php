@@ -30,7 +30,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 
 $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 
-$tab_profils_actifs = (isset($_POST['tab_id'])) ? Clean::map_texte(explode(',',$_POST['tab_id'])) : array() ;
+$tab_profils_actifs = (isset($_POST['tab_id'])) ? Clean::map('texte',explode(',',$_POST['tab_id'])) : array() ;
 
 $tab_profils          = array_keys($_SESSION['TAB_PROFILS_ADMIN']['TYPE']);
 $tab_profils_inactifs = array_diff( $tab_profils , $tab_profils_actifs );

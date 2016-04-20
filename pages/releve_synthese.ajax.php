@@ -58,7 +58,7 @@ $marge_min       = (isset($_POST['f_marge_min']))          ? Clean::entier($_POS
 $eleves_ordre    = (isset($_POST['f_eleves_ordre']))       ? Clean::texte($_POST['f_eleves_ordre'])           : '';
 // Normalement c'est un tableau qui est transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
-$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
+$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
 
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')

@@ -1115,23 +1115,6 @@ public static function DB_supprimer_bilans_officiels()
 }
 
 /**
- * supprimer_officiel_archive_image
- *
- * @param void
- * @return void
- */
-public static function DB_supprimer_officiel_archive_image()
-{
-  $DB_SQL = 'DELETE sacoche_officiel_archive_image ';
-  $DB_SQL.= 'FROM sacoche_officiel_archive_image ';
-  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive AS t1 ON sacoche_officiel_archive_image.archive_image_md5=t1.archive_md5_image1 ';
-  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive AS t2 ON sacoche_officiel_archive_image.archive_image_md5=t2.archive_md5_image2 ';
-  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive AS t3 ON sacoche_officiel_archive_image.archive_image_md5=t3.archive_md5_image3 ';
-  $DB_SQL.= 'WHERE t1.archive_md5_image1 IS NULL AND t2.archive_md5_image2 IS NULL AND t3.archive_md5_image3 IS NULL ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * supprimer_brevet_saisies
  *
  * @param void
@@ -1231,9 +1214,6 @@ public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
     $DB_SQL.= 'WHERE eleve_ou_classe_id=:user_id AND saisie_type="eleve" ';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_officiel_fichier ';
-    $DB_SQL.= 'WHERE user_id=:user_id';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_officiel_archive ';
     $DB_SQL.= 'WHERE user_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_officiel_assiduite ';
@@ -1370,7 +1350,6 @@ public static function DB_fusionner_donnees_comptes_eleves( $user_id_ancien , $u
     'sacoche_jointure_user_pilier'     => 'user_id' ,
     'sacoche_jointure_user_abonnement' => 'user_id' ,
     'sacoche_notification'             => 'user_id' ,
-    'sacoche_officiel_archive'         => 'user_id' ,
     'sacoche_officiel_assiduite'       => 'user_id' ,
     'sacoche_brevet_fichier'           => 'user_id' ,
     'sacoche_officiel_fichier'         => 'user_id' ,
@@ -1467,13 +1446,12 @@ public static function DB_corriger_anomalies()
     return '<label class="'.$classe.'">'.$sujet.' : '.$message.'.</label>';
   }
   // Référentiels associés à une matière supprimée
-  $DB_SQL = 'DELETE sacoche_referentiel,sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel,sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
@@ -1481,12 +1459,11 @@ public static function DB_corriger_anomalies()
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Référentiels' );
   // Domaines associés à une matière supprimée...
-  $DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
@@ -1494,11 +1471,10 @@ public static function DB_corriger_anomalies()
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Domaines (arborescence)' );
   // Thèmes associés à un domaine supprimé...
-  $DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel_theme ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
@@ -1506,10 +1482,9 @@ public static function DB_corriger_anomalies()
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Thèmes (arborescence)' );
   // Items associés à un thème supprimé...
-  $DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel_item ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';

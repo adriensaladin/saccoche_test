@@ -88,7 +88,7 @@ if( ($action=='modifier_phpCAS') && ($chemin_logs) )
   if($etabl_id_listing)
   {
     $tab_etabl_id = explode(',',$etabl_id_listing);
-    $tab_etabl_id = Clean::map('entier',$tab_etabl_id);
+    $tab_etabl_id = Clean::map_entier($tab_etabl_id);
     $tab_etabl_id = array_filter($tab_etabl_id,'positif');
     $etabl_id_listing = count($tab_etabl_id) ? ','.implode(',',$tab_etabl_id).',' : '' ;
   }

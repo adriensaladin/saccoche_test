@@ -30,7 +30,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 
 $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 
-$tab_id = (isset($_POST['tab_id']))   ? Clean::map('entier',explode(',',$_POST['tab_id'])) : array() ;
+$tab_id = (isset($_POST['tab_id']))   ? Clean::map_entier(explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 

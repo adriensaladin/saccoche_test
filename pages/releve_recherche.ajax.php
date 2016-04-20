@@ -42,7 +42,7 @@ $with_coef     = (isset($_POST['f_with_coef']))     ? 1                         
 
 // item(s) matière(s)
 $tab_compet_liste = (isset($_POST['f_matiere_items_liste'])) ? explode('_',$_POST['f_matiere_items_liste']) : array() ;
-$tab_compet_liste = Clean::map('entier',$tab_compet_liste);
+$tab_compet_liste = Clean::map_entier($tab_compet_liste);
 $compet_liste  = implode(',',$tab_compet_liste);
 $compet_nombre = count($tab_compet_liste);
 
@@ -53,7 +53,7 @@ $socle_pilier_id = (isset($_POST['f_select_pilier'])) ? Clean::entier($_POST['f_
 // mode de recherche (situation n°3 uniquement)
 $mode           = (isset($_POST['f_mode']))    ? Clean::texte($_POST['f_mode'])     : '';
 $tab_matiere_id = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere'])) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
-$tab_matiere_id = array_filter( Clean::map('entier',$tab_matiere_id) , 'positif' );
+$tab_matiere_id = array_filter( Clean::map_entier($tab_matiere_id) , 'positif' );
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $critere_tab_seuil_acquis = ( (isset($_POST['f_critere_seuil_acquis'])) && (is_array($_POST['f_critere_seuil_acquis'])) ) ? $_POST['f_critere_seuil_acquis'] : array();

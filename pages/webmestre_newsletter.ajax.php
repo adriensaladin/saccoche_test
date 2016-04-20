@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 // Transmis en tableau pour la newsletter, mais en chaine pour la suppression
 $tab_base_id = (isset($_POST['f_base'])) ? ( (is_array($_POST['f_base'])) ? $_POST['f_base'] : explode(',',$_POST['f_base']) ) : array() ;
-$tab_base_id = array_filter( Clean::map('entier',$tab_base_id) , 'positif' );
+$tab_base_id = array_filter( Clean::map_entier($tab_base_id) , 'positif' );
 $nb_bases    = count($tab_base_id);
 
 $action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '';

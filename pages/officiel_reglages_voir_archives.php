@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Archives des bilans officiels"));
 
-// TODO : A TERME IL FAUDRA Y INTEGRER L'ACCES PARENT / ELEVES (DOIT REMPLACER officiel_voir_archive.php)
+// A TERME IL FAUDRA Y INTEGRER L'ACCES PARENT / ELEVES (DOIT REMPLACER officiel_voir_archive.php)
 // + AJOUTER LE CHOIX DE L'ETABLISSEMENT AU FORMULAIRE AVANT LA PERIODE (QUAND IL Y AURA POSSIBILITE DE TRANSFERT)
 ?>
 

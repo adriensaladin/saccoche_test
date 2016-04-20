@@ -454,7 +454,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           $tab_archive['user'][$eleve_id]['image_md5'] = array();
           $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $synthese_modele , $tab_nb_lignes_total_eleve[$eleve_id] , 1 /*eleve_nb*/ ) );
         }
-        //  TODO : A RETIRER UNE FOIS LA GESTION DES ARCHIVES MIGREES CAR DEJA GÉRÉ CI-DESSUS
+        //  A RETIRER UNE FOIS LA GESTION DES ARCHIVES MIGREES CAR DEJA GÉRÉ CI-DESSUS
         if( ($make_officiel) && ($couleur=='non') )
         {
           // Le réglage ne semble pertinent que pour les exemplaires que l'établissement destine à l'impression.

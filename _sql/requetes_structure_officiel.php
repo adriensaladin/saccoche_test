@@ -501,7 +501,7 @@ public static function DB_ajouter_officiel_archive_image( $image_md5 , $image_co
 /**
  * ajouter_officiel_archive
  *
- * TODO Doit progressivement remplacer DB_ajouter_bilan_officiel_fichier()
+ * Doit progressivement remplacer DB_ajouter_bilan_officiel_fichier()
  *
  * @param int     $user_id
  * @param string  $structure_uai

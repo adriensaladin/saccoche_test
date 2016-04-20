@@ -86,10 +86,10 @@ $tab_eleve = (isset($_POST['f_eleve']))        ? ( (is_array($_POST['f_eleve']))
 $tab_type  = (isset($_POST['f_type']))         ? ( (is_array($_POST['f_type']))         ? $_POST['f_type']         : explode(',',$_POST['f_type'])         ) : array() ;
 $tab_items = (isset($_POST['f_compet_liste'])) ? ( (is_array($_POST['f_compet_liste'])) ? $_POST['f_compet_liste'] : explode('_',$_POST['f_compet_liste']) ) : array() ;
 $tab_evals = (isset($_POST['f_evaluation']))   ? ( (is_array($_POST['f_evaluation']))   ? $_POST['f_evaluation']   : explode(',',$_POST['f_evaluation'])   ) : array() ;
-$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
-$tab_items = array_filter( Clean::map('entier',$tab_items) , 'positif' );
-$tab_evals = array_filter( Clean::map('entier',$tab_evals) , 'positif' );
-$tab_type  = Clean::map('texte',$tab_type);
+$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
+$tab_items = array_filter( Clean::map_entier($tab_items) , 'positif' );
+$tab_evals = array_filter( Clean::map_entier($tab_evals) , 'positif' );
+$tab_type  = Clean::map_texte($tab_type);
 
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if($releve_modele=='multimatiere')

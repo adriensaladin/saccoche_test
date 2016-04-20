@@ -40,8 +40,8 @@ $periode_id     = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_per
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve    = (isset($_POST['f_eleve']))    ? ( (is_array($_POST['f_eleve']))    ? $_POST['f_eleve']    : explode(',',$_POST['f_eleve'])    ) : array() ;
 $tab_type_ref = (isset($_POST['f_type_ref'])) ? ( (is_array($_POST['f_type_ref'])) ? $_POST['f_type_ref'] : explode(',',$_POST['f_type_ref']) ) : array() ;
-$tab_eleve    = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
-$tab_type_ref = Clean::map('code',$tab_type_ref);
+$tab_eleve    = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
+$tab_type_ref = Clean::map_texte($tab_type_ref);
 
 $tab_type = array();
 $tab_ref  = array();
@@ -49,6 +49,8 @@ $tab_ref  = array();
 foreach($tab_type_ref as $type_ref)
 {
   list($type,$ref) = explode('_',$type_ref) + array_fill(0,2,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
+  $type = Clean::code($type);
+  $ref  = Clean::code($ref);
   if( $type && $ref )
   {
     $tab_type[$type] = $type;
@@ -102,7 +104,6 @@ foreach($DB_TAB_Archives as $key => $DB_ROW)
 }
 
 // Dossier accueillant les PDF
-// TODO : UTILISER LE DOSSIER "OFFIFICIEL" AVEC UNE DUREE DE CONSERVATION D'1 SEMAINE
 if($nb_archives>1)
 {
   $chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().DS;
@@ -156,7 +157,6 @@ if($nb_archives>1)
   FileSystem::supprimer_dossier($chemin_temp_pdf);
 }
 // Retour
-// TODO : SI $uai_origine TRANSMIS, PROPOSER ENVOI AUTOMATIQUE D'UN MAIL TYPE AVEC UN LIEN VERS LE FICHIER GENERE, (on a l'adresse de l'établ d'origine et celle de l'établ actuel)
 $texte = ($nb_archives>1)
         ? $nb_archives.' archives générées dans <span class="file file_zip">ce fichier <em>zip</em></span>.'
         : 'Archive générée dans <span class="file file_pdf">ce fichier <em>pdf</em></span>.' ;

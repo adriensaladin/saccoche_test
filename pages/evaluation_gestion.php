@@ -61,11 +61,11 @@ else
   unset($_SESSION['TMP']['req_user_item']);
   // réception d'élèves
   $tab_users = ( isset($_POST['id_user']) && is_array($_POST['id_user']) ) ? $_POST['id_user'] : array() ;
-  $tab_users = Clean::map('entier',$tab_users);
+  $tab_users = Clean::map_entier($tab_users);
   $tab_users = array_filter($tab_users,'positif');
   // réception d'items
   $tab_items = ( isset($_POST['id_item']) && is_array($_POST['id_item']) ) ? $_POST['id_item'] : array() ;
-  $tab_items = Clean::map('entier',$tab_items);
+  $tab_items = Clean::map_entier($tab_items);
   $tab_items = array_filter($tab_items,'positif');
 }
 $nb_users  = count($tab_users);

@@ -102,7 +102,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
   $tab_ids  = (isset($_POST['classe_ids']))   ? explode(',',$_POST['classe_ids'])  : array() ;
   $new_etat = (isset($_POST['etat']))         ? Clean::texte($_POST['etat'])       : '' ;
   $discret  = (isset($_POST['mode_discret'])) ? TRUE                               : FALSE ;
-  $tab_ids = array_intersect( array_filter( Clean::map('entier',$tab_ids) , 'positif' ) , $tab_classes_concernees );
+  $tab_ids = array_intersect( array_filter( Clean::map_entier($tab_ids) , 'positif' ) , $tab_classes_concernees );
   if( count($tab_ids) && isset($tab_etats[$new_etat]) )
   {
     Session::verifier_jeton_anti_CSRF($PAGE);

@@ -64,8 +64,8 @@ $eleves_ordre            = (isset($_POST['f_eleves_ordre']))    ? Clean::texte($
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve_id = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_type     = (isset($_POST['f_type']))  ? ( (is_array($_POST['f_type']))  ? $_POST['f_type']  : explode(',',$_POST['f_type'])  ) : array() ;
-$tab_eleve_id = array_filter( Clean::map('entier',$tab_eleve_id) , 'positif' );
-$tab_type     = Clean::map('texte',$tab_type);
+$tab_eleve_id = array_filter( Clean::map_entier($tab_eleve_id) , 'positif' );
+$tab_type     = Clean::map_texte($tab_type);
 
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))

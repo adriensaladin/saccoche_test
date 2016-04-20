@@ -53,7 +53,7 @@ foreach($DB_TAB_epreuves as $DB_ROW)
   $recherche = (isset($_POST['f_'.$serie.'_'.$epreuve.'_recherche'])) ? Clean::entier($_POST['f_'.$serie.'_'.$epreuve.'_recherche']) : NULL ;
   $moyenne   = (isset($_POST['f_'.$serie.'_'.$epreuve.'_moyenne']))   ? Clean::entier($_POST['f_'.$serie.'_'.$epreuve.'_moyenne'])   : NULL ;
   $tab_matieres = (isset($_POST['f_'.$serie.'_'.$epreuve.'_matieres'])) ? explode(',',$_POST['f_'.$serie.'_'.$epreuve.'_matieres']) : array() ;
-  $matieres = implode( ',' , array_filter( Clean::map('entier',$tab_matieres) , 'positif' ) );
+  $matieres = implode( ',' , array_filter( Clean::map_entier($tab_matieres) , 'positif' ) );
   if( ($recherche===NULL) || ($moyenne===NULL) || ( empty($matieres) && $DB_ROW['brevet_epreuve_obligatoire'] ) )
   {
     Json::end( FALSE , 'Données manquante pour l\'épreuve "'.html($DB_ROW['brevet_epreuve_nom']).'" !' );

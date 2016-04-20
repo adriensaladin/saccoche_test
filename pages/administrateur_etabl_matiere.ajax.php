@@ -39,7 +39,7 @@ $nom        = (isset($_POST['f_nom']))       ? Clean::texte($_POST['f_nom'])    
 $nom_avant  = (isset($_POST['f_nom_avant'])) ? Clean::texte($_POST['f_nom_avant']) : '';
 $nom_apres  = (isset($_POST['f_nom_apres'])) ? Clean::texte($_POST['f_nom_apres']) : '';
 
-$tab_id = (isset($_POST['tab_id']))   ? Clean::map('entier',explode(',',$_POST['tab_id'])) : array() ;
+$tab_id = (isset($_POST['tab_id']))   ? Clean::map_entier(explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
 sort($tab_id);
 

@@ -35,12 +35,12 @@ $groupe_nom = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])     : 
 
 // Contrôler la liste des élèves transmis
 $tab_eleves = (isset($_POST['f_eleve_liste']))  ? explode('_',$_POST['f_eleve_liste'])  : array() ;
-$tab_eleves = Clean::map('entier',$tab_eleves);
+$tab_eleves = Clean::map_entier($tab_eleves);
 $tab_eleves = array_filter($tab_eleves,'positif');
 $nb_eleves  = count($tab_eleves);
 // Contrôler la liste des profs transmis
 $tab_profs = (isset($_POST['f_prof_liste'])) ? explode('_',$_POST['f_prof_liste']) : array() ;
-$tab_profs = Clean::map('entier',$tab_profs);
+$tab_profs = Clean::map_entier($tab_profs);
 $tab_profs = array_filter($tab_profs,'positif');
 $nb_profs = count($tab_profs);
 // Si profs transmis, en retirer le responsable (si le responsable est le seul prof, rien n'est transmis)

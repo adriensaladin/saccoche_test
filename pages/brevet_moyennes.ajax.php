@@ -353,7 +353,7 @@ if($action=='enregistrer')
     extract($tab_infos); // $epreuve_*
     // Matières utilisées
     $tab_matieres_id = (isset($_POST['check_'.$epreuve_code])) ? explode('-',$_POST['check_'.$epreuve_code]) : array() ;
-    $tab_matieres_id = Clean::map('entier',$tab_matieres_id);
+    $tab_matieres_id = Clean::map_entier($tab_matieres_id);
     $tab_matieres_id = array_filter($tab_matieres_id,'positif');
     $matieres_id = implode(',',$tab_matieres_id);
     if( !$matieres_id && $epreuve_obligatoire )

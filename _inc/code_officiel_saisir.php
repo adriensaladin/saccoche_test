@@ -47,8 +47,8 @@ $import_info  = (isset($_POST['f_import_info']))  ? Clean::texte($_POST['f_impor
 // Autres chaines spécifiques...
 $listing_matieres = (isset($_POST['f_listing_matieres'])) ? $_POST['f_listing_matieres'] : '' ;
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
-$tab_matiere_id = array_filter( Clean::map('entier', explode(',',$listing_matieres) ) , 'positif' );
-$tab_pilier_id  = array_filter( Clean::map('entier', explode(',',$listing_piliers) )  , 'positif' );
+$tab_matiere_id = array_filter( Clean::map_entier( explode(',',$listing_matieres) ) , 'positif' );
+$tab_pilier_id  = array_filter( Clean::map_entier( explode(',',$listing_piliers) )  , 'positif' );
 $liste_matiere_id = implode(',',$tab_matiere_id);
 $liste_pilier_id  = implode(',',$tab_pilier_id);
 

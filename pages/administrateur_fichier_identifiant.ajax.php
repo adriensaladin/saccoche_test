@@ -32,7 +32,7 @@ $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])   : '';
 $profil = (isset($_POST['f_profil'])) ? Clean::lettres($_POST['f_profil']) : '';
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_user = (isset($_POST['f_user'])) ? ( (is_array($_POST['f_user'])) ? $_POST['f_user'] : explode(',',$_POST['f_user']) ) : array() ;
-$tab_user = array_filter( Clean::map('entier',$tab_user) , 'positif' );
+$tab_user = array_filter( Clean::map_entier($tab_user) , 'positif' );
 $tab_profils = array('eleves','parents','professeurs','directeurs');
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

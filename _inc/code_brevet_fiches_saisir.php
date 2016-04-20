@@ -44,7 +44,7 @@ $avis_conseil = (isset($_POST['f_avis_conseil'])) ? Clean::texte($_POST['f_avis_
 $appreciation = (isset($_POST['f_appreciation'])) ? Clean::texte($_POST['f_appreciation']) : '';
 // Autres chaines spécifiques...
 $listing_matieres = (isset($_POST['f_listing_matieres'])) ? $_POST['f_listing_matieres'] : '' ;
-$tab_matiere_id = array_filter( Clean::map('entier', explode(',',$listing_matieres) ) , 'positif' );
+$tab_matiere_id = array_filter( Clean::map_entier( explode(',',$listing_matieres) ) , 'positif' );
 $liste_matiere_id = implode(',',$tab_matiere_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;

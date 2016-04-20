@@ -31,7 +31,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 $action    = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $etape     = (isset($_POST['f_etape']))  ? Clean::entier($_POST['f_etape']) : FALSE;
 $tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
-$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
+$tab_eleve = array_filter( Clean::map_entier($tab_eleve) , 'positif' );
 
 Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , TRUE /*time*/ );
 

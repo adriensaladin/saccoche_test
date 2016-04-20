@@ -103,16 +103,16 @@ else
 
 // Contrôler la liste des items transmis (ordre dans l'évaluation)
 $tab_id      = (isset($_POST['tab_id'])) ? explode(',',$_POST['tab_id']) : array() ;
-$tab_id      = Clean::map('entier',$tab_id);
+$tab_id      = Clean::map_entier($tab_id);
 $tab_id      = array_filter($tab_id,'positif');
 // Contrôler la liste des items transmis
 $tab_items   = (isset($_POST['f_compet_liste'])) ? explode('_',$_POST['f_compet_liste']) : array() ;
-$tab_items   = Clean::map('entier',$tab_items);
+$tab_items   = Clean::map_entier($tab_items);
 $tab_items   = array_filter($tab_items,'positif');
 $nb_items    = count($tab_items);
 // Contrôler la liste des élèves transmis (sur des élèves sélectionnés uniquement)
 $tab_eleves  = (isset($_POST['f_eleve_liste']))  ? explode('_',$_POST['f_eleve_liste'])  : array() ;
-$tab_eleves  = Clean::map('entier',$tab_eleves);
+$tab_eleves  = Clean::map_entier($tab_eleves);
 $tab_eleves  = array_filter($tab_eleves,'positif');
 $nb_eleves   = count($tab_eleves);
 // Contrôler la liste des profs transmis

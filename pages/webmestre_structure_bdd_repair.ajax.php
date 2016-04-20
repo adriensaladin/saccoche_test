@@ -27,7 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( Clean::map('entier', explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
+$tab_base_id = (isset($_POST['f_listing_id'])) ? array_filter( Clean::map_entier( explode(',',$_POST['f_listing_id']) ) , 'positif' ) : array() ;
 $nb_bases    = count($tab_base_id);
 
 $num    = (isset($_POST['num']))      ? Clean::entier($_POST['num'])     : 0 ;  // Numéro de l'étape en cours

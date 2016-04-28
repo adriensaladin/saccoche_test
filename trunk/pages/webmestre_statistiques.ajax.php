@@ -34,6 +34,8 @@ $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $num    = (isset($_POST['num']))      ? Clean::entier($_POST['num'])     : 0 ;  // Numéro de l'étape en cours
 $max    = (isset($_POST['max']))      ? Clean::entier($_POST['max'])     : 0 ;  // Nombre d'étapes à effectuer
 
+$file_memo = CHEMIN_DOSSIER_EXPORT.'webmestre_statistiques_'.session_id().'.txt';
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des structures avant recherche des stats
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,28 +43,30 @@ $max    = (isset($_POST['max']))      ? Clean::entier($_POST['max'])     : 0 ;  
 if( ($action=='calculer') && $nb_bases )
 {
   // Pour mémoriser les totaux
-  $_SESSION['tmp']['totaux'] = array(
-    'personnel_nb'   =>0 ,
-    'personnel_use'  =>0 ,
-    'eleve_nb'       =>0 ,
-    'eleve_use'      =>0 ,
-    'evaluation_nb'  =>0 ,
-    'evaluation_use' =>0 ,
-    'validation_nb'  =>0 ,
-    'validation_use' =>0 ,
+  $tab_memo['totaux'] = array(
+    'personnel_nb'   => 0 ,
+    'personnel_use'  => 0 ,
+    'eleve_nb'       => 0 ,
+    'eleve_use'      => 0 ,
+    'evaluation_nb'  => 0 ,
+    'evaluation_use' => 0 ,
+    'validation_nb'  => 0 ,
+    'validation_use' => 0 ,
     );
   // Mémoriser les données des structures concernées par les stats
-  $_SESSION['tmp']['infos'] = array();
+  $tab_memo['infos'] = array();
   $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures( implode(',',$tab_base_id) );
   foreach($DB_TAB as $DB_ROW)
   {
-    $_SESSION['tmp']['infos'][] = array(
+    $tab_memo['infos'][] = array(
       'base_id'                => $DB_ROW['sacoche_base'] ,
       'structure_denomination' => $DB_ROW['structure_denomination'] ,
       'contact'                => $DB_ROW['structure_contact_nom'].' '.$DB_ROW['structure_contact_prenom'] ,
       'inscription_date'       => $DB_ROW['structure_inscription_date'] ,
     );
   }
+  // Enregistrer ces informations
+  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
   // Retour
   $max = $nb_bases + 1 ; // La dernière étape consistera à vider la session temporaire et à renvoyer les totaux
   Json::end( TRUE , $max );
@@ -74,20 +78,23 @@ if( ($action=='calculer') && $nb_bases )
 
 if( ($action=='calculer') && $num && $max && ($num<$max) )
 {
-  // Récupérer les infos ($base_id $structure_denomination $contact $inscription_date)
-  extract($_SESSION['tmp']['infos'][$num-1]);
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+  extract($tab_memo['infos'][$num-1]); // $base_id $structure_denomination $contact $inscription_date
   // Récupérer une série de stats
   DBextra::charger_parametres_mysql_supplementaires($base_id);
   list($personnel_nb,$eleve_nb,$personnel_use,$eleve_use,$evaluation_nb,$validation_nb,$evaluation_use,$validation_use,$connexion_nom,$date_last_connexion) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( TRUE /*info_user_nb*/ , TRUE /*info_user_use*/ , TRUE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
   // maj les totaux
-  $_SESSION['tmp']['totaux']['personnel_nb']   += $personnel_nb;
-  $_SESSION['tmp']['totaux']['personnel_use']  += $personnel_use;
-  $_SESSION['tmp']['totaux']['eleve_nb']       += $eleve_nb;
-  $_SESSION['tmp']['totaux']['eleve_use']      += $eleve_use;
-  $_SESSION['tmp']['totaux']['evaluation_nb']  += $evaluation_nb;
-  $_SESSION['tmp']['totaux']['evaluation_use'] += $evaluation_use;
-  $_SESSION['tmp']['totaux']['validation_nb']  += $validation_nb;
-  $_SESSION['tmp']['totaux']['validation_use'] += $validation_use;
+  $tab_memo['totaux']['personnel_nb']   += $personnel_nb;
+  $tab_memo['totaux']['personnel_use']  += $personnel_use;
+  $tab_memo['totaux']['eleve_nb']       += $eleve_nb;
+  $tab_memo['totaux']['eleve_use']      += $eleve_use;
+  $tab_memo['totaux']['evaluation_nb']  += $evaluation_nb;
+  $tab_memo['totaux']['evaluation_use'] += $evaluation_use;
+  $tab_memo['totaux']['validation_nb']  += $validation_nb;
+  $tab_memo['totaux']['validation_use'] += $validation_use;
+  // Enregistrer ces informations
+  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
   // Retour
   $ligne_etabl = '<tr>'.
     '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>'.
@@ -110,20 +117,25 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
 }
 if( ($action=='calculer') && $num && $max && ($num==$max) )
 {
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+  // Retour
   $ligne_total = '<tr>'.
     '<td class="nu"></td>'.
     '<th colspan="5" class="nu">Totaux</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['personnel_nb']  ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['personnel_use'] ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_nb']      ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_use']     ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['evaluation_nb'] ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['evaluation_use'],0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['validation_nb'] ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['validation_use'],0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_nb']  ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_use'] ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_nb']      ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_use']     ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_nb'] ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_use'],0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['validation_nb'] ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['validation_use'],0,'',' ').'</th>'.
     '<th class="nu"></th>'.
     '</tr>';
-  unset($_SESSION['tmp']);
+  // Supprimer les informations provisoires
+  FileSystem::supprimer_fichier( $file_memo );
+  // Retour
   Json::end( TRUE , $ligne_total );
 }
 

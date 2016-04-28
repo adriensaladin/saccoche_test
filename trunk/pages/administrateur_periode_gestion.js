@@ -46,13 +46,13 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , ordre , nom , lsun_texte )
+    function afficher_form_gestion( mode , id , ordre , nom , livret_texte )
     {
       $('#f_action').val(mode);
-      $('#f_id').val(id);
-      $('#f_ordre').val(ordre);
-      $('#f_nom').val(nom);
-      $('#f_lsun').html(select_lsun.replace('>'+lsun_texte,' selected>'+lsun_texte));
+      $('#f_id'    ).val(id);
+      $('#f_ordre' ).val(ordre);
+      $('#f_nom'   ).val(nom);
+      $('#f_livret').html(select_livret.replace('>'+livret_texte,' selected>'+livret_texte));
       // pour finir
       $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " une période");
       if(mode!='supprimer')
@@ -80,7 +80,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , '' /*ordre*/ , '' /*nom*/ , '-' /*lsun_texte*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*ordre*/ , '' /*nom*/ , '-' /*livret_texte*/ );
     };
 
     /**
@@ -93,12 +93,12 @@ $(document).ready
       var objet_tr   = $(this).parent().parent();
       var objet_tds  = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
-      var id         = objet_tr.attr('id').substring(3);
-      var ordre      = objet_tds.eq(0).html();
-      var nom        = objet_tds.eq(1).html();
-      var lsun_texte = objet_tds.eq(2).html();
+      var id           = objet_tr.attr('id').substring(3);
+      var ordre        = objet_tds.eq(0).html();
+      var nom          = objet_tds.eq(1).html();
+      var livret_texte = objet_tds.eq(2).html();
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , ordre , unescapeHtml(nom) , lsun_texte /* volontairement sans unescapeHtml() */ );
+      afficher_form_gestion( mode , id , ordre , unescapeHtml(nom) , livret_texte /* volontairement sans unescapeHtml() */ );
     };
 
     /**
@@ -110,12 +110,12 @@ $(document).ready
       mode = $(this).attr('class');
       var objet_tds  = $(this).parent().parent().find('td');
       // Récupérer les informations de la ligne concernée
-      var ordre      = objet_tds.eq(0).html();
-      var nom        = objet_tds.eq(1).html();
-      var lsun_texte = objet_tds.eq(2).html();
+      var ordre        = objet_tds.eq(0).html();
+      var nom          = objet_tds.eq(1).html();
+      var livret_texte = objet_tds.eq(2).html();
       ordre++;
       // Afficher le formulaire
-      afficher_form_gestion( mode , '' /*id*/ , ordre , unescapeHtml(nom) , lsun_texte /* volontairement sans unescapeHtml() */ );
+      afficher_form_gestion( mode , '' /*id*/ , ordre , unescapeHtml(nom) , livret_texte /* volontairement sans unescapeHtml() */ );
     };
 
     /**
@@ -131,7 +131,7 @@ $(document).ready
       var id         = objet_tr.attr('id').substring(3);
       var nom        = objet_tds.eq(1).html();
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , '' /*ordre*/ , unescapeHtml(nom) , '-' /*lsun_texte*/ );
+      afficher_form_gestion( mode , id , '' /*ordre*/ , unescapeHtml(nom) , '-' /*livret_texte*/ );
     };
 
     /**
@@ -189,15 +189,15 @@ $(document).ready
       {
         rules :
         {
-          f_ordre : { required:true  , digits:true , range:[1,99] },
-          f_nom   : { required:true  , maxlength:40 },
-          f_lsun  : { required:false }
+          f_ordre  : { required:true  , digits:true , range:[1,99] },
+          f_nom    : { required:true  , maxlength:40 },
+          f_livret : { required:false }
         },
         messages :
         {
-          f_ordre : { required:"ordre manquant" , digits:"nombre entier requis" , range:"nombre entre 1 et 99" },
-          f_nom   : { required:"nom manquant" , maxlength:"40 caractères maximum" },
-          f_lsun  : { }
+          f_ordre  : { required:"ordre manquant" , digits:"nombre entier requis" , range:"nombre entre 1 et 99" },
+          f_nom    : { required:"nom manquant" , maxlength:"40 caractères maximum" },
+          f_livret : { }
         },
         errorElement : "label",
         errorClass : "erreur",

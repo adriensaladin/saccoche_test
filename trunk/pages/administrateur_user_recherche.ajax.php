@@ -64,11 +64,9 @@ if( ($action=='rechercher') && in_array($champ_nom,array('id_ent','id_gepi','sco
   else
   {
     // Tableau avec noms des profils en session pour usage si modification de l'utilisateur
-    $_SESSION['tmp'] = array();
     foreach($DB_TAB as $DB_ROW)
     {
       $genre_key = ($DB_ROW['user_profil_sigle']=='ELV') ? 'enfant' : 'adulte' ;
-      $_SESSION['tmp'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_singulier'];
       // Formater la date
       $date_mysql  = $DB_ROW['user_sortie_date'];
       $date_sortie = ($date_mysql!=SORTIE_DEFAUT_MYSQL) ? To::date_mysql_to_french($date_mysql) : '-' ;
@@ -218,7 +216,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   Json::add_str('<td>'.html($sconet_id).'</td>');
   Json::add_str('<td>'.html($sconet_num).'</td>');
   Json::add_str('<td>'.html($reference).'</td>');
-  Json::add_str('<td>'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>');
+  Json::add_str('<td>'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="{{PROFIL}}" /></td>');
   Json::add_str('<td>'.Html::$tab_genre[$genre_key][$genre].'</td>');
   Json::add_str('<td>'.html($nom).'</td>');
   Json::add_str('<td>'.html($prenom).'</td>');

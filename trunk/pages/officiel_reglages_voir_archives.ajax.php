@@ -102,8 +102,9 @@ foreach($DB_TAB_Archives as $key => $DB_ROW)
 }
 
 // Dossier accueillant les PDF
+$is_make_zip = ( ($nb_archives>1) || $uai_origine ) ? TRUE : FALSE;
 // TODO : UTILISER LE DOSSIER "OFFIFICIEL" AVEC UNE DUREE DE CONSERVATION D'1 SEMAINE
-if($nb_archives>1)
+if($is_make_zip)
 {
   $chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().DS;
   FileSystem::creer_ou_vider_dossier($chemin_temp_pdf);
@@ -137,7 +138,7 @@ foreach($DB_TAB_Archives as $DB_ROW)
   FileSystem::ecrire_sortie_PDF( $chemin_temp_pdf.$fichier_nom  , $archive_PDF  );
 }
 // On zippe l'ensemble
-if($nb_archives>1)
+if($is_make_zip)
 {
   $fichier_nom  = 'archive_';
   $fichier_nom .= (!$uai_origine)       ? '' : Clean::fichier($uai_origine).'_' ;
@@ -157,8 +158,9 @@ if($nb_archives>1)
 }
 // Retour
 // TODO : SI $uai_origine TRANSMIS, PROPOSER ENVOI AUTOMATIQUE D'UN MAIL TYPE AVEC UN LIEN VERS LE FICHIER GENERE, (on a l'adresse de l'établ d'origine et celle de l'établ actuel)
-$texte = ($nb_archives>1)
-        ? $nb_archives.' archives générées dans <span class="file file_zip">ce fichier <em>zip</em></span>.'
+$s = ($nb_archives>1) ? 's' : '' ;
+$texte = ($is_make_zip)
+        ? $nb_archives.' archive'.$s.' générée'.$s.' dans <span class="file file_zip">ce fichier <em>zip</em></span>.'
         : 'Archive générée dans <span class="file file_pdf">ce fichier <em>pdf</em></span>.' ;
 Json::add_row( 'texte' ,$texte );
 Json::add_row( 'href' , URL_DIR_EXPORT.$fichier_nom );

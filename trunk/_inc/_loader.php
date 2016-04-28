@@ -26,9 +26,16 @@
  */
 
 // ============================================================================
-// Constante SACoche - Atteste l'appel de ce fichier avant inclusion d'une autre page & permet de connaître le nom du script initial.
+// Premières constantes
 // ============================================================================
 
+// CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé
+// Dès maintenant car utilisé par exit_error().
+// Tous les fichiers étant en UTF-8, et le code prévu pour manipuler des données en UTF-8, changer le CHARSET serait assez hasardeux pour ne pas dire risqué...
+define('CHARSET','utf-8');
+define('NL',PHP_EOL);
+
+// Constante "SACoche" : atteste l'appel de ce fichier avant inclusion d'une autre page, et permet de connaître le nom du script initial.
 if(defined('PATHINFO_FILENAME'))
 {
   define( 'SACoche', pathinfo( $_SERVER['SCRIPT_NAME'] , PATHINFO_FILENAME ) );
@@ -41,47 +48,12 @@ else
 if(SACoche=='_loader') {exit('Ce fichier ne peut être appelé directement !');}
 
 // ============================================================================
-// Configuration PHP
+// Versions PHP & MySQL requises et conseillées
 // ============================================================================
 
-// CHARSET : "iso-8859-1" ou "utf-8" suivant l'encodage utilisé
-// Dès maintenant car utilisé par exit_error().
-// Tous les fichiers étant en UTF-8, et le code prévu pour manipuler des données en UTF-8, changer le CHARSET serait assez hasardeux pour ne pas dire risqué...
-define('CHARSET','utf-8');
-define('NL',PHP_EOL);
-
-// Définir le décalage horaire par défaut de toutes les fonctions date/heure
-// La fonction date_default_timezone_set() est disponible depuis PHP 5.1 ; on a été stoppé avant si ce n'est pas le cas.
-date_default_timezone_set('Europe/Paris'); 
-
-// Modifier l'encodage interne pour les fonctions mb_* (manipulation de chaînes de caractères multi-octets)
-// Requiert le module "mbstring" ; on a été stoppé avant si ce dernier est manquant.
-mb_internal_encoding(CHARSET);
-
-// Remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée en PHP 5.4.0).
-// Cette remédiation n'est toutefois que partielle car des antislashs sont aussi ajouté à tout ce qui vient "de l'extérieur", donc file_get_contents() & Co.
-// array_map() génère une erreur si le tableau contient lui-même un tableau ; à la place on peut utiliser array_walk_recursive() ou la fonction ci-dessous présente dans le code de MySQL_Dumper et PunBB) :
-// function stripslashes_array($val){$val = is_array($val) ? array_map('stripslashes_array',$val) : stripslashes($val);return $val;}
-if(get_magic_quotes_gpc())
-{
-  function tab_stripslashes(&$val,$key)
-  {
-    $val = stripslashes($val);
-  }
-  array_walk_recursive($_COOKIE ,'tab_stripslashes');
-  array_walk_recursive($_GET    ,'tab_stripslashes');
-  array_walk_recursive($_POST   ,'tab_stripslashes');
-  array_walk_recursive($_REQUEST,'tab_stripslashes');
-}
-
-// ============================================================================
-// Versions PHP & MySQL requises
-// ============================================================================
-
-// Version PHP & MySQL requises et conseillées
 // @see commentaire() in ./_inc/class.InfoServeur.php
 // Attention : ne pas mettre de ".0" (par exemple "5.0") car version_compare() considère que 5 < 5.0 (@see http://fr.php.net/version_compare)
-define('PHP_VERSION_MINI_PRE_REQUISE' ,'5.1'); // PHP 5.1 et PHP 5.2 tolérées jusqu'en avril 2016, mais cela devenait trop lourd à gérer (besoin de json_decode).
+define('PHP_VERSION_MINI_PRE_REQUISE' ,'5.1'); // PHP 5.1 et PHP 5.2 tolérées jusqu'en avril 2016, mais cela devenait trop lourd à gérer.
 define('PHP_VERSION_MINI_REQUISE'     ,'5.3');
 define('PHP_VERSION_MINI_CONSEILLEE'  ,'5.4');
 define('MYSQL_VERSION_MINI_REQUISE'   ,'5.1');
@@ -90,7 +62,7 @@ define('MYSQL_VERSION_MINI_CONSEILLEE','5.5');
 // Vérifier la version de PHP
 if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'<'))
 {
-  // Il se peut que la version indiquée soit plus récente que ce qui est indiquée ; un test de présence de éléments nouveaux utilisés évite de se faire avoir.
+  // Il se peut que la version indiquée soit plus récente que ce qui est indiquée ; un test de présence d'éléments nouveaux utilisés évite de se faire leurrer.
   if( version_compare(PHP_VERSION,PHP_VERSION_MINI_PRE_REQUISE,'<') || !function_exists('array_fill_keys') || !function_exists('error_get_last') || !function_exists('json_decode') || !function_exists('json_encode') || !function_exists('str_getcsv') || !defined('PATHINFO_FILENAME') || !defined('PHP_ROUND_HALF_DOWN') )
   {
     exit_error( 'PHP trop ancien' /*titre*/ , 'Version de PHP utilisée sur ce serveur : '.PHP_VERSION.'<br />Version de PHP requise au minimum : '.PHP_VERSION_MINI_REQUISE /*contenu*/ );
@@ -114,6 +86,34 @@ if(count($tab_extensions_manquantes))
 // Rmq : Un souci a été rencontré sur un serveur FreeBSD : fonction json_encode() indéfinie alors qu'un phpinfo() du PHP 5.6.11 indiquait json chargé !
 // Il a fallu explicitement installer le paquet "php56-json" existant dans les dépôts de FreeBSD...
 // @see http://php.net/manual/fr/json.installation.php
+
+// ============================================================================
+// Configuration PHP
+// ============================================================================
+
+// Définir le décalage horaire par défaut de toutes les fonctions date/heure
+// La fonction date_default_timezone_set() est disponible depuis PHP 5.1 ; on a été stoppé avant si ce n'est pas le cas.
+date_default_timezone_set('Europe/Paris'); 
+
+// Modifier l'encodage interne pour les fonctions mb_* (manipulation de chaînes de caractères multi-octets)
+// Requiert le module "mbstring" ; on a été stoppé avant si ce dernier est manquant.
+mb_internal_encoding(CHARSET);
+
+// Remédier à l'éventuelle configuration de magic_quotes_gpc à On (directive obsolète depuis PHP 5.3.0 et supprimée en PHP 5.4.0).
+// Cette remédiation n'est toutefois que partielle car des antislashs sont aussi ajoutés à tout ce qui vient "de l'extérieur", donc file_get_contents() & Co.
+// array_map() génère une erreur si le tableau contient lui-même un tableau ; à la place on peut utiliser array_walk_recursive() ou la fonction ci-dessous présente dans le code de MySQL_Dumper et PunBB) :
+// function stripslashes_array($val){$val = is_array($val) ? array_map('stripslashes_array',$val) : stripslashes($val);return $val;}
+if(get_magic_quotes_gpc())
+{
+  function tab_stripslashes(&$val,$key)
+  {
+    $val = stripslashes($val);
+  }
+  array_walk_recursive($_COOKIE ,'tab_stripslashes');
+  array_walk_recursive($_GET    ,'tab_stripslashes');
+  array_walk_recursive($_POST   ,'tab_stripslashes');
+  array_walk_recursive($_REQUEST,'tab_stripslashes');
+}
 
 // ============================================================================
 // Chemins dans le système de fichiers du serveur (pour des manipulations de fichiers locaux)
@@ -314,6 +314,7 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
     'DB_STRUCTURE_DEMANDE'        => '_sql'.DS.'requetes_structure_demande.php' ,
     'DB_STRUCTURE_IMAGE'          => '_sql'.DS.'requetes_structure_image.php' ,
+    'DB_STRUCTURE_LIVRET'         => '_sql'.DS.'requetes_structure_livret.php' ,
     'DB_STRUCTURE_MAJ_BASE'       => '_sql'.DS.'requetes_structure_maj_base.php' ,
     'DB_STRUCTURE_MATIERE'        => '_sql'.DS.'requetes_structure_matiere.php' ,
     'DB_STRUCTURE_MESSAGE'        => '_sql'.DS.'requetes_structure_message.php' ,

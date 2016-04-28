@@ -113,6 +113,9 @@ class FileSystem
     23 => "23 | DELETED | entrée supprimée",
   );
 
+  // Tableau utile à analyser_dossier()
+  public static $tab_analyse = array();
+
   // //////////////////////////////////////////////////
   // Méthodes privées (internes)
   // //////////////////////////////////////////////////
@@ -340,6 +343,7 @@ class FileSystem
 
   /**
    * Recense récursivement les dossiers présents et les md5 des fichiers (utilisé pour la maj automatique par le webmestre).
+   * Le résultat est placé dans $tab_analyse[].
    * 
    * @param string   $dossier
    * @param int      $longueur_prefixe   longueur de $dossier lors du premier appel
@@ -361,13 +365,13 @@ class FileSystem
       }
       else
       {
-        $_SESSION['tmp']['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = ($calc_md5) ? FileSystem::fabriquer_md5_file($chemin_contenu) : file_get_contents($chemin_contenu) ;
+        FileSystem::$tab_analyse['fichier'][substr($chemin_contenu,$longueur_prefixe)][$indice] = ($calc_md5) ? FileSystem::fabriquer_md5_file($chemin_contenu) : file_get_contents($chemin_contenu) ;
       }
     }
     $chemin_dossier = (string)substr($dossier,$longueur_prefixe);
     if( $with_first_dir || $chemin_dossier!=='' )
     {
-      $_SESSION['tmp']['dossier'][$chemin_dossier][$indice] = TRUE;
+      FileSystem::$tab_analyse['dossier'][$chemin_dossier][$indice] = TRUE;
     }
   }
 
@@ -793,6 +797,40 @@ class FileSystem
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à  1 an
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DEVOIR.$BASE   , $duree); // Nettoyer ce dossier des fichiers antérieurs à la date fixée par le webmestre (1 an par défaut)
     return FileSystem::$nb_suppression;
+  }
+
+  /**
+   * Enregistrer un fichier avec des infos sérializées à récupérer lors de l'appel ajax suivant
+   *
+   * @param string   $fichier_chemin
+   * @param string   $fichier_contenu
+   * @return void
+   */
+
+  public static function enregistrer_fichier_infos_serializees( $fichier_chemin , $fichier_contenu )
+  {
+    FileSystem::ecrire_fichier( $fichier_chemin , serialize($fichier_contenu) );
+  }
+
+  /**
+   * Récupérer un fichier avec des infos sérializées
+   *
+   * @param string   $fichier_chemin
+   * @return void
+   */
+
+  public static function recuperer_fichier_infos_serializees( $fichier_chemin )
+  {
+    if(!is_file($fichier_chemin))
+    {
+      Json::end( FALSE , 'Le fichier de données est introuvable !' );
+    }
+    $fichier_contenu = @unserialize( file_get_contents( $fichier_chemin ) );
+    if($fichier_contenu===FALSE)
+    {
+      Json::end( FALSE , 'Le fichier de données est syntaxiquement incorrect !' );
+    }
+    return $fichier_contenu;
   }
 
   /**

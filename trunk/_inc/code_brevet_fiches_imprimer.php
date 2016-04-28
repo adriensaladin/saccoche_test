@@ -49,6 +49,8 @@ $tab_action = array('initialiser','imprimer');
 $bilan_type = 'brevet';
 $annee_session_brevet = To::annee_session_brevet();
 
+$file_memo = CHEMIN_DOSSIER_EXPORT.'imprimer_brevet_'.$_SESSION['BASE'].'_'.session_id().'.txt';
+
 // On vérifie les paramètres principaux
 
 if( (!in_array($ACTION,$tab_action)) || (!in_array($OBJET,$tab_objet)) || !$classe_id || ( (!$liste_eleve_id)&&($ACTION!='initialiser') ) )
@@ -158,15 +160,20 @@ if($ACTION=='initialiser')
 if( ($ACTION=='imprimer') && ($etape==2) )
 {
   Erreur500::prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
-  foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+  foreach($tab_memo['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
   {
     list( $eleve_identite , $page_numero ) = $tab_tirages[1];
     DB_STRUCTURE_BREVET::DB_modifier_brevet_fichier($eleve_id);
     $fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $annee_session_brevet );
-    unset($_SESSION['tmp']['tab_pages_decoupe_pdf'][$eleve_id][1]);
+    unset($tab_memo['tab_pages_decoupe_pdf'][$eleve_id][1]);
     $releve_pdf = new PDFMerger;
-    $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_numero ) -> merge( 'file' , $fichier_extraction_chemin );
+    $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' , $page_numero ) -> merge( 'file' , $fichier_extraction_chemin );
   }
+  // Enregistrer les informations
+  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
+  // Retour
   Json::end( TRUE );
 }
 
@@ -177,26 +184,30 @@ if( ($ACTION=='imprimer') && ($etape==2) )
 if( ($ACTION=='imprimer') && ($etape==3) )
 {
   Erreur500::prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
   $date = date('Y-m-d');
   $tab_pages_non_anonymes = array();
   $chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().DS;
   FileSystem::creer_ou_vider_dossier($chemin_temp_pdf);
-  foreach($_SESSION['tmp']['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
+  foreach($tab_memo['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
   {
     list( $eleve_identite , $page_numero ) = $tab_tirages[0];
     $tab_pages_non_anonymes[] = $page_numero;
     $fichier_extraction_chemin = $chemin_temp_pdf.'officiel_'.$bilan_type.'_'.Clean::fichier($eleve_identite).'_'.$date.'.pdf';
     $releve_pdf = new PDFMerger;
-    $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $page_numero ) -> merge( 'file' , $fichier_extraction_chemin );
+    $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' , $page_numero ) -> merge( 'file' , $fichier_extraction_chemin );
   }
-  $result = FileSystem::zip_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $_SESSION['tmp']['fichier_nom'].'.zip' );
+  $result = FileSystem::zip_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $tab_memo['fichier_nom'].'.zip' );
   if($result!==TRUE)
   {
     Json::end( FALSE , $result );
   }
   FileSystem::supprimer_dossier($chemin_temp_pdf);
-  $_SESSION['tmp']['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
-  unset($_SESSION['tmp']['tab_pages_decoupe_pdf']);
+  $tab_memo['pages_non_anonymes'] = implode(',',$tab_pages_non_anonymes);
+  unset($tab_memo['tab_pages_decoupe_pdf']);
+  // Enregistrer les informations
+  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
   Json::end( TRUE );
 }
 
@@ -206,16 +217,20 @@ if( ($ACTION=='imprimer') && ($etape==3) )
 
 if( ($ACTION=='imprimer') && ($etape==4) )
 {
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
   $releve_pdf = new PDFMerger;
-  if($_SESSION['tmp']['pages_non_anonymes']!='') // Potentiellement possible si on veut imprimer un ou plusieurs bulletins d'élèves sans aucune donnée, ce qui provoque l'erreur "FPDF error: Pagenumber is wrong!"
+  if($tab_memo['pages_non_anonymes']!='') // Potentiellement possible si on veut imprimer un ou plusieurs bulletins d'élèves sans aucune donnée, ce qui provoque l'erreur "FPDF error: Pagenumber is wrong!"
   {
-    $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' , $_SESSION['tmp']['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf' );
+    $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' , $tab_memo['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' );
   }
   Json::add_str('<ul class="puce">');
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des fiches brevet en un seul document.</span></a></li>');
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$_SESSION['tmp']['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les fiches brevet dans des documents individuels.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des fiches brevet en un seul document.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les fiches brevet dans des documents individuels.</span></a></li>');
   Json::add_str('</ul>');
-  unset( $_SESSION['tmp']['fichier_nom'] , $_SESSION['tmp']['pages_non_anonymes'] );
+  unset( $tab_memo['fichier_nom'] , $tab_memo['pages_non_anonymes'] );
+  // Supprimer les informations provisoires
+  FileSystem::supprimer_fichier( $file_memo );
   Json::end( TRUE );
 }
 
@@ -286,8 +301,12 @@ if(empty($is_test_impression))
   {
     Json::end( FALSE , 'Aucune donnée trouvée pour le ou les élèves concernés !' );
   }
-  $_SESSION['tmp']['fichier_nom'] = $fichier_nom;
-  $_SESSION['tmp']['tab_pages_decoupe_pdf'] = $tab_pages_decoupe_pdf;
+  $tab_memo = array(
+    'fichier_nom'           => $fichier_nom,
+    'tab_pages_decoupe_pdf' => $tab_pages_decoupe_pdf,
+  );
+  // Enregistrer les informations
+  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
   Json::end( TRUE );
 }
 else

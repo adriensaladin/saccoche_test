@@ -368,14 +368,15 @@ $(document).ready
       else
       {
         $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        var profil = $('#f_profil option:selected').val();
         switch (mode)
         {
           case 'ajouter':
             $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
-            $('#table_action tbody').prepend(responseJSON['value']);
+            $('#table_action tbody').prepend(responseJSON['value'].replace('{{PROFIL}}',tab_profil[profil]));
             break;
           case 'modifier':
-            $('#id_'+$('#f_id').val()).addClass("new").html(responseJSON['value']);
+            $('#id_'+$('#f_id').val()).addClass("new").html(responseJSON['value'].replace('{{PROFIL}}',tab_profil[profil]));
             break;
         }
         tableau_maj();

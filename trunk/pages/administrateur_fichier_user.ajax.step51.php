@@ -33,14 +33,16 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
-$tab_liens_id_base = load_fichier('liens_id_base');
+$tab_liens_id_base = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt' );
 $tab_i_classe_TO_id_base  = $tab_liens_id_base['classes'];
 $tab_i_groupe_TO_id_base  = $tab_liens_id_base['groupes'];
 $tab_i_fichier_TO_id_base = $tab_liens_id_base['users'];
 // On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / genre / nom / prenom / birth_date / courriel / uai_origine / lv1 / lv2 / classe / groupes / matieres / adresse / enfant
-$tab_users_fichier = load_fichier('users');
+$tab_users_fichier = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'users.txt' );
 // On récupère le fichier avec les classes : $tab_classes_fichier['ref'] : i -> ref ; $tab_classes_fichier['nom'] : i -> nom ; $tab_classes_fichier['niveau'] : i -> niveau
-$tab_classes_fichier = load_fichier('classes');
+$tab_classes_fichier = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'classes.txt' );
+// On récupère le fichier avec les dates de sortie des élèves
+$tab_date_sortie = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_sortie.txt' );
 // On récupère le contenu de la base pour comparer : $tab_users_base['champ'] : id -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil / genre / nom / prenom / birth_date / courriel / email_origine / uai_origine / lv1 / lv2 / statut / classe / adresse
 $tab_users_base                  = array();
 $tab_users_base['sconet_id'    ] = array();
@@ -303,7 +305,7 @@ if(count($tab_users_base['sconet_id']))
     if($tab_users_base['sortie'][$id_base]==SORTIE_DEFAUT_MYSQL)
     {
       $indication = ($import_profil=='eleve') ? $tab_users_base['classe'][$id_base] : $tab_users_base['profil_sigle'][$id_base] ;
-      $date_sortie_fr = isset($_SESSION['tmp']['date_sortie'][$tab_users_base['sconet_id'][$id_base]]) ? $_SESSION['tmp']['date_sortie'][$tab_users_base['sconet_id'][$id_base]] : TODAY_FR ;
+      $date_sortie_fr = isset($tab_date_sortie[$tab_users_base['sconet_id'][$id_base]]) ? $tab_date_sortie[$tab_users_base['sconet_id'][$id_base]] : TODAY_FR ;
       $lignes_retirer .= '<tr><th>Retirer <input id="del_'.$id_base.'" name="del_'.$id_base.'" type="checkbox" checked /></th><td>'.html($tab_users_base['sconet_id'][$id_base].' / '.$tab_users_base['sconet_num'][$id_base].' / '.$tab_users_base['reference'][$id_base].' || '.$tab_users_base['nom'][$id_base].' '.$tab_users_base['prenom'][$id_base].' ('.$indication.')').' || <b>Sortie : non &rarr; '.$date_sortie_fr.'</b></td></tr>'.NL;
       $tab_users_retirer[$id_base] = To::date_french_to_mysql($date_sortie_fr);
     }
@@ -318,21 +320,20 @@ if(count($tab_users_base['sconet_id']))
     }
   }
 }
-unset($_SESSION['tmp']['date_sortie']);
 // On enregistre
 $tab_memo_analyse = array(
   'modifier' => $tab_users_modifier,
   'ajouter'  => $tab_users_ajouter,
   'retirer'  => $tab_users_retirer,
 );
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
+FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'memo_analyse.txt', $tab_memo_analyse );
 // On enregistre (tableau mis à jour)
 $tab_liens_id_base = array(
   'classes' => $tab_i_classe_TO_id_base,
   'groupes' => $tab_i_groupe_TO_id_base,
   'users'   => $tab_i_fichier_TO_id_base,
 );
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt', $tab_liens_id_base );
 // On affiche
 Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des utilisateurs.</label></p>'.NL);
 if( $lignes_ajouter && $lignes_retirer )

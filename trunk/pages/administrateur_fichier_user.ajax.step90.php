@@ -33,12 +33,13 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Il est arrivé que ces fichiers n'existent plus (bizarre...) d'où le test d'existence.
-FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_dest                                                                                            , TRUE /*verif_exist*/ );
-FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt'         , TRUE /*verif_exist*/ );
-FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt'       , TRUE /*verif_exist*/ );
-FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt'       , TRUE /*verif_exist*/ );
-FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt'  , TRUE /*verif_exist*/ );
-FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt' , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom                      , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'users.txt'         , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'classes.txt'       , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'groupes.txt'       , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'memo_analyse.txt'  , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt' , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_sortie.txt'   , TRUE /*verif_exist*/ );
 // Retenir qu'un import a été effectué
 $nom_variable = 'date_last_import_'.$import_profil.'s';
 DB_STRUCTURE_COMMUN::DB_modifier_parametres( array( $nom_variable => TODAY_MYSQL ) );

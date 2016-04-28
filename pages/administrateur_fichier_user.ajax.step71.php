@@ -33,10 +33,20 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
-$tab_liens_id_base = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt' );
+$tab_liens_id_base = load_fichier('liens_id_base');
 $tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 // On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil_sigle / nom / prenom / classe / groupes / matieres / adresse / enfant
-$tab_users_fichier = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'users.txt' );
+$fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt';
+if(!is_file($fnom))
+{
+  Json::end( FALSE , 'Le fichier contenant les utilisateurs est introuvable !' );
+}
+$contenu = file_get_contents($fnom);
+$tab_users_fichier = @unserialize($contenu);
+if($tab_users_fichier===FALSE)
+{
+  Json::end( FALSE , 'Le fichier contenant les utilisateurs est syntaxiquement incorrect !' );
+}
 // On récupère le contenu de la base pour comparer : $tab_base_adresse[user_id]=array()
 $tab_base_adresse = array();
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_adresses_parents();

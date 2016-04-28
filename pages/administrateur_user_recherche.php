@@ -29,16 +29,9 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Rechercher un utilisateur"));
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var tab_profil = new Array();' );
 Layout::add( 'js_inline_before' , 'var input_date = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var date_mysql = "'.TODAY_MYSQL.'";' );
 Layout::add( 'js_inline_before' , 'var LOGIN_LONGUEUR_MAX = '.LOGIN_LONGUEUR_MAX.';' );
-// Tableau js pour le retour ajax
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_nom_long_singulier' /*listing_champs*/ , TRUE /*only_actif*/ );
-foreach($DB_TAB as $DB_ROW)
-{
-  Layout::add( 'js_inline_before' , 'tab_profil["'.$DB_ROW['user_profil_sigle'].'"]="'.html(html($DB_ROW['user_profil_nom_long_singulier'])).'";' );
-}
 ?>
 
 <ul class="puce">

@@ -34,24 +34,23 @@ $statut = (isset($_POST['f_statut'])) ? Clean::entier($_POST['f_statut']) : 1  ;
 // Construire et personnaliser le formulaire pour restreindre l'affichage
 $select_f_statuts = HtmlForm::afficher_select(Form::$tab_select_statut , 'f_statut' /*select_nom*/ , FALSE /*option_first*/ , $statut /*selection*/ , '' /*optgroup*/ );
 
+// Options du formulaire de profils, et variable en session pour la page ajax associée
+$options = '';
+$_SESSION['tmp'] = array();
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_nom_long_singulier' /*listing_champs*/ , TRUE /*only_actif*/ , array('professeur','directeur') /*only_listing_profils_types*/ );
+foreach($DB_TAB as $DB_ROW)
+{
+  $options .= '<option value="'.$DB_ROW['user_profil_sigle'].'">'.$DB_ROW['user_profil_sigle'].' &rarr; '.$DB_ROW['user_profil_nom_long_singulier'].'</option>';
+  $_SESSION['tmp'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_singulier'];
+}
+
 // Javascript
 Layout::add( 'js_inline_before' , 'var input_date      = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var date_mysql      = "'.TODAY_MYSQL.'";' );
 Layout::add( 'js_inline_before' , 'var    LOGIN_LONGUEUR_MAX = '.   LOGIN_LONGUEUR_MAX.';' );
 Layout::add( 'js_inline_before' , 'var PASSWORD_LONGUEUR_MAX = '.PASSWORD_LONGUEUR_MAX.';' );
-Layout::add( 'js_inline_before' , 'var tab_profil            = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_login_modele      = new Array();' );
 Layout::add( 'js_inline_before' , 'var tab_mdp_longueur_mini = new Array();' );
-
-// Options du formulaire de profils (en tableau js pour le retour ajax)
-$options   = '';
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_nom_long_singulier' /*listing_champs*/ , TRUE /*only_actif*/ , array('professeur','directeur') /*only_listing_profils_types*/ );
-foreach($DB_TAB as $DB_ROW)
-{
-  $options   .= '<option value="'.$DB_ROW['user_profil_sigle'].'">'.$DB_ROW['user_profil_sigle'].' &rarr; '.$DB_ROW['user_profil_nom_long_singulier'].'</option>';
-  Layout::add( 'js_inline_before' , 'tab_profil["'.$DB_ROW['user_profil_sigle'].'"]="'.html(html($DB_ROW['user_profil_nom_long_singulier'])).'";' );
-}
-
 foreach($_SESSION['TAB_PROFILS_ADMIN']['LOGIN_MODELE'] as $profil_sigle => $login_modele)
 {
   Layout::add( 'js_inline_before' , 'tab_login_modele["'.$profil_sigle.'"] = "'.$login_modele.'";' );

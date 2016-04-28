@@ -328,12 +328,7 @@ class SessionUser
     // Récupérer et Enregistrer en session les noms des profils utilisateurs d'un établissement (activés) pour afficher les droits de certaines pages.
     else
     {
-      $_SESSION['TAB_PROFILS_DROIT'] = array(
-        'TYPE'             => array() ,
-        'JOIN_GROUPES'     => array() ,
-        'JOIN_MATIERES'    => array() ,
-        'NOM_LONG_PLURIEL' => array(),
-      );
+      $_SESSION['TAB_PROFILS_DROIT'] = array( 'TYPE'=>array() , 'JOIN_GROUPES'=>array() , 'JOIN_MATIERES'=>array() , 'NOM_LONG_PLURIEL'=>array() );
       $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_join_groupes,user_profil_join_matieres,user_profil_nom_long_pluriel' /*listing_champs*/ , TRUE /*only_actif*/ );
       foreach($DB_TAB as $DB_ROW)
       {

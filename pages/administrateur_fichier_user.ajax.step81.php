@@ -33,10 +33,10 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
-$tab_liens_id_base = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt' );
+$tab_liens_id_base = load_fichier('liens_id_base');
 $tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 // On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil_sigle / nom / prenom / classe / groupes / matieres / adresse / enfant
-$tab_users_fichier = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'users.txt' );
+$tab_users_fichier = load_fichier('users');
 // On convertit les données du fichier parent=>enfant dans un tableau enfant=>parent
 $tab_fichier_parents_par_eleve = array();
 foreach($tab_i_fichier_TO_id_base as $i_fichier => $id_base)
@@ -87,7 +87,7 @@ foreach($tab_fichier_parents_par_eleve as $eleve_id_base => $tab_parent)
     $tab_memo_analyse[$eleve_id_base][$parent_id_base] = $resp_legal_num;
   }
 }
-FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'memo_analyse.txt', $tab_memo_analyse );
+FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_memo_analyse.txt',serialize($tab_memo_analyse));
 // Pour préparer l'affichage
 $lignes_modifier  = '';
 $lignes_conserver = '';

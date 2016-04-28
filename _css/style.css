@@ -164,7 +164,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu li a    {line-height:43px} /* pour le premier bouton (boussole) */
 #menu li li a {line-height:43px} /* dans le reste du menu déroulant ; si modification, @see memoriser_menu() in ./_inc/class.SessionUser.php */
 
-#menu a {background:transparent url(../_img/sprite_menu_25.png) 0 20px no-repeat;padding-left:25px;}
+#menu a {background:transparent url(../_img/sprite_menu_24.png) 0 20px no-repeat;padding-left:25px;}
 #menu a.boussole              {background-position: 6px    13px} /* ( line_height 43 - img_hauteur 16 - 1 ) / 2 */
 #menu a.fleche                {background-position: 6px   -27px}
 #menu a.administrateur        {background-position: 6px   -67px}
@@ -199,66 +199,65 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.item_selection        {background-position: 6px -1227px}
 #menu a.log_actions           {background-position: 6px -1267px}
 #menu a.mail                  {background-position: 6px -1307px}
-#menu a.marianne              {background-position: 6px -1347px}
-#menu a.mdp_admin             {background-position: 6px -1387px}
-#menu a.message_accueil       {background-position: 6px -1427px}
-#menu a.nettoyage             {background-position: 6px -1467px}
-#menu a.newsletter            {background-position: 6px -1507px}
-#menu a.officiel_assiduite    {background-position: 6px -1547px}
-#menu a.officiel_brevet       {background-position: 6px -1587px}
-#menu a.officiel_bulletin     {background-position: 6px -1627px}
-#menu a.officiel_palier1      {background-position: 6px -1667px}
-#menu a.officiel_palier2      {background-position: 6px -1707px}
-#menu a.officiel_palier3      {background-position: 6px -1747px}
-#menu a.officiel_reglages     {background-position: 6px -1787px}
-#menu a.officiel_releve       {background-position: 6px -1827px}
-#menu a.officiel_voir_archive {background-position: 6px -1867px}
-#menu a.parent                {background-position: 6px -1907px}
-#menu a.periode               {background-position: 6px -1947px}
-#menu a.periode_groupe        {background-position: 6px -1987px}
-#menu a.professeur            {background-position: 6px -2027px}
-#menu a.referentiel_edition   {background-position: 6px -2067px}
-#menu a.referentiel_gestion   {background-position: 6px -2107px}
-#menu a.referentiel_ressources{background-position: 6px -2147px}
-#menu a.referentiel_voir      {background-position: 6px -2187px}
-#menu a.releve_chrono         {background-position: 6px -2227px}
-#menu a.releve_grille         {background-position: 6px -2267px}
-#menu a.releve_items          {background-position: 6px -2307px}
-#menu a.releve_recherche      {background-position: 6px -2347px}
-#menu a.releve_socle          {background-position: 6px -2387px}
-#menu a.releve_synthese       {background-position: 6px -2427px}
-#menu a.releve_synthese_socle {background-position: 6px -2467px}
-#menu a.resilier              {background-position: 6px -2507px}
-#menu a.rss                   {background-position: 6px -2547px}
-#menu a.serveur_database      {background-position: 6px -2587px}
-#menu a.serveur_debug         {background-position: 6px -2627px}
-#menu a.serveur_erreur        {background-position: 6px -2667px}
-#menu a.serveur_fichiers      {background-position: 6px -2707px}
-#menu a.serveur_geographie    {background-position: 6px -2747px}
-#menu a.serveur_identite      {background-position: 6px -2787px}
-#menu a.serveur_info          {background-position: 6px -2827px}
-#menu a.serveur_maintenance   {background-position: 6px -2867px}
-#menu a.serveur_proxy         {background-position: 6px -2907px}
-#menu a.serveur_security      {background-position: 6px -2947px}
-#menu a.socle_annuler         {background-position: 6px -2987px}
-#menu a.socle_fichier         {background-position: 6px -3027px}
-#menu a.socle_item            {background-position: 6px -3067px}
-#menu a.socle_langue          {background-position: 6px -3107px}
-#menu a.socle_pilier          {background-position: 6px -3147px}
-#menu a.statistiques          {background-position: 6px -3187px}
-#menu a.structure_ajout_csv   {background-position: 6px -3227px}
-#menu a.structure_bdd_repair  {background-position: 6px -3267px}
-#menu a.structure_gestion     {background-position: 6px -3307px}
-#menu a.structure_transfert   {background-position: 6px -3347px}
-#menu a.trombinoscope         {background-position: 6px -3387px}
-#menu a.user_recherche        {background-position: 6px -3427px}
+#menu a.mdp_admin             {background-position: 6px -1347px}
+#menu a.message_accueil       {background-position: 6px -1387px}
+#menu a.nettoyage             {background-position: 6px -1427px}
+#menu a.newsletter            {background-position: 6px -1467px}
+#menu a.officiel_assiduite    {background-position: 6px -1507px}
+#menu a.officiel_brevet       {background-position: 6px -1547px}
+#menu a.officiel_bulletin     {background-position: 6px -1587px}
+#menu a.officiel_palier1      {background-position: 6px -1627px}
+#menu a.officiel_palier2      {background-position: 6px -1667px}
+#menu a.officiel_palier3      {background-position: 6px -1707px}
+#menu a.officiel_reglages     {background-position: 6px -1747px}
+#menu a.officiel_releve       {background-position: 6px -1787px}
+#menu a.officiel_voir_archive {background-position: 6px -1827px}
+#menu a.parent                {background-position: 6px -1867px}
+#menu a.periode               {background-position: 6px -1907px}
+#menu a.periode_groupe        {background-position: 6px -1947px}
+#menu a.professeur            {background-position: 6px -1987px}
+#menu a.referentiel_edition   {background-position: 6px -2027px}
+#menu a.referentiel_gestion   {background-position: 6px -2067px}
+#menu a.referentiel_ressources{background-position: 6px -2107px}
+#menu a.referentiel_voir      {background-position: 6px -2147px}
+#menu a.releve_chrono         {background-position: 6px -2187px}
+#menu a.releve_grille         {background-position: 6px -2227px}
+#menu a.releve_items          {background-position: 6px -2267px}
+#menu a.releve_recherche      {background-position: 6px -2307px}
+#menu a.releve_socle          {background-position: 6px -2347px}
+#menu a.releve_synthese       {background-position: 6px -2387px}
+#menu a.releve_synthese_socle {background-position: 6px -2427px}
+#menu a.resilier              {background-position: 6px -2467px}
+#menu a.rss                   {background-position: 6px -2507px}
+#menu a.serveur_database      {background-position: 6px -2547px}
+#menu a.serveur_debug         {background-position: 6px -2587px}
+#menu a.serveur_erreur        {background-position: 6px -2627px}
+#menu a.serveur_fichiers      {background-position: 6px -2667px}
+#menu a.serveur_geographie    {background-position: 6px -2707px}
+#menu a.serveur_identite      {background-position: 6px -2747px}
+#menu a.serveur_info          {background-position: 6px -2787px}
+#menu a.serveur_maintenance   {background-position: 6px -2827px}
+#menu a.serveur_proxy         {background-position: 6px -2867px}
+#menu a.serveur_security      {background-position: 6px -2907px}
+#menu a.socle_annuler         {background-position: 6px -2947px}
+#menu a.socle_fichier         {background-position: 6px -2987px}
+#menu a.socle_item            {background-position: 6px -3027px}
+#menu a.socle_langue          {background-position: 6px -3067px}
+#menu a.socle_pilier          {background-position: 6px -3107px}
+#menu a.statistiques          {background-position: 6px -3147px}
+#menu a.structure_ajout_csv   {background-position: 6px -3187px}
+#menu a.structure_bdd_repair  {background-position: 6px -3227px}
+#menu a.structure_gestion     {background-position: 6px -3267px}
+#menu a.structure_transfert   {background-position: 6px -3307px}
+#menu a.trombinoscope         {background-position: 6px -3347px}
+#menu a.user_recherche        {background-position: 6px -3387px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Sous-menus (rappel en haut de page)                                                                 */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-div.sousmenu{margin:0.5ex auto 0.5ex 2em}
-div.sousmenu a{display:inline-block;padding:0.5ex 1ex;margin:0.5ex 0.5ex 0.5ex 0.5ex;background:#66F;color:#FFF}
+div.sousmenu{margin:0.5ex auto 0 2em}
+div.sousmenu a{display:inline-block;padding:0.5ex 1ex;margin:0.5ex 0.5ex 0 0.5ex;background:#66F;color:#FFF}
 div.sousmenu a.actif{background:#99F}
 div.sousmenu a:hover {color:#FFF}
 div.sousmenu a.disabled {color:#99F;cursor:default;font-style:italic}
@@ -674,7 +673,7 @@ table.simulation th, table.simulation td {border:1px solid #000;text-align:cente
 table.simulation td.nu {border:none}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-/* Tableau de saisie des notes d'une évaluation                                                        */
+/* Tableau de saisie des compétences                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table.scor_eval th, table.scor_eval td {text-align:center}
@@ -803,10 +802,10 @@ table.vm_nug td {vertical-align:middle}
 table.vm_nug td.nu {text-align:left}
 table.notanet td {height:30px}
 /* Pour rester indépendant des préférences établissements pour les états d'acquisition */
-.br{background-color:#F99}
-.bj{background-color:#FD3}
-.bv{background-color:#9F9}
-.bf{background-color:#8D8} /* A mettre en dernier pour surcharger les précédents */
+td.br{background-color:#F99}
+td.bj{background-color:#FD3}
+td.bv{background-color:#9F9}
+td.bf{background-color:#8D8} /* A mettre en dernier pour surcharger les précédents */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format du tableau webmestre présentant les statistiques                                             */

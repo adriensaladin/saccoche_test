@@ -32,7 +32,9 @@ $TITRE = html(Lang::_("Archives des bilans officiels"));
 // + AJOUTER LE CHOIX DE L'ETABLISSEMENT AU FORMULAIRE AVANT LA PERIODE (QUAND IL Y AURA POSSIBILITE DE TRANSFERT)
 ?>
 
-<div class="travaux">Fonctionnalité expérimentale d'un nouveau système d'archivage des bilans officiels sur plusieurs années. Ne prend en compte que les bilans générés avec une version 2016-04-17 minimum.</div>
+<div class="travaux">
+  Fonctionnalité expérimentale d'un nouveau système d'archivage des bilans officiels sur plusieurs années. Ne prend en compte que les bilans générés avec une version 2016-04-17 minimum.
+</div>
 
 <?php
 // Fabrication des éléments select du formulaire
@@ -78,7 +80,7 @@ $select_type_ref  = HtmlForm::afficher_select($tab_type_ref   , 'f_type_ref'  /*
     <label class="tab" for="f_type_ref">Type(s) :</label><span id="f_type_ref" class="select_multiple"><?php echo $select_type_ref ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_valider" type="submit" class="valider">Accéder à ces archives</button><label id="ajax_msg">&nbsp;</label>
+    <span class="tab"></span><button id="bouton_valider" type="submit" class="valider">Afficher ces archives</button><label id="ajax_msg">&nbsp;</label>
   </p>
 </fieldset></form>
 

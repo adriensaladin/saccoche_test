@@ -33,12 +33,12 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
-$tab_liens_id_base = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt' );
+$tab_liens_id_base = load_fichier('liens_id_base');
 $tab_i_classe_TO_id_base   = $tab_liens_id_base['classes'];
 $tab_i_groupe_TO_id_base   = $tab_liens_id_base['groupes'];
 $tab_i_fichier_TO_id_base  = $tab_liens_id_base['users'];
 // On récupère le fichier avec des infos sur les utilisateurs : $tab_memo_analyse['modifier'] : id -> array ; $tab_memo_analyse['ajouter'] : i -> array ; $tab_memo_analyse['retirer'] : i -> array
-$tab_memo_analyse = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'memo_analyse.txt' );
+$tab_memo_analyse = load_fichier('memo_analyse');
 // Récupérer les éléments postés
 $tab_check = (isset($_POST['f_check'])) ? explode(',',$_POST['f_check']) : array() ;
 $tab_mod = array();  // id à modifier
@@ -200,7 +200,7 @@ if(count($tab_mod))
 }
 // On enregistre (tableau mis à jour)
 $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt', $tab_liens_id_base );
+FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
 // Afficher le bilan
 $lignes        = '';
 $nb_fin_actuel = 0;

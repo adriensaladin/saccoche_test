@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Choisir la langue étrangère pour le socle commun / Affecter les LV pour le Livret Scolaire"));
+$TITRE = html(Lang::_("Choisir la langue étrangère pour le socle commun / Affecter les LV pour le LSUN"));
 
 if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
 {

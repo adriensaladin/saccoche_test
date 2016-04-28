@@ -448,7 +448,7 @@ public static function DB_lister_devoirs_id_disponibles()
  * @param string   $only_profils_types
  * @return array
  */
-public static function DB_lister_profils_parametres( $listing_champs , $only_actif , $only_profils_types=FALSE )
+public static function DB_lister_profils_parametres($listing_champs,$only_actif,$only_profils_types=FALSE)
 {
   $DB_SQL = 'SELECT user_profil_sigle, '.$listing_champs.' ';
   $DB_SQL.= 'FROM sacoche_user_profil ';

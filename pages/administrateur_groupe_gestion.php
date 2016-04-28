@@ -102,7 +102,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
   <h2>Ajouter | Modifier | Supprimer un groupe</h2>
   <div id="gestion_edit">
     <p>
-      <label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><option></option></select><br />
+      <label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><?php echo $select_niveau ?></select><br />
       <label class="tab" for="f_ref">Référence :</label><input id="f_ref" name="f_ref" type="text" value="" size="10" maxlength="8" /><br />
       <label class="tab" for="f_nom">Nom complet :</label><input id="f_nom" name="f_nom" type="text" value="" size="20" maxlength="20" />
     </p>

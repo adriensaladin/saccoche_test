@@ -34,6 +34,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $num  = (isset($_POST['num'])) ? (int)$_POST['num'] : 0 ;  // Numéro de l'étape en cours
 $max  = (isset($_POST['max'])) ? (int)$_POST['max'] : 0 ;  // Nombre d'étapes à effectuer
 
+$file_memo = CHEMIN_DOSSIER_EXPORT.'partenaire_statistiques_'.$_SESSION['USER_ID'].'_'.session_id().'.txt';
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // 1/3 : Récupération de la liste des structures avant collecte des stats
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -41,18 +43,20 @@ $max  = (isset($_POST['max'])) ? (int)$_POST['max'] : 0 ;  // Nombre d'étapes �
 if((!$num)||(!$max))
 {
   // Pour mémoriser les totaux
-  $_SESSION['tmp']['totaux'] = array( 'personnel_use'=>0 , 'eleve_use'=>0 , 'evaluation_use'=>0 , 'validation_use'=>0 );
+  $tab_memo['totaux'] = array( 'personnel_use'=>0 , 'eleve_use'=>0 , 'evaluation_use'=>0 , 'validation_use'=>0 );
   // Mémoriser les données des structures concernées par les stats
-  $_SESSION['tmp']['infos'] = array();
+  $tab_memo['infos'] = array();
   $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures();
   foreach($DB_TAB as $DB_ROW)
   {
-    $_SESSION['tmp']['infos'][] = array(
+    $tab_memo['infos'][] = array(
       'base_id'   => $DB_ROW['sacoche_base'],
       'structure' => $DB_ROW['structure_uai'].' '.$DB_ROW['structure_denomination'],
       'geo'       => $DB_ROW['geo_nom'],
     );
   }
+  // Enregistrer ces informations
+  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
   // Retour
   $max = count($DB_TAB) + 1 ; // La dernière étape consistera à vider la session temporaire et à renvoyer les totaux
   Json::end( TRUE , $max );
@@ -64,18 +68,21 @@ if((!$num)||(!$max))
 
 if( $num && $max && ($num<$max) )
 {
-  // Récupérer les infos ($base_id $structure $geo)
-  extract($_SESSION['tmp']['infos'][$num-1]);
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+  extract($tab_memo['infos'][$num-1]); // $base_id $structure $geo
   // Récupérer une série de stats
   DBextra::charger_parametres_mysql_supplementaires($base_id);
   list($personnel_use,$eleve_use,$evaluation_use,$validation_use,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( FALSE /*info_user_nb*/ , TRUE /*info_user_use*/ , FALSE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
   if( mb_strpos( $_SESSION['USER_CONNECTEURS'] , '|'.$connexion_nom.',' ) !== FALSE )
   {
     // maj les totaux
-    $_SESSION['tmp']['totaux']['personnel_use']  += $personnel_use;
-    $_SESSION['tmp']['totaux']['eleve_use']      += $eleve_use;
-    $_SESSION['tmp']['totaux']['evaluation_use'] += $evaluation_use;
-    $_SESSION['tmp']['totaux']['validation_use'] += $validation_use;
+    $tab_memo['totaux']['personnel_use']  += $personnel_use;
+    $tab_memo['totaux']['eleve_use']      += $eleve_use;
+    $tab_memo['totaux']['evaluation_use'] += $evaluation_use;
+    $tab_memo['totaux']['validation_use'] += $validation_use;
+    // Enregistrer ces informations
+    FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
     // Retour
     $ligne_etabl = '<tr>'.
       '<td>'.html($geo).'</td>'.
@@ -100,14 +107,18 @@ if( $num && $max && ($num<$max) )
 
 if( $num && $max && ($num==$max) )
 {
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+  // Supprimer les informations provisoires
+  FileSystem::supprimer_fichier( $file_memo );
+      // Retour
   $ligne_total = '<tr>'.
     '<th colspan="3" class="nu">Totaux</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['personnel_use'] ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['eleve_use']     ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['evaluation_use'],0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($_SESSION['tmp']['totaux']['validation_use'],0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_use'] ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_use']     ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_use'],0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['validation_use'],0,'',' ').'</th>'.
     '</tr>';
-  unset($_SESSION['tmp']);
   Json::end( TRUE , $ligne_total );
 }
 

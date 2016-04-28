@@ -197,7 +197,7 @@ else
     <hr />
     <h2>Chef d'établissement</h2>
     <p class="astuce">
-      En collège, pour établir les bilans périodiques et attestations du <em>LSUN</em>, il est requis de désigner le chef d'établissement.<br />
+      En collège, pour établir les bilans périodiques et attestations du <em>Livret Scolaire</em>, il est requis de désigner le chef d'établissement.<br />
       En dehors de ce cas précis, ce n'est pas nécessaire au fonctionnement de <em>SACoche</em>.
     </p>
     <p>

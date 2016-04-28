@@ -33,7 +33,7 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les utilisateurs : $tab_memo_analyse[$eleve_id][$parent_id] = $resp_legal_num;
-$tab_memo_analyse = load_fichier('memo_analyse');
+$tab_memo_analyse = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'memo_analyse.txt' );
 // Récupérer les éléments postés
 $tab_eleve_id = array() ;
 $tab_check = (isset($_POST['f_check'])) ? explode(',',$_POST['f_check']) : array() ;

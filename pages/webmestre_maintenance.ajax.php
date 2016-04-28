@@ -30,6 +30,8 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '' ;
 $motif  = (isset($_POST['f_motif']))  ? Clean::texte($_POST['f_motif'])  : '' ;
 
+$file_memo = CHEMIN_DOSSIER_EXPORT.'webmestre_maintenance_'.session_id().'.txt';
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Bloquer ou débloquer l'application
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,13 +183,15 @@ if($action=='maj_etape2')
 }
 
 //
-// 3. Analyse des fichiers et recensement des dossiers... (après initialisation de la session temporaire)
+// 3. Analyse des fichiers et recensement des dossiers...
 //
 if($action=='maj_etape3')
 {
-  $_SESSION['tmp'] = array();
   FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , FALSE /*with_first_dir*/ );
   FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE /*with_first_dir*/ );
+  // Enregistrer ces informations
+  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , FileSystem::$tab_analyse );
+  // Retour
   Json::end( TRUE , 'Analyse et répercussion des modifications&hellip;' );
 }
 
@@ -201,9 +205,11 @@ if($action=='maj_etape4')
   // Bloquer l'application
   Outil::ajouter_log_PHP( 'Mise à jour des fichiers' /*log_objet*/ , 'Application fermée.' /*log_contenu*/ , __FILE__ /*log_fichier*/ , __LINE__ /*log_ligne*/ , FALSE /*only_sesamath*/ );
   LockAcces::bloquer_application('automate','0','Mise à jour des fichiers en cours.');
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
   // Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.
-  ksort($_SESSION['tmp']['dossier']);
-  foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
+  ksort($tab_memo['dossier']);
+  foreach($tab_memo['dossier'] as $dossier => $tab)
   {
     if( (isset($tab['avant'])) && (isset($tab['apres'])) )
     {
@@ -231,8 +237,8 @@ if($action=='maj_etape4')
     }
   }
   // Fichiers : ordre décroissant pour avoir VERSION.txt en dernier (majuscules avant dans la table ASCII).
-  krsort($_SESSION['tmp']['fichier']);
-  foreach($_SESSION['tmp']['fichier'] as $fichier => $tab)
+  krsort($tab_memo['fichier']);
+  foreach($tab_memo['fichier'] as $fichier => $tab)
   {
     if( (isset($tab['avant'])) && (isset($tab['apres'])) )
     {
@@ -272,6 +278,7 @@ if($action=='maj_etape4')
   // Enregistrement du rapport
   $_SESSION['tmp']['rapport_filename'] = 'rapport_maj_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $_SESSION['tmp']['rapport_filename'] , $thead , $tbody );
+  // Retour
   Json::end( TRUE , 'Rapport des modifications apportées et nettoyage&hellip;' );
 }
 
@@ -280,9 +287,12 @@ if($action=='maj_etape4')
 //
 if($action=='maj_etape5')
 {
-  FileSystem::supprimer_dossier($dossier_dezip);
   $fichier_chemin = URL_DIR_EXPORT.$_SESSION['tmp']['rapport_filename'];
+  // Supprimer toutes les données provisoires
+  FileSystem::supprimer_dossier($dossier_dezip);
+  FileSystem::supprimer_fichier( $file_memo );
   unset($_SESSION['tmp']);
+  // Retour
   Json::end( TRUE , array( 'version' => VERSION_PROG , 'fichier' => $fichier_chemin ) );
 }
 
@@ -330,13 +340,15 @@ if($action=='verif_file_appli_etape2')
 }
 
 //
-// 3. Analyse des fichiers et recensement des dossiers... (après initialisation de la session temporaire)
+// 3. Analyse des fichiers et recensement des dossiers...
 //
 if($action=='verif_file_appli_etape3')
 {
-  $_SESSION['tmp'] = array();
   FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , FALSE /*with_first_dir*/ );
   FileSystem::analyser_dossier( $dossier_dezip   , strlen($dossier_dezip)   , 'apres' , FALSE /*with_first_dir*/ , FALSE );
+  // Enregistrer ces informations
+  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , FileSystem::$tab_analyse );
+  // Retour
   Json::end( TRUE , 'Comparaison des données&hellip;' );
 }
 
@@ -348,9 +360,11 @@ if($action=='verif_file_appli_etape4')
   $thead = '<tr><td colspan="2">Vérification des fichiers de l\'application en place - '.date('d/m/Y H:i:s').'</td></tr>';
   $tbody_ok = '';
   $tbody_pb = '';
+  // Récupérer les informations
+  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
   // Dossiers : ordre croissant pour commencer par ceux les moins imbriqués : obligatoire pour l'ajout, et pour la suppression on teste si pas déjà supprimé.
-  ksort($_SESSION['tmp']['dossier']);
-  foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
+  ksort($tab_memo['dossier']);
+  foreach($tab_memo['dossier'] as $dossier => $tab)
   {
     if( (isset($tab['avant'])) && (isset($tab['apres'])) )
     {
@@ -369,8 +383,8 @@ if($action=='verif_file_appli_etape4')
     }
   }
   // Fichiers : ordre décroissant pour avoir VERSION.txt en dernier (majuscules avant dans la table ASCII).
-  krsort($_SESSION['tmp']['fichier']);
-  foreach($_SESSION['tmp']['fichier'] as $fichier => $tab)
+  krsort($tab_memo['fichier']);
+  foreach($tab_memo['fichier'] as $fichier => $tab)
   {
     if( (isset($tab['avant'])) && (isset($tab['apres'])) )
     {
@@ -398,6 +412,7 @@ if($action=='verif_file_appli_etape4')
   // Enregistrement du rapport
   $_SESSION['tmp']['rapport_filename'] = 'rapport_verif_file_appli_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
   FileSystem::fabriquer_fichier_rapport( $_SESSION['tmp']['rapport_filename'] , $thead , $tbody_pb.$tbody_ok );
+  // Retour
   Json::end( TRUE , 'Rapport des différences trouvées et nettoyage&hellip;' );
 }
 
@@ -406,9 +421,12 @@ if($action=='verif_file_appli_etape4')
 //
 if($action=='verif_file_appli_etape5')
 {
-  FileSystem::supprimer_dossier($dossier_dezip);
   $fichier_chemin = URL_DIR_EXPORT.$_SESSION['tmp']['rapport_filename'];
+  // Supprimer toutes les données provisoires
+  FileSystem::supprimer_dossier($dossier_dezip);
+  FileSystem::supprimer_fichier( $file_memo );
   unset($_SESSION['tmp']);
+  // Retour
   Json::end( TRUE , $fichier_chemin );
 }
 
@@ -424,84 +442,102 @@ if( ($action=='maj_bases_etabl') && $step_maj )
   if($step_maj==1)
   {
     // Récupérer les ids des structures
-    $_SESSION['tmp']['maj_bases_etabl'] = array(
+    $tab_memo = array(
       'base_id' => array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() ),
       'rapport' => array(),
     );
+    // Enregistrer ces informations
+    FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
+    // Retour
     Json::end( TRUE , 'continuer' );
   }
-  // n. Étape suivante
-  elseif(!empty($_SESSION['tmp']['maj_bases_etabl']['base_id']))
-  {
-    $base_id = current($_SESSION['tmp']['maj_bases_etabl']['base_id']);
-    DBextra::charger_parametres_mysql_supplementaires($base_id);
-    $version_base = DB_STRUCTURE_MAJ_BASE::DB_version_base();
-    if(empty($_SESSION['tmp']['maj_bases_etabl']['rapport'][$base_id]))
-    {
-      $_SESSION['tmp']['maj_bases_etabl']['rapport'][$base_id] = $version_base;
-    }
-    // base déjà à jour
-    if($_SESSION['tmp']['maj_bases_etabl']['rapport'][$base_id] == VERSION_BASE_STRUCTURE)
-    {
-      array_shift($_SESSION['tmp']['maj_bases_etabl']['base_id']);
-      Json::end( TRUE , 'continuer' );
-    }
-    // on lance la maj "classique"
-    if($version_base != VERSION_BASE_STRUCTURE)
-    {
-      $maj_classique = TRUE;
-      // Bloquer l'application
-      LockAcces::bloquer_application('automate',$base_id,'Mise à jour de la base en cours.');
-      // Lancer une mise à jour de la base
-      DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
-    }
-    else
-    {
-      $maj_classique = FALSE;
-    }
-    // test si cela nécessite une mise à jour complémentaire
-    $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire();
-    if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
-    {
-      // Débloquer l'application
-      LockAcces::debloquer_application('automate',$base_id);
-      array_shift($_SESSION['tmp']['maj_bases_etabl']['base_id']);
-      Json::end( TRUE , 'continuer' );
-    }
-    elseif($maj_classique)
-    {
-      // on fera la maj complémentaire au prochain coup
-      Json::end( TRUE , 'continuer' );
-    }
-    else
-    {
-      // on lance une étape de la maj complémentaire
-      DB_STRUCTURE_MAJ_BASE::DB_maj_base_complement();
-      if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
-      {
-        LockAcces::debloquer_application('automate',$base_id);
-        array_shift($_SESSION['tmp']['maj_bases_etabl']['base_id']);
-      }
-      Json::end( TRUE , 'continuer' );
-    }
-  }
-  // n. Dernière étape
   else
   {
-    // Rapport
-    $thead = '<tr><td>Mise à jour forcée des bases - '.date('d/m/Y H:i:s').'</td></tr>';
-    $tbody = '';
-    foreach($_SESSION['tmp']['maj_bases_etabl']['rapport'] as $base_id => $version_base)
+    // Récupérer les informations
+    $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+    // n. Étape suivante
+    if(!empty($tab_memo['base_id']))
     {
-      $tbody .= ($version_base==VERSION_BASE_STRUCTURE) ? '<tr><td class="b">Base n°'.$base_id.' déjà à jour.</td></tr>' : '<tr><td class="v">Base n°'.$base_id.' mise à jour depuis la version '.$version_base.'.</td></tr>' ;
+      $base_id = current($tab_memo['base_id']);
+      DBextra::charger_parametres_mysql_supplementaires($base_id);
+      $version_base = DB_STRUCTURE_MAJ_BASE::DB_version_base();
+      if(empty($tab_memo['rapport'][$base_id]))
+      {
+        $tab_memo['rapport'][$base_id] = $version_base;
+      }
+      // base déjà à jour
+      if($tab_memo['rapport'][$base_id] == VERSION_BASE_STRUCTURE)
+      {
+        array_shift($tab_memo['base_id']);
+        // Enregistrer ces informations
+        FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
+        // Retour
+        Json::end( TRUE , 'continuer' );
+      }
+      // on lance la maj "classique"
+      if($version_base != VERSION_BASE_STRUCTURE)
+      {
+        $maj_classique = TRUE;
+        // Bloquer l'application
+        LockAcces::bloquer_application('automate',$base_id,'Mise à jour de la base en cours.');
+        // Lancer une mise à jour de la base
+        DB_STRUCTURE_MAJ_BASE::DB_maj_base($version_base);
+      }
+      else
+      {
+        $maj_classique = FALSE;
+      }
+      // test si cela nécessite une mise à jour complémentaire
+      $_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'] = DB_STRUCTURE_MAJ_BASE::DB_version_base_maj_complementaire();
+      if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
+      {
+        // Débloquer l'application
+        LockAcces::debloquer_application('automate',$base_id);
+        array_shift($tab_memo['base_id']);
+        // Enregistrer ces informations
+        FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
+        // Retour
+        Json::end( TRUE , 'continuer' );
+      }
+      elseif($maj_classique)
+      {
+        // on fera la maj complémentaire au prochain coup
+        Json::end( TRUE , 'continuer' );
+      }
+      else
+      {
+        // on lance une étape de la maj complémentaire
+        DB_STRUCTURE_MAJ_BASE::DB_maj_base_complement();
+        if(!$_SESSION['VERSION_BASE_MAJ_COMPLEMENTAIRE'])
+        {
+          LockAcces::debloquer_application('automate',$base_id);
+          array_shift($tab_memo['base_id']);
+        }
+        // Enregistrer ces informations
+        FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
+        // Retour
+        Json::end( TRUE , 'continuer' );
+      }
     }
-    // Enregistrement du rapport
-    $fichier_rapport = 'rapport_maj_bases_etabl_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
-    FileSystem::fabriquer_fichier_rapport( $fichier_rapport , $thead , $tbody );
-    $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
-    // retour
-    unset($_SESSION['tmp']['maj_bases_etabl']);
-    Json::end( TRUE , $fichier_chemin );
+    // n. Dernière étape
+    else
+    {
+      // Rapport
+      $thead = '<tr><td>Mise à jour forcée des bases - '.date('d/m/Y H:i:s').'</td></tr>';
+      $tbody = '';
+      foreach($tab_memo['rapport'] as $base_id => $version_base)
+      {
+        $tbody .= ($version_base==VERSION_BASE_STRUCTURE) ? '<tr><td class="b">Base n°'.$base_id.' déjà à jour.</td></tr>' : '<tr><td class="v">Base n°'.$base_id.' mise à jour depuis la version '.$version_base.'.</td></tr>' ;
+      }
+      // Enregistrement du rapport
+      $fichier_rapport = 'rapport_maj_bases_etabl_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+      FileSystem::fabriquer_fichier_rapport( $fichier_rapport , $thead , $tbody );
+      $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
+      // Supprimer les informations provisoires
+      FileSystem::supprimer_fichier( $file_memo );
+      // Retour
+      Json::end( TRUE , $fichier_chemin );
+    }
   }
 }
 
@@ -517,42 +553,54 @@ if( ($action=='clean_file_temp') && $step_clean )
   if($step_clean==1)
   {
     // Récupérer les ids des structures
-    $_SESSION['tmp']['clean_file_temp'] = array(
+    $tab_memo = array(
       'base_id' => array_keys( DB_WEBMESTRE_WEBMESTRE::DB_lister_structures_id() ),
       'rapport' => array(),
     );
+    // Enregistrer ces informations
+    FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
+    // Retour
     Json::end( TRUE , 'continuer' );
   }
-  // n. Étape suivante
-  elseif(!empty($_SESSION['tmp']['clean_file_temp']['base_id']))
-  {
-    $base_id = current($_SESSION['tmp']['clean_file_temp']['base_id']);
-    $_SESSION['tmp']['clean_file_temp']['rapport'][$base_id] = FileSystem::nettoyer_fichiers_temporaires_etablissement($base_id);
-    array_shift($_SESSION['tmp']['clean_file_temp']['base_id']);
-    Json::end( TRUE , 'continuer' );
-  }
-  // n. Dernière étape
   else
   {
-    // Rapport
-    $thead = '<tr><td>Nettoyage forcé des fichiers temporaires - '.date('d/m/Y H:i:s').'</td></tr>';
-    $tbody = '';
-    $total = 0;
-    foreach($_SESSION['tmp']['clean_file_temp']['rapport'] as $base_id => $nb_suppression)
+    // Récupérer les informations
+    $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+    // n. Étape suivante
+    if(!empty($tab_memo['base_id']))
     {
-      $total += $nb_suppression;
-      $s = ($nb_suppression>1) ? 's' : '' ;
-      $tbody .= ($nb_suppression) ? '<tr><td class="v">Base n°'.$base_id.' &rarr; '.$nb_suppression.' fichier'.$s.' / dossier'.$s.' supprimé'.$s.'.</td></tr>' : '<tr><td class="b">Base n°'.$base_id.' &rarr; rien à signaler.</td></tr>' ;
+      $base_id = current($tab_memo['base_id']);
+      $tab_memo['rapport'][$base_id] = FileSystem::nettoyer_fichiers_temporaires_etablissement($base_id);
+      array_shift($tab_memo['base_id']);
+      // Enregistrer ces informations
+      FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
+      // Retour
+      Json::end( TRUE , 'continuer' );
     }
-    $s = ($total>1) ? 's' : '' ;
-    $tfoot = '<tr><td>'.$total.' fichier'.$s.' / dossier'.$s.' supprimé'.$s.'</td></tr>';
-    // Enregistrement du rapport
-    $fichier_rapport = 'rapport_clean_file_temp_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
-    FileSystem::fabriquer_fichier_rapport( $fichier_rapport , $thead , $tbody , $tfoot );
-    $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
-    // retour
-    unset($_SESSION['tmp']['clean_file_temp']);
-    Json::end( TRUE , $fichier_chemin );
+    // n. Dernière étape
+    else
+    {
+      // Rapport
+      $thead = '<tr><td>Nettoyage forcé des fichiers temporaires - '.date('d/m/Y H:i:s').'</td></tr>';
+      $tbody = '';
+      $total = 0;
+      foreach($tab_memo['rapport'] as $base_id => $nb_suppression)
+      {
+        $total += $nb_suppression;
+        $s = ($nb_suppression>1) ? 's' : '' ;
+        $tbody .= ($nb_suppression) ? '<tr><td class="v">Base n°'.$base_id.' &rarr; '.$nb_suppression.' fichier'.$s.' / dossier'.$s.' supprimé'.$s.'.</td></tr>' : '<tr><td class="b">Base n°'.$base_id.' &rarr; rien à signaler.</td></tr>' ;
+      }
+      $s = ($total>1) ? 's' : '' ;
+      $tfoot = '<tr><td>'.$total.' fichier'.$s.' / dossier'.$s.' supprimé'.$s.'</td></tr>';
+      // Enregistrement du rapport
+      $fichier_rapport = 'rapport_clean_file_temp_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
+      FileSystem::fabriquer_fichier_rapport( $fichier_rapport , $thead , $tbody , $tfoot );
+      $fichier_chemin = URL_DIR_EXPORT.$fichier_rapport;
+      // Supprimer les informations provisoires
+      FileSystem::supprimer_fichier( $file_memo );
+        // Retour
+      Json::end( TRUE , $fichier_chemin );
+    }
   }
 }
 

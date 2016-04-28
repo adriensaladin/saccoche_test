@@ -156,7 +156,7 @@ if( ($action=='ajouter') && $profil && isset(Html::$tab_genre['adulte'][$genre])
   Json::add_str(  '<td class="label">'.html($id_gepi).'</td>');
   Json::add_str(  '<td class="label">'.html($sconet_id).'</td>');
   Json::add_str(  '<td class="label">'.html($reference).'</td>');
-  Json::add_str(  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>');
+  Json::add_str(  '<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="{{PROFIL}}" /></td>');
   Json::add_str(  '<td class="label">'.Html::$tab_genre['adulte'][$genre].'</td>');
   Json::add_str(  '<td class="label">'.html($nom).'</td>');
   Json::add_str(  '<td class="label">'.html($prenom).'</td>');
@@ -278,7 +278,7 @@ if( ($action=='modifier') && $id && $profil && isset(Html::$tab_genre['adulte'][
   Json::add_str('<td class="label">'.html($id_gepi).'</td>');
   Json::add_str('<td class="label">'.html($sconet_id).'</td>');
   Json::add_str('<td class="label">'.html($reference).'</td>');
-  Json::add_str('<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($_SESSION['tmp'][$profil])).'" /></td>');
+  Json::add_str('<td class="label">'.html($profil).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="{{PROFIL}}" /></td>');
   Json::add_str('<td class="label">'.Html::$tab_genre['adulte'][$genre].'</td>');
   Json::add_str('<td class="label">'.html($nom).'</td>');
   Json::add_str('<td class="label">'.html($prenom).'</td>');

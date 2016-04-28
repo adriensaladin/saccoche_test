@@ -240,7 +240,7 @@ class Form
     ),
     'officiel_type' => array(
       'sacoche' => 'SACoche',
-      'lsun'    => 'LSUN',
+      'livret'  => 'Livret Scolaire',
     ),
     // complété à partir de la base si besoin (contenu dynamique)
     'zones_geo'  => array(), 

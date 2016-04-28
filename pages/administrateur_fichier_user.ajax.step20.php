@@ -32,7 +32,7 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // Étape 20 - Extraction des données (tous les cas)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if(!is_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest))
+if(!is_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom))
 {
   Json::end( FALSE , 'Le fichier récupéré et enregistré n\'a pas été retrouvé !' );
 }
@@ -71,7 +71,7 @@ $tab_groupes_fichier['nom']    = array();
 $tab_groupes_fichier['niveau'] = array();
 
 // Pour retenir à part les dates de sortie Sconet des élèves
-$_SESSION['tmp']['date_sortie'] = array();
+$tab_date_sortie = array();
 
 $init_negatif = -1000;
 
@@ -89,7 +89,7 @@ function filter_init_negatif($var)
 
 if( ($import_origine=='sconet') && ($import_profil=='professeur') )
 {
-  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   if($xml===FALSE)
   {
     Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
@@ -337,7 +337,7 @@ if( ($import_origine=='sconet') && ($import_profil=='professeur') )
 
 if( ($import_origine=='sconet') && ($import_profil=='eleve') )
 {
-  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   if($xml===FALSE)
   {
     Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
@@ -362,7 +362,7 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
       $civilite  = Clean::entier($eleve->CODE_SEXE);
       if($eleve->DATE_SORTIE)
       {
-        $_SESSION['tmp']['date_sortie'][$i_fichier] = (string) $eleve->DATE_SORTIE; // format fr (jj/mm/aaaa)
+        $tab_date_sortie[$i_fichier] = (string) $eleve->DATE_SORTIE; // format fr (jj/mm/aaaa)
       }
       else
       {
@@ -443,7 +443,7 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
     foreach ($xml->DONNEES->STRUCTURES->STRUCTURES_ELEVE as $structures_eleve)
     {
       $i_fichier = Clean::entier($structures_eleve->attributes()->ELEVE_ID);
-      if(!isset($_SESSION['tmp']['date_sortie'][$i_fichier]))  // les élèves marqués comme sortis de l'établissement sont encore dans le fichier reliés à une classe et d'autres bricoles...
+      if(!isset($tab_date_sortie[$i_fichier]))  // les élèves marqués comme sortis de l'établissement sont encore dans le fichier reliés à une classe et d'autres bricoles...
       {
         foreach ($structures_eleve->STRUCTURE as $structure)
         {
@@ -496,7 +496,7 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
 
 if( ($import_origine=='sconet') && ($import_profil=='parent') )
 {
-  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   if($xml===FALSE)
   {
     Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
@@ -616,7 +616,7 @@ if( ($import_origine=='sconet') && ($import_profil=='parent') )
 
 if( ($import_origine=='tableur') && ($import_profil=='professeur') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -708,7 +708,7 @@ if( ($import_origine=='tableur') && ($import_profil=='professeur') )
 
 if( ($import_origine=='tableur') && ($import_profil=='eleve') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -800,7 +800,7 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
 
 if( ($import_origine=='tableur') && ($import_profil=='parent') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -904,7 +904,7 @@ if( ($import_origine=='tableur') && ($import_profil=='parent') )
 
 if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -1013,7 +1013,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
 
 if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -1131,7 +1131,7 @@ if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
 
 if( ($import_origine=='factos') && ($import_profil=='eleve') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -1209,7 +1209,7 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
 
 if( ($import_origine=='factos') && ($import_profil=='parent') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
   $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
@@ -1494,10 +1494,11 @@ switch($import_origine.'+'.$import_profil)
 }
 
 // On enregistre
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_users.txt'        ,serialize($tab_users_fichier));
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_classes.txt'      ,serialize($tab_classes_fichier));
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_groupes.txt'      ,serialize($tab_groupes_fichier));
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'users.txt'        , $tab_users_fichier );
+FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'classes.txt'      , $tab_classes_fichier );
+FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'groupes.txt'      , $tab_groupes_fichier );
+FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt', $tab_liens_id_base );
+FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_sortie.txt'  , $tab_date_sortie );
 
 // On affiche le bilan des utilisateurs trouvés
 if(count($tab_users_fichier['profil_sigle']))

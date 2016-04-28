@@ -366,7 +366,8 @@ $(document).ready
       else
       {
         $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
-        $('#id_'+$('#f_id').val()).addClass("new").html(responseJSON['value']);
+        var profil = $('#f_profil').val();
+        $('#id_'+$('#f_id').val()).addClass("new").html(responseJSON['value'].replace('{{PROFIL}}',tab_profil[profil]));
         $.fancybox.close();
       }
     }

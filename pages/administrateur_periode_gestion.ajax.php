@@ -32,9 +32,9 @@ $action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
 $id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])    : 0;
 $ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre']) : 0;
 $nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])    : '';
-$lsun   = (isset($_POST['f_lsun']))   ? Clean::texte($_POST['f_lsun'])   : NULL;
+$livret = (isset($_POST['f_livret'])) ? Clean::texte($_POST['f_livret']) : NULL;
 
-$tab_periode_lsun = array(
+$tab_periode_livret = array(
   ''   => '-',
   'T1' => 'Trimestre 1/3',
   'T2' => 'Trimestre 2/3',
@@ -47,25 +47,25 @@ $tab_periode_lsun = array(
 // Ajouter une nouvelle période / Dupliquer une pédiode existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom && isset($tab_periode_lsun[$lsun]) )
+if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom && isset($tab_periode_livret[$livret]) )
 {
   // Vérifier que le nom de la période est disponible
   if( DB_STRUCTURE_PERIODE::DB_tester_periode_nom($nom) )
   {
     Json::end( FALSE , 'Nom déjà utilisé !' );
   }
-  // Vérifier que le type LSUN de la période est disponible
-  if( $lsun && DB_STRUCTURE_PERIODE::DB_tester_periode_lsun($lsun) )
+  // Vérifier que la référence de Livret Scolaire est disponible
+  if( $livret && DB_STRUCTURE_PERIODE::DB_tester_periode_livret($livret) )
   {
-    Json::end( FALSE , 'Type LSUN déjà utilisé !' );
+    Json::end( FALSE , 'Référence de Livret Scolaire déjà utilisée !' );
   }
   // Insérer l'enregistrement
-  $periode_id = DB_STRUCTURE_PERIODE::DB_ajouter_periode( $ordre , $nom , $lsun );
+  $periode_id = DB_STRUCTURE_PERIODE::DB_ajouter_periode( $ordre , $nom , $livret );
   // Afficher le retour
   Json::add_str('<tr id="id_'.$periode_id.'" class="new">');
   Json::add_str(  '<td>'.$ordre.'</td>');
   Json::add_str(  '<td>'.html($nom).'</td>');
-  Json::add_str(  '<td>'.$tab_periode_lsun[$lsun].'</td>');
+  Json::add_str(  '<td>'.$tab_periode_livret[$livret].'</td>');
   Json::add_str(  '<td class="nu">');
   Json::add_str(    '<q class="modifier" title="Modifier cette période."></q>');
   Json::add_str(    '<q class="dupliquer" title="Dupliquer cette période."></q>');
@@ -79,24 +79,24 @@ if( (($action=='ajouter')||($action=='dupliquer')) && $ordre && $nom && isset($t
 // Modifier une période existante
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $id && $ordre && $nom && isset($tab_periode_lsun[$lsun]) )
+if( ($action=='modifier') && $id && $ordre && $nom && isset($tab_periode_livret[$livret]) )
 {
   // Vérifier que le nom de la période est disponible
   if( DB_STRUCTURE_PERIODE::DB_tester_periode_nom( $nom , $id ) )
   {
     Json::end( FALSE , 'Nom déjà utilisé !' );
   }
-  // Vérifier que le type LSUN de la période est disponible
-  if( $lsun && DB_STRUCTURE_PERIODE::DB_tester_periode_lsun( $lsun , $id ) )
+  // Vérifier que la référence de Livret Scolaire est disponible
+  if( $livret && DB_STRUCTURE_PERIODE::DB_tester_periode_livret( $livret , $id ) )
   {
-    Json::end( FALSE , 'Type LSUN déjà utilisé !' );
+    Json::end( FALSE , 'Référence de Livret Scolaire déjà utilisée !' );
   }
   // Mettre à jour l'enregistrement
-  DB_STRUCTURE_PERIODE::DB_modifier_periode( $id , $ordre , $nom , $lsun );
+  DB_STRUCTURE_PERIODE::DB_modifier_periode( $id , $ordre , $nom , $livret );
   // Afficher le retour
   Json::add_str('<td>'.$ordre.'</td>');
   Json::add_str('<td>'.html($nom).'</td>');
-  Json::add_str('<td>'.$tab_periode_lsun[$lsun].'</td>');
+  Json::add_str('<td>'.$tab_periode_livret[$livret].'</td>');
   Json::add_str('<td class="nu">');
   Json::add_str(  '<q class="modifier" title="Modifier cette période."></q>');
   Json::add_str(  '<q class="dupliquer" title="Dupliquer cette période."></q>');

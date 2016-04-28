@@ -86,30 +86,15 @@ list( $import_origine , $import_profil ) = $tab_action[$action];
 
 $tab_extensions_autorisees = ($import_origine=='sconet') ? array('zip','xml') : array('txt','csv') ;
 $extension_fichier_dest    = ($import_origine=='sconet') ? 'xml'              : 'txt' ;
-$fichier_dest = 'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'.'.$extension_fichier_dest ;
+$fichier_nom_debut   = 'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_';
+$fichier_dest_nom    = $fichier_nom_debut.'import.'.$extension_fichier_dest ;
+$fichier_dest_chemin = CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Quelques fonctions utiles
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
-
-function load_fichier($nom)
-{
-  global $import_origine,$import_profil;
-  $fnom = CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_'.$nom.'.txt';
-  if(!is_file($fnom))
-  {
-    Json::end( FALSE , 'Le fichier transmis est introuvable !' );
-  }
-  $contenu = file_get_contents($fnom);
-  $tableau = @unserialize($contenu);
-  if($tableau===FALSE)
-  {
-    Json::end( FALSE , 'Le fichier transmis est syntaxiquement incorrect !' );
-  }
-  return $tableau;
-}
 
 function afficher_etapes($import_origine,$import_profil)
 {

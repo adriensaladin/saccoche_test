@@ -60,7 +60,6 @@ if($action=='choix_umask')
 
 if($action=='appliquer_chmod')
 {
-  $_SESSION['tmp'] = array();
   // Récupérer l'arborescence
   $dossier_install = '.';
   FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , TRUE /*with_first_dir*/ );
@@ -69,16 +68,16 @@ if($action=='appliquer_chmod')
   $tbody = '';
   // Dossiers
   $mode_dossier = octdec( 777 - SYSTEME_UMASK ); // On ne peut pas passer une variable en octal et chmod() accepte le format décimal (c'est juste que c'est moins lisible).
-  ksort($_SESSION['tmp']['dossier']);
-  foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
+  ksort(FileSystem::$tab_analyse['dossier']);
+  foreach(FileSystem::$tab_analyse['dossier'] as $dossier => $tab)
   {
     $dossier = ($dossier) ? '.'.$dossier : '.'.DS ;
     $tbody .= (@chmod($dossier,$mode_dossier)) ? '<tr><td class="v">Droits appliqués au dossier</td><td>'.$dossier.'</td></tr>' : '<tr><td class="r">Permission insuffisante sur ce dossier pour en modifier les droits</td><td>'.$dossier.'</td></tr>' ;
   }
   // Fichiers
   $mode_fichier = octdec( 666 - SYSTEME_UMASK ); // On ne peut pas passer une variable en octal et chmod() accepte le format décimal (c'est juste que c'est moins lisible).
-  ksort($_SESSION['tmp']['fichier']);
-  foreach($_SESSION['tmp']['fichier'] as $fichier => $tab)
+  ksort(FileSystem::$tab_analyse['fichier']);
+  foreach(FileSystem::$tab_analyse['fichier'] as $fichier => $tab)
   {
     $fichier = '.'.$fichier;
     $tbody .= (@chmod($fichier,$mode_fichier)) ? '<tr><td class="v">Droits appliqués au fichier</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Permission insuffisante sur ce fichier pour en modifier les droits</td><td>'.$fichier.'</td></tr>' ;
@@ -95,7 +94,6 @@ if($action=='appliquer_chmod')
 
 if($action=='verif_droits')
 {
-  $_SESSION['tmp'] = array();
   // Récupérer l'arborescence
   $dossier_install = '.';
   FileSystem::analyser_dossier( $dossier_install , strlen($dossier_install) , 'avant' , TRUE /*with_first_dir*/ );
@@ -103,15 +101,15 @@ if($action=='verif_droits')
   $thead = '<tr><td colspan="2">Vérification des droits en écriture - '.date('d/m/Y H:i:s').'</td></tr>';
   $tbody = '';
   // Dossiers
-  ksort($_SESSION['tmp']['dossier']);
-  foreach($_SESSION['tmp']['dossier'] as $dossier => $tab)
+  ksort(FileSystem::$tab_analyse['dossier']);
+  foreach(FileSystem::$tab_analyse['dossier'] as $dossier => $tab)
   {
     $dossier = ($dossier) ? '.'.$dossier : '.'.DS ;
     $tbody .= (@is_writable($dossier)) ? '<tr><td class="v">Dossier accessible en écriture</td><td>'.$dossier.'</td></tr>' : '<tr><td class="r">Dossier aux droits insuffisants</td><td>'.$dossier.'</td></tr>' ;
   }
   // Fichiers
-  ksort($_SESSION['tmp']['fichier']);
-  foreach($_SESSION['tmp']['fichier'] as $fichier => $tab)
+  ksort(FileSystem::$tab_analyse['fichier']);
+  foreach(FileSystem::$tab_analyse['fichier'] as $fichier => $tab)
   {
     $fichier = '.'.$fichier;
     $tbody .= (@is_writable($fichier)) ? '<tr><td class="v">Fichier accessible en écriture</td><td>'.$fichier.'</td></tr>' : '<tr><td class="r">Fichier aux droits insuffisants</td><td>'.$fichier.'</td></tr>' ;

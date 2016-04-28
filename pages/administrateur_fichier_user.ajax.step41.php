@@ -33,12 +33,12 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
-$tab_liens_id_base = load_fichier('liens_id_base');
+$tab_liens_id_base = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt' );
 $tab_i_classe_TO_id_base  = $tab_liens_id_base['classes'];
 $tab_i_groupe_TO_id_base  = $tab_liens_id_base['groupes'];
 $tab_i_fichier_TO_id_base = $tab_liens_id_base['users'];
 // On récupère le fichier avec les groupes : $tab_groupes_fichier['ref'] : i -> ref ; $tab_groupes_fichier['nom'] : i -> nom ; $tab_groupes_fichier['niveau'] : i -> niveau
-$tab_groupes_fichier = load_fichier('groupes');
+$tab_groupes_fichier = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'groupes.txt' );
 // On récupère le contenu de la base pour comparer : $tab_groupes_base['ref'] : id -> ref ; $tab_groupes_base['nom'] : id -> nom
 $tab_groupes_base        = array();
 $tab_groupes_base['ref'] = array();
@@ -115,7 +115,7 @@ if(count($tab_groupes_fichier['ref']))
 }
 // On enregistre (tableau mis à jour)
 $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i_groupe_TO_id_base,'users'=>$tab_i_fichier_TO_id_base);
-FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_liens_id_base.txt',serialize($tab_liens_id_base));
+FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt', $tab_liens_id_base );
 // On affiche
 Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label></p>'.NL);
 // Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.

@@ -1,11 +1,11 @@
 DROP TABLE IF EXISTS sacoche_socle_composante;
 
 CREATE TABLE sacoche_socle_composante (
-  socle_composante_id         TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  socle_domaine_id            TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  socle_composante_ordre      TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
-  socle_composante_ordre_lsun TINYINT(3)  UNSIGNED                         DEFAULT NULL,
-  socle_composante_nom        VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  socle_composante_id           TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+  socle_domaine_id              TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+  socle_composante_ordre        TINYINT(3)  UNSIGNED                NOT NULL DEFAULT 0,
+  socle_composante_ordre_livret TINYINT(3)  UNSIGNED                         DEFAULT NULL,
+  socle_composante_nom          VARCHAR(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (socle_composante_id),
   KEY socle_domaine_id (socle_domaine_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

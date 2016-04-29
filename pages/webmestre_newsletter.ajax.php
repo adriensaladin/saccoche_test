@@ -103,6 +103,7 @@ if( ($action=='envoyer') && $num && $max && ($num==$max) )
 {
   // Supprimer les informations provisoires
   FileSystem::supprimer_fichier( $file_memo );
+  // Retour
   Json::end( TRUE );
 }
 

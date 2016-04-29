@@ -157,7 +157,12 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
       $nombre_boucles = max( ceil($DB_ROW['Rows']/$nb_lignes_maxi_for_table) , 1 ); // Parcourir au moins une fois la boucle pour une table sans enregistrement
       for($numero_boucle=0 ; $numero_boucle<$nombre_boucles ; $numero_boucle++)
       {
-        $_SESSION['tab_tables_info'][] = array( 'TableNom'=>$DB_ROW['Name'] , 'NombreLignes'=>$nb_lignes_maxi_for_table , 'NombreBoucles'=>$nombre_boucles , 'NumeroBoucle'=>$numero_boucle );
+        $_SESSION['tab_tables_info'][] = array(
+          'TableNom'      => $DB_ROW['Name'] ,
+          'NombreLignes'  => $nb_lignes_maxi_for_table ,
+          'NombreBoucles' => $nombre_boucles ,
+          'NumeroBoucle'  => $numero_boucle ,
+        );
       }
     }
     if($etape==1)

@@ -46,10 +46,10 @@ class Webmestre
    * @param string $inscription_date   Pour forcer la date d'inscription, par exemple en cas de transfert de bases académiques (facultatif).
    * @return int
    */
-  public static function ajouter_structure( $base_id , $geo_id , $structure_uai , $localisation , $denomination , $contact_nom , $contact_prenom , $contact_courriel , $inscription_date=0 )
+  public static function ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date=0)
   {
     // Insérer l'enregistrement d'une nouvelle structure dans la base du webmestre
-    $base_id = DB_WEBMESTRE_WEBMESTRE::DB_ajouter_structure( $base_id , $geo_id , $structure_uai , $localisation , $denomination , $contact_nom , $contact_prenom , $contact_courriel , $inscription_date );
+    $base_id = DB_WEBMESTRE_WEBMESTRE::DB_ajouter_structure($base_id,$geo_id,$structure_uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$inscription_date);
     // Génération des paramètres de connexion à la base de données
     $BD_name = 'sac_base_'.$base_id; // Limité à 64 caractères (tranquille...)
     $BD_user = 'sac_user_'.$base_id; // Limité à 16 caractères (attention !)
@@ -124,7 +124,7 @@ class Webmestre
    * @param string $password_nouveau
    * @return bool   TRUE si ok | FALSE si le mot de passe actuel est incorrect.
    */
-  public static function modifier_mdp_webmestre( $password_ancien , $password_nouveau )
+  public static function modifier_mdp_webmestre($password_ancien,$password_nouveau)
   {
     // Tester si l'ancien mot de passe correspond à celui enregistré
     $password_ancien_crypte = Outil::crypter_mdp($password_ancien);
@@ -154,7 +154,7 @@ class Webmestre
    * @param string   $url_dir_sacoche
    * @return string
    */
-  public static function contenu_courriel_inscription( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_login , $admin_password , $url_dir_sacoche )
+  public static function contenu_courriel_inscription($base_id,$denomination,$contact_nom,$contact_prenom,$admin_login,$admin_password,$url_dir_sacoche)
   {
     $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.','."\r\n";
     $texte.= "\r\n";
@@ -209,7 +209,7 @@ class Webmestre
    * @param string   $url_dir_sacoche
    * @return string
    */
-  public static function contenu_courriel_nouveau_mdp( $base_id , $denomination , $contact_nom , $contact_prenom , $admin_nom , $admin_prenom , $admin_login , $admin_password , $url_dir_sacoche )
+  public static function contenu_courriel_nouveau_mdp($base_id,$denomination,$contact_nom,$contact_prenom,$admin_nom,$admin_prenom,$admin_login,$admin_password,$url_dir_sacoche)
   {
     $texte = 'Bonjour '.$contact_prenom.' '.$contact_nom.','."\r\n";
     $texte.= "\r\n";
@@ -255,7 +255,7 @@ class Webmestre
    * @param string   $url_dir_sacoche
    * @return string
    */
-  public static function contenu_courriel_partenaire_ajout( $denomination , $nom , $prenom , $password , $url_dir_sacoche )
+  public static function contenu_courriel_partenaire_ajout($denomination,$nom,$prenom,$password,$url_dir_sacoche)
   {
     $texte = 'A l\'attention de '.$prenom.' '.$nom.','."\r\n";
     $texte.= "\r\n";
@@ -290,7 +290,7 @@ class Webmestre
    * @param string   $url_dir_sacoche
    * @return string
    */
-  public static function contenu_courriel_partenaire_nouveau_mdp( $denomination , $nom , $prenom , $password , $url_dir_sacoche )
+  public static function contenu_courriel_partenaire_nouveau_mdp($denomination,$nom,$prenom,$password,$url_dir_sacoche)
   {
     $texte = 'A l\'attention de '.$prenom.' '.$nom.','."\r\n";
     $texte.= "\r\n";

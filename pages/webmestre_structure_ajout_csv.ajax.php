@@ -38,8 +38,6 @@ $courriel_copie = (isset($_POST['f_courriel_copie'])) ? Clean::entier($_POST['f_
 
 $fichier_csv_nom  = 'ajout_structures_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.csv';
 
-$file_memo = CHEMIN_DOSSIER_EXPORT.'webmestre_structure_ajout_csv_'.session_id().'.txt';
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Import d'un fichier CSV avec le listing des structures
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,8 +57,8 @@ if($action=='importer_csv')
   {
     $tab_geo[$DB_ROW['geo_id']] = TRUE;
   }
-  // Tester si le contenu est correct, et mémoriser les infos
-  $tab_memo = array();
+  // Tester si le contenu est correct, et mémoriser les infos en session
+  $_SESSION['tab_info'] = array();
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
@@ -83,7 +81,7 @@ if($action=='importer_csv')
     if(count($tab_elements)==8)
     {
       $nb_lignes_trouvees++;
-      list( $import_id , $geo_id , $localisation , $denomination , $uai , $contact_nom , $contact_prenom , $contact_courriel ) = $tab_elements;
+      list($import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel) = $tab_elements;
       $import_id        = Clean::entier($import_id);
       $geo_id           = Clean::entier($geo_id);
       $localisation     = Clean::texte($localisation);
@@ -92,7 +90,7 @@ if($action=='importer_csv')
       $contact_nom      = Clean::nom($contact_nom);
       $contact_prenom   = Clean::prenom($contact_prenom);
       $contact_courriel = Clean::courriel($contact_courriel);
-      $tab_memo[$nb_lignes_trouvees] = array(
+      $_SESSION['tab_info'][$nb_lignes_trouvees] = array(
         'import_id'        => $import_id ,
         'geo_id'           => $geo_id ,
         'localisation'     => $localisation ,
@@ -157,9 +155,6 @@ if($action=='importer_csv')
       Json::end( FALSE , $info_lignes_trouvees.' mais '.$tab['nb'].' ligne'.$s.$tab['txt'] );
     }
   }
-  // Enregistrer ces informations
-  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
-  // Retour
   Json::end( TRUE , $info_lignes_trouvees );
 }
 
@@ -169,16 +164,18 @@ if($action=='importer_csv')
 
 if( ($action=='ajouter') && $num && $max )
 {
+  if(!count($_SESSION['tab_info']))
+  {
+    Json::end( FALSE , 'Données du fichier CSV non retrouvées !' );
+  }
   require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
-  // Récupérer les informations
-  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
   // Récupérer la série d'infos
-  extract($tab_memo[$num]); // import_id / geo_id / localisation / denomination / uai / nom / prenom / courriel
+  extract($_SESSION['tab_info'][$num]); // import_id / geo_id / localisation / denomination / uai / nom / prenom / courriel
   // Insérer l'enregistrement dans la base du webmestre
   // Créer le fichier de connexion de la base de données de la structure
   // Créer la base de données de la structure
   // Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-  $base_id = Webmestre::ajouter_structure( $import_id , $geo_id , $uai , $localisation , $denomination , $contact_nom , $contact_prenom , $contact_courriel );
+  $base_id = Webmestre::ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
   // Créer les dossiers de fichiers temporaires par établissement
   foreach(FileSystem::$tab_dossier_tmp_structure as $dossier)
   {
@@ -229,10 +226,10 @@ if( ($action=='ajouter') && $num && $max )
       Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
     }
   }
-  // Supprimer les informations provisoires si dernier appel
+  // Mini-ménage si dernier appel
   if($num==$max)
   {
-    FileSystem::supprimer_fichier( $file_memo );
+    unset($_SESSION['tab_info']);
   }
   // Retour de l'affichage, appel suivant
   Json::add_str('<tr>');

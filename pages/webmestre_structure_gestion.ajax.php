@@ -92,7 +92,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   // Créer le fichier de connexion de la base de données de la structure
   // Créer la base de données de la structure
   // Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-  $base_id = Webmestre::ajouter_structure( $base_id , $geo_id , $uai , $localisation , $denomination , $contact_nom , $contact_prenom , $contact_courriel );
+  $base_id = Webmestre::ajouter_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
   // Créer les dossiers de fichiers temporaires par établissement
   foreach(FileSystem::$tab_dossier_tmp_structure as $dossier)
   {
@@ -173,7 +173,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
     }
   }
   // On met à jour l'enregistrement dans la base du webmestre
-  DB_WEBMESTRE_WEBMESTRE::DB_modifier_structure( $base_id , $geo_id , $uai , $localisation , $denomination , $contact_nom , $contact_prenom , $contact_courriel );
+  DB_WEBMESTRE_WEBMESTRE::DB_modifier_structure($base_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel);
   // On met à jour l'enregistrement dans la base de la structure
   DBextra::charger_parametres_mysql_supplementaires($base_id);
   $tab_parametres = array();

@@ -34,12 +34,11 @@ $action = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action']) : ''; 
 $num    = (isset($_POST['num']))       ? (int)$_POST['num']              : 0 ;  // Numéro de l'étape en cours
 $max    = (isset($_POST['max']))       ? (int)$_POST['max']              : 0 ;  // Nombre d'étapes à effectuer
 
-$file_memo = CHEMIN_DOSSIER_EXPORT.'webmestre_structure_transfert_'.session_id().'.txt';
-
 if( ( ($action=='exporter') && $nb_bases ) || ($action=='importer_csv') || (!isset($_SESSION['alea'])) )
 {
   $_SESSION['datetime'] = date('Y-m-d_H-i-s');
   $_SESSION['alea']     = mt_rand();
+  $_SESSION['tab_info'] = array();
 }
 
 $dossier_temp_sql = CHEMIN_DOSSIER_DUMP.$_SESSION['alea'].'_sql'.DS; // Pour les sql d'une base
@@ -82,7 +81,7 @@ if( ($action=='exporter') && $num && $max && ($num<$max) )
   $fichier_texte = file_get_contents(CHEMIN_DOSSIER_EXPORT.$fichier_csv_nom);
   $tab_ligne = explode("\r\n",$fichier_texte);
   // Récupérer une série d'infos, sachant que seuls $export_id et $fichier_nom sont utiles
-  list( $export_id, $import_id, $geo_id, $localisation, $denomination, $uai, $contact_nom, $contact_prenom, $contact_courriel, $date, $fichier_nom ) = explode( $separateur , $tab_ligne[$num] );
+  list($export_id,$import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel,$date,$fichier_nom) = explode($separateur,$tab_ligne[$num]);
   // Charger les paramètres de connexion à cette base afin de pouvoir y effectuer des requêtes
   DBextra::charger_parametres_mysql_supplementaires($export_id);
   // Créer ou vider le dossier temporaire des sql
@@ -107,7 +106,7 @@ elseif( ($action=='exporter') && $num && $max && ($num==$max) )
   // Supprimer le dossier temporaire des sql
   FileSystem::supprimer_dossier($dossier_temp_sql);
   // Zipper les zip de svg
-  $result = FileSystem::zip_fichiers( $dossier_temp_zip , CHEMIN_DOSSIER_DUMP , $fichier_zip_nom );
+  $result = FileSystem::zip_fichiers($dossier_temp_zip,CHEMIN_DOSSIER_DUMP,$fichier_zip_nom);
   if($result!==TRUE)
   {
     Json::end( FALSE , $result );
@@ -163,7 +162,7 @@ if($action=='importer_csv')
     if(count($tab_elements)==11)
     {
       $nb_lignes_trouvees++;
-      list( $export_id, $import_id, $geo_id, $localisation, $denomination, $uai, $contact_nom, $contact_prenom, $contact_courriel, $date, $fichier_nom ) = $tab_elements;
+      list($export_id,$import_id,$geo_id,$localisation,$denomination,$uai,$contact_nom,$contact_prenom,$contact_courriel,$date,$fichier_nom) = $tab_elements;
       $import_id        = Clean::entier($import_id);
       $geo_id           = Clean::entier($geo_id);
       $localisation     = Clean::texte($localisation);
@@ -172,18 +171,7 @@ if($action=='importer_csv')
       $contact_nom      = Clean::nom($contact_nom);
       $contact_prenom   = Clean::prenom($contact_prenom);
       $contact_courriel = Clean::courriel($contact_courriel);
-      $tab_memo[$nb_lignes_trouvees] = array(
-        'import_id'        => $import_id ,
-        'geo_id'           => $geo_id ,
-        'localisation'     => $localisation ,
-        'denomination'     => $denomination ,
-        'uai'              => $uai ,
-        'contact_nom'      => $contact_nom ,
-        'contact_prenom'   => $contact_prenom ,
-        'contact_courriel' => $contact_courriel ,
-        'date'             => $date ,
-        'fichier_nom'      => $fichier_nom ,
-      );
+      $_SESSION['tab_info'][$nb_lignes_trouvees] = array( 'import_id'=>$import_id , 'geo_id'=>$geo_id , 'localisation'=>$localisation , 'denomination'=>$denomination , 'uai'=>$uai , 'contact_nom'=>$contact_nom , 'contact_prenom'=>$contact_prenom , 'contact_courriel'=>$contact_courriel , 'date'=>$date , 'fichier_nom'=>$fichier_nom );
       // Vérifier la présence des informations
       if( !$geo_id || !$localisation || !$denomination || !$contact_nom || !$contact_prenom || !$contact_courriel || !$date || !$fichier_nom )
       {
@@ -250,13 +238,10 @@ if($action=='importer_csv')
     }
   }
   // Nettoyer des restes d'upload de zip éventuels
-  foreach($tab_memo as $key => $tab_infos)
+  foreach($_SESSION['tab_info'] as $key => $tab_infos)
   {
     FileSystem::supprimer_fichier( CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom'] , TRUE /*verif_exist*/ );
   }
-  // Enregistrer ces informations
-  FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
-  // Retour
   Json::end( TRUE , $info_lignes_trouvees );
 }
 
@@ -266,8 +251,10 @@ if($action=='importer_csv')
 
 if($action=='importer_zip')
 {
-  // Récupérer les informations
-  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+  if(!count($_SESSION['tab_info']))
+  {
+    Json::end( FALSE , 'Données du fichier CSV non retrouvées !' );
+  }
   // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_zip_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
@@ -284,7 +271,7 @@ if($action=='importer_zip')
   // Vérifier le contenu : noms des fichiers
   $tab_fichier = FileSystem::lister_contenu_dossier(CHEMIN_DOSSIER_DUMP);
   $nb_fichiers_introuvables = 0;
-  foreach($tab_memo as $key => $tab_infos)
+  foreach($_SESSION['tab_info'] as $key => $tab_infos)
   {
     if(!in_array($tab_infos['fichier_nom'],$tab_fichier))
     {
@@ -297,7 +284,7 @@ if($action=='importer_zip')
     Json::end( FALSE , $nb_fichiers_introuvables.' fichier'.$s.' référencé'.$s.' dans le CSV non trouvé'.$s.' dans le ZIP !' );
   }
   // La dernière étape consiste seulement à faire le ménage.
-  $max = count($tab_memo) + 1 ;
+  $max = count($_SESSION['tab_info']) + 1 ;
   Json::end( TRUE , $max );
 }
 
@@ -307,10 +294,12 @@ if($action=='importer_zip')
 
 if( ($action=='importer') && $num && $max && ($num<$max) )
 {
-  // Récupérer les informations
-  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+  if(!count($_SESSION['tab_info']))
+  {
+    Json::end( FALSE , 'Données du fichier CSV non retrouvées !' );
+  }
   // Récupérer la série d'infos
-  extract($tab_memo[$num]); // import_id / geo_id / localisation / denomination / uai / contact_nom / contact_prenom / contact_courriel / date / fichier_nom
+  extract($_SESSION['tab_info'][$num]); // import_id / geo_id / localisation / denomination / uai / contact_nom / contact_prenom / contact_courriel / date / fichier_nom
   // Préparer le retour en cas de pb
   $retour_cellules_non = '<td class="nu"></td><td>---</td><td>'.html($localisation.' | '.$denomination).'</td><td>'.html($contact_nom.' '.$contact_prenom).'</td>';
   // Créer ou vider le dossier temporaire
@@ -344,7 +333,7 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
   // Créer le fichier de connexion de la base de données de la structure
   // Créer la base de données de la structure
   // Créer un utilisateur pour la base de données de la structure et lui attribuer ses droits
-  $base_id = Webmestre::ajouter_structure( $import_id , $geo_id , $uai , $localisation , $denomination , $contact_nom , $contact_prenom , $contact_courriel , $date );
+  $base_id = Webmestre::ajouter_structure($import_id,$geo_id,$uai,$localisation,$denomination,$contact_nom,$contact_prenom,$contact_courriel,$date);
   // Créer les dossiers de fichiers temporaires par établissement
   foreach(FileSystem::$tab_dossier_tmp_structure as $dossier)
   {
@@ -363,17 +352,13 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
 }
 elseif( ($action=='importer') && $num && $max && ($num==$max) )
 {
-  // Récupérer les informations
-  $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
   // Supprimer les fichiers zip des bases
-  foreach($tab_memo as $key => $tab_infos)
+  foreach($_SESSION['tab_info'] as $key => $tab_infos)
   {
     FileSystem::supprimer_fichier( CHEMIN_DOSSIER_DUMP.$tab_infos['fichier_nom'] , TRUE /*verif_exist*/ );
   }
-  // Supprimer les informations provisoires
-  FileSystem::supprimer_fichier( $file_memo );
-  unset($_SESSION['datetime'],$_SESSION['alea']);
-  // Retour
+  // Game over
+  unset($_SESSION['datetime'],$_SESSION['alea'],$_SESSION['tab_info']);
   Json::end( TRUE );
 }
 

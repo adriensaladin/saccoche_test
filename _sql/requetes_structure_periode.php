@@ -65,7 +65,7 @@ public static function DB_recuperer_amplitude_periodes()
  */
 public static function DB_lister_periodes()
 {
-  $DB_SQL = 'SELECT periode_id, periode_ordre, periode_nom, periode_livret ';
+  $DB_SQL = 'SELECT periode_id, periode_ordre, periode_nom, periode_lsun ';
   $DB_SQL.= 'FROM sacoche_periode ';
   $DB_SQL.= 'ORDER BY periode_ordre ASC';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
@@ -125,22 +125,22 @@ public static function DB_tester_periode_nom( $periode_nom , $periode_id=FALSE )
 }
 
 /**
- * tester_periode_livret
+ * tester_periode_lsun
  *
- * @param string $periode_livret
+ * @param string $periode_lsun
  * @param int    $periode_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-public static function DB_tester_periode_livret( $periode_livret , $periode_id=FALSE )
+public static function DB_tester_periode_lsun( $periode_lsun , $periode_id=FALSE )
 {
   $DB_SQL = 'SELECT periode_id ';
   $DB_SQL.= 'FROM sacoche_periode ';
-  $DB_SQL.= 'WHERE periode_livret=:periode_livret ';
+  $DB_SQL.= 'WHERE periode_lsun=:periode_lsun ';
   $DB_SQL.= ($periode_id) ? 'AND periode_id!=:periode_id ' : '' ;
   $DB_SQL.= 'LIMIT 1'; // utile
   $DB_VAR = array(
-    ':periode_livret' => $periode_livret,
-    ':periode_id'     => $periode_id,
+    ':periode_lsun' => $periode_lsun,
+    ':periode_id'   => $periode_id,
   );
   return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -150,17 +150,17 @@ public static function DB_tester_periode_livret( $periode_livret , $periode_id=F
  *
  * @param int    $periode_ordre
  * @param string $periode_nom
- * @param string $periode_livret
+ * @param string $periode_lsun
  * @return int
  */
-public static function DB_ajouter_periode( $periode_ordre , $periode_nom , $periode_livret )
+public static function DB_ajouter_periode( $periode_ordre , $periode_nom , $periode_lsun )
 {
-  $DB_SQL = 'INSERT INTO sacoche_periode(periode_ordre, periode_nom, periode_livret) ';
-  $DB_SQL.= 'VALUES(                    :periode_ordre,:periode_nom,:periode_livret)';
+  $DB_SQL = 'INSERT INTO sacoche_periode(periode_ordre, periode_nom, periode_lsun) ';
+  $DB_SQL.= 'VALUES(                    :periode_ordre,:periode_nom,:periode_lsun)';
   $DB_VAR = array(
-    ':periode_ordre'  => $periode_ordre,
-    ':periode_nom'    => $periode_nom,
-    ':periode_livret' => $periode_livret,
+    ':periode_ordre' => $periode_ordre,
+    ':periode_nom'   => $periode_nom,
+    ':periode_lsun'  => $periode_lsun,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
@@ -172,19 +172,19 @@ public static function DB_ajouter_periode( $periode_ordre , $periode_nom , $peri
  * @param int    $periode_id
  * @param int    $periode_ordre
  * @param string $periode_nom
- * @param string $periode_livret
+ * @param string $periode_lsun
  * @return void
  */
-public static function DB_modifier_periode( $periode_id , $periode_ordre , $periode_nom , $periode_livret )
+public static function DB_modifier_periode( $periode_id , $periode_ordre , $periode_nom , $periode_lsun )
 {
   $DB_SQL = 'UPDATE sacoche_periode ';
-  $DB_SQL.= 'SET periode_ordre=:periode_ordre, periode_nom=:periode_nom, periode_livret=:periode_livret ';
+  $DB_SQL.= 'SET periode_ordre=:periode_ordre, periode_nom=:periode_nom, periode_lsun=:periode_lsun ';
   $DB_SQL.= 'WHERE periode_id=:periode_id ';
   $DB_VAR = array(
-    ':periode_id'     => $periode_id,
-    ':periode_ordre'  => $periode_ordre,
-    ':periode_nom'    => $periode_nom,
-    ':periode_livret' => $periode_livret,
+    ':periode_id'    => $periode_id,
+    ':periode_ordre' => $periode_ordre,
+    ':periode_nom'   => $periode_nom,
+    ':periode_lsun'  => $periode_lsun,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

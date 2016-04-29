@@ -267,6 +267,7 @@ public static function DB_ajouter_structure( $base_id , $geo_id , $structure_uai
       ':contact_nom'      => $contact_nom,
       ':contact_prenom'   => $contact_prenom,
       ':contact_courriel' => $contact_courriel,
+      ':inscription_date' => $inscription_date,
     );
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
     $base_id = DB::getLastOid(SACOCHE_WEBMESTRE_BD_NAME);
@@ -284,6 +285,7 @@ public static function DB_ajouter_structure( $base_id , $geo_id , $structure_uai
       ':contact_nom'      => $contact_nom,
       ':contact_prenom'   => $contact_prenom,
       ':contact_courriel' => $contact_courriel,
+      ':inscription_date' => $inscription_date,
     );
     DB::query(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , $DB_VAR);
   }

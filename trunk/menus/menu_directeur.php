@@ -103,6 +103,7 @@ $tab_sous_menu = array
     'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2")    , 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
     'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3")    , 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
     'brevet_accueil'            => array( 'texte' => Lang::_("Notanet & Fiches brevet") , 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=accueil'            ),
+    'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")         , 'class' => 'marianne'           , 'href' => 'page=livret&amp;section=accueil'            ),
   ),
 );
 

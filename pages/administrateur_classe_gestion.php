@@ -108,7 +108,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
     </p>
   </div>
   <div id="gestion_delete">
-    <p class="danger">Les associations des élèves, des professeurs, et les évaluations seront perdues !</p>
+    <p class="danger">Les associations des élèves, des professeurs, les évaluations et les pages du livret scolaire seront perdues !</p>
     <p>Confirmez-vous la suppression de la classe &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
   <p>

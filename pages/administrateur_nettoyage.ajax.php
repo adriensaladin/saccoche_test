@@ -100,6 +100,8 @@ if($action=='purger')
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
   // Supprimer les saisies brevet & les archives (Notanet & fiches brevet)
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_brevet();
+  // Vider les saisies & configurations du livret scolaire
+  DB_STRUCTURE_LIVRET::DB_vider_livret();
   // Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_desactives_obsoletes();
   if(!empty($DB_TAB))

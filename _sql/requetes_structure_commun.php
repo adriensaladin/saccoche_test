@@ -1512,6 +1512,31 @@ public static function DB_OPT_profs_groupe( $groupe_type , $groupe_id )
 }
 
 /**
+ * Retourner un tableau [valeur texte] des profs (au statut actif) associés à un groupe (classe) et une matière (éventuellement)
+ *
+ * @param int    $groupe_id     id du groupe classe
+ * @param int    $matiere_id    id de la matière (facultatif)
+ * @return array
+ */
+public static function DB_OPT_profs_groupe_matiere( $groupe_id , $matiere_id=FALSE )
+{
+  $join  = ($matiere_id) ? 'LEFT JOIN sacoche_jointure_user_matiere USING (user_id) ' : '' ;
+  $where = ($matiere_id) ? 'AND matiere_id=:matiere_id ' : '' ;
+  $DB_SQL = 'SELECT user_id AS valeur, CONCAT(user_nom," ",user_prenom) AS texte ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
+  $DB_SQL.= $join;
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id '.$where.'AND user_sortie_date>NOW() ';
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
+  $DB_VAR = array(
+    ':groupe_id'  => $groupe_id,
+    ':matiere_id' => $matiere_id,
+  );
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return !empty($DB_TAB) ? $DB_TAB : 'Aucun professeur trouvé.' ;
+}
+
+/**
  * Retourner un tableau [valeur texte] des professeurs et directeurs de l'établissement
  * optgroup sert à pouvoir regrouper les options
  *

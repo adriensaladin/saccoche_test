@@ -31,8 +31,8 @@ $TITRE = html(Lang::_("Professeurs & groupes"));
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_prof   = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('config') , 'f_prof'   /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , $multiple=TRUE);
-$select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_etabl()             , 'f_groupe' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , $multiple=TRUE);
+$select_prof   = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('config') , 'f_prof'   /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ );
+$select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_groupes_etabl()             , 'f_groupe' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_groupes">DOC : Gestion des groupes</a></span></p>

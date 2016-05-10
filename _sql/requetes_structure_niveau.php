@@ -217,7 +217,7 @@ public static function DB_supprimer_niveau_specifique($niveau_id)
   $DB_VAR = array(':niveau_id'=>$niveau_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // Il faut aussi supprimer les référentiels associés, et donc tous les scores associés (orphelins du niveau)
-  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_referentiels('niveau_id',$niveau_id);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_referentiels( 'niveau_id' , $niveau_id );
 }
 
 }

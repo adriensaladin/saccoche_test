@@ -922,7 +922,7 @@ public static function DB_modifier_matiere_nb_demandes( $matiere_id , $matiere_n
  */
 public static function DB_supprimer_referentiel_matiere_niveau( $matiere_id , $niveau_id )
 {
-  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande, sacoche_livret_jointure_referentiel ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
@@ -932,7 +932,8 @@ public static function DB_supprimer_referentiel_matiere_niveau( $matiere_id , $n
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (matiere_id,item_id) ';
-  $DB_SQL.= 'WHERE matiere_id=:matiere_id AND niveau_id=:niveau_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel ON (sacoche_referentiel_domaine.domaine_id=sacoche_livret_jointure_referentiel.domaine_id) OR (sacoche_referentiel_theme.theme_id=sacoche_livret_jointure_referentiel.theme_id) ';
+  $DB_SQL.= 'WHERE sacoche_referentiel.matiere_id=:matiere_id AND sacoche_referentiel.niveau_id=:niveau_id ';
   $DB_VAR = array(
     ':matiere_id' => $matiere_id,
     ':niveau_id'  => $niveau_id,
@@ -948,7 +949,7 @@ public static function DB_supprimer_referentiel_matiere_niveau( $matiere_id , $n
  */
 public static function DB_supprimer_referentiel_domaine($domaine_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande, sacoche_livret_jointure_referentiel ';
   $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
@@ -957,7 +958,8 @@ public static function DB_supprimer_referentiel_domaine($domaine_id)
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
-  $DB_SQL.= 'WHERE domaine_id=:domaine_id';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel ON (sacoche_referentiel_domaine.domaine_id=sacoche_livret_jointure_referentiel.domaine_id) OR (sacoche_referentiel_theme.theme_id=sacoche_livret_jointure_referentiel.theme_id) ';
+  $DB_SQL.= 'WHERE sacoche_referentiel_domaine.domaine_id=:domaine_id';
   $DB_VAR = array(':domaine_id'=>$domaine_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);  // Est censé renvoyer le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un élément non lié
@@ -971,7 +973,7 @@ public static function DB_supprimer_referentiel_domaine($domaine_id)
  */
 public static function DB_supprimer_referentiel_theme($theme_id)
 {
-  $DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_referentiel_socle, sacoche_jointure_devoir_item, sacoche_jointure_selection_item, sacoche_saisie, sacoche_demande, sacoche_livret_jointure_referentiel ';
   $DB_SQL.= 'FROM sacoche_referentiel_theme ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
@@ -979,7 +981,8 @@ public static function DB_supprimer_referentiel_theme($theme_id)
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_selection_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (item_id) ';
-  $DB_SQL.= 'WHERE theme_id=:theme_id';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel USING (theme_id) ';
+  $DB_SQL.= 'WHERE sacoche_referentiel_theme.theme_id=:theme_id';
   $DB_VAR = array(':theme_id'=>$theme_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);  // Est censé renvoyer le nb de lignes supprimées ; à cause du multi-tables curieusement ça renvoie 2, même pour un élément non lié

@@ -585,7 +585,8 @@ public static function DB_modifier_liaison_professeur_principal($user_id,$groupe
 /**
  * Supprimer un groupe
  *
- * Par défaut, on supprime aussi les devoirs associés ($with_devoir=TRUE), mais on conserve les notes, qui deviennent orphelines et non éditables ultérieurement.
+ * On ne supprime pas les jointures avec les bulletins (qui peuvent être accessibles depuis un autre groupe...).
+ * Mais on peut aussi vouloir dans un second temps ($with_devoir=FALSE) supprimer les devoirs associés avec leurs notes en utilisant DB_supprimer_devoir_et_saisies().
  * Mais on peut aussi vouloir dans un second temps ($with_devoir=FALSE) supprimer les devoirs associés avec leurs notes en utilisant DB_supprimer_devoir_et_saisies().
  *
  * @param int    $groupe_id
@@ -595,24 +596,39 @@ public static function DB_modifier_liaison_professeur_principal($user_id,$groupe
  */
 public static function DB_supprimer_groupe_par_admin( $groupe_id , $groupe_type , $with_devoir=TRUE )
 {
-  // Il faut aussi supprimer les jointures avec les utilisateurs
-  // Il faut aussi supprimer les jointures avec les périodes, mais pas les bulletins (peuvent être accessibles depuis un autre groupe...)
-  $jointure_periode_delete = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? ', sacoche_jointure_groupe_periode ' : '' ;
-  $jointure_periode_join   = ( ($groupe_type=='classe') || ($groupe_type=='groupe') ) ? 'LEFT JOIN sacoche_jointure_groupe_periode USING (groupe_id) ' : '' ;
-  // Il faut aussi supprimer les évaluations portant sur le groupe
-  $jointure_devoir_delete = ($with_devoir) ? ', sacoche_devoir , sacoche_jointure_devoir_item , sacoche_jointure_devoir_prof , sacoche_jointure_devoir_eleve ' : '' ;
-  $jointure_devoir_join   = ($with_devoir) ? 'LEFT JOIN sacoche_devoir USING (groupe_id) LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ' : '' ;
-  // Il faut aussi supprimer les destinataires de messages portant sur le groupe
-  $jointure_message_delete = ($groupe_type!='eval') ? ', sacoche_jointure_message_destinataire ' : '' ;
-  $jointure_message_join   = ($groupe_type!='eval') ? 'LEFT JOIN sacoche_jointure_message_destinataire ON sacoche_groupe.groupe_id=sacoche_jointure_message_destinataire.destinataire_id AND destinataire_type="'.$groupe_type.'" ' : '' ;
-  // Let's go
-  $DB_SQL = 'DELETE sacoche_groupe , sacoche_jointure_user_groupe '.$jointure_periode_delete.$jointure_devoir_delete.$jointure_message_delete;
-  $DB_SQL.= 'FROM sacoche_groupe ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';
-  $DB_SQL.= $jointure_periode_join.$jointure_devoir_join.$jointure_message_join;
-  $DB_SQL.= 'WHERE groupe_id=:groupe_id ';
+  $tab_tables = array( 'sacoche_groupe' , 'sacoche_jointure_user_groupe' );
+  if( ($groupe_type=='classe') || ($groupe_type=='groupe') )
+  {
+    $tab_tables[] = 'sacoche_jointure_groupe_periode';
+  }
+  if($groupe_type=='classe')
+  {
+    $tab_tables = array_merge( $tab_tables , array( 'sacoche_livret_jointure_groupe' , 'sacoche_livret_ap' , 'sacoche_livret_epi' , 'sacoche_livret_parcours' ) );
+  }
   $DB_VAR = array(':groupe_id'=>$groupe_id);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  foreach( $tab_tables as $table )
+  {
+    $DB_SQL = 'DELETE FROM '.$table.' WHERE groupe_id=:groupe_id ';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
+  // Il faut aussi supprimer les évaluations portant sur le groupe
+  if($with_devoir)
+  {
+    $DB_SQL = 'DELETE sacoche_devoir , sacoche_jointure_devoir_item , sacoche_jointure_devoir_prof , sacoche_jointure_devoir_eleve ';
+    $DB_SQL.= 'FROM sacoche_devoir ';
+    $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (devoir_id) ';
+    $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof USING (devoir_id) ';
+    $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ';
+    $DB_SQL.= 'WHERE groupe_id=:groupe_id ';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
+  // Il faut aussi supprimer les destinataires de messages portant sur le groupe
+  if($groupe_type!='eval')
+  {
+    $DB_SQL = 'DELETE FROM sacoche_jointure_message_destinataire ';
+    $DB_SQL.= 'WHERE destinataire_id=:groupe_id AND destinataire_type="'.$groupe_type.'" ';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
   // Sans oublier le champ pour les affectations des élèves dans une classe
   if($groupe_type=='classe')
   {

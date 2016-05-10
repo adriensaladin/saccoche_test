@@ -37,7 +37,7 @@ define( 'FIREFOX_VERSION_LAST'           ,46  ); define( 'FIREFOX_URL_DOWNLOAD' 
 
 define(   'OPERA_VERSION_MINI_REQUISE'   ,10  ); define(   'OPERA_TEXTE_MINI_REQUIS'     , 'Version 10 minimum (sortie en 2009).');
 define(   'OPERA_VERSION_MINI_CONSEILLEE',11  );
-define(   'OPERA_VERSION_LAST'           ,36  ); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
+define(   'OPERA_VERSION_LAST'           ,37  ); define(   'OPERA_URL_DOWNLOAD'          , 'http://www.opera-fr.com/telechargements/');
 
 define(    'EDGE_VERSION_MINI_REQUISE'   ,12  ); define(    'EDGE_TEXTE_MINI_REQUIS'      , 'Version 12 minimum (sortie en 2015).');
 define(    'EDGE_VERSION_MINI_CONSEILLEE',12  );

@@ -177,7 +177,7 @@ public static function DB_modifier_matiere_partagee($matiere_id,$matiere_active)
   if(!$matiere_active)
   {
     // On supprime aussi les jointures avec les enseignants.
-    // Mais on laisse les référentiels en sommeil, au cas où...
+    // Mais on laisse les référentiels / le livret scolaire / les bilans officiels en sommeil, au cas où...
     $DB_SQL = 'DELETE FROM sacoche_jointure_user_matiere ';
     $DB_SQL.= 'WHERE matiere_id=:matiere_id ';
     $DB_VAR = array(':matiere_id'=>$matiere_id);
@@ -300,17 +300,15 @@ public static function DB_modifier_liaison_professeur_matiere($user_id,$matiere_
  */
 public static function DB_supprimer_matiere_specifique($matiere_id)
 {
-  $DB_SQL = 'DELETE FROM sacoche_matiere ';
-  $DB_SQL.= 'WHERE matiere_id=:matiere_id ';
+  $tab_tables = array( 'sacoche_matiere' , 'sacoche_jointure_user_matiere', 'sacoche_livret_ap' , 'sacoche_livret_jointure_epi_prof' , 'sacoche_livret_jointure_referentiel' );
   $DB_VAR = array(':matiere_id'=>$matiere_id);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  // Il faut aussi supprimer les jointures avec les enseignants
-  $DB_SQL = 'DELETE FROM sacoche_jointure_user_matiere ';
-  $DB_SQL.= 'WHERE matiere_id=:matiere_id ';
-  $DB_VAR = array(':matiere_id'=>$matiere_id);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  foreach( $tab_tables as $table )
+  {
+    $DB_SQL = 'DELETE FROM '.$table.' WHERE matiere_id=:matiere_id ';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
   // Il faut aussi supprimer les référentiels associés, et donc tous les scores associés (orphelins de la matière)
-  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_referentiels('matiere_id',$matiere_id);
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_referentiels( 'matiere_id' , $matiere_id );
 }
 
 /**

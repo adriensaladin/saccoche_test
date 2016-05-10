@@ -99,6 +99,7 @@ foreach($DB_TAB as $DB_ROW)
 $TH = array();
 $TB = array();
 $TF = array();
+$nb_tag_br_par_eleve = 3+1; // TODO : A MODIFIER LORS DE LA MAJ
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
   $TH[$niveau_id] = '';
@@ -106,7 +107,7 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
   $TF[$niveau_id] = '';
   foreach($tab_groupe as $groupe_id => $groupe_nom)
   {
-    $nb = mb_substr_count($tab_user[$groupe_id],'<br />','UTF-8');
+    $nb = mb_substr_count($tab_user[$groupe_id],'<br />','UTF-8') / $nb_tag_br_par_eleve ;
     $s = ($nb>1) ? 's' : '' ;
     $TH[$niveau_id] .= '<th>'.$groupe_nom.'</th>';
     $TB[$niveau_id] .= '<td>'.mb_substr($tab_user[$groupe_id],0,-6,'UTF-8').'</td>';

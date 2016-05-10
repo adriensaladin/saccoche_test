@@ -270,26 +270,13 @@ public static function DB_supprimer_liaisons_groupe_periode()
  */
 public static function DB_supprimer_periode($periode_id)
 {
+  $tab_tables = array( 'sacoche_periode' , 'sacoche_jointure_groupe_periode', 'sacoche_officiel_saisie' , 'sacoche_officiel_fichier' , 'sacoche_officiel_assiduite' );
   $DB_VAR = array(':periode_id'=>$periode_id);
-  $DB_SQL = 'DELETE FROM sacoche_periode ';
-  $DB_SQL.= 'WHERE periode_id=:periode_id ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  // Il faut aussi supprimer les jointures avec les classes
-  $DB_SQL = 'DELETE FROM sacoche_jointure_groupe_periode ';
-  $DB_SQL.= 'WHERE periode_id=:periode_id ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  // Il faut aussi supprimer les jointures avec les saisies des bilans officiels
-  $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
-  $DB_SQL.= 'WHERE periode_id=:periode_id ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  // Il faut aussi supprimer les jointures avec les fichiers des bilans officiels
-  $DB_SQL = 'DELETE FROM sacoche_officiel_fichier ';
-  $DB_SQL.= 'WHERE periode_id=:periode_id ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  // Il faut aussi supprimer les jointures avec les assiduités des bilans officiels
-  $DB_SQL = 'DELETE FROM sacoche_officiel_assiduite ';
-  $DB_SQL.= 'WHERE periode_id=:periode_id ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  foreach( $tab_tables as $table )
+  {
+    $DB_SQL = 'DELETE FROM '.$table.' WHERE periode_id=:periode_id ';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  }
 }
 
 }

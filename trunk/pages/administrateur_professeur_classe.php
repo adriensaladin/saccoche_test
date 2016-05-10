@@ -31,8 +31,8 @@ $TITRE = html(Lang::_("Professeurs & classes / Professeurs principaux"));
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_prof   = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('config')       , 'f_prof'   /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , $multiple=TRUE);
-$select_classe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/) , 'f_classe' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , $multiple=TRUE);
+$select_prof   = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('config')       , 'f_prof'   /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ );
+$select_classe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_classes_etabl(FALSE /*with_ref*/) , 'f_classe' /*select_nom*/ , FALSE /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ , TRUE /*multiple*/ );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></span></p>

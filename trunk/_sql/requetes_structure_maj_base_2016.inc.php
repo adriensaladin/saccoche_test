@@ -271,15 +271,14 @@ if($version_base_structure_actuelle=='2016-04-17')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-04-29 => 2016-05-XX
+// MAJ 2016-04-29 => 2016-05-10
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*
 if($version_base_structure_actuelle=='2016-04-29')
 {
   if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
   {
-    $version_base_structure_actuelle = '2016-05-XX';
+    $version_base_structure_actuelle = '2016-05-10';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
     // nouvelle table [sacoche_livret_ap]
     $reload_sacoche_livret_ap = TRUE;
@@ -348,6 +347,5 @@ if($version_base_structure_actuelle=='2016-04-29')
     DB::close(SACOCHE_STRUCTURE_BD_NAME);
   }
 }
-*/
 
 ?>

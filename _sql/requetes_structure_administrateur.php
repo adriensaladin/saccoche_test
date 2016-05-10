@@ -1015,7 +1015,7 @@ public static function DB_modifier_parametre_acquis_seuils( $acquis_id , $acquis
  */
 public static function DB_supprimer_referentiels( $champ_nom , $champ_val )
 {
-  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande, sacoche_livret_jointure_referentiel ';
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
@@ -1023,9 +1023,29 @@ public static function DB_supprimer_referentiels( $champ_nom , $champ_val )
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (matiere_id,item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel ON (sacoche_referentiel_domaine.domaine_id=sacoche_livret_jointure_referentiel.domaine_id) OR (sacoche_referentiel_theme.theme_id=sacoche_livret_jointure_referentiel.theme_id) ';
-  $DB_SQL.= 'WHERE sacoche_referentiel.'.$champ_nom.'=:champ_val ';
+  $DB_SQL.= 'WHERE '.$champ_nom.'=:champ_val ';
   $DB_VAR = array(':champ_val'=>$champ_val);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Supprimer les référentiels dépendant d'un niveau
+ *
+ * @param int $niveau_id
+ * @return void
+ */
+public static function DB_supprimer_referentiels_niveau($niveau_id)
+{
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL.= 'FROM sacoche_referentiel ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_demande USING (matiere_id,item_id) ';
+  $DB_SQL.= 'WHERE niveau_id=:niveau_id ';
+  $DB_VAR = array(':niveau_id'=>$niveau_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -1037,12 +1057,13 @@ public static function DB_supprimer_referentiels( $champ_nom , $champ_val )
  */
 public static function DB_supprimer_devoirs_sans_saisies()
 {
-  $tab_tables = array( 'sacoche_devoir' , 'sacoche_jointure_devoir_item', 'sacoche_jointure_devoir_prof' , 'sacoche_jointure_devoir_eleve' );
-  foreach( $tab_tables as $table )
-  {
-    $DB_SQL = 'DELETE FROM '.$table;
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  }
+  // Il faut aussi supprimer les jointures du devoir avec les items / les profs / les élèves
+  $DB_SQL = 'DELETE sacoche_devoir, sacoche_jointure_devoir_item, sacoche_jointure_devoir_prof, sacoche_jointure_devoir_eleve ';
+  $DB_SQL.= 'FROM sacoche_devoir ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item  USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_prof  USING (devoir_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -1206,9 +1227,6 @@ public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
     $DB_SQL = 'DELETE FROM sacoche_demande ';
     $DB_SQL.= 'WHERE eleve_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_livret_jointure_modaccomp_eleve ';
-    $DB_SQL.= 'WHERE eleve_id=:user_id';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
     $DB_SQL.= 'WHERE eleve_ou_classe_id=:user_id AND saisie_type="eleve" ';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -1241,15 +1259,6 @@ public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
   {
     $DB_SQL = 'DELETE FROM sacoche_jointure_user_matiere ';
     $DB_SQL.= 'WHERE user_id=:user_id';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_livret_parcours ';
-    $DB_SQL.= 'WHERE prof_id=:user_id';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_livret_ap ';
-    $DB_SQL.= 'WHERE prof_id=:user_id';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_livret_jointure_epi_prof ';
-    $DB_SQL.= 'WHERE prof_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE sacoche_jointure_devoir_item ';
     $DB_SQL.= 'FROM sacoche_jointure_devoir_item ';

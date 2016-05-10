@@ -169,7 +169,6 @@ $tab_droits_par_page = array
   'partenaire_parametrages' => $tab_droits_profil_partenaire,
   'partenaire_statistiques' => $tab_droits_profil_partenaire,
   // Profil professeur | directeur | administrateur
-  '_maj_select_livret'                      => $tab_droits_profil_prof_dir_admin,
   '_maj_select_officiel_periode'            => $tab_droits_profil_prof_dir_admin,
   '_maj_select_structure_origine'           => $tab_droits_profil_prof_dir_admin,
   'administrateur_eleve_langue'             => $tab_droits_profil_prof_dir_admin,

@@ -470,7 +470,6 @@ class Session
     '_maj_select_eleves',
     '_maj_select_eval',
     '_maj_select_items',
-    '_maj_select_livret',
     '_maj_select_matieres',
     '_maj_select_matieres_famille',
     '_maj_select_matieres_prof',

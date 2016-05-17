@@ -677,8 +677,12 @@ public static function DB_ajouter_jointure_parent_eleve($parent_id,$eleve_id,$re
  */
 public static function DB_remplacer_structure_origine( $uai , $denomination , $localisation , $courriel )
 {
-  $DB_SQL = 'REPLACE INTO sacoche_structure_origine(structure_uai, structure_denomination, structure_localisation, structure_courriel) ';
-  $DB_SQL.= 'VALUES(                               :structure_uai,:structure_denomination,:structure_localisation,:structure_courriel)';
+  // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
+  // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
+  $DB_SQL = 'INSERT INTO sacoche_structure_origine(structure_uai, structure_denomination, structure_localisation, structure_courriel) ';
+  $DB_SQL.= 'VALUES(                              :structure_uai,:structure_denomination,:structure_localisation,:structure_courriel) ';
+  $DB_SQL.= 'ON DUPLICATE KEY UPDATE ';
+  $DB_SQL.= 'structure_denomination=:structure_denomination, structure_localisation=:structure_localisation, structure_courriel=:structure_courriel ';
   $DB_VAR = array(
     ':structure_uai'          => $uai,
     ':structure_denomination' => $denomination,

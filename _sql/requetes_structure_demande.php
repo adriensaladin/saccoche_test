@@ -62,7 +62,7 @@ public static function DB_lister_demandes_eleve($eleve_id)
 /**
  * lister_demandes_prof
  *
- * @param int    $prof_id           id du prof
+ * @param int    $prof_id           id du prof ; si 0 alors chercher les demandes pour tous les profs
  * @param int    $matiere_id        id de la matière du prof ; si 0 alors chercher parmi toutes les matières du prof
  * @param int    $listing_user_id   id des élèves du prof séparés par des virgules
  * @return array
@@ -71,7 +71,7 @@ public static function DB_lister_demandes_prof( $prof_id , $matiere_id , $listin
 {
   $select_matiere = ($matiere_id) ? '' : 'matiere_nom, ';
   $order_matiere  = ($matiere_id) ? '' : 'matiere_nom ASC, ';
-
+  $group_by       = ($prof_id)    ? '' : 'GROUP BY demande_id ';
   $DB_SQL = 'SELECT sacoche_demande.*, '.$select_matiere;
   $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
   $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
@@ -81,17 +81,20 @@ public static function DB_lister_demandes_prof( $prof_id , $matiere_id , $listin
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_demande.eleve_id=sacoche_user.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_demande.prof_id=sacoche_user.user_id ';
   if($matiere_id)
   {
-    $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') AND prof_id IN(0,'.$prof_id.') AND sacoche_demande.matiere_id=:matiere_id ';
+    $where_prof = ($prof_id) ? 'AND prof_id IN(0,'.$prof_id.')' : '' ;
+    $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') '.$where_prof.' AND sacoche_demande.matiere_id=:matiere_id ';
   }
   else
   {
+    $where_prof = ($prof_id) ? 'AND prof_id IN(0,'.$prof_id.') AND sacoche_jointure_user_matiere.user_id=:prof_id' : '' ;
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere ON sacoche_demande.matiere_id=sacoche_jointure_user_matiere.matiere_id ';
     $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_jointure_user_matiere.matiere_id=sacoche_matiere.matiere_id ';
-    $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') AND prof_id IN(0,'.$prof_id.') AND sacoche_jointure_user_matiere.user_id=:prof_id ';
+    $DB_SQL.= 'WHERE eleve_id IN('.$listing_user_id.') '.$where_prof.' ';
   }
+  $DB_SQL.= $group_by;
   $DB_SQL.= 'ORDER BY '.$order_matiere.'niveau_ref ASC, domaine_code ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array(
     ':matiere_id' => $matiere_id,

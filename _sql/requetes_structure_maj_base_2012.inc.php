@@ -47,7 +47,7 @@ if($version_base_structure_actuelle=='2011-12-30')
     $DB_SQL.= 'HAVING nb_pp=0 ';
     $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL );
     // Lors de la rectification, si plusieurs profs sont associés aux groupes, il n'est pas dit que l'on tombe sur le bon...
-    $DB_SQL = 'REPLACE INTO sacoche_jointure_user_groupe (user_id,groupe_id,jointure_pp) VALUES(:user_id,:groupe_id,1)';
+    $DB_SQL = 'INSERT IGNORE INTO sacoche_jointure_user_groupe (user_id,groupe_id,jointure_pp) VALUES(:user_id,:groupe_id,1) ';
     foreach($DB_TAB as $DB_ROW)
     {
       $DB_VAR = array(

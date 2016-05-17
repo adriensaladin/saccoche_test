@@ -134,7 +134,7 @@ if($user_id)
   $mail_contenu.= 'Pour confirmer la génération d\'un nouveau mot de passe, veuillez cliquer sur ce lien :'."\r\n";
   $mail_contenu.= URL_DIR_SACOCHE.'?code_mdp='.$code_mdp."\r\n";
   $mail_contenu.= Sesamail::texte_pied_courriel( array('excuses_derangement','info_connexion','no_reply','signature') , $DB_ROW['user_email'] );
-  $courriel_bilan = Sesamail::mail( $DB_ROW['user_email'] , 'Demande de nouveaux identifiants' , $mail_contenu , $DB_ROW['user_email'] /*replyto*/ );
+  $courriel_bilan = Sesamail::mail( $DB_ROW['user_email'] , 'Demande de nouveaux identifiants' , $mail_contenu , NULL );
   if(!$courriel_bilan)
   {
     Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );

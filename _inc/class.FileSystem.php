@@ -1114,7 +1114,7 @@ class FileSystem
   {
     $bytes = filesize($fichier_chemin);
     $size_unit = ' KMGTP';
-    $factor = floor((strlen($bytes) - 1) / 3);
+    $factor = (int) floor((strlen($bytes) - 1) / 3);
     return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';
   }
 

@@ -96,8 +96,12 @@ public static function DB_lister_signatures_avec_identite()
  */
 public static function DB_modifier_image($user_id,$image_objet,$image_contenu,$image_format,$image_largeur,$image_hauteur)
 {
-  $DB_SQL = 'REPLACE INTO sacoche_image( user_id,  image_objet,  image_contenu,  image_format,  image_largeur,  image_hauteur) ';
-  $DB_SQL.= 'VALUES                    (:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
+  // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
+  // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
+  $DB_SQL = 'INSERT INTO sacoche_image( user_id,  image_objet,  image_contenu,  image_format,  image_largeur,  image_hauteur) ';
+  $DB_SQL.= 'VALUES                   (:user_id, :image_objet, :image_contenu, :image_format, :image_largeur, :image_hauteur) ';
+  $DB_SQL.= 'ON DUPLICATE KEY UPDATE ';
+  $DB_SQL.= 'image_contenu=:image_contenu, image_format=:image_format, image_largeur=:image_largeur, image_hauteur=:image_hauteur ';
   $DB_VAR = array(
     ':user_id'       => $user_id,
     ':image_objet'   => $image_objet,

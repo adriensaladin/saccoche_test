@@ -83,7 +83,7 @@ if(!$code)
   $mail_contenu.= "\r\n";
   $mail_contenu.= $code."\r\n";
   $mail_contenu.= Sesamail::texte_pied_courriel( array('excuses_derangement','info_connexion','no_reply','signature') , $courriel );
-  $courriel_bilan = Sesamail::mail( $courriel , 'Contact administrateurs - Code de confirmation' , $mail_contenu , NULL );
+  $courriel_bilan = Sesamail::mail( $courriel , 'Contact administrateurs - Code de confirmation' , $mail_contenu , $courriel /*replyto*/ );
   if(!$courriel_bilan)
   {
     Json::end( FALSE , 'Erreur lors de l\'envoi du courriel !' );
@@ -143,7 +143,7 @@ if($code)
      * Du coup, le paramètre 'notif_individuelle' n'est pas transmis dans le tableau pour texte_pied_courriel().
      */
     $notification_contenu .= Sesamail::texte_pied_courriel( array('no_reply','signature') );
-    $courriel_bilan = Sesamail::mail( $tab_destinataires , 'Notification - Contact externe' , $notification_contenu , NULL );
+    $courriel_bilan = Sesamail::mail( $tab_destinataires , 'Notification - Contact externe' , $notification_contenu , $tab_destinataires );
   }
   $admin_txt = ($destinataires_nb>1) ? 'aux '.$destinataires_nb.' administrateurs' : 'à l\'administrateur' ;
   Json::end( TRUE , $admin_txt );

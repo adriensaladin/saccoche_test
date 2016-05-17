@@ -162,14 +162,12 @@ $(document).ready
         rules :
         {
           f_matiere : { required:false },
-          f_groupe  : { required:false },
-          f_prof    : { required:false }
+          f_groupe  : { required:false }
         },
         messages :
         {
           f_matiere : { },
-          f_groupe  : { },
-          f_prof    : { }
+          f_groupe  : { }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -256,14 +254,7 @@ $(document).ready
         $("#f_qui option[value=groupe]").text($("#f_groupe_nom").val()).prop('disabled',etat_disabled);
         if(etat_disabled) { $("#f_qui option[value=select]").prop('selected',true); }
         maj_evaluation();
-        if( $("#f_prof option:selected").val() != 0 )
-        {
-          $("#zone_actions").show(0);
-        }
-        else
-        {
-          $("#zone_actions").hide(0);
-        }
+        $("#zone_actions").show(0);
       }
     }
 
@@ -271,7 +262,7 @@ $(document).ready
 
     formulaire0.submit();
 
-    $('#f_matiere , #f_groupe , #f_prof').change
+    $('#f_matiere , #f_groupe').change
     (
       function()
       {

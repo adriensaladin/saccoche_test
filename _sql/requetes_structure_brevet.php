@@ -288,11 +288,8 @@ public static function DB_modifier_brevet_classe_etat($classe_id , $new_etat)
  */
 public static function DB_modifier_brevet_fichier($user_id)
 {
-  // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
-  // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
-  $DB_SQL = 'INSERT INTO sacoche_brevet_fichier ( user_id, fichier_date) ';
-  $DB_SQL.= 'VALUES                             (:user_id, NOW() ) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE fichier_date=NOW() ';
+  $DB_SQL = 'REPLACE INTO sacoche_brevet_fichier (user_id, fichier_date) ';
+  $DB_SQL.= 'VALUES(:user_id, NOW() ) ';
   $DB_VAR = array(':user_id'=>$user_id);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

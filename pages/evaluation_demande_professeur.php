@@ -80,7 +80,6 @@ $select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select
 <form action="#" method="post" id="form_prechoix"><fieldset>
   <label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />
   <label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><br />
-  <label class="tab" for="f_prof">Destinataire :</label><select id="f_prof" name="f_prof"><option value="<?php echo $_SESSION['USER_ID'] ?>">Demandes qui me concernent (pour traitement).</option><option value="0">Demandes à tous les enseignants (pour information).</option></select><br />
   <span class="tab"></span><input type="hidden" name="f_action" value="Afficher_demandes" /><button id="actualiser" type="submit" class="actualiser">Actualiser l'affichage.</button><label id="ajax_msg_prechoix">&nbsp;</label>
 </fieldset></form>
 

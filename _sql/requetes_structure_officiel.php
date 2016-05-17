@@ -489,11 +489,8 @@ public static function DB_lister_adresses_parents_for_enfants($listing_user_id)
  */
 public static function DB_ajouter_officiel_archive_image( $image_md5 , $image_contenu )
 {
-  // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
-  // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
-  $DB_SQL = 'INSERT INTO sacoche_officiel_archive_image(archive_image_md5, archive_image_contenu) ';
-  $DB_SQL.= 'VALUES                                    (       :image_md5,        :image_contenu) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE archive_image_contenu=:image_contenu ';
+  $DB_SQL = 'REPLACE INTO sacoche_officiel_archive_image(archive_image_md5, archive_image_contenu) ';
+  $DB_SQL.= 'VALUES                                     (       :image_md5,        :image_contenu) ';
   $DB_VAR = array(
     ':image_md5'     => $image_md5,
     ':image_contenu' => $image_contenu,
@@ -639,11 +636,8 @@ public static function DB_modifier_bilan_officiel_fichier_date( $user_id , $offi
  */
 public static function DB_modifier_bilan_officiel_saisie( $officiel_type , $periode_id , $eleve_ou_classe_id , $rubrique_id , $prof_id , $saisie_type , $note , $appreciation )
 {
-  // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
-  // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
-  $DB_SQL = 'INSERT INTO sacoche_officiel_saisie ( officiel_type,  periode_id,  eleve_ou_classe_id,  rubrique_id,  prof_id,  saisie_type,  saisie_note,  saisie_appreciation) ';
-  $DB_SQL.= 'VALUES                              (:officiel_type, :periode_id, :eleve_ou_classe_id, :rubrique_id, :prof_id, :saisie_type, :saisie_note, :saisie_appreciation) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE saisie_note=:saisie_note, saisie_appreciation=:saisie_appreciation ';
+  $DB_SQL = 'REPLACE INTO sacoche_officiel_saisie (officiel_type, periode_id, eleve_ou_classe_id, rubrique_id, prof_id, saisie_type, saisie_note, saisie_appreciation) ';
+  $DB_SQL.= 'VALUES(:officiel_type, :periode_id, :eleve_ou_classe_id, :rubrique_id, :prof_id, :saisie_type, :saisie_note, :saisie_appreciation) ';
   $DB_VAR = array(
     ':officiel_type'       => $officiel_type,
     ':periode_id'          => $periode_id,

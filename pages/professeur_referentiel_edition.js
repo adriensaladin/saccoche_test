@@ -708,7 +708,7 @@ $(document).ready
             }
             else
             {
-              var separateur = ' &#9553; '; // Car ' ║ ' ne s'affiche pas correctement sur le serveur de Bordeaux ; corresponce trouvée avec http://hapax.qc.ca/conversion.fr.html
+              var separateur = ' ║ ';
               switch(contexte)
               {
                 case 'n1' :  // domaine

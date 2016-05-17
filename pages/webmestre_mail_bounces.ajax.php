@@ -75,7 +75,7 @@ if( ($action=='TestEnvoiCourriel') && $courriel )
     Json::end( FALSE , 'Erreur lors de l\'envoi du courriel de test n°1 !' );
   }
   // Test d'envoi d'un courriel de notification
-  $courriel_bilan = Sesamail::mail( $courriel , 'Test d\'envoi d\'une notification' , 'Sans Reply-To.' , NULL /*replyto*/ );
+  $courriel_bilan = Sesamail::mail( $courriel , 'Test d\'envoi d\'une notification' , 'Avec soi-même en Reply-To.' , $courriel /*replyto*/ );
   if(!$courriel_bilan)
   {
     Json::end( FALSE , 'Erreur lors de l\'envoi du courriel de test n°2 !' );

@@ -412,7 +412,7 @@ function enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $clas
   $eleve_ou_classe_id = ($eleve_id) ? $eleve_id : $classe_id ;
   if($rubrique_id==0)
   {
-    // Dans le cas d'une appréciation générale, si c'est une autre personne en a saisi la version précédente, un remplacement ne la supprimera pas.
+    // Dans le cas d'une appréciation générale, si c'est une autre personne en a saisi la version précédente, le REPLACE INTO ne la supprimera pas.
     DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , 0 /*rubrique_id*/ , 0 /*prof_id*/ , $saisie_type );
   }
   DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $rubrique_id , $prof_id , $saisie_type , NULL , $appreciation );

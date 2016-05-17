@@ -119,19 +119,8 @@ class Outil
   public static function tester_domaine_courriel_valide($mail_adresse)
   {
     $mail_domaine = mb_substr( $mail_adresse , mb_strpos($mail_adresse,'@')+1 );
-    $hasMx = function_exists('getmxrr') && getmxrr($mail_domaine, $tab_mxhosts);
-    $isPort25open = FALSE;
-    if (!$hasMx)
-    {
-      $res = @fsockopen($mail_domaine, 25, $errno, $errstr, 5);
-      if ($res)
-      {
-        fclose($res);
-        $isPort25open = TRUE;
-      }
-    }
-    $is_domaine_valide = $hasMx || $isPort25open ;
-    return array( $mail_domaine , $is_domaine_valide );
+    $is_domaine_valide = ( ( function_exists('getmxrr') && getmxrr($mail_domaine, $tab_mxhosts) ) || (@fsockopen($mail_domaine,25,$errno,$errstr,5)) ) ? TRUE : FALSE ;
+    return array($mail_domaine,$is_domaine_valide);
   }
 
   /**

@@ -152,7 +152,12 @@ class Sesamail
     }
 
     // Application : utilisé en préfixe du sujet et en nom d'expéditeur par défaut
-    $this->domain_application = (defined('HEBERGEUR_DENOMINATION')) ? 'SACoche '.HEBERGEUR_DENOMINATION : 'SACoche' ;
+    if(defined('HEBERGEUR_DENOMINATION')) {
+      $this->domain_application = !empty($_SESSION['BASE']) ? 'SACoche '.HEBERGEUR_DENOMINATION.' '.$_SESSION['BASE'] : 'SACoche '.HEBERGEUR_DENOMINATION ;
+    }
+    else {
+      $this->domain_application = 'SACoche' ;
+    }
 
     // Les headers communs à tous nos mails
     $this->headers .= 'Sender: <'.$this->default_sender.'>'.EOHL;
@@ -201,9 +206,12 @@ class Sesamail
     // Message
     $mail->setMessage($message);
 
-    // ReplyTo
-    $replyto = (!empty($replyto)) ? $replyto : ( (!empty($mail->default_replyto)) ? $mail->default_replyto : $to ) ;
-    $mail->setReplyTo($replyto);
+    // ReplyTo ; on ne peut pas forcer l'adresse du destinataire en ReplyTo, cela peut être utilisé pour spammer et peut conduire à un rejet du mail...
+    $replyto = ( empty($replyto) && !is_null($replyto) && !empty($mail->default_replyto)) ? $mail->default_replyto : $replyto ;
+    if($replyto)
+    {
+      $mail->setReplyTo($replyto);
+    }
 
     // From
     $from = (!empty($from)) ? $from : $mail->domain_application ;
@@ -774,7 +782,7 @@ class Sesamail
           $mail_user    = $DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' <'.$DB_ROW['user_email'].'>';
           $mail_objet   = 'Notification - '.$DB_ROW['abonnement_objet'];
           $mail_contenu = $DB_ROW['notification_contenu'].Sesamail::texte_pied_courriel( array('no_reply','notif_individuelle','signature') , $DB_ROW['user_email'] );
-          $courriel_bilan = Sesamail::mail( $mail_user , $mail_objet , $mail_contenu , $mail_user );
+          $courriel_bilan = Sesamail::mail( $mail_user , $mail_objet , $mail_contenu , NULL );
         }
       }
     }

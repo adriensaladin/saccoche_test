@@ -98,7 +98,7 @@ if( ($action=='signaler_faute') || ($action=='corriger_faute') )
     {
       $destinataire = $DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' <'.$DB_ROW['user_email'].'>';
       $notification_contenu .= Sesamail::texte_pied_courriel( array('no_reply','notif_individuelle','signature') , $DB_ROW['user_email'] );
-      $courriel_bilan = Sesamail::mail( $destinataire , 'Notification - Erreur appréciation bilan officiel' , $notification_contenu , $destinataire );
+      $courriel_bilan = Sesamail::mail( $destinataire , 'Notification - Erreur appréciation bilan officiel' , $notification_contenu , NULL );
     }
   }
   Json::end( TRUE );

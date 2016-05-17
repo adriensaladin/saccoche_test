@@ -35,6 +35,7 @@ $matiere_nom   = (isset($_POST['f_matiere_nom']))   ? Clean::texte($_POST['f_mat
 $groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier($_POST['f_groupe_id'])      : 0;   // C'est l'id du groupe d'appartenance de l'élève, pas l'id du groupe associé à un devoir
 $groupe_type   = (isset($_POST['f_groupe_type']))   ? Clean::lettres($_POST['f_groupe_type'])   : '';
 $groupe_nom    = (isset($_POST['f_groupe_nom']))    ? Clean::texte($_POST['f_groupe_nom'])      : '';
+$prof_id       = (isset($_POST['f_prof']))          ? Clean::entier($_POST['f_prof'])           : 0;
 
 $qui           = (isset($_POST['f_qui']))           ? Clean::texte($_POST['f_qui'])             : '';
 $date          = (isset($_POST['f_date']))          ? Clean::date_fr($_POST['f_date'])          : '';
@@ -139,7 +140,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
   $messages_html = '<table><thead><tr><th>Matière - Item</th><th>Groupe - Élève</th><th>Message(s)</th></tr></thead><tbody>';
   $fichier_csv = 'Matière'.$separateur.'Item Ref'.$separateur.'Item Nom'.$separateur.'Groupe'.$separateur.'Élève'.$separateur.'Score'.$separateur.'Date'.$separateur.'Message'."\r\n";
   $tab_demandes = array();
-  $DB_TAB = DB_STRUCTURE_DEMANDE::DB_lister_demandes_prof( $_SESSION['USER_ID'] , $matiere_id , $listing_user_id );
+  $DB_TAB = DB_STRUCTURE_DEMANDE::DB_lister_demandes_prof( $prof_id , $matiere_id , $listing_user_id );
   if(empty($DB_TAB))
   {
     Json::end( FALSE , 'Aucune demande n\'a été formulée selon les critères indiqués !' );
@@ -151,8 +152,9 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $score  = ($DB_ROW['demande_score']!==NULL) ? $DB_ROW['demande_score'] : FALSE ;
     $date   = To::date_mysql_to_french($DB_ROW['demande_date']);
     $statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
-    $dest   = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? 'vous seul' : 'collègues concernés' ;
+    $dest   = ($DB_ROW['prof_id']==$_SESSION['USER_ID']) ? 'vous seul' : ( ($DB_ROW['prof_id']) ? html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']) : 'collègues concernés' ) ;
     $class  = ($DB_ROW['demande_statut']=='eleve') ? ' class="new"' : '' ;
+    $input_type = ($prof_id) ? 'checkbox' : 'hidden' ;
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
     $matiere_nom = ($selection_matiere) ? $matiere_nom : $DB_ROW['matiere_nom'] ;
     $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace(array("\r\n","\r","\n"),'<br />',html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
@@ -161,7 +163,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $fichier_csv .= '"'.$matiere_nom.'"'.$separateur.'"'.$item_ref.'"'.$separateur.'"'.$DB_ROW['item_nom'].'"'.$separateur.'"'.$tab_groupes[$DB_ROW['eleve_id']].'"'.$separateur.'"'.$tab_eleves[$DB_ROW['eleve_id']].'"'.$separateur.'"'.$score.'"'.$separateur.'"'.$date.'"'.$separateur.'"'.$DB_ROW['demande_messages'].'"'."\r\n";
     // Afficher une ligne du tableau 
     $retour .= '<tr'.$class.'>';
-    $retour .= '<td class="nu"><input type="checkbox" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['eleve_id'].'x'.$DB_ROW['item_id'].'" /></td>';
+    $retour .= '<td class="nu"><input type="'.$input_type.'" name="f_ids" value="'.$DB_ROW['demande_id'].'x'.$DB_ROW['eleve_id'].'x'.$DB_ROW['item_id'].'" /></td>';
     $retour .= '<td class="label">'.html($matiere_nom).'</td>';
     $retour .= '<td class="label">'.html($item_ref).' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';
@@ -187,7 +189,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $tab_bad[] = '$'.$DB_ROW['item_id'].'$';
     $tab_bon[] = '<i>'.sprintf("%03u",$DB_ROW['popularite']).'</i>'.$DB_ROW['popularite'].' demande'.$s;
   }
-  // Enregistrer le csv des commentaires
+  // Enregistrer le csv des demandes
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom_export.'.csv' , To::csv($fichier_csv) );
   // Inclure dans le retour la liste des élèves sans demandes et le tableau des commentaires
   $chaine_autres = ( $selection_matiere && $selection_groupe ) ? implode('<br />',$tab_autres) : 'sur choix d\'une matière et d\'un regroupement' ;

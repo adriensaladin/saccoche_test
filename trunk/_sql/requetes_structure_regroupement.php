@@ -465,8 +465,8 @@ public static function DB_modifier_liaison_user_groupe_par_admin( $user_id , $us
   {
     if($etat)
     {
-      $DB_SQL = 'REPLACE INTO sacoche_jointure_user_groupe (user_id,groupe_id) ';
-      $DB_SQL.= 'VALUES(:user_id,:groupe_id)';
+      $DB_SQL = 'INSERT IGNORE INTO sacoche_jointure_user_groupe ( user_id,  groupe_id) ';
+      $DB_SQL.= 'VALUES                                          (:user_id, :groupe_id) ';
     }
     else
     {

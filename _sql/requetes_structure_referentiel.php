@@ -719,7 +719,7 @@ public static function DB_modifier_liaison_item_socle2016( $item_id , $tab_liais
   // Ajout
   if($mode=='ajouter')
   {
-    if(empty($tab_liaisons))
+    if(!empty($tab_liaisons))
     {
       return FALSE;
     }

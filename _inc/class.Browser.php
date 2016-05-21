@@ -41,7 +41,7 @@ define(   'OPERA_VERSION_LAST'           ,37  ); define(   'OPERA_URL_DOWNLOAD' 
 
 define(    'EDGE_VERSION_MINI_REQUISE'   ,12  ); define(    'EDGE_TEXTE_MINI_REQUIS'      , 'Version 12 minimum (sortie en 2015).');
 define(    'EDGE_VERSION_MINI_CONSEILLEE',12  );
-define(    'EDGE_VERSION_LAST'           ,25  ); define(    'EDGE_URL_DOWNLOAD'           , 'https://www.microsoft.com/fr-fr/windows/microsoft-edge');
+define(    'EDGE_VERSION_LAST'           ,12  ); define(    'EDGE_URL_DOWNLOAD'           , 'https://www.microsoft.com/fr-fr/windows/microsoft-edge');
 
 define(  'SAFARI_VERSION_MINI_REQUISE'   , 4  ); define(  'SAFARI_TEXTE_MINI_REQUIS'     , 'Version 4 minimum (sortie en 2009).');
 define(  'SAFARI_VERSION_MINI_CONSEILLEE', 5  );

@@ -389,17 +389,12 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
             }
           }
         }
-        // Depuis décembre 2015 (version 15.5 de SIECLE), la structure des données des élèves et des responsables a évolué :
-        // le "Nom" de l'élève et de ses responsables devient le "Nom de famille",
-        // et un "Nom d'usage" est créé pour les élèves et les responsables (cette donnée est facultative et ne doit être renseignée que lorsqu'elle est différente du "Nom de famille").
-        // Les contrats d'échanges des exports XML génériques de BEE, et de l'import des élèves issus des logiciels privés vont être modifiés dans la version 16.3 de SIECLE, installée en juillet/août dans les académies.
-        $eleve_nom = ($eleve->NOM) ? $eleve->NOM : ( ($eleve->NOM_USAGE) ? $eleve->NOM_USAGE : $eleve->NOM_DE_FAMILLE ) ;
         $tab_users_fichier['sconet_id'   ][$i_fichier] = $i_fichier;
         $tab_users_fichier['sconet_num'  ][$i_fichier] = Clean::entier($eleve->attributes()->ELENOET);
         $tab_users_fichier['reference'   ][$i_fichier] = Clean::ref($eleve->ID_NATIONAL);
         $tab_users_fichier['profil_sigle'][$i_fichier] = 'ELV' ;
         $tab_users_fichier['genre'       ][$i_fichier] = isset($tab_genre[$civilite]) ? $tab_genre[$civilite] : 'I' ;
-        $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($eleve_nom);
+        $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($eleve->NOM);
         $tab_users_fichier['prenom'      ][$i_fichier] = Clean::prenom($eleve->PRENOM);
         $tab_users_fichier['birth_date'  ][$i_fichier] = Clean::texte($eleve->DATE_NAISS);
         $tab_users_fichier['courriel'    ][$i_fichier] = Clean::courriel($eleve->MEL);
@@ -599,18 +594,13 @@ if( ($import_origine=='sconet') && ($import_profil=='parent') )
       $civilite  = Clean::texte($personne->LC_CIVILITE); // L'attribut <LL_CIVILITE> est aussi présent.
       if(isset($tab_enfants[$i_fichier]))
       {
-        // Depuis décembre 2015 (version 15.5 de SIECLE), la structure des données des élèves et des responsables a évolué :
-        // le "Nom" de l'élève et de ses responsables devient le "Nom de famille",
-        // et un "Nom d'usage" est créé pour les élèves et les responsables (cette donnée est facultative et ne doit être renseignée que lorsqu'elle est différente du "Nom de famille").
-        // Les contrats d'échanges des exports XML génériques de BEE, et de l'import des élèves issus des logiciels privés vont être modifiés dans la version 16.3 de SIECLE, installée en juillet/août dans les académies.
-        $personne_nom = ($personne->NOM) ? $personne->NOM : ( ($personne->NOM_USAGE) ? $personne->NOM_USAGE : $personne->NOM_DE_FAMILLE ) ;
         $i_adresse = Clean::entier($personne->ADRESSE_ID);
         $tab_users_fichier['sconet_id'   ][$i_fichier] = $i_fichier;
         $tab_users_fichier['sconet_num'  ][$i_fichier] = 0;
         $tab_users_fichier['reference'   ][$i_fichier] = '';
         $tab_users_fichier['profil_sigle'][$i_fichier] = 'TUT' ;
         $tab_users_fichier['genre'       ][$i_fichier] = isset($tab_genre[$civilite]) ? $tab_genre[$civilite] : 'I' ;
-        $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($personne_nom);
+        $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($personne->NOM);
         $tab_users_fichier['prenom'      ][$i_fichier] = Clean::prenom($personne->PRENOM);
         $tab_users_fichier['courriel'    ][$i_fichier] = Clean::courriel($personne->MEL);
         $tab_users_fichier['adresse'     ][$i_fichier] = isset($tab_adresses[$i_adresse]) ? $tab_adresses[$i_adresse] : array('','','','',0,'','') ;

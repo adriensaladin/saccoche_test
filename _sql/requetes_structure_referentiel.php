@@ -703,7 +703,9 @@ public static function DB_modifier_referentiel_item( $item_id , $socle_id , $ite
     ':item_cart'  => $item_cart,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) || DB_STRUCTURE_REFERENTIEL::DB_modifier_liaison_item_socle2016( $item_id , $tab_socle2016 , 'modifier' ) ;
+  $nb_modifs_item = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+  $nb_modifs_socle = DB_STRUCTURE_REFERENTIEL::DB_modifier_liaison_item_socle2016( $item_id , $tab_socle2016 , 'modifier' );
+  return $nb_modifs_item || $nb_modifs_socle ;
 }
 
 /**
@@ -774,7 +776,7 @@ public static function DB_modifier_liaison_item_socle2016( $item_id , $tab_liais
     {
       $DB_SQL = 'DELETE FROM sacoche_jointure_referentiel_socle ';
       $DB_SQL.= 'WHERE item_id=:item_id AND socle_cycle_id=:socle_cycle_id AND socle_composante_id=:socle_composante_id ';
-      foreach($tab_liaisons_a_retirer as $liaison_infos)
+      foreach($tab_liaisons_a_retirer as $socle_id)
       {
         $cycle_id      = floor($socle_id/100);
         $composante_id = $socle_id - $cycle_id*100;

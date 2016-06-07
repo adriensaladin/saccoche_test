@@ -445,10 +445,13 @@ class Form
         $tab_choix_new = compact('palier_id');
         break;
       case 'evaluation_cartouche' :
-        global $orientation,$couleur,$fond,$legende,$marge_min,$cart_detail,$cart_cases_nb,$cart_contenu,$cart_restriction_item,$cart_restriction_eleve,$repart_categorie_autre,$repart_ref_pourcentage,$cart_hauteur,$aff_reference,$aff_coef,$aff_socle;
-        $tab_choix_new = compact('orientation','couleur','fond','legende','marge_min','cart_detail','cart_cases_nb','cart_contenu','cart_restriction_item','cart_restriction_eleve','repart_categorie_autre','repart_ref_pourcentage','cart_hauteur','aff_reference','aff_coef','aff_socle');
+        global $orientation,$couleur,$fond,$legende,$marge_min,$cart_detail,$cart_cases_nb,$cart_contenu,$cart_restriction_item,$cart_restriction_eleve,$cart_hauteur,$aff_reference,$aff_coef,$aff_socle;
+        $tab_choix_new = compact('orientation','couleur','fond','legende','marge_min','cart_detail','cart_cases_nb','cart_contenu','cart_restriction_item','cart_restriction_eleve','cart_hauteur','aff_reference','aff_coef','aff_socle');
         break;
       case 'evaluation_statistiques' :
+        global $couleur,$fond,$repart_categorie_autre,$repart_ref_pourcentage;
+        $tab_choix_new = compact('couleur','fond','repart_categorie_autre','repart_ref_pourcentage');
+        break;
       case 'evaluation_archivage' :
         global $couleur,$fond;
         $tab_choix_new = compact('couleur','fond');

@@ -530,24 +530,8 @@ $(document).ready
      * Voir les répartitions des élèves à une évaluation : chargement des données
      * @return void
      */
-    var voir_repart = function()
+    function ajax_statistiques()
     {
-      mode = $(this).attr('class');
-      var objet_tds     = $(this).parent().parent().find('td');
-      // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
-      var date_fr       = objet_tds.eq(0).html();
-      var groupe        = objet_tds.eq(3).text().trim();
-      var description   = objet_tds.eq(5).html();
-      // Et aussi...
-      var categorie_autre = ($('#f_categorie_autre').is(':checked')) ? 1 : 0 ;
-      // Mettre les infos de côté
-      $('#repart_ref').val(ref);
-      $('#repart_date_fr').val(date_fr);
-      $('#repart_groupe_nom').val(unescapeHtml(groupe));
-      $('#repart_description').val(unescapeHtml(description));
-      // Afficher la zone associée après avoir chargé son contenu
-      $('#titre_voir_repart').html(groupe+' | '+date_fr+' | '+description);
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
       (
@@ -584,85 +568,37 @@ $(document).ready
       );
     };
 
-    $('#f_categorie_autre').change
-    (
-      function()
-      {
-        // $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=voir_repart'+'&'+$("#zone_voir_repart").serialize(),
-            dataType : 'json',
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              // $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
-              return false;
-            },
-            success : function(responseJSON)
-            {
-              initialiser_compteur();
-              if(responseJSON['statut']==false)
-              {
-                // $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                // Afficher la zone
-                $('#table_voir_repart_quantitative').html(responseJSON['quantitative']);
-                $('#table_voir_repart_quantitative tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
-                $('#table_voir_repart_nominative').html(responseJSON['nominative']);
-                $('#table_voir_repart_nominative tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
-                $('#lien_repart_nominative').attr('href',responseJSON['href']);
-                $('#ajax_msg_archiver_repart').removeAttr('class').html("");
-                // $.fancybox( { 'href':'#zone_voir_repart' , onStart:function(){$('#zone_voir_repart').css("display","block");} , onClosed:function(){$('#zone_voir_repart').css("display","none");} , 'centerOnScroll':true } );
-              }
-            }
-          }
-        );
-      }
-    );
+    /**
+     * Voir les répartitions des élèves à une évaluation : chargement des données
+     * @return void
+     */
+    var voir_repart = function()
+    {
+      mode = $(this).attr('class');
+      var objet_tds     = $(this).parent().parent().find('td');
+      // Récupérer les informations de la ligne concernée
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
+      var date_fr       = objet_tds.eq(0).html();
+      var groupe        = objet_tds.eq(3).text().trim();
+      var description   = objet_tds.eq(5).html();
+      // Et aussi...
+      var categorie_autre = ($('#f_categorie_autre').is(':checked')) ? 1 : 0 ;
+      // Mettre les infos de côté
+      $('#repart_ref').val(ref);
+      $('#repart_date_fr').val(date_fr);
+      $('#repart_groupe_nom').val(unescapeHtml(groupe));
+      $('#repart_description').val(unescapeHtml(description));
+      // Afficher la zone associée après avoir chargé son contenu
+      $('#titre_voir_repart').html(groupe+' | '+date_fr+' | '+description);
+      $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
+      ajax_statistiques();
+    };
 
-    $('#f_ref_pourcentage').change
+    $('#f_categorie_autre , #f_ref_pourcentage').change
     (
       function()
       {
-        // $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=voir_repart'+'&'+$("#zone_voir_repart").serialize(),
-            dataType : 'json',
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              // $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
-              return false;
-            },
-            success : function(responseJSON)
-            {
-              initialiser_compteur();
-              if(responseJSON['statut']==false)
-              {
-                // $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
-              }
-              else
-              {
-                // Afficher la zone
-                $('#table_voir_repart_quantitative').html(responseJSON['quantitative']);
-                $('#table_voir_repart_quantitative tbody td').css({"background-color":"#DDF","font-weight":"normal","text-align":"center"});
-                $('#table_voir_repart_nominative').html(responseJSON['nominative']);
-                $('#table_voir_repart_nominative tbody td').css({"background-color":"#DDF","font-weight":"normal","font-size":"85%"});
-                $('#lien_repart_nominative').attr('href',responseJSON['href']);
-                $('#ajax_msg_archiver_repart').removeAttr('class').html("");
-                // $.fancybox( { 'href':'#zone_voir_repart' , onStart:function(){$('#zone_voir_repart').css("display","block");} , onClosed:function(){$('#zone_voir_repart').css("display","none");} , 'centerOnScroll':true } );
-              }
-            }
-          }
-        );
+        ajax_statistiques();
       }
     );
 

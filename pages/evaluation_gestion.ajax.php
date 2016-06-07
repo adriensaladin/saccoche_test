@@ -1299,6 +1299,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart
   {
     Json::end( FALSE , 'Aucun élève n\'est associé à cette évaluation !' );
   }
+  Form::save_choix('evaluation_statistiques');
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_item_id = array(); // pas indispensable, mais plus lisible
   $tab_user_order = array(); // pour trier les répartition nominatives
@@ -1460,7 +1461,6 @@ if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart
   //
   elseif( ($action=='archiver_repart') && $repartition_type && $couleur && $fond )
   {
-    Form::save_choix('evaluation_statistiques');
     if($repartition_type=='quantitative')
     {
       $tableau_PDF = new PDF_evaluation_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 10 /*marge_haut*/ , 10 /*marge_bas*/ , $couleur , $fond );

@@ -459,15 +459,18 @@ Form::load_choix_memo();
 $check_aff_reference    = (Form::$tab_choix['aff_reference'])    ? ' checked' : '' ;
 $check_aff_coef         = (Form::$tab_choix['aff_coef'])         ? ' checked' : '' ;
 $check_aff_socle        = (Form::$tab_choix['aff_socle'])        ? ' checked' : '' ;
-$check_cart_restriction = (Form::$tab_choix['cart_restriction']) ? ' checked' : '' ;
-$select_cart_detail   = HtmlForm::afficher_select(Form::$tab_select_cart_detail   , 'f_detail'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']   /*selection*/ , '' /*optgroup*/ );
-$select_cart_cases_nb = HtmlForm::afficher_select(Form::$tab_select_cart_cases_nb , 'f_cases_nb'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb'] /*selection*/ , '' /*optgroup*/ );
-$select_cart_contenu  = HtmlForm::afficher_select(Form::$tab_select_cart_contenu  , 'f_contenu'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']  /*selection*/ , '' /*optgroup*/ );
-$select_orientation   = HtmlForm::afficher_select(Form::$tab_select_orientation   , 'f_orientation' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']   /*selection*/ , '' /*optgroup*/ );
-$select_cart_hauteur  = HtmlForm::afficher_select(Form::$tab_select_cart_hauteur  , 'f_hauteur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_hauteur']  /*selection*/ , '' /*optgroup*/ );
-$select_couleur       = HtmlForm::afficher_select(Form::$tab_select_couleur       , 'f_couleur'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']       /*selection*/ , '' /*optgroup*/ );
-$select_fond          = HtmlForm::afficher_select(Form::$tab_select_fond          , 'f_fond'        /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']          /*selection*/ , '' /*optgroup*/ );
-$select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min     , 'f_marge_min'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']     /*selection*/ , '' /*optgroup*/ );
+$check_cart_restriction_item  = (Form::$tab_choix['cart_restriction_item'])  ? ' checked' : '' ;
+$check_cart_restriction_eleve = (Form::$tab_choix['cart_restriction_eleve']) ? ' checked' : '' ;
+$check_repart_categorie_autre = (Form::$tab_choix['repart_categorie_autre']) ? ' checked' : '' ;
+$select_cart_detail            = HtmlForm::afficher_select(Form::$tab_select_cart_detail            , 'f_detail'          /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_detail']            /*selection*/ , '' /*optgroup*/ );
+$select_cart_cases_nb          = HtmlForm::afficher_select(Form::$tab_select_cart_cases_nb          , 'f_cases_nb'        /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_cases_nb']          /*selection*/ , '' /*optgroup*/ );
+$select_cart_contenu           = HtmlForm::afficher_select(Form::$tab_select_cart_contenu           , 'f_contenu'         /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_contenu']           /*selection*/ , '' /*optgroup*/ );
+$select_orientation            = HtmlForm::afficher_select(Form::$tab_select_orientation            , 'f_orientation'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['orientation']            /*selection*/ , '' /*optgroup*/ );
+$select_cart_hauteur           = HtmlForm::afficher_select(Form::$tab_select_cart_hauteur           , 'f_hauteur'         /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['cart_hauteur']           /*selection*/ , '' /*optgroup*/ );
+$select_couleur                = HtmlForm::afficher_select(Form::$tab_select_couleur                , 'f_couleur'         /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']                /*selection*/ , '' /*optgroup*/ );
+$select_fond                   = HtmlForm::afficher_select(Form::$tab_select_fond                   , 'f_fond'            /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']                   /*selection*/ , '' /*optgroup*/ );
+$select_marge_min              = HtmlForm::afficher_select(Form::$tab_select_marge_min              , 'f_marge_min'       /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']              /*selection*/ , '' /*optgroup*/ );
+$select_repart_ref_pourcentage = HtmlForm::afficher_select(Form::$tab_select_repart_ref_pourcentage , 'f_ref_pourcentage' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['repart_ref_pourcentage'] /*selection*/ , '' /*optgroup*/ );
 ?>
 
 <form action="#" method="post" id="zone_imprimer" class="hide"><fieldset>
@@ -483,7 +486,8 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
     <label class="tab">Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_fond ?> <?php echo $select_marge_min ?><br />
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement pour un choix de détail complet." /> Indications :</label><label for="f_reference"><input type="checkbox" id="f_reference" name="f_reference" value="1"<?php echo $check_aff_reference ?> /> Références</label>&nbsp;&nbsp;&nbsp;<label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label><br />
-    <label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_req" name="f_restriction_req" value="1"<?php echo $check_cart_restriction ?> /> <label for="f_restriction_req">Uniquement les items ayant fait l'objet d'une demande d'évaluation (ou dont une note est saisie).</label><br />
+    <label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_item" name="f_restriction_item" value="1"<?php echo $check_cart_restriction_item ?> /> <label for="f_restriction_item">Uniquement les items dont une note est saisie ou faisant l'objet d'une demande d'évaluation.</label><br />
+    <span class="tab"></span><input type="checkbox" id="f_restriction_eleve" name="f_restriction_eleve" value="1"<?php echo $check_cart_restriction_eleve ?> /> <label for="f_restriction_eleve">Uniquement les élèves ayant fait l'objet d'une saisie de code couleur (pas ABS etc.).</label><br />
     <label class="tab" for="f_detail">Hauteur des blocs :</label><?php echo $select_cart_hauteur ?><br />
   </div>
   <span class="tab"></span><button id="valider_imprimer" type="button" class="valider">Générer le cartouche</button> <button id="fermer_zone_imprimer" type="button" class="retourner">Retour</button> <label id="ajax_msg_imprimer">&nbsp;</label>
@@ -495,9 +499,11 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
   <p id="zone_imprimer_retour"></p>
 </fieldset></form>
 
-<div id="zone_voir_repart" class="hide">
+<form action="#" method="post" id="zone_voir_repart" class="hide"><fieldset>
   <h2>Voir les répartitions des élèves à une évaluation</h2>
   <p class="b" id="titre_voir_repart"></p>
+  <label class="tab" for="f_categorie_autre">Catégorie "Autre" :</label><input type="checkbox" id="f_categorie_autre" name="f_categorie_autre" value="1"<?php echo $check_repart_categorie_autre ?> /> <label for="f_categorie_autre">Tenir compte de cette catégorie.</label><br />
+  <label class="tab" for="f_ref_pourcentage">Pourcentage :</label><?php echo $select_repart_ref_pourcentage ?>
   <hr />
   <h3>Répartition quantitative des scores</h3>
   <table id="table_voir_repart_quantitative" class="scor_eval">
@@ -513,22 +519,20 @@ $select_marge_min     = HtmlForm::afficher_select(Form::$tab_select_marge_min   
   <p><a id="lien_repart_nominative" target="_blank" href=""><span class="file file_htm">Préparer une évaluation / Constituer un groupe de besoin (format <em>html</em>).</span></a></p>
   <hr />
   <h3>Archivage PDF</h3>
-  <form action="#" method="post" id="zone_archiver_repart"><fieldset>
-    <input id="repart_ref"         name="f_ref"         type="hidden" value="" />
-    <input id="repart_date_fr"     name="f_date_fr"     type="hidden" value="" />
-    <input id="repart_groupe_nom"  name="f_groupe_nom"  type="hidden" value="" />
-    <input id="repart_description" name="f_description" type="hidden" value="" />
-    <button id="archiver_repart" type="button" class="imprimer">Archiver / Imprimer</button> le tableau avec la 
-    <select id="repart_type" name="f_repartition_type"><option value="nominative">répartition nominative</option><option value="quantitative">répartition quantitative</option></select>
-    des scores 
-    <?php echo str_replace( 'id="f_couleur"' , 'id="f_repart_couleur"' , $select_couleur); ?>
-    <?php echo str_replace( 'id="f_fond"'    , 'id="f_repart_fond"'    , $select_fond); ?>
-  </fieldset></form>
+  <input id="repart_ref"         name="f_ref"         type="hidden" value="" />
+  <input id="repart_date_fr"     name="f_date_fr"     type="hidden" value="" />
+  <input id="repart_groupe_nom"  name="f_groupe_nom"  type="hidden" value="" />
+  <input id="repart_description" name="f_description" type="hidden" value="" />
+  <button id="archiver_repart" type="button" class="imprimer">Archiver / Imprimer</button> le tableau avec la 
+  <select id="repart_type" name="f_repartition_type"><option value="nominative">répartition nominative</option><option value="quantitative">répartition quantitative</option></select>
+  des scores 
+  <?php echo str_replace( 'id="f_couleur"' , 'id="f_repart_couleur"' , $select_couleur); ?>
+  <?php echo str_replace( 'id="f_fond"'    , 'id="f_repart_fond"'    , $select_fond); ?>
   <p>
     <span class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</span>
     <label id="ajax_msg_archiver_repart"></label>
   </p>
-</div>
+</fieldset></form>
 
 <div id="zone_saisir_voir" class="hide">
   <h2>Saisir / Voir les acquisitions d'une évaluation</h2>

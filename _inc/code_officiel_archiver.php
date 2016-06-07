@@ -67,7 +67,7 @@ $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement
                              : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_id , 2 /*actuels_et_anciens*/ , $periode_id ) ;
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
+  Json::end( FALSE , 'Aucun élève évalué sur la période trouvé dans ce regroupement !' );
 }
 $tab_eleve_id    = array( 0 => array( 'eleve_nom' => $classe_nom ,  'eleve_prenom' => '' ) );
 $tab_saisie_init = array( 0 => array( 'note'=>NULL , 'appreciation'=>'' ) );

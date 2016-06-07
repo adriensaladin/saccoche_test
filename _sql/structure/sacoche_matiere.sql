@@ -187,9 +187,10 @@ INSERT INTO sacoche_matiere VALUES
 ( 233, 0, 0,   2, 0, 255,  23300, "LITTE", "Littérature"),
 ( 234, 0, 0,   2, 0, 255,  23400, "CUGEX", "Culture générale et expression"),
 ( 235, 0, 0,   2, 0, 255,  23500, "FHGEC", "Français - histoire-géo. - éduc. civique"),
+( 236, 0, 0,   2, 0, 255,  23600, "LGLIT", "Langue et littérature"),
 ( 299, 0, 0,   2, 0, 255,  29900, "LETDI", "Lettres divers"),
 
--- 3 Langues vivantes
+-- 3 Langues vivantes ; voir la famille 93 pour le rangement des autres langues...
 
 ( 300, 0, 0,   3, 0, 255,  39701, "FLE"  , "Français langue étrangère"),
 ( 301, 0, 0,   3, 0, 255,  30100, "ALL"  , "Allemand"),
@@ -1542,6 +1543,7 @@ INSERT INTO sacoche_matiere VALUES
 (3219, 0, 0,  32, 0, 255, 321900, "HHCYT", "Hématologie - histologie - cytologie"),
 (3220, 0, 0,  32, 0, 255, 322000, "TECMA", "Technologie matériels"),
 (3221, 0, 0,  32, 0, 255, 322100, "ANAMP", "Anatomie - morphologie"),
+(3222, 0, 0,  32, 0, 255, 322200, "HANCY", "Hématologie - anatomocythopathologie"),
 (3223, 0, 0,  32, 0, 255, 322300, "STBP" , "Sciences et techn biol et paramédicales"),
 (3224, 0, 0,  32, 0, 255, 322400, "IMNEP", "Im med medec nucl 4rad elec pathol pharm"),
 (3225, 0, 0,  32, 0, 255, 322520, "EMEDS", "Enseignement médical et scientifique"),
@@ -1807,6 +1809,7 @@ INSERT INTO sacoche_matiere VALUES
 (3734, 0, 0,  37, 0, 255, 373400, "SISR" , "Solutions d’infrastructure, systèmes et réseaux"),
 (3735, 0, 0,  37, 0, 255, 373500, "SLAM" , "Solutions logicielles et applications métiers"),
 (3736, 0, 0,  37, 0, 255, 373600, "PRPEN", "Projets personnalisés encadrés"),
+(3737, 0, 0,  37, 0, 255, 373700, "ICN"  , "Informatique et création numérique"),
 (3799, 0, 0,  37, 0, 255, 379900, "IFGSD", "Informatique de gestion divers"),
 
 -- 38 Économie
@@ -2140,6 +2143,8 @@ INSERT INTO sacoche_matiere VALUES
 -- 47 Activités non spécialisées (suite)
 
 (4701, 0, 0,  47, 0, 255, 470100, "ACMET", "Accompagnement méthodologique"),
+(4702, 0, 0,  47, 0, 255, 470200, "MODAS", "Module d'aides spécifiques"),
+(4703, 0, 0,  47, 0, 255, 470300, "ENSHL", "Enseignement non suivi hors langue vivante"),
 
 -- 48 Sciences (suite)
 
@@ -2346,6 +2351,10 @@ INSERT INTO sacoche_matiere VALUES
 (9371, 0, 0,  93, 0, 255,  37100, "LMN", "Mélanésien nengone"),
 (9372, 0, 0,  93, 0, 255,  37200, "LMD", "Mélanésien paici"),
 (9373, 0, 0,  93, 0, 255,  37300, "CRE", "Créole"),
+(9374, 0, 0,  93, 0, 255,  37400, "WAL", "Walissien-futunien"),
+(9380, 0, 0,  93, 0, 255,  38000, "LNS", "Langue non suivie"),
+(9381, 0, 0,  93, 0, 255,  38100, "LIT", "Lituanien"),
+(9382, 0, 0,  93, 0, 255,  38200, "EST", "Estonien"),
 
 -- 97 Spécialités de baccalauréat professionnel (http://eduscol.education.fr/cid47640/le-baccalaureat-professionnel.html#lien2)
 

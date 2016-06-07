@@ -28,46 +28,49 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && (!in_array($_POST['f_action'],array('lister_evaluations','ordonner','indiquer_eleves_deja','saisir','voir','voir_repart','archiver_repart','imprimer_cartouche','generer_tableau_scores_vierge_csv','generer_tableau_scores_rempli_csv','generer_tableau_scores_vierge_pdf','generer_tableau_scores_rempli_pdf'))) ) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action           = (isset($_POST['f_action']))           ? Clean::texte($_POST['f_action'])                : '';
-$type             = (isset($_POST['f_type']))             ? Clean::texte($_POST['f_type'])                  : '';
-$aff_classe_txt   = (isset($_POST['f_aff_classe']))       ? Clean::texte($_POST['f_aff_classe'])            : '';
-$aff_classe_id    = (isset($_POST['f_aff_classe']))       ? Clean::entier(substr($_POST['f_aff_classe'],1)) : 0;
-$aff_periode      = (isset($_POST['f_aff_periode']))      ? Clean::entier($_POST['f_aff_periode'])          : 0;
-$date_debut       = (isset($_POST['f_date_debut']))       ? Clean::date_fr($_POST['f_date_debut'])          : '';
-$date_fin         = (isset($_POST['f_date_fin']))         ? Clean::date_fr($_POST['f_date_fin'])            : '';
-$ref              = (isset($_POST['f_ref']))              ? Clean::texte($_POST['f_ref'])                   : '';
-$date             = (isset($_POST['f_date']))             ? Clean::date_fr($_POST['f_date'])                : '';
-$date_fr          = (isset($_POST['f_date_fr']))          ? Clean::date_fr($_POST['f_date_fr'])             : '';
-$date_visible     = (isset($_POST['f_date_visible']))     ? Clean::date_fr($_POST['f_date_visible'])        : ''; // JJ/MM/AAAA ou "identique" (est alors transformé en 00/00/0000)
-$date_autoeval    = (isset($_POST['f_date_autoeval']))    ? Clean::date_fr($_POST['f_date_autoeval'])       : ''; // JJ/MM/AAAA mais peut valoir 00/00/0000
-$description      = (isset($_POST['f_description']))      ? Clean::texte($_POST['f_description'])           : '';
-$mode_discret     = (isset($_POST['f_mode_discret']))     ? TRUE                                            : FALSE ;
-$doc_sujet        = (isset($_POST['f_doc_sujet']))        ? Clean::texte($_POST['f_doc_sujet'])             : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
-$doc_corrige      = (isset($_POST['f_doc_corrige']))      ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
-$groupe           = (isset($_POST['f_groupe']))           ? Clean::lettres_chiffres($_POST['f_groupe'])     : '';
-$groupe_nom       = (isset($_POST['f_groupe_nom']))       ? Clean::texte($_POST['f_groupe_nom'])            : '';
-$eleves_ordre     = (isset($_POST['f_eleves_ordre']))     ? Clean::texte($_POST['f_eleves_ordre'])          : '';
-$eleve_id         = (isset($_POST['f_eleve_id']))         ? Clean::entier($_POST['f_eleve_id'])             : 0;
-$msg_objet        = (isset($_POST['f_msg_objet']))        ? Clean::texte($_POST['f_msg_objet'])             : '';
-$msg_data         = (isset($_POST['f_msg_data']))         ? Clean::texte($_POST['f_msg_data'])              : '';
-$msg_url          = (isset($_POST['f_msg_url']))          ? Clean::texte($_POST['f_msg_url'])               : '';
-$msg_autre        = (isset($_POST['f_msg_autre']))        ? Clean::texte($_POST['f_msg_autre'])             : '';
-$repartition_type = (isset($_POST['f_repartition_type'])) ? Clean::texte($_POST['f_repartition_type'])      : '';
-$cart_detail      = (isset($_POST['f_detail']))           ? Clean::texte($_POST['f_detail'])                : '';
-$cart_cases_nb    = (isset($_POST['f_cases_nb']))         ? Clean::entier($_POST['f_cases_nb'])             : '';
-$cart_contenu     = (isset($_POST['f_contenu']))          ? Clean::texte($_POST['f_contenu'])               : '';
-$orientation      = (isset($_POST['f_orientation']))      ? Clean::texte($_POST['f_orientation'])           : '';
-$marge_min        = (isset($_POST['f_marge_min']))        ? Clean::texte($_POST['f_marge_min'])             : '';
-$couleur          = (isset($_POST['f_couleur']))          ? Clean::texte($_POST['f_couleur'])               : '';
-$fond             = (isset($_POST['f_fond']))             ? Clean::texte($_POST['f_fond'])                  : '';
-$aff_reference    = (isset($_POST['f_reference']))        ? 1                                               : 0;
-$aff_coef         = (isset($_POST['f_coef']))             ? 1                                               : 0;
-$aff_socle        = (isset($_POST['f_socle']))            ? 1                                               : 0;
-$cart_restriction = (isset($_POST['f_restriction_req']))  ? TRUE                                            : FALSE;
-$cart_hauteur     = (isset($_POST['f_hauteur']))          ? Clean::texte($_POST['f_hauteur'])               : '';
-$doc_objet        = (isset($_POST['f_doc_objet']))        ? Clean::texte($_POST['f_doc_objet'])             : '';
-$doc_url          = (isset($_POST['f_doc_url']))          ? Clean::texte($_POST['f_doc_url'])               : '';
-$fini             = (isset($_POST['f_fini']))             ? Clean::texte($_POST['f_fini'])                  : '';
+$action                 = (isset($_POST['f_action']))            ? Clean::texte($_POST['f_action'])                : '';
+$type                   = (isset($_POST['f_type']))              ? Clean::texte($_POST['f_type'])                  : '';
+$aff_classe_txt         = (isset($_POST['f_aff_classe']))        ? Clean::texte($_POST['f_aff_classe'])            : '';
+$aff_classe_id          = (isset($_POST['f_aff_classe']))        ? Clean::entier(substr($_POST['f_aff_classe'],1)) : 0;
+$aff_periode            = (isset($_POST['f_aff_periode']))       ? Clean::entier($_POST['f_aff_periode'])          : 0;
+$date_debut             = (isset($_POST['f_date_debut']))        ? Clean::date_fr($_POST['f_date_debut'])          : '';
+$date_fin               = (isset($_POST['f_date_fin']))          ? Clean::date_fr($_POST['f_date_fin'])            : '';
+$ref                    = (isset($_POST['f_ref']))               ? Clean::texte($_POST['f_ref'])                   : '';
+$date                   = (isset($_POST['f_date']))              ? Clean::date_fr($_POST['f_date'])                : '';
+$date_fr                = (isset($_POST['f_date_fr']))           ? Clean::date_fr($_POST['f_date_fr'])             : '';
+$date_visible           = (isset($_POST['f_date_visible']))      ? Clean::date_fr($_POST['f_date_visible'])        : ''; // JJ/MM/AAAA ou "identique" (est alors transformé en 00/00/0000)
+$date_autoeval          = (isset($_POST['f_date_autoeval']))     ? Clean::date_fr($_POST['f_date_autoeval'])       : ''; // JJ/MM/AAAA mais peut valoir 00/00/0000
+$description            = (isset($_POST['f_description']))       ? Clean::texte($_POST['f_description'])           : '';
+$mode_discret           = (isset($_POST['f_mode_discret']))      ? TRUE                                            : FALSE ;
+$doc_sujet              = (isset($_POST['f_doc_sujet']))         ? Clean::texte($_POST['f_doc_sujet'])             : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
+$doc_corrige            = (isset($_POST['f_doc_corrige']))       ? Clean::texte($_POST['f_doc_corrige'])           : ''; // Pas Clean::fichier() car transmis pour "dupliquer" (et "modifier") avec le chemin complet http://...
+$groupe                 = (isset($_POST['f_groupe']))            ? Clean::lettres_chiffres($_POST['f_groupe'])     : '';
+$groupe_nom             = (isset($_POST['f_groupe_nom']))        ? Clean::texte($_POST['f_groupe_nom'])            : '';
+$eleves_ordre           = (isset($_POST['f_eleves_ordre']))      ? Clean::texte($_POST['f_eleves_ordre'])          : '';
+$eleve_id               = (isset($_POST['f_eleve_id']))          ? Clean::entier($_POST['f_eleve_id'])             : 0;
+$msg_objet              = (isset($_POST['f_msg_objet']))         ? Clean::texte($_POST['f_msg_objet'])             : '';
+$msg_data               = (isset($_POST['f_msg_data']))          ? Clean::texte($_POST['f_msg_data'])              : '';
+$msg_url                = (isset($_POST['f_msg_url']))           ? Clean::texte($_POST['f_msg_url'])               : '';
+$msg_autre              = (isset($_POST['f_msg_autre']))         ? Clean::texte($_POST['f_msg_autre'])             : '';
+$repartition_type       = (isset($_POST['f_repartition_type']))  ? Clean::texte($_POST['f_repartition_type'])      : '';
+$cart_detail            = (isset($_POST['f_detail']))            ? Clean::texte($_POST['f_detail'])                : '';
+$cart_cases_nb          = (isset($_POST['f_cases_nb']))          ? Clean::entier($_POST['f_cases_nb'])             : '';
+$cart_contenu           = (isset($_POST['f_contenu']))           ? Clean::texte($_POST['f_contenu'])               : '';
+$orientation            = (isset($_POST['f_orientation']))       ? Clean::texte($_POST['f_orientation'])           : '';
+$marge_min              = (isset($_POST['f_marge_min']))         ? Clean::texte($_POST['f_marge_min'])             : '';
+$couleur                = (isset($_POST['f_couleur']))           ? Clean::texte($_POST['f_couleur'])               : '';
+$fond                   = (isset($_POST['f_fond']))              ? Clean::texte($_POST['f_fond'])                  : '';
+$aff_reference          = (isset($_POST['f_reference']))         ? 1                                               : 0;
+$aff_coef               = (isset($_POST['f_coef']))              ? 1                                               : 0;
+$aff_socle              = (isset($_POST['f_socle']))             ? 1                                               : 0;
+$cart_restriction_item  = (isset($_POST['f_restriction_item']))  ? TRUE                                            : FALSE;
+$cart_restriction_eleve = (isset($_POST['f_restriction_eleve'])) ? TRUE                                            : FALSE;
+$repart_categorie_autre = (isset($_POST['f_categorie_autre']))   ? TRUE                                            : FALSE;
+$repart_ref_pourcentage = (isset($_POST['f_ref_pourcentage']))   ? Clean::texte($_POST['f_ref_pourcentage'])       : '';
+$cart_hauteur           = (isset($_POST['f_hauteur']))           ? Clean::texte($_POST['f_hauteur'])               : '';
+$doc_objet              = (isset($_POST['f_doc_objet']))         ? Clean::texte($_POST['f_doc_objet'])             : '';
+$doc_url                = (isset($_POST['f_doc_url']))           ? Clean::texte($_POST['f_doc_url'])               : '';
+$fini                   = (isset($_POST['f_fini']))              ? Clean::texte($_POST['f_fini'])                  : '';
 
 $chemin_devoir      = CHEMIN_DOSSIER_DEVOIR.$_SESSION['BASE'].DS;
 $url_dossier_devoir = URL_DIR_DEVOIR.$_SESSION['BASE'].'/';
@@ -1279,7 +1282,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
 // Voir ou Archiver la répartition, nominative ou quantitative, des élèves par item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $groupe_id && $date_fr && $description ) // $groupe_nom est aussi transmis
+if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart_ref_pourcentage,array('tous','only_eval')) && $devoir_id && $groupe_id && $date_fr && $description ) // $groupe_nom est aussi transmis
 {
   // liste des items
   $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , TRUE /*with_lien*/ );
@@ -1321,17 +1324,22 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     $tab_init_nominatif[  $note_id] = array();
     $tab_init_quantitatif[$note_id] = 0;
   }
-  $tab_init_nominatif[  'X'] = array();
-  $tab_init_quantitatif['X'] = 0;
+  if($repart_categorie_autre)
+  {
+    $tab_init_nominatif[  'X'] = array();
+    $tab_init_quantitatif['X'] = 0;
+  }
   $tab_repartition_nominatif   = array();
   $tab_repartition_quantitatif = array();
   $tab_selection_nominatif     = array();
+  $tab_nombre_eleves           = array();
   // initialisation
-  foreach($tab_item_id as $item_id=>$tab_infos_item)
+  foreach($tab_item_id as $item_id => $tab_infos_item)
   {
     $tab_repartition_nominatif[$item_id]   = $tab_init_nominatif;
     $tab_repartition_quantitatif[$item_id] = $tab_init_quantitatif;
     $tab_selection_nominatif[$item_id]     = $tab_init_nominatif;
+    $tab_nombre_eleves[$item_id]           = 0;
   }
   // remplissage
   $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , FALSE /*with_marqueurs*/ );
@@ -1344,10 +1352,17 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
       $eleve = isset($tab_init_quantitatif[$DB_ROW['saisie_note']]) ? $tab_user_id[$DB_ROW['eleve_id']] : $tab_user_id[$DB_ROW['eleve_id']].' ('.$DB_ROW['saisie_note'].')' ; // Ajouter la note si hors des codes couleurs usuels
       $checkbox_user = '<input type="checkbox" name="id_user[]" value="'.$DB_ROW['eleve_id'].'" />';
       $checkbox_req  = '<input type="checkbox" name="id_req[]" value="'.$DB_ROW['eleve_id'].'x'.$DB_ROW['item_id'].'" />';
-      $tab_repartition_nominatif[$DB_ROW['item_id']][$note][$DB_ROW['eleve_id']] = $eleve;
-      $tab_repartition_quantitatif[$DB_ROW['item_id']][$note]++;
-      $tab_selection_nominatif[$DB_ROW['item_id']][$note][$DB_ROW['eleve_id']] = $checkbox_user.$checkbox_req.' '.$eleve;
+      if( $repart_categorie_autre || ($note!='X') )
+      {
+        $tab_repartition_nominatif[$DB_ROW['item_id']][$note][$DB_ROW['eleve_id']] = $eleve;
+        $tab_repartition_quantitatif[$DB_ROW['item_id']][$note]++;
+        $tab_selection_nominatif[$DB_ROW['item_id']][$note][$DB_ROW['eleve_id']] = $checkbox_user.$checkbox_req.' '.$eleve;
+      }
     }
+  }
+  foreach($tab_repartition_quantitatif as $item_id => $tab)
+  {
+    $tab_nombre_eleves[$item_id] = ($repart_ref_pourcentage == 'tous') ? $eleve_nb : max( 1 , array_sum($tab) ) ;
   }
   // Tri des tableaux nominatifs par ordre alphabétique des élèves pour chaque catégorie
   // La fonction tri_clefs() utilisée avec uksort() trie les élèves par ordre alphabétique à partir de leur identifiant.
@@ -1356,13 +1371,13 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     global $tab_user_order;
     return $tab_user_order[$key1] - $tab_user_order[$key2];
   }
-  foreach($tab_item_id as $item_id=>$tab_infos_item)
+  foreach($tab_item_id as $item_id => $tab_infos_item)
   {
-    foreach($tab_repartition_nominatif[$item_id] as $code=>$tab_eleves)
+    foreach($tab_repartition_nominatif[$item_id] as $code => $tab_eleves)
     {
       uksort( $tab_repartition_nominatif[$item_id][$code] , 'tri_clefs' );
     }
-    foreach($tab_selection_nominatif[$item_id] as $code=>$tab_eleves)
+    foreach($tab_selection_nominatif[$item_id] as $code => $tab_eleves)
     {
       uksort( $tab_selection_nominatif[$item_id][$code] , 'tri_clefs' );
     }
@@ -1374,34 +1389,35 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
   {
     // 1e ligne : référence des codes
     $affichage_repartition_head = '<th class="nu"></th>';
-    foreach($tab_init_quantitatif as $note=>$vide)
+    foreach($tab_init_quantitatif as $note => $vide)
     {
       $affichage_repartition_head .= ($note!='X') ? '<th>'.Html::note_image($note,'','',FALSE).'</th>' : '<th>Autre</th>' ;
     }
     // PARTIE 1 : assemblage / affichage du tableau avec la répartition quantitative
     Json::add_row( 'quantitative' , '<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>' );
-    foreach($tab_item_id as $item_id=>$tab_infos_item)
+    foreach($tab_item_id as $item_id => $tab_infos_item)
     {
       $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" href="'.html($tab_infos_item[2]).'">' : '';
       $texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
       Json::add_row( 'quantitative' , '<tr>' );
       Json::add_row( 'quantitative' , '<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>' );
-      foreach($tab_repartition_quantitatif[$item_id] as $code=>$note_nb)
+      foreach($tab_repartition_quantitatif[$item_id] as $code => $note_nb)
       {
-        Json::add_row( 'quantitative' , '<td style="font-size:'.round(75+100*$note_nb/$eleve_nb).'%">'.round(100*$note_nb/$eleve_nb).'%</td>' );
+        $valeur = round( 100 * $note_nb / $tab_nombre_eleves[$item_id] );
+        Json::add_row( 'quantitative' , '<td style="font-size:'.(75+$valeur).'%">'.$valeur.'%</td>' );
       }
       Json::add_row( 'quantitative' , '</tr>' );
     }
     Json::add_row( 'quantitative' , '</tbody>' );
     // PARTIE 2 : assemblage / affichage du tableau avec la répartition nominative
     Json::add_row( 'nominative' , '<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>' );
-    foreach($tab_item_id as $item_id=>$tab_infos_item)
+    foreach($tab_item_id as $item_id => $tab_infos_item)
     {
       $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" href="'.html($tab_infos_item[2]).'">' : '';
       $texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
       Json::add_row( 'nominative' , '<tr>' );
       Json::add_row( 'nominative' , '<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>' );
-      foreach($tab_repartition_nominatif[$item_id] as $code=>$tab_eleves)
+      foreach($tab_repartition_nominatif[$item_id] as $code => $tab_eleves)
       {
         Json::add_row( 'nominative' , '<td>'.implode('<br />',$tab_eleves).'</td>' );
       }
@@ -1418,11 +1434,11 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
     $affichage_HTML .= '<table class="eval_exploitation">'.NL;
     $affichage_HTML .= '<thead><tr>'.$affichage_repartition_head.'</tr></thead>'.NL;
     $affichage_HTML .= '<tbody>';
-    foreach($tab_item_id as $item_id=>$tab_infos_item)
+    foreach($tab_item_id as $item_id => $tab_infos_item)
     {
       $affichage_HTML .= '<tr>';
       $affichage_HTML .= '<th><b>'.html($tab_infos_item[0]).'</b><br />'.html($tab_infos_item[1]).'</th>';
-      foreach($tab_selection_nominatif[$item_id] as $code=>$tab_eleves)
+      foreach($tab_selection_nominatif[$item_id] as $code => $tab_eleves)
       {
         $affichage_HTML .= '<td>'.implode('<br />',$tab_eleves).'</td>';
       }
@@ -1452,12 +1468,12 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
       // 1ère ligne : référence du devoir et des codes
       $tableau_PDF->repartition_quantitative_entete( $groupe_nom , $date_fr , $description , $tab_init_quantitatif );
       // ligne suivantes : référence item, cases répartition quantitative
-      foreach($tab_item_id as $item_id=>$tab_infos_item)
+      foreach($tab_item_id as $item_id => $tab_infos_item)
       {
         // ligne de répartition pour 1 item : référence item
         $tableau_PDF->saisie_reference_item( $tab_infos_item[0] , $tab_infos_item[1] );
         // ligne de répartition pour 1 item : cases répartition quantitative
-        $tableau_PDF->repartition_quantitative_cases_eleves( $tab_repartition_quantitatif[$item_id] , $eleve_nb );
+        $tableau_PDF->repartition_quantitative_cases_eleves( $tab_repartition_quantitatif[$item_id] , $tab_nombre_eleves[$item_id] );
       }
     }
     elseif($repartition_type=='nominative')
@@ -1470,7 +1486,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && $devoir_id && $g
         $somme += max(4,max($tab_effectifs));
       }
       $tableau_PDF->repartition_nominative_initialiser($somme);
-      foreach($tab_item_id as $item_id=>$tab_infos_item)
+      foreach($tab_item_id as $item_id => $tab_infos_item)
       {
         // 1ère ligne : nouvelle page si besoin + référence du devoir et des codes si besoin
         $tableau_PDF->repartition_nominative_entete( $groupe_nom , $date_fr , $description , $tab_init_quantitatif , $tab_repartition_quantitatif[$item_id] );
@@ -1559,6 +1575,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
   $tab_user_nb_items      = array(); // pour retenir le nb d'items par utilisateur : utile si cartouche avec les seuls résultats ou demandes d'évaluations
+  $tab_user_nb_notes      = array(); // pour retenir le nb de codes couleurs saisis par utilisateur : utile si cartouche avec les seuls élèves ayant un code couleur saisi
   $tab_user_nb_ligne_comm = array(); // pour retenir le nb de lignes de commentaires par utilisateur
   $tab_user_commentaire   = array(); // pour retenir les commentaires écrits pour par élève
   // enregistrer noms prénoms des élèves
@@ -1566,6 +1583,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   {
     $tab_user_id[$DB_ROW['user_id']] = ($with_nom) ? html($DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' ('.$groupe_nom.')') : '' ;
     $tab_user_nb_items[$DB_ROW['user_id']] = 0 ;
+    $tab_user_nb_notes[$DB_ROW['user_id']] = 0 ;
     $tab_user_nb_ligne_comm[$DB_ROW['user_id']] = 0 ;
     $tab_user_commentaire[$DB_ROW['user_id']] = NULL;
   }
@@ -1601,9 +1619,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     }
   }
   // compléter si demandé avec les résultats et/ou les demandes d'évaluations
-  if($with_result || $cart_restriction)
+  if( $with_result || $cart_restriction_item || $cart_restriction_eleve )
   {
-    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , $cart_restriction );
+    $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , $cart_restriction_item );
     foreach($DB_TAB as $DB_ROW)
     {
       // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
@@ -1614,6 +1632,10 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         {
           $tab_result[$DB_ROW['item_id']][$DB_ROW['eleve_id']] = $valeur ;
           $tab_user_nb_items[$DB_ROW['eleve_id']]++;
+        }
+        if(isset($_SESSION['NOTE'][$DB_ROW['saisie_note']])) // Note {1;...;6}
+        {
+          $tab_user_nb_notes[$DB_ROW['eleve_id']]++;
         }
       }
     }
@@ -1657,9 +1679,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $lignes_comm_max = max($tab_user_nb_ligne_comm);
   $item_nb = count($tab_comp_id);
-  if(!$cart_restriction)
+  if(!$cart_restriction_item)
   {
     $tab_user_nb_items = array_fill_keys( array_keys($tab_user_nb_items) , $item_nb );
+  }
+  if(!$cart_restriction_eleve)
+  {
+    $tab_user_nb_notes = array_fill_keys( array_keys($tab_user_nb_notes) , $item_nb );
   }
   $cartouche_PDF = new PDF_evaluation_cartouche( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $fond , 'oui' /*legende*/ );
   $cartouche_PDF->initialiser( $cart_detail , $longueur_ref_max , $item_nb , $cart_cases_nb );
@@ -1668,7 +1694,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     // dans le cas d'un cartouche minimal...
     foreach($tab_user_id as $user_id=>$val_user)
     {
-      if($tab_user_nb_items[$user_id])
+      if( $tab_user_nb_items[$user_id] && $tab_user_nb_notes[$user_id] )
       {
         $colonnes_nb    = $tab_user_nb_items[$user_id];
         $lignes_comm_nb = ($cart_hauteur=='variable') ? $tab_user_nb_ligne_comm[$user_id] : $lignes_comm_max ;
@@ -1702,7 +1728,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         }
         foreach($tab_comp_id as $comp_id => $tab_val_comp)
         {
-          if( ($cart_restriction==FALSE) || ($tab_result[$comp_id][$user_id]) )
+          if( ($cart_restriction_item==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
             $note = ($tab_result[$comp_id][$user_id]!='PA') ? $tab_result[$comp_id][$user_id] : '' ; // Si on voulait récupérer les items ayant fait l'objet d'une demande d'évaluation, il n'y a pour autant pas lieu d'afficher les paniers sur les cartouches.
             list($ref_matiere,$ref_suite) = explode('.',$tab_val_comp[0],2);
@@ -1765,7 +1791,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     // dans le cas d'un cartouche complet...
     foreach($tab_user_id as $user_id=>$val_user)
     {
-      if($tab_user_nb_items[$user_id])
+      if( $tab_user_nb_items[$user_id] && $tab_user_nb_notes[$user_id] )
       {
         $colonnes_nb    = ($cart_cases_nb==1) ? 2+$aff_reference : 1+$aff_reference ;
         $lignes_comm_nb = ($cart_hauteur=='variable') ? $tab_user_nb_ligne_comm[$user_id] : $lignes_comm_max ;
@@ -1802,7 +1828,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $cartouche_PDF->entete( $texte_entete , $lignes_nb , $cart_detail , $cart_cases_nb );
         foreach($tab_comp_id as $comp_id=>$tab_val_comp)
         {
-          if( ($cart_restriction==FALSE) || ($tab_result[$comp_id][$user_id]) )
+          if( ($cart_restriction_item==FALSE) || ($tab_result[$comp_id][$user_id]) )
           {
             $ref_html  = ($aff_reference) ? '<td>'.html($tab_val_comp[0]).'</td>' : '' ;
             $ref_csv   = ($aff_reference) ? '"'.$tab_val_comp[0].'"'.$separateur  : '' ;

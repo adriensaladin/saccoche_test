@@ -531,7 +531,7 @@ public static function DB_lister_users_regroupement( $profil_type , $statut , $g
     ':groupe'       => $groupe_id,
     ':niveau'       => $groupe_id,
     ':classe'       => 0,
-  );
+  ) ;
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

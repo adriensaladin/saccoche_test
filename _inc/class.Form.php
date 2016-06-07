@@ -178,11 +178,6 @@ class Form
     array('valeur' => 'fixe'     , 'texte' => 'fixe quel que soit le contenu (massicotage de l\'ensemble)') ,
   );
 
-  public static $tab_select_repart_ref_pourcentage = array(
-    array('valeur' => 'tous'      , 'texte' => 'par rapport à tous les élèves du regroupement') ,
-    array('valeur' => 'only_eval' , 'texte' => 'par rapport aux seuls élèves évalués') ,
-  );
-
   public static $tab_select_recherche_objet = array(
     array('valeur' => 'matiere_items_bilanMS'   , 'optgroup'=>1 , 'texte' => 'moyenne des scores d\'acquisition') ,
     array('valeur' => 'matiere_items_bilanPA'   , 'optgroup'=>1 , 'texte' => 'pourcentage d\'items acquis') ,
@@ -324,10 +319,7 @@ class Form
       'cart_cases_nb'            => 1 ,
       'cart_contenu'             => 'AVEC_nom_SANS_result' ,
       'cart_hauteur'             => 'variable' ,
-      'cart_restriction_item'    => 0 ,
-      'cart_restriction_eleve'   => 0 ,
-      'repart_categorie_autre'   => 1 ,
-      'repart_ref_pourcentage'   => 'tous' ,
+      'cart_restriction'         => 0 ,
       'only_etat'                => 'tous',
       'only_niveau'              => 0 ,
       'only_presence'            => 0 ,
@@ -445,13 +437,10 @@ class Form
         $tab_choix_new = compact('palier_id');
         break;
       case 'evaluation_cartouche' :
-        global $orientation,$couleur,$fond,$legende,$marge_min,$cart_detail,$cart_cases_nb,$cart_contenu,$cart_restriction_item,$cart_restriction_eleve,$cart_hauteur,$aff_reference,$aff_coef,$aff_socle;
-        $tab_choix_new = compact('orientation','couleur','fond','legende','marge_min','cart_detail','cart_cases_nb','cart_contenu','cart_restriction_item','cart_restriction_eleve','cart_hauteur','aff_reference','aff_coef','aff_socle');
+        global $orientation,$couleur,$fond,$legende,$marge_min,$cart_detail,$cart_cases_nb,$cart_contenu,$cart_restriction,$cart_hauteur,$aff_reference,$aff_coef,$aff_socle;
+        $tab_choix_new = compact('orientation','couleur','fond','legende','marge_min','cart_detail','cart_cases_nb','cart_contenu','cart_restriction','cart_hauteur','aff_reference','aff_coef','aff_socle');
         break;
       case 'evaluation_statistiques' :
-        global $couleur,$fond,$repart_categorie_autre,$repart_ref_pourcentage;
-        $tab_choix_new = compact('couleur','fond','repart_categorie_autre','repart_ref_pourcentage');
-        break;
       case 'evaluation_archivage' :
         global $couleur,$fond;
         $tab_choix_new = compact('couleur','fond');

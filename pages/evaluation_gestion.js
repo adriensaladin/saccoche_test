@@ -530,15 +530,29 @@ $(document).ready
      * Voir les répartitions des élèves à une évaluation : chargement des données
      * @return void
      */
-    function ajax_statistiques()
+    var voir_repart = function()
     {
+      mode = $(this).attr('class');
+      var objet_tds     = $(this).parent().parent().find('td');
+      // Récupérer les informations de la ligne concernée
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
+      var date_fr       = objet_tds.eq(0).html();
+      var groupe        = objet_tds.eq(3).text().trim();
+      var description   = objet_tds.eq(5).html();
+      // Mettre les infos de côté
+      $('#repart_ref').val(ref);
+      $('#repart_date_fr').val(date_fr);
+      $('#repart_groupe_nom').val(unescapeHtml(groupe));
+      $('#repart_description').val(unescapeHtml(description));
+      // Afficher la zone associée après avoir chargé son contenu
+      $('#titre_voir_repart').html(groupe+' | '+date_fr+' | '+description);
       $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
       $.ajax
       (
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+mode+'&'+$("#zone_voir_repart").serialize(),
+          data : 'csrf='+CSRF+'&f_action='+mode+'&f_ref='+ref+'&f_date_fr='+encodeURIComponent(date_fr)+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -567,40 +581,6 @@ $(document).ready
         }
       );
     };
-
-    /**
-     * Voir les répartitions des élèves à une évaluation : chargement des données
-     * @return void
-     */
-    var voir_repart = function()
-    {
-      mode = $(this).attr('class');
-      var objet_tds     = $(this).parent().parent().find('td');
-      // Récupérer les informations de la ligne concernée
-      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
-      var date_fr       = objet_tds.eq(0).html();
-      var groupe        = objet_tds.eq(3).text().trim();
-      var description   = objet_tds.eq(5).html();
-      // Et aussi...
-      var categorie_autre = ($('#f_categorie_autre').is(':checked')) ? 1 : 0 ;
-      // Mettre les infos de côté
-      $('#repart_ref').val(ref);
-      $('#repart_date_fr').val(date_fr);
-      $('#repart_groupe_nom').val(unescapeHtml(groupe));
-      $('#repart_description').val(unescapeHtml(description));
-      // Afficher la zone associée après avoir chargé son contenu
-      $('#titre_voir_repart').html(groupe+' | '+date_fr+' | '+description);
-      $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
-      ajax_statistiques();
-    };
-
-    $('#f_categorie_autre , #f_ref_pourcentage').change
-    (
-      function()
-      {
-        ajax_statistiques();
-      }
-    );
 
     /**
      * Choisir les professeurs associés à une évaluation : mise en place du formulaire
@@ -1096,7 +1076,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=archiver_repart'+'&'+$("#zone_voir_repart").serialize(),
+            data : 'csrf='+CSRF+'&f_action=archiver_repart'+'&'+$("#zone_archiver_repart").serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

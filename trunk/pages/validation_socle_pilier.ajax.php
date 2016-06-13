@@ -105,7 +105,7 @@ if( ($action=='Afficher_bilan') && $palier_id && count($tab_pilier) && count($ta
       foreach($tab_eleve_id as $eleve_id)
       {
         $affichage .= '<td id="U'.$eleve_id.'C'.$pilier_id.'"></td>'; // class/title + data-etat + contenu seront ajoutés ensuite 
-        $tab_modif_cellule[$eleve_id][$pilier_id] = array( 'html_v1'=>'0' , 'html_v0'=>'0' , 'class'=>' class="V2"' , 'title'=>'' , 'data_etat'=>'' );
+        $tab_modif_cellule[$eleve_id][$pilier_id] = array( 'html_V1'=>'0' , 'html_V0'=>'0' , 'class'=>' class="V2"' , 'title'=>'' , 'data_etat'=>'' );
       }
       $affichage .= '<th id="C'.$pilier_id.'" class="left1" title="Modifier la validation de cette compétence pour tous les élèves."></th>';
       $affichage .= '<th class="nu" colspan="2"><div class="n1">'.html($DB_ROW['rubrique_nom']).'</div></th>';

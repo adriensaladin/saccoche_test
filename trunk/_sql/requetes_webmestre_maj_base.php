@@ -73,7 +73,8 @@ public static function DB_maj_base($version_base_webmestre_actuelle)
 
   if( !VERSION_BASE_WEBMESTRE || !$version_base_webmestre_actuelle )
   {
-    exit_error( 'Erreur MAJ BDD' /*titre*/ , 'Fichier avec version de la base webmestre manquant.' /*contenu*/ );
+    $message = (!VERSION_BASE_WEBMESTRE) ? 'Fichier avec version de la base webmestre manquant.' : 'Base de données inaccessible (valeur sacoche_parametre.version_base non récupérée).' ;
+    exit_error( 'Erreur MAJ BDD' /*titre*/ , $message /*contenu*/ );
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

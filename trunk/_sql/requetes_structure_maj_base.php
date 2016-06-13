@@ -86,7 +86,8 @@ class DB_STRUCTURE_MAJ_BASE extends DB
 
     if( !VERSION_BASE_STRUCTURE || !$version_base_structure_actuelle )
     {
-      exit_error( 'Erreur MAJ BDD' /*titre*/ , 'Fichier avec version de la base manquant, ou base inaccessible.' /*contenu*/ );
+      $message = (!VERSION_BASE_STRUCTURE) ? 'Fichier avec version de la base manquant.' : 'Base de données inaccessible (valeur sacoche_parametre.version_base non récupérée).' ;
+      exit_error( 'Erreur MAJ BDD' /*titre*/ , $message /*contenu*/ );
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////

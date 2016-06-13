@@ -899,10 +899,13 @@ if( ($action=='import') && ($etape==7) )
   // On récupère le contenu de la base
   $listing_user_id = implode(',',$tab_user);
   $listing_item_id = implode(',',$tab_item);
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $listing_user_id , $listing_item_id , 0 /*matiere_id*/ , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL_TYPE'] );
-  foreach($DB_TAB as $DB_ROW)
+  if( $listing_user_id && $listing_item_id )
   {
-    $tab_base[$DB_ROW['eleve_id']][$DB_ROW['item_id']][$DB_ROW['date']] = TRUE;
+    $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $listing_user_id , $listing_item_id , 0 /*matiere_id*/ , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL_TYPE'] );
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_base[$DB_ROW['eleve_id']][$DB_ROW['item_id']][$DB_ROW['date']] = TRUE;
+    }
   }
   /* 
    * Libérer de la place mémoire.

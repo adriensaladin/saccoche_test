@@ -35,7 +35,29 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  */
 function html_decode($text)
 {
-  return htmlspecialchars_decode($text,ENT_COMPAT) ;
+  return htmlspecialchars_decode($text,ENT_COMPAT);
+}
+
+/*
+ * Conversion des retours chariot en balises BR
+ * 
+ * @param string
+ * @return string
+ */
+function convertCRtoBR($text)
+{
+  return str_replace( array("\r\n","\r","\n") , '<br />' , $text );
+}
+
+/*
+ * Conversion des retours chariot en JS pour textarea
+ * 
+ * @param string
+ * @return string
+ */
+function convertCRtoJS($text)
+{
+  return str_replace( array("\r\n","\r","\n") , array('\r\n','\r','\n') , $text );
 }
 
 /**

@@ -30,6 +30,20 @@
 var please_wait = false;
 
 /**
+ * Fonction addBR() pour ajouter des balises HTML de retour à la ligne
+ *
+ * @param unsafe
+ * @return string
+ */
+function addBR(txt)
+{
+  return txt
+    .replace(/\r\n/g, '<br />')
+    .replace(/\r/g  , '<br />')
+    .replace(/\n/g  , '<br />');
+}
+
+/**
  * Fonction htmlspecialchars() en javascript
  *
  * @param unsafe

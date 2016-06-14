@@ -74,7 +74,7 @@ $menu = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? '[Paramétrages]' : 
         echo  '</td>';
         echo'</tr>'.NL;
         // Javascript
-        Layout::add( 'js_inline_before' , 'tab_notif_contenu['.$DB_ROW['notification_id'].']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($DB_ROW['notification_contenu'])).'";' );
+        Layout::add( 'js_inline_before' , 'tab_notif_contenu['.$DB_ROW['notification_id'].']="'.convertCRtoJS(html($DB_ROW['notification_contenu'])).'";' );
       }
       Layout::add( 'js_inline_before' , '// ]]>' );
     }

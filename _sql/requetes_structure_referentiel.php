@@ -405,14 +405,13 @@ public static function DB_ajouter_referentiel_theme( $domaine_id , $theme_ordre 
  * @param string $item_abrev
  * @param int    $item_coef
  * @param int    $item_cart
- * @param string $item_comm
  * @param array  $tab_socle2016
  * @return int
  */
-public static function DB_ajouter_referentiel_item( $theme_id , $socle_id , $item_ordre , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $item_comm , $tab_socle2016 )
+public static function DB_ajouter_referentiel_item( $theme_id , $socle_id , $item_ordre , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $tab_socle2016 )
 {
-  $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_comm) ';
-  $DB_SQL.= 'VALUES                              (:theme_id,:socle_id ,:item_ordre,:item_ref,:item_nom,:item_abrev,:item_coef,:item_cart,:item_comm)';
+  $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart) ';
+  $DB_SQL.= 'VALUES                              (:theme_id,:socle_id ,:item_ordre,:item_ref,:item_nom,:item_abrev,:item_coef,:item_cart)';
   $DB_VAR = array(
     ':theme_id'   => $theme_id,
     ':socle_id'   => $socle_id,
@@ -422,7 +421,6 @@ public static function DB_ajouter_referentiel_item( $theme_id , $socle_id , $ite
     ':item_abrev' => $item_abrev,
     ':item_coef'  => $item_coef,
     ':item_cart'  => $item_cart,
-    ':item_comm'  => $item_comm,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   $item_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
@@ -568,9 +566,8 @@ public static function DB_importer_arborescence_from_XML( $arbreXML , $matiere_i
         $item_coef  = $item_xml -> getAttribute('coef');
         $item_cart  = $item_xml -> getAttribute('cart');
         $item_lien  = $item_xml -> getAttribute('lien');
-        $item_comm  = $item_xml -> getAttribute('comm');
-        $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien, item_comm) ';
-        $DB_SQL.= 'VALUES                              (:theme   ,:socle    ,     :ordre,     :ref,     :nom,     :abrev,     :coef,     :cart,     :lien,     :comm)';
+        $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien) ';
+        $DB_SQL.= 'VALUES                              (:theme   ,:socle    ,     :ordre,     :ref,     :nom,     :abrev,     :coef,     :cart,     :lien)';
         $DB_VAR = array(
           ':theme' => $theme_id,
           ':socle' => $item_socle,
@@ -581,7 +578,6 @@ public static function DB_importer_arborescence_from_XML( $arbreXML , $matiere_i
           ':coef'  => $item_coef,
           ':cart'  => $item_cart,
           ':lien'  => $item_lien,
-          ':comm'  => $item_comm,
         );
         DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
         $item_id = DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
@@ -688,15 +684,14 @@ public static function DB_modifier_referentiel_theme( $theme_id , $theme_ref , $
  * @param string $item_abrev
  * @param int    $item_coef
  * @param int    $item_cart
- * @param string $item_comm
  * @param array  $tab_socle2016
  * @return bool  si ligne(s) modifiée(s)
  */
-public static function DB_modifier_referentiel_item( $item_id , $socle_id , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $item_comm , $tab_socle2016 )
+public static function DB_modifier_referentiel_item( $item_id , $socle_id , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $tab_socle2016 )
 {
   // On récupère les liaisons au socle pour comparer
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
-  $DB_SQL.= 'SET entree_id=:socle_id, item_ref=:item_ref, item_nom=:item_nom, item_abrev=:item_abrev, item_coef=:item_coef, item_cart=:item_cart, item_comm=:item_comm ';
+  $DB_SQL.= 'SET entree_id=:socle_id, item_ref=:item_ref, item_nom=:item_nom, item_abrev=:item_abrev, item_coef=:item_coef, item_cart=:item_cart ';
   $DB_SQL.= 'WHERE item_id=:item_id ';
   $DB_VAR = array(
     ':item_id'    => $item_id,
@@ -706,7 +701,6 @@ public static function DB_modifier_referentiel_item( $item_id , $socle_id , $ite
     ':item_abrev' => $item_abrev,
     ':item_coef'  => $item_coef,
     ':item_cart'  => $item_cart,
-    ':item_comm'  => $item_comm,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   $nb_modifs_item = DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);

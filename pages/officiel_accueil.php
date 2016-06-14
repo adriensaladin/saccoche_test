@@ -203,8 +203,8 @@ Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFI
 Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_REPORT   = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_REPORT'].';' );
 Layout::add( 'js_inline_before' , 'var APP_GENERALE_REPORT   = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_REPORT'].';' );
 Layout::add( 'js_inline_before' , '// <![CDATA[' );
-Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_MODELE   = "'.convertCRtoJS(html($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_MODELE'])).'";' );
-Layout::add( 'js_inline_before' , 'var APP_GENERALE_MODELE   = "'.convertCRtoJS(html($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_MODELE'])).'";' );
+Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_MODELE   = "'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_MODELE'])).'";' );
+Layout::add( 'js_inline_before' , 'var APP_GENERALE_MODELE   = "'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_MODELE'])).'";' );
 Layout::add( 'js_inline_before' , '// ]]>' );
 ?>
 

@@ -119,7 +119,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
                    .'<th>Socle</th>'
                  .'</tr>'.NL.'</thead><tbody>'.NL;
 
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , TRUE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , TRUE /*socle_nom*/ );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -174,7 +174,7 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
   // Préparation de l'export HTML
   $export_html_entete = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Notes<br />Total</th>';
   $tab_export_html = array();
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , FALSE /*socle_nom*/ );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -259,7 +259,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
   $tab_theme   = array();
   $tab_item    = array();
   $niveau_id = 0;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     if($DB_ROW['niveau_id']!=$niveau_id)

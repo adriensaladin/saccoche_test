@@ -87,7 +87,7 @@ Layout::add( 'js_inline_before' , 'var tab_msg_contenus  = new Array();' );
         echo'</tr>'.NL;
         // Javascript
         Layout::add( 'js_inline_before' , 'tab_destinataires['.$DB_ROW['message_id'].']="'.$DB_ROW['message_destinataires'].'";' );
-        Layout::add( 'js_inline_before' , 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.convertCRtoJS(html($DB_ROW['message_contenu'])).'";' );
+        Layout::add( 'js_inline_before' , 'tab_msg_contenus['.$DB_ROW['message_id'].']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($DB_ROW['message_contenu'])).'";' );
       }
       Layout::add( 'js_inline_before' , '// ]]>' );
     }

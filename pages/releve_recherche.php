@@ -100,7 +100,7 @@ Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_
   Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
   // Affichage de la liste des items pour toutes les matières d'un professeur ou toutes les matières de l'établissement si directeur ou PP, sur tous les niveaux
   $user_id = ( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && !DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'],0) ) ? $_SESSION['USER_ID'] : 0 ;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
   if(empty($DB_TAB))
   {
     $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous n\'êtes rattaché à' : 'L\'établissement n\'a mis en place' ;

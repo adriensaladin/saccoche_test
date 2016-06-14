@@ -61,11 +61,6 @@ if($action=='associer')
   }
   // go
   DB_STRUCTURE_BREVET::DB_modifier_user_brevet_serie($listing_user_id,$serie);
-  // Notifications (rendues visibles ultérieurement)
-  $nb_eleves = count($tab_eleve);
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a affecté la série de brevet "'.$serie.'" à '.$nb_eleves.' élève(s).'."\r\n";
-  DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
-  SACocheLog::ajouter('Affectation de la série de brevet "'.$serie.'" à '.$nb_eleves.' élève(s).');
 }
 
 //

@@ -372,6 +372,8 @@ if($version_base_structure_actuelle=='2016-05-10')
         (9381, 0, 0,  93, 0, 255,  38100, "LIT", "Lituanien"),
         (9382, 0, 0,  93, 0, 255,  38200, "EST", "Estonien") ';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES '.$insert );
+      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
     }
     if(empty($reload_sacoche_niveau))
     {
@@ -496,39 +498,6 @@ if($version_base_structure_actuelle=='2016-05-10')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET code_mef="3112521422.", niveau_nom="2BTS2 moteurs à combustion interne" WHERE niveau_id=311105' );
       // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau ORDER BY niveau_id' );
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-06-07 => 2016-06-14
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2016-06-07')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2016-06-14';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // ajout du champ [item_comm]
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item ADD item_comm TEXT COLLATE utf8_unicode_ci NOT NULL COMMENT "Commentaire associé à l\'item, par exemple des échelles descriptives." AFTER item_lien' );
-    if(empty($reload_sacoche_matiere))
-    {
-      // Ajout de matières
-      $insert = '
-        (9789, 0, 0,  97, 0, 255, 0, "BPAOO", "Artisanat et métiers d\'art - facteur d\'orgues option organier"),
-        (9790, 0, 0,  97, 0, 255, 0, "BPAOT", "Artisanat et métiers d\'art - facteur d\'orgues option tuyautier"),
-        (9791, 0, 0,  97, 0, 255, 0, "BPMVA", "Maintenance de véhicules - option A voitures particulières"),
-        (9792, 0, 0,  97, 0, 255, 0, "BPMVB", "Maintenance de véhicules - option B véh. de transport routier"),
-        (9793, 0, 0,  97, 0, 255, 0, "BPMVC", "Maintenance de véhicules - option C motocycles"),
-        (9794, 0, 0,  97, 0, 255, 0, "BPMAV", "Menuiserie aluminium verre"),
-        (9795, 0, 0,  97, 0, 255, 0, "BPMS" , "Métiers de la sécurité"),
-        (9796, 0, 0,  97, 0, 255, 0, "BPRPG", "Réal. de prod. imprimés et plurimédia option A prod. graphiques"),
-        (9797, 0, 0,  97, 0, 255, 0, "BPRPI", "Réal. de prod. imprimés et plurimédia option B prod. imprimées"),
-        (9798, 0, 0,  97, 0, 255, 0, "BPTIN", "Techniques d\'interventions sur installations nucléaires") ';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES '.$insert );
-      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
     }
   }
 }

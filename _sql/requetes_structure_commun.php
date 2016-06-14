@@ -176,13 +176,11 @@ public static function DB_recuperer_dates_periode( $groupe_id , $periode_id )
  * @param bool $only_socle   "TRUE" pour ne retourner que les items reliés au socle
  * @param bool $only_item    "TRUE" pour ne retourner que les lignes d'items, "FALSE" pour l'arborescence complète, sans forcément descendre jusqu'à l'items (valeurs NULL retournées)
  * @param bool $socle_nom    avec ou pas le nom des items du socle associés
- * @param bool $item_comm    avec ou pas les commentaires associés aux items
  * @return array
  */
-public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $niveau_id , $only_socle , $only_item , $socle_nom , $item_comm )
+public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $niveau_id , $only_socle , $only_item , $socle_nom )
 {
-  $select_item_comm  = ($item_comm)   ? 'item_comm, ' : '' ;
-  $select_socle_nom  = ($socle_nom)   ? 'entree_id, entree_nom ' : 'entree_id ' ;
+  $select_socle_nom  = ($socle_nom)   ? 'entree_id,entree_nom ' : 'entree_id ' ;
   $join_user_matiere = ($prof_id)     ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
   $join_socle_item   = ($socle_nom)   ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
   $where_user        = ($prof_id)     ? 'AND user_id=:user_id ' : '' ;
@@ -198,7 +196,7 @@ public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $nive
   $DB_SQL.= 'domaine_id, domaine_ordre, domaine_code, domaine_ref, domaine_nom, ';
   $DB_SQL.= 'theme_id, theme_ordre, theme_ref, theme_nom, ';
   $DB_SQL.= 'item_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien, ';
-  $DB_SQL.= $select_item_comm.$select_socle_nom;
+  $DB_SQL.= $select_socle_nom;
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= $join_user_matiere;
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';

@@ -24,8 +24,6 @@
  * 
  */
 
-var nb_caracteres_max = 1000;
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Permettre l'utilisation de caractères spéciaux
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,11 +42,10 @@ function entity_convert(string)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Pour mémoriser les liens des ressources et les contenus des commentaires.
+// Pour mémoriser les liens des ressources avant que le tooltip ne bouffe les title.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var tab_lien = new Array();
-var tab_comm = new Array();
+var tab_ressources = new Array();
 
 // jQuery !
 $(document).ready
@@ -121,28 +118,23 @@ $(document).ready
               {
                 $('#zone_choix_referentiel').hide();
                 initialiser_action_groupe();
-                eval( responseJSON['script'] );
-                $('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter :<q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des matières</button></p>'+'<h2>'+matiere_nom+'</h2>'+responseJSON['html']);
+                $('#zone_elaboration_referentiel').html('<p><span class="tab"></span>Tout déployer / contracter :<q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q><br /><span class="tab"></span><button id="fermer_zone_elaboration_referentiel" type="button" class="retourner">Retour à la liste des matières</button></p>'+'<h2>'+matiere_nom+'</h2>'+responseJSON['value']);
+                // Récupérer le contenu des title des ressources avant que le tooltip ne les enlève
+                $('#zone_elaboration_referentiel li.li_n3').each
+                (
+                  function()
+                  {
+                    id2 = $(this).attr('id').substring(3);
+                    titre = $(this).children('span').children('img:eq(4)').attr('title');
+                    tab_ressources[id2] = (titre=='Absence de ressource.') ? '' : titre ;
+                  }
+                );
               }
               $('label[for='+id+']').remove();
               afficher_masquer_images_action('show');
             }
           }
         );
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Indiquer le nombre de caractères restant autorisés dans le textarea
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_elaboration_referentiel').on
-    (
-      'keyup',
-      '#f_comm',
-      function()
-      {
-        afficher_textarea_reste( $(this) , nb_caracteres_max );
       }
     );
 
@@ -246,8 +238,6 @@ $(document).ready
               }
               s2016_txt = s2016_txt.substring(0,s2016_txt.length-3);
             }
-            // On récupère le commentaire
-            var commentaire = tab_comm[ objet.parent().attr('id').substring(3) ]; // n3_*
             // on récupère la référence
             var ref   = obj_conteneur.children('b:eq(0)').text();
             // on récupère l'abréviation
@@ -265,18 +255,15 @@ $(document).ready
             var socle_txt = "Hors-socle.";
             var s2016_id  = '';
             var s2016_txt = 'Hors-socle 2016.';
-            var commentaire = '';
             var ref   = '';
             var abrev = '';
             var nom_texte    = '';
             var nom_longueur = 125;
           }
-          var nb_lignes = Math.max( parseInt(commentaire.length/75,10) , 2 );
           // On assemble
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour remplacer les références automatiques." /> Ref.</i><input id="f_ref" name="f_ref" size="2" maxlength="3" type="text" value="'+escapeQuote(ref)+'" /> (facultatif)<br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Abréviation éclairant sur l\'item pour les tableaux PDF à double entrée." /> Abrev.</i><input id="f_abrev" name="f_abrev" size="12" maxlength="15" type="text" value="'+escapeQuote(abrev)+'" /> (facultatif)<br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Nom de l\'item." /> Nom</i><input id="f_nom" name="f_nom" size="'+nom_longueur+'" maxlength="256" type="text" value="'+escapeQuote(nom_texte)+'" /><br />';
-          new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Commentaire éventuel.<br />Par exemple pour renseigner des ‟échelles descriptives”.<br />Encore inusité en dehors de cette interface." /> Comm.</i><textarea id="f_comm" name="f_comm" rows="'+nb_lignes+'" cols="100">'+escapeQuote(commentaire)+'</textarea><label id="f_comm_reste"></label><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun." /> Socle</i><input id="f_intitule" name="f_intitule" size="90" maxlength="256" type="text" value="'+socle_txt+'" readonly /><input id="f_socle" name="f_socle" type="hidden" value="'+socle_id+'" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Appartenance éventuelle au socle commun 2016." /> S.2016</i><input id="f_intitule2016" name="f_intitule2016" size="75" maxlength="75" type="text" value="'+s2016_txt+'" readonly /><input id="f_socle2016" name="f_socle2016" type="hidden" value="'+s2016_id+'" /><q class="choisir_socle" title="Sélectionner un item du socle commun 2016."></q><br />';
           new_html += '<i class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Coefficient (nombre entier entre 0 et 20 ; 1 par défaut)." /> Coef.</i><input id="f_coef" name="f_coef" type="number" min="0" max="20" value="'+coef+'" /><br />';
@@ -313,10 +300,6 @@ $(document).ready
       }
       else
       {
-        if(contexte=='n3')
-        {
-          afficher_textarea_reste( $('#f_comm') , nb_caracteres_max );
-        }
         $('#f_nom').focus();
       }
     }
@@ -636,13 +619,12 @@ $(document).ready
         $('#f_nom').focus();
         return false;
       }
-      // On récupère l'abréviation, le coefficient, l'autorisation de demande, le lien au socle, les liens au socle 2016, le lien de ressources, le commentaire de l'élément (item uniquement)
+      // On récupère l'abréviation, le coefficient, l'autorisation de demande, le lien au socle, les liens au socle 2016 et le lien de ressources de l'élément (item uniquement)
       if(contexte=='n3')
       {
         var abrev = $('#f_abrev').val();
         var coef  = parseInt( $('#f_coef').val() , 10 );
         var cart  = $("input[name=f_cart]:checked").val();
-        var comm  = $('#f_comm').val();
         var socle = $('#f_socle').val();
         var socle2016 = $('#f_socle2016').val();
         if( (isNaN(coef)) || (coef<0) || (coef>20) )
@@ -662,7 +644,6 @@ $(document).ready
         var abrev = '';
         var coef  = 1;
         var cart  = 0;
-        var comm  = '';
         var socle = 0;
         var socle2016 = '';
       }
@@ -712,7 +693,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action='+action+'&contexte='+contexte+'&matiere='+matiere_id+'&'+get_texte+'='+get_value+'&ordre='+ordre+'&tab_id='+tab_id+'&code='+code+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&socle2016='+socle2016+'&ref='+encodeURIComponent(ref)+'&nom='+encodeURIComponent(nom)+'&abrev='+encodeURIComponent(abrev)+'&matiere_nom='+encodeURIComponent(matiere_nom)+'&comm='+encodeURIComponent(comm),
+          data : 'csrf='+CSRF+'&f_action='+action+'&contexte='+contexte+'&matiere='+matiere_id+'&'+get_texte+'='+get_value+'&ordre='+ordre+'&tab_id='+tab_id+'&code='+code+'&coef='+coef+'&cart='+cart+'&socle='+socle+'&socle2016='+socle2016+'&ref='+encodeURIComponent(ref)+'&nom='+encodeURIComponent(nom)+'&abrev='+encodeURIComponent(abrev)+'&matiere_nom='+encodeURIComponent(matiere_nom),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -774,24 +755,16 @@ $(document).ready
                     s2016_title = s2016_title.substring(0,s2016_title.length-6);
                   }
                   s2016_texte   = '<img src="./_img/etat/socle_'+s2016_image+'.png" alt="" title="'+s2016_title+'" data-id="'+socle2016+'" />';
-                  lien_image    = ( (action=='edit') && (tab_lien[get_value]) ) ? 'oui' : 'non' ;
-                  lien_title    = ( (action=='edit') && (tab_lien[get_value]) ) ? tab_lien[get_value] : 'Absence de ressource.' ;
+                  lien_image    = ( (action=='edit') && (tab_ressources[get_value]) ) ? 'oui' : 'non' ;
+                  lien_title    = ( (action=='edit') && (tab_ressources[get_value]) ) ? tab_ressources[get_value] : 'Absence de ressource.' ;
                   lien_texte    = '<img src="./_img/etat/link_'+lien_image+'.png" alt="" title="'+lien_title+'" />';
-                  comm_image    = (comm) ? 'oui' : 'non' ;
-                  comm_title    = (comm) ? comm : 'Sans commentaire.' ;
-                  comm_texte    = '<img alt="" src="./_img/etat/comm_'+comm_image+'.png" width="16" height="16" title="'+addBR(escapeHtml(comm_title))+'" />';
                   var sep_ref   = (ref) ? separateur : '' ;
                   var sep_abrev = (abrev) ? separateur : '' ;
-                  var texte = coef_texte + cart_texte + socle_texte + s2016_texte + lien_texte + comm_texte + '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(abrev)+'</b>' + '<b>'+sep_abrev+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
+                  var texte = coef_texte + cart_texte + socle_texte + s2016_texte + lien_texte + '<b>'+escapeHtml(ref)+'</b>' + '<b>'+sep_ref+'</b>' + '<b>'+escapeHtml(abrev)+'</b>' + '<b>'+sep_abrev+'</b>' + '<b>'+escapeHtml(nom)+'</b>';
                   if(action=='add')
                   {
                     texte = '<b>' + texte + '</b>' + images[contexte.charAt(1)];
-                    tab_lien[contexte+'_'+responseJSON['value']] = '';
-                    tab_comm[responseJSON['value']] = comm;
-                  }
-                  else
-                  {
-                    tab_comm[get_value] = comm;
+                    tab_ressources[responseJSON['value']] = '';
                   }
                   break;
                 default :
@@ -801,7 +774,7 @@ $(document).ready
               // On met à jour la page
               if(action=='add')
               {
-                objet_parent.attr('id',contexte+'_'+responseJSON['value']).html(texte);
+                objet_parent.attr('id',responseJSON['value']).html(texte);
               }
               else
               {

@@ -54,7 +54,7 @@ $(document).ready
     var matiere_id  = 0;
     var matiere_ref = '';
     var bouton_interface_travail = etablissement_identifie ? '<q class="ress_page_elaborer" title="Créer / Modifier une page de ressources pour travailler (partagées sur le serveur communautaire)."></q>' : '<q class="partager_non" title="Pour pouvoir créer une page de ressources sur le serveur communautaire, un administrateur doit préalablement identifier l\'établissement dans la base Sésamath."></q>' ;
-    var tab_lien = new Array();
+    var tab_ressources = new Array();
     var images = new Array();
     images[1]  = '';
     images[1] += '<q class="modifier" title="Modifier ce sous-titre"></q>';
@@ -117,8 +117,8 @@ $(document).ready
                   {
                     id2 = $(this).attr('id').substring(3);
                     titre = $(this).children('img').attr('title');
-                    tab_lien[id2] = (titre=='Absence de ressource.') ? '' : titre ;
-                    $(this).append('<br /><input name="f_lien" size="100" maxlength="256" type="text" value="'+tab_lien[id2]+'" /><q class="voir" title="Tester ce lien."></q>'+bouton_interface_travail+'<q class="valider" title="Valider la modification de ce lien."></q><label>&nbsp;</label>');
+                    tab_ressources[id2] = (titre=='Absence de ressource.') ? '' : titre ;
+                    $(this).append('<br /><input name="f_lien" size="100" maxlength="256" type="text" value="'+tab_ressources[id2]+'" /><q class="voir" title="Tester ce lien."></q>'+bouton_interface_travail+'<q class="valider" title="Valider la modification de ce lien."></q><label>&nbsp;</label>');
                   }
                 );
               }
@@ -231,7 +231,7 @@ $(document).ready
                 lien_title  = (item_lien=='') ? 'Absence de ressource.' : escapeHtml(item_lien) ;
                 retour_msg  = (item_lien=='') ? 'Lien retiré.' : 'Lien enregistré.' ;
                 $('#n3_'+item_id).children('img').attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
-                tab_lien[item_id] = (item_lien=='') ? '' : lien_title ;
+                tab_ressources[item_id] = (item_lien=='') ? '' : lien_title ;
                 $('#n3_'+item_id).children('label').removeAttr('class').addClass('valide').html(retour_msg);
               }
             }

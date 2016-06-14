@@ -113,7 +113,7 @@ $partageable = ( ( $matiere_id <= ID_MATIERE_PARTAGEE_MAX ) && ( $niveau_id <= I
 
 if( ($action=='voir_referentiel_etablissement') && $matiere_id && $niveau_id )
 {
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ );
   Json::end( TRUE , HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , FALSE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_coef*/ , TRUE /*aff_cart*/ , 'image' /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ ) );
 }
 
@@ -130,7 +130,7 @@ if( ($action=='partager') && $matiere_id && $niveau_id && $partageable && $parta
   // Envoyer le référentiel (éventuellement vide pour l'effacer) vers le serveur de partage, sauf si passage non<->bof
   if($partage=='oui')
   {
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*item_comm*/ );
+    $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
     $nb_item = compter_items($DB_TAB);
     if($nb_item<5)
     {
@@ -179,7 +179,7 @@ if( ($action=='envoyer') && $matiere_id && $niveau_id && $partageable )
     Json::end( FALSE , 'Pour échanger avec le serveur communautaire, un administrateur doit identifier l\'établissement dans la base Sésamath.' );
   }
   // Envoyer le référentiel vers le serveur de partage
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
   $nb_item = count($DB_TAB);
   if($nb_item<5)
   {

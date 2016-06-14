@@ -167,7 +167,6 @@ class ServeurCommunautaire
           'coef'  => $DB_ROW['item_coef'],
           'cart'  => $DB_ROW['item_cart'],
           'lien'  => $DB_ROW['item_lien'],
-          'comm'  => $DB_ROW['item_comm'],
         );
       }
     }
@@ -187,7 +186,7 @@ class ServeurCommunautaire
             {
               foreach($tab_item[$domaine_id][$theme_id] as $item_id => $tab_item_info)
               {
-                $arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" ref="'.html($tab_item_info['ref']).'" nom="'.html($tab_item_info['nom']).'" abrev="'.html($tab_item_info['abrev']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'" comm="'.html($tab_item_info['comm']).'">'."\r\n";
+                $arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" ref="'.html($tab_item_info['ref']).'" nom="'.html($tab_item_info['nom']).'" abrev="'.html($tab_item_info['abrev']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'">'."\r\n";
                 if(isset($tab_item_socle2016[$item_id]))
                 {
                   foreach($tab_item_socle2016[$item_id] as $tab_socle_info)

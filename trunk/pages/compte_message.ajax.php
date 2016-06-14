@@ -194,7 +194,7 @@ if( ($action=='ajouter') && $date_debut_fr && $date_fin_fr && $message_contenu &
   Json::add_row( 'html' ,   '</td>' );
   Json::add_row( 'html' , '</tr>' );
   Json::add_row( 'script' , 'tab_destinataires['.$message_id.']="'.implode(',',$tab_destinataires_valides).'";' );
-  Json::add_row( 'script' , 'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";' );
+  Json::add_row( 'script' , 'tab_msg_contenus['.$message_id.']="'.convertCRtoJS(html($message_contenu)).'";' );
   Json::end( TRUE );
 }
 
@@ -244,7 +244,7 @@ if( ($action=='modifier') && $message_id && $date_debut_fr && $date_fin_fr && $m
   Json::add_row( 'html' ,   '<q class="supprimer" title="Supprimer ce message."></q>' );
   Json::add_row( 'html' , '</td>' );
   Json::add_row( 'script' , 'tab_destinataires['.$message_id.']="'.implode(',',$tab_destinataires_valides).'";' );
-  Json::add_row( 'script' , 'tab_msg_contenus['.$message_id.']="'.str_replace(array("\r\n","\r","\n"),array('\r\n','\r','\n'),html($message_contenu)).'";' );
+  Json::add_row( 'script' , 'tab_msg_contenus['.$message_id.']="'.convertCRtoJS(html($message_contenu)).'";' );
   Json::end( TRUE );
 }
 

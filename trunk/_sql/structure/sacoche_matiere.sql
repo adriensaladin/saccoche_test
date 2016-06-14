@@ -2360,14 +2360,14 @@ INSERT INTO sacoche_matiere VALUES
 
 (9701, 0, 0,  97, 0, 255,      0, "BPASS", "Accompagnement soins et services à la personne"),
 (9702, 0, 0,  97, 0, 255,      0, "BPARC", "Accueil - relation clients et usagers"),
-(9703, 0, 0,  97, 0, 255,      0, "BPAOA", "Aéronautique - option mécanicien systèmes avionique"),
-(9704, 0, 0,  97, 0, 255,      0, "BPAOC", "Aéronautique - option mécanicien système cellule"),
+(9703, 0, 0,  97, 0, 255,      0, "BPAOA", "Aéronautique - option mécanicien systèmes avionique"), -- à retirer
+(9704, 0, 0,  97, 0, 255,      0, "BPAOC", "Aéronautique - option mécanicien système cellule"), -- à retirer
 (9705, 0, 0,  97, 0, 255,      0, "BPA3O", "Aéronautique à trois options (avionique - syst. et structures)"),
 (9706, 0, 0,  97, 0, 255,      0, "BPAEA", "Agencement de l'espace architectural"),
 (9707, 0, 0,  97, 0, 255,      0, "BPAFB", "Aménagement et finition du bâtiment"),
-(9708, 0, 0,  97, 0, 255,      0, "BPAMP", "Artisanat et métiers d'art - option arts de la pierre"),
+(9708, 0, 0,  97, 0, 255,      0, "BPAMP", "Artisanat et métiers d'art - option arts de la pierre"), -- dernière session 2017
 (9709, 0, 0,  97, 0, 255,      0, "BPAMC", "Artisanat et métiers d'art - option comm. visuelle pluri média"),
-(9710, 0, 0,  97, 0, 255,      0, "BPAME", "Artisanat et métiers d'art - option ébéniste"),
+(9710, 0, 0,  97, 0, 255,      0, "BPAME", "Artisanat et métiers d'art - option ébéniste"), -- dernière session 2016
 (9711, 0, 0,  97, 0, 255,      0, "BPAMM", "Artisanat et métiers d'art - option marchandisage visuel"),
 (9712, 0, 0,  97, 0, 255,      0, "BPAMT", "Artisanat et métiers d'art - option tapissier d'ameublement"),
 (9713, 0, 0,  97, 0, 255,      0, "BPAMV", "Artisanat et métiers d'art - verrerie + enseigne / signalétique"),
@@ -2377,60 +2377,60 @@ INSERT INTO sacoche_matiere VALUES
 (9717, 0, 0,  97, 0, 255,      0, "BPBCT", "Boucher charcutier traiteur"),
 (9718, 0, 0,  97, 0, 255,      0, "BPCOM", "Commerce"),
 (9719, 0, 0,  97, 0, 255,      0, "BPCSR", "Commercialisation et services en restauration"),
-(9720, 0, 0,  97, 0, 255,      0, "BPCPT", "Comptabilité"),
+(9720, 0, 0,  97, 0, 255,      0, "BPCPT", "Comptabilité"), -- à retirer
 (9721, 0, 0,  97, 0, 255,      0, "BPCTR", "Conducteur transport routier marchandises"),
 (9722, 0, 0,  97, 0, 255,      0, "BPCR" , "Construction des carrosseries"),
 (9723, 0, 0,  97, 0, 255,      0, "BPCUI", "Cuisine"),
 (9724, 0, 0,  97, 0, 255,      0, "BPCM" , "Cultures marines"),
 (9725, 0, 0,  97, 0, 255,      0, "BPEEE", "Électrotechnique, énergie, équipement communicants"),
-(9726, 0, 0,  97, 0, 255,      0, "BPEN" , "Environnement nucléaire"),
+(9726, 0, 0,  97, 0, 255,      0, "BPEN" , "Environnement nucléaire"), -- dernière session 2016
 (9727, 0, 0,  97, 0, 255,      0, "BPECP", "Esthétique cosmétique parfumerie"),
 (9728, 0, 0,  97, 0, 255,      0, "BPEPI", "Étude et définition de produits industriels"),
 (9729, 0, 0,  97, 0, 255,      0, "BPFPI", "Façonnage de produits imprimés, routage"),
 (9730, 0, 0,  97, 0, 255,      0, "BPFON", "Fonderie"),
-(9731, 0, 0,  97, 0, 255,      0, "BPGA" , "Gestion-administration"),
+(9731, 0, 0,  97, 0, 255,      0, "BPGA" , "Gestion administration"),
 (9732, 0, 0,  97, 0, 255,      0, "BPGP" , "Gestion des pollutions et protection de l'environnement"),
 (9733, 0, 0,  97, 0, 255,      0, "BPHE" , "Hygiène et environnement"),
 (9734, 0, 0,  97, 0, 255,      0, "BPHPS", "Hygiène, propreté et stérilisation"),
-(9735, 0, 0,  97, 0, 255,      0, "BPIP" , "Industrie de procédés"),
-(9736, 0, 0,  97, 0, 255,      0, "BPIPC", "Industries des pates, papiers et cartons"),
+(9735, 0, 0,  97, 0, 255,      0, "BPIP" , "Industrie de procédés"), -- à retirer
+(9736, 0, 0,  97, 0, 255,      0, "BPIPC", "Industries des pates, papiers et cartons"), -- à retirer
 (9737, 0, 0,  97, 0, 255,      0, "BPIPB", "Interventions sur le patrimoine bâti"),
 (9738, 0, 0,  97, 0, 255,      0, "BPLOG", "Logistique"),
-(9739, 0, 0,  97, 0, 255,      0, "BPMVA", "Maintenance de véhicules automobiles"),
+(9739, 0, 0,  97, 0, 255,      0, "BPMVA", "Maintenance de véhicules automobiles"), -- dernière session 2016
 (9740, 0, 0,  97, 0, 255,      0, "BPMEI", "Maintenance des équipements industriels"),
-(9741, 0, 0,  97, 0, 255,      0, "BPMM" , "Maintenance des matériels"),
+(9741, 0, 0,  97, 0, 255,      0, "BPMM" , "Maintenance des matériels"), -- dernières sessions 2018-2019
 (9742, 0, 0,  97, 0, 255,      0, "BPMN" , "Maintenance nautique"),
 (9743, 0, 0,  97, 0, 255,      0, "BPMMV", "Métiers de la mode - vêtements"),
 (9744, 0, 0,  97, 0, 255,      0, "BPMCC", "Métiers du cuir option chaussures"),
 (9745, 0, 0,  97, 0, 255,      0, "BPMCM", "Métiers du cuir option maroquinerie"),
 (9746, 0, 0,  97, 0, 255,      0, "BPMPB", "Métiers du pressing et de la blanchisserie"),
 (9747, 0, 0,  97, 0, 255,      0, "BPMIC", "Microtechniques"),
-(9748, 0, 0,  97, 0, 255,      0, "BPMIT", "Mise en œuvre des matériaux option industries textiles"),
-(9749, 0, 0,  97, 0, 255,      0, "BPMMC", "Mise en œuvre des matériaux opt. mat. métal. moulés, céramiques"),
+(9748, 0, 0,  97, 0, 255,      0, "BPMIT", "Mise en œuvre des matériaux option industries textiles"), -- à retirer
+(9749, 0, 0,  97, 0, 255,      0, "BPMMC", "Mise en œuvre des matériaux opt. mat. métal. moulés, céramiques"), -- à retirer
 (9750, 0, 0,  97, 0, 255,      0, "BPOL" , "Optique lunetterie"),
-(9751, 0, 0,  97, 0, 255,      0, "BPOBS", "Ouvrage du bâtiment : aluminium, verre et matériaux de synthèse"),
+(9751, 0, 0,  97, 0, 255,      0, "BPOBS", "Ouvrage du bâtiment : aluminium, verre et matériaux de synthèse"), -- à retirer
 (9752, 0, 0,  97, 0, 255,      0, "BPOBM", "Ouvrage du bâtiment : métallerie"),
 (9753, 0, 0,  97, 0, 255,      0, "BPPP" , "Perruquier posticheur"),
 (9754, 0, 0,  97, 0, 255,      0, "BPPHO", "Photographie"),
-(9755, 0, 0,  97, 0, 255,      0, "BPPSP", "Pilotage de systèmes de production automatisée"),
+(9755, 0, 0,  97, 0, 255,      0, "BPPSP", "Pilotage de systèmes de production automatisée"), -- à retirer
 (9756, 0, 0,  97, 0, 255,      0, "BPPLP", "Pilote de ligne de production"),
 (9757, 0, 0,  97, 0, 255,      0, "BPPC" , "Plastiques et composites"),
 (9758, 0, 0,  97, 0, 255,      0, "BPPET", "Poissonnier écailler traiteur"),
 (9759, 0, 0,  97, 0, 255,      0, "BPPCE", "Procédés de la chimie, de l'eau et des papiers-cartons"),
-(9760, 0, 0,  97, 0, 255,      0, "BPPG" , "Production graphique"),
-(9761, 0, 0,  97, 0, 255,      0, "BPPI" , "Production imprimée"),
+(9760, 0, 0,  97, 0, 255,      0, "BPPG" , "Production graphique"), -- dernière session 2016
+(9761, 0, 0,  97, 0, 255,      0, "BPPI" , "Production imprimée"), -- dernière session 2016
 (9762, 0, 0,  97, 0, 255,      0, "BPPMD", "Productique mécanique - option décolletage"),
 (9763, 0, 0,  97, 0, 255,      0, "BPPD" , "Prothèse dentaire"),
 (9764, 0, 0,  97, 0, 255,      0, "BPRC" , "Réparation des carrosseries"),
-(9765, 0, 0,  97, 0, 255,      0, "BPSEC", "Secrétariat"),
-(9766, 0, 0,  97, 0, 255,      0, "BPSP" , "Sécurité prévention"),
+(9765, 0, 0,  97, 0, 255,      0, "BPSEC", "Secrétariat"), -- à retirer
+(9766, 0, 0,  97, 0, 255,      0, "BPSP" , "Sécurité prévention"), -- dernière session 2016
 (9767, 0, 0,  97, 0, 255,      0, "BPSPL", "Services de proximité et vie locale"),
 (9768, 0, 0,  97, 0, 255,      0, "BPSEN", "Systèmes électroniques numériques"),
-(9769, 0, 0,  97, 0, 255,      0, "BPTA" , "Technicien aérostructure"),
+(9769, 0, 0,  97, 0, 255,      0, "BPTA" , "Technicien aérostructure"), -- à retirer
 (9770, 0, 0,  97, 0, 255,      0, "BPTCB", "Technicien constructeur bois"),
 (9771, 0, 0,  97, 0, 255,      0, "BPTFB", "Technicien de fabrication bois et matériaux associes"),
 (9772, 0, 0,  97, 0, 255,      0, "BPTEC", "Technicien de maintenance de syst. énergétiques et climatiques"),
-(9773, 0, 0,  97, 0, 255,      0, "BPTSC" , "Technicien de scierie"),
+(9773, 0, 0,  97, 0, 255,      0, "BPTSC", "Technicien de scierie"),
 (9774, 0, 0,  97, 0, 255,      0, "BPTB" , "Technicien du bâtiment : organisation réalisation du gros œuvre"),
 (9775, 0, 0,  97, 0, 255,      0, "BPTFC", "Technique du froid et du conditionnement de l'air"),
 (9776, 0, 0,  97, 0, 255,      0, "BPTEB", "Technicien d'études du bâtiment"),
@@ -2446,6 +2446,17 @@ INSERT INTO sacoche_matiere VALUES
 (9786, 0, 0,  97, 0, 255,      0, "BPTF" , "Transport fluvial"),
 (9787, 0, 0,  97, 0, 255,      0, "BPTP" , "Travaux publics"),
 (9788, 0, 0,  97, 0, 255,      0, "BPV"  , "Vente (prospection-négociation-suivi de clientèle)"),
+(9789, 0, 0,  97, 0, 255,      0, "BPAOO", "Artisanat et métiers d'art - facteur d'orgues option organier"),
+(9790, 0, 0,  97, 0, 255,      0, "BPAOT", "Artisanat et métiers d'art - facteur d'orgues option tuyautier"),
+(9791, 0, 0,  97, 0, 255,      0, "BPMVA", "Maintenance de véhicules - option A voitures particulières"),
+(9792, 0, 0,  97, 0, 255,      0, "BPMVB", "Maintenance de véhicules - option B véh. de transport routier"),
+(9793, 0, 0,  97, 0, 255,      0, "BPMVC", "Maintenance de véhicules - option C motocycles"),
+(9794, 0, 0,  97, 0, 255,      0, "BPMAV", "Menuiserie aluminium verre"),
+(9795, 0, 0,  97, 0, 255,      0, "BPMS" , "Métiers de la sécurité"), -- remplace 9766
+(9796, 0, 0,  97, 0, 255,      0, "BPRPG", "Réal. de prod. imprimés et plurimédia option A prod. graphiques"), -- remplace 9760
+(9797, 0, 0,  97, 0, 255,      0, "BPRPI", "Réal. de prod. imprimés et plurimédia option B prod. imprimées"), -- remplace 9761
+(9798, 0, 0,  97, 0, 255,      0, "BPTIN", "Techniques d'interventions sur installations nucléaires"), -- remplace 9726
+
 
 -- 98 Champs professionnels en SEGPA (http://www.education.gouv.fr/cid24467/mene0900316c.html)
 

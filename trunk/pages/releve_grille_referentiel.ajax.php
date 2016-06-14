@@ -216,7 +216,7 @@ if($besoin_notes)
 
 $lignes_nb = 0;
 $longueur_ref_max = 0;
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , $only_socle , FALSE /*only_item*/ , FALSE /*socle_nom*/ );
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , $only_socle , FALSE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*item_comm*/ );
 if(!empty($DB_TAB))
 {
   $domaine_id = 0;

@@ -50,7 +50,6 @@ $only_socle              = (isset($_POST['f_only_socle']))      ? 1             
 $aff_reference           = (isset($_POST['f_reference']))       ? 1                                                : 0;
 $aff_coef                = (isset($_POST['f_coef']))            ? 1                                                : 0;
 $aff_socle               = (isset($_POST['f_socle']))           ? 1                                                : 0;
-$aff_comm                = (isset($_POST['f_comm']))            ? 1                                                : 0;
 $aff_lien                = (isset($_POST['f_lien']))            ? 1                                                : 0;
 $orientation             = (isset($_POST['f_orientation']))     ? Clean::texte($_POST['f_orientation'])            : '';
 $couleur                 = (isset($_POST['f_couleur']))         ? Clean::texte($_POST['f_couleur'])                : '';
@@ -217,7 +216,7 @@ if($besoin_notes)
 
 $lignes_nb = 0;
 $longueur_ref_max = 0;
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , $only_socle , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*s2016_count*/ , TRUE /*item_comm*/ );
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , $only_socle , FALSE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*item_comm*/ );
 if(!empty($DB_TAB))
 {
   $domaine_id = 0;
@@ -260,8 +259,6 @@ if(!empty($DB_TAB))
         'item_coef'  => $DB_ROW['item_coef'],
         'item_cart'  => $DB_ROW['item_cart'],
         'item_socle' => $DB_ROW['entree_id'],
-        'item_s2016' => $DB_ROW['s2016_nb'],
-        'item_comm'  => $DB_ROW['item_comm'],
         'item_lien'  => $DB_ROW['item_lien'],
       );
       $tab_item_synthese[$item_id] = array(
@@ -594,13 +591,6 @@ if( $type_generique || $type_individuel )
                 if($aff_socle)
                 {
                   $texte_socle = ($item_socle) ? '[S] ' : '[–] ';
-                  $texte_s2016 = ($item_s2016) ? '[S] ' : '[–] ';
-                }
-                if($aff_comm)
-                {
-                  $image_comm  = ($item_comm) ? 'oui' : 'non' ;
-                  $title_comm  = ($item_comm) ? convertCRtoBR(html(html($item_comm))) : 'Sans commentaire.' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-                  $texte_comm  = '<img src="./_img/etat/comm_'.$image_comm.'.png" title="'.$title_comm.'" /> ';
                 }
                 if($aff_lien)
                 {
@@ -614,8 +604,8 @@ if( $type_generique || $type_individuel )
                 elseif(!$item_cart)                            { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
                 else                                           { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
                 $td_ref = ($longueur_ref_max) ? '<td>'.$item_ref.'</td>' : '' ;
-                $releve_HTML_individuel .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_socle.$texte_s2016.$texte_comm.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
-                $releve_PDF->item( $item_ref , $texte_coef.$texte_socle.$texte_s2016.$item_nom , $colspan_nb_apres );
+                $releve_HTML_individuel .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_socle.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
+                $releve_PDF->item( $item_ref , $texte_coef.$texte_socle.$item_nom , $colspan_nb_apres );
                 // Pour chaque case...
                 if($colspan_nb_apres)
                 {

@@ -78,9 +78,8 @@ if( ($make_html) || ($make_pdf) )
   $bilan_titre = 'd\'items '.$tab_titre_etat[$only_etat].' '.$tab_titre_modele[$releve_modele];
   $info_ponderation_complete = ($with_coef) ? '(pondérée)' : '(non pondérée)' ;
   $info_ponderation_courte   = ($with_coef) ? 'pondérée'   : 'simple' ;
-  if(!$aff_coef)  { $texte_coef  = ''; }
-  if(!$aff_socle) { $texte_socle = ''; }
-  if(!$aff_comm)  { $texte_comm  = ''; }
+  if(!$aff_coef)  { $texte_coef       = ''; }
+  if(!$aff_socle) { $texte_socle      = ''; }
   if(!$aff_lien)  { $texte_lien_avant = ''; }
   if(!$aff_lien)  { $texte_lien_apres = ''; }
   if(!$highlight_id) { $texte_fluo_avant = ''; }
@@ -375,7 +374,7 @@ if(empty($is_appreciation_groupe))
             // Pour chaque item...
             foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
             {
-              extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_comm $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
+              extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
               // calcul du bilan de l'item
               $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
               if( ($only_etat=='tous') || OutilBilan::tester_acquisition( $score , $only_etat ) )
@@ -803,7 +802,7 @@ if($type_individuel)
                   // Pour chaque item...
                   foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
                   {
-                    extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_comm $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
+                    extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
                     // cases référence et nom
                     if($aff_coef)
                     {
@@ -812,12 +811,6 @@ if($type_individuel)
                     if($aff_socle)
                     {
                       $texte_socle = ($item_socle) ? '[S] ' : '[–] ';
-                    }
-                    if($aff_comm)
-                    {
-                      $image_comm  = ($item_comm) ? 'oui' : 'non' ;
-                      $title_comm  = ($item_comm) ? convertCRtoBR(html(html($item_comm))) : 'Sans commentaire.' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-                      $texte_comm  = '<img src="./_img/etat/comm_'.$image_comm.'.png" title="'.$title_comm.'" /> ';
                     }
                     if($make_html)
                     {
@@ -837,7 +830,7 @@ if($type_individuel)
                       elseif(!$item_cart)                            { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
                       else                                           { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>'; }
                       $td_ref = ($longueur_ref_max) ? '<td>'.$item_ref.'</td>' : '' ;
-                      $releve_HTML_table_body .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_socle.$texte_comm.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</td>';
+                      $releve_HTML_table_body .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_socle.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</td>';
                     }
                     if($make_pdf)
                     {
@@ -1235,12 +1228,6 @@ if($type_individuel)
           {
             $texte_socle = ($item_socle) ? '[S] ' : '[–] ';
           }
-          if($aff_comm)
-          {
-            $image_comm  = ($item_comm) ? 'oui' : 'non' ;
-            $title_comm  = ($item_comm) ? convertCRtoBR(html(html($item_comm))) : 'Sans commentaire.' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-            $texte_comm  = '<img src="./_img/etat/comm_'.$image_comm.'.png" title="'.$title_comm.'" /> ';
-          }
           if($make_html)
           {
             if($aff_lien)
@@ -1263,7 +1250,7 @@ if($type_individuel)
           }
           if($make_html)
           {
-            $releve_HTML_individuel .= $separation.'<h3>'.$texte_item.$texte_coef.$texte_socle.$aff_comm.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</h3>'.NL;
+            $releve_HTML_individuel .= $separation.'<h3>'.$texte_item.$texte_coef.$texte_socle.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</h3>'.NL;
             // On passe au tableau
             $releve_HTML_table_head = '<thead><tr><th>Élève</th>';
             if($cases_nb)

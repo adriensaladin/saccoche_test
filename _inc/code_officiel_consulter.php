@@ -236,7 +236,6 @@ if($BILAN_TYPE=='releve')
   $aff_reference            = $_SESSION['OFFICIEL']['RELEVE_AFF_REFERENCE'];
   $aff_coef                 = $_SESSION['OFFICIEL']['RELEVE_AFF_COEF'];
   $aff_socle                = $_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'];
-  $aff_comm                 = 0; // Sans intérêt, l'élève & sa famille n'ayant accès qu'à l'archive pdf
   $aff_lien                 = 0; // Sans intérêt, l'élève & sa famille n'ayant accès qu'à l'archive pdf
   $aff_domaine              = $_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE'];
   $aff_theme                = $_SESSION['OFFICIEL']['RELEVE_AFF_THEME'];

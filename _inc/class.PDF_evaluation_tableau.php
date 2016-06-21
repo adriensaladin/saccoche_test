@@ -101,8 +101,7 @@ class PDF_evaluation_tableau extends PDF
     {
       $item_ref    =  $DB_ROW_COMP['matiere_ref'].'.'.$DB_ROW_COMP['item_ref'];
       $texte_socle = ($DB_ROW_COMP['entree_id']) ? ' [S]' : ' [–]';
-      $texte_s2016 = ($DB_ROW_COMP['s2016_nb'])  ? ' [S]' : ' [–]' ;
-      $this->saisie_reference_item( $item_ref.$texte_socle.$texte_s2016 , $DB_ROW_COMP['item_nom'] );
+      $this->saisie_reference_item( $item_ref.$texte_socle , $DB_ROW_COMP['item_nom'] );
       if($tab_scores)
       {
         foreach($DB_TAB_USER as $DB_ROW_USER)

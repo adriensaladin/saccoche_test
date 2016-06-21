@@ -45,9 +45,9 @@ $niveau_id   = Clean::entier($niveau_id);
 
 if( $matiere_id && $niveau_id )
 {
-  // Affichage du bilan de la liste des items pour la matière et le niveau sélectionnés
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ , FALSE /*item_comm*/ );
-  Json::end( TRUE , HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , FALSE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_coef*/ , TRUE /*aff_cart*/ , 'image' /*aff_socle*/ , 'image' /*aff_lien*/ , FALSE /*aff_input*/ ) );
+  $DB_TAB_socle2016 = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiel_matiere_niveau( $matiere_id , $niveau_id , 'texte' /*format*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ , FALSE /*s2016_count*/ , TRUE /*item_comm*/ );
+  Json::end( TRUE , HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , $DB_TAB_socle2016 , FALSE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_coef*/ , TRUE /*aff_cart*/ , 'image' /*aff_socle*/ , 'image' /*aff_lien*/ , TRUE /*aff_comm*/ , FALSE /*aff_input*/ ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

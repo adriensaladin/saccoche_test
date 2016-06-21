@@ -77,7 +77,7 @@ public static function DB_OPT_lister_elements_referentiels_prof( $prof_id , $gra
   $DB_SQL.= 'AND matiere_id IN ('.$listing_id_matieres_autorisees.') ';
   $DB_SQL.= $where;
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC'.$order_by;
-  $DB_VAR = array(':user_id'=>$prof_id);
+  $DB_VAR = array( ':user_id' => $prof_id );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun élément de référentiel trouvé.' ;
 }
@@ -100,8 +100,19 @@ public static function DB_recuperer_socle2016_for_referentiels_matiere($matiere_
   $DB_SQL.= 'LEFT JOIN sacoche_socle_domaine USING (socle_domaine_id) ';
   $DB_SQL.= 'WHERE matiere_id=:matiere_id AND socle_cycle_id IS NOT NULL '; // on peut aussi utiliser INNER JOIN
   $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC, socle_domaine_ordre ASC, socle_composante_ordre ASC';
-  $DB_VAR = array(':matiere_id'=>$matiere_id);
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_VAR = array( ':matiere_id' => $matiere_id );
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_TAB_socle2016 = array();
+  // On retourne [item_id] => array( 'id' => array(cycle_id.composante_id) , 'nom' => array(cycle_nom.' - '.composante_nom) )
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $DB_TAB_socle2016[$DB_ROW['item_id']]['id' ][] = $DB_ROW['socle_cycle_id'].$DB_ROW['socle_composante_id'];
+      $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][] = html($DB_ROW['socle_cycle_nom'].' - '.$DB_ROW['socle_composante_nom']);
+    }
+  }
+  return $DB_TAB_socle2016;
 }
 
 /**
@@ -109,12 +120,12 @@ public static function DB_recuperer_socle2016_for_referentiels_matiere($matiere_
  *
  * @param int  $matiere_id
  * @param int  $niveau_id
- * @param bool $with_nom    avec ou pas le nom des cycles et composantes
+ * @param bool $format    'texte' | 'ids'
  * @return array
  */
-public static function DB_recuperer_socle2016_for_referentiel_matiere_niveau( $matiere_id , $niveau_id , $with_nom )
+public static function DB_recuperer_socle2016_for_referentiel_matiere_niveau( $matiere_id , $niveau_id , $format )
 {
-  $select_noms = ($with_nom)   ? ', socle_cycle_nom, socle_composante_nom ' : '' ;
+  $select_noms = ($format=='texte') ? ', socle_cycle_nom, socle_composante_nom ' : '' ;
   $DB_SQL = 'SELECT item_id, socle_cycle_id, socle_composante_id '.$select_noms;
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
@@ -130,7 +141,29 @@ public static function DB_recuperer_socle2016_for_referentiel_matiere_niveau( $m
     ':matiere_id' => $matiere_id,
     ':niveau_id'  => $niveau_id,
   );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_TAB_socle2016 = array();
+  // On retourne [item_id][] => array( 'cycle'=>cycle_id , 'composante'=>composante_id )
+  if( !empty($DB_TAB) && ($format=='ids') )
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $DB_TAB_socle2016[$DB_ROW['item_id']][] = array(
+        'cycle'      => $DB_ROW['socle_cycle_id'],
+        'composante' => $DB_ROW['socle_composante_id'],
+      );
+    }
+  }
+  // On retourne [item_id] => array( 'id' => array(cycle_id.composante_id) , 'nom' => array(cycle_nom.' - '.composante_nom) )
+  if( !empty($DB_TAB) && ($format=='texte') )
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $DB_TAB_socle2016[$DB_ROW['item_id']]['id' ][] = $DB_ROW['socle_cycle_id'].$DB_ROW['socle_composante_id'];
+      $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][] = html($DB_ROW['socle_cycle_nom'].' - '.$DB_ROW['socle_composante_nom']);
+    }
+  }
+  return $DB_TAB_socle2016;
 }
 
 /**

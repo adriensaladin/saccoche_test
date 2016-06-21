@@ -34,6 +34,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
   $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
+  $tab_cycles   = DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles();
   $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
@@ -41,6 +42,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
   $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
+  $tab_cycles   = DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles();
   $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
@@ -48,12 +50,14 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   $tab_matieres = array();
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/);
   $tab_paliers  = array();
+  $tab_cycles   = DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles();
   $of_p = FALSE;
 }
 
 $select_matiere = HtmlForm::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,    '' /*option_first*/ , Form::$tab_choix['matiere_id'] /*selection*/ ,              '' /*optgroup*/ );
 $select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ ,    '' /*option_first*/ , FALSE                          /*selection*/ , 'regroupements' /*optgroup*/ );
 $select_palier  = HtmlForm::afficher_select($tab_paliers  , 'f_palier'  /*select_nom*/ , $of_p /*option_first*/ , Form::$tab_choix['palier_id']  /*selection*/ ,              '' /*optgroup*/ );
+$select_cycle   = HtmlForm::afficher_select($tab_cycles   , 'f_cycle'   /*select_nom*/ ,    '' /*option_first*/ , Form::$tab_choix['cycle_id']   /*selection*/ ,              '' /*optgroup*/ );
 
 if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
 {
@@ -62,7 +66,8 @@ if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
                 .'<option value="item_matiere_usage">utilisation des items par matière</option>'
                 .'<option value="arbre_matiere">arborescence des items par matière</option>'
                 .'<option value="arbre_socle">arborescence des items du socle</option>'
-                .'<option value="jointure_socle_matiere">liens socle &amp; matières</option>';
+                .'<option value="jointure_socle_matiere">liens socle &amp; matières</option>'
+                .'<option value="jointure_socle2016_matiere">liens socle 2016 &amp; matières</option>';
 }
 else
 {
@@ -81,6 +86,7 @@ else
   <div id="div_groupe" class="hide"><label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /></div>
   <div id="div_matiere" class="hide"><label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /></div>
   <div id="div_palier" class="hide"><label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /></div>
+  <div id="div_cycle" class="hide"><label class="tab" for="f_cycle">Cycle :</label><?php echo $select_cycle ?><input type="hidden" id="f_cycle_nom" name="f_cycle_nom" value="" /></div>
   <p id="p_submit" class="hide"><span class="tab"></span><button id="bouton_exporter" type="submit" class="fichier_export">Générer le listing de données</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>
 

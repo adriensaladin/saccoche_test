@@ -35,6 +35,8 @@ $matiere_id  = (isset($_POST['f_matiere']))     ? Clean::entier($_POST['f_matier
 $matiere_nom = (isset($_POST['f_matiere_nom'])) ? Clean::texte($_POST['f_matiere_nom'])   : '';
 $palier_id   = (isset($_POST['f_palier']))      ? Clean::entier($_POST['f_palier'])       : 0;
 $palier_nom  = (isset($_POST['f_palier_nom']))  ? Clean::texte($_POST['f_palier_nom'])    : '';
+$cycle_id    = (isset($_POST['f_cycle']))       ? Clean::entier($_POST['f_cycle'])        : 0;
+$cycle_nom   = (isset($_POST['f_cycle_nom']))   ? Clean::texte($_POST['f_cycle_nom'])     : '';
 
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 
@@ -105,6 +107,8 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
     .$separateur.'DEMANDE_EVAL'
     .$separateur.'LIEN'
     .$separateur.'SOCLE'
+    .$separateur.'SOCLE_2016'
+    .$separateur.'COMMENTAIRE'
     ."\r\n\r\n";
   // Préparation de l'export HTML
   $export_html = '<table class="p"><thead>'.NL.'<tr>'
@@ -117,15 +121,19 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
                    .'<th>Demande</th>'
                    .'<th>Lien</th>'
                    .'<th>Socle</th>'
+                   .'<th>Socle 2016</th>'
+                   .'<th>Commentaire</th>'
                  .'</tr>'.NL.'</thead><tbody>'.NL;
 
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , TRUE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB_socle2016 = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiels_matiere($matiere_id);
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , TRUE /*socle_nom*/ , FALSE /*s2016_count*/ , TRUE /*item_comm*/ );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
       $item_ref = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
       $demande_eval = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
+      $s2016_texte = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? ( (count($DB_TAB_socle2016[$DB_ROW['item_id']]['id'])==1) ? $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][0] : count($DB_TAB_socle2016[$DB_ROW['item_id']]['id']).' liaisons' ) : 'Hors-socle 2016.' ;
       $export_csv .= $DB_ROW['item_id']
         .$separateur.$matiere_nom
         .$separateur.$DB_ROW['niveau_nom']
@@ -135,6 +143,8 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
         .$separateur.$demande_eval
         .$separateur.'"'.$DB_ROW['item_lien'].'"'
         .$separateur.'"'.$DB_ROW['entree_nom'].'"'
+        .$separateur.'"'.$s2016_texte.'"'
+        .$separateur.'"'.$DB_ROW['item_comm'].'"'
         ."\r\n";
       $export_html .= '<tr>'
                        .'<td>'.$DB_ROW['item_id'].'</td>'
@@ -146,6 +156,8 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
                        .'<td>'.html($demande_eval).'</td>'
                        .'<td>'.html($DB_ROW['item_lien']).'</td>'
                        .'<td>'.html($DB_ROW['entree_nom']).'</td>'
+                       .'<td>'.html($s2016_texte).'</td>'
+                       .'<td>'.html($DB_ROW['item_comm']).'</td>'
                      .'</tr>'.NL;
     }
   }
@@ -174,7 +186,7 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
   // Préparation de l'export HTML
   $export_html_entete = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Notes<br />Total</th>';
   $tab_export_html = array();
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*s2016_count*/ , FALSE /*item_comm*/ );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
@@ -259,7 +271,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
   $tab_theme   = array();
   $tab_item    = array();
   $niveau_id = 0;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*s2016_count*/ , FALSE /*item_comm*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     if($DB_ROW['niveau_id']!=$niveau_id)
@@ -533,6 +545,85 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_jointures_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
+  // Finalisation de l'export HTML
+  $export_html.= '</div>'.NL;
+
+  // Affichage
+  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  Json::end( TRUE , $puce_download.$export_html );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Export CSV des liens des matières rattachés aux liens du socle 2016
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($type_export=='jointure_socle2016_matiere') && $cycle_id && $cycle_nom )
+{
+  Form::save_choix('cycle');
+  // Préparation de l'export CSV
+  $separateur = ';';
+  $export_csv  = 'SOCLE CYCLE'.$separateur.'SOCLE DOMAINE'.$separateur.'SOCLE COMPOSANTE'.$separateur.'MATIERE ITEM'."\r\n\r\n";
+  // Préparation de l'export HTML
+  $export_html = '<div id="zone_cycles" class="arbre_dynamique p">'.NL;
+  // Récupération des données du socle
+  $tab_socle_domaine    = array();
+  $tab_socle_composante = array();
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_socle2016_arborescence();
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $socle_domaine_id    = $DB_ROW['socle_domaine_id'];
+    $socle_composante_id = $DB_ROW['socle_composante_id'];
+    $tab_socle_domaine[$socle_domaine_id] = $DB_ROW['socle_domaine_ordre'].' '.$DB_ROW['socle_domaine_nom'];
+    $tab_socle_composante[$socle_domaine_id][$socle_composante_id] = $DB_ROW['socle_composante_nom'];
+  }
+  // Récupération des données des référentiels liés aux composantes du socle
+  $tab_jointure = array();
+  $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes($cycle_id);
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
+    $tab_jointure[$DB_ROW['socle_composante_id']][] = $DB_ROW['matiere_ref'].'.'.$item_ref.' - '.$DB_ROW['item_nom'];
+  }
+  // Elaboration de la sortie
+  $export_csv .= $cycle_nom."\r\n";
+  $export_html .= '<ul class="ul_m1">'.NL;
+  $export_html .=   '<li class="li_m1"><span>'.html($cycle_nom).'</span>'.NL;
+  $export_html .=     '<ul class="ul_n1">'.NL;
+  foreach($tab_socle_domaine as $socle_domaine_id => $domaine_nom)
+  {
+    $export_csv .= $separateur.$domaine_nom."\r\n";
+    $export_html .=       '<li class="li_n1"><span>'.html($domaine_nom).'</span>'.NL;
+    $export_html .=         '<ul class="ul_n2">'.NL;
+    foreach($tab_socle_composante[$socle_domaine_id] as $socle_composante_id => $socle_composante_nom)
+    {
+      $export_csv .= $separateur.$separateur.'"'.$socle_composante_nom.'"'."\r\n";
+      $export_html .=           '<li class="li_n2"><span>'.html($socle_composante_nom).'</span>'.NL;
+      if(isset($tab_jointure[$socle_composante_id]))
+      {
+        $export_html .=             '<ul class="ul_m2">'.NL;
+        foreach($tab_jointure[$socle_composante_id] as $item_descriptif)
+        {
+          $export_csv .= $separateur.$separateur.$separateur.'"'.$item_descriptif.'"'."\r\n";
+          $export_html .=               '<li class="li_m2">'.html($item_descriptif).'</li>'.NL;
+        }
+        $export_html .=             '</ul>'.NL;
+      }
+      else
+      {
+        $export_csv .= $separateur.$separateur.$separateur.'"AUCUN ITEM ASSOCIÉ"'."\r\n";
+        $export_html .=             '<br /><label class="alerte"><span style="background-color:#EE7">Aucun item associé.</span></label>'.NL;
+      }
+      $export_html .=           '</li>'.NL;
+    }
+    $export_html .=         '</ul>'.NL;
+    $export_html .=       '</li>'.NL;
+  }
+  $export_html .=     '</ul>'.NL;
+  $export_html .=   '</li>'.NL;
+  $export_html .= '</ul>'.NL;
+  // Finalisation de l'export CSV (archivage dans un fichier)
+  $fnom = 'export_jointures_'.Clean::fichier($cycle_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;

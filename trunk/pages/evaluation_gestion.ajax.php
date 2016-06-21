@@ -759,7 +759,7 @@ if( ($action=='supprimer') && $devoir_id && ( ($type=='groupe') || $groupe_id ) 
 if( ($action=='ordonner') && $devoir_id )
 {
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , FALSE /*with_lien*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , FALSE /*with_comm*/ , FALSE /*with_lien*/ );
   if(empty($DB_TAB_COMP))
   {
     Json::end( FALSE , 'Aucun item n\'est associé à cette évaluation !' );
@@ -768,8 +768,9 @@ if( ($action=='ordonner') && $devoir_id )
   {
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+    $texte_s2016 = ($DB_ROW['s2016_nb'])  ? ' [S]' : ' [–]' ;
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-    Json::add_str('<li id="i'.$DB_ROW['item_id'].'"><b>'.html($DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_coef).'</b> - '.html($DB_ROW['item_nom']).'</li>');
+    Json::add_str('<li id="i'.$DB_ROW['item_id'].'"><b>'.html($DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_s2016.$texte_coef).'</b> - '.html($DB_ROW['item_nom']).'</li>');
   }
    Json::end( TRUE );
 }
@@ -799,7 +800,7 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
 {
   $with_lien = ($action=='voir') ? TRUE : FALSE ;
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , $with_lien );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , TRUE /*with_comm*/ , $with_lien );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // liste des commentaires audio ou texte
@@ -887,10 +888,12 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
   {
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
     $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+    $texte_s2016 = ($DB_ROW['s2016_nb'])  ? ' [S]' : ' [–]' ;
+    $texte_comm  = ($DB_ROW['item_comm']) ? ' <img src="./_img/etat/comm_oui.png" title="'.convertCRtoBR(html(html($DB_ROW['item_comm']))).'" />' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
     $texte_lien_avant = ( ($action=='voir') && ($DB_ROW['item_lien']) ) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ( ($action=='voir') && ($DB_ROW['item_lien']) ) ? '</a>' : '';
-    $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_coef).$texte_lien_apres.'</b> <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /><div>'.html($DB_ROW['item_nom']).'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+    $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_s2016.$texte_coef).$texte_lien_apres.'</b> <img data-mode="bulle" alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /><div data-mode="complet">'.html($DB_ROW['item_nom']).$texte_comm.'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $tab_comp_id[$DB_ROW['item_id']] = $DB_ROW['matiere_ref'].'.'.$item_ref;
   }
   // cases centrales...
@@ -1140,7 +1143,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
   $tab_user_id = array(); // pas indispensable, mais plus lisible
   $tab_comp_id = array(); // pas indispensable, mais plus lisible
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , FALSE /*with_lien*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , FALSE /*with_comm*/ , FALSE /*with_lien*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // Let's go
@@ -1232,9 +1235,10 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
     {
       $item_ref    = $tab_comp_id[$DB_ROW['item_id']];
       $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+      $texte_s2016 = ($DB_ROW['s2016_nb'])  ? ' [S]' : ' [–]' ;
       $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
       $tab_scores[$DB_ROW['item_id']][0] = $DB_ROW['item_id'];
-      $csv_colonne_texte[$DB_ROW['item_id']] = $item_ref.$texte_socle.$texte_coef.' '.$DB_ROW['item_nom'];
+      $csv_colonne_texte[$DB_ROW['item_id']] = $item_ref.$texte_socle.$texte_s2016.$texte_coef.' '.$DB_ROW['item_nom'];
     }
     $separateur = ';';
     // première ligne (identifiants des élèves) + dernière ligne (noms prénoms des élèves)
@@ -1285,7 +1289,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
 if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart_ref_pourcentage,array('tous','only_eval')) && $devoir_id && $groupe_id && $date_fr && $description ) // $groupe_nom est aussi transmis
 {
   // liste des items
-  $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , TRUE /*with_lien*/ );
+  $DB_TAB_ITEM = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , TRUE /*with_socle*/ , TRUE /*with_coef*/ , TRUE /*with_ref*/ , FALSE /*with_comm*/ , TRUE /*with_lien*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , 'alpha' /*eleves_ordre*/ );
   // Let's go
@@ -1313,9 +1317,10 @@ if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart
   foreach($DB_TAB_ITEM as $DB_ROW)
   {
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
-    $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]';
+    $texte_socle = ($DB_ROW['entree_id']) ? ' [S]' : ' [–]' ;
+    $texte_s2016 = ($DB_ROW['s2016_nb'])  ? ' [S]' : ' [–]' ;
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-    $tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_coef , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
+    $tab_item_id[$DB_ROW['item_id']] = array( $DB_ROW['matiere_ref'].'.'.$item_ref.$texte_socle.$texte_s2016.$texte_coef , $DB_ROW['item_nom'] , $DB_ROW['item_lien'] );
   }
   // tableaux utiles ou pour conserver les infos
   $tab_init_nominatif = array();
@@ -1559,7 +1564,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $with_coef   = ($cart_detail=='minimal')                ? FALSE : $aff_coef ;
   $with_socle  = ($cart_detail=='minimal')                ? FALSE : $aff_socle ;
   // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , $with_socle , $with_coef , $with_ref , FALSE /*with_lien*/ );
+  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , $with_socle , $with_coef , $with_ref , FALSE /*with_comm*/ , FALSE /*with_lien*/ );
   // liste des élèves
   $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
   // Let's go
@@ -1603,12 +1608,13 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
     if($with_socle)
     {
       $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ' ;
+      $texte_s2016 = ($DB_ROW['s2016_nb'])  ? '[S] ' : '[–] ' ;
     }
     if($with_coef)
     {
       $texte_coef = '['.$DB_ROW['item_coef'].'] ';
     }
-    $tab_comp_id[$DB_ROW['item_id']] = array($texte_ref,$texte_socle.$texte_coef.$DB_ROW['item_nom']);
+    $tab_comp_id[$DB_ROW['item_id']] = array($texte_ref,$texte_socle.$texte_s2016.$texte_coef.$DB_ROW['item_nom']);
   }
   // résultats vierges
   foreach($tab_user_id as $user_id=>$val_user)

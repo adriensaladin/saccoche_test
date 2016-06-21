@@ -118,19 +118,6 @@ class ServeurCommunautaire
    */
   public static function exporter_arborescence_to_XML( $DB_TAB_referentiel , $DB_TAB_socle2016 )
   {
-    // Un 1er traitement pour les liaisons au socle commun
-    $tab_item_socle2016 = array();
-    if(!empty($DB_TAB_socle2016))
-    {
-      foreach($DB_TAB_socle2016 as $DB_ROW)
-      {
-        $tab_item_socle2016[$DB_ROW['item_id']][] = array(
-          'cycle'      => $DB_ROW['socle_cycle_id'],
-          'composante' => $DB_ROW['socle_composante_id'],
-        );
-      }
-    }
-    // 2ème traitement pour le référentiel en lui-même
     $tab_domaine = array();
     $tab_theme   = array();
     $tab_item    = array();
@@ -188,9 +175,9 @@ class ServeurCommunautaire
               foreach($tab_item[$domaine_id][$theme_id] as $item_id => $tab_item_info)
               {
                 $arbreXML .= "\t\t\t".'<item socle="'.$tab_item_info['socle'].'" ref="'.html($tab_item_info['ref']).'" nom="'.html($tab_item_info['nom']).'" abrev="'.html($tab_item_info['abrev']).'" coef="'.$tab_item_info['coef'].'" cart="'.$tab_item_info['cart'].'" lien="'.html($tab_item_info['lien']).'" comm="'.html($tab_item_info['comm']).'">'."\r\n";
-                if(isset($tab_item_socle2016[$item_id]))
+                if(isset($DB_TAB_socle2016[$item_id]))
                 {
-                  foreach($tab_item_socle2016[$item_id] as $tab_socle_info)
+                  foreach($DB_TAB_socle2016[$item_id] as $tab_socle_info)
                   {
                     $arbreXML .= "\t\t\t\t".'<socle cycle="'.$tab_socle_info['cycle'].'" composante="'.$tab_socle_info['composante'].'" />'."\r\n";
                   }

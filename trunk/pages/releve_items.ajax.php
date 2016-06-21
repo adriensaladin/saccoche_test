@@ -65,6 +65,7 @@ $only_socle               = (isset($_POST['f_only_socle']))         ? 1         
 $aff_reference            = (isset($_POST['f_reference']))          ? 1                                                : 0;
 $aff_coef                 = (isset($_POST['f_coef']))               ? 1                                                : 0;
 $aff_socle                = (isset($_POST['f_socle']))              ? 1                                                : 0;
+$aff_comm                 = (isset($_POST['f_comm']))               ? 1                                                : 0;
 $aff_lien                 = (isset($_POST['f_lien']))               ? 1                                                : 0;
 $aff_domaine              = (isset($_POST['f_domaine']))            ? 1                                                : 0;
 $aff_theme                = (isset($_POST['f_theme']))              ? 1                                                : 0;

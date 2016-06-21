@@ -176,20 +176,24 @@ public static function DB_recuperer_dates_periode( $groupe_id , $periode_id )
  * @param bool $only_socle   "TRUE" pour ne retourner que les items reliés au socle
  * @param bool $only_item    "TRUE" pour ne retourner que les lignes d'items, "FALSE" pour l'arborescence complète, sans forcément descendre jusqu'à l'items (valeurs NULL retournées)
  * @param bool $socle_nom    avec ou pas le nom des items du socle associés
+ * @param bool $s2016_count  avec ou pas le nb de liaisons au socle 2016
  * @param bool $item_comm    avec ou pas les commentaires associés aux items
  * @return array
  */
-public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $niveau_id , $only_socle , $only_item , $socle_nom , $item_comm )
+public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $niveau_id , $only_socle , $only_item , $socle_nom , $s2016_count , $item_comm )
 {
   $select_item_comm  = ($item_comm)   ? 'item_comm, ' : '' ;
+  $select_s2016_nb   = ($s2016_count) ? 'COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ' : '' ;
   $select_socle_nom  = ($socle_nom)   ? 'entree_id, entree_nom ' : 'entree_id ' ;
   $join_user_matiere = ($prof_id)     ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
   $join_socle_item   = ($socle_nom)   ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
+  $join_s2016        = ($s2016_count) ? 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
   $where_user        = ($prof_id)     ? 'AND user_id=:user_id ' : '' ;
   $where_matiere     = ($matiere_id)  ? 'AND matiere_id=:matiere_id ' : '' ;
   $where_niveau      = ($niveau_id)   ? 'AND niveau_id=:niveau_id ' : 'AND niveau_actif=1 ' ;
   $where_item        = ($only_item)   ? 'AND item_id IS NOT NULL ' : '' ;
   $where_socle       = ($only_socle)  ? 'AND entree_id !=0 ' : '' ;
+  $group_s2016       = ($s2016_count) ? 'GROUP BY sacoche_referentiel_item.item_id ' : '' ;
   $order_matiere     = (!$matiere_id) ? 'matiere_nom ASC, '  : '' ;
   $order_niveau      = (!$niveau_id)  ? 'niveau_ordre ASC, ' : '' ;
   $DB_SQL = 'SELECT ';
@@ -198,7 +202,7 @@ public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $nive
   $DB_SQL.= 'domaine_id, domaine_ordre, domaine_code, domaine_ref, domaine_nom, ';
   $DB_SQL.= 'theme_id, theme_ordre, theme_ref, theme_nom, ';
   $DB_SQL.= 'item_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien, ';
-  $DB_SQL.= $select_item_comm.$select_socle_nom;
+  $DB_SQL.= $select_item_comm.$select_s2016_nb.$select_socle_nom;
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= $join_user_matiere;
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -206,8 +210,9 @@ public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $nive
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-  $DB_SQL.= $join_socle_item;
+  $DB_SQL.= $join_socle_item.$join_s2016;
   $DB_SQL.= 'WHERE matiere_active=1 '.$where_user.$where_matiere.$where_niveau.$where_item.$where_socle;
+  $DB_SQL.= $group_s2016;
   $DB_SQL.= 'ORDER BY '.$order_matiere.$order_niveau.'domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array(
     ':user_id'    => $prof_id,
@@ -1038,6 +1043,20 @@ public static function DB_OPT_niveaux_matiere($matiere_id)
   $DB_VAR = array(':matiere_id'=>$matiere_id);
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun référentiel est rattaché à cette matière.' ;
+}
+
+/**
+ * Retourner un tableau [valeur texte] des cycles du socle 2016
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_OPT_socle2016_cycles()
+{
+  $DB_SQL = 'SELECT socle_cycle_id AS valeur, socle_cycle_nom AS texte ';
+  $DB_SQL.= 'FROM sacoche_socle_cycle ';
+  $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

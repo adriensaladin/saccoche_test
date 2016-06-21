@@ -298,8 +298,8 @@ public static function DB_lister_derniers_resultats_eleve( $eleve_id , $nb_jours
  */
 public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
 {
-  $DB_SQL = 'SELECT item_id, item_nom, entree_id, ';
-  $DB_SQL.= 'item_cart, item_lien, ';
+  $DB_SQL = 'SELECT item_id, item_nom, entree_id, COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ';
+  $DB_SQL.= 'item_cart, item_comm, item_lien, ';
   $DB_SQL.= 'matiere_id, matiere_nb_demandes, matiere_ref , ';
   $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
   $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso , ';
@@ -311,7 +311,9 @@ public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
+  $DB_SQL.= 'GROUP BY sacoche_referentiel_item.item_id ';
   $DB_SQL.= 'ORDER BY jointure_ordre ASC, matiere_ref ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array(':devoir_id'=>$devoir_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);

@@ -36,17 +36,19 @@ class HtmlArborescence
    * Retourner une liste HTML ordonnée de l'arborescence d'un référentiel matière à partir d'une requête SQL transmise.
    * 
    * @param tab         $DB_TAB
+   * @param tab         $DB_TAB_socle2016
    * @param bool        $dynamique   arborescence cliquable ou pas (plier/replier)
    * @param bool        $aff_ref     afficher ou pas les références
    * @param bool        $aff_coef    affichage des coefficients des items (sous forme d'image)
    * @param bool        $aff_cart    affichage des possibilités de demandes d'évaluation des items (sous forme d'image)
    * @param bool|string $aff_socle   FALSE | 'texte' | 'image' : affichage de la liaison au socle
    * @param bool|string $aff_lien    FALSE | 'image' | 'click' : affichage des liens (ressources pour travailler)
+   * @param bool        $aff_comm    affichage ou pas du commentaire associé à l'item
    * @param bool        $aff_input   affichage ou pas des input checkbox avec label
    * @param string      $aff_id_li   vide par défaut, "n3" pour ajouter des id aux li_n3
    * @return string
    */
-  public static function afficher_matiere_from_SQL( $DB_TAB , $dynamique , $aff_ref , $aff_coef , $aff_cart , $aff_socle , $aff_lien , $aff_input , $aff_id_li='' )
+  public static function afficher_matiere_from_SQL( $DB_TAB , $DB_TAB_socle2016 , $dynamique , $aff_ref , $aff_coef , $aff_cart , $aff_socle , $aff_lien , $aff_comm , $aff_input , $aff_id_li='' )
   {
     $input_all = ($aff_input) ? '<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q>' : '' ;
     $input_texte = '';
@@ -113,11 +115,15 @@ class HtmlArborescence
         {
           case 'texte' :
             $socle_texte = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
+            $s2016_texte = ($DB_ROW['s2016_nb'])  ? '[S] ' : '[–] ';
             break;
           case 'image' :
             $socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
             $socle_title = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
             $socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" title="'.$socle_title.'" /> ';
+            $s2016_image = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? 'oui' : 'non' ;
+            $s2016_title = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? implode('<br />',$DB_TAB_socle2016[$DB_ROW['item_id']]['nom']) : 'Hors-socle 2016.' ;
+            $s2016_texte = '<img src="./_img/etat/socle_'.$s2016_image.'.png" title="'.$s2016_title.'" /> ';
         }
         switch($aff_lien)
         {
@@ -129,6 +135,12 @@ class HtmlArborescence
             $lien_title = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
             $lien_texte = '<img src="./_img/etat/link_'.$lien_image.'.png" title="'.$lien_title.'" /> ';
         }
+        if($aff_comm)
+        {
+          $comm_image  = ($DB_ROW['item_comm']) ? 'oui' : 'non' ;
+          $comm_title  = ($DB_ROW['item_comm']) ? convertCRtoBR(html(html($DB_ROW['item_comm']))) : 'Sans commentaire.' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+          $comm_texte  = '<img src="./_img/etat/comm_'.$comm_image.'.png" title="'.$comm_title.'" /> ';
+        }
         if($aff_input)
         {
           $input_texte = '<input id="item_'.$item_id.'" name="f_items[]" type="checkbox" value="'.$item_id.'" /> ';
@@ -137,7 +149,7 @@ class HtmlArborescence
         }
         $reference = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
         $prefixe   = ($aff_ref) ? $reference.' - ' : '' ;
-        $tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $label_texte_avant.$input_texte.$coef_texte.$cart_texte.$socle_texte.$lien_texte.$lien_texte_avant.html($prefixe.$DB_ROW['item_nom']).$lien_texte_apres.$label_texte_apres;
+        $tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $label_texte_avant.$input_texte.$coef_texte.$cart_texte.$socle_texte.$s2016_texte.$lien_texte.$comm_texte.$lien_texte_avant.html($prefixe.$DB_ROW['item_nom']).$lien_texte_apres.$label_texte_apres;
       }
     }
     // Affichage de l'arborescence
@@ -320,7 +332,6 @@ class HtmlArborescence
     }
     // 2) Domaines et composantes
     $DB_TAB_Socle = DB_STRUCTURE_COMMUN::DB_recuperer_socle2016_arborescence();
-    $domaine_id = 0;
     foreach($DB_TAB_Socle as $DB_ROW)
     {
       $domaine_id    = $DB_ROW['socle_domaine_id'];

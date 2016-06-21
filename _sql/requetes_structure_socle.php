@@ -36,6 +36,32 @@ class DB_STRUCTURE_SOCLE extends DB
 /**
  * Lister les items des référentiels reliés au socle
  *
+ * @param int $cycle_id   id du cycle
+ * @return array
+ */
+public static function DB_recuperer_associations_items_composantes($cycle_id)
+{
+  $DB_SQL = 'SELECT item_id , item_nom , matiere_ref , socle_composante_id , ';
+  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
+  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso ';
+  $DB_SQL.= 'FROM sacoche_referentiel ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
+  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND socle_cycle_id=:cycle_id ' ;
+  $DB_SQL.= 'GROUP BY item_id ';
+  $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
+  $DB_VAR = array( ':cycle_id' => $cycle_id );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * Lister les items des référentiels reliés au socle
+ *
  * @param void
  * @return array
  */
@@ -69,7 +95,7 @@ public static function DB_recuperer_piliers($palier_id)
   $DB_SQL.= 'FROM sacoche_socle_pilier ';
   $DB_SQL.= 'WHERE palier_id=:palier_id ';
   $DB_SQL.= 'ORDER BY pilier_ordre ASC';
-  $DB_VAR = array(':palier_id'=>$palier_id);
+  $DB_VAR = array( ':palier_id' => $palier_id );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -89,7 +115,7 @@ public static function DB_recuperer_arborescence_pilier( $pilier_id , $listing_d
   $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
   $DB_SQL.= 'WHERE pilier_id=:pilier_id '.$where_domaine;
   $DB_SQL.= 'ORDER BY section_ordre ASC, entree_ordre ASC';
-  $DB_VAR = array(':pilier_id'=>$pilier_id);
+  $DB_VAR = array( ':pilier_id' => $pilier_id );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -174,7 +200,7 @@ public static function DB_lister_eleves_cibles_actuels_avec_sconet_id( $listing_
   $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
   $DB_SQL.= $only_sconet_id ? 'AND user_sconet_id>0 ' : '' ;
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC';
-  $DB_VAR = array(':profil_type'=>'eleve');
+  $DB_VAR = array( ':profil_type' => 'eleve' );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -235,7 +261,7 @@ public static function DB_lister_jointure_user_entree( $listing_eleves , $listin
     $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
     $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND section_id=:section_id ';
-    $DB_VAR = array(':section_id'=>$domaine_id);
+    $DB_VAR = array( ':section_id' => $domaine_id );
   }
   elseif($pilier_id)
   {
@@ -245,7 +271,7 @@ public static function DB_lister_jointure_user_entree( $listing_eleves , $listin
     $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
     $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND pilier_id=:pilier_id ';
-    $DB_VAR = array(':pilier_id'=>$pilier_id);
+    $DB_VAR = array( ':pilier_id' => $pilier_id );
   }
   elseif($palier_id)
   {
@@ -256,7 +282,7 @@ public static function DB_lister_jointure_user_entree( $listing_eleves , $listin
     $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_entree USING (entree_id) ';
     $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND palier_id=:palier_id ';
-    $DB_VAR = array(':palier_id'=>$palier_id);
+    $DB_VAR = array( ':palier_id' => $palier_id );
   }
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -278,7 +304,7 @@ public static function DB_lister_jointure_user_pilier( $listing_eleves , $listin
     $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
     $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_pilier USING (pilier_id) ';
     $DB_SQL.= 'WHERE user_id IN('.$listing_eleves.') AND palier_id=:palier_id ';
-    $DB_VAR = array(':palier_id'=>$palier_id);
+    $DB_VAR = array( ':palier_id' => $palier_id );
   }
   elseif($listing_piliers)
   {
@@ -343,7 +369,7 @@ public static function DB_lister_eleves_identite_et_sconet()
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(':profil_type'=>'eleve');
+  $DB_VAR = array( ':profil_type' => 'eleve' );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

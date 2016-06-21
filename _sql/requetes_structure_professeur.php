@@ -593,31 +593,35 @@ public static function DB_OPT_eleves_devoirs_prof_groupe($prof_id,$groupe_id)
  * Retourner les items d'un devoir
  *
  * @param int   $devoir_id
- * @param bool  $with_lien
- * @param bool  $with_coef
  * @param bool  $with_socle
+ * @param bool  $with_coef
  * @param bool  $with_ref
+ * @param bool  $with_comm
+ * @param bool  $with_lien
  * @return array
  */
-public static function DB_lister_devoir_items( $devoir_id , $with_socle , $with_coef , $with_ref , $with_lien )
+public static function DB_lister_devoir_items( $devoir_id , $with_socle , $with_coef , $with_ref , $with_comm , $with_lien )
 {
   $DB_SQL = 'SELECT item_id, ';
-  $DB_SQL.= ($with_socle) ? 'entree_id, '   : '' ;
+  $DB_SQL.= ($with_socle) ? 'entree_id, COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ' : '' ;
   $DB_SQL.= ($with_coef)  ? 'item_coef, '   : '' ;
   $DB_SQL.= ($with_lien)  ? 'item_lien, '   : '' ;
   $DB_SQL.= ($with_ref)   ? 'matiere_ref, ' : '' ;
   $DB_SQL.= ($with_ref)   ? 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto, ' : '' ;
   $DB_SQL.= ($with_ref)   ? 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso, ' : '' ;
+  $DB_SQL.= ($with_comm)  ? 'item_comm, '   : '' ;
   $DB_SQL.= 'item_nom ';
   $DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
+  $DB_SQL.= ($with_socle) ? 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
+  $DB_SQL.= ($with_socle) ? 'GROUP BY sacoche_referentiel_item.item_id ' : '' ;
   $DB_SQL.= 'ORDER BY jointure_ordre ASC, matiere_ref ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
-  $DB_VAR = array(':devoir_id'=>$devoir_id);
+  $DB_VAR = array( ':devoir_id' => $devoir_id );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -636,7 +640,7 @@ public static function DB_lister_devoir_saisies($devoir_id,$with_marqueurs)
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_saisie.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id AND user_sortie_date>NOW() ';
   $DB_SQL.= ($with_marqueurs) ? '' : 'AND saisie_note!="PA" ' ;
-  $DB_VAR = array(':devoir_id'=>$devoir_id);
+  $DB_VAR = array( ':devoir_id' => $devoir_id );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -689,7 +693,7 @@ public static function DB_lister_nb_saisies_par_evaluation($listing_devoir_id)
   $DB_SQL.= 'WHERE devoir_id IN('.$listing_devoir_id.') ' ;
   $DB_SQL.= 'AND saisie_note!="PA" AND user_sortie_date>NOW() ' ;
   $DB_SQL.= 'GROUP BY devoir_id ';
-  $DB_VAR = array(':devoir_id'=>$listing_devoir_id);
+  $DB_VAR = array( ':devoir_id' => $listing_devoir_id );
   return ($is_devoir_unique) ? (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) : DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) ;
 }
 
@@ -752,7 +756,7 @@ public static function tester_prof_langue_vivante($prof_id)
   $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
   $DB_SQL.= 'WHERE user_id=:user_id AND matiere_id IN('.implode(',',$tab_langues[100]['tab_matiere_id']).') ';
   $DB_SQL.= 'LIMIT 1'; // utile
-  $DB_VAR = array(':user_id'=>$prof_id);
+  $DB_VAR = array( ':user_id' => $prof_id );
   return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

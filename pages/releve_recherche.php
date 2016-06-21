@@ -100,7 +100,7 @@ Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_
   Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
   // Affichage de la liste des items pour toutes les matières d'un professeur ou toutes les matières de l'établissement si directeur ou PP, sur tous les niveaux
   $user_id = ( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && !DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'],0) ) ? $_SESSION['USER_ID'] : 0 ;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*s2016_count*/ , FALSE /*item_comm*/ );
   if(empty($DB_TAB))
   {
     $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous n\'êtes rattaché à' : 'L\'établissement n\'a mis en place' ;
@@ -108,7 +108,7 @@ Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_
   }
   else
   {
-    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_input*/ );
+    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , NULL /*DB_TAB_socle2016*/ , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , FALSE /*aff_comm*/ , TRUE /*aff_input*/ );
     $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous êtes rattaché à' : 'L\'établissement a mis en place' ;
     echo strpos($arborescence,'<input') ? $arborescence : '<p class="danger">'.$phrase_debut.' des matières dont les référentiels ne comportent aucun item !</p>' ;
   }

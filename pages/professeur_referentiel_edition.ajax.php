@@ -92,18 +92,9 @@ if( ($action=='lister_options') && in_array($granulosite,$tab_granulosite) )
 if( ($action=='Voir') && $matiere_id )
 {
   // Une 1ère requête pour les liaisons au socle commun
-  $tab_item_socle2016 = array();
-  $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiels_matiere($matiere_id);
-  if(!empty($DB_TAB))
-  {
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_item_socle2016[$DB_ROW['item_id']]['id' ][] = $DB_ROW['socle_cycle_id'].$DB_ROW['socle_composante_id'];
-      $tab_item_socle2016[$DB_ROW['item_id']]['nom'][] = html($DB_ROW['socle_cycle_nom'].' - '.$DB_ROW['socle_composante_nom']);
-    }
-  }
+  $DB_TAB_socle2016 = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiels_matiere($matiere_id);
   // On passe aux réféentiels
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ , TRUE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ , FALSE /*s2016_count*/ , TRUE /*item_comm*/ );
   $tab_niveau  = array();
   $tab_domaine = array();
   $tab_theme   = array();
@@ -135,23 +126,23 @@ if( ($action=='Voir') && $matiere_id )
     if( (!is_null($DB_ROW['item_id'])) && ($DB_ROW['item_id']!=$item_id) )
     {
       $item_id     = $DB_ROW['item_id'];
-      $coef_texte  = '<img src="./_img/coef/'.sprintf("%02u",$DB_ROW['item_coef']).'.gif" alt="" title="Coefficient '.$DB_ROW['item_coef'].'." />';
+      $coef_texte  = '<img src="./_img/coef/'.sprintf("%02u",$DB_ROW['item_coef']).'.gif" title="Coefficient '.$DB_ROW['item_coef'].'." />';
       $cart_title  = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
       $cart_image  = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
       $cart_texte  = '<img src="./_img/etat/cart_'.$cart_image.'.png" title="'.$cart_title.'" />';
       $socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
-      $socle_nom   = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
-      $socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" alt="" title="'.$socle_nom.'" data-id="'.$DB_ROW['entree_id'].'" />';
-      $s2016_image = isset($tab_item_socle2016[$item_id]) ? 'oui' : 'non' ;
-      $s2016_id    = isset($tab_item_socle2016[$item_id]) ? implode(',',$tab_item_socle2016[$item_id]['id']) : '' ;
-      $s2016_nom   = isset($tab_item_socle2016[$item_id]) ? implode('<br />',$tab_item_socle2016[$item_id]['nom']) : 'Hors-socle 2016.' ;
-      $s2016_texte = '<img src="./_img/etat/socle_'.$s2016_image.'.png" alt="" title="'.$s2016_nom.'" data-id="'.$s2016_id.'" />';
+      $socle_title = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
+      $socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" title="'.$socle_title.'" data-id="'.$DB_ROW['entree_id'].'" />';
+      $s2016_image = isset($DB_TAB_socle2016[$item_id]) ? 'oui' : 'non' ;
+      $s2016_id    = isset($DB_TAB_socle2016[$item_id]) ? implode(',',$DB_TAB_socle2016[$item_id]['id']) : '' ;
+      $s2016_title = isset($DB_TAB_socle2016[$item_id]) ? implode('<br />',$DB_TAB_socle2016[$item_id]['nom']) : 'Hors-socle 2016.' ;
+      $s2016_texte = '<img src="./_img/etat/socle_'.$s2016_image.'.png" title="'.$s2016_title.'" data-id="'.$s2016_id.'" />';
       $lien_image  = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
-      $lien_nom    = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
-      $lien_texte  = '<img src="./_img/etat/link_'.$lien_image.'.png" alt="" title="'.$lien_nom.'" />';
+      $lien_title  = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;
+      $lien_texte  = '<img src="./_img/etat/link_'.$lien_image.'.png" title="'.$lien_title.'" />';
       $comm_image  = ($DB_ROW['item_comm']) ? 'oui' : 'non' ;
       $comm_title  = ($DB_ROW['item_comm']) ? $DB_ROW['item_comm'] : 'Sans commentaire.' ;
-      $comm_texte  = '<img alt="" src="./_img/etat/comm_'.$comm_image.'.png" width="16" height="16" title="'.convertCRtoBR(html(html($comm_title))).'" />'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+      $comm_texte  = '<img src="./_img/etat/comm_'.$comm_image.'.png" width="16" height="16" title="'.convertCRtoBR(html(html($comm_title))).'" />'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
       $sep_ref     = ($DB_ROW['item_ref'])   ? $separateur : '' ;
       $sep_abrev   = ($DB_ROW['item_abrev']) ? $separateur : '' ;
       $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$s2016_texte.$lien_texte.$comm_texte.'<b>'.html($DB_ROW['item_ref']).'</b>'.'<b>'.$sep_ref.'</b>'.'<b>'.html($DB_ROW['item_abrev']).'</b>'.'<b>'.$sep_abrev.'</b>'.'<b>'.html($DB_ROW['item_nom']).'</b>';

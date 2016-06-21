@@ -48,6 +48,7 @@ $(document).ready
         if( (type=='listing_eleves') || (type.substring(0,6)=='infos_') )                          {requis='groupe';  $('#div_groupe' ).slideDown();} else {$('#div_groupe' ).slideUp();}
         if( (type=='listing_matiere') || (type=='item_matiere_usage') || (type=='arbre_matiere') ) {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
         if( (type=='arbre_socle') || (type=='jointure_socle_matiere') )                            {requis='palier';  $('#div_palier' ).slideDown();} else {$('#div_palier' ).slideUp();}
+        if(type=='jointure_socle2016_matiere')                                                     {requis='cycle';   $('#div_cycle'  ).slideDown();} else {$('#div_cycle'  ).slideUp();}
         if(type=='')                                                                               {requis='';        $('#p_submit'   ).hide(0);    } else {$('#p_submit'   ).show(0);  }
         $('#bilan').html("");
       }
@@ -69,14 +70,16 @@ $(document).ready
           f_type    : { required:true },
           f_groupe  : { required:function(){return requis=='groupe';} },
           f_matiere : { required:function(){return requis=='matiere';} },
-          f_palier  : { required:function(){return requis=='palier';} }
+          f_palier  : { required:function(){return requis=='palier';} },
+          f_cycle  : { required:function(){return requis=='cycle';} }
         },
         messages :
         {
           f_type :    { required:"type manquant" },
           f_groupe :  { required:"regroupement manquant" },
           f_matiere : { required:"matière manquante" },
-          f_palier :  { required:"palier manquant" }
+          f_palier :  { required:"palier manquant" },
+          f_cycle :  { required:"cycle manquant" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -138,6 +141,13 @@ $(document).ready
         {
           nom  = $("#f_palier option:selected").text();
           $('#f_palier_nom').val( nom );
+        }
+        // récupération du nom du cycle
+        var cycle_val = $("#f_cycle").val();
+        if(cycle_val)
+        {
+          nom  = $("#f_cycle option:selected").text();
+          $('#f_cycle_nom').val( nom );
         }
         $(this).ajaxSubmit(ajaxOptions);
         return false;

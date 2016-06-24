@@ -32,7 +32,7 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Enseignements
 <ul class="puce">
   <li><span class="astuce">Les <b>Enseignements Pratiques Interdisciplinaires</b> mis en place à compter de la rentrée 2016 concernent les <b>élèves du Cycle 4 (5e 4e 3e)</b>.</span></li>
   <li><span class="manuel"><a class="pop_up" href="http://eduscol.education.fr/cid99750/epi.html">Documents et informations ministérielles.</a></span></li>
-  <li>Dans sa forme, le livret scolaire impose de rattacher plusieurs couples { matière / enseignant } pour un projet mené sur une classe.</li>
+  <li>Dans sa forme, le livret scolaire impose de rattacher plusieurs couples { matière / enseignant } à un projet mené sur une classe.</li>
 </ul>
 
 <hr />

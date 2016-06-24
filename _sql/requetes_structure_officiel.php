@@ -372,7 +372,7 @@ public static function DB_lister_officiel_archive( $structure_uai , $annee_scola
   $order_annee    = (!$annee_scolaire) ? 'annee_scolaire ASC, ' : '' ;
   $order_periode  = (!$periode_id)     ? 'periode_id ASC, '     : '' ;
   // key
-  $key_eleve_id   = ($annee_scolaire && $archive_type && $archive_ref && $periode_id) ? TRUE : FALSE ; // Pas de test sur $structure_uai qui peut être une chaine vide
+  $key_eleve_id   = ($structure_uai && $annee_scolaire && $archive_type && $archive_ref && $periode_id) ? TRUE : FALSE ;
   // on assemble
   $DB_SQL = 'SELECT '.$select;
   $DB_SQL.= 'FROM sacoche_officiel_archive ';

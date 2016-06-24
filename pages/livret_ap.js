@@ -36,11 +36,9 @@ $(document).ready
 
     var mode = false;
 
-    var memo_nombre = 1;
-
     // tri du tableau (avec jquery.tablesorter.js).
-    $('#table_action').tablesorter({ headers:{4:{sorter:false}} });
-    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[0,0],[1,0]] ] ); };
+    $('#table_action').tablesorter({ headers:{5:{sorter:false}} });
+    var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[0,0],[1,0],[2,0]] ] ); };
     var tableau_maj = function(){ $('#table_action').trigger( 'update' , [ true ] ); };
     tableau_tri();
 
@@ -48,9 +46,9 @@ $(document).ready
     // Mettre à jour la liste des professeurs associés à une classe et à une matière
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_prof( groupe_id , select_numero , matiere_id , prof_id )
+    function maj_f_prof( groupe_id , matiere_id , prof_id )
     {
-      $('#f_prof_'+select_numero).html('<option></option>');
+      $('#f_prof').html('<option></option>');
       $('#ajax_msg_gestion').removeAttr('class').html("");
       if( groupe_id && matiere_id )
       {
@@ -74,7 +72,7 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 $('#ajax_msg_gestion').removeAttr('class').html("");
-                $('#f_prof_'+select_numero).html(responseJSON['value']);
+                $('#f_prof').html(responseJSON['value']);
               }
               else
               {
@@ -86,15 +84,14 @@ $(document).ready
       }
     }
 
-    $("select[id^=f_matiere").change
+    $("#f_matiere").change
     (
       function()
       {
-        var select_numero = $(this).attr('id').substr(10);
         var groupe_id  = $('#f_groupe option:selected').val();
         var matiere_id = $(this).val();
-        var prof_id    = $('#f_prof_'+select_numero+' option:selected').val();
-        maj_f_prof( groupe_id , select_numero , matiere_id , prof_id );
+        var prof_id    = $('#f_prof option:selected').val();
+        maj_f_prof( groupe_id , matiere_id , prof_id );
       }
     );
 
@@ -102,10 +99,10 @@ $(document).ready
     // Mettre à jour la liste des matières associées à une classe
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_matiere( groupe_id , select_numero , matiere_id , prof_id )
+    function maj_f_matiere( groupe_id , matiere_id , prof_id )
     {
-      $('#f_matiere_'+select_numero).html('<option></option>');
-      $('#f_prof_'+select_numero).html('<option></option>');
+      $('#f_matiere').html('<option></option>');
+      $('#f_prof').html('<option></option>');
       $('#ajax_msg_gestion').removeAttr('class').html("");
       if( groupe_id )
       {
@@ -129,10 +126,10 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 $('#ajax_msg_gestion').removeAttr('class').html("");
-                $('#f_matiere_'+select_numero).html(responseJSON['value']);
-                if( $('#f_matiere_'+select_numero+' option:selected').val() )
+                $('#f_matiere').html(responseJSON['value']);
+                if( $('#f_matiere option:selected').val() )
                 {
-                  maj_f_prof( groupe_id , select_numero , matiere_id , prof_id );
+                  maj_f_prof( groupe_id , matiere_id , prof_id );
                 }
               }
               else
@@ -149,13 +146,10 @@ $(document).ready
     (
       function()
       {
-        var groupe_id = $(this).val();
-        for( var select_numero=1 ; select_numero<=memo_nombre ; select_numero++ )
-        {
-          var matiere_id = $('#f_matiere_'+select_numero+' option:selected').val();
-          var prof_id    = $('#f_prof_'+select_numero+' option:selected').val();
-          maj_f_matiere( groupe_id , select_numero , matiere_id , prof_id );
-        }
+        var groupe_id  = $(this).val();
+        var matiere_id = $('#f_matiere option:selected').val();
+        var prof_id    = $('#f_prof option:selected').val();
+        maj_f_matiere( groupe_id , matiere_id , prof_id );
       }
     );
 
@@ -163,24 +157,11 @@ $(document).ready
     // Mettre à jour la liste des classes associées à un moment
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_groupe( page_ref , groupe_id , tab_join )
+    function maj_f_groupe( page_ref , groupe_id , matiere_id , prof_id )
     {
-      memo_nombre = Math.max( tab_join.length , 1 );
-      $('#f_nombre option[value="'+memo_nombre+'"]').prop('selected',true);
       $('#f_groupe').html('<option></option>');
-      for( var i=1 ; i<=5 ; i++ )
-      {
-        $('#f_matiere_'+i).html('<option></option>');
-        $('#f_prof_'+i).html('<option></option>');
-        if(i<=memo_nombre)
-        {
-          $('#join_'+i).show(0);
-        }
-        else
-        {
-          $('#join_'+i).hide(0);
-        }
-      }
+      $('#f_matiere').html('<option></option>');
+      $('#f_prof').html('<option></option>');
       $('#ajax_msg_gestion').removeAttr('class').html("");
       if( page_ref )
       {
@@ -207,13 +188,7 @@ $(document).ready
                 $('#f_groupe').html(responseJSON['value']);
                 if( $('#f_groupe option:selected').val() )
                 {
-                  var select_numero = 0;
-                  for(var i in tab_join)
-                  {
-                    select_numero++;
-                    var tab_id = tab_join[i].split('_');
-                    maj_f_matiere( groupe_id , select_numero , tab_id[0] /*matiere_id*/ , tab_id[1] /*prof_id*/ );
-                  }
+                  maj_f_matiere( groupe_id , matiere_id , prof_id );
                 }
               }
               else
@@ -230,47 +205,11 @@ $(document).ready
     (
       function()
       {
-        var page_ref  = $(this).val();
-        var groupe_id = $('#f_groupe option:selected').val();
-        var tab_join  = new Array();
-        for( var i=1 ; i<=memo_nombre ; i++ )
-        {
-          var matiere_id = $('#f_matiere_'+i+' option:selected').val();
-          var prof_id    = $('#f_prof_'+i+' option:selected').val();
-          tab_join[i-1] = matiere_id+'_'+prof_id;
-        }
-        maj_f_groupe( page_ref , groupe_id , tab_join );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Mettre à jour le nombre de disciplines
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $("#f_nombre").change
-    (
-      function()
-      {
-        var nombre = $(this).val();
-        for( var i=1 ; i<=5 ; i++ )
-        {
-          if(i<=nombre)
-          {
-            if(i>memo_nombre)
-            {
-              $('#f_matiere_'+i).html( $('#f_matiere_1').html().replace(' selected','') );
-              $('#f_prof_'+i).html('<option></option>');
-            }
-            $('#join_'+i).show(0);
-          }
-          else if(i<=memo_nombre)
-          {
-            $('#f_matiere_'+i).html('<option></option>');
-            $('#f_prof_'+i).html('<option></option>');
-            $('#join_'+i).hide(0);
-          }
-        }
-        memo_nombre = nombre;
+        var page_ref   = $(this).val();
+        var groupe_id  = $('#f_groupe option:selected').val();
+        var matiere_id = $('#f_matiere option:selected').val();
+        var prof_id    = $('#f_prof option:selected').val();
+        maj_f_groupe( page_ref , groupe_id , matiere_id , prof_id );
       }
     );
 
@@ -278,14 +217,14 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , page_ref , groupe_id , join_ids , titre , delete_txt )
+    function afficher_form_gestion( mode , id , page_ref , groupe_id , matiere_id , prof_id , titre , delete_txt )
     {
       $('#f_action').val(mode);
       $('#f_id').val(id);
       // Ci-dessous, les guillemets autour des valeurs transmises évitent une erreur en cas de valeur vide.
       $('#f_page option[value="'+page_ref+'"]').prop('selected',true);
       $('#f_titre').val(titre);
-      maj_f_groupe( page_ref , groupe_id , join_ids.split(' ') );
+      maj_f_groupe( page_ref , groupe_id , matiere_id , prof_id );
       // pour finir
       $('#gestion_titre_action').html( mode[0].toUpperCase() + mode.substring(1) );
       if(mode!='supprimer')
@@ -312,7 +251,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , 0 /*id*/ , '' /*page_ref*/ , 0 /*groupe_id*/ , '' /*join_ids*/ , '' /*titre*/ , '' /*delete_txt*/ );
+      afficher_form_gestion( mode , 0 /*id*/ , '' /*page_ref*/ , 0 /*groupe_id*/ , 0 /*matiere_id*/ , 0 /*prof_id*/ , '' /*titre*/ , '' /*delete_txt*/ );
     };
 
     /**
@@ -328,11 +267,12 @@ $(document).ready
       var id         = (mode!='dupliquer') ? objet_tr.attr('id').substring(3) : '' ;
       var page_ref   = objet_tds.eq(0).data('id');
       var groupe_id  = objet_tds.eq(1).data('id');
-      var join_ids   = objet_tds.eq(2).data('id');
-      var titre      = objet_tds.eq(3).html();
-      var delete_txt = (mode!='supprimer') ? '' : objet_tds.eq(1).html() + ' || ' + objet_tds.eq(2).html() ;
+      var matiere_id = objet_tds.eq(2).data('id');
+      var prof_id    = objet_tds.eq(3).data('id');
+      var titre      = objet_tds.eq(4).html();
+      var delete_txt = (mode!='supprimer') ? '' : objet_tds.eq(1).html() + ' || ' + objet_tds.eq(2).html() + ' || ' + objet_tds.eq(3).html() ;
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , page_ref , groupe_id , join_ids , unescapeHtml(titre) , unescapeHtml(delete_txt) );
+      afficher_form_gestion( mode , id , page_ref , groupe_id , matiere_id , prof_id , unescapeHtml(titre) , unescapeHtml(delete_txt) );
     };
 
     /**
@@ -390,37 +330,19 @@ $(document).ready
       {
         rules :
         {
-          f_page      : { required:true },
-          f_groupe    : { required:true },
-          f_nombre    : { required:true, min:1, max:5 },
-          f_matiere_1 : { required:true },
-          f_matiere_2 : { required:function(){return memo_nombre<=2;} },
-          f_matiere_3 : { required:function(){return memo_nombre<=3;} },
-          f_matiere_4 : { required:function(){return memo_nombre<=4;} },
-          f_matiere_5 : { required:function(){return memo_nombre<=5;} },
-          f_prof_1    : { required:true },
-          f_prof_2    : { required:function(){return memo_nombre<=2;} },
-          f_prof_3    : { required:function(){return memo_nombre<=3;} },
-          f_prof_4    : { required:function(){return memo_nombre<=4;} },
-          f_prof_5    : { required:function(){return memo_nombre<=5;} },
-          f_titre     : { required:true , maxlength:50 }
+          f_page    : { required:true },
+          f_groupe  : { required:true },
+          f_matiere : { required:true },
+          f_prof    : { required:true },
+          f_titre   : { required:true , maxlength:50 }
         },
         messages :
         {
-          f_page      : { required:"moment manquant" },
-          f_groupe    : { required:"classe manquante" },
-          f_nombre    : { required:"nombre manquant", min:"1 minimum", max:"5 maximum" },
-          f_matiere_1 : { required:"matière manquante" },
-          f_matiere_2 : { required:"matière manquante" },
-          f_matiere_3 : { required:"matière manquante" },
-          f_matiere_4 : { required:"matière manquante" },
-          f_matiere_5 : { required:"matière manquante" },
-          f_prof_1    : { required:"professeur manquant" },
-          f_prof_2    : { required:"professeur manquant" },
-          f_prof_3    : { required:"professeur manquant" },
-          f_prof_4    : { required:"professeur manquant" },
-          f_prof_5    : { required:"professeur manquant" },
-          f_titre     : { required:"titre manquant" , maxlength:"50 caractères maximum" }
+          f_page    : { required:"moment manquant" },
+          f_groupe  : { required:"classe manquante" },
+          f_matiere : { required:"matière manquante" },
+          f_prof    : { required:"professeur manquant" },
+          f_titre   : { required:"titre manquant" , maxlength:"50 caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -502,18 +424,13 @@ $(document).ready
           case 'dupliquer':
             var page_moment = $('#f_page option:selected').text();
             var groupe_nom  = $('#f_groupe option:selected').text();
-            var tab_mat_prof_nom = new Array();
-            for( var i=1 ; i<=memo_nombre ; i++ )
-            {
-              var matiere_nom = $('#f_matiere_'+i+' option:selected').text();
-              var prof_nom    = $('#f_prof_'+i+' option:selected').text();
-              tab_mat_prof_nom[i-1] = matiere_nom+' - '+prof_nom;
-            }
-            var mat_prof_nom = tab_mat_prof_nom.join('<br />');
+            var matiere_nom = $('#f_matiere option:selected').text();
+            var prof_nom    = $('#f_prof option:selected').text();
             responseJSON['value'] = responseJSON['value']
                                     .replace('{{PAGE_MOMENT}}','<i>'+tab_page_ordre[page_moment]+'</i>'+page_moment)
                                     .replace('{{GROUPE_NOM}}',groupe_nom)
-                                    .replace('{{MATIERE_PROF_NOM}}',mat_prof_nom);
+                                    .replace('{{MATIERE_NOM}}',matiere_nom)
+                                    .replace('{{PROF_NOM}}',prof_nom);
             if(action=='modifier')
             {
               $('#id_'+$('#f_id').val()).addClass("new").html(responseJSON['value']);

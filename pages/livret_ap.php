@@ -32,7 +32,7 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Accompagnemen
 <ul class="puce">
   <li><span class="astuce">L'<b>Accompagnement Personnalisé</b> mis en place à compter de la rentrée 2016 concerne les <b>élèves du Collège</b>.</span></li>
   <li><span class="manuel"><a class="pop_up" href="http://eduscol.education.fr/cid99430/l-accompagnement-personnalise-rentree-2016.html">Documents et informations ministérielles.</a></span></li>
-  <li>Dans sa forme, le livret scolaire permet de rattacher plusieurs couples { matière / enseignant } pour une action menée sur une classe.</li>
+  <li>Dans sa forme, le livret scolaire impose de rattacher une matière et un enseignant à une action menée sur une classe.</li>
 </ul>
 
 <hr />
@@ -67,7 +67,8 @@ foreach($DB_TAB as $DB_ROW)
     <tr>
       <th>Moment</th>
       <th>Classe</th>
-      <th>Matière / Professeur</th>
+      <th>Matière</th>
+      <th>Professeur</th>
       <th>Titre</th>
       <th class="nu"><q class="ajouter" title="Ajouter un accompagnement personnalisé."></q></th>
     </tr>
@@ -84,7 +85,8 @@ foreach($DB_TAB as $DB_ROW)
         echo'<tr id="id_'.$DB_ROW['livret_ap_id'].'">';
         echo  '<td data-id="'.$DB_ROW['livret_page_ref'].'"><i>'.sprintf($page_ordre_format,$DB_ROW['livret_page_ordre']).'</i>'.html($DB_ROW['livret_page_moment']).'</td>';
         echo  '<td data-id="'.$DB_ROW['groupe_id'].'">'.html($DB_ROW['groupe_nom']).'</td>';
-        echo  '<td data-id="'.$DB_ROW['matiere_prof_id'].'">'.str_replace('§BR§','<br />',html($DB_ROW['matiere_prof_texte'])).'</td>';
+        echo  '<td data-id="'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</td>';
+        echo  '<td data-id="'.$DB_ROW['prof_id'].'">'.html($DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom']).'</td>';
         echo  '<td>'.html($DB_ROW['livret_ap_titre']).'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier cet A.P."></q>';
@@ -96,7 +98,7 @@ foreach($DB_TAB as $DB_ROW)
     }
     else
     {
-      echo'<tr class="vide"><td class="nu" colspan="4">Cliquer sur l\'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter un accompagnement personnalisé.</td><td class="nu"></td></tr>'.NL;
+      echo'<tr class="vide"><td class="nu" colspan="5">Cliquer sur l\'icône ci-dessus (symbole "+" dans un rond vert) pour ajouter un accompagnement personnalisé.</td><td class="nu"></td></tr>'.NL;
     }
     ?>
   </tbody>
@@ -108,28 +110,9 @@ foreach($DB_TAB as $DB_ROW)
     <p>
       <label class="tab" for="f_page">Moment :</label><select id="f_page" name="f_page"><?php echo $select_page ?></select><br />
       <label class="tab" for="f_groupe">Classe :</label><select id="f_groupe" name="f_groupe"><option></option></select><br />
-      <label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" type="text" value="" size="40" maxlength="50" /><br />
-      <label class="tab" for="f_nombre">Nombre disciplines :</label><select id="f_nombre" name="f_nombre"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
-    </p>
-    <p id="join_1" class="hide">
-      <label class="tab" for="f_matiere_1">Matière 1 :</label><select id="f_matiere_1" name="f_matiere_1"><option></option></select><br />
-      <label class="tab" for="f_prof_1">Professeur 1 :</label><select id="f_prof_1" name="f_prof_1"><option></option></select>
-    </p>
-    <p id="join_2" class="hide">
-      <label class="tab" for="f_matiere_2">Matière 2 :</label><select id="f_matiere_2" name="f_matiere_2"><option></option></select><br />
-      <label class="tab" for="f_prof_2">Professeur 2 :</label><select id="f_prof_2" name="f_prof_2"><option></option></select>
-    </p>
-    <p id="join_3" class="hide">
-      <label class="tab" for="f_matiere_3">Matière 3 :</label><select id="f_matiere_3" name="f_matiere_3"><option></option></select><br />
-      <label class="tab" for="f_prof_3">Professeur 3 :</label><select id="f_prof_3" name="f_prof_3"><option></option></select>
-    </p>
-    <p id="join_4" class="hide">
-      <label class="tab" for="f_matiere_4">Matière 4 :</label><select id="f_matiere_4" name="f_matiere_4"><option></option></select><br />
-      <label class="tab" for="f_prof_4">Professeur 4 :</label><select id="f_prof_4" name="f_prof_4"><option></option></select>
-    </p>
-    <p id="join_5" class="hide">
-      <label class="tab" for="f_matiere_5">Matière 5 :</label><select id="f_matiere_5" name="f_matiere_5"><option></option></select><br />
-      <label class="tab" for="f_prof_5">Professeur 5 :</label><select id="f_prof_5" name="f_prof_5"><option></option></select>
+      <label class="tab" for="f_matiere">Matière :</label><select id="f_matiere" name="f_matiere"><option></option></select><br />
+      <label class="tab" for="f_prof">Professeur :</label><select id="f_prof" name="f_prof"><option></option></select><br />
+      <label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" type="text" value="" size="40" maxlength="50" />
     </p>
     <p class="astuce">L'action réalisée est renseignée ultérieurement via le commentaire sur la classe.</p>
   </div>

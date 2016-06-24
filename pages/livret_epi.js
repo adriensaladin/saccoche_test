@@ -166,6 +166,7 @@ $(document).ready
     function maj_f_groupe( page_ref , groupe_id , tab_join )
     {
       memo_nombre = Math.max( tab_join.length , 2 );
+      $('#f_nombre option[value="'+memo_nombre+'"]').prop('selected',true);
       $('#f_groupe').html('<option></option>');
       for( var i=1 ; i<=5 ; i++ )
       {

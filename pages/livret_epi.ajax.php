@@ -55,6 +55,12 @@ if( !$page_ref || !$groupe_id || ($nombre<2) || ($nombre>5) || !$matiere_id_1 ||
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
+$tab_matiere_prof = array( $matiere_id_1.'~'.$prof_id_1 , $matiere_id_2.'~'.$prof_id_2 , $matiere_id_3.'~'.$prof_id_3 , $matiere_id_4.'~'.$prof_id_4 , $matiere_id_5.'~'.$prof_id_5 );
+if( count(array_unique($tab_matiere_prof)) != $nombre+1 )
+{
+  Json::end( FALSE , 'Couples { matière / enseignant } identiques !' );
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter un nouvel enseignement pratique interdisciplinaire
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

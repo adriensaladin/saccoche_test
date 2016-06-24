@@ -92,7 +92,7 @@ foreach($DB_TAB as $DB_ROW)
       <th>Moment</th>
       <th>Objet</th>
       <th>Rubriques</th>
-      <th>Seuils</th>
+      <th>Notation / Seuils</th>
       <th>E.P.I.</th>
       <th>A.P.</th>
       <th>Parcours</th>

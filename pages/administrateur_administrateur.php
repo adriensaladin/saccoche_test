@@ -44,6 +44,9 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_administrateurs">DOC : Gestion des administrateurs</a></span></p>
+<?php if(HEBERGEUR_INSTALLATION=='multi-structures'): ?>
+<p class="astuce">Si besoin vous pouvez aussi <a href="./index.php?page=administrateur_etabl_identite">indiquer un nouveau contact référent</a>.</p>
+<?php endif; ?>
 
 <hr />
 

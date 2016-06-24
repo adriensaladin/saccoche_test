@@ -1013,15 +1013,13 @@ public static function DB_modifier_parametre_acquis_seuils( $acquis_id , $acquis
 /**
  * Supprimer les référentiels dépendant d'une matière ou d'un niveau
  *
- * Le ménage dans sacoche_livret_jointure_referentiel est un peu pénible ici, il est effectué ailleurs.
- *
  * @param string $champ_nom   'matiere_id' | 'niveau_id'
  * @param int    $champ_val   $matiere_id  | $niveau_id
  * @return void
  */
 public static function DB_supprimer_referentiels( $champ_nom , $champ_val )
 {
-  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande ';
+  $DB_SQL = 'DELETE sacoche_referentiel, sacoche_referentiel_domaine, sacoche_referentiel_theme, sacoche_referentiel_item, sacoche_jointure_devoir_item, sacoche_saisie, sacoche_demande, sacoche_livret_jointure_referentiel ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
@@ -1029,6 +1027,7 @@ public static function DB_supprimer_referentiels( $champ_nom , $champ_val )
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_demande USING (matiere_id,item_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel ON (sacoche_referentiel_domaine.domaine_id=sacoche_livret_jointure_referentiel.domaine_id) OR (sacoche_referentiel_theme.theme_id=sacoche_livret_jointure_referentiel.theme_id) ';
   $DB_SQL.= 'WHERE sacoche_referentiel.'.$champ_nom.'=:champ_val ';
   $DB_VAR = array(':champ_val'=>$champ_val);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

@@ -273,16 +273,16 @@ if( ($f_action=='imprimer_documents') && $f_convention_id && in_array($f_first_t
   if($_SESSION['ETABLISSEMENT']['ADRESSE1'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
   if($_SESSION['ETABLISSEMENT']['ADRESSE2'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
   if($_SESSION['ETABLISSEMENT']['ADRESSE3'])  { $tab_etabl_coords[] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
-  if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords[] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
+  if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords[] = 'Tél : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
   if($_SESSION['ETABLISSEMENT']['FAX'])       { $tab_etabl_coords[] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
-  if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords[] = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+  if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords[] = 'Mél : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; } // @see http://www.langue-fr.net/Courriel-E-Mail-Mel | https://fr.wiktionary.org/wiki/m%C3%A9l | https://fr.wikipedia.org/wiki/Courrier_%C3%A9lectronique#.C3.89volution_des_termes_employ.C3.A9s_par_les_utilisateurs
   if($_SESSION['ETABLISSEMENT']['URL'])       { $tab_etabl_coords[] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
   // Coordonnées du contact référent
   $DB_ROW2 = DB_WEBMESTRE_ADMINISTRATEUR::DB_recuperer_contact_infos($_SESSION['BASE']);
   $tab_etabl_coords[] = '';
   $tab_etabl_coords[] = 'Contact référent pour SACoche :';
   $tab_etabl_coords[] = $DB_ROW2['structure_contact_nom'].' '.$DB_ROW2['structure_contact_prenom'];
-  $tab_etabl_coords[] = 'Mel : '.$DB_ROW2['structure_contact_courriel'];
+  $tab_etabl_coords[] = 'Mél : '.$DB_ROW2['structure_contact_courriel']; // @see http://www.langue-fr.net/Courriel-E-Mail-Mel | https://fr.wiktionary.org/wiki/m%C3%A9l | https://fr.wikipedia.org/wiki/Courrier_%C3%A9lectronique#.C3.89volution_des_termes_employ.C3.A9s_par_les_utilisateurs
   // référence du connecteur
   $connecteur_ref = $_SESSION['BASE'].' . '.$f_convention_id.' . '.$DB_ROW['connexion_nom'];
   // Charge les tableaux   $tab_responsable_conventions & $tab_tresorier

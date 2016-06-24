@@ -249,9 +249,9 @@ $tab_etabl_coords = array( 'denomination' => $_SESSION['ETABLISSEMENT']['DENOMIN
 if($_SESSION['ETABLISSEMENT']['ADRESSE1'])  { $tab_etabl_coords['adresse1']  = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
 if($_SESSION['ETABLISSEMENT']['ADRESSE2'])  { $tab_etabl_coords['adresse2']  = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
 if($_SESSION['ETABLISSEMENT']['ADRESSE3'])  { $tab_etabl_coords['adresse3']  = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
-if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords['telephone'] = 'Tel : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
+if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords['telephone'] = 'Tél : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
 if($_SESSION['ETABLISSEMENT']['FAX'])       { $tab_etabl_coords['fax']       = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
-if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords['courriel']  = 'Mel : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; }
+if($_SESSION['ETABLISSEMENT']['COURRIEL'])  { $tab_etabl_coords['courriel']  = 'Mél : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; } // @see http://www.langue-fr.net/Courriel-E-Mail-Mel | https://fr.wiktionary.org/wiki/m%C3%A9l | https://fr.wikipedia.org/wiki/Courrier_%C3%A9lectronique#.C3.89volution_des_termes_employ.C3.A9s_par_les_utilisateurs
 if($_SESSION['ETABLISSEMENT']['URL'])       { $tab_etabl_coords['url']       = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
 
 // académie, département, année

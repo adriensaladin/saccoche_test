@@ -301,8 +301,8 @@ public static function DB_lister_epi_theme()
 public static function DB_lister_epi()
 {
   $DB_SQL = 'SELECT sacoche_livret_epi.*, livret_page_ordre, livret_page_moment, groupe_nom, livret_epi_theme_nom, ';
-  $DB_SQL.= 'GROUP_CONCAT( CONCAT(matiere_id,"_",user_id) SEPARATOR " ") AS matiere_prof_id, ';
-  $DB_SQL.= 'GROUP_CONCAT( CONCAT(matiere_nom," - ",user_nom," ",user_prenom) SEPARATOR "§BR§") AS matiere_prof_texte ';
+  $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_id,"_",user_id) SEPARATOR " ") AS matiere_prof_id, ';
+  $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_nom," - ",user_nom," ",user_prenom) SEPARATOR "§BR§") AS matiere_prof_texte ';
   $DB_SQL.= 'FROM sacoche_livret_epi ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_epi_theme USING(livret_epi_theme_code) ';
   $DB_SQL.= 'INNER JOIN sacoche_livret_jointure_groupe USING(livret_page_ref, groupe_id) ';
@@ -311,7 +311,7 @@ public static function DB_lister_epi()
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING(matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_epi_prof.prof_id = sacoche_user.user_id ';
-  $DB_SQL.= 'GROUP BY livret_page_ref, groupe_id, livret_epi_theme_code ';
+  $DB_SQL.= 'GROUP BY livret_epi_id ';
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC, groupe_nom ASC, livret_epi_theme_nom ASC ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -324,7 +324,7 @@ public static function DB_lister_epi()
  */
 public static function DB_compter_epi_par_page()
 {
-  $DB_SQL = 'SELECT livret_page_ref, livret_epi_theme_code, COUNT(livret_epi_id) AS nombre ';
+  $DB_SQL = 'SELECT livret_page_ref, livret_epi_theme_code, COUNT(DISTINCT livret_epi_id) AS nombre ';
   $DB_SQL.= 'FROM sacoche_livret_epi ';
   $DB_SQL.= 'INNER JOIN sacoche_livret_jointure_groupe USING(livret_page_ref, groupe_id) ';
   $DB_SQL.= 'GROUP BY livret_page_ref, livret_epi_theme_code ';
@@ -481,15 +481,17 @@ public static function DB_supprimer_epi_jointure( $epi_id )
  */
 public static function DB_lister_ap()
 {
-  $DB_SQL = 'SELECT sacoche_livret_ap.*, livret_page_ordre, livret_page_moment, ';
-  $DB_SQL.= 'groupe_nom, matiere_nom, user_nom AS prof_nom, user_prenom AS prof_prenom ';
+  $DB_SQL = 'SELECT sacoche_livret_ap.*, livret_page_ordre, livret_page_moment, groupe_nom, ';
+  $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_id,"_",user_id) SEPARATOR " ") AS matiere_prof_id, ';
+  $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_nom," - ",user_nom," ",user_prenom) SEPARATOR "§BR§") AS matiere_prof_texte ';
   $DB_SQL.= 'FROM sacoche_livret_ap ';
   $DB_SQL.= 'INNER JOIN sacoche_livret_jointure_groupe USING(livret_page_ref, groupe_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_ap_prof USING(livret_ap_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING(livret_page_ref) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING(matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_ap.prof_id = sacoche_user.user_id ';
-  $DB_SQL.= 'GROUP BY livret_page_ref, groupe_id, matiere_id, prof_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_ap_prof.prof_id = sacoche_user.user_id ';
+  $DB_SQL.= 'GROUP BY livret_ap_id ';
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC, groupe_nom ASC, matiere_nom ASC ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -502,7 +504,7 @@ public static function DB_lister_ap()
  */
 public static function DB_compter_ap_par_page()
 {
-  $DB_SQL = 'SELECT livret_page_ref, COUNT(livret_ap_id) AS nombre ';
+  $DB_SQL = 'SELECT livret_page_ref, COUNT(DISTINCT livret_ap_id) AS nombre ';
   $DB_SQL.= 'FROM sacoche_livret_ap ';
   $DB_SQL.= 'INNER JOIN sacoche_livret_jointure_groupe USING(livret_page_ref, groupe_id) ';
   $DB_SQL.= 'GROUP BY livret_page_ref ';
@@ -510,55 +512,44 @@ public static function DB_compter_ap_par_page()
 }
 
 /**
- * tester_ap
- *
- * @param string $page_ref
- * @param int    $groupe_id
- * @param int    $matiere_id
- * @param int    $prof_id
- * @param int    $ap_id   inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
- * @return int
- */
-public static function DB_tester_ap( $page_ref , $groupe_id , $matiere_id , $prof_id , $ap_id=FALSE )
-{
-  $DB_SQL = 'SELECT livret_ap_id ';
-  $DB_SQL.= 'FROM sacoche_livret_ap ';
-  $DB_SQL.= 'WHERE livret_page_ref=:page_ref AND groupe_id=:groupe_id AND matiere_id=:matiere_id AND prof_id=:prof_id ';
-  $DB_SQL.= ($ap_id) ? 'AND livret_ap_id!=:ap_id ' : '' ;
-  $DB_SQL.= 'LIMIT 1'; // utile
-  $DB_VAR = array(
-    ':page_ref'   => $page_ref,
-    ':groupe_id'  => $groupe_id,
-    ':matiere_id' => $matiere_id,
-    ':prof_id'    => $prof_id,
-    ':ap_id'      => $ap_id,
-  );
-  return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * ajouter_ap
  *
  * @param string $page_ref
  * @param int    $groupe_id
- * @param int    $matiere_id
- * @param int    $prof_id
  * @param string $ap_titre
  * @return int
  */
-public static function DB_ajouter_ap( $page_ref , $groupe_id , $matiere_id , $prof_id , $ap_titre )
+public static function DB_ajouter_ap( $page_ref , $groupe_id , $ap_titre )
 {
-  $DB_SQL = 'INSERT INTO sacoche_livret_ap( livret_page_ref, groupe_id, matiere_id, prof_id,livret_ap_titre) ';
-  $DB_SQL.= 'VALUES                       (       :page_ref,:groupe_id,:matiere_id,:prof_id,      :ap_titre)';
+  $DB_SQL = 'INSERT INTO sacoche_livret_ap( livret_page_ref, groupe_id, livret_ap_titre) ';
+  $DB_SQL.= 'VALUES                       (       :page_ref,:groupe_id,       :ap_titre)';
   $DB_VAR = array(
     ':page_ref'   => $page_ref,
     ':groupe_id'  => $groupe_id,
-    ':matiere_id' => $matiere_id,
-    ':prof_id'    => $prof_id,
     ':ap_titre'   => $ap_titre,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
+}
+
+/**
+ * ajouter_ap_jointure
+ *
+ * @param int    $ap_id
+ * @param int    $matiere_id
+ * @param int    $prof_id
+ * @return void
+ */
+public static function DB_ajouter_ap_jointure( $ap_id , $matiere_id , $prof_id )
+{
+  $DB_SQL = 'INSERT INTO sacoche_livret_jointure_ap_prof( livret_ap_id, matiere_id, prof_id) ';
+  $DB_SQL.= 'VALUES                                     (       :ap_id,:matiere_id,:prof_id)';
+  $DB_VAR = array(
+    ':ap_id'     => $ap_id,
+    ':matiere_id' => $matiere_id,
+    ':prof_id'    => $prof_id,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -567,23 +558,19 @@ public static function DB_ajouter_ap( $page_ref , $groupe_id , $matiere_id , $pr
  * @param int    $ap_id
  * @param string $page_ref
  * @param int    $groupe_id
- * @param int    $matiere_id
- * @param int    $prof_id
  * @param string $ap_titre
  * @return void
  */
-public static function DB_modifier_ap( $ap_id , $page_ref , $groupe_id , $matiere_id , $prof_id , $ap_titre )
+public static function DB_modifier_ap( $ap_id , $page_ref , $groupe_id , $ap_titre )
 {
   $DB_SQL = 'UPDATE sacoche_livret_ap ';
-  $DB_SQL.= 'SET livret_page_ref=:page_ref, groupe_id=:groupe_id, matiere_id=:matiere_id, prof_id=:prof_id, livret_ap_titre=:ap_titre ';
+  $DB_SQL.= 'SET livret_page_ref=:page_ref, groupe_id=:groupe_id, livret_ap_titre=:ap_titre ';
   $DB_SQL.= 'WHERE livret_ap_id=:ap_id ';
   $DB_VAR = array(
-    ':ap_id'      => $ap_id,
-    ':page_ref'   => $page_ref,
-    ':groupe_id'  => $groupe_id,
-    ':matiere_id' => $matiere_id,
-    ':prof_id'    => $prof_id,
-    ':ap_titre'   => $ap_titre,
+    ':ap_id'     => $ap_id,
+    ':page_ref'  => $page_ref,
+    ':groupe_id' => $groupe_id,
+    ':ap_titre'  => $ap_titre,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -596,7 +583,23 @@ public static function DB_modifier_ap( $ap_id , $page_ref , $groupe_id , $matier
  */
 public static function DB_supprimer_ap( $ap_id )
 {
-  $DB_SQL = 'DELETE FROM sacoche_livret_ap ';
+  $DB_SQL = 'DELETE FROM sacoche_livret_ap, sacoche_livret_jointure_ap_prof ';
+  $DB_SQL.= 'FROM sacoche_livret_ap ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_ap_prof USING (livret_ap_id) ';
+  $DB_SQL.= 'WHERE livret_ap_id=:ap_id ';
+  $DB_VAR = array( ':ap_id' => $ap_id );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * supprimer_ap_jointure
+ *
+ * @param int    $ap_id
+ * @return void
+ */
+public static function DB_supprimer_ap_jointure( $ap_id )
+{
+  $DB_SQL = 'DELETE FROM sacoche_livret_jointure_ap_prof ';
   $DB_SQL.= 'WHERE livret_ap_id=:ap_id ';
   $DB_VAR = array( ':ap_id' => $ap_id );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

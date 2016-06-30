@@ -1006,6 +1006,9 @@ if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
         $tab_users_fichier['birth_date'  ][] = Clean::texte($birth_date);
         $tab_users_fichier['courriel'    ][] = '';
         $tab_users_fichier['classe'      ][] = $i_classe;
+        $tab_users_fichier['uai_origine' ][] = '';
+        $tab_users_fichier['lv1'         ][] = 100;
+        $tab_users_fichier['lv2'         ][] = 100;
         if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$i_classe])) )
         {
           $tab_classes_fichier['ref'   ][$i_classe] = $classe_ref;
@@ -1201,6 +1204,9 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
         $tab_users_fichier['prenom'      ][] = Clean::prenom($prenom);
         $tab_users_fichier['birth_date'  ][] = Clean::texte($birth_date);
         $tab_users_fichier['courriel'    ][] = '';
+        $tab_users_fichier['uai_origine' ][] = '';
+        $tab_users_fichier['lv1'         ][] = 100;
+        $tab_users_fichier['lv2'         ][] = 100;
         $tab_users_fichier['classe'      ][] = $i_classe;
         if( !isset($tab_classes_fichier['ref'][$i_classe]))
         {
@@ -1481,6 +1487,9 @@ switch($import_origine.'+'.$import_profil)
       $tab_users_fichier['sconet_num'],
       $tab_users_fichier['reference'],
       $tab_users_fichier['profil_sigle'],
+      $tab_users_fichier['uai_origine'],
+      $tab_users_fichier['lv1'],
+      $tab_users_fichier['lv2'],
       $tab_users_fichier['classe']
     );
     break;

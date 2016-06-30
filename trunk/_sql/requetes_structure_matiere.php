@@ -295,12 +295,19 @@ public static function DB_modifier_liaison_professeur_matiere($user_id,$matiere_
 /**
  * Supprimer une matière spécifique
  *
+ * Le ménage dans sacoche_livret_jointure_referentiel est un peu pénible ici, il est effectué ailleurs.
+ *
  * @param int $matiere_id
  * @return void
  */
 public static function DB_supprimer_matiere_specifique($matiere_id)
 {
-  $tab_tables = array( 'sacoche_matiere' , 'sacoche_jointure_user_matiere', 'sacoche_livret_ap' , 'sacoche_livret_jointure_epi_prof' , 'sacoche_livret_jointure_referentiel' );
+  $tab_tables = array(
+    'sacoche_matiere' ,
+    'sacoche_jointure_user_matiere' ,
+    'sacoche_livret_jointure_ap_prof' ,
+    'sacoche_livret_jointure_epi_prof' ,
+  );
   $DB_VAR = array(':matiere_id'=>$matiere_id);
   foreach( $tab_tables as $table )
   {

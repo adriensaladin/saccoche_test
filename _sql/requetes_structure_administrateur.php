@@ -1250,7 +1250,7 @@ public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
     $DB_SQL = 'DELETE FROM sacoche_livret_parcours ';
     $DB_SQL.= 'WHERE prof_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_livret_jointure_ap_prof ';
+    $DB_SQL = 'DELETE FROM sacoche_livret_ap ';
     $DB_SQL.= 'WHERE prof_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_livret_jointure_epi_prof ';

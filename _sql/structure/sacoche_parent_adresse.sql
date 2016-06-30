@@ -1,7 +1,5 @@
 DROP TABLE IF EXISTS sacoche_parent_adresse;
 
--- https://portail-presse-poste.net-courrier.extra.laposte.fr/actualites/du-nouveau-sur-ladresse
-
 CREATE TABLE IF NOT EXISTS sacoche_parent_adresse (
   parent_id              MEDIUMINT(8) UNSIGNED                NOT NULL DEFAULT 0,
   adresse_ligne1         VARCHAR(50)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",

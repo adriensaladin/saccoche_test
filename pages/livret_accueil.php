@@ -42,9 +42,6 @@ if( is_int($result) )
   echo'<p class="danger">Aucune association de classe au livret scolaire n\'était enregistrée.<br /><em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />Vérifiez et ajustez si besoin (étape "Classes" ci-dessus).</p>'.NL;
 }
 
-// Vérifier qu'il y a au moins une classe associée au livret, et sinon essayer de faire le boulot automatiquement
-DB_STRUCTURE_LIVRET::DB_supprimer_jointure_referentiel_obsolete();
-
 // On liste les types de parcours
 $DB_TAB_parcours = DB_STRUCTURE_LIVRET::DB_lister_parcours_type();
 
@@ -94,7 +91,7 @@ foreach($DB_TAB as $DB_ROW)
     <tr>
       <th>Moment</th>
       <th>Objet</th>
-      <th>Rubriques / Liaisons</th>
+      <th>Rubriques</th>
       <th>Notation / Seuils</th>
       <th>E.P.I.</th>
       <th>A.P.</th>
@@ -104,21 +101,18 @@ foreach($DB_TAB as $DB_ROW)
   </thead>
   <tbody>
     <?php
-    $tab_rubrique = array(
-      'item'    => "liaisons aux items",
-      'theme'   => "liaisons aux thèmes",
-      'domaine' => "liaisons aux domaines",
-      'matiere' => "liaisons aux matières",
+    $tab_rubriques = array(
+      'theme'   => "liaisons aux thèmes".'<br /><span class="fluo">configuration à venir</span>',
+      'domaine' => "liaisons aux domaines".'<br /><span class="fluo">configuration à venir</span>',
+      'matiere' => "liaisons aux matières".'<br /><span class="fluo">configuration à venir</span>',
+      'socle'   => "liaisons au items<br />voir gestion des référentiels",
       ''        => "",
     );
-    $tab_notation = array(
-      'reussite'    => "degrés de réussite",
-      'objectif'    => "objectifs d'apprentissage",
-      'maitrise'    => "degrés de maîtrise",
-      'moyenne'     => "moyenne sur 20",
-      'pourcentage' => "pourcentage",
-      'position'    => "positionnement de 1 à 4",
-      ''            => "moyenne<br />pourcentage<br />positionnement",
+    $tab_seuils = array(
+      'reussite' => "degrés de réussite".'<br /><span class="fluo">configuration à venir</span>',
+      'objectif' => "objectifs d'apprentissage".'<br /><span class="fluo">configuration à venir</span>',
+      'maitrise' => "degrés de maîtrise".'<br /><span class="fluo">configuration à venir</span>',
+      'moyenne'  => "",
     );
     $tab_bad = array( ' - '    , "Bilan de l'acquisition des connaissances et compétences" );
     $tab_bon = array( '<br />' , "Bilan des acquisitions" );
@@ -142,32 +136,6 @@ foreach($DB_TAB as $DB_ROW)
         $moment_title = implode('<br />',$tab_groupes);
         $s = ($DB_ROW['groupe_nb']>1) ? 's' : '' ;
         $moment = '<b>'.$moment.'</b>'.'<br /><a title="'.$moment_title.'" href="./index.php?page=livret&amp;section=classes">'.$DB_ROW['groupe_nb'].' classe'.$s.'</a>';
-        // rubriques / liaisons
-        if($DB_ROW['livret_page_rubrique_type']=='')
-        {
-          $liaison = '' ; // brevet
-        }
-        elseif($DB_ROW['livret_page_rubrique_type']=='socle')
-        {
-          $liaison = '<div class="bv"><a href="./index.php?page=livret&amp;section=rubriques&amp;ref='.$DB_ROW['livret_page_ref'].'">liaisons aux items<br />via gestion des référentiels</div>' ;
-        }
-        else
-        {
-          $liaison_texte = $tab_rubrique[$DB_ROW['livret_page_rubrique_join']];
-          $liaison_class = ($DB_ROW['element_nb']) ? 'bj' : 'br' ;
-          $liaison = '<div class="'.$liaison_class.'"><a href="./index.php?page=livret&amp;section=liaisons&amp;ref='.$DB_ROW['livret_page_ref'].'">'.$liaison_texte.'</a></div>';
-        }
-        // notation / seuils
-        if($DB_ROW['livret_page_colonne_defaut']=='')
-        {
-          $notation = '' ; // brevet
-        }
-        else
-        {
-          $notation_texte = $tab_notation[$DB_ROW['livret_page_colonne_choix']];
-          $notation_class = ($DB_ROW['livret_page_colonne_choix']) ? 'bv' : 'br' ;
-          $notation = '<div class="'.$notation_class.'"><a href="./index.php?page=livret&amp;section=seuils&amp;ref='.$DB_ROW['livret_page_ref'].'">'.$notation_texte.'</a></div>';
-        }
         // epi
         $epi = '';
         if($DB_ROW['livret_page_epi'])
@@ -183,7 +151,7 @@ foreach($DB_TAB as $DB_ROW)
               $s         = ($epi_nb>1) ? 's' : '' ;
               $epi_title = html($ROW_epi['livret_epi_theme_nom']).'<br />';
               $epi_title.= $epi_nb.' enregistré'.$s;
-              $epi .= '<div class="'.$epi_class.'" title="'.$epi_title.'"><a href="./index.php?page=livret&amp;section=epi">'.$epi_nb.' '.$epi_aff.'</a></div>';
+              $epi .= '<div class="bf" title="'.$epi_title.'"><a href="./index.php?page=livret&amp;section=epi">'.$epi_nb.' '.$epi_aff.'</a></div>';
             }
           }
           if(!$epi)
@@ -222,8 +190,8 @@ foreach($DB_TAB as $DB_ROW)
         echo'<tr>';
         echo  '<td>'.$moment.'</td>';
         echo  '<td>'.$objet.'</td>';
-        echo  '<td>'.$liaison.'</td>';
-        echo  '<td>'.$notation.'</td>';
+        echo  '<td>'.$tab_rubriques[$DB_ROW['livret_page_rubrique_type']].'</td>';
+        echo  '<td>'.$tab_seuils[$DB_ROW['livret_page_colonne_type']].'</td>';
         echo  '<td>'.$epi.'</td>';
         echo  '<td>'.$ap.'</td>';
         echo  '<td>'.$parcours.'</td>';

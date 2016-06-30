@@ -142,22 +142,20 @@ public static function DB_initialiser_jointures_livret_classes()
  */
 public static function DB_lister_pages( $with_info_classe )
 {
-  $DB_SQL = 'SELECT sacoche_livret_page.* ';
   if($with_info_classe)
   {
-    $DB_SQL.= ', COUNT( DISTINCT groupe_id ) AS groupe_nb ';
-    $DB_SQL.= ', GROUP_CONCAT( DISTINCT groupe_nom SEPARATOR "<br />" ) AS listing_groupe_nom ';
-    $DB_SQL.= ', COUNT( DISTINCT element_id ) AS element_nb ';
-  }
-  $DB_SQL.= 'FROM sacoche_livret_page ';
-  if($with_info_classe)
-  {
-    $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_groupe USING(livret_page_ref) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel USING(livret_page_ref) ';
-    $DB_SQL.= 'GROUP BY livret_page_ref ';
+    $select_nombre = ', COUNT( DISTINCT groupe_id ) AS groupe_nb ';
+    $select_groupe = ', GROUP_CONCAT( DISTINCT groupe_nom SEPARATOR "<br />" ) AS listing_groupe_nom ';
+    $join_jointure = 'LEFT JOIN sacoche_livret_jointure_groupe USING(livret_page_ref) ';
+    $join_groupe   = 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
+    $group_by      = 'GROUP BY livret_page_ref ';
     // Ajouter un ordre sur le nom du groupe ne fonctionne pas : traité en PHP après
   }
+  $DB_SQL = 'SELECT sacoche_livret_page.* ';
+  $DB_SQL.= $select_nombre.$select_groupe;
+  $DB_SQL.= 'FROM sacoche_livret_page ';
+  $DB_SQL.= $join_jointure.$join_groupe;
+  $DB_SQL.= $group_by;
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -779,33 +777,6 @@ public static function DB_OPT_groupes_for_page( $page_ref )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Nettoyage
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * supprimer_jointure_referentiel_obsolete
- *
- * Lors de la suppression de référentiels ou d'éléments de référentiels, la table sacoche_livret_jointure_referentiel n'est pas nettoyée car c'est un peu pénible, on le fait donc ici.
- *
- * @param void
- * @return void
- */
-public static function DB_supprimer_jointure_referentiel_obsolete()
-{
-  $tab_element = array(
-    'matiere' => 'sacoche_matiere',
-    'domaine' => 'sacoche_referentiel_domaine',
-    'theme'   => 'sacoche_referentiel_theme',
-    'item'    => 'sacoche_referentiel_item',
-  );
-  foreach($tab_element as $element => $table)
-  {
-    $DB_SQL = 'DELETE sacoche_livret_jointure_referentiel ';
-    $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-    $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING (livret_page_ref) ';
-    $DB_SQL.= 'LEFT JOIN '.$table.' ON sacoche_livret_jointure_referentiel.element_id = '.$table.'.'.$element.'_id ';
-    $DB_SQL.= 'WHERE livret_page_rubrique_join="'.$element.'" AND '.$table.'.'.$element.'_id IS NULL ';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  }
-}
 
 /**
  * supprimer_bilans_officiels

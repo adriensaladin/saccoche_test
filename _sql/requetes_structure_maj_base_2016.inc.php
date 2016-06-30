@@ -325,20 +325,16 @@ if($version_base_structure_actuelle=='2016-04-29')
     $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_page.sql');
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
     DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    // nouvelle table [sacoche_livret_parametre_colonne] => supprimée peu après (modifiée et renommée)
-    /*
+    // nouvelle table [sacoche_livret_parametre_colonne]
     $reload_sacoche_livret_parametre_colonne = TRUE;
     $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_parametre_colonne.sql');
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
     DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    */
-    // nouvelle table [sacoche_livret_parametre_rubrique] => supprimée peu après (modifiée et renommée)
-    /*
+    // nouvelle table [sacoche_livret_parametre_rubrique]
     $reload_sacoche_livret_parametre_rubrique = TRUE;
     $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_parametre_rubrique.sql');
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
     DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    */
     // nouvelle table [sacoche_livret_jointure_groupe]
     $reload_sacoche_livret_jointure_groupe = TRUE;
     $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_jointure_groupe.sql');
@@ -599,35 +595,6 @@ if($version_base_structure_actuelle=='2016-06-14')
     {
       $reload_sacoche_livret_page = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_page.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-06-24 => 2016-06-30
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2016-06-24')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2016-06-30';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // recharger [sacoche_livret_page]
-    if(empty($reload_sacoche_livret_page))
-    {
-      $reload_sacoche_livret_page = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_page.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    }
-    // recharger [sacoche_livret_seuil]
-    if(empty($reload_sacoche_livret_seuil))
-    {
-      $reload_sacoche_livret_seuil = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_seuil.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
     }

@@ -509,9 +509,10 @@ class Session
   // //////////////////////////////////////////////////
   private static $tab_pages_csrf_multi = array
   (
-    'brevet_fiches'    => array( 'calque_voir_photo' ),
-    'officiel_accueil' => array( 'calque_voir_photo' ),
+    'brevet_fiches'                 => array( 'calque_voir_photo' ),
+    'officiel_accueil'              => array( 'calque_voir_photo' ),
     'evaluation_demande_professeur' => array( 'evaluation_ponctuelle' ),
+    'livret_liaisons'               => array( 'export_fichier' ),
   );
 
   // //////////////////////////////////////////////////

@@ -383,7 +383,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
   }
   else
   {
-    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , NULL /*DB_TAB_socle2016*/ , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_comm*/ , TRUE /*aff_input*/ );
+    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , NULL /*DB_TAB_socle2016*/ , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , FALSE /*aff_comm*/ , TRUE /*aff_input*/ );
     echo strpos($arborescence,'<input') ? $arborescence : '<p class="danger">Vous êtes rattaché à des matières dont les référentiels ne comportent aucun item !</p>' ;
   }
   ?>

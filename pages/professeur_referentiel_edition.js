@@ -947,26 +947,23 @@ $(document).ready
         //
         // Element de départ
         //
-        var obj_li = $('q.annuler[data-action=fusionner]').parent();
-        var obj_b  = obj_li.children('b');
-        var li_id_depart = obj_li.attr('id');
-        var element_id  = li_id_depart.substring(3);
-        var element_nom = obj_b.find('b').eq(4).text();
+        li = $('q.annuler[data-action=fusionner]').parent();
+        li_id_depart = li.attr('id');
+        element_id  = li_id_depart.substring(3);
+        element_nom = li.children('b').children('b:eq(4)').text();
         // On récupère la liste des éléments suivants dont il faudra diminuer l'ordre
         tab_id = new Array();
-        while(obj_li.next().length)
+        while(li.next().length)
         {
-          obj_li = obj_li.next();
-          tab_id.push(obj_li.attr('id').substring(3));
+          li = li.next();
+          tab_id.push(li.attr('id').substring(3));
         }
         //
         // Element d'arrivée
         //
-        var obj_li = $(this).parent();
-        var obj_b  = obj_li.children('b');
-        var li_id_arrivee = obj_li.attr('id');
-        var element2_id  = li_id_arrivee.substring(3);
-        var element2_nom = obj_b.find('b').eq(4).text();
+        li_id_arrivee = $(this).parent().attr('id');
+        element2_id  = li_id_arrivee.substring(3);
+        element2_nom = $(this).parent().children('b').children('b:eq(4)').text();
         // Envoi des infos en ajax pour le traitement de la demande
         $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
@@ -992,7 +989,7 @@ $(document).ready
                 var lien = responseJSON['value'];
                 var lien_image  = (lien) ? 'oui' : 'non' ;
                 var lien_title  = (lien) ? lien : 'Absence de ressource.' ;
-                $('#n3_'+element2_id).children('b').find('img').eq(4).attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
+                $('#n3_'+element2_id).children('b').find('img').eq(3).attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
                 $('#ajax_msg').parent().remove();
                 $('q[data-action=fus2]').remove();
                 afficher_masquer_images_action('show');

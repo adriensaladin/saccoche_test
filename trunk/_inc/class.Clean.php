@@ -55,16 +55,57 @@ class Clean
   // //////////////////////////////////////////////////
 
   /**
-   * Pour supprimer les caractères NULL dans une chaîne.
-   * Il m'est arrivé d'en trouver dans des chaînes copiées-collées et ça pose pb par exemple pour les noms de fichiers :
-   * "PHP Warning : is_file() expects parameter 1 to be a valid path, string given"
+   * Pour supprimer les caractères de contrôle invisibles indésirables dans une chaîne.
+   *
+   * Il est arrivé d'en trouver dans des chaînes copiées-collées et ça pose problème, par exemple 
+   * - NUL pour les noms de fichiers "is_file() expects parameter 1 to be a valid path, string given"
+   * - RS | US pour la validation XML "Erreur XML ligne iii (> required)"
+   *
+   * Seuls quelques-uns (U+0009, U+000A, U+000D) sont normalisés pour le codage de textes
+   * et ont un comportement bien défini par Unicode.
+   * https://fr.wikipedia.org/wiki/Table_des_caract%C3%A8res_Unicode/U0000
    *
    * @param string
    * @return string
    */
-  private static function nul($text)
+  private static function ctrl($text)
   {
-    return str_replace("\0", "", $text);
+    $tab_bad = array(
+      "\x00" , // NUL Null (caractère de bourrage)
+      "\x01" , // SOH Start of Header (début d'en-tête)
+      "\x02" , // STX Start of Text (début de texte)
+      "\x03" , // ETX End of Text (fin de texte)
+      "\x04" , // EOT End of Transmission (fin de transmission)
+      "\x05" , // ENQ Enquiry (requête / demande)
+      "\x06" , // ACK Acknowledge (accusé de réception positif)
+      "\x07" , // BEL Bell (appel / sonnerie)
+      "\x08" , // BS  BackSpace (retour arrière)
+   // "\x09" , // HT  Horizontal Tabulation (tabulation horizontale)
+   // "\x0A" , // LF  Line Feed (saut de ligne / ligne suivante)
+      "\x0B" , // VT  Vertical Tabulation (tabulation verticale)
+      "\x0C" , // FF  Form Feed (saut de page / page suivante)
+   // "\x0D" , // CR  Carriage Return (retour de chariot)
+      "\x0E" , // SO  Shift Out (hors code, remplacement verrouillé un)
+      "\x0F" , // SI  Shift In (en code, remplacement verrouillé zéro)
+      "\x10" , // DLE Data Link Escape (échappement de transmission)
+      "\x11" , // DC1 Device Control 1 (commande de dispositif 1)
+      "\x12" , // DC2 Device Control 2 (commande de dispositif 2)
+      "\x13" , // DC3 Device Control 3 (commande de dispositif 3)
+      "\x14" , // DC4 Device Control 4 (commande de dispositif 4)
+      "\x15" , // NAK Negative acknowledge (accusé de réception négatif)
+      "\x16" , // SYN Synchronous Idle (synchronisation)
+      "\x17" , // ETB End of Transmission Block (fin de bloc de transmission)
+      "\x18" , // CAN Cancel (annulation)
+      "\x19" , // EM  End of Medium (fin de support)
+      "\x1A" , // SUB Substitute (substitution)
+      "\x1B" , // ESC Escape (échappement)
+      "\x1C" , // FS  File Separator (séparateur de fichiers)
+      "\x1D" , // GS  Group Separator (séparateur de groupes)
+      "\x1E" , // RS  Record Separator (séparateur d'enregistrements, séparateur d'articles)
+      "\x1F" , // US  Unit Separator (séparateur de sous-articles)
+      "\x7F" , // DEL (suppression)
+    );
+    return str_replace( $tab_bad , "" , $text );
   }
 
   /**
@@ -303,33 +344,33 @@ class Clean
     En général il s'agit d'harmoniser les données de la base ou d'aider l'utilisateur (en évitant les problèmes de casse par exemple).
     Le login est davantage nettoyé car il y a un risque d'engendrer des comportements incertains (à l'affichage ou à l'enregistrement) avec les applications externes (pmwiki, phpbb...).
   */
-  public static function lettres($text)          { return Clean::only_letters( Clean::nul( trim($text) ) ); }
-  public static function lettres_chiffres($text) { return Clean::only_letters_numbers( Clean::nul( trim($text) ) ); }
+  public static function lettres($text)          { return Clean::only_letters( Clean::ctrl( trim($text) ) ); }
+  public static function lettres_chiffres($text) { return Clean::only_letters_numbers( Clean::ctrl( trim($text) ) ); }
 
-  public static function login($text)        { return str_replace(' ','', Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::symboles( Clean::nul( trim($text) ) ) ) ) ) ); }
-  public static function fichier($text)      { return Clean::only_filechars(       Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::nul( trim($text) ) ) ) ) ); }
-  public static function id($text)           { return Clean::only_letters_numbers( Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::nul( trim($text) ) ) ) ) ); }
-  public static function param_chemin($text) { return str_replace(array('.','/','\\'),'', Clean::nul( trim($text) ) ); } // Contre l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
+  public static function login($text)        { return str_replace(' ','', Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::symboles( Clean::ctrl( trim($text) ) ) ) ) ) ); }
+  public static function fichier($text)      { return Clean::only_filechars(       Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::ctrl( trim($text) ) ) ) ) ); }
+  public static function id($text)           { return Clean::only_letters_numbers( Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::ctrl( trim($text) ) ) ) ) ); }
+  public static function param_chemin($text) { return str_replace(array('.','/','\\'),'', Clean::ctrl( trim($text) ) ); } // Contre l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
   public static function zip_filename($text) { return Clean::fichier(iconv('CP850','UTF-8',$text)); } //  filenames stored in the ZIP archives created on non-Unix systems are encoded in CP850 http://fr.php.net/manual/fr/function.zip-entry-name.php#87130
-  public static function password($text)     { return Clean::nul( trim($text) ); }
-  public static function ref($text)          { return Clean::perso_strtoupper( Clean::nul( trim($text) ) ); }
-  public static function uai($text)          { return Clean::only_letters_numbers( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) ); }
-  public static function nom($text)          { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 25); }
-  public static function prenom($text)       { return Clean::tronquer_chaine( Clean::perso_ucwords( Clean::nul( trim($text) ) ) , 25); }
-  public static function structure($text)    { return Clean::perso_ucwords( Clean::nul( trim($text) ) ); }
-  public static function adresse($text)      { return Clean::tronquer_chaine( Clean::perso_ucwords( Clean::nul( trim($text) ) ) , 50); }
-  public static function codepostal($text)   { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 10); }
-  public static function commune($text)      { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 45); }
-  public static function pays($text)         { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::nul( trim($text) ) ) , 35); }
-  public static function code($text)         { return Clean::only_letters_numbers( Clean::perso_strtolower( Clean::nul( trim($text) ) ) ); }
-  public static function courriel($text)     { return Clean::perso_strtolower( Clean::accents( Clean::nul( trim($text) ) ) ); }
-  public static function appreciation($text) { return Clean::espaces( Clean::lignes( Clean::nul( trim($text) ) ) ); }
-  public static function texte($text)        { return Clean::nul( trim($text) ); }
-  public static function url($text)          { return Clean::nul( trim($text) ); }
+  public static function password($text)     { return Clean::ctrl( trim($text) ); }
+  public static function ref($text)          { return Clean::perso_strtoupper( Clean::ctrl( trim($text) ) ); }
+  public static function uai($text)          { return Clean::only_letters_numbers( Clean::perso_strtoupper( Clean::ctrl( trim($text) ) ) ); }
+  public static function nom($text)          { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::ctrl( trim($text) ) ) , 25); }
+  public static function prenom($text)       { return Clean::tronquer_chaine( Clean::perso_ucwords( Clean::ctrl( trim($text) ) ) , 25); }
+  public static function structure($text)    { return Clean::perso_ucwords( Clean::ctrl( trim($text) ) ); }
+  public static function adresse($text)      { return Clean::tronquer_chaine( Clean::perso_ucwords( Clean::ctrl( trim($text) ) ) , 50); }
+  public static function codepostal($text)   { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::ctrl( trim($text) ) ) , 10); }
+  public static function commune($text)      { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::ctrl( trim($text) ) ) , 45); }
+  public static function pays($text)         { return Clean::tronquer_chaine( Clean::perso_strtoupper( Clean::ctrl( trim($text) ) ) , 35); }
+  public static function code($text)         { return Clean::only_letters_numbers( Clean::perso_strtolower( Clean::ctrl( trim($text) ) ) ); }
+  public static function courriel($text)     { return Clean::perso_strtolower( Clean::accents( Clean::ctrl( trim($text) ) ) ); }
+  public static function appreciation($text) { return Clean::espaces( Clean::lignes( Clean::ctrl( trim($text) ) ) ); }
+  public static function texte($text)        { return Clean::ctrl( trim($text) ); }
+  public static function url($text)          { return Clean::ctrl( trim($text) ); }
   public static function id_ent($text)       { return mb_substr( Clean::texte( (string)$text ) ,0,63 ); }
   public static function entier($text)       { return intval($text); }
   public static function decimal($text)      { return floatval(str_replace(',','.',$text)); }
-  public static function txt_note($text)     { return Clean::tronquer_chaine( Clean::nul( trim($text) ) , 40); }
+  public static function txt_note($text)     { return Clean::tronquer_chaine( Clean::ctrl( trim($text) ) , 40); }
   public static function upper($text)        { return Clean::perso_strtoupper($text); }
   public static function lower($text)        { return Clean::perso_strtolower($text); }
 

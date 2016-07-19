@@ -243,7 +243,7 @@ if($version_base_structure_actuelle=='2016-03-22')
 // MAJ 2016-04-17 => 2016-04-29
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($version_base_structure_actuelle=='2016-04-17')
+if( ($version_base_structure_actuelle=='2016-04-17') || ($version_base_structure_actuelle=='2016-04-23') ) // Il a dû y avoir une erreur à un moment donné car des bases se sont retrouvées en version 2016-04-23.
 {
   if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
   {
@@ -548,9 +548,9 @@ if($version_base_structure_actuelle=='2016-06-14')
     $version_base_structure_actuelle = '2016-06-24';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
     // suppression de la table [sacoche_livret_parametre_colonne]
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE sacoche_livret_parametre_colonne ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_livret_parametre_colonne ' );
     // suppression de la table [sacoche_livret_parametre_rubrique]
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE sacoche_livret_parametre_rubrique ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_livret_parametre_rubrique ' );
     // nouvelle table [sacoche_livret_colonne]
     $reload_sacoche_livret_colonne = TRUE;
     $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_colonne.sql');
@@ -586,14 +586,6 @@ if($version_base_structure_actuelle=='2016-06-14')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_ap DROP matiere_id ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_ap DROP prof_id ' );
     }
-    // recharger [sacoche_livret_jointure_referentiel]
-    if(empty($reload_sacoche_livret_jointure_referentiel))
-    {
-      $reload_sacoche_livret_jointure_referentiel = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_jointure_referentiel.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    }
     // recharger [sacoche_livret_page]
     if(empty($reload_sacoche_livret_page))
     {
@@ -628,6 +620,73 @@ if($version_base_structure_actuelle=='2016-06-24')
     {
       $reload_sacoche_livret_seuil = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_seuil.sql');
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+      DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2016-06-30 => 2016-07-19
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2016-06-30')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2016-07-19';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // nettoyer les intitulés des référentiels plus en profondeur que les seuls caractères NULL
+    $tab_bad = array( "\x00" , "\x01" , "\x02" , "\x03" , "\x04" , "\x05" , "\x06" , "\x07" , "\x08" , "\x0B" , "\x0C" , "\x0E" , "\x0F" , "\x10" , "\x11" , "\x12" , "\x13" , "\x14" , "\x15" , "\x16" , "\x17" , "\x18" , "\x19" , "\x1A" , "\x1B" , "\x1C" , "\x1D" , "\x1E" , "\x1F" , "\x7F" );
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT item_id, item_nom, item_comm FROM sacoche_referentiel_item');
+    $DB_SQL = 'UPDATE sacoche_referentiel_item SET item_nom=:item_nom, item_comm=:item_comm WHERE item_id=:item_id';
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $item_nom  = str_replace( $tab_bad , "" , $DB_ROW['item_nom']  , $count1 );
+      $item_comm = str_replace( $tab_bad , "" , $DB_ROW['item_comm'] , $count2 );
+      if( $count1 || $count2 )
+      {
+        $DB_VAR = array(
+          ':item_id'   => $DB_ROW['item_id'],
+          ':item_nom'  => $item_nom,
+          ':item_comm' => $item_comm,
+        );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR );
+      }
+    }
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT theme_id, theme_nom FROM sacoche_referentiel_theme');
+    $DB_SQL = 'UPDATE sacoche_referentiel_theme SET theme_nom=:theme_nom WHERE theme_id=:theme_id';
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $theme_nom  = str_replace( $tab_bad , "" , $DB_ROW['theme_nom']  , $count );
+      if( $count )
+      {
+        $DB_VAR = array(
+          ':theme_id'   => $DB_ROW['theme_id'],
+          ':theme_nom'  => $theme_nom,
+        );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR );
+      }
+    }
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT domaine_id, domaine_nom FROM sacoche_referentiel_domaine');
+    $DB_SQL = 'UPDATE sacoche_referentiel_domaine SET domaine_nom=:domaine_nom WHERE domaine_id=:domaine_id';
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $domaine_nom  = str_replace( $tab_bad , "" , $DB_ROW['domaine_nom']  , $count );
+      if( $count )
+      {
+        $DB_VAR = array(
+          ':domaine_id'   => $DB_ROW['domaine_id'],
+          ':domaine_nom'  => $domaine_nom,
+        );
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR );
+      }
+    }
+    // recharger [sacoche_livret_jointure_referentiel] (car ajout de clefs + colonne trouvée manquante sur une installation)
+    if(empty($reload_sacoche_livret_jointure_referentiel))
+    {
+      $reload_sacoche_livret_jointure_referentiel = TRUE;
+      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_jointure_referentiel.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
     }

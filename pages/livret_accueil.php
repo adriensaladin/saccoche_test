@@ -149,7 +149,7 @@ foreach($DB_TAB as $DB_ROW)
         }
         elseif($DB_ROW['livret_page_rubrique_type']=='socle')
         {
-          $liaison = '<div class="bv"><a href="./index.php?page=livret&amp;section=rubriques&amp;ref='.$DB_ROW['livret_page_ref'].'">liaisons aux items<br />via gestion des référentiels</div>' ;
+          $liaison = '<div class="bv"><a href="./index.php?page=livret&amp;section=liaisons&amp;ref='.$DB_ROW['livret_page_ref'].'">liaisons aux items<br />via gestion des référentiels</div>' ;
         }
         else
         {

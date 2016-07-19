@@ -162,6 +162,132 @@ public static function DB_lister_pages( $with_info_classe )
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
+/**
+ * recuperer_page_info
+ *
+ * @param string   $page_ref
+ * @return array
+ */
+public static function DB_recuperer_page_info($page_ref)
+{
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_livret_page ';
+  $DB_SQL.= 'WHERE livret_page_ref=:page_ref ';
+  $DB_VAR = array( ':page_ref' => $page_ref );
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rubriques & Jointures rubriques / référentiels
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * lister_rubriques_avec_jointures_référentiels
+ *
+ * @param string   $page_ref
+ * @param string   $rubrique_type
+ * @return array
+ */
+public static function DB_lister_rubriques_avec_jointures_référentiels( $page_ref , $rubrique_type )
+{
+  $DB_SQL = 'SELECT livret_rubrique_id, livret_rubrique_titre, livret_rubrique_sous_titre, GROUP_CONCAT(element_id SEPARATOR ",") AS listing_elements ';
+  $DB_SQL.= 'FROM sacoche_livret_rubrique ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel USING(livret_rubrique_id) ';
+  $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type AND ( livret_page_ref=:page_ref OR livret_page_ref IS NULL ) ';
+  $DB_SQL.= 'GROUP BY livret_rubrique_id ';
+  $DB_SQL.= 'ORDER BY livret_rubrique_ordre ASC ';
+  $DB_VAR = array(
+    ':page_ref'      => $page_ref,
+    ':rubrique_type' => $rubrique_type,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * tester_page_avec_dispositif
+ *
+ * @param string $page_ref
+ * @param string $rubrique_join
+ * @param int    $rubrique_id
+ * @return int
+ */
+
+public static function DB_tester_page_jointure_rubrique( $page_ref , $rubrique_join , $rubrique_id )
+{
+  $DB_SQL = 'SELECT 1 ';
+  $DB_SQL.= 'FROM sacoche_livret_page ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_rubrique ON livret_page_rubrique_type = livret_rubrique_type ';
+  $DB_SQL.= 'WHERE livret_page_ref=:page_ref AND livret_page_rubrique_join=:rubrique_join AND livret_rubrique_id=:rubrique_id ';
+  $DB_VAR = array(
+    ':page_ref'      => $page_ref,
+    ':rubrique_join' => $rubrique_join,
+    ':rubrique_id'   => $rubrique_id,
+  );
+  return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_jointure_référentiel
+ *
+ * @param string $page_ref
+ * @param int    $rubrique_id
+ * @param int    $element_id
+ * @param bool   $etat   TRUE pour ajouter ; FALSE pour retirer
+ * @return void
+ */
+public static function DB_modifier_jointure_référentiel( $page_ref , $rubrique_id , $element_id , $etat )
+{
+  if($etat)
+  {
+    $DB_SQL = 'INSERT INTO sacoche_livret_jointure_referentiel ( livret_page_ref , livret_rubrique_id , element_id ) ';
+    $DB_SQL.= 'VALUES( :page_ref , :rubrique_id , :element_id )';
+  }
+  else
+  {
+    $DB_SQL = 'DELETE FROM sacoche_livret_jointure_referentiel ';
+    $DB_SQL.= 'WHERE livret_page_ref=:page_ref AND livret_rubrique_id=:rubrique_id AND element_id=:element_id ';
+  }
+  $DB_VAR = array(
+    ':page_ref'    => $page_ref,
+    ':rubrique_id' => $rubrique_id,
+    ':element_id'  => $element_id,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_type_jointure
+ *
+ * @param string $page_ref
+ * @param string $rubrique_join
+ * @return void
+ */
+public static function DB_modifier_type_jointure( $page_ref , $rubrique_join )
+{
+  $DB_SQL = 'UPDATE sacoche_livret_page ';
+  $DB_SQL.= 'SET livret_page_rubrique_join=:rubrique_join ';
+  $DB_SQL.= 'WHERE livret_page_ref=:page_ref ';
+  $DB_VAR = array(
+    ':page_ref'      => $page_ref,
+    ':rubrique_join' => $rubrique_join,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * supprimer_jointures_référentiel
+ *
+ * @param string $page_ref
+ * @return void
+ */
+public static function DB_supprimer_jointures_référentiel( $page_ref )
+{
+  $DB_SQL = 'DELETE FROM sacoche_livret_jointure_referentiel ';
+  $DB_SQL.= 'WHERE livret_page_ref=:page_ref ';
+  $DB_VAR = array( ':page_ref' => $page_ref );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Jointures livret / groupe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -585,7 +711,7 @@ public static function DB_modifier_ap( $ap_id , $page_ref , $groupe_id , $ap_tit
  */
 public static function DB_supprimer_ap( $ap_id )
 {
-  $DB_SQL = 'DELETE FROM sacoche_livret_ap, sacoche_livret_jointure_ap_prof ';
+  $DB_SQL = 'DELETE sacoche_livret_ap, sacoche_livret_jointure_ap_prof ';
   $DB_SQL.= 'FROM sacoche_livret_ap ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_ap_prof USING (livret_ap_id) ';
   $DB_SQL.= 'WHERE livret_ap_id=:ap_id ';

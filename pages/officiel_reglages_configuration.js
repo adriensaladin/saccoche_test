@@ -314,7 +314,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_releve').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_releve').attr('class','alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -322,7 +322,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_bulletin').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_bulletin').attr('class','alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -330,7 +330,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_socle').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_socle').attr('class','alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -371,7 +371,7 @@ $(document).ready
         nombre = (nombre==0) ? 'Sans exception (toutes matières avec moyennes)' : ( (nombre==1) ? 'Une exception (matière sans moyenne)' : ' '+nombre+' exceptions (matières sans moyennes)' ) ;
         $('#f_matiere_liste').val(liste);
         $('#f_matiere_nombre').val(nombre);
-        $('#ajax_msg_bulletin').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_bulletin').attr('class','alerte').html("Enregistrer pour confirmer.");
         $('#annuler_matieres').click();
       }
     );
@@ -401,22 +401,22 @@ $(document).ready
         var objet = $(this).attr('id').substring(15);
         if( (objet=='releve') && (!$('#f_'+objet+'_etat_acquisition').is(':checked')) && ($('#f_'+objet+'_cases_nb option:selected').val()==0) )
         {
-          $('#ajax_msg_'+objet).removeAttr('class').addClass('erreur').html("Choisir au moins une indication à faire figurer sur le bilan !");
+          $('#ajax_msg_'+objet).attr('class','erreur').html("Choisir au moins une indication à faire figurer sur le bilan !");
           return false;
         }
         if( (objet=='socle') && (!$('#f_'+objet+'_pourcentage_acquis').is(':checked')) && (!$('#f_'+objet+'_etat_validation').is(':checked')) )
         {
-          $('#ajax_msg_'+objet).removeAttr('class').addClass('erreur').html("Choisir au moins une indication à faire figurer sur le bilan !");
+          $('#ajax_msg_'+objet).attr('class','erreur').html("Choisir au moins une indication à faire figurer sur le bilan !");
           return false;
         }
         if( ($('#f_'+objet+'_check_supplementaire').is(':checked')) && (!$('#f_'+objet+'_ligne_supplementaire').val()) )
         {
-          $('#ajax_msg_'+objet).removeAttr('class').addClass('erreur').html("Indiquer le texte de la ligne additionnelle à faire figurer sur le bilan !");
+          $('#ajax_msg_'+objet).attr('class','erreur').html("Indiquer le texte de la ligne additionnelle à faire figurer sur le bilan !");
           $('#f_'+objet+'_ligne_supplementaire').focus();
           return false;
         }
         $('#bouton_valider_'+objet).prop('disabled',true);
-        $('#ajax_msg_'+objet).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_'+objet).attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -427,7 +427,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_valider_'+objet).prop('disabled',false);
-              $('#ajax_msg_'+objet).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+objet).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -436,11 +436,11 @@ $(document).ready
               $('#bouton_valider_'+objet).prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_'+objet).removeAttr('class').addClass('valide').html("Données enregistrées !");
+                $('#ajax_msg_'+objet).attr('class','valide').html("Données enregistrées !");
               }
               else
               {
-                $('#ajax_msg_'+objet).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_'+objet).attr('class','alerte').html(responseJSON['value']);
               }
               return false;
             }

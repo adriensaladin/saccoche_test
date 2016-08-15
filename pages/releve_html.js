@@ -103,7 +103,7 @@ $(document).ready
         {
           if( !$('#form_synthese input[name=id_req\\[\\]]:checked').length )
           {
-            $('#check_msg').removeAttr('class').addClass('alerte').html('Aucune case cochée !');
+            $('#check_msg').attr('class','alerte').html('Aucune case cochée !');
             return false;
           }
           else
@@ -118,12 +118,12 @@ $(document).ready
         {
           if( !$('#form_synthese input[name=id_user\\[\\]]:checked').length )
           {
-            $('#check_msg').removeAttr('class').addClass('alerte').html('Aucun élève coché !');
+            $('#check_msg').attr('class','alerte').html('Aucun élève coché !');
             return false;
           }
           else if( !$('#form_synthese input[name=id_item\\[\\]]:checked').length )
           {
-            $('#check_msg').removeAttr('class').addClass('alerte').html('Aucun item coché !');
+            $('#check_msg').attr('class','alerte').html('Aucun item coché !');
             return false;
           }
           else
@@ -137,7 +137,7 @@ $(document).ready
         {
           if( !$('#form_synthese input[name=id_user\\[\\]]:checked').length )
           {
-            $('#check_msg').removeAttr('class').addClass('alerte').html('Aucun élève coché !');
+            $('#check_msg').attr('class','alerte').html('Aucun élève coché !');
             return false;
           }
           else
@@ -173,7 +173,7 @@ $(document).ready
         }
         else
         {
-          $('#check_msg').removeAttr('class').addClass('alerte').html('Aucun élève coché !');
+          $('#check_msg').attr('class','alerte').html('Aucun élève coché !');
           return false;
         }
       }

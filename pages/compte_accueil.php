@@ -59,6 +59,12 @@ $tab_accueil = array(
 // [alert] - Alertes (pour l'administrateur) ; affiché après [user] mais à définir avant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Mis en session car réutilisé pour des profils autres qu'administrateur
+if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','partenaire')))
+{
+  $_SESSION['NB_DEVOIRS_ANTERIEURS'] = DB_STRUCTURE_COMMUN::DB_compter_devoirs_annees_scolaires_precedentes();
+}
+
 if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
   $alerte_novice = FALSE ;
@@ -78,9 +84,9 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
     $tab_accueil['alert']['contenu'] .= '<p class="danger">Aucun niveau de classe n\'est choisi pour l\'établissement !<br /><a href="./index.php?page=administrateur_etabl_niveau">Gestion des niveaux.</a></p>';
     $alerte_novice = TRUE ;
   }
-  if(DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annees_scolaires_precedentes())
+  if($_SESSION['NB_DEVOIRS_ANTERIEURS'])
   {
-    $tab_accueil['alert']['contenu'] .= '<p class="danger">Année scolaire précédente non archivée !<br />Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
+    $tab_accueil['alert']['contenu'] .= '<p class="danger">Année scolaire précédente non archivée !<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>';
     $info_rentree  = TRUE ;
   }
   if(!$_SESSION['USER_EMAIL'])

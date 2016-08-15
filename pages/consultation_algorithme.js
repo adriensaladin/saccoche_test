@@ -137,7 +137,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -181,19 +181,19 @@ $(document).ready
           var valeur = parseInt(saisie,10);
           if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
           {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Valeur d'un code : valeurs entières requises.").show();
+            $('#ajax_msg').attr('class','erreur').html("Valeur d'un code : valeurs entières requises.").show();
             $('#'+key).focus();
             return false;
           }
           else if( valeur < 0 )
           {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Valeur d'un code : valeur positives requises.").show();
+            $('#ajax_msg').attr('class','erreur').html("Valeur d'un code : valeur positives requises.").show();
             $('#'+key).focus();
             return false;
           }
           else if( valeur <= val_min )
           {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Valeur d'un code : valeurs croissantes requises.").show();
+            $('#ajax_msg').attr('class','erreur').html("Valeur d'un code : valeurs croissantes requises.").show();
             $('#'+key).focus();
             return false;
           }
@@ -205,13 +205,13 @@ $(document).ready
         }
         if( nb_sup_100 >= 2 )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Valeur d'un code : une seule valeur dépassant 100 permise.").show();
+          $('#ajax_msg').attr('class','erreur').html("Valeur d'un code : une seule valeur dépassant 100 permise.").show();
           $('#'+key).focus();
           return false;
         }
         else if( val_min > 200 )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Valeur d'un code : 200 maximum pour le meilleur code.").show();
+          $('#ajax_msg').attr('class','erreur').html("Valeur d'un code : 200 maximum pour le meilleur code.").show();
           $('#'+key).focus();
           return false;
         }
@@ -223,25 +223,25 @@ $(document).ready
           var valeur = parseInt(saisie,10);
           if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
           {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Seuil d'acquisition : valeurs entières requises.").show();
+            $('#ajax_msg').attr('class','erreur').html("Seuil d'acquisition : valeurs entières requises.").show();
             $('#'+key).focus();
             return false;
           }
           else if( ( val_min==-1 ) && ( valeur != 0 ) )
           {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Seuil d'acquisition : valeur minimale requise à 0.").show();
+            $('#ajax_msg').attr('class','erreur').html("Seuil d'acquisition : valeur minimale requise à 0.").show();
             $('#'+key).focus();
             return false;
           }
           else if( valeur <= val_min )
           {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Seuil d'acquisition : valeurs croissantes requises.").show();
+            $('#ajax_msg').attr('class','erreur').html("Seuil d'acquisition : valeurs croissantes requises.").show();
             $('#'+key).focus();
             return false;
           }
           else if( ( key.substring(2)=='min' ) && ( valeur != val_min+1 ) )
           {
-            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Seuil d'acquisition : intervalles consécutifs requis.").show();
+            $('#ajax_msg').attr('class','erreur').html("Seuil d'acquisition : intervalles consécutifs requis.").show();
             $('#'+key).focus();
             return false;
           }
@@ -249,7 +249,7 @@ $(document).ready
         }
         if( val_min != 100 )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Seuil d'acquisition : valeur maximale requise à 100.").show();
+          $('#ajax_msg').attr('class','erreur').html("Seuil d'acquisition : valeur maximale requise à 100.").show();
           $('#'+key).focus();
           return false;
         }
@@ -259,7 +259,7 @@ $(document).ready
         $('#bilan table tbody').hide();
       }
       $('button').prop('disabled',true);
-      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;").show();
+      $('#ajax_msg').attr('class','loader').html("En cours&hellip;").show();
       return readytogo;
     }
 
@@ -267,7 +267,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -277,11 +277,11 @@ $(document).ready
       $('button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg').removeAttr('class').addClass('valide').html("Simulation effectuée !");
+        $('#ajax_msg').attr('class','valide').html("Simulation effectuée !");
         $('#bilan table tbody').html(responseJSON['value']).show();
       }
     }

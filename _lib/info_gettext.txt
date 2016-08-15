@@ -1,5 +1,5 @@
 ﻿================================================================================
-Librairie : gettext                        Version : 1.0.11
+Librairie : gettext                        Version : 1.0.12
 ================================================================================
 
 "gettext" est un format ouvert normé destiné à gérer des traductions.
@@ -25,6 +25,13 @@ Cela a donné le fichier "Lang.class.php".
 Des constantes sont définies dans le _loader.php (dont LC_MESSAGES si besoin, pas pu faire autrement).
 Les appels se font ainsi (après ouverture de session) : "Lang::fonction_gettext_de_la_doc_php()".
 En général pour une traduction simple on utilise l'alias : Lang::_("...").
+
+Modifications apportées manuellement pour PHP 7 car non encore prises en compte au 28/07/2016 :
+https://bugs.launchpad.net/php-gettext/+bug/1522900
+streams.php#52 : function StringReader($str='') => function __construct($str='')
+streams.php#89 : function FileReader($filename) => function __construct($filename)
+streams.php#146 : function CachedFileReader($filename) => function __construct($filename)
+gettext#101 : function gettext_reader($Reader, $enable_cache = true) => function __construct($Reader, $enable_cache = true)
 
 ================================================================================
 Fabriquer les fichiers de traduction

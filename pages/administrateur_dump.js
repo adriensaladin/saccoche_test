@@ -46,7 +46,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $("button").prop('disabled',false);
-            $('#ajax_msg_sauvegarde').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_sauvegarde').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -54,7 +54,7 @@ $(document).ready
             if(responseJSON['statut']==false)
             {
               $("button").prop('disabled',false);
-              $('#ajax_msg_sauvegarde').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_sauvegarde').attr('class','alerte').html(responseJSON['value']);
             }
             else
             {
@@ -82,7 +82,7 @@ $(document).ready
       function()
       {
         $("button").prop('disabled',true);
-        $('#ajax_msg_sauvegarde').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_sauvegarde').attr('class','loader').html("En cours&hellip;");
         $('#ajax_msg_restauration').removeAttr('class').html('');
         $('#ajax_info').html('');
         initialiser_compteur();
@@ -131,13 +131,13 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( fichier_ext != 'zip' )
           {
-            $('#ajax_msg_restauration').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
+            $('#ajax_msg_restauration').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
             return false;
           }
           else
           {
             $("button").prop('disabled',true);
-            $('#ajax_msg_restauration').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            $('#ajax_msg_restauration').attr('class','loader').html("En cours&hellip;");
             formulaire_restauration.submit();
           }
         }
@@ -159,7 +159,7 @@ $(document).ready
     {
       $('#f_restauration').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $("button").prop('disabled',false);
-      $('#ajax_msg_restauration').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_restauration').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -169,11 +169,11 @@ $(document).ready
       $("button").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_restauration').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_restauration').attr('class','alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_restauration').removeAttr('class').addClass('valide').html('Contenu du fichier récupéré avec succès.');
+        $('#ajax_msg_restauration').attr('class','valide').html('Contenu du fichier récupéré avec succès.');
         $.prompt(
           "Souhaitez-vous vraiment restaurer la base contenue dans ce fichier&nbsp;?<br />==&gt; "+responseJSON['value']+"<br />Toute action effectuée depuis le moment de cette sauvegarde sera à refaire&nbsp;!!!<br />En particulier les saisies d'évaluations et les modifications de référentiels seront perdues&hellip;",
           {
@@ -185,14 +185,14 @@ $(document).ready
             submit  : function(event, value, message, formVals) {
               if(value)
               {
-                $('#ajax_msg_restauration').removeAttr('class').addClass('loader').html('Demande traitée...');
+                $('#ajax_msg_restauration').attr('class','loader').html('Demande traitée...');
                 initialiser_compteur();
                 restaurer(1);
               }
               else
               {
                 $("button").prop('disabled',false);
-                $('#ajax_msg_restauration').removeAttr('class').addClass('alerte').html('Restauration annulée.');
+                $('#ajax_msg_restauration').attr('class','alerte').html('Restauration annulée.');
               }
             }
           }
@@ -216,7 +216,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $("button").prop('disabled',false);
-            $('#ajax_msg_restauration').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_restauration').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -224,7 +224,7 @@ $(document).ready
             if(responseJSON['statut']==false)
             {
               $("button").prop('disabled',false);
-              $('#ajax_msg_restauration').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_restauration').attr('class','alerte').html(responseJSON['value']);
             }
             else
             {

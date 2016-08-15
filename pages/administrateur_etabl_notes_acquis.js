@@ -97,7 +97,7 @@ $(document).ready
         var input_obj = $('#note_image_'+mode_note_code);
         input_obj.val(new_note_code);
         input_obj.prev('img').attr('src',new_note_src);
-        $('#ajax_msg_notes').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+        $('#ajax_msg_notes').attr('class','alerte').html("Pensez à valider vos modifications !");
         $.fancybox.close();
       }
     );
@@ -137,7 +137,7 @@ $(document).ready
       function()
       {
         $( '#acquis_'+$(this).attr('name') ).val( $(this).val() ).focus();
-        $('#ajax_msg_acquis').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+        $('#ajax_msg_acquis').attr('class','alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -175,25 +175,25 @@ $(document).ready
               var valeur = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Valeur #"+note_id+" : nombre entier requis.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Valeur #"+note_id+" : nombre entier requis.").show();
                 $('#note_valeur_'+note_id).focus();
                 return false;
               }
               if( valeur < 0 )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Valeur #"+note_id+" : nombre positif requis.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Valeur #"+note_id+" : nombre positif requis.").show();
                 $('#note_valeur_'+note_id).focus();
                 return false;
               }
               if( valeur <= val_min )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Valeur #"+note_id+" : nombres croissants requis.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Valeur #"+note_id+" : nombres croissants requis.").show();
                 $('#note_valeur_'+note_id).focus();
                 return false;
               }
               if( valeur > 200 )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Valeur #"+note_id+" : 200 maximum pour le meilleur code.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Valeur #"+note_id+" : 200 maximum pour le meilleur code.").show();
                 $('#note_valeur_'+note_id).focus();
                 return false;
               }
@@ -202,7 +202,7 @@ $(document).ready
                 nb_sup_100++;
                 if( nb_sup_100 >= 2 )
                 {
-                  $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Valeur #"+note_id+" : une seule prut dépasser 100.").show();
+                  $('#ajax_msg_notes').attr('class','erreur').html("Valeur #"+note_id+" : une seule prut dépasser 100.").show();
                   $('#note_valeur_'+note_id).focus();
                   return false;
                 }
@@ -212,14 +212,14 @@ $(document).ready
               var image = $('#note_image_'+note_id).val();
               if( (image=='X') || !image )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Symbole #"+note_id+" : choix manquant.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Symbole #"+note_id+" : choix manquant.").show();
                 $('#note_image_'+note_id).focus();
                 return false;
               }
               var image_upper = image.toUpperCase();
               if( typeof(tab_image[image_upper]) !== 'undefined' )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Symbole #"+note_id+" : identique au symbole #"+tab_image[image_upper]+".").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Symbole #"+note_id+" : identique au symbole #"+tab_image[image_upper]+".").show();
                 $('#note_image_'+note_id).focus();
                 return false;
               }
@@ -228,20 +228,20 @@ $(document).ready
               var sigle = $('#note_sigle_'+note_id).val();
               if( !sigle.trim() )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Sigle #"+note_id+" : saisie manquante.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Sigle #"+note_id+" : saisie manquante.").show();
                 $('#note_sigle_'+note_id).focus();
                 return false;
               }
               if( sigle.length>3 )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Sigle #"+note_id+" : 3 caractères maximum.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Sigle #"+note_id+" : 3 caractères maximum.").show();
                 $('#note_sigle_'+note_id).focus();
                 return false;
               }
               var sigle_upper = sigle.toUpperCase();
               if( typeof(tab_sigle[sigle_upper]) !== 'undefined' )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Sigle #"+note_id+" : identique au sigle #"+tab_sigle[sigle_upper]+".").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Sigle #"+note_id+" : identique au sigle #"+tab_sigle[sigle_upper]+".").show();
                 $('#note_sigle_'+note_id).focus();
                 return false;
               }
@@ -250,20 +250,20 @@ $(document).ready
               var legende = $('#note_legende_'+note_id).val();
               if( !legende.trim() )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Légende #"+note_id+" : saisie manquante.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Légende #"+note_id+" : saisie manquante.").show();
                 $('#note_legende_'+note_id).focus();
                 return false;
               }
               if( legende.length>40 )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Légende #"+note_id+" : 40 caractères maximum.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Légende #"+note_id+" : 40 caractères maximum.").show();
                 $('#note_legende_'+note_id).focus();
                 return false;
               }
               var legende_upper = legende.toUpperCase();
               if( typeof(tab_legende[legende_upper]) !== 'undefined' )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Légende #"+note_id+" : identique à la légende #"+tab_legende[legende_upper]+".").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Légende #"+note_id+" : identique à la légende #"+tab_legende[legende_upper]+".").show();
                 $('#note_legende_'+note_id).focus();
                 return false;
               }
@@ -273,19 +273,19 @@ $(document).ready
               var clavier = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != clavier ) )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Touche #"+note_id+" : nombre entier requis.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Touche #"+note_id+" : nombre entier requis.").show();
                 $('#note_clavier_'+note_id).focus();
                 return false;
               }
               if( ( clavier < 1 ) || ( clavier > 10 ) )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Touche #"+note_id+" : nombre entre 1 et 9 requis.").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Touche #"+note_id+" : nombre entre 1 et 9 requis.").show();
                 $('#note_clavier_'+note_id).focus();
                 return false;
               }
               if( typeof(tab_clavier[clavier]) !== 'undefined' )
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Touche #"+note_id+" : identique à la touche #"+tab_clavier[clavier]+".").show();
+                $('#ajax_msg_notes').attr('class','erreur').html("Touche #"+note_id+" : identique à la touche #"+tab_clavier[clavier]+".").show();
                 $('#note_clavier_'+note_id).focus();
                 return false;
               }
@@ -302,14 +302,14 @@ $(document).ready
         // Vérification au moins 2 codes activés
         if( nb_actifs < 2 )
         {
-          $('#ajax_msg_notes').removeAttr('class').addClass('erreur').html("Il faut au moins 2 codes actifs.").show();
+          $('#ajax_msg_notes').attr('class','erreur').html("Il faut au moins 2 codes actifs.").show();
           return false;
         }
         // GO !
         $('#notes_ordre').val(tab_ordre.join());
         $('#notes_actif').val(tab_actif.join());
         $("#bouton_valider_notes").prop('disabled',true);
-        $('#ajax_msg_notes').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_notes').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -320,7 +320,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("#bouton_valider_notes").prop('disabled',false);
-              $('#ajax_msg_notes').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_notes').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -329,11 +329,11 @@ $(document).ready
               $("#bouton_valider_notes").prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('valide').html("Choix mémorisés !");
+                $('#ajax_msg_notes').attr('class','valide').html("Choix mémorisés !");
               }
               else
               {
-                $('#ajax_msg_notes').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_notes').attr('class','alerte').html(responseJSON['value']);
               }
               return false;
             }
@@ -379,31 +379,31 @@ $(document).ready
               var valeur = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil min #"+acquis_id+" : nombre entier requis.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Seuil min #"+acquis_id+" : nombre entier requis.").show();
                 $('#acquis_seuil_'+acquis_id+'_min').focus();
                 return false;
               }
               if( ( seuil_min==-1 ) && ( valeur != 0 ) )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil min #"+acquis_id+" : valeur 0 requise pour le premier seuil.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Seuil min #"+acquis_id+" : valeur 0 requise pour le premier seuil.").show();
                 $('#acquis_seuil_'+acquis_id+'_min').focus();
                 return false;
               }
               if( valeur <= seuil_min )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil min #"+acquis_id+" : valeurs croissantes requises.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Seuil min #"+acquis_id+" : valeurs croissantes requises.").show();
                 $('#acquis_seuil_'+acquis_id+'_min').focus();
                 return false;
               }
               if( valeur != seuil_min+1 )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil min #"+acquis_id+" : intervalles consécutifs requis.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Seuil min #"+acquis_id+" : intervalles consécutifs requis.").show();
                 $('#acquis_seuil_'+acquis_id+'_min').focus();
                 return false;
               }
               if( valeur > 100 )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil min #"+acquis_id+" : valeur inférieure à 100 requise.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Seuil min #"+acquis_id+" : valeur inférieure à 100 requise.").show();
                 $('#acquis_seuil_'+acquis_id+'_min').focus();
                 return false;
               }
@@ -413,19 +413,19 @@ $(document).ready
               var valeur = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil max #"+acquis_id+" : nombre entier requis.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Seuil max #"+acquis_id+" : nombre entier requis.").show();
                 $('#acquis_seuil_'+acquis_id+'_max').focus();
                 return false;
               }
               if( valeur <= seuil_min )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil max #"+acquis_id+" : valeurs croissantes requises.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Seuil max #"+acquis_id+" : valeurs croissantes requises.").show();
                 $('#acquis_seuil_'+acquis_id+'_max').focus();
                 return false;
               }
               if( valeur > 100 )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil max #"+acquis_id+" : valeur inférieure à 100 requise.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Seuil max #"+acquis_id+" : valeur inférieure à 100 requise.").show();
                 $('#acquis_seuil_'+acquis_id+'_max').focus();
                 return false;
               }
@@ -434,19 +434,19 @@ $(document).ready
               var color = $('#acquis_color_'+acquis_id).val();
               if( !color )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Couleur #"+acquis_id+" : choix manquant.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Couleur #"+acquis_id+" : choix manquant.").show();
                 $('#acquis_color_'+acquis_id).focus();
                 return false;
               }
               if( !verif_hexa_format(color) )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Couleur #"+acquis_id+" : valeur invalide.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Couleur #"+acquis_id+" : valeur invalide.").show();
                 $('#acquis_color_'+acquis_id).focus();
                 return false;
               }
               if( typeof(tab_color[color]) !== 'undefined' )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Couleur #"+acquis_id+" : identique à l'acquisition #"+tab_color[color]+".").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Couleur #"+acquis_id+" : identique à l'acquisition #"+tab_color[color]+".").show();
                 $('#acquis_color_'+acquis_id).focus();
                 return false;
               }
@@ -455,20 +455,20 @@ $(document).ready
               var sigle = $('#acquis_sigle_'+acquis_id).val();
               if( !sigle.trim() )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Sigle #"+acquis_id+" : saisie manquante.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Sigle #"+acquis_id+" : saisie manquante.").show();
                 $('#acquis_sigle_'+acquis_id).focus();
                 return false;
               }
               if( sigle.length>3 )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Sigle #"+acquis_id+" : 3 caractères maximum.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Sigle #"+acquis_id+" : 3 caractères maximum.").show();
                 $('#acquis_sigle_'+acquis_id).focus();
                 return false;
               }
               var sigle_upper = sigle.toUpperCase();
               if( typeof(tab_sigle[sigle_upper]) !== 'undefined' )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Sigle #"+acquis_id+" : identique au sigle #"+tab_sigle[sigle_upper]+".").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Sigle #"+acquis_id+" : identique au sigle #"+tab_sigle[sigle_upper]+".").show();
                 $('#acquis_sigle_'+acquis_id).focus();
                 return false;
               }
@@ -477,20 +477,20 @@ $(document).ready
               var legende = $('#acquis_legende_'+acquis_id).val();
               if( !legende.trim() )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Légende #"+acquis_id+" : saisie manquante.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Légende #"+acquis_id+" : saisie manquante.").show();
                 $('#acquis_legende_'+acquis_id).focus();
                 return false;
               }
               if( legende.length>40 )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Légende #"+acquis_id+" : 40 caractères maximum.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Légende #"+acquis_id+" : 40 caractères maximum.").show();
                 $('#acquis_legende_'+acquis_id).focus();
                 return false;
               }
               var legende_upper = legende.toUpperCase();
               if( typeof(tab_legende[legende_upper]) !== 'undefined' )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Légende #"+acquis_id+" : identique à la légende #"+tab_legende[legende_upper]+".").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("Légende #"+acquis_id+" : identique à la légende #"+tab_legende[legende_upper]+".").show();
                 $('#acquis_legende_'+acquis_id).focus();
                 return false;
               }
@@ -500,25 +500,25 @@ $(document).ready
               var valeur = parseInt(saisie,10);
               if( isNaN(saisie) || ( parseFloat(saisie) != valeur ) )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("État #"+acquis_id+" : nombre entier requis.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("État #"+acquis_id+" : nombre entier requis.").show();
                 $('#acquis_valeur_'+acquis_id).focus();
                 return false;
               }
               if( ( valeur < 0 ) || ( valeur > 100 ) )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("État #"+acquis_id+" : nombre entre 0 et 100 requis.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("État #"+acquis_id+" : nombre entre 0 et 100 requis.").show();
                 $('#acquis_valeur_'+acquis_id).focus();
                 return false;
               }
               if( ( etat_min==-1 ) && ( valeur != 0 ) )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("État #"+acquis_id+" : valeur 0 requise pour le premier état.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("État #"+acquis_id+" : valeur 0 requise pour le premier état.").show();
                 $('#acquis_valeur_'+acquis_id).focus();
                 return false;
               }
               if( valeur < etat_min )
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("État #"+acquis_id+" : valeurs croissantes requises.").show();
+                $('#ajax_msg_acquis').attr('class','erreur').html("État #"+acquis_id+" : valeurs croissantes requises.").show();
                 $('#acquis_valeur_'+acquis_id).focus();
                 return false;
               }
@@ -535,28 +535,28 @@ $(document).ready
         if( seuil_min != 100 )
         {
           var last_acquis_id_actif = tab_actif.pop();
-          $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Seuil max #"+last_acquis_id_actif+" : valeur 100 requise pour le dernier seuil.").show();
+          $('#ajax_msg_acquis').attr('class','erreur').html("Seuil max #"+last_acquis_id_actif+" : valeur 100 requise pour le dernier seuil.").show();
           $('#acquis_seuil_'+last_acquis_id_actif+'_max').focus();
           return false;
         }
         if( etat_min != 100 )
         {
           var last_acquis_id_actif = tab_actif.pop();
-          $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("État #"+last_acquis_id_actif+" : valeur 100 requise pour le dernier état.").show();
+          $('#ajax_msg_acquis').attr('class','erreur').html("État #"+last_acquis_id_actif+" : valeur 100 requise pour le dernier état.").show();
           $('#acquis_valeur_'+last_acquis_id_actif).focus();
           return false;
         }
         // Vérification au moins 2 états activés
         if( nb_actifs < 2 )
         {
-          $('#ajax_msg_acquis').removeAttr('class').addClass('erreur').html("Il faut au moins 2 états actifs.").show();
+          $('#ajax_msg_acquis').attr('class','erreur').html("Il faut au moins 2 états actifs.").show();
           return false;
         }
         // GO !
         $('#acquis_ordre').val(tab_ordre.join());
         $('#acquis_actif').val(tab_actif.join());
         $("#bouton_valider_acquis").prop('disabled',true);
-        $('#ajax_msg_acquis').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_acquis').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -567,7 +567,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("#bouton_valider_acquis").prop('disabled',false);
-              $('#ajax_msg_acquis').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_acquis').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -576,7 +576,7 @@ $(document).ready
               $("#bouton_valider_acquis").prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('valide').html("Choix mémorisés !");
+                $('#ajax_msg_acquis').attr('class','valide').html("Choix mémorisés !");
                 $('#colorpicker').hide();
                 // Actualisation boutons avec valeur enregistrée établissement
                 for( num=1 ; num<7 ; num++ )
@@ -587,7 +587,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_acquis').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_acquis').attr('class','alerte').html(responseJSON['value']);
               }
               return false;
             }
@@ -634,13 +634,13 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( '.bmp.gif.jpg.jpeg.png.'.indexOf('.'+fichier_ext+'.') == -1 )
           {
-            $('#ajax_msg_symbole').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (bmp gif jpg jpeg png).');
+            $('#ajax_msg_symbole').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (bmp gif jpg jpeg png).');
             return false;
           }
           else
           {
             $("#bouton_choisir_symbole").prop('disabled',true);
-            $('#ajax_msg_symbole').removeAttr('class').addClass('loader').html("En cours&hellip;");
+            $('#ajax_msg_symbole').attr('class','loader').html("En cours&hellip;");
             formulaire_symbole.submit();
           }
         }
@@ -662,7 +662,7 @@ $(document).ready
     {
       $('#f_symbole').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $("#bouton_choisir_symbole").prop('disabled',false);
-      $('#ajax_msg_symbole').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_symbole').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -672,12 +672,12 @@ $(document).ready
       $("#bouton_choisir_symbole").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_symbole').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_symbole').attr('class','alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_msg_symbole').removeAttr('class').addClass('valide').html('Image ajoutée');
+        $('#ajax_msg_symbole').attr('class','valide').html('Image ajoutée');
         $('#notes_perso').append(responseJSON['value']);
       }
     }
@@ -693,7 +693,7 @@ $(document).ready
       function()
       {
         var image_id = $(this).prev('a').attr('id').substr(9); // p_upload_
-        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_upload').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -703,14 +703,14 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_upload').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_upload').attr('class','alerte').html(responseJSON['value']);
               }
               else
               {

@@ -27,6 +27,21 @@
 
 // Tableau avec la liste des ids de référentiels associables aux rubriques de type "matière" du livret pour les classes de collège
 
+/*
+(130, "matiere",  10, "Français", NULL),
+(140, "matiere",  20, "Mathématiques", NULL),
+(150, "matiere",  30, "Histoire-Géographie / Enseignement moral et civique", NULL),
+(160, "matiere",  40, "Langue vivante 1", NULL),
+(161, "matiere",  41, "Langue vivante 2", NULL),
+(170, "matiere",  50, "Éducation physique et sportive", NULL),
+(180, "matiere",  60, "Arts plastiques", NULL),
+(190, "matiere",  70, "Éducation musicale", NULL),
+(200, "matiere",  80, "Sciences de la Vie et de la Terre", NULL),
+(210, "matiere",  90, "Technologie", NULL),
+(220, "matiere", 100, "Physique-Chimie", NULL),
+(231, "matiere", 111, "Enseignement(s) de complément", "Latin / Langue et culture régionales");
+*/
+
 // Clefs issues de la table sacoche_livret_rubrique
 (, "matiere",  10, "", NULL),
 (, "matiere",  20, "", NULL),

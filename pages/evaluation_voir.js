@@ -64,7 +64,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -82,7 +82,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_maj').attr('class','alerte').html(responseJSON['value']);
             }
           }
         }
@@ -115,7 +115,7 @@ $(document).ready
         groupe_id = $("#f_groupe option:selected").val();
         if(groupe_id)
         {
-          $('#ajax_maj').removeAttr('class').addClass('loader').html("En cours&hellip;");
+          $('#ajax_maj').attr('class','loader').html("En cours&hellip;");
           maj_eleve(groupe_id,groupe_type);
           $('#zone_profs').show();
         }
@@ -136,7 +136,7 @@ $(document).ready
     function afficher_prof_connecte()
     {
       $('#f_prof').html('<option value="'+user_id+'">'+user_texte+'</option>');
-      $('#modifier_prof').removeAttr('class').addClass('form_ajouter');
+      $('#modifier_prof').attr('class','form_ajouter');
       action_prof = 'ajouter';
     }
 
@@ -164,7 +164,7 @@ $(document).ready
             if(responseJSON['statut']==true)
             {
               $('#f_prof').html(responseJSON['value']);
-              $('#modifier_prof').removeAttr('class').addClass('form_retirer');
+              $('#modifier_prof').attr('class','form_retirer');
               action_prof = 'retirer';
             }
           }
@@ -250,7 +250,7 @@ $(document).ready
       if(readytogo)
       {
         $("#actualiser").prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
         $('#zone_eval_choix').hide();
       }
       return readytogo;
@@ -260,7 +260,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $("#actualiser").prop('disabled',false);
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -270,11 +270,11 @@ $(document).ready
       $("#actualiser").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        $('#ajax_msg').attr('class','valide').html("Demande réalisée !");
         $('#table_action tbody').html( responseJSON['html'] );
         tableau_maj_action();
         if(aff_nom_eleve)
@@ -422,7 +422,7 @@ $(document).ready
               {
                 $('#titre_saisir').html('Devoir du ' + texte_date + ' par ' + texte_prof + ' [ ' + texte_info + ' ]');
                 $('#report_date').html(tab_dates[devoir_id]);
-                $('#fermer_zone_saisir').removeAttr('class').addClass("retourner").html('Retour');
+                $('#fermer_zone_saisir').attr('class',"retourner").html('Retour');
                 $('#msg_saisir').removeAttr('class').html("");
                 $('#f_devoir').val(devoir_id);
                 $('#table_saisir tbody').html(responseJSON['lignes']);
@@ -452,7 +452,7 @@ $(document).ready
       function()
       {
         modification = true;
-        $('#fermer_zone_saisir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+        $('#fermer_zone_saisir').attr('class',"annuler").html('Annuler / Retour');
         $('#msg_saisir').removeAttr('class').html("");
       }
     );
@@ -462,7 +462,7 @@ $(document).ready
       function()
       {
         modification = true;
-        $('#fermer_zone_saisir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+        $('#fermer_zone_saisir').attr('class',"annuler").html('Annuler / Retour');
         $('#msg_saisir').removeAttr('class').html("");
       }
     );
@@ -502,12 +502,12 @@ $(document).ready
       {
         if(modification==false)
         {
-          $('#msg_saisir').removeAttr('class').addClass('alerte').html("Aucune modification effectuée !");
+          $('#msg_saisir').attr('class','alerte').html("Aucune modification effectuée !");
         }
         else
         {
           $('#zone_eval_saisir button').prop('disabled',true);
-          $('#msg_saisir').removeAttr('class').addClass('loader').html("En cours&hellip;");
+          $('#msg_saisir').attr('class','loader').html("En cours&hellip;");
           // On ne risque pas de problème dû à une limitation du module "suhosin" ou à "max input vars" pour un seul élève (nb champs envoyés = nb items + 1).
           $.ajax
           (
@@ -519,7 +519,7 @@ $(document).ready
               error : function(jqXHR, textStatus, errorThrown)
               {
                 $('#zone_eval_saisir button').prop('disabled',false);
-                $('#msg_saisir').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#msg_saisir').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
               success : function(responseJSON)
@@ -528,13 +528,13 @@ $(document).ready
                 $('#zone_eval_saisir button').prop('disabled',false);
                 if(responseJSON['statut']==false)
                 {
-                  $('#msg_saisir').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                  $('#msg_saisir').attr('class','alerte').html(responseJSON['value']);
                 }
                 else
                 {
                   modification = false;
-                  $('#msg_saisir').removeAttr('class').addClass('valide').html("Saisies enregistrées !");
-                  $('#fermer_zone_saisir').removeAttr('class').addClass("retourner").html('Retour');
+                  $('#msg_saisir').attr('class','valide').html("Saisies enregistrées !");
+                  $('#fermer_zone_saisir').attr('class',"retourner").html('Retour');
                 }
               }
             }

@@ -378,7 +378,7 @@ function memoriser_selection_matieres_items(selection_items_nom)
   var $ajax_msg = $('#ajax_msg_memo');
   if(!selection_items_nom)
   {
-    $ajax_msg.removeAttr('class').addClass('erreur').html("nom manquant");
+    $ajax_msg.attr('class','erreur').html("nom manquant");
     $("#f_liste_items_nom").focus();
     return false;
   }
@@ -392,11 +392,11 @@ function memoriser_selection_matieres_items(selection_items_nom)
   );
   if(!compet_liste)
   {
-    $ajax_msg.removeAttr('class').addClass('erreur').html("Aucun item coché !");
+    $ajax_msg.attr('class','erreur').html("Aucun item coché !");
     return false;
   }
   var compet_liste  = compet_liste.substring(0,compet_liste.length-1);
-  $ajax_msg.removeAttr('class').addClass('loader').html("En cours&hellip;");
+  $ajax_msg.attr('class','loader').html("En cours&hellip;");
   $.ajax
   (
     {
@@ -406,19 +406,19 @@ function memoriser_selection_matieres_items(selection_items_nom)
       dataType : 'json',
       error : function(jqXHR, textStatus, errorThrown)
       {
-        $ajax_msg.removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+        $ajax_msg.attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
       },
       success : function(responseJSON)
       {
         initialiser_compteur();
         if(responseJSON['statut']==false)
         {
-          $ajax_msg.removeAttr('class').addClass('alerte').html(responseJSON['value']);
+          $ajax_msg.attr('class','alerte').html(responseJSON['value']);
           $("#f_liste_items_nom").focus();
         }
         else
         {
-          $ajax_msg.removeAttr('class').addClass('valide').html("Sélection mémorisée.");
+          $ajax_msg.attr('class','valide').html("Sélection mémorisée.");
           $("#f_selection_items option:disabled").remove();
           $("#f_selection_items").append(responseJSON['value']);
         }
@@ -626,7 +626,7 @@ function selectionner_profs_option(prof_liste)
 {
   // Sélectionner l'option par défaut pour tous les profs
   $('#zone_profs').find('select').find('option[value=x]').prop('selected',true);
-  $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_x');
+  $('.prof_liste').find('span.select_img').attr('class','select_img droit_x');
   // Décocher les boutons pour reporter une valeur à tous
   $('#zone_profs').find('input[type=radio]').prop('checked',false);
   // Modifier les sélections des profs concernés
@@ -641,7 +641,7 @@ function selectionner_profs_option(prof_liste)
       if($id_select.length)
       {
         $id_select.find('option[value='+val_option+']').prop('selected',true);
-        $id_select.next('span').removeAttr('class').addClass('select_img droit_'+val_option);
+        $id_select.next('span').attr('class','select_img droit_'+val_option);
       }
     }
   }
@@ -670,7 +670,7 @@ function afficher_textarea_reste(textarea_obj,textarea_maxi_length)
   var reste_nb    = textarea_maxi_length - textarea_longueur;
   var reste_str   = (reste_nb>1) ? ' caractères restants' : ' caractère restant' ;
   var reste_class = (reste_nb>9) ? 'valide' : 'alerte' ;
-  $('#'+textarea_obj.attr('id')+'_reste').html(reste_nb+reste_str).removeAttr('class').addClass(reste_class);
+  $('#'+textarea_obj.attr('id')+'_reste').html(reste_nb+reste_str).attr('class',reste_class);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -748,7 +748,7 @@ function initialiser_compteur()
   var date = new Date();
   SetCookie('SACoche-compteur',date.getTime());
   DUREE_AFFICHEE = DUREE_AUTORISEE;
-  $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr('class').addClass("top clock_fixe");
+  $("#clock").html(DUREE_AFFICHEE+' min').parent().attr('class',"top clock_fixe");
 }
 
 /**
@@ -769,7 +769,7 @@ function tester_compteur()
     DUREE_AFFICHEE = Math.max(duree_restante,0);
     if(DUREE_AFFICHEE>5)
     {
-      $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr('class').addClass("top clock_fixe");
+      $("#clock").html(DUREE_AFFICHEE+' min').parent().attr('class',"top clock_fixe");
       if(DUREE_AFFICHEE%10==0)
       {
         // Fonction conserver_session_active() à appeler une fois toutes les 10min ; code placé ici pour éviter un appel après déconnection, et l'application inutile d'un 2nd compteur
@@ -782,7 +782,7 @@ function tester_compteur()
       {
         $('#audio_bip').get(0).play(); // Fonctionne sauf avec IE<9 et Safari sous Windows si Quicktime n'est pas installé.
       }
-      $("#clock").html(DUREE_AFFICHEE+' min').parent().removeAttr('class').addClass("top clock_anim");
+      $("#clock").html(DUREE_AFFICHEE+' min').parent().attr('class',"top clock_anim");
       if(DUREE_AFFICHEE==0)
       {
         fermer_session_en_ajax('inactivite');
@@ -1108,8 +1108,8 @@ if(!accepteCookies)
 
 /**
  * Est appelé ainsi :
- * $(window).bind('beforeunload', confirmOnLeave );
- * $(window).unbind( 'beforeunload', confirmOnLeave );
+ * $(window).on( 'beforeunload', confirmOnLeave );
+ * $(window).off('beforeunload', confirmOnLeave );
  */
 var confirmOnLeave = function() {
   return "ATTENTION : VOUS N'AVEZ PAS ENREGISTRÉ VOTRE TRAVAIL !";
@@ -1141,7 +1141,7 @@ $(document).ready
         var id   = $(this).attr('id').substring(3); // 'to_' + id
         var class_old = $(this).attr('class');
         var class_new = (class_old=='toggle_plus') ? 'toggle_moins' : 'toggle_plus' ;
-        $(this).removeAttr('class').addClass(class_new);
+        $(this).attr('class',class_new);
         $('#'+id).toggle('fast');
         return false;
       }
@@ -1587,7 +1587,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_alerte_calque').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_alerte_calque').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               leave_erreur = true;
             },
             success : function(responseJSON)
@@ -1599,7 +1599,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_alerte_calque').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_alerte_calque').attr('class','alerte').html(responseJSON['value']);
                 leave_erreur = true;
               }
             }
@@ -1795,13 +1795,13 @@ $(document).ready
                       var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
                       if( '.bat.com.exe.php.zip.'.indexOf('.'+fichier_ext+'.') !== -1 )
                       {
-                        $('#ajax_demande_evaluation_document').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
+                        $('#ajax_demande_evaluation_document').attr('class','erreur').html('Extension non autorisée.');
                         return false;
                       }
                       else
                       {
                         $("#bouton_choisir_demande_evaluation_document").prop('disabled',true);
-                        $('#ajax_demande_evaluation_document').removeAttr('class').addClass('loader').html("En cours&hellip;");
+                        $('#ajax_demande_evaluation_document').attr('class','loader').html("En cours&hellip;");
                         formulaire_demande_evaluation.submit();
                       }
                     }
@@ -1821,7 +1821,7 @@ $(document).ready
                 {
                   $('#f_demande_evaluation_document').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
                   $("#bouton_choisir_demande_evaluation_document").prop('disabled',false);
-                  $('#ajax_demande_evaluation_document').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                  $('#ajax_demande_evaluation_document').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 }
                 // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
                 function retour_form_valide_demande_evaluation(responseJSON)
@@ -1830,7 +1830,7 @@ $(document).ready
                   $("#bouton_choisir_demande_evaluation_document").prop('disabled',false);
                   if(responseJSON['statut']==false)
                   {
-                    $('#ajax_demande_evaluation_document').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                    $('#ajax_demande_evaluation_document').attr('class','alerte').html(responseJSON['value']);
                   }
                   else
                   {
@@ -1839,7 +1839,7 @@ $(document).ready
                     var doc_url = responseJSON['url'];
                     var doc_ext = doc_url.split('.').pop().toLowerCase();
                     $('#f_doc_nom').val(doc_nom);
-                    $('#ajax_demande_evaluation_document').removeAttr('class').addClass('valide').html('<a href="'+doc_url+'" target="_blank">'+doc_nom+'</a>');
+                    $('#ajax_demande_evaluation_document').attr('class','valide').html('<a href="'+doc_url+'" target="_blank">'+doc_nom+'</a>');
                   }
                 }
               }
@@ -1876,7 +1876,7 @@ $(document).ready
       {
         $('#f_demande_evaluation_action').val('confirmer_ajout');
         $('#form_demande_evaluation button').prop('disabled',true);
-        $('#ajax_msg_confirmer_demande').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_confirmer_demande').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -1886,14 +1886,14 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_confirmer_demande').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_confirmer_demande').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               $('#form_demande_evaluation button').prop('disabled',false);
             },
             success : function(responseJSON)
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_confirmer_demande').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_confirmer_demande').attr('class','alerte').html(responseJSON['value']);
               }
               else
               {

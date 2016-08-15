@@ -232,13 +232,16 @@ if( ( ($action=='initialiser') && ($BASE>0) && (HEBERGEUR_INSTALLATION=='multi-s
 // Traiter une demande d'identification
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function adresse_redirection_apres_authentification()
+function adresse_redirection_apres_authentification($BASE)
 {
   if( empty($_SESSION['MEMO_GET']) || !isset($_SESSION['MEMO_GET']['page']) )
   {
     $_SESSION['MEMO_GET']['page'] = 'compte_accueil';
   }
-  $tab_get = array();
+  // Le numéro de la base est transmis en GET simplement pour avoir une trace dans les logs "accès www" de l'établissement concerné en cas d'erreur MySQL (dans les logs "erreurs php", où cette info n'apparaît pas...).
+  // Cela demeure peu pratique dans la mesure où il faut d'abord essayer de trouver l'IP correspondante via une recherche sur l'heure (pour faire le lien "erreurs php"->"accès www").
+  // Il y aurait mieux à faire avec $_CONST['POOL'][...]['DEBUG'] à 'file' car cette infos est alors logguée...
+  $tab_get = ($BASE) ? array('log_id='.$BASE) : array() ;
   foreach($_SESSION['MEMO_GET'] as $key => $val)
   {
     $tab_get[] = $key.'='.urlencode($val);
@@ -301,7 +304,7 @@ if($action=='identifier')
   // Conclusion & Retour
   if($auth_SUCCESS===TRUE)
   {
-    Json::end( TRUE , adresse_redirection_apres_authentification() );
+    Json::end( TRUE , adresse_redirection_apres_authentification($BASE) );
   }
   else
   {

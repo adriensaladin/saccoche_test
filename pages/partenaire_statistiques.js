@@ -44,7 +44,7 @@ $(document).ready
 // Lancement de la récupération des stats
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#ajax_msg1').removeAttr('class').addClass('loader').html("Connexion au serveur&hellip;");
+    $('#ajax_msg1').attr('class','loader').html("Connexion au serveur&hellip;");
     $.ajax
     (
       {
@@ -53,18 +53,18 @@ $(document).ready
         dataType : 'json',
         error : function(msg,string)
         {
-          $('#ajax_msg1').removeAttr('class').addClass('alerte').html("Échec de la connexion ! Veuillez recommencer.");
+          $('#ajax_msg1').attr('class','alerte').html("Échec de la connexion ! Veuillez recommencer.");
         },
         success : function(responseJSON)
         {
           if(responseJSON['statut']==false)
           {
-            $('#ajax_msg1').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+            $('#ajax_msg1').attr('class','alerte').html(responseJSON['value']);
           }
           else
           {
             var max = responseJSON['value'];
-            $('#ajax_msg1').removeAttr('class').addClass('loader').html('Récolte des informations en cours : étape 1 sur ' + max + '...');
+            $('#ajax_msg1').attr('class','loader').html('Récolte des informations en cours : étape 1 sur ' + max + '...');
             $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
             $('#ajax_num').html(1);
             $('#ajax_max').html(max);
@@ -95,7 +95,7 @@ $(document).ready
           dataType : 'json',
           error : function(msg,string)
           {
-            $('#ajax_msg1').removeAttr('class').addClass('alerte').html('Échec lors de la connexion au serveur !');
+            $('#ajax_msg1').attr('class','alerte').html('Échec lors de la connexion au serveur !');
             $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
           },
           success : function(responseJSON)
@@ -103,7 +103,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg1').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg1').attr('class','alerte').html(responseJSON['value']);
               $('#ajax_msg2').html('<a id="a_reprise" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a>');
             }
             else
@@ -113,7 +113,7 @@ $(document).ready
               if(num > max)  // Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
               {
                 $('#table_action tfoot').append(ligne);
-                $('#ajax_msg1').removeAttr('class').addClass('valide').html('Calcul des statistiques terminé.');
+                $('#ajax_msg1').attr('class','valide').html('Calcul des statistiques terminé.');
                 $('#ajax_msg2').html('');
                 tableau_maj();
                 $('#structures').show('fast');
@@ -127,7 +127,7 @@ $(document).ready
                   $('#table_action tbody').append(ligne);
                 }
                 $('#ajax_num').html(num);
-                $('#ajax_msg1').removeAttr('class').addClass('loader').html('Récolte des informations en cours : étape ' + num + ' sur ' + max + '...');
+                $('#ajax_msg1').attr('class','loader').html('Récolte des informations en cours : étape ' + num + ' sur ' + max + '...');
                 $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
                 rechercher();
               }
@@ -145,7 +145,7 @@ $(document).ready
       {
         num = $('#ajax_num').html();
         max = $('#ajax_max').html();
-        $('#ajax_msg1').removeAttr('class').addClass('loader').html('Récolte des informations en cours : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg1').attr('class','loader').html('Récolte des informations en cours : étape ' + num + ' sur ' + max + '...');
         $('#ajax_msg2').html('Ne pas interrompre la procédure avant la fin du traitement !');
         rechercher();
       }

@@ -30,13 +30,13 @@ $TITRE = html(Lang::_("Importer des fichiers d'utilisateurs"));
 ?>
 
 <?php
-$alerte = DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annees_scolaires_precedentes() ? '<p class="danger b">Année scolaire précédente non nettoyée&nbsp;! Au changement d\'année scolaire il faut <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>' : '' ;
-$alerte.= DB_STRUCTURE_ADMINISTRATEUR::DB_compter_niveaux_etabl( FALSE /*with_specifiques*/ ) ? '' : '<p class="danger b">Aucun niveau de classe choisi pour l\'établissement&nbsp;! Commencez par <a href="./index.php?page=administrateur_etabl_niveau">indiquer les niveaux de classe de votre établissement</a>.</p>' ;
+$alerte = (!empty($_SESSION['NB_DEVOIRS_ANTERIEURS'])) ? '<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p>' : '' ;
+$alerte.= DB_STRUCTURE_ADMINISTRATEUR::DB_compter_niveaux_etabl( FALSE /*with_specifiques*/ ) ? '' : '<p class="danger b">Aucun niveau de classe choisi pour l\'établissement&nbsp;!<br />Commencez par <a href="./index.php?page=administrateur_etabl_niveau">indiquer les niveaux de classe de votre établissement</a>.</p>' ;
 
 $test_UAI = ($_SESSION['WEBMESTRE_UAI']) ? 'oui' : 'non' ;
 
-$annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
-$nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire;
+$annee_siecle = To::annee_scolaire('siecle');
+$nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_siecle;
 
 // Javascript
 $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');

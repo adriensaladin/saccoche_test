@@ -30,6 +30,20 @@ $(document).ready
   function()
   {
 
+    /**
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     * Pour les vignettes du livret
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     */
+
+    // On utilise "data-titre" au lieu de "title" d'une part parce qu'on n'en a pas besoin dans l'infobulle et d'autre part parce que sinon à cause de l'infobulle fancybox ne récupère pas le titre de la vignette cliquée.
+    $(".fancybox").fancybox({
+      type : 'iframe',
+      beforeLoad: function() {
+        this.title = $(this.element).attr('data-titre');
+      }
+    });
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher / Masquer le formulaire de jointure aux périodes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,7 +72,7 @@ $(document).ready
       function()
       {
         var groupe_id = $(this).parent().data('id');
-        $(this).parent().next('td').html('<button type="button" class="valider">Valider.</button><label class="alerte">Pensez à enregistrer !</label>');
+        $(this).nextAll('span').html('<button type="button" class="valider">Valider.</button><label class="alerte">Pensez à enregistrer !</label>');
       }
     );
 
@@ -73,15 +87,16 @@ $(document).ready
       function()
       {
         var obj_bouton = $(this);
-        var obj_label  = $(this).next('label');
-        var obj_td     = $(this).parent().prev('td');
+        var obj_label  = obj_bouton.next('label');
+        var obj_span   = obj_bouton.parent();
+        var obj_td     = obj_span.parent();
         var groupe_id  = obj_td.data('id');
-        var f_periode  = obj_td.children('select[name=f_periode]' ).val();
-        var f_jointure = obj_td.children('select[name=f_jointure]').val();
-        var f_cycle    = obj_td.children('select[name=f_cycle]'   ).val();
-        var f_college  = obj_td.children('select[name=f_college]' ).val();
+        var f_periode  = $('#f_periode_' +groupe_id).val();
+        var f_jointure = $('#f_jointure_'+groupe_id).val();
+        var f_cycle    = $('#f_cycle_'   +groupe_id).val();
+        var f_college  = $('#f_college_' +groupe_id).val();
         obj_bouton.prop('disabled',true);
-        obj_label.removeAttr('class').addClass('loader').html("En cours&hellip;");
+        obj_label.attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -92,23 +107,40 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               obj_bouton.prop('disabled',false);
-              obj_label.removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              obj_label.attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
             {
               initialiser_compteur();
-              obj_bouton.prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                obj_label.removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                obj_bouton.prop('disabled',false);
+                obj_label.attr('class','alerte').html(responseJSON['value']);
               }
               else
               {
                 obj_bouton.remove();
-                obj_label.removeAttr('class').addClass('valide').html("Choix enregistrés !").fadeOut( 2000, function() { $(this).remove(); } );
-                var td_class = ( f_periode || f_cycle || f_college ) ? 'bv' : 'bj' ;
-                obj_td.prev('td').removeAttr('class').addClass(td_class);
+                obj_label.attr('class','valide').html("Choix enregistrés !").fadeOut( 2000, function() { obj_label.remove(); } );
+                var td_class = 'bj';
+                var vignettes = '';
+                if(f_periode)
+                {
+                  vignettes += '<a href="'+URL_DIR_PDF+'livret_'+f_periode+'_original.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_periode_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_periode+'"></span></a>';
+                  td_class = 'bv';
+                }
+                if(f_cycle)
+                {
+                  vignettes += '<a href="'+URL_DIR_PDF+'livret_'+f_cycle+'_original.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_cycle_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_cycle+'"></span></a>';
+                  td_class = 'bv';
+                }
+                if(f_college)
+                {
+                  vignettes += '<a href="'+URL_DIR_PDF+'livret_'+f_college+'_original.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_college_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_college+'"></span></a>';
+                  td_class = 'bv';
+                }
+                obj_td.prev('td').attr('class',td_class);
+                obj_td.next('td').html(vignettes);
               }
             }
           }

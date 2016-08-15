@@ -50,7 +50,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+        $('#ajax_msg').attr('class','alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -62,7 +62,7 @@ $(document).ready
       function()
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
         var check_ids = new Array(); $("#table_action input[type=checkbox]:checked").each(function(){check_ids.push($(this).val());});
         $.ajax
         (
@@ -74,7 +74,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_valider').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -83,11 +83,11 @@ $(document).ready
               $('#bouton_valider').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande enregistrée !");
+                $('#ajax_msg').attr('class','valide').html("Demande enregistrée !");
               }
               else
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
               }
             }
           }

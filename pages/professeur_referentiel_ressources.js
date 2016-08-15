@@ -161,12 +161,12 @@ $(document).ready
         item_lien = $('#n3_'+item_id).children('input').val();
         if(!item_lien)
         {
-          $('#n3_'+item_id).children('label').removeAttr('class').addClass('erreur').html("Adresse absente !");
+          $('#n3_'+item_id).children('label').attr('class','erreur').html("Adresse absente !");
           return false;
         }
         if(!testURL(item_lien))
         {
-          $('#n3_'+item_id).children('label').removeAttr('class').addClass('erreur').html("Adresse incorrecte !");
+          $('#n3_'+item_id).children('label').attr('class','erreur').html("Adresse incorrecte !");
           return false;
         }
         window.open(item_lien);
@@ -183,7 +183,7 @@ $(document).ready
       'input',
       function()
       {
-        $(this).parent().children('label').removeAttr('class').addClass('alerte').html("Penser à valider !");
+        $(this).parent().children('label').attr('class','alerte').html("Penser à valider !");
         return false;
       }
     );
@@ -202,11 +202,11 @@ $(document).ready
         item_lien = $('#n3_'+item_id).children('input').val();
         if(item_lien && !testURL(item_lien))
         {
-          $('#n3_'+item_id).children('label').removeAttr('class').addClass('erreur').html("Adresse incorrecte !");
+          $('#n3_'+item_id).children('label').attr('class','erreur').html("Adresse incorrecte !");
           return false;
         }
         // Envoi des infos en ajax pour le traitement de la demande
-        $('#n3_'+item_id).children('label').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#n3_'+item_id).children('label').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -216,14 +216,14 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#n3_'+item_id).children('label').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#n3_'+item_id).children('label').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
               initialiser_compteur();
               if(responseJSON['statut']==false)
               {
-                $('#n3_'+item_id).children('label').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#n3_'+item_id).children('label').attr('class','alerte').html(responseJSON['value']);
               }
               else
               {
@@ -232,7 +232,7 @@ $(document).ready
                 retour_msg  = (item_lien=='') ? 'Lien retiré.' : 'Lien enregistré.' ;
                 $('#n3_'+item_id).children('img').attr('src','./_img/etat/link_'+lien_image+'.png').attr('title',lien_title);
                 tab_lien[item_id] = (item_lien=='') ? '' : lien_title ;
-                $('#n3_'+item_id).children('label').removeAttr('class').addClass('valide').html(retour_msg);
+                $('#n3_'+item_id).children('label').attr('class','valide').html(retour_msg);
               }
             }
           }
@@ -562,7 +562,7 @@ $(document).ready
       {
         if($('#sortable_v li.i').length)
         {
-          $('#ajax_ressources_msg').removeAttr('class').addClass('erreur').html("La liste de ressources est vide !");
+          $('#ajax_ressources_msg').attr('class','erreur').html("La liste de ressources est vide !");
           return false;
         }
         // Récupérer les éléments
@@ -597,16 +597,16 @@ $(document).ready
         );
         if(modif_en_cours)
         {
-          $('#ajax_ressources_msg').removeAttr('class').addClass('erreur').html("Valider ou annuler d'abord toute modification en cours !");
+          $('#ajax_ressources_msg').attr('class','erreur').html("Valider ou annuler d'abord toute modification en cours !");
           return false;
         }
         if(!nb_ressources)
         {
-          $('#ajax_ressources_msg').removeAttr('class').addClass('erreur').html("Aucun lien trouvé vers une ressource !");
+          $('#ajax_ressources_msg').attr('class','erreur').html("Aucun lien trouvé vers une ressource !");
           return false;
         }
         // appel ajax
-        $('#ajax_ressources_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_ressources_msg').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -616,14 +616,14 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_ressources_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_ressources_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_ressources_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_ressources_msg').attr('class','alerte').html(responseJSON['value']);
                 return false;
               }
               else
@@ -724,23 +724,23 @@ $(document).ready
     {
 
       // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dasn une boucle if{} !
+      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dans une boucle if{} !
       function retour_form_erreur_ressource(jqXHR, textStatus, errorThrown)
       {
         $('#f_ressource').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
         $('#zone_ressources_upload button').prop('disabled',false);
-        $('#ajax_msg_ressource').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+        $('#ajax_msg_ressource').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
       }
 
       // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dasn une boucle if{} !
+      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dans une boucle if{} !
       function retour_form_valide_ressource(responseJSON)
       {
         $('#f_ressource').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
         $('#zone_ressources_upload button').prop('disabled',false);
         if(responseJSON['statut']==false)
         {
-          $('#ajax_msg_ressource').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+          $('#ajax_msg_ressource').attr('class','alerte').html(responseJSON['value']);
         }
         else
         {
@@ -749,8 +749,8 @@ $(document).ready
           var extension   = upload_lien.split('.').pop().toLowerCase();
           $('#ajax_ressources_upload').removeAttr('class').html('');
           $('#afficher_zone_ressources_form').click();
-          $('label[for=lien_url]').removeAttr('class').addClass('valide').html("Upload réussi !");
-          $('label[for=lien_nom]').removeAttr('class').addClass('alerte').html("Validez l'ajout&hellip;");
+          $('label[for=lien_url]').attr('class','valide').html("Upload réussi !");
+          $('label[for=lien_nom]').attr('class','alerte').html("Validez l'ajout&hellip;");
           $('#lien_url').val(upload_lien);
           $('#lien_nom').focus();
           if ( '.doc.docx.odg.odp.ods.odt.ppt.pptx.rtf.sxc.sxd.sxi.sxw.xls.xlsx.'.indexOf('.'+extension+'.') !== -1 )
@@ -798,14 +798,14 @@ $(document).ready
             var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
             if( '.bat.com.exe.php.zip.'.indexOf('.'+fichier_ext+'.') !== -1 )
             {
-              $('#ajax_msg_ressource').removeAttr('class').addClass('erreur').html('Extension non autorisée.');
+              $('#ajax_msg_ressource').attr('class','erreur').html('Extension non autorisée.');
               return false;
             }
             else
             {
               $('#f_ressource_matiere').val(matiere_ref);
               $('#zone_ressources_upload button').prop('disabled',true);
-              $('#ajax_msg_ressource').removeAttr('class').addClass('loader').html("En cours&hellip;");
+              $('#ajax_msg_ressource').attr('class','loader').html("En cours&hellip;");
               formulaire_ressource.submit();
             }
           }
@@ -896,7 +896,7 @@ $(document).ready
         $('#ajax_ressources_upload').removeAttr('class').html('');
         $('#afficher_zone_ressources_form').click();
         $('label[for=lien_url]').removeAttr('class').html("");
-        $('label[for=lien_nom]').removeAttr('class').addClass('alerte').html("Validez l'ajout&hellip;");
+        $('label[for=lien_nom]').attr('class','alerte').html("Validez l'ajout&hellip;");
         $('#lien_url').val(lien_url);
         $('#lien_nom').focus();
       }

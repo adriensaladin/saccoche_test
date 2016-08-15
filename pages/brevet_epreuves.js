@@ -79,7 +79,7 @@ $(document).ready
         $('#sortable_v_non').html(li_non);
         // Afficher la zone associée après avoir chargé son contenu
         $('#titre_ordonner').html( $('#h2_'+serie_ref).html() + ' | ' + $('#h3_'+serie_ref+'_'+epreuve_code).html() );
-        $('#fermer_zone_ordonner').removeAttr('class').addClass("retourner").html('Retour');
+        $('#fermer_zone_ordonner').attr('class',"retourner").html('Retour');
         modification = false;
         $('#sortable_v_oui , #sortable_v_non').sortable( { connectWith:'.connectedSortable' , cursor:'ns-resize' , update:function(event,ui){modif_ordre();} } );
         // Afficher la zone
@@ -91,7 +91,7 @@ $(document).ready
     {
       if(modification==false)
       {
-        $('#fermer_zone_ordonner').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+        $('#fermer_zone_ordonner').attr('class',"annuler").html('Annuler / Retour');
         modification = true;
       }
     }
@@ -138,7 +138,7 @@ $(document).ready
         );
         $('#f_'+serie_ref+'_'+epreuve_code+'_matieres_id').val(tab_matieres_id.join(','));
         $('#f_'+serie_ref+'_'+epreuve_code+'_matieres_text').val(tab_matieres_text.join(' ; '));
-        $('#ajax_msg_'+serie_ref).removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+        $('#ajax_msg_'+serie_ref).attr('class','alerte').html("Pensez à valider vos modifications !");
         $.fancybox.close();
       }
     );
@@ -154,7 +154,7 @@ $(document).ready
       function()
       {
         serie_ref = $(this).parent().parent().attr('id').substring(5); // form_
-        $('#ajax_msg_'+serie_ref).removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+        $('#ajax_msg_'+serie_ref).attr('class','alerte').html("Pensez à valider vos modifications !");
         modification = true;
       }
     );
@@ -182,13 +182,13 @@ $(document).ready
         if(nb_erreurs)
         {
           var s = (nb_erreurs>1) ? 's' : '' ;
-          $('#ajax_msg_'+serie_ref).removeAttr('class').addClass('erreur').html("Référentiel manquant pour "+nb_erreurs+" épreuve"+s+" obligatoire"+s+" !");
+          $('#ajax_msg_'+serie_ref).attr('class','erreur').html("Référentiel manquant pour "+nb_erreurs+" épreuve"+s+" obligatoire"+s+" !");
           return false;
         }
         else
         {
           $('#bouton_valider_'+serie_ref).prop('disabled',true);
-          $('#ajax_msg_'+serie_ref).removeAttr('class').addClass('loader').html("En cours&hellip;");
+          $('#ajax_msg_'+serie_ref).attr('class','loader').html("En cours&hellip;");
           $.ajax
           (
             {
@@ -198,7 +198,7 @@ $(document).ready
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_msg_'+serie_ref).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg_'+serie_ref).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 $('#bouton_valider_'+serie_ref).prop('disabled',false);
                 return false;
               },
@@ -207,11 +207,11 @@ $(document).ready
                 initialiser_compteur();
                 if(responseJSON['statut']==false)
                 {
-                  $('#ajax_msg_'+serie_ref).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                  $('#ajax_msg_'+serie_ref).attr('class','alerte').html(responseJSON['value']);
                 }
                 else
                 {
-                  $('#ajax_msg_'+serie_ref).removeAttr('class').addClass('valide').html("Paramètres enregistrés.");
+                  $('#ajax_msg_'+serie_ref).attr('class','valide').html("Paramètres enregistrés.");
                 }
                 $('#bouton_valider_'+serie_ref).prop('disabled',false);
               }

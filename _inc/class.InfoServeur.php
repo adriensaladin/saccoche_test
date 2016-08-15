@@ -118,6 +118,7 @@ class InfoServeur
       case 'memory_limit'                   : return "Par défaut 128Mo (convient très bien).<br />Doit être plus grand que post_max_size (ci-dessous).<br />Une valeur inférieure à 128Mo peut poser problème (pour générer des bilans PDF en particulier).<br />Mais 64Mo voire 32Mo peuvent aussi convenir, tout dépend de l'usage (nombre d'élèves considérés à la fois, quantité de données&hellip;).";
       case 'post_max_size'                  : return "Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).";
       case 'upload_max_filesize'            : return "Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d'une taille supérieure.";
+      case 'sql_mode'                       : return "Un mode comportant TRADITIONAL ou STRICT_TRANS_TABLES ou STRICT_ALL_TABLES induit un mode SQL strict.";
       case 'max_allowed_packet'             : return "Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.";
       case 'max_user_connections'           : return "Une valeur inférieure à 5 est susceptible, suivant la charge, de poser problème.";
       case 'group_concat_max_len'           : return "Par défaut 1024 octets.<br />Une telle valeur devrait suffire.";
@@ -754,7 +755,7 @@ function getServerProtocole()
       'max_input_time'          => 'max input time',
       'max_input_nesting_level' => 'max input nesting level',
     );
-    return InfoServeur::tableau_deux_colonnes( 'Réglage des limitations PHP' , $tab_objets );
+    return InfoServeur::tableau_deux_colonnes( 'Limitations PHP' , $tab_objets );
   }
 
   public static function tableau_limitations_MySQL()
@@ -764,7 +765,7 @@ function getServerProtocole()
       'max_user_connections' => 'max user connections',
       'group_concat_max_len' => 'group concat max len',
     );
-    return InfoServeur::tableau_deux_colonnes( 'Réglage des limitations MySQL' , $tab_objets );
+    return InfoServeur::tableau_deux_colonnes( 'Limitations MySQL' , $tab_objets );
   }
 
   public static function tableau_configuration_PHP()
@@ -783,6 +784,23 @@ function getServerProtocole()
       'zend_ze1_compatibility_mode' => 'zend.ze1_compatibility_mode',
     );
     return InfoServeur::tableau_deux_colonnes( 'Configuration de PHP' , $tab_objets );
+  }
+
+  public static function tableau_configuration_MySQL()
+  {
+    $tab_tr = array();
+    $tab_tr[] = '<tr><th>Mode SQL <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.InfoServeur::commentaire('sql_mode').'" /></th></tr>';
+    // Déterminer le mode SQL.
+    // @see http://dev.mysql.com/doc/refman/5.7/en/sql-mode.html
+    // @see http://dev.mysql.com/doc/refman/5.7/en/faqs-sql-modes.html
+    $sql_mode = defined('SACOCHE_STRUCTURE_BD_NAME') ? DB_STRUCTURE_COMMUN::DB_recuperer_mode_SQL() : DB_WEBMESTRE_PUBLIC::DB_recuperer_mode_SQL() ;
+    $tab_mode = explode( ',' , $sql_mode );
+    sort($tab_mode);
+    foreach($tab_mode as $mode)
+    {
+      $tab_tr[] = '<tr><td>'.$mode.'</td></tr>';
+    }
+    return'<table class="p"><tbody>'.implode('',$tab_tr).'</tbody></table>';
   }
 
   public static function tableau_verification_variables()

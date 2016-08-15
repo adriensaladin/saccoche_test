@@ -48,7 +48,7 @@ $(document).ready
       palier_id = $("#f_palier").val();
       if(palier_id)
       {
-        $('#ajax_maj_pilier').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_maj_pilier').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -58,7 +58,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_maj_pilier').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_maj_pilier').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -70,7 +70,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_maj_pilier').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_maj_pilier').attr('class','alerte').html(responseJSON['value']);
               }
             }
           }
@@ -99,7 +99,7 @@ $(document).ready
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         if(typeof(groupe_type)=='undefined') {groupe_type = 'Classes';} // Cas d'un P.P.
-        $('#ajax_maj_eleve').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_maj_eleve').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -109,7 +109,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_maj_eleve').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_maj_eleve').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -129,7 +129,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_maj_eleve').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_maj_eleve').attr('class','alerte').html(responseJSON['value']);
               }
             }
           }
@@ -216,7 +216,7 @@ $(document).ready
       if(readytogo)
       {
         $("#Afficher_validation").prop('disabled',true);
-        $('#ajax_msg_choix').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_choix').attr('class','loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -225,7 +225,7 @@ $(document).ready
     function retour_form_erreur0(jqXHR, textStatus, errorThrown)
     {
       $("#Afficher_validation").prop('disabled',false);
-      $('#ajax_msg_choix').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_choix').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -235,7 +235,7 @@ $(document).ready
       $("#Afficher_validation").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_choix').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_choix').attr('class','alerte').html(responseJSON['value']);
       }
       else
       {
@@ -265,7 +265,7 @@ $(document).ready
         $('#report_nom').html( $('#I'+user_id).attr('alt') );
         $('#report_compet').html( $(this).parent().children('th').text().substring(0,12) );
         $('#confirmation').css('opacity',1);
-        $('#fermer_zone_validation').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+        $('#fermer_zone_validation').attr('class',"annuler").html('Annuler / Retour');
         return false;
       }
     );
@@ -298,7 +298,7 @@ $(document).ready
       function()
       {
         $("button").prop('disabled',true);
-        $('#ajax_msg_validation').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_validation').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -309,7 +309,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("button").prop('disabled',false);
-              $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_validation').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -318,12 +318,12 @@ $(document).ready
               $("button").prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_validation').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_validation').attr('class','alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#'+td_id).removeAttr("data-etat").removeAttr('class').addClass("v3");
-                $('#fermer_zone_validation').removeAttr('class').addClass("retourner").html('Retour');
+                $('#'+td_id).removeAttr("data-etat").attr('class',"v3");
+                $('#fermer_zone_validation').attr('class',"retourner").html('Retour');
                 $('#confirmation').css('opacity',0);
                 $('#ajax_msg_validation').removeAttr('class').html("");
               }

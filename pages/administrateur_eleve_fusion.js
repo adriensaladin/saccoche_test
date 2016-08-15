@@ -86,11 +86,11 @@ $(document).ready
         var nom    = $('#nom_'+statut).val();
         if( !nom )
         {
-          $('#ajax_msg_'+statut).removeAttr('class').addClass('erreur').html("Entrer un nom !");
+          $('#ajax_msg_'+statut).attr('class','erreur').html("Entrer un nom !");
           return false;
         }
         $('#bouton_chercher_'+statut).prop('disabled',true);
-        $('#ajax_msg_'+statut).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_'+statut).attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -100,7 +100,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_'+statut).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+statut).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               $('#bouton_chercher_'+statut).prop('disabled',false);
             },
             success : function(responseJSON)
@@ -109,13 +109,13 @@ $(document).ready
               $('#bouton_chercher_'+statut).prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_'+statut).removeAttr('class').addClass('valide').html("");
+                $('#ajax_msg_'+statut).attr('class','valide').html("");
                 $('#id_'+statut).html(responseJSON['value']).show(0);
                 change_etat_bouton_selection();
               }
               else
               {
-                $('#ajax_msg_'+statut).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_'+statut).attr('class','alerte').html(responseJSON['value']);
                 $('#id_'+statut).hide(0);
               }
             }
@@ -136,11 +136,11 @@ $(document).ready
         var id_ancien = $('#id_ancien option:selected').val();
         if( !id_actuel || !id_ancien )
         {
-          $('#ajax_msg_selection').removeAttr('class').addClass('erreur').html("Sélectionner 2 élèves !");
+          $('#ajax_msg_selection').attr('class','erreur').html("Sélectionner 2 élèves !");
           return false;
         }
         $('#bouton_selectionner').prop('disabled',true);
-        $('#ajax_msg_selection').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_selection').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -150,7 +150,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_selection').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_selection').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               $('#bouton_selectionner').prop('disabled',false);
             },
             success : function(responseJSON)
@@ -158,7 +158,7 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_selection').removeAttr('class').addClass('valide').html("Comptes fusionnés.");
+                $('#ajax_msg_selection').attr('class','valide').html("Comptes fusionnés.");
                 $('#nom_actuel').val("");
                 $('#nom_ancien').val("");
                 $('#id_actuel').html('<option value=""></option>').hide(0);;
@@ -169,7 +169,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_selection').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_selection').attr('class','alerte').html(responseJSON['value']);
                 $('#bouton_selectionner').prop('disabled',false);
               }
             }

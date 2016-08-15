@@ -57,7 +57,7 @@ if($import_origine=='sconet')
   }
   else if($import_profil=='professeur')
   {
-    $annee_scolaire  = (date('n')>7) ? date('Y') : date('Y')-1 ;
+    $annee_scolaire = To::annee_scolaire('siecle');
     $nom_fichier_extrait = 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml';
   }
 }

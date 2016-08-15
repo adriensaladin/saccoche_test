@@ -63,6 +63,8 @@ $select_fond         = HtmlForm::afficher_select(Form::$tab_select_fond         
 $select_legende      = HtmlForm::afficher_select(Form::$tab_select_legende      , 'f_legende'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']      /*selection*/ ,              '' /*optgroup*/ );
 ?>
 
+<p class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2016 ; pour le nouveau socle un développement doit être effectué.</p>
+
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_socle">DOC : Synthèse de maîtrise du socle.</a></span></div>
 <hr />
 

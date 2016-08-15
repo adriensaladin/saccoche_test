@@ -1,5 +1,5 @@
 ﻿================================================================================
-Librairie : FPDI                        Version : 1.5.2
+Librairie : FPDI                        Version : 1.6.1
 Librairie : FPDF_TPL                    Version : 1.2.3
 Extension : PDFMerger                   Version : 1.0 alpha
 ================================================================================

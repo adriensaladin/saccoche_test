@@ -122,6 +122,11 @@ Layout::add( 'js_inline_before' , 'var reception_todo        = '.$reception_todo
 Layout::add( 'js_inline_before' , 'var reception_users_texte = "'.$txt_users.'";' );
 Layout::add( 'js_inline_before' , 'var reception_users_liste = "'.implode('_',$tab_users).'";' );
 
+// Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
+if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
+{
+  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
+}
 ?>
 
 <ul class="puce">

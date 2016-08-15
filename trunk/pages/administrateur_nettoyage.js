@@ -66,7 +66,7 @@ $(document).ready
     var prompt_etapes_confirmer_purge_une_etape = {
       etape_1: {
         title   : 'Demande de confirmation',
-        html    : "Attention : les scores déjà saisis ne seront plus modifiables !<br />Attention : les données des bulletins seront effacées !<br />Souhaitez-vous vraiment lancer l'initialisation annuelle des données ?",
+        html    : "Attention : les scores déjà saisis ne seront plus modifiables !<br />Attention : les saisies des bilans officiels seront effacées !<br />Souhaitez-vous vraiment lancer l'initialisation annuelle des données ?",
         buttons : {
           "Non, c'est une erreur !" : false ,
           "Oui, je confirme !" : true
@@ -97,7 +97,7 @@ $(document).ready
       },
       etape_2: {
         title   : 'Demande de confirmation (2/2)',
-        html    : "Attention : dernière demande de confirmation !!!<br />Les scores déjà saisis ne seront plus modifiables !<br />Les données des bulletins seront effacées !<br />Est-ce définitivement votre dernier mot ???",
+        html    : "Attention : dernière demande de confirmation !!!<br />Les scores déjà saisis ne seront plus modifiables !<br />Les saisies des bilans officiels seront effacées !<br />Est-ce définitivement votre dernier mot ???",
         buttons : {
           "Oui, j'insiste !" : true ,
           "Non, surtout pas !" : false
@@ -160,7 +160,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $("button").prop('disabled',false);
-            $('#ajax_msg_'+memo_action).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_'+memo_action).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -168,7 +168,7 @@ $(document).ready
             $("button").prop('disabled',false);
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_'+memo_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_'+memo_action).attr('class','alerte').html(responseJSON['value']);
             }
             else
             {

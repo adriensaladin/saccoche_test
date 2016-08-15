@@ -69,7 +69,7 @@ $(document).ready
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_save').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_save').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               },
               success : function(responseJSON)
               {
@@ -81,7 +81,7 @@ $(document).ready
                 }
                 else
                 {
-                  $('#ajax_save').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                  $('#ajax_save').attr('class','alerte').html(responseJSON['value']);
                 }
               }
             }

@@ -223,7 +223,7 @@ $(document).ready
       var readytogo = validation0.form();
       if(readytogo)
       {
-        $('#ajax_msg_prechoix').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_prechoix').attr('class','loader').html("En cours&hellip;");
         $('#form_gestion').hide();
       }
       return readytogo;
@@ -232,7 +232,7 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur0(jqXHR, textStatus, errorThrown)
     {
-      $('#ajax_msg_prechoix').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_prechoix').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -241,11 +241,11 @@ $(document).ready
       initialiser_compteur();
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_prechoix').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_prechoix').attr('class','alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_prechoix').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        $('#ajax_msg_prechoix').attr('class','valide').html("Demande réalisée !");
         $('#export_fichier').attr('href',responseJSON['file']);
         $('#zone_messages').html(responseJSON['msg']);
         $('#table_action tbody').html(responseJSON['tr']);
@@ -345,7 +345,7 @@ $(document).ready
     function maj_evaluation()
     {
       $("#f_devoir").html('<option value="">&nbsp;</option>');
-      $('#ajax_maj1').removeAttr('class').addClass('loader').html("En cours&hellip;");
+      $('#ajax_maj1').attr('class','loader').html("En cours&hellip;");
       eval_type = $('#f_qui option:selected').val();
       groupe_id = $("#f_groupe_id").val();
       $.ajax
@@ -357,7 +357,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj1').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj1').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -370,7 +370,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj1').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_maj1').attr('class','alerte').html(responseJSON['value']);
             }
           }
         }
@@ -494,7 +494,7 @@ $(document).ready
       {
         var valeur = $(this).val();
         $('#zone_profs').find('select').find('option[value='+valeur+']').prop('selected',true);
-        $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_'+valeur);
+        $('.prof_liste').find('span.select_img').attr('class','select_img droit_'+valeur);
       }
     );
 
@@ -505,7 +505,7 @@ $(document).ready
       function()
       {
         var val_option = $(this).find('option:selected').val();
-        $(this).next('span').removeAttr('class').addClass('select_img droit_'+val_option);
+        $(this).next('span').attr('class','select_img droit_'+val_option);
       }
     );
 
@@ -662,7 +662,7 @@ $(document).ready
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -671,7 +671,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -681,7 +681,7 @@ $(document).ready
       $('button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
       }
       else
       {
@@ -709,7 +709,7 @@ $(document).ready
             function()
             {
               this.checked = false;
-              $(this).parent().parent().removeAttr('class').addClass("new").find('td').eq(9).html('demande non traitée');
+              $(this).parent().parent().attr('class',"new").find('td').eq(9).html('demande non traitée');
             }
           );
           tableau_maj(); // sinon, un clic ultérieur pour retrier par statut ne fonctionne pas
@@ -732,7 +732,7 @@ $(document).ready
           $('#bilan_lien').attr('href','./index.php?page=evaluation&section=gestion_'+section+'&devoir_id='+responseJSON['devoir_id']+'&groupe_type='+responseJSON['groupe_type']+'&groupe_id='+responseJSON['groupe_id']);
           $('#bilan').show();
         }
-        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
       }
     }
 
@@ -749,18 +749,18 @@ $(document).ready
       $('#ids').val(tab_ids);
       if(!tab_ids.length)
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('erreur').html("Cocher au moins une demande !");
+        $('#ajax_msg_gestion').attr('class','erreur').html("Cocher au moins une demande !");
         return false;
       }
       else if(typeof(valeur)=='undefined')	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
       {
-        $('#ajax_msg_gestion').removeAttr('class').addClass('erreur').html("Choisir une note !");
+        $('#ajax_msg_gestion').attr('class','erreur').html("Choisir une note !");
         return false;
       }
       else
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
         enregistrer_saisie( tab_ids , valeur , devoir_id , groupe_id );
       }
     }
@@ -782,7 +782,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('button').prop('disabled',false);
-            $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -804,7 +804,7 @@ $(document).ready
             else
             {
               $('button').prop('disabled',false);
-              $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
             }
           }
         }
@@ -823,7 +823,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('button').prop('disabled',false);
-            $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -831,7 +831,7 @@ $(document).ready
             $('button').prop('disabled',false);
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
             }
             else
             {
@@ -842,7 +842,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
+              $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
               $('#bilan_lien').attr('href','./index.php?page=evaluation&section=gestion_selection&devoir_id='+devoir_id+'&groupe_type='+'E'+'&groupe_id='+groupe_id);
               $('#bilan').show();
             }

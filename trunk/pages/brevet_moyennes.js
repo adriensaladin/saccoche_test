@@ -53,7 +53,7 @@ $(document).ready
       memo_eleve_id  = tab_id[1];
       memo_serie_ref = tab_id[2];
       $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',true);
-      $('#ajax_msg').removeAttr('class').addClass('loader').html('En cours&hellip;');
+      $('#ajax_msg').attr('class','loader').html('En cours&hellip;');
       $.ajax
       (
         {
@@ -65,7 +65,7 @@ $(document).ready
           {
             $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',false);
             $('#valider_notes').prop('disabled',true);
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -75,7 +75,7 @@ $(document).ready
             if(responseJSON['statut']==false)
             {
               $('#valider_notes').prop('disabled',true);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
               return false;
             }
             else
@@ -229,7 +229,7 @@ $(document).ready
       'select',
       function()
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+        $('#ajax_msg').attr('class','alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -244,7 +244,7 @@ $(document).ready
       function()
       {
         $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html('En cours&hellip;');
+        $('#ajax_msg').attr('class','loader').html('En cours&hellip;');
         $.ajax
         (
           {
@@ -255,7 +255,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -264,13 +264,13 @@ $(document).ready
               $('#form_choix_eleve button , #form_choix_eleve select').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
-                $('#ajax_msg').removeAttr('class').addClass('valide').html('Notes enregistrées.');
-                $('#m_'+memo_eleve_info).children('label').removeAttr('class').addClass('valide');
+                $('#ajax_msg').attr('class','valide').html('Notes enregistrées.');
+                $('#m_'+memo_eleve_info).children('label').attr('class','valide');
                 var numero_ligne = 0;
                 $('#zone_resultat_eleve table tbody tr').each
                 (

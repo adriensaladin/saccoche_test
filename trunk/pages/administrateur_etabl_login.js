@@ -33,6 +33,19 @@ $(document).ready
     var profil = '';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Éviter une soumission d'un formulaire sans contrôle (appui sur la touche "entrée")
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('form').submit
+    (
+      function()
+      {
+        $(this).find('button').click();
+        return false;
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alerter sur la nécessité de valider
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -41,7 +54,7 @@ $(document).ready
       function()
       {
         profil = $(this).attr('id').substr(8); // f_login_XXX & f_birth_ELV
-        $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Pensez à valider !");
+        $('#ajax_msg_'+profil).attr('class','alerte').html("Pensez à valider !");
       }
     );
 
@@ -50,7 +63,7 @@ $(document).ready
       function()
       {
         profil = $(this).attr('id').substr(6); // f_mdp_XXX
-        $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Pensez à valider !");
+        $('#ajax_msg_'+profil).attr('class','alerte').html("Pensez à valider !");
       }
     );
 
@@ -82,11 +95,11 @@ $(document).ready
         var birth = ( (profil=='ELV') && ($('#f_birth_'+profil).is(':checked')) ) ? 1 : 0 ;
         if( test_format_login(login)==false )
         {
-          $('#ajax_msg_'+profil).removeAttr('class').addClass('erreur').html("Modèle de nom d'utilisateur incorrect !");
+          $('#ajax_msg_'+profil).attr('class','erreur').html("Modèle de nom d'utilisateur incorrect !");
           return false;
         }
         $('#bouton_valider_'+profil).prop('disabled',true);
-        $('#ajax_msg_'+profil).removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_'+profil).attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -97,7 +110,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_valider_'+profil).prop('disabled',false);
-              $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+profil).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -113,11 +126,11 @@ $(document).ready
                   $('select option[value='+mdp+']').prop('selected',true);
                   $('label[id^=ajax_msg_]').removeAttr('class').html("");
                 }
-                $('#ajax_msg_'+profil).removeAttr('class').addClass('valide').html("Valeurs enregistrées !");
+                $('#ajax_msg_'+profil).attr('class','valide').html("Valeurs enregistrées !");
               }
               else
               {
-                $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_'+profil).attr('class','alerte').html(responseJSON['value']);
               }
             }
           }

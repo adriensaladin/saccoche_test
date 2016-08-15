@@ -61,7 +61,7 @@ $(document).ready
       'select, input',
       function()
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos choix !");
+        $('#ajax_msg').attr('class','alerte').html("Pensez à valider vos choix !");
       }
     );
 
@@ -76,7 +76,7 @@ $(document).ready
         var action = $(this).attr('id');
         if( !$("#f_prof input:checked").length || !$("#f_matiere input:checked").length )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez dans les deux listes !");
+          $('#ajax_msg').attr('class','erreur').html("Sélectionnez dans les deux listes !");
           return false;
         }
         // On récupère les id des profs et des matières concernés
@@ -98,12 +98,12 @@ $(document).ready
         }
         if(!tab_modifs.length)
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Aucune nouveauté détectée !");
+          $('#ajax_msg').attr('class','erreur').html("Aucune nouveauté détectée !");
           return false;
         }
         // On envoie les changements
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -114,7 +114,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -123,11 +123,11 @@ $(document).ready
               $('#form_select button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+                $('#ajax_msg').attr('class','valide').html("Demande réalisée !");
                 maj_tableaux(action,tab_modifs);
               }
             }
@@ -203,7 +203,7 @@ $(document).ready
         var class_old  = (action=='ajouter_coord') ? 'off' : 'on' ;
         var class_new  = (action=='ajouter_coord') ? 'on' : 'off' ;
         var js_val     = (action=='ajouter_pp') ? 2 : 1 ;
-        obj_bouton.prop('disabled',true).parent().removeAttr('class').addClass('load');
+        obj_bouton.prop('disabled',true).parent().attr('class','load');
         $.ajax
         (
           {
@@ -213,7 +213,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              obj_bouton.prop('disabled',false).prop('checked',check_old).parent().removeAttr('class').addClass(class_old);
+              obj_bouton.prop('disabled',false).prop('checked',check_old).parent().attr('class',class_old);
               $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
               return false;
             },
@@ -222,14 +222,14 @@ $(document).ready
               if(responseJSON['statut']==false)
               {
                 $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
-                obj_bouton.prop('disabled',false).prop('checked',check_old).parent().removeAttr('class').addClass(class_old);
+                obj_bouton.prop('disabled',false).prop('checked',check_old).parent().attr('class',class_old);
               }
               else
               {
-                obj_bouton.prop('disabled',false).parent().removeAttr('class').addClass(class_new);
+                obj_bouton.prop('disabled',false).parent().attr('class',class_new);
                 // MAJ tableaux bilans et javascript
                 var id_autre = (tab_id[0]=='mp') ? prof_id+'pm'+matiere_id : matiere_id+'mp'+prof_id ;
-                $('#'+id_autre).prop('checked',check_new).parent().removeAttr('class').addClass(class_new);
+                $('#'+id_autre).prop('checked',check_new).parent().attr('class',class_new);
                 tab_join[matiere_id][prof_id] = js_val;
               }
             }

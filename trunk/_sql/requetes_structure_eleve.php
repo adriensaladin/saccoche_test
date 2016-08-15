@@ -313,7 +313,7 @@ public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
-  $DB_SQL.= 'GROUP BY sacoche_referentiel_item.item_id ';
+  $DB_SQL.= 'GROUP BY sacoche_jointure_devoir_item.item_id ';
   $DB_SQL.= 'ORDER BY jointure_ordre ASC, matiere_ref ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array(':devoir_id'=>$devoir_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR , TRUE);

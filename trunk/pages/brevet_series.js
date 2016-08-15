@@ -40,7 +40,7 @@ $(document).ready
       'select, input',
       function()
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
+        $('#ajax_msg').attr('class','alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -57,19 +57,19 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
             initialiser_compteur();
             if(responseJSON['statut']==true)
             {
-              $('#ajax_msg').removeAttr('class').addClass('valide').html("Affichage actualisé !");
+              $('#ajax_msg').attr('class','valide').html("Affichage actualisé !");
               $('#f_eleve').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
             }
           }
         }
@@ -92,7 +92,7 @@ $(document).ready
           groupe_type = groupe_val.substring(0,1);
           groupe_id   = groupe_val.substring(1);
         }
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type);
       }
       else
@@ -117,11 +117,11 @@ $(document).ready
         var f_serie = $('#f_serie option:selected').val();
         if( !$("#f_eleve input:checked").length || !f_serie )
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez dans les deux listes !");
+          $('#ajax_msg').attr('class','erreur').html("Sélectionnez dans les deux listes !");
           return false;
         }
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
         var tab_eleve = new Array();
         $("#f_eleve input:checked").each
@@ -141,7 +141,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_select button').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -150,11 +150,11 @@ $(document).ready
               $('#form_select button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
+                $('#ajax_msg').attr('class','valide').html("Demande réalisée !");
                 $('#bilan').html(responseJSON['value']);
               }
             }
@@ -175,7 +175,7 @@ $(document).ready
         dataType : 'json',
         error : function(jqXHR, textStatus, errorThrown)
         {
-          $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+          $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           return false;
         },
         success : function(responseJSON)
@@ -183,7 +183,7 @@ $(document).ready
           initialiser_compteur();
           if(responseJSON['statut']==false)
           {
-            $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+            $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
           }
           else
           {

@@ -1,5 +1,5 @@
 ================================================================================
-Librairie : FirePHPCore                 Version : 0.3.2
+Librairie : FirePHPCore                 Version : 0.4.0
 ================================================================================
 
 FirePHPCore (http://www.firephp.org/HQ/Install.htm) est une classe PHP servant d'outil de débogage 

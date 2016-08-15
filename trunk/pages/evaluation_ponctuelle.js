@@ -60,7 +60,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_matiere').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj_matiere').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -73,7 +73,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj_matiere').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_maj_matiere').attr('class','alerte').html(responseJSON['value']);
             }
           }
         }
@@ -89,7 +89,7 @@ $(document).ready
         var matiere_val = $("#f_matiere").val();
         if(matiere_val)
         {
-          $('#ajax_maj_matiere').removeAttr('class').addClass('loader').html("En cours&hellip;");
+          $('#ajax_maj_matiere').attr('class','loader').html("En cours&hellip;");
           maj_niveau(matiere_val);
         }
         else
@@ -115,7 +115,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_niveau').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj_niveau').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -128,7 +128,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj_niveau').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_maj_niveau').attr('class','alerte').html(responseJSON['value']);
             }
           }
         }
@@ -145,7 +145,7 @@ $(document).ready
         var niveau_val = $("#f_niveau").val();
         if(matiere_val && niveau_val)
         {
-          $('#ajax_maj_niveau').removeAttr('class').addClass('loader').html("En cours&hellip;");
+          $('#ajax_maj_niveau').attr('class','loader').html("En cours&hellip;");
           maj_item(matiere_val,niveau_val);
         }
         else
@@ -171,7 +171,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_groupe').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj_groupe').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -184,7 +184,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj_groupe').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+              $('#ajax_maj_groupe').attr('class','alerte').html(responseJSON['value']);
             }
           }
         }
@@ -201,7 +201,7 @@ $(document).ready
         if(groupe_id)
         {
           groupe_type = $("#f_classe option:selected").parent().attr('label');
-          $('#ajax_maj_groupe').removeAttr('class').addClass('loader').html("En cours&hellip;");
+          $('#ajax_maj_groupe').attr('class','loader').html("En cours&hellip;");
           maj_eleve(groupe_id,groupe_type);
         }
         else
@@ -262,17 +262,17 @@ $(document).ready
         valeur = $('#zone_validation input[name=f_note]:checked').val();
         if(typeof(valeur)=='undefined')	// normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
         {
-          $('#ajax_msg_enregistrement').removeAttr('class').addClass('erreur').html("Choisir une note !");
+          $('#ajax_msg_enregistrement').attr('class','erreur').html("Choisir une note !");
           return false;
         }
         if( !$('#box_autodescription').is(':checked') && !$('#f_description').val() )
         {
-          $('#ajax_msg_enregistrement').removeAttr('class').addClass('erreur').html("Choisir un intitulé ou cocher la case !");
+          $('#ajax_msg_enregistrement').attr('class','erreur').html("Choisir un intitulé ou cocher la case !");
           $('#f_description').focus();
           return false;
         }
         $('#form_select button').prop('disabled',true);
-        $('#ajax_msg_enregistrement').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg_enregistrement').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -283,7 +283,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#form_select button').prop('disabled',false);
-              $('#ajax_msg_enregistrement').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_enregistrement').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -292,7 +292,7 @@ $(document).ready
               $('#form_select button').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_enregistrement').removeAttr('class').addClass('valide').html("Note enregistrée !");
+                $('#ajax_msg_enregistrement').attr('class','valide').html("Note enregistrée !");
                 $("#f_devoir").val(responseJSON['devoir_id']);
                 $('#f_groupe').val(responseJSON['groupe_id']);
                 $('#bilan_lien').attr('href','./index.php?page=evaluation&section=gestion_selection&devoir_id='+responseJSON['devoir_id']+'&groupe_type='+'E'+'&groupe_id='+responseJSON['groupe_id']);
@@ -300,7 +300,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_enregistrement').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg_enregistrement').attr('class','alerte').html(responseJSON['value']);
               }
             }
           }

@@ -78,12 +78,12 @@ if($action=='nettoyer')
 
 if($action=='purger')
 {
-
   // Bloquer l'application
   LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Purge annuelle de la base en cours.');
   // Supprimer tous les devoirs associés aux classes, mais pas les saisies associées
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_devoirs_sans_saisies();
   SACocheLog::ajouter('Suppression de tous les devoirs sans les saisies associées.');
+  $_SESSION['NB_DEVOIRS_ANTERIEURS'] = 0;
   // Supprimer tous les types de groupes, sauf les classes (donc 'groupe' ; 'besoin' ; 'eval'), ainsi que les jointures avec les périodes.
   $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_groupes_sauf_classes();
   if(!empty($DB_TAB))

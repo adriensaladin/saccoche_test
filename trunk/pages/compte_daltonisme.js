@@ -38,7 +38,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Penser à enregistrer le choix.");
+        $('#ajax_msg').attr('class','alerte').html("Penser à enregistrer le choix.");
       }
     );
 
@@ -99,7 +99,7 @@ $(document).ready
       if(readytogo)
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -108,7 +108,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('#bouton_valider').prop('disabled',false);
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -118,11 +118,11 @@ $(document).ready
       $('#bouton_valider').prop('disabled',false);
       if(responseJSON['statut']==true)
       {
-        $('#ajax_msg').removeAttr('class').addClass('valide').html("Choix mémorisé !");
+        $('#ajax_msg').attr('class','valide').html("Choix mémorisé !");
       }
       else
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
       }
     }
 

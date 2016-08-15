@@ -75,7 +75,7 @@ $(document).ready
     function maj_label_versions()
     {
       var classe = ( $('#ajax_version_installee').text() == $('#ajax_version_disponible').text() ) ? 'valide' : 'alerte' ;
-      $('#ajax_version_installee').removeAttr('class').addClass(classe);
+      $('#ajax_version_installee').attr('class',classe);
     }
 
     maj_label_versions();
@@ -137,7 +137,7 @@ $(document).ready
       if(readytogo)
       {
         $("#bouton_verrouillage").prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -146,7 +146,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $("#bouton_verrouillage").prop('disabled',false);
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -162,7 +162,7 @@ $(document).ready
       }
       else
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
       }
     }
 
@@ -179,7 +179,7 @@ $(document).ready
       {
         var version = etape_info['version'];
         var fichier = etape_info['fichier'];
-        $('#ajax_maj').removeAttr('class').addClass('valide').html('Mise à jour terminée !');
+        $('#ajax_maj').attr('class','valide').html('Mise à jour terminée !');
         $('#ajax_version_installee').html(version);
         maj_label_versions();
         $('#bouton_maj').prop('disabled',false);
@@ -189,7 +189,7 @@ $(document).ready
       }
       else
       {
-        $('#ajax_maj').removeAttr('class').addClass('loader').html('Etape '+etape_numero+' - '+etape_info['value']);
+        $('#ajax_maj').attr('class','loader').html('Etape '+etape_numero+' - '+etape_info['value']);
         $.ajax
         (
           {
@@ -200,7 +200,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_maj').prop('disabled',false);
-              $('#ajax_maj').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_maj').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -208,7 +208,7 @@ $(document).ready
               if(responseJSON['statut']==false)
               {
                 $('#bouton_maj').prop('disabled',false);
-                $('#ajax_maj').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_maj').attr('class','alerte').html(responseJSON['value']);
                 return false;
               }
               else
@@ -228,7 +228,7 @@ $(document).ready
         etape_numero = 0 ;
         if( $('#ajax_version_installee').text() > $('#ajax_version_disponible').text() )
         {
-          $('#ajax_maj').removeAttr('class').addClass('erreur').html("Version installée postérieure à la version disponible !");
+          $('#ajax_maj').attr('class','erreur').html("Version installée postérieure à la version disponible !");
           return false;
         }
         $('#bouton_maj').prop('disabled',true);
@@ -245,13 +245,13 @@ $(document).ready
       etape_numero++;
       if(etape_numero==6)
       {
-        $('#ajax_verif_file_appli').removeAttr('class').addClass('valide').html('Vérification terminée !');
+        $('#ajax_verif_file_appli').attr('class','valide').html('Vérification terminée !');
         $('#bouton_verif_file_appli').prop('disabled',false);
         $.fancybox( { 'href':etape_info , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
         initialiser_compteur();
         return false;
       }
-      $('#ajax_verif_file_appli').removeAttr('class').addClass('loader').html('Etape '+etape_numero+' - '+etape_info);
+      $('#ajax_verif_file_appli').attr('class','loader').html('Etape '+etape_numero+' - '+etape_info);
       $.ajax
       (
         {
@@ -262,7 +262,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#bouton_verif_file_appli').prop('disabled',false);
-            $('#ajax_verif_file_appli').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_verif_file_appli').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -270,7 +270,7 @@ $(document).ready
             if(responseJSON['statut']==false)
             {
               $('#bouton_verif_file_appli').prop('disabled',false);
-              $('#ajax_verif_file_appli').removeAttr('class').addClass('alerte').html(tab_infos[0]);
+              $('#ajax_verif_file_appli').attr('class','alerte').html(tab_infos[0]);
               return false;
             }
             else
@@ -301,7 +301,7 @@ $(document).ready
       function()
       {
         $('#bouton_verif_dir_etabl').prop('disabled',true);
-        $('#ajax_verif_dir_etabl').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_verif_dir_etabl').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -312,7 +312,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_verif_dir_etabl').prop('disabled',false);
-              $('#ajax_verif_dir_etabl').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_verif_dir_etabl').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -320,13 +320,13 @@ $(document).ready
               $('#bouton_verif_dir_etabl').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_verif_dir_etabl').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_verif_dir_etabl').attr('class','alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
                 var adresse_rapport = responseJSON['value'];
-                $('#ajax_verif_dir_etabl').removeAttr('class').addClass('valide').html('Vérification terminée !');
+                $('#ajax_verif_dir_etabl').attr('class','valide').html('Vérification terminée !');
                 $.fancybox( { 'href':adresse_rapport , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
                 initialiser_compteur();
               }
@@ -354,26 +354,26 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_bases_etabl').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus)+' <a id="a_reprise" href="#">Reprendre la procédure.</a>');
+            $('#ajax_maj_bases_etabl').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus)+' <a id="a_reprise" href="#">Reprendre la procédure.</a>');
           },
           success : function(responseJSON)
           {
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_maj_bases_etabl').removeAttr('class').addClass('alerte').html(responseJSON['value']+'<a id="a_reprise" href="#">Reprendre la procédure.</a>');
+              $('#ajax_maj_bases_etabl').attr('class','alerte').html(responseJSON['value']+'<a id="a_reprise" href="#">Reprendre la procédure.</a>');
             }
             else if(responseJSON['value']=='continuer')
             {
               step_maj++;
-              $('#ajax_maj_bases_etabl').removeAttr('class').addClass('loader').html('Mise à jour en cours : étape ' + step_maj + '...');
+              $('#ajax_maj_bases_etabl').attr('class','loader').html('Mise à jour en cours : étape ' + step_maj + '...');
               maj_bases_etabl_etape(step_maj);
             }
             else
             {
               var adresse_rapport = responseJSON['value'];
               $.fancybox( { 'href':adresse_rapport , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-              $('#ajax_maj_bases_etabl').removeAttr('class').addClass('valide').html('Mise à jour des bases terminée.');
+              $('#ajax_maj_bases_etabl').attr('class','valide').html('Mise à jour des bases terminée.');
               $('#bouton_maj_bases_etabl').prop('disabled',false);
             }
           }
@@ -387,7 +387,7 @@ $(document).ready
       {
         $('#bouton_maj_bases_etabl').prop('disabled',true);
         step_maj = 1;
-        $('#ajax_maj_bases_etabl').removeAttr('class').addClass('loader').html('Mise à jour en cours : initialisation...');
+        $('#ajax_maj_bases_etabl').attr('class','loader').html('Mise à jour en cours : initialisation...');
         maj_bases_etabl_etape(step_maj);
       }
     );
@@ -420,26 +420,26 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_clean_file_temp').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus)+' <a id="a_reprise" href="#">Reprendre la procédure.</a>');
+            $('#ajax_clean_file_temp').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus)+' <a id="a_reprise" href="#">Reprendre la procédure.</a>');
           },
           success : function(responseJSON)
           {
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_clean_file_temp').removeAttr('class').addClass('alerte').html(responseJSON['value']+'<a id="a_reprise" href="#">Reprendre la procédure.</a>');
+              $('#ajax_clean_file_temp').attr('class','alerte').html(responseJSON['value']+'<a id="a_reprise" href="#">Reprendre la procédure.</a>');
             }
             else if(responseJSON['value']=='continuer')
             {
               step_clean++;
-              $('#ajax_clean_file_temp').removeAttr('class').addClass('loader').html('Nettoyage en cours : étape ' + step_clean + '...');
+              $('#ajax_clean_file_temp').attr('class','loader').html('Nettoyage en cours : étape ' + step_clean + '...');
               clean_file_temp_etape(step_clean);
             }
             else
             {
               var adresse_rapport = responseJSON['value'];
               $.fancybox( { 'href':adresse_rapport , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
-              $('#ajax_clean_file_temp').removeAttr('class').addClass('valide').html('Nettoyage des fichiers terminé.');
+              $('#ajax_clean_file_temp').attr('class','valide').html('Nettoyage des fichiers terminé.');
               $('#bouton_clean_file_temp').prop('disabled',false);
             }
           }
@@ -453,7 +453,7 @@ $(document).ready
       {
         $('#bouton_clean_file_temp').prop('disabled',true);
         step_clean = 1;
-        $('#ajax_clean_file_temp').removeAttr('class').addClass('loader').html('Nettoyage en cours : initialisation...');
+        $('#ajax_clean_file_temp').attr('class','loader').html('Nettoyage en cours : initialisation...');
         clean_file_temp_etape(step_clean);
       }
     );

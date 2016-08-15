@@ -84,11 +84,11 @@ $(document).ready
         var f_eleve = new Array(); $("#table_accueil input:enabled:checked").each(function(){f_eleve.push($(this).val());});
         if(!f_eleve.length)
         {
-          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez au moins un élève !");
+          $('#ajax_msg').attr('class','erreur').html("Sélectionnez au moins un élève !");
           return false;
         }
         $('#export_notanet').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html('En cours&hellip;');
+        $('#ajax_msg').attr('class','loader').html('En cours&hellip;');
         $.ajax
         (
           {
@@ -99,7 +99,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#export_notanet').prop('disabled',false);
-              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -108,12 +108,12 @@ $(document).ready
               $('#export_notanet').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
-                $('#ajax_msg').removeAttr('class').addClass('valide').html('Fichier généré.');
+                $('#ajax_msg').attr('class','valide').html('Fichier généré.');
                 $('#lien_notanet').attr('href','./force_download.php?fichier='+responseJSON['value']);
                 $.fancybox( { 'href':'#ajax_info' , onStart:function(){$('#ajax_info').css("display","block");} , onClosed:function(){$('#ajax_info').css("display","none");} , 'minWidth':600 , 'centerOnScroll':true } );
               }

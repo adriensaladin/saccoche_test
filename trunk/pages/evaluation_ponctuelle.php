@@ -42,9 +42,16 @@ foreach($tab_notes as $note)
   $tab_radio_boutons[] = '<label for="note_'.$note.'"><span class="td"><input type="radio" id="note_'.$note.'" name="f_note" value="'.$note.'"> <img alt="'.$note.'" src="'.Html::note_src($note).'" /></span></label>';
 }
 $radio_boutons = implode(' ',$tab_radio_boutons);
+
+// Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
+if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
+{
+  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
+}
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_ponctuelles">DOC : Évaluer un élève à la volée.</a></span></div>
+
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>

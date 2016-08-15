@@ -76,6 +76,18 @@ public static function DB_recuperer_version_MySQL()
 }
 
 /**
+ * Récupérer le mode SQL
+ *
+ * @param void
+ * @return string
+ */
+public static function DB_recuperer_mode_SQL()
+{
+  $DB_SQL = 'SELECT @@sql_mode';
+  return DB::queryOne(SACOCHE_WEBMESTRE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * Récupérer l'identifiant d'une base d'établissement à partir du numéro UAI d'une structure (mode multi-structures)
  *
  * @param string uai

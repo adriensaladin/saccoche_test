@@ -99,7 +99,7 @@ $(document).ready
       palier_id = $("#f_palier").val();
       if(palier_id)
       {
-        $('#ajax_maj_pilier').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_maj_pilier').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -109,7 +109,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_maj_pilier').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_maj_pilier').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -121,7 +121,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_maj_pilier').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_maj_pilier').attr('class','alerte').html(responseJSON['value']);
               }
             }
           }
@@ -150,7 +150,7 @@ $(document).ready
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
         if(typeof(groupe_type)=='undefined') {groupe_type = 'Classes';} // Cas d'un P.P.
-        $('#ajax_maj_eleve').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_maj_eleve').attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -160,7 +160,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_maj_eleve').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_maj_eleve').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -180,7 +180,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_maj_eleve').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+                $('#ajax_maj_eleve').attr('class','alerte').html(responseJSON['value']);
               }
             }
           }
@@ -245,7 +245,7 @@ $(document).ready
           else if(element.attr("type")=="radio") {element.parent().next().after(error);}
           else if(element.attr("type")=="checkbox") {element.parent().parent().next().after(error);}
         }
-        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -285,7 +285,7 @@ $(document).ready
       if(readytogo)
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -295,7 +295,7 @@ $(document).ready
     {
       $('#bouton_valider').prop('disabled',false);
       var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-      $('#ajax_msg').removeAttr('class').addClass('alerte').html(message);
+      $('#ajax_msg').attr('class','alerte').html(message);
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -305,11 +305,11 @@ $(document).ready
       $('#bouton_valider').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
+        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
       }
       else if(responseJSON['direct']==true)
       {
-        $('#ajax_msg').removeAttr('class').addClass('valide').html("Résultat ci-dessous.");
+        $('#ajax_msg').attr('class','valide').html("Résultat ci-dessous.");
         $('#bilan').html(responseJSON['bilan']);
       }
       else if(responseJSON['direct']==false)

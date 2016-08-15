@@ -74,7 +74,7 @@ $(document).ready
     function envoyer_demande_confirmee()
     {
       $('#bouton_valider').prop('disabled',true);
-      $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -85,7 +85,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#bouton_valider').prop('disabled',false);
-            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -93,11 +93,11 @@ $(document).ready
             if(responseJSON['statut']==false)
             {
               $('#bouton_valider').prop('disabled',false);
-              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg').attr('class','valide').html("Inscription supprimée !");
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Inscription supprimée !");
               $('div.jqibox').remove(); // Sinon il y a un conflit d'affichage avec le prompt précédent
               $.prompt(
                 "Toutes les données ont été effacées !<br />Déconnexion du compte webmestre...",

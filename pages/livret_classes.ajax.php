@@ -55,7 +55,7 @@ if(!empty($DB_TAB))
 {
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_jointures_old[$DB_ROW['periodicite']] = $DB_ROW['livret_page_ref'];
+    $tab_jointures_old[$DB_ROW['livret_page_periodicite']] = $DB_ROW['livret_page_ref'];
     if($DB_ROW['listing_periodes'])
     {
       $jointure_old = $DB_ROW['listing_periodes']{0};

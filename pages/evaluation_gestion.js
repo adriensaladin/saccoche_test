@@ -520,7 +520,7 @@ $(document).ready
     {
       if(modification==false)
       {
-        $('#fermer_zone_ordonner').attr('class',"annuler").html('Annuler / Retour');
+        $('#fermer_zone_ordonner').removeAttr('class').addClass("annuler").html('Annuler / Retour');
         modification = true;
         $('#ajax_msg_ordonner').removeAttr('class').html("");
       }
@@ -751,7 +751,7 @@ $(document).ready
       {
         var valeur = $(this).val();
         $('#zone_profs').find('select').find('option[value='+valeur+']').prop('selected',true);
-        $('.prof_liste').find('span.select_img').attr('class','select_img droit_'+valeur);
+        $('.prof_liste').find('span.select_img').removeAttr('class').addClass('select_img droit_'+valeur);
       }
     );
 
@@ -766,7 +766,7 @@ $(document).ready
       function()
       {
         var val_option = $(this).find('option:selected').val();
-        $(this).next('span').attr('class','select_img droit_'+val_option);
+        $(this).next('span').removeAttr('class').addClass('select_img droit_'+val_option);
       }
     );
 
@@ -1047,7 +1047,7 @@ $(document).ready
       function()
       {
         $('#zone_imprimer button').prop('disabled',true);
-        $('#ajax_msg_imprimer').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_imprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#zone_imprimer_retour').html("");
         $.ajax
         (
@@ -1059,7 +1059,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_imprimer button').prop('disabled',false);
-              $('#ajax_msg_imprimer').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_imprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -1068,11 +1068,11 @@ $(document).ready
               $('#zone_imprimer button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_imprimer').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_imprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg_imprimer').attr('class','valide').html("Cartouches générés !");
+                $('#ajax_msg_imprimer').removeAttr('class').addClass('valide').html("Cartouches générés !");
                 $('#zone_imprimer_retour').html(responseJSON['value']);
               }
             }
@@ -1090,7 +1090,7 @@ $(document).ready
       function()
       {
         $('#archiver_repart').prop('disabled',true);
-        $('#ajax_msg_archiver_repart').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_archiver_repart').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -1101,7 +1101,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#archiver_repart').prop('disabled',false);
-              $('#ajax_msg_archiver_repart').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_archiver_repart').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -1110,7 +1110,7 @@ $(document).ready
               $('#archiver_repart').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_archiver_repart').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_archiver_repart').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
@@ -1157,7 +1157,7 @@ $(document).ready
       {
         $('#f_archivage_action').val( $(this).attr('id') );
         $('#zone_deport_archivage button').prop('disabled',true);
-        $('#ajax_msg_deport_archivage').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -1168,7 +1168,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_deport_archivage button').prop('disabled',false);
-              $('#ajax_msg_deport_archivage').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -1177,7 +1177,7 @@ $(document).ready
               $('#zone_deport_archivage button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_deport_archivage').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
@@ -1200,22 +1200,22 @@ $(document).ready
       {
         if(!$('#f_description').val())
         {
-          $('#msg_indiquer_eleves_deja').attr('class','erreur').html('évaluation sans nom');
+          $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('erreur').html('évaluation sans nom');
           return false;
         }
         var f_date_debut = $('#f_date_deja').val();
         if(!f_date_debut)
         {
-          $('#msg_indiquer_eleves_deja').attr('class','erreur').html('date manquante');
+          $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('erreur').html('date manquante');
           return false;
         }
         if(!test_dateITA(f_date_debut))
         {
-          $('#msg_indiquer_eleves_deja').attr('class','erreur').html('date JJ/MM/AAAA incorrecte');
+          $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('erreur').html('date JJ/MM/AAAA incorrecte');
           return false;
         }
         $('button').prop('disabled',true);
-        $('#msg_indiquer_eleves_deja').attr('class','loader').html("En cours&hellip;");
+        $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -1226,7 +1226,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#msg_indiquer_eleves_deja').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -1235,7 +1235,7 @@ $(document).ready
               $('button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#msg_indiquer_eleves_deja').attr('class','alerte').html(responseJSON['value']);
+                $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
@@ -1290,7 +1290,7 @@ $(document).ready
                   }
                   $('#groupe_'+groupe_id).css('color',couleur).html('<span class="gradient_outer"><span class="gradient_inner" style="width:'+pourcentage+'px"></span></span>'+pourcentage+'%');
                 }
-                $('#msg_indiquer_eleves_deja').attr('class','valide').html("Affichage actualisé.");
+                $('#msg_indiquer_eleves_deja').removeAttr('class').addClass('valide').html("Affichage actualisé.");
               }
             }
           }
@@ -1366,7 +1366,7 @@ $(document).ready
         );
         if(mode=='saisir')
         {
-          $table_saisir_voir.find('tbody').attr('class',condense);
+          $table_saisir_voir.find('tbody').removeAttr('class').addClass(condense);
         }
         if(mode=='voir')
         {
@@ -1508,7 +1508,7 @@ $(document).ready
         {
           // pour une seule case
           var cellule_obj = $('#C'+colonne+'L'+ligne);
-          cellule_obj.val(note).attr('class',style);
+          cellule_obj.val(note).removeAttr('class').addClass(style);
           cellule_obj.parent().css("background-color","#F6D");
           if(memo_direction=='down')
           {
@@ -1528,7 +1528,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).attr('class',style);
+                $(this).val(note).removeAttr('class').addClass(style);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1543,7 +1543,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).attr('class',style);
+                $(this).val(note).removeAttr('class').addClass(style);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1559,7 +1559,7 @@ $(document).ready
             {
               if($(this).val()=='X')
               {
-                $(this).val(note).attr('class',style);
+                $(this).val(note).removeAttr('class').addClass(style);
                 $(this).parent().css("background-color","#F6D");
               }
             }
@@ -1568,9 +1568,9 @@ $(document).ready
         }
         if(modification==false)
         {
-          $('#fermer_zone_saisir_voir').attr('class',"annuler").html('Annuler / Retour');
-          $('#kbd_27').attr('class',"img annuler");
-          $(window).on('beforeunload', confirmOnLeave );
+          $('#fermer_zone_saisir_voir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+          $('#kbd_27').removeAttr('class').addClass("img annuler");
+          $(window).bind('beforeunload', confirmOnLeave );
           modification = true;
         }
         $('#ajax_msg_saisir_voir').removeAttr('class').html("");
@@ -1635,7 +1635,7 @@ $(document).ready
           // Test si un précédent td n'a pas été remis en place (js a du mal à suivre le mouseleave sinon)
           if(memo_input_id)
           {
-            $("td#td_"+memo_input_id).attr('class',"td_clavier").children("div").remove();
+            $("td#td_"+memo_input_id).removeAttr('class').addClass("td_clavier").children("div").remove();
             $("input#"+memo_input_id).show();
             memo_input_id = false;
             if(nb_lignes>nb_lignes_max)
@@ -1651,7 +1651,7 @@ $(document).ready
             ligne   = parseInt(memo_input_id.substring(memo_input_id.indexOf('L')+1),10);
             var valeur = $(this).children("input").val();
             $(this).children("input").hide();
-            $(this).attr('class',"td_souris").append( $("#td_souris_container").html() ).find("img[alt="+valeur+"]").addClass("on");
+            $(this).removeAttr('class').addClass("td_souris").append( $("#td_souris_container").html() ).find("img[alt="+valeur+"]").addClass("on");
             if(nb_lignes>nb_lignes_max)
             {
               $table_saisir_voir.stickyTableHeaders();
@@ -1672,7 +1672,7 @@ $(document).ready
         {
           if(memo_input_id)
           {
-            $("td#td_"+memo_input_id).attr('class',"td_clavier").children("div").remove();
+            $("td#td_"+memo_input_id).removeAttr('class').addClass("td_clavier").children("div").remove();
             $("input#"+memo_input_id).show();
             memo_input_id = false;
           }
@@ -1693,7 +1693,7 @@ $(document).ready
         if( (typeof(endroit_report_note)=='undefined') || (endroit_report_note=='cellule') )
         {
           // pour une seule case
-          $("input#"+memo_input_id).val(note).attr('class',style);
+          $("input#"+memo_input_id).val(note).removeAttr('class').addClass(style);
           $(this).parent().children("img").removeAttr('class');
           $(this).addClass("on").parent().parent().css("background-color","#F6D");
         }
@@ -1708,7 +1708,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).attr('class',style);
+                  $(this).val(note).removeAttr('class').addClass(style);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1723,7 +1723,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).attr('class',style);
+                  $(this).val(note).removeAttr('class').addClass(style);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1738,7 +1738,7 @@ $(document).ready
               {
                 if($(this).val()=='X')
                 {
-                  $(this).val(note).attr('class',style);
+                  $(this).val(note).removeAttr('class').addClass(style);
                   $(this).parent().css("background-color","#F6D");
                 }
               }
@@ -1747,9 +1747,9 @@ $(document).ready
         }
         if(modification==false)
         {
-          $('#fermer_zone_saisir_voir').attr('class',"annuler").html('Annuler / Retour');
-          $('#kbd_27').attr('class',"img annuler");
-          $(window).on('beforeunload', confirmOnLeave );
+          $('#fermer_zone_saisir_voir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
+          $('#kbd_27').removeAttr('class').addClass("img annuler");
+          $(window).bind('beforeunload', confirmOnLeave );
           modification = true;
         }
         $('#ajax_msg_saisir_voir').removeAttr('class').html("");
@@ -1766,7 +1766,7 @@ $(document).ready
       {
         if(modification==false)
         {
-          $('#ajax_msg_ordonner').attr('class','alerte').html("Aucune modification effectuée !");
+          $('#ajax_msg_ordonner').removeAttr('class').addClass('alerte').html("Aucune modification effectuée !");
         }
         else
         {
@@ -1784,7 +1784,7 @@ $(document).ready
             }
           );
           $('#zone_ordonner button').prop('disabled',true);
-          $('#ajax_msg_ordonner').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg_ordonner').removeAttr('class').addClass('loader').html("En cours&hellip;");
           var ref = $('#ordre_ref').val();
           $.ajax
           (
@@ -1796,7 +1796,7 @@ $(document).ready
               error : function(jqXHR, textStatus, errorThrown)
               {
                 $('#zone_ordonner button').prop('disabled',false);
-                $('#ajax_msg_ordonner').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg_ordonner').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
               success : function(responseJSON)
@@ -1805,14 +1805,14 @@ $(document).ready
                 $('#zone_ordonner button').prop('disabled',false);
                 if(responseJSON['statut']==false)
                 {
-                  $('#ajax_msg_ordonner').attr('class','alerte').html(responseJSON['value']);
+                  $('#ajax_msg_ordonner').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
                   modification = false;
                   $('#devoir_'+ref).parent().addClass("new");
-                  $('#ajax_msg_ordonner').attr('class','valide').html("Ordre enregistré !");
-                  $('#fermer_zone_ordonner').attr('class',"retourner").html('Retour');
+                  $('#ajax_msg_ordonner').removeAttr('class').addClass('valide').html("Ordre enregistré !");
+                  $('#fermer_zone_ordonner').removeAttr('class').addClass("retourner").html('Retour');
                 }
               }
             }
@@ -1831,12 +1831,12 @@ $(document).ready
       {
         if(modification==false)
         {
-          $('#ajax_msg_saisir_voir').attr('class','alerte').html("Aucune modification effectuée !");
+          $('#ajax_msg_saisir_voir').removeAttr('class').addClass('alerte').html("Aucune modification effectuée !");
         }
         else
         {
           $('button').prop('disabled',true);
-          $('#ajax_msg_saisir_voir').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg_saisir_voir').removeAttr('class').addClass('loader').html("En cours&hellip;");
           // Grouper les saisies dans une variable unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
           var f_notes = new Array();
           $table_saisir_voir.find("tbody input").each
@@ -1862,25 +1862,25 @@ $(document).ready
               error : function(jqXHR, textStatus, errorThrown)
               {
                 $('button').prop('disabled',false);
-                $('#ajax_msg_saisir_voir').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg_saisir_voir').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
               success : function(responseJSON)
               {
                 modification = false; // Mis ici pour le cas "aucune modification détectée"
-                $(window).off( 'beforeunload', confirmOnLeave );
+                $(window).unbind( 'beforeunload', confirmOnLeave );
                 initialiser_compteur();
                 $('button').prop('disabled',false);
                 if(responseJSON['statut']==false)
                 {
-                  $('#ajax_msg_saisir_voir').attr('class','alerte').html(responseJSON['value']);
+                  $('#ajax_msg_saisir_voir').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
                   $('#devoir_'+ref).parent().addClass("new");
-                  $('#ajax_msg_saisir_voir').attr('class','valide').html("Saisies enregistrées !");
-                  $('#fermer_zone_saisir_voir').attr('class',"retourner").html('Retour');
-                  $('#kbd_27').attr('class',"img retourner");
+                  $('#ajax_msg_saisir_voir').removeAttr('class').addClass('valide').html("Saisies enregistrées !");
+                  $('#fermer_zone_saisir_voir').removeAttr('class').addClass("retourner").html('Retour');
+                  $('#kbd_27').removeAttr('class').addClass("img retourner");
                   colorer_cellules();
                   $("#devoir_"+$("#saisir_voir_ref").val()).prev().replaceWith(responseJSON['value']);
                 }
@@ -1997,7 +1997,7 @@ $(document).ready
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -2007,7 +2007,7 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -2018,11 +2018,11 @@ $(document).ready
       $('#form_gestion button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter':
@@ -2096,14 +2096,14 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( '.csv.txt.'.indexOf('.'+fichier_ext+'.') == -1 )
           {
-            $('#ajax_msg_deport_archivage').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
+            $('#ajax_msg_deport_archivage').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension "csv" ou "txt".');
             return false;
           }
           else
           {
             $('#f_archivage_action').val('importer_saisie_csv');
             $('#zone_deport_archivage button').prop('disabled',true);
-            $('#ajax_msg_deport_archivage').attr('class','loader').html("En cours&hellip;");
+            $('#ajax_msg_deport_archivage').removeAttr('class').addClass('loader').html("En cours&hellip;");
             formulaire_importer_scores.submit();
           }
         }
@@ -2125,7 +2125,7 @@ $(document).ready
     {
       $('#f_importer_scores').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $('#zone_deport_archivage button').prop('disabled',false);
-      $('#ajax_msg_deport_archivage').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -2135,7 +2135,7 @@ $(document).ready
       $('#zone_deport_archivage button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_deport_archivage').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
@@ -2159,20 +2159,20 @@ $(document).ready
                 nb_notes_reportees++;
                 switch (score)
                 {
-                  case 'A': champ.val('AB').attr('class','AB'); break;
-                  case 'D': champ.val('DI').attr('class','DI'); break;
-                  case 'N': champ.val('NN').attr('class','NN'); break;
-                  case 'E': champ.val('NE').attr('class','NE'); break;
-                  case 'F': champ.val('NF').attr('class','NF'); break;
-                  case 'R': champ.val('NR').attr('class','NR'); break;
-                  case 'P': champ.val('PA').attr('class','PA'); break;
-                  default : champ.val(score).attr('class','N'+score); break;
+                  case 'A': champ.val('AB').removeAttr('class').addClass('AB'); break;
+                  case 'D': champ.val('DI').removeAttr('class').addClass('DI'); break;
+                  case 'N': champ.val('NN').removeAttr('class').addClass('NN'); break;
+                  case 'E': champ.val('NE').removeAttr('class').addClass('NE'); break;
+                  case 'F': champ.val('NF').removeAttr('class').addClass('NF'); break;
+                  case 'R': champ.val('NR').removeAttr('class').addClass('NR'); break;
+                  case 'P': champ.val('PA').removeAttr('class').addClass('PA'); break;
+                  default : champ.val(score).removeAttr('class').addClass('N'+score); break;
                 }
                 champ.parent().css("background-color","#F6D");
               }
               if(modification==false)
               {
-                $(window).on('beforeunload', confirmOnLeave );
+                $(window).bind('beforeunload', confirmOnLeave );
                 modification = true;
               }
             }
@@ -2180,7 +2180,7 @@ $(document).ready
         }
         var s_remontees = (nb_notes_remontees>1) ? 's' : '' ;
         var s_reportees = (nb_notes_remontees>1) ? 's' : '' ;
-        $('#ajax_msg_deport_archivage').attr('class','valide').html(nb_notes_remontees+" saisie"+s_remontees+" trouvée"+s_remontees+" dans le fichier ; "+nb_notes_reportees+" note"+s_reportees+" reportée"+s_reportees+" dans le tableau.<br />N'oubliez pas d'enregistrer !");
+        $('#ajax_msg_deport_archivage').removeAttr('class').addClass('valide').html(nb_notes_remontees+" saisie"+s_remontees+" trouvée"+s_remontees+" dans le fichier ; "+nb_notes_reportees+" note"+s_reportees+" reportée"+s_reportees+" dans le tableau.<br />N'oubliez pas d'enregistrer !");
       }
     }
 
@@ -2223,7 +2223,7 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( '.bat.com.exe.php.zip.'.indexOf('.'+fichier_ext+'.') !== -1 )
           {
-            $('#ajax_document_upload').attr('class','erreur').html('Extension du fichier "'+fichier_nom+'" interdite.');
+            $('#ajax_document_upload').removeAttr('class').addClass('erreur').html('Extension du fichier "'+fichier_nom+'" interdite.');
             return false;
           }
           else
@@ -2231,7 +2231,7 @@ $(document).ready
             var doc_objet = $(this).attr('id').substring(11); // f_uploader_*
             $('#f_doc_objet').val(doc_objet);
             $('#zone_upload button').prop('disabled',true);
-            $('#ajax_document_upload').attr('class','loader').html("En cours&hellip;");
+            $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
             formulaire_document.submit();
           }
         }
@@ -2254,7 +2254,7 @@ $(document).ready
       $('#f_uploader_sujet').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $('#f_uploader_corrige').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       activer_boutons_upload( $('#uploader_ref').val() );
-      $('#ajax_document_upload').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -2264,12 +2264,12 @@ $(document).ready
       $('#f_uploader_corrige').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       if(responseJSON['statut']==false)
       {
-        $('#ajax_document_upload').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_document_upload').attr('class','valide').html("Document enregistré.");
+        $('#ajax_document_upload').removeAttr('class').addClass('valide').html("Document enregistré.");
         var ref   = responseJSON['ref'];
         var objet = responseJSON['objet'];
         var url   = responseJSON['url'];
@@ -2302,7 +2302,7 @@ $(document).ready
       function()
       {
         $('#zone_upload button').prop('disabled',true);
-        $('#ajax_document_upload').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
         var objet = $(this).attr('id').substring(17);
         var ref   = $('#uploader_ref').val();
         var url   = (objet=='sujet') ? tab_sujets[ref] : tab_corriges[ref] ;
@@ -2315,7 +2315,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_document_upload').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               activer_boutons_upload(ref);
               return false;
             },
@@ -2324,11 +2324,11 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==false)
               {
-                $('#ajax_document_upload').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_document_upload').attr('class','valide').html("Document retiré.");
+                $('#ajax_document_upload').removeAttr('class').addClass('valide').html("Document retiré.");
                 if(objet=='sujet') { var alt='sujet';   var numero=0; tab_sujets[ref] = ''; }
                 else               { var alt='corrigé'; var numero=1; tab_corriges[ref] = ''; }
                 var lien        = '<img alt="'+alt+'" src="./_img/document/'+objet+'_non.png" />';
@@ -2356,20 +2356,20 @@ $(document).ready
         var url   = $('#f_adresse_'+objet).val();
         if(url == '')
         {
-          $('#ajax_document_upload').attr('class','erreur').html("Adresse manquante !");
+          $('#ajax_document_upload').removeAttr('class').addClass('erreur').html("Adresse manquante !");
           $('#f_adresse_'+objet).focus();
           return false;
         }
         else if(!testURL(url))
         {
-          $('#ajax_document_upload').attr('class','erreur').html("Adresse incorrecte !");
+          $('#ajax_document_upload').removeAttr('class').addClass('erreur').html("Adresse incorrecte !");
           $('#f_adresse_'+objet).focus();
           return false;
         }
         else
         {
           $('#zone_upload button').prop('disabled',true);
-          $('#ajax_document_upload').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_document_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
           $.ajax
           (
             {
@@ -2379,7 +2379,7 @@ $(document).ready
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_document_upload').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 activer_boutons_upload(ref);
                 return false;
               },
@@ -2388,11 +2388,11 @@ $(document).ready
                 initialiser_compteur();
                 if(responseJSON['statut']==false)
                 {
-                  $('#ajax_document_upload').attr('class','alerte').html(responseJSON['value']);
+                  $('#ajax_document_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
-                  $('#ajax_document_upload').attr('class','valide').html("Document référencé.");
+                  $('#ajax_document_upload').removeAttr('class').addClass('valide').html("Document référencé.");
                   if(objet=='sujet') { var alt='sujet';   var title='Sujet';   var numero=0; tab_sujets[ref] = url; }
                   else               { var alt='corrigé'; var title='Corrigé'; var numero=1; tab_corriges[ref] = url; }
                   var lien        = '<a href="'+url+'" target="_blank" class="no_puce"><img alt="'+alt+'" src="./_img/document/'+objet+'_oui.png" title="'+title+' disponible." /></a>';
@@ -2464,8 +2464,7 @@ $(document).ready
      * @see http://webaudiodemos.appspot.com/AudioRecorder/index.html 
      *
      * Ressource dont est issu le code utilisé :
-     * @see http://audior.ec/blog/recording-mp3-using-only-html5-and-javascript-recordmp3-js/
-     * @see http://audior.ec/recordmp3js/
+     * @see http://nusofthq.com/blog/recording-mp3-using-only-html5-and-javascript-recordmp3-js
      * @see https://github.com/nusofthq/Recordmp3js
      * (utilise le même plugin mais en le couplant à http://lame.sourceforge.net/ qu'il a converti en js grâce à https://github.com/kripken/emscripten)
      *
@@ -2484,7 +2483,7 @@ $(document).ready
       log('log',"Fréquence d'échantillonnage d'entrée : " +input.context.sampleRate);
       input.connect(audio_context.destination);
       log('log',"Entrée connectée au contexte audio.");
-      recorder = new Recorder( input, { numChannels: 1 } );
+      recorder = new Recorder(input);
       log('log',"Enregistreur initialisé.");
       $('#record_start').show();
       $('#ajax_msg_enregistrer_audio').removeAttr('class').html("");
@@ -2502,14 +2501,14 @@ $(document).ready
         if(navigator.getUserMedia)
         {
           log('log',"Environnement navigator.getUserMedia disponible.");
-          $('#ajax_msg_enregistrer_audio').attr('class','alerte').html("Veuillez autoriser l'utilisation du microphone (voir en haut de la fenêtre)&hellip;");
+          $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('alerte').html("Veuillez autoriser l'utilisation du microphone (voir en haut de la fenêtre)&hellip;");
           navigator.getUserMedia(
             {audio: true},
             startUserMedia,
             function(e)
             {
               log('error',"Pas d'entrée audio en direct : " + e);
-              $('#ajax_msg_enregistrer_audio').attr('class','erreur').html("Utilisation du microphone rejetée&hellip; Veuillez l'autoriser puis recharger la page.");
+              $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('erreur').html("Utilisation du microphone rejetée&hellip; Veuillez l'autoriser puis recharger la page.");
               $('#record_start').hide();
             }
           );
@@ -2517,11 +2516,11 @@ $(document).ready
         else
         {
           log('warn',"Environnement navigator.getUserMedia manquant !");
-          $('#ajax_msg_enregistrer_audio').attr('class','erreur').html("Ce navigateur ne gère pas l'enregistrement audio !");
+          $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('erreur').html("Ce navigateur ne gère pas l'enregistrement audio !");
         }
       } catch (e) {
         log('error',"Ce navigateur ne gère pas l'enregistrement audio !");
-        $('#ajax_msg_enregistrer_audio').attr('class','erreur').html("Ce navigateur ne gère pas l'enregistrement audio !");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('erreur').html("Ce navigateur ne gère pas l'enregistrement audio !");
         $('#record_start').hide();
       }
     };
@@ -2535,15 +2534,13 @@ $(document).ready
       var Recorder = function(source, cfg){
         var config = cfg || {};
         var bufferLen = config.bufferLen || 4096;
-        var numChannels = config.numChannels || 2;
         this.context = source.context;
-        this.node = (this.context.createScriptProcessor || this.context.createJavaScriptNode).call(this.context, bufferLen, numChannels, numChannels);
+        this.node = (this.context.createScriptProcessor || this.context.createJavaScriptNode).call(this.context, bufferLen, 2, 2);
         var worker = new Worker(config.workerPath || WORKER_PATH);
         worker.postMessage({
           command: 'init',
           config: {
-            sampleRate: this.context.sampleRate,
-            numChannels: numChannels
+            sampleRate: this.context.sampleRate
           }
         });
         var recording = false,
@@ -2551,13 +2548,12 @@ $(document).ready
 
         this.node.onaudioprocess = function(e){
           if (!recording) return;
-          var buffer = [];
-          for (var channel = 0; channel < numChannels; channel++){
-            buffer.push(e.inputBuffer.getChannelData(channel));
-          }
           worker.postMessage({
             command: 'record',
-            buffer: buffer
+            buffer: [
+              e.inputBuffer.getChannelData(0) /* ,
+              e.inputBuffer.getChannelData(1) */
+            ]
           });
         };
 
@@ -2599,7 +2595,7 @@ $(document).ready
         // Mp3 conversion
         worker.onmessage = function(e){
           var blob = e.data;
-          log('log',"Objet Blob de taille " + blob.size + " et de type " + blob.type);
+          log('log',"Objet Blob " +  blob + " de taille " + blob.size + " et de type " + blob.type);
 
           var arrayBuffer;
           var fileReader = new FileReader();
@@ -2704,7 +2700,7 @@ $(document).ready
       audio_duree_restante--;
       if(audio_duree_restante>0)
       {
-        $('#ajax_msg_enregistrer_audio').attr('class','valide').html("Enregistrement en cours&hellip; Encore "+audio_duree_restante+"s maximum.");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('valide').html("Enregistrement en cours&hellip; Encore "+audio_duree_restante+"s maximum.");
       }
       else
       {
@@ -2937,7 +2933,7 @@ $(document).ready
       {
         var ref = $('#enregistrer_texte_ref').val();
         $('#zone_enregistrer_texte button').prop('disabled',true);
-        $('#ajax_msg_enregistrer_texte').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_enregistrer_texte').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -2948,7 +2944,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_enregistrer_texte button').prop('disabled',false);
-              $('#ajax_msg_enregistrer_texte').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_enregistrer_texte').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -2957,11 +2953,11 @@ $(document).ready
               $('#zone_enregistrer_texte button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_enregistrer_texte').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_enregistrer_texte').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg_enregistrer_texte').attr('class','valide').html("Commentaire enregistré !");
+                $('#ajax_msg_enregistrer_texte').removeAttr('class').addClass('valide').html("Commentaire enregistré !");
                 var eleve_id = $('#enregistrer_texte_eleve_id').val();
                 if(responseJSON['value']=='supprimé')
                 {
@@ -2996,7 +2992,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_enregistrer_audio').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#fermer_enregistrer_audio').prop('disabled',false);
             if(is_audio)
             {
@@ -3016,7 +3012,7 @@ $(document).ready
             $('#fermer_enregistrer_audio').prop('disabled',false);
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_enregistrer_audio').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               if(is_audio)
               {
                 $('#audio_enregistrer_stop').prop('disabled',false);
@@ -3034,14 +3030,14 @@ $(document).ready
              if(responseJSON['value']=='supprimé')
               {
                 $('#audio_'+eleve_id).removeAttr('class').children('q').attr('title',"Enregistrer un commentaire audio.");
-                $('#ajax_msg_enregistrer_audio').attr('class','valide').html("Commentaire supprimé !");
+                $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('valide').html("Commentaire supprimé !");
                 $('#record_start').show();
               }
               else
               {
                 $('#enregistrer_audio_msg_url').val(responseJSON['value']);
                 $('#audio_'+eleve_id).addClass('off').children('q').attr('title',"Modifier le commentaire audio.");
-                $('#ajax_msg_enregistrer_audio').attr('class','valide').html("Commentaire enregistré !");
+                $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('valide').html("Commentaire enregistré !");
                 $('#audio_enregistrer_stop').prop('disabled',false);
                 $('#record_stop').hide();
                 $('#record_start , #record_play, #record_delete').show();
@@ -3062,7 +3058,7 @@ $(document).ready
       {
         $('#enregistrer_audio_msg_data').val('');
         $('#record_start , #record_play, #record_delete').hide();
-        $('#ajax_msg_enregistrer_audio').attr('class','loader').html("Suppression en cours&hellip;");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('loader').html("Suppression en cours&hellip;");
         valider_enregistrer_audio(false);
       }
     );
@@ -3098,7 +3094,7 @@ $(document).ready
       {
         audio_compteur_stop();
         $('#audio_enregistrer_stop').prop('disabled',true);
-        $('#ajax_msg_enregistrer_audio').attr('class','loader').html("Traitement en cours&hellip;");
+        $('#ajax_msg_enregistrer_audio').removeAttr('class').addClass('loader').html("Traitement en cours&hellip;");
         // Go
         recorder && recorder.stop();
         log('log','Enregistrement arrêté.');
@@ -3302,7 +3298,7 @@ $(document).ready
       var readytogo = validation_prechoix.form();
       if(readytogo)
       {
-        $('#ajax_msg_prechoix').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_prechoix').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -3310,7 +3306,7 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur_prechoix(jqXHR, textStatus, errorThrown)
     {
-      $('#ajax_msg_prechoix').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_prechoix').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -3319,11 +3315,11 @@ $(document).ready
       initialiser_compteur();
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_prechoix').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_prechoix').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_prechoix').attr('class','valide').html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr('class').html("").show();});
+        $('#ajax_msg_prechoix').removeAttr('class').addClass('valide').html("Demande réalisée !").fadeOut(3000,function(){$(this).removeAttr('class').html("").show();});
         $('#table_action tbody').html( responseJSON['html'] );
         eval( responseJSON['script'] );
         tableau_maj();

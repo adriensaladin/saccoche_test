@@ -56,7 +56,7 @@ $(document).ready
             break;
         }
         $('#bouton_'+ids).prop('disabled',false);
-        $('#label_'+ids).attr('class','alerte').html("Modification non enregistrée !");
+        $('#label_'+ids).removeAttr('class').addClass('alerte').html("Modification non enregistrée !");
       }
     );
 
@@ -71,7 +71,7 @@ $(document).ready
         var ids = $(this).attr('id').substr(7);
         if( $('input[name=f_'+ids+']').is(':checked')!=true )  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
         {
-          $('#label_'+ids).attr('class','erreur').html("Cocher une option !");
+          $('#label_'+ids).removeAttr('class').addClass('erreur').html("Cocher une option !");
           return false;
         }
         var f_methode = $('input[name=f_'+ids+']:checked').val();
@@ -79,7 +79,7 @@ $(document).ready
         var f_matiere = tab_infos[0];
         var f_niveau  = tab_infos[1];
         $('#bouton_'+ids).prop('disabled',true);
-        $('#label_'+ids).attr('class','loader').html("En cours&hellip;");
+        $('#label_'+ids).removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -90,7 +90,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_'+ids).prop('disabled',false);
-              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -99,11 +99,11 @@ $(document).ready
               $('#bouton_'+ids).prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#label_'+ids).attr('class','valide').html("Modification enregistrée !");
+                $('#label_'+ids).removeAttr('class').addClass('valide').html("Modification enregistrée !");
               }
               else
               {
-                $('#label_'+ids).attr('class','alerte').html(responseJSON['value']);
+                $('#label_'+ids).removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

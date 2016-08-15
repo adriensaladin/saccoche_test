@@ -294,7 +294,7 @@ $(document).ready
       }
       if($('#f_indiv').is(':checked'))
       {
-        $('#ajax_msg_destinataires').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_destinataires').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#bilan tbody').html('');
         $.ajax
         (
@@ -305,7 +305,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_destinataires').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_destinataires').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -320,7 +320,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_destinataires').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_destinataires').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 $('#div_users').hide();
                 $('#ajouter_destinataires').prop('disabled',true);
               }
@@ -556,7 +556,7 @@ $(document).ready
       if(readytogo)
       {
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -565,7 +565,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -575,11 +575,11 @@ $(document).ready
       $('#form_gestion button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter':

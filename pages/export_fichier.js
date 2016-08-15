@@ -84,7 +84,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element){element.after(error);}
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -162,7 +162,7 @@ $(document).ready
       if(readytogo)
       {
         $("#bouton_exporter").prop('disabled',true);
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#bilan').html('');
       }
       return readytogo;
@@ -172,7 +172,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $("#bouton_exporter").prop('disabled',false);
-      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -182,7 +182,7 @@ $(document).ready
       $("#bouton_exporter").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {

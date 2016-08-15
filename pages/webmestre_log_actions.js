@@ -42,13 +42,13 @@ $(document).ready
         var base_id = $('#f_base option:selected').val();
         if( !base_id )
         {
-          $('#ajax_msg').attr('class','erreur').html("Choisir un établissement !");
+          $('#ajax_msg').removeAttr('class').html("");
           return false;
         }
         else
         {
           // on envoie
-          $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
           $.ajax
           (
             {
@@ -58,7 +58,7 @@ $(document).ready
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
               success : function(responseJSON)
@@ -66,11 +66,11 @@ $(document).ready
                 initialiser_compteur();
                 if(responseJSON['statut']==false)
                 {
-                  $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                  $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
-                  $('#ajax_msg').attr('class','valide').html('Voir ci-dessous.');
+                  $('#ajax_msg').removeAttr('class').addClass('valide').html('Voir ci-dessous.');
                   $('#ajax_retour').html(responseJSON['value']);
                 }
               }

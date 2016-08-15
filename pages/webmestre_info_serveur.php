@@ -33,7 +33,6 @@ echo InfoServeur::tableau_versions_logicielles();
 echo InfoServeur::tableau_limitations_PHP();
 echo InfoServeur::tableau_limitations_MySQL();
 echo InfoServeur::tableau_configuration_PHP();
-echo InfoServeur::tableau_configuration_MySQL();
 echo InfoServeur::tableau_modules_PHP(5 /*nb_lignes*/);
 echo InfoServeur::tableau_reglages_Suhosin();
 echo InfoServeur::tableau_reglages_GD();

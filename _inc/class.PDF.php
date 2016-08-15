@@ -517,7 +517,7 @@ class PDF extends FPDF
     }
     stream_wrapper_register('var', 'VariableStream');
     // Appeler le constructeur de la classe mère
-    parent::__construct( $orientation , 'mm' /*unit*/ , 'A4' /*format*/ );
+    parent::FPDF( $orientation , 'mm' /*unit*/ , 'A4' /*format*/ );
     // On passe à la classe fille
     $this->officiel    = $officiel;
     $this->orientation = $orientation;

@@ -137,7 +137,6 @@ define('CHEMIN_DOSSIER_TMP'           , CHEMIN_DOSSIER_SACOCHE.'__tmp'.DS);
 define('CHEMIN_DOSSIER_IMG'           , CHEMIN_DOSSIER_SACOCHE.'_img'.DS);
 define('CHEMIN_DOSSIER_INCLUDE'       , CHEMIN_DOSSIER_SACOCHE.'_inc'.DS);
 define('CHEMIN_DOSSIER_FPDF_FONT'     , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'FPDF'.DS.'font'.DS);
-define('CHEMIN_DOSSIER_PDF'           , CHEMIN_DOSSIER_SACOCHE.'_pdf'.DS);
 define('CHEMIN_DOSSIER_SQL'           , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS);
 define('CHEMIN_DOSSIER_SQL_STRUCTURE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'structure'.DS);
 define('CHEMIN_DOSSIER_SQL_WEBMESTRE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'webmestre'.DS);
@@ -326,7 +325,6 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
     'DB_STRUCTURE_REGROUPEMENT'   => '_sql'.DS.'requetes_structure_regroupement.php' ,
     'DB_STRUCTURE_SELECTION_ITEM' => '_sql'.DS.'requetes_structure_selection_item.php' ,
-    'DB_STRUCTURE_SIECLE'         => '_sql'.DS.'requetes_structure_siecle.php' ,
     'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
     'DB_STRUCTURE_SWITCH'         => '_sql'.DS.'requetes_structure_switch.php' ,
 
@@ -487,7 +485,6 @@ define('URL_DIR_IMPORT'      , chemin_to_url(CHEMIN_DOSSIER_IMPORT     ) );
 define('URL_DIR_LOGINPASS'   , chemin_to_url(CHEMIN_DOSSIER_LOGINPASS  ) );
 define('URL_DIR_LOGO'        , chemin_to_url(CHEMIN_DOSSIER_LOGO       ) );
 define('URL_DIR_PARTENARIAT' , chemin_to_url(CHEMIN_DOSSIER_PARTENARIAT) );
-define('URL_DIR_PDF'         , chemin_to_url(CHEMIN_DOSSIER_PDF        ) );
 define('URL_DIR_RSS'         , chemin_to_url(CHEMIN_DOSSIER_RSS        ) );
 define('URL_DIR_WEBSERVICES' , chemin_to_url(CHEMIN_DOSSIER_WEBSERVICES) );
 
@@ -632,7 +629,7 @@ function getServerUrl()
 function getServerProtocole()
 {
   // $_SERVER['HTTPS'] peut valoir 'on' ou 'off' ou ''
-  if ( !empty($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'],'off') )
+  if ( isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS'])=='on') )
   {
     return 'https://';
   }

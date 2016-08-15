@@ -94,7 +94,7 @@ if( ($import_origine=='sconet') && ($import_profil=='professeur') )
   {
     Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
   }
-  $editeur_prive_edt = @(string)$xml->PARAMETRES->APPLICATION_SOURCE;
+  $editeur_prive_edt = (string)$xml->PARAMETRES->APPLICATION_SOURCE;
   if($editeur_prive_edt)
   {
     Json::end( FALSE , 'Le fichier transmis est issu d\'un éditeur privé d\'emploi du temps, pas de STS !' );
@@ -107,78 +107,6 @@ if( ($import_origine=='sconet') && ($import_profil=='professeur') )
   if($uai!=$_SESSION['WEBMESTRE_UAI'])
   {
     Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
-  }
-  $annee = @(string)$xml->PARAMETRES->ANNEE_SCOLAIRE->attributes()->ANNEE;
-  $annee_scolaire = To::annee_scolaire('siecle');
-  if( $annee_scolaire !== $annee )
-  {
-    Json::end( FALSE , 'Le fichier transmis ne correspond pas à l\'année scolaire '.$annee_scolaire.' !' );
-  }
-  // Archivage car l'export vers le Livret Scolaire s'annonce complexe...
-  DB_STRUCTURE_SIECLE::DB_ajouter_import( 'sts_emp_UAI' , $annee , $xml );
-  /* **********************************************************************************************
-   * Mettre à jour au passage les matières du Livret Scolaire
-   * **********************************************************************************************/
-  // Ordre à partir de "code_gestion"
-  $tab_ordre = array( 1 => 
-    "FRANC" , "MATHS" ,
-    "HIGCV" , "HI-GE" , "EMC" ,
-    "ALL1" , "AGL1" , "ARA1" , "CHI1" , "DAN1" , "ESP1" , "ITA1" , "JAP1" , "POR1" , "NEE1" , "POL1" , "RUS1" ,
-    "ALL2" , "AGL2" , "ARA2" , "CHI2" , "DAN2" , "ESP2" , "ITA2" , "JAP2" , "POR2" , "NEE2" , "POL2" , "RUS2" ,
-    "EPS" , "A-PLA" , "EDMUS" , "SVT" , "TECHN" , "PH-CH" ,
-    "LCALA" , "LCAGR"
-  );
-  $ordre_matiere_personnalisee = count($tab_ordre) + 1;
-  // On récupère les matières de la base afin de conserver les ids
-  $tab_matiere_base = array();
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_livret_matiere();
-  if(!empty($DB_TAB))
-  {
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_matiere_base[(string)$DB_ROW['livret_siecle_code_gestion']] = $DB_ROW['livret_matiere_id'];
-    }
-  }
-  // On récupère les matières du fichier
-  $tab_matiere_fichier = array();
-  if( ($xml->NOMENCLATURES) && ($xml->NOMENCLATURES->MATIERES) && ($xml->NOMENCLATURES->MATIERES->MATIERE) )
-  {
-    foreach ($xml->NOMENCLATURES->MATIERES->MATIERE as $matiere)
-    {
-      $siecle_code_matiere = (string) $matiere->attributes()->CODE; // (string) obligatoire car série de chiffres commençant souvent par 0...
-      $siecle_code_gestion = (string) $matiere->CODE_GESTION;
-      $siecle_libelle      = (string) $matiere->LIBELLE_EDITION;
-      $matiere_ordre = array_search( $siecle_code_gestion , $tab_ordre );
-      if( $matiere_ordre === FALSE )
-      {
-        $matiere_ordre = $ordre_matiere_personnalisee;
-        $ordre_matiere_personnalisee++;
-      }
-      $matiere_id = isset($tab_matiere_base[$siecle_code_gestion]) ? $tab_matiere_base[$siecle_code_gestion] : NULL ;
-      $tab_matiere_fichier[] = array(
-        'matiere_id'          => $matiere_id,
-        'matiere_ordre'       => $matiere_ordre,
-        'siecle_code_matiere' => $siecle_code_matiere,
-        'siecle_code_gestion' => $siecle_code_gestion,
-        'siecle_libelle'      => ucfirst($siecle_libelle), // Quelques anomalies trouvées sans majuscule initiale
-      );
-    }
-  }
-  // On vide (soit pour un changement de modèle soit pour des matières en moins par rapport à l'an passé)...
-  DB_STRUCTURE_LIVRET::DB_vider_livret_matiere();
-  // ... et on re-remplit la table, en commançant par les id à conserver...
-  foreach($tab_matiere_fichier as $key => $tab)
-  {
-    if( $tab['matiere_id'] !== NULL )
-    {
-      DB_STRUCTURE_LIVRET::DB_ajouter_livret_matiere( $tab['matiere_id'] , $tab['matiere_ordre'] , $tab['siecle_code_matiere'] , $tab['siecle_code_gestion'] , $tab['siecle_libelle'] );
-      unset($tab_matiere_fichier[$key]);
-    }
-  }
-  // ... puis maintenant avec de nouveaux id, sans boucher les trous éventuels pour supprimer ultérieurement les jointures obsolètes.
-  foreach($tab_matiere_fichier as $key => $tab)
-  {
-    DB_STRUCTURE_LIVRET::DB_ajouter_livret_matiere( $tab['matiere_id'] , $tab['matiere_ordre'] , $tab['siecle_code_matiere'] , $tab['siecle_code_gestion'] , $tab['siecle_libelle'] );
   }
   /*
    * Les matières des profs peuvent être récupérées de 2 façons :
@@ -419,14 +347,6 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
   {
     Json::end( FALSE , 'Le fichier transmis n\'est pas correct (erreur de numéro UAI) !' );
   }
-  $annee = @(string)$xml->PARAMETRES->ANNEE_SCOLAIRE;
-  $annee_scolaire = To::annee_scolaire('siecle');
-  if( $annee_scolaire !== $annee )
-  {
-    Json::end( FALSE , 'Le fichier transmis ne correspond pas à l\'année scolaire '.$annee_scolaire.' !' );
-  }
-  // Archivage car l'export vers le Livret Scolaire s'annonce complexe...
-  DB_STRUCTURE_SIECLE::DB_ajouter_import( 'Eleves' , $annee , $xml );
   // tableau temporaire qui sera effacé, servant à retenir le niveau de l'élève en attendant de connaître sa classe.
   $tab_users_fichier['niveau'] = array();
   //
@@ -594,12 +514,6 @@ if( ($import_origine=='sconet') && ($import_profil=='parent') )
   if($uai!=$_SESSION['WEBMESTRE_UAI'])
   {
     Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
-  }
-  $annee = @(string)$xml->PARAMETRES->ANNEE_SCOLAIRE;
-  $annee_scolaire = To::annee_scolaire('siecle');
-  if( $annee_scolaire !== $annee )
-  {
-    Json::end( FALSE , 'Le fichier transmis ne correspond pas à l\'année scolaire '.$annee_scolaire.' !' );
   }
   //
   // On recense les adresses dans un tableau temporaire.
@@ -1388,7 +1302,7 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
     Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
-  // On récupère les élèves pour vérifier que ceux trouvé dans le fichier des parents sont bien dans la base.
+  // On récupère les élèves pour vérifier que ceux trouvé dans le fichier des parents sont bien dasn la base.
   $tab_eleves_actuels  = array();
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' /*profil_type*/ , 1 /*only_actuels*/ , 'user_id,user_sconet_elenoet' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
   foreach($DB_TAB as $DB_ROW)
@@ -1605,11 +1519,6 @@ FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichie
 FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt', $tab_liens_id_base );
 FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_sortie.txt'  , $tab_date_sortie );
 
-// On affiche le bilan des matières de SIECLE mises à jour
-if( ($import_origine=='sconet') && ($import_profil=='professeur') )
-{
-    Json::add_str('<p><label class="valide">Matières du Livret Scolaire actualisées.</label></p>'.NL);
-}
 // On affiche le bilan des utilisateurs trouvés
 if(count($tab_users_fichier['profil_sigle']))
 {
@@ -1694,8 +1603,6 @@ if($import_profil=='parent')
 $STEP = ($import_profil=='parent') ? '5' : '3' ;
 Json::add_str('<ul class="puce p"><li><a href="#step'.$STEP.'1" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
 
-// Log de l'action
-SACocheLog::ajouter('Import d\'un fichier d\'utilisateurs type '.$import_origine.' / '.$import_profil.'.');
 // Notifications (rendues visibles ultérieurement)
 $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' importe un fichier d\'utilisateurs type '.$import_origine.' / '.$import_profil.'.'."\r\n";
 DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );

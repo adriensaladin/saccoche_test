@@ -40,7 +40,7 @@ $(document).ready
     {
       if(modification==false)
       {
-        $('#ajax_msg_ordre').attr('class','alerte').html("Ordre non enregistré !");
+        $('#ajax_msg_ordre').removeAttr('class').addClass('alerte').html("Ordre non enregistré !");
         modification = true;
         return false;
       }
@@ -58,7 +58,7 @@ $(document).ready
       {
         if(!modification)
         {
-          $('#ajax_msg_ordre').attr('class','alerte').html("Aucune modification effectuée !");
+          $('#ajax_msg_ordre').removeAttr('class').addClass('alerte').html("Aucune modification effectuée !");
         }
         else
         {
@@ -76,7 +76,7 @@ $(document).ready
             }
           );
           $('#form_ordonner button').prop('disabled',true);
-          $('#ajax_msg_ordre').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg_ordre').removeAttr('class').addClass('loader').html("En cours&hellip;");
           $.ajax
           (
             {
@@ -87,7 +87,7 @@ $(document).ready
               error : function(jqXHR, textStatus, errorThrown)
               {
                 $('#form_ordonner button').prop('disabled',false);
-                $('#ajax_msg_ordre').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg_ordre').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
               success : function(responseJSON)
@@ -97,11 +97,11 @@ $(document).ready
                 if(responseJSON['statut']==true)
                 {
                   modification = false;
-                  $('#ajax_msg_ordre').attr('class','valide').html("Ordre enregistré !");
+                  $('#ajax_msg_ordre').removeAttr('class').addClass('valide').html("Ordre enregistré !");
                 }
                 else
                 {
-                  $('#ajax_msg_ordre').attr('class','alerte').html(responseJSON['value']);
+                  $('#ajax_msg_ordre').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
               }
             }

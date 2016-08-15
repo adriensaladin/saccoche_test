@@ -57,7 +57,7 @@ $(document).ready
         groupe_id   = groupe_val;
       }
       groupe_nom = $("#f_groupe option:selected").text();
-      $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -67,18 +67,18 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg').attr('class','valide').html("Demande réalisée !");
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
               $('#bilan').html(responseJSON['value']);
             }
           }

@@ -139,7 +139,7 @@ $(document).ready
         {
           var valeur = $(this).val();
           var color = ($(this).is(':checked')) ? ( ( (check_pp && tab_profil_join_groupes[valeur]) || (check_coord && tab_profil_join_matieres[valeur]) || (check_lv && tab_profil_join_matieres[valeur]) ) ? 'bj' : 'bv' ) : 'br' ;
-          $(this).parent().attr('class','hc '+color);
+          $(this).parent().removeAttr('class').addClass('hc '+color);
         }
       );
     }
@@ -171,7 +171,7 @@ $(document).ready
       {
         var objet  = $(this).attr('name');
         actualiser_si_besoin(objet);
-        $('#ajax_msg_'+objet).attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_'+objet).removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -189,7 +189,7 @@ $(document).ready
           $('#form_autorisations input[name="'+objet+'"][value="'+value+'"]').prop('checked',tab_init[objet][value]);
         }
         actualiser_si_besoin(objet);
-        $('#ajax_msg_'+objet).attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_'+objet).removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -205,7 +205,7 @@ $(document).ready
         var objet = obj_bouton.parent().parent().attr('id').substring(3);
         var tab_check = new Array(); $('#form_autorisations input[name='+objet+']:checked').each(function(){tab_check.push($(this).val());});
         obj_bouton.prop('disabled',true);
-        $('#ajax_msg_'+objet).attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_'+objet).removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -216,7 +216,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               obj_bouton.prop('disabled',false);
-              $('#ajax_msg_'+objet).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+objet).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -225,11 +225,11 @@ $(document).ready
               obj_bouton.prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_'+objet).attr('class','valide').html("Droits enregistrés !");
+                $('#ajax_msg_'+objet).removeAttr('class').addClass('valide').html("Droits enregistrés !");
               }
               else
               {
-                $('#ajax_msg_'+objet).attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_'+objet).removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

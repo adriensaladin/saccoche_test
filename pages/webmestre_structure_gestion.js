@@ -360,7 +360,7 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      $('#ajax_supprimer').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_supprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -370,7 +370,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_supprimer').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $("button").prop('disabled',false);
           },
           success : function(responseJSON)
@@ -378,7 +378,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_supprimer').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
@@ -389,7 +389,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_supprimer').attr('class','valide').html('Demande réalisée !');
+              $('#ajax_supprimer').removeAttr('class').addClass('valide').html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }
@@ -406,7 +406,7 @@ $(document).ready
         $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_supprimer').attr('class','erreur').html("Aucune structure cochée !");
+          $('#ajax_supprimer').removeAttr('class').addClass('erreur').html("Aucune structure cochée !");
           return false;
         }
         $('#ajax_supprimer').removeAttr('class').html('&nbsp;');
@@ -442,11 +442,11 @@ $(document).ready
       {
         if(!$('#f_admin_id option:selected').val())
         {
-          $('#ajax_msg_generer_mdp').attr('class','erreur').html("Sélectionner un administrateur !");
+          $('#ajax_msg_generer_mdp').removeAttr('class').addClass('erreur').html("Sélectionner un administrateur !");
           return false;
         }
         $('#zone_generer_mdp button').prop('disabled',true);
-        $('#ajax_msg_generer_mdp').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_generer_mdp').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#zone_imprimer_retour').html("");
         $.ajax
         (
@@ -458,7 +458,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_generer_mdp button').prop('disabled',false);
-              $('#ajax_msg_generer_mdp').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_generer_mdp').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -467,7 +467,7 @@ $(document).ready
               $('#zone_generer_mdp button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_generer_mdp').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_generer_mdp').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
@@ -596,7 +596,7 @@ $(document).ready
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -606,7 +606,7 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -617,11 +617,11 @@ $(document).ready
       $('#form_gestion button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').attr('class','valide').html('Demande réalisée !');
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html('Demande réalisée !');
         switch (mode)
         {
           case 'ajouter':

@@ -283,12 +283,6 @@ Layout::add( 'js_inline_before' , 'var AUDIO_DUREE_MAX = '.$AUDIO_DUREE_MAX.';' 
 Layout::add( 'js_inline_before' , '// <![CDATA[' );
 Layout::add( 'js_inline_before' , 'var select_groupe = "'.str_replace('"','\"','<option value="">&nbsp;</option>'.$select_eleve).'";' );
 Layout::add( 'js_inline_before' , '// ]]>' );
-
-// Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
-if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
-{
-  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
-}
 ?>
 
 <ul class="puce">
@@ -632,7 +626,7 @@ $select_repart_ref_pourcentage = HtmlForm::afficher_select(Form::$tab_select_rep
   <hr />
   <ul class="puce">
     <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_gestion#toggle_evaluations_commentaire_audio">DOC : Commentaire audio personnalisé.</a></span></li>
-    <li><span class="danger">Fonctionnalité expérimentale ! <span class="fluo">Utiliser Chrome en HTTPS | Opera en HTTPS | Edge à jour.</span></span></li>
+    <li><span class="danger">Fonctionnalité expérimentale ! <span class="fluo">Usage du navigateur Chrome ou Edge quasi-obligatoire !</span></span></li>
     <li><span class="astuce">Enregistrement de <?php echo $AUDIO_DUREE_MAX ?> s maximum, conservé <?php echo FICHIER_DUREE_CONSERVATION ?> mois. <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="La taille maximale autorisée et la durée de conservation des fichiers sont fixées par le webmestre.<br />Dans tous les cas l'enregistrement ne peut techniquement pas dépasser 120 secondes." /></span></li>
   </ul>
   <hr />

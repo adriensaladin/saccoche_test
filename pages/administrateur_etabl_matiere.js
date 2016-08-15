@@ -244,7 +244,7 @@ $(document).ready
 
     function maj_resultat_recherche(data_action,data_parametre)
     {
-      $('#ajax_msg_recherche').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -254,7 +254,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_recherche').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -266,7 +266,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_recherche').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -310,7 +310,7 @@ $(document).ready
         }
         else
         {
-          $('#ajax_msg_recherche').attr('class',"danger").html("Indiquer des mots clefs !");
+          $('#ajax_msg_recherche').removeAttr('class').addClass("danger").html("Indiquer des mots clefs !");
         }
       }
     );
@@ -326,7 +326,7 @@ $(document).ready
       function()
       {
         var matiere_id = $(this).attr('id').substr(4); // add_
-        $('#ajax_msg_recherche').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -336,7 +336,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_recherche').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -344,7 +344,7 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_recherche').attr('class','valide').html("Matière ajoutée.");
+                $('#ajax_msg_recherche').removeAttr('class').addClass('valide').html("Matière ajoutée.");
                 var texte = $('#add_'+matiere_id).parent().text();
                 var pos_separe  = (texte.indexOf('|')==-1) ? 0 : texte.lastIndexOf('|')+2 ;
                 var pos_par_ouv = texte.lastIndexOf('(');
@@ -353,14 +353,14 @@ $(document).ready
                 var matiere_ref = texte.substring(pos_par_ouv+1,pos_par_fer);
                 $('#zone_partage table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#zone_partage table.form tbody').append('<tr id="id_'+matiere_id+'"><td>'+matiere_ref+'</td><td>'+matiere_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer cette matière."></q></td></tr>');
-                $('#add_'+matiere_id).attr('class',"ajouter_non").attr('title',"Matière déjà choisie.");
+                $('#add_'+matiere_id).removeAttr('class').addClass("ajouter_non").attr('title',"Matière déjà choisie.");
                 tableau_maj_partage();
                 $('#f_matiere_avant').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
                 $('#f_matiere_apres').append('<option value="'+matiere_id+'">'+matiere_nom+' ('+matiere_ref+')</option>');
               }
               else
               {
-                $('#ajax_msg_recherche').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -380,25 +380,25 @@ $(document).ready
         var matiere_id_apres = parseInt( $("#f_matiere_apres option:selected").val() ,10);
         if(!matiere_id_avant)
         {
-          $('#ajax_msg_move').attr('class','erreur').html("Sélectionner une ancienne matière !");
+          $('#ajax_msg_move').removeAttr('class').addClass('erreur').html("Sélectionner une ancienne matière !");
           $("#f_matiere_avant").focus();
           return false;
         }
         if(!matiere_id_apres)
         {
-          $('#ajax_msg_move').attr('class','erreur').html("Sélectionner une nouvelle matière !");
+          $('#ajax_msg_move').removeAttr('class').addClass('erreur').html("Sélectionner une nouvelle matière !");
           $("#f_matiere_apres").focus();
           return false;
         }
         if(matiere_id_avant==matiere_id_apres)
         {
-          $('#ajax_msg_move').attr('class','erreur').html("Sélectionner des matières différentes !");
+          $('#ajax_msg_move').removeAttr('class').addClass('erreur').html("Sélectionner des matières différentes !");
           return false;
         }
         var matiere_nom_avant = $("#f_matiere_avant option:selected").text();
         var matiere_nom_apres = $("#f_matiere_apres option:selected").text();
         $('button').prop('disabled',true);
-        $('#ajax_msg_move').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_move').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -409,7 +409,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_msg_move').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_move').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -422,11 +422,11 @@ $(document).ready
                 $('#f_matiere_apres option[value='+matiere_id_avant+']').remove();
                 $('#f_matiere_apres option[value=0]').prop('selected',true);
                 $('#id_'+matiere_id_avant).remove();
-                $('#ajax_msg_move').attr('class','valide').html("Transfert effectué.");
+                $('#ajax_msg_move').removeAttr('class').addClass('valide').html("Transfert effectué.");
               }
               else
               {
-                $('#ajax_msg_move').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_move').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -544,7 +544,7 @@ $(document).ready
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -554,7 +554,7 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -565,11 +565,11 @@ $(document).ready
       $('#form_gestion button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter_perso':

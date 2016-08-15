@@ -278,24 +278,16 @@ class To
   /**
    * Renvoyer l'année scolaire en cours.
    *
-   * format 'texte'  : Année scolaire 2016 / 2017
-   * format 'code'   : 2016-2017
-   * format 'siecle' : 2016
-   *
-   * @param string   $format   'texte' | 'code' | 'siecle'
+   * @param string   $format   'texte' | 'code'
    * @return string
    */
   public static function annee_scolaire($format)
   {
+    $sep = ($format=='code') ? '-' : ' / ' ;
+    $txt = ($format=='code') ? '' : 'Année scolaire ' ;
     $mois_actuel    = date('n');
     $annee_actuelle = date('Y');
     $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'];
-    if($format=='siecle')
-    {
-      return ($mois_actuel >= $mois_bascule) ? $annee_actuelle : $annee_actuelle-1 ;
-    }
-    $sep = ($format=='code') ? '-' : ' / ' ;
-    $txt = ($format=='code') ? '' : 'Année scolaire ' ;
     if($mois_bascule==1)
     {
       return $txt.$annee_actuelle;

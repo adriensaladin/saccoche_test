@@ -253,7 +253,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
     // indiquer le fichier source
     $source_pdf = ($eleve_brevet_serie_initiale=='G') ? 'DNB_Fiche_scolaire_pour_le_jury_Serie_generale_2014_01' : 'DNB_Fiche_scolaire_pour_le_jury_Serie_professionnelle_2014_01' ;
-    $fiche_brevet_PDF->setSourceFile(CHEMIN_DOSSIER_PDF.$source_pdf.'.pdf');
+    $fiche_brevet_PDF->setSourceFile('./_pdf/'.$source_pdf.'.pdf');
   }
   for( $numero_tirage=0 ; $numero_tirage<$nombre_tirages ; $numero_tirage++ )
   {

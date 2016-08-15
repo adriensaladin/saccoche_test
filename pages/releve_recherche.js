@@ -255,7 +255,7 @@ $(document).ready
           else if(element.attr("type")=="radio")    {element.parent().next().after(error);}
           else if(element.attr("type")=="checkbox") {element.parent().parent().next().after(error);}
         }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -309,7 +309,7 @@ $(document).ready
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#bilan').html('');
       }
       return readytogo;
@@ -319,7 +319,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -329,12 +329,12 @@ $(document).ready
       $('button').prop('disabled',false);
       if(responseJSON['statut']==true)
       {
-        $('#ajax_msg').attr('class','valide').html("Résultat ci-dessous.");
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Résultat ci-dessous.");
         $('#bilan').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 
@@ -356,7 +356,7 @@ $(document).ready
         }
         else
         {
-          $('#check_msg').attr('class','alerte').html('Aucun élève coché !');
+          $('#check_msg').removeAttr('class').addClass('alerte').html('Aucun élève coché !');
           return false;
         }
       }

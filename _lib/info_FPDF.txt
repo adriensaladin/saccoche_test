@@ -1,5 +1,5 @@
 ﻿================================================================================
-Librairie : FPDF                        Version : 1.8.1
+Librairie : FPDF                        Version : 1.8
 ================================================================================
 
 FPDF est une classe PHP qui permet de produire des fichiers PDF.
@@ -15,7 +15,7 @@ TODO http://www.tcpdf.org/index.php
 
 PDF_Label est une extension de classe de FPDF pour générer un fichier d'étiquettes.
 http://www.fpdf.org/fr/script/script29.php
-Ligne n°87 "$this->SetFont('Arial');" commentée.
+Ligne n°83 commentée : $this->SetFont('Times');
 
 Fichiers de polices Arial incorporés dans /font/ en n'ayant conservé que les caractères de l'encodage cp1252
 Pour infos : http://www.fpdf.org/fr/tutorial/tuto7.htm
@@ -31,20 +31,13 @@ D'autres extensions de FPDF intéressantes mais non utilisées :
 http://www.fpdf.org/fr/script/script6.php   Pour tracer un cercle (ou une ellipse).
 http://www.fpdf.org/en/script/script37.php  Pour protéger le PDF en écriture -> fonctionne si on crée un PDF de toutes pièces, mais pas si on ajoute du contenu sur un PDF existant.
 
-
-========================================
-Modifications apportées
-========================================
-
-
 Attention : à partir de FPDF 1.7 il faut remplacer 4x dans le script18 "DefPageFormat" par "DefPageSize" !
 http://www.fpdf.org/phorum/read.php?f=1&i=56024&t=56024
 
-Attention : remplacer "__construct()" par "FPDF()" pour des histoires de classes dépendantes.
-            ==> Non, plus possible en PHP 7, sinon "Deprecated: Methods with the same name as their class will not be constructors in a future version of PHP; FPDF has a deprecated constructor ..."
-
 Attention : la fonction get_defined_vars() pouvant être désactivée, la fonction _loadfont() a été modifiée.
 http://www.fpdf.org/?go=forum&i=56830&t=56830
+
+Attention : remplacer "__construct()" par "FPDF()" pour des histoires de classes dépendantes.
 
 Attention : remplacer dans FPDF 1.8
   $n = $this->PageInfo[1]['n'];

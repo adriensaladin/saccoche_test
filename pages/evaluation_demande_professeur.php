@@ -55,21 +55,9 @@ $radio_boutons = implode(' ',$tab_radio_boutons);
 // Dates par défaut
 $date_autoeval = date('d/m/Y',mktime(0,0,0,date('m'),date('d')+7,date('Y'))); // 1 semaine après
 
-// Fabrication des éléments select du formulaire
-$tab_matieres   = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
-$tab_groupes    = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
-$select_matiere = HtmlForm::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,    'toutes_matieres' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ );
-$select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ , 'tous_regroupements' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
-
 // Javascript
 Layout::add( 'js_inline_before' , 'var input_visible  = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' );
-
-// Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
-if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
-{
-  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
-}
 ?>
 
 <ul class="puce">
@@ -79,6 +67,15 @@ if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
 </ul>
 
 <hr />
+
+<?php
+// Fabrication des éléments select du formulaire
+
+$tab_matieres   = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']) ;
+$tab_groupes    = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
+$select_matiere = HtmlForm::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,    'toutes_matieres' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ );
+$select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ , 'tous_regroupements' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
+?>
 
 <form action="#" method="post" id="form_prechoix"><fieldset>
   <label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /><br />

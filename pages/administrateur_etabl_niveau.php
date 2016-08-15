@@ -40,7 +40,7 @@ Layout::add( 'js_inline_before' , 'var ID_NIVEAU_PARTAGE_MAX = '.ID_NIVEAU_PARTA
 <div id="zone_partage">
   <hr />
   <h2>Niveaux partagés (officiels)</h2>
-  <table class="form hsort">
+  <table class="form">
     <thead>
       <tr>
         <th>Référence</th>

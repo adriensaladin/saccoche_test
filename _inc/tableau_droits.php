@@ -41,7 +41,6 @@ $tab_droits_profil_dir_admin             = array( 'public'=>0 , 'eleve'=>0 , 'pa
 $tab_droits_profil_eleve                 = array( 'public'=>0 , 'eleve'=>1 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_parent                = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>1 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_professeur            = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>1 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
-$tab_droits_profil_developpeur           = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>1 , 'partenaire'=>0 );
 $tab_droits_profil_directeur             = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>1 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_administrateur        = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 );
 $tab_droits_profil_webmestre_developpeur = array( 'public'=>0 , 'eleve'=>0 , 'parent'=>0 , 'professeur'=>0 , 'directeur'=>0 , 'inspecteur'=>0 , 'administrateur'=>0 , 'webmestre'=>1 , 'developpeur'=>1 , 'partenaire'=>0 );
@@ -153,8 +152,6 @@ $tab_droits_par_page = array
   'webmestre_maintenance'                   => $tab_droits_profil_webmestre_developpeur,
   'webmestre_statistiques'                  => $tab_droits_profil_webmestre_developpeur,
   'webmestre_structure_bdd_repair'          => $tab_droits_profil_webmestre_developpeur,
-  // Profil développeur
-  'developpeur_superviseur'                 => $tab_droits_profil_developpeur,
   // Profil webmestre
   'webmestre_contact_modification'          => $tab_droits_profil_webmestre,
   'webmestre_envoi_notifications'           => $tab_droits_profil_webmestre,

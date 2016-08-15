@@ -56,9 +56,6 @@ foreach($DB_TAB as $DB_ROW)
 {
   $tab_option[$DB_ROW['livret_page_periodicite']] .= '<option value="'.$DB_ROW['livret_page_ref'].'">'.html($DB_ROW['livret_page_titre_classe'].' || '.$DB_ROW['livret_page_moment'].' || '.str_replace($tab_bad,$tab_bon,$DB_ROW['livret_page_resume'])).'</option>';
 }
-
-// Javascript
-Layout::add( 'js_inline_before' , 'var URL_DIR_PDF = "'.URL_DIR_PDF.'";' );
 ?>
 
 <ul class="puce">
@@ -85,15 +82,13 @@ Layout::add( 'js_inline_before' , 'var URL_DIR_PDF = "'.URL_DIR_PDF.'";' );
     {
       $classe_nom = $DB_TAB_Classe[0]['groupe_nom'];
       $tab_option_classe = $tab_option;
-      $tab_image_classe = array( 'periode' => '' , 'cycle' => '' , 'college'  => '' );
       $periode_type = FALSE;
       foreach($DB_TAB_Classe as $DB_ROW)
       {
         if(!is_null($DB_ROW['livret_page_ref']))
         {
           $td_class = 'bv';
-          $tab_option_classe[$DB_ROW['periodicite']] = str_replace( 'value="'.$DB_ROW['livret_page_ref'].'"' , 'value="'.$DB_ROW['livret_page_ref'].'" selected' , $tab_option_classe[$DB_ROW['periodicite']] );
-          $tab_image_classe[$DB_ROW['periodicite']] = '<a href="'.URL_DIR_PDF.'livret_'.$DB_ROW['livret_page_ref'].'_original.pdf" class="fancybox" rel="gallery_'.$classe_id.'" data-titre="'.html($DB_ROW['livret_page_titre_classe'].' || '.$DB_ROW['livret_page_moment'].' || '.str_replace($tab_bad,$tab_bon,$DB_ROW['livret_page_resume'])).'"><span class="livret livret_'.$DB_ROW['livret_page_ref'].'"></span></a>';
+          $tab_option_classe[$DB_ROW['livret_page_periodicite']] = str_replace( 'value="'.$DB_ROW['livret_page_ref'].'"' , 'value="'.$DB_ROW['livret_page_ref'].'" selected' , $tab_option_classe[$DB_ROW['livret_page_periodicite']] );
           if($DB_ROW['listing_periodes'])
           {
             $periode_type = $DB_ROW['listing_periodes']{0};
@@ -112,9 +107,9 @@ Layout::add( 'js_inline_before' , 'var URL_DIR_PDF = "'.URL_DIR_PDF.'";' );
       echo  '<td data-id="'.$classe_id.'">';
       echo    '<label class="tab" for="f_periode_'.$classe_id.'">Périodique :</label><select id="f_periode_'.$classe_id.'" name="f_periode">'.$tab_option_classe['periode'].'</select> <select id="f_jointure_'.$classe_id.'" name="f_jointure" class="'.$class_jointure.'">'.$tab_option_classe['jointure'].'</select><br />';
       echo    '<label class="tab" for="f_cycle_'.$classe_id.'">Fin de cycle :</label><select id="f_cycle_'.$classe_id.'" name="f_cycle">'.$tab_option_classe['cycle'].'</select><br />';
-      echo    '<label class="tab" for="f_college_'.$classe_id.'">Fin du collège :</label><select id="f_college_'.$classe_id.'" name="f_college">'.$tab_option_classe['college'].'</select><span></span>';
+      echo    '<label class="tab" for="f_college_'.$classe_id.'">Fin du collège :</label><select id="f_college_'.$classe_id.'" name="f_college">'.$tab_option_classe['college'].'</select>';
       echo  '</td>';
-      echo  '<td class="nu">'.implode('',$tab_image_classe).'</td>';
+      echo  '<td class="nu"></td>';
       echo'</tr>'.NL;
     }
     ?>

@@ -47,13 +47,13 @@ $(document).ready
       {
         if( $("#f_base input:checked").length==0 )
         {
-          $('#ajax_msg_export').attr('class','erreur').html("structure(s) manquante(s)");
+          $('#ajax_msg_export').removeAttr('class').addClass('erreur').html("structure(s) manquante(s)");
           return false;
         }
         // Grouper les checkbox dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
         var bases = new Array(); $("#f_base input:checked").each(function(){bases.push($(this).val());});
         $("button").prop('disabled',true);
-        $('#ajax_msg_export').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_export').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -64,7 +64,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("button").prop('disabled',false);
-              $('#ajax_msg_export').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_export').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -73,12 +73,12 @@ $(document).ready
               $("button").prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_export').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_export').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
                 var max = responseJSON['value'];
-                $('#ajax_msg_export').attr('class','loader').html('Export en cours : étape 1 sur ' + max + '...');
+                $('#ajax_msg_export').removeAttr('class').addClass('loader').html('Export en cours : étape 1 sur ' + max + '...');
                 $('#puce_info_export').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
                 $('#ajax_export_num').html(1);
                 $('#ajax_export_max').html(max);
@@ -110,7 +110,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_export').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_export').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#puce_info_export').html('<li><a id="a_reprise_export" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
           },
           success : function(responseJSON)
@@ -118,7 +118,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_export').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_export').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               $('#puce_info_export').html('<li><a id="a_reprise_export" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
             }
             else
@@ -128,7 +128,7 @@ $(document).ready
               {
                 var fichier_csv = responseJSON['csv'];
                 var fichier_zip = responseJSON['zip'];
-                $('#ajax_msg_export').attr('class','valide').html('Export terminé.');
+                $('#ajax_msg_export').removeAttr('class').addClass('valide').html('Export terminé.');
                 var li1 = '<li><a target="_blank" href="'+fichier_csv+'">Récupérer le listing des bases exportées au format <em>CSV</em>.</a></li>';
                 var li2 = '<li><a target="_blank" href="'+fichier_zip+'">Récupérer le fichier des bases sauvegardées au format <em>ZIP</em>.</a></li>';
                 $('#puce_info_export').html(li1+li2);
@@ -138,7 +138,7 @@ $(document).ready
               else
               {
                 $('#ajax_export_num').html(num);
-                $('#ajax_msg_export').attr('class','loader').html('Export en cours : étape ' + num + ' sur ' + max + '...');
+                $('#ajax_msg_export').removeAttr('class').addClass('loader').html('Export en cours : étape ' + num + ' sur ' + max + '...');
                 $('#puce_info_export').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
                 exporter();
               }
@@ -156,7 +156,7 @@ $(document).ready
       {
         num = $('#ajax_export_num').html();
         max = $('#ajax_export_max').html();
-        $('#ajax_msg_export').attr('class','loader').html('Export en cours : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg_export').removeAttr('class').addClass('loader').html('Export en cours : étape ' + num + ' sur ' + max + '...');
         $('#puce_info_export').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
         exporter();
       }
@@ -210,18 +210,18 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if ( (f_action=='importer_csv') && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
-            $('#ajax_msg_'+f_action).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+            $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }
           else if ( (f_action=='importer_zip') && (fichier_ext!='zip') )
           {
-            $('#ajax_msg_'+f_action).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "zip".');
+            $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "zip".');
             return false;
           }
           else
           {
             $('#form_importer button').prop('disabled',true);
-            $('#ajax_msg_'+f_action).attr('class','loader').html("En cours&hellip;");
+            $('#ajax_msg_'+f_action).removeAttr('class').addClass('loader').html("En cours&hellip;");
             formulaire_import.submit();
           }
         }
@@ -243,7 +243,7 @@ $(document).ready
     {
       $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $('#form_importer button').prop('disabled',false);
-      $('#ajax_msg_'+f_action).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -253,7 +253,7 @@ $(document).ready
       $('#form_importer button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_'+f_action).attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
         if(f_action=='importer_csv')
         {
           $('#div_zip , #div_import , #div_info_import , #structures').hide('fast');
@@ -268,14 +268,14 @@ $(document).ready
         initialiser_compteur();
         if(f_action=='importer_csv')
         {
-          $('#ajax_msg_'+f_action).attr('class','valide').html("Fichier bien reçu ; "+responseJSON['value']+".");
+          $('#ajax_msg_'+f_action).removeAttr('class').addClass('valide').html("Fichier bien reçu ; "+responseJSON['value']+".");
           $('#div_import , #div_info_import , #structures').hide('fast');
           $('#ajax_msg_zip').removeAttr('class').html('&nbsp;');
           $('#div_zip').show('fast');
         }
         else
         {
-          $('#ajax_msg_'+f_action).attr('class','valide').html("Fichier bien reçu ; sauvegarde(s) extraite(s).");
+          $('#ajax_msg_'+f_action).removeAttr('class').addClass('valide').html("Fichier bien reçu ; sauvegarde(s) extraite(s).");
           $('#div_info_import , #structures').hide('fast');
           $('#div_import').show('fast');
           $('#ajax_import_num').html(1);
@@ -305,7 +305,7 @@ $(document).ready
         $("button").prop('disabled',true);
         var num = $('#ajax_import_num').html();
         var max = $('#ajax_import_max').html();
-        $('#ajax_msg_import').attr('class','loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
         $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
         $('#div_info_import').show('fast');
         $('#structures').hide('fast').children('#table_action').children('tbody').html('');
@@ -331,7 +331,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_import').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_import').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
           },
           success : function(responseJSON)
@@ -339,7 +339,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_import').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_import').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               $('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
             }
             else
@@ -347,7 +347,7 @@ $(document).ready
               num++;
               if(num > max)  // Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
               {
-                $('#ajax_msg_import').attr('class','valide').html('');
+                $('#ajax_msg_import').removeAttr('class').addClass('valide').html('');
                 $('#puce_info_import').html('<li>Import terminé !</li>');
                 $('#ajax_msg_importer_csv , #ajax_msg_importer_zip , #ajax_msg_import').removeAttr('class').html('');
                 $('#div_zip , #div_import').hide('fast');
@@ -358,7 +358,7 @@ $(document).ready
               {
                 $('#table_action tbody').append(responseJSON['value']);
                 $('#ajax_import_num').html(num);
-                $('#ajax_msg_import').attr('class','loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
+                $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
                 $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
                 importer();
               }
@@ -376,7 +376,7 @@ $(document).ready
       {
         var num = $('#ajax_import_num').html();
         var max = $('#ajax_import_max').html();
-        $('#ajax_msg_import').attr('class','loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
         $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
         importer();
       }
@@ -436,7 +436,7 @@ $(document).ready
     var supprimer_structures_selectionnees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      $('#ajax_supprimer_export').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_supprimer_export').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -446,7 +446,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_supprimer_export').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_supprimer_export').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $("button").prop('disabled',false);
           },
           success : function(responseJSON)
@@ -454,7 +454,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_supprimer_export').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_supprimer_export').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
@@ -465,7 +465,7 @@ $(document).ready
                   $(this).parent().remove();
                 }
               );
-              $('#ajax_supprimer_export').attr('class','valide').html('Demande réalisée !');
+              $('#ajax_supprimer_export').removeAttr('class').addClass('valide').html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }
@@ -482,7 +482,7 @@ $(document).ready
         $("#f_base input:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_supprimer_export').attr('class','erreur').html("Aucune structure sélectionnée !");
+          $('#ajax_supprimer_export').removeAttr('class').addClass('erreur').html("Aucune structure sélectionnée !");
           return false;
         }
         $('#ajax_supprimer_export').removeAttr('class').html('&nbsp;');
@@ -547,7 +547,7 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      $('#ajax_supprimer_import').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_supprimer_import').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -557,7 +557,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_supprimer_import').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_supprimer_import').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $("button").prop('disabled',false);
           },
           success : function(responseJSON)
@@ -565,7 +565,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_supprimer_import').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_supprimer_import').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
@@ -576,7 +576,7 @@ $(document).ready
                   $(this).parent().parent().remove();
                 }
               );
-              $('#ajax_supprimer_import').attr('class','valide').html('Demande réalisée !');
+              $('#ajax_supprimer_import').removeAttr('class').addClass('valide').html('Demande réalisée !');
               $("button").prop('disabled',false);
             }
           }
@@ -593,7 +593,7 @@ $(document).ready
         $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_supprimer_import').attr('class','erreur').html("Aucune structure cochée !");
+          $('#ajax_supprimer_import').removeAttr('class').addClass('erreur').html("Aucune structure cochée !");
           return false;
         }
         $('#ajax_supprimer_import').removeAttr('class').html('&nbsp;');

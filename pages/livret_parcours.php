@@ -35,14 +35,6 @@ $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_parcours_type();
 $parcours      = isset($_GET['code'])           ? Clean::ref($_GET['code']) : '' ;
 $parcours_code = isset($DB_TAB['P_'.$parcours]) ? 'P_'.$parcours            : '' ;
 
-// On complète le Sous-Menu d'en-tête
-$SOUS_MENU .= '<br />';
-foreach($DB_TAB as $key => $TAB)
-{
-  $class = ($key==$parcours_code) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page=livret&amp;section=parcours&amp;code='.strtolower(substr($key,2)).'">'.html($TAB[0]['livret_parcours_type_nom']).'</a>'.NL;
-}
-
 if(!$parcours_code)
 {
   echo'<p>Choisir un type de parcours :</p>'.NL;
@@ -53,6 +45,14 @@ if(!$parcours_code)
   }
   echo'</ul>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
+// On complète le Sous-Menu d'en-tête
+$SOUS_MENU .= '<br />';
+foreach($DB_TAB as $key => $TAB)
+{
+  $class = ($key==$parcours_code) ? ' class="actif"' : '' ;
+  $SOUS_MENU .= '<a'.$class.' href="./index.php?page=livret&amp;section=parcours&amp;code='.strtolower(substr($key,2)).'">'.html($TAB[0]['livret_parcours_type_nom']).'</a>'.NL;
 }
 
 // On met de côté les informations du parcours choisi

@@ -56,19 +56,19 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
             initialiser_compteur();
             if(responseJSON['statut']==true)
             {
-              $('#ajax_msg').attr('class','valide').html("");
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("");
               $('#select_eleve').html(responseJSON['value']).show();
             }
             else
             {
-              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -83,7 +83,7 @@ $(document).ready
         // type = $("#f_groupe option:selected").parent().attr('label');
         groupe_type = groupe_val.substring(0,1);
         groupe_id   = groupe_val.substring(1);
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type);
       }
       else
@@ -116,7 +116,7 @@ $(document).ready
           $('#ajax_msg').removeAttr('class').html("");
           return false;
         }
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -126,7 +126,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -138,7 +138,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -165,7 +165,7 @@ $(document).ready
         table_next.find('th.vu').html(titre_prev);
         para_clic.before(table_next);
         para_clic.after(table_prev);
-        $('#ajax_msg2').attr('class','alerte').html("Modification(s) non enregistrée(s) !").parent().show();
+        $('#ajax_msg2').removeAttr('class').addClass('alerte').html("Modification(s) non enregistrée(s) !").parent().show();
       }
     );
 
@@ -180,7 +180,7 @@ $(document).ready
       function()
       {
         $(this).parent().html('<q class="ajouter" title="Ajouter un responsable."></q>').prev('td').html('---').parent().parent().parent().removeAttr('id');
-        $('#ajax_msg2').attr('class','alerte').html("Modification(s) non enregistrée(s) !").parent().show();
+        $('#ajax_msg2').removeAttr('class').addClass('alerte').html("Modification(s) non enregistrée(s) !").parent().show();
       }
     );
 
@@ -219,17 +219,17 @@ $(document).ready
         var parent_login = tab_parent[1].substring(0,tab_parent[1].length-1);
         if(!parent_id)
         {
-          $('#ajax_msg_select').attr('class','alerte').html("Aucun responsable choisi !");
+          $('#ajax_msg_select').removeAttr('class').addClass('alerte').html("Aucun responsable choisi !");
           return false;
         }
         if($('#parent_'+parent_id).length)
         {
-          $('#ajax_msg_select').attr('class','alerte').html("Ce responsable est déjà associé à l'élève !");
+          $('#ajax_msg_select').removeAttr('class').addClass('alerte').html("Ce responsable est déjà associé à l'élève !");
           return false;
         }
         $(this).parent().html('<em>'+parent_nom+'</em><span class="ml">['+parent_login+']</span><hr /><div class="astuce">Penser à enregistrer pour confirmer ce changement.</div>').next('th').html('<q class="modifier" title="Changer ce responsable."></q><q class="supprimer" title="Retirer ce responsable."></q>').parent().parent().parent().attr('id','parent_'+parent_id);
         afficher_masquer_images_action('show');
-        $('#ajax_msg2').attr('class','alerte').html("Modification(s) non enregistrée(s) !").parent().show();
+        $('#ajax_msg2').removeAttr('class').addClass('alerte').html("Modification(s) non enregistrée(s) !").parent().show();
       }
     );
 
@@ -269,7 +269,7 @@ $(document).ready
         // Zy va : envoi ajax
         $('button').prop('disabled',true);
         afficher_masquer_images_action('hide');
-        $('#ajax_msg2').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg2').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -281,7 +281,7 @@ $(document).ready
             {
               $('button').prop('disabled',false);
               afficher_masquer_images_action('show');
-              $('#ajax_msg2').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg2').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -296,7 +296,7 @@ $(document).ready
               {
                 $('button').prop('disabled',false);
                 afficher_masquer_images_action('show');
-                $('#ajax_msg2').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg2').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

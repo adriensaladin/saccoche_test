@@ -147,33 +147,6 @@ public static function DB_recuperer_version_MySQL()
 }
 
 /**
- * Récupérer le mode SQL
- *
- * @param void
- * @return string
- */
-public static function DB_recuperer_mode_SQL()
-{
-  $DB_SQL = 'SELECT @@sql_mode';
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * compter_devoirs_annees_scolaires_precedentes
- *
- * @param void
- * @return int
- */
-public static function DB_compter_devoirs_annees_scolaires_precedentes()
-{
-  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL.= 'FROM sacoche_devoir ';
-  $DB_SQL.= 'WHERE devoir_date<:devoir_date ';
-  $DB_VAR = array( ':devoir_date' => To::jour_debut_annee_scolaire('mysql') );
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * recuperer_dates_periode
  *
  * @param int    $groupe_id    id du groupe
@@ -209,12 +182,6 @@ public static function DB_recuperer_dates_periode( $groupe_id , $periode_id )
  */
 public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $niveau_id , $only_socle , $only_item , $socle_nom , $s2016_count , $item_comm )
 {
-  // Depuis MySQL 5.7.5 la directive ONLY_FULL_GROUP_BY est activée ce qui plantait la requête ci-dessous
-  // (SELECT list is not in GROUP BY clause and contains nonaggregated column 'sacoche.sacoche_referentiel.matiere_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by)
-  // à moins d'inverser l'ordre de parcours des tables (partir de sacoche_referentiel_item) ce qui ne me semble pas cool au vu du WHERE
-  // ou de remplacer les LEFT JOIN par des INNER JOIN jusqu'à atteindre sacoche_referentiel_item
-  // (INNER JOIN n'est cependant pas généralisé car dans certains cas on souhaite pouvoir récupérer des arborescences incomplètes)
-  $type_join         = ($s2016_count) ? 'INNER JOIN' : 'LEFT JOIN' ;
   $select_item_comm  = ($item_comm)   ? 'item_comm, ' : '' ;
   $select_s2016_nb   = ($s2016_count) ? 'COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ' : '' ;
   $select_socle_nom  = ($socle_nom)   ? 'entree_id, entree_nom ' : 'entree_id ' ;
@@ -240,9 +207,9 @@ public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $nive
   $DB_SQL.= $join_user_matiere;
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= $type_join.' sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
-  $DB_SQL.= $type_join.' sacoche_referentiel_theme USING (domaine_id) ';
-  $DB_SQL.= $type_join.' sacoche_referentiel_item USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= $join_socle_item.$join_s2016;
   $DB_SQL.= 'WHERE matiere_active=1 '.$where_user.$where_matiere.$where_niveau.$where_item.$where_socle;
   $DB_SQL.= $group_s2016;
@@ -445,7 +412,7 @@ public static function DB_lister_users_regroupement( $profil_type , $statut , $g
   $from  = 'FROM sacoche_user'.$as.' ' ; // Peut être modifié ensuite (requête optimisée si on commence par une autre table)
   $ljoin = '';
   $where = 'WHERE sacoche_user_profil.user_profil_type=:profil_type '.$test_date_sortie.' ';
-  $group = ($profil_type!='parent') ? 'GROUP BY user_id ' : 'GROUP BY parent.user_id, enfant.user_id ' ;
+  $group = ($profil_type!='parent') ? 'GROUP BY user_id ' : 'GROUP BY parent.user_id ' ;
   $order = 'ORDER BY '.$prefixe.'user_nom ASC, '.$prefixe.'user_prenom ASC'; // Peut être modifié ensuite (si besoin de tri des élèves par classe d'origine)
   if(in_array($profil_type,array('directeur','administrateur')))
   {
@@ -1371,10 +1338,9 @@ public static function DB_OPT_classes_parent($parent_id)
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_jointure_parent_eleve.eleve_id=sacoche_user.user_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id=sacoche_groupe.groupe_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'WHERE parent_id=:parent_id AND user_profil_type=:profil_type AND user_sortie_date>NOW() AND groupe_id IS NOT NULL '; // Not NULL sinon pb qd un parent est rattaché à un enfant affecté dans aucune classe.
   $DB_SQL.= 'GROUP BY groupe_id ';
-  $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_nom ASC';
+  $DB_SQL.= 'ORDER BY resp_legal_num ASC, user_nom ASC, user_prenom ASC ';
   $DB_VAR = array(
     ':parent_id'   => $parent_id,
     ':profil_type' => 'eleve',

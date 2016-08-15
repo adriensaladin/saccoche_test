@@ -55,7 +55,7 @@ $(document).ready
       if( groupe_id && matiere_id )
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -65,7 +65,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -78,7 +78,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -110,7 +110,7 @@ $(document).ready
       if( groupe_id )
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -120,7 +120,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -137,7 +137,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -185,7 +185,7 @@ $(document).ready
       if( page_ref )
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -195,7 +195,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
@@ -218,7 +218,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -472,7 +472,7 @@ $(document).ready
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -482,7 +482,7 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -493,11 +493,11 @@ $(document).ready
       $('#form_gestion button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         action = $('#f_action').val();
         switch (action)
         {

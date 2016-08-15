@@ -602,9 +602,6 @@ public static function DB_OPT_eleves_devoirs_prof_groupe($prof_id,$groupe_id)
  */
 public static function DB_lister_devoir_items( $devoir_id , $with_socle , $with_coef , $with_ref , $with_comm , $with_lien )
 {
-  // Depuis MySQL 5.7.5 la directive ONLY_FULL_GROUP_BY est activée ce qui plantait la requête ci-dessous
-  // (SELECT list is not in GROUP BY clause and contains nonaggregated column 'sacoche_jointure_devoir_item.item_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by)
-  // d'où le remplacement d'un LEFT JOIN par un INNER JOIN
   $DB_SQL = 'SELECT item_id, ';
   $DB_SQL.= ($with_socle) ? 'entree_id, COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ' : '' ;
   $DB_SQL.= ($with_coef)  ? 'item_coef, '   : '' ;
@@ -615,12 +612,12 @@ public static function DB_lister_devoir_items( $devoir_id , $with_socle , $with_
   $DB_SQL.= ($with_comm)  ? 'item_comm, '   : '' ;
   $DB_SQL.= 'item_nom ';
   $DB_SQL.= 'FROM sacoche_jointure_devoir_item ';
-  $DB_SQL.= 'INNER JOIN sacoche_referentiel_item USING (item_id) '; // 
+  $DB_SQL.= ($with_socle) ? 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= ($with_socle) ? 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
   $DB_SQL.= 'WHERE devoir_id=:devoir_id ';
   $DB_SQL.= ($with_socle) ? 'GROUP BY sacoche_referentiel_item.item_id ' : '' ;
   $DB_SQL.= 'ORDER BY jointure_ordre ASC, matiere_ref ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';

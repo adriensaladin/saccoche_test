@@ -313,7 +313,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -338,7 +338,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_maj').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -357,7 +357,7 @@ $(document).ready
         {
           eleves_ordre = $("#f_eleves_ordre option:selected").val();
           groupe_type  = $("#f_groupe option:selected").parent().attr('label');
-          $('#ajax_maj').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_maj').removeAttr('class').addClass('loader').html("En cours&hellip;");
           if(PROFIL_TYPE=='directeur')
           {
             maj_eleve(groupe_id,groupe_type,eleves_ordre);
@@ -383,7 +383,7 @@ $(document).ready
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
         $("#f_eleve").html('<option value="">&nbsp;</option>').hide();
-        $('#ajax_maj').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_maj').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }
     );
@@ -417,7 +417,7 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 modifier_action_matiere = (modifier_action_matiere=='ajouter') ? 'retirer' : 'ajouter' ;
-                $('#modifier_matiere').attr('class',"form_"+modifier_action_matiere);
+                $('#modifier_matiere').removeAttr('class').addClass("form_"+modifier_action_matiere);
                 $('#f_matiere').html(responseJSON['value']);
               }
             }
@@ -451,7 +451,7 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 modifier_action_matieres = (modifier_action_matieres=='ajouter') ? 'retirer' : 'ajouter' ;
-                $('#modifier_matieres').attr('class',"form_"+modifier_action_matieres);
+                $('#modifier_matieres').removeAttr('class').addClass("form_"+modifier_action_matieres);
                 $('#f_matieres').html(responseJSON['value']);
               }
             }
@@ -611,7 +611,7 @@ $(document).ready
             else {element.parent().next().next().after(error);}
           }
         }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -656,7 +656,7 @@ $(document).ready
         if(readytogo)
         {
           $('#form_select button').prop('disabled',true);
-          $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         }
         return readytogo;
       }
@@ -674,7 +674,7 @@ $(document).ready
       else
       {
         $('#form_select button').prop('disabled',false);
-        $('#ajax_msg').attr('class','alerte').html(message);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(message);
       }
     }
 
@@ -698,7 +698,7 @@ $(document).ready
         }
         else
         {
-          $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+          $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
         }
       }
       else

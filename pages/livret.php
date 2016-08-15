@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Livret Scolaire"));
 ?>
 
-<p class="travaux">Interfaces en prévision de la gestion du <em>Livret Scolaire</em> dans <em>SACoche</em>.</p>
+<div class="travaux">Interfaces en prévision de la réforme entrant en vigueur en septembre 2016. Les données seront ré-initialisées au changement d'année scolaire.</div>
 
 <?php
 // Sous-Menu d'en-tête

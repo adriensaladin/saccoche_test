@@ -206,21 +206,9 @@ Layout::add( 'js_inline_before' , '// <![CDATA[' );
 Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_MODELE   = "'.convertCRtoJS(html($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_MODELE'])).'";' );
 Layout::add( 'js_inline_before' , 'var APP_GENERALE_MODELE   = "'.convertCRtoJS(html($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_MODELE'])).'";' );
 Layout::add( 'js_inline_before' , '// ]]>' );
-
-// Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
-if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
-{
-  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
-}
 ?>
 
 <ul class="puce">
-  <?php
-  if($tab_types[$BILAN_TYPE]['droit']=='SOCLE')
-  {
-    echo'<li><span class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2016 ; elle ne doit plus être utilisée par les établissements ayant appliqué la réforme.</span></li>';
-  }
-  ?>
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__<?php echo $tab_types[$BILAN_TYPE]['doc'] ?>">DOC : Bilan officiel &rarr; <?php echo $tab_types[$BILAN_TYPE]['titre'] ?></a></span></li>
   <li><span class="astuce"><?php echo($affichage_formulaire_statut) ? 'Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.' : '<a title="'.$profils_modifier_statut.'" href="#">Profils pouvant modifier le statut d\'un bilan.</a>' ; ?></span></li>
   <?php echo $li ?>

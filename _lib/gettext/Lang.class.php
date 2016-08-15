@@ -148,13 +148,14 @@ class Lang
    * Convert the given string to the encoding set by bind_textdomain_codeset.
    */
   private static function encode($text) {
+    $source_encoding = mb_detect_encoding($text);
     $target_encoding = Lang::get_codeset();
-    if (function_exists("mb_detect_encoding")) {
-      $source_encoding = mb_detect_encoding($text);
-      if ($source_encoding != $target_encoding)
-        $text = mb_convert_encoding($text, $target_encoding, $source_encoding);
+    if ($source_encoding != $target_encoding) {
+      return mb_convert_encoding($text, $target_encoding, $source_encoding);
     }
-    return $text;
+    else {
+      return $text;
+    }
   }
 
   // //////////////////////////////////////////////////

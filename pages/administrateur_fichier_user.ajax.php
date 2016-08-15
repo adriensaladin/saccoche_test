@@ -88,6 +88,7 @@ $tab_extensions_autorisees = ($import_origine=='sconet') ? array('zip','xml') : 
 $extension_fichier_dest    = ($import_origine=='sconet') ? 'xml'              : 'txt' ;
 $fichier_nom_debut   = 'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_';
 $fichier_dest_nom    = $fichier_nom_debut.'import.'.$extension_fichier_dest ;
+$fichier_dest_chemin = CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Quelques fonctions utiles

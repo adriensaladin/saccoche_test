@@ -57,7 +57,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_enregistrer').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_enregistrer').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -67,19 +67,19 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_enregistrer').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_enregistrer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
             {
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_enregistrer').attr('class','valide').html("Compte activé.");
+                $('#ajax_msg_enregistrer').removeAttr('class').addClass('valide').html("Compte activé.");
                 document.location.href = './index.php?page=compte_accueil';
               }
               else
               {
-                $('#ajax_msg_enregistrer').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_enregistrer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 return false;
               }
             }

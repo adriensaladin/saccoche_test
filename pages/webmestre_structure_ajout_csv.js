@@ -76,13 +76,13 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( '.csv.txt.'.indexOf('.'+fichier_ext+'.') == -1 )
           {
-            $('#ajax_msg_csv').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+            $('#ajax_msg_csv').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }
           else
           {
             $("#bouton_choisir_csv").prop('disabled',true);
-            $('#ajax_msg_csv').attr('class','loader').html("En cours&hellip;");
+            $('#ajax_msg_csv').removeAttr('class').addClass('loader').html("En cours&hellip;");
             formulaire_csv.submit();
           }
         }
@@ -104,7 +104,7 @@ $(document).ready
     {
       $('#f_csv').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $("#bouton_choisir_csv").prop('disabled',false);
-      $('#ajax_msg_csv').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_csv').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
       $('#div_import , #div_info_import , #structures').hide('fast');
     }
 
@@ -115,13 +115,13 @@ $(document).ready
       $("#bouton_choisir_csv").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_csv').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_csv').removeAttr('class').addClass('alerte').html(responseJSON['value']);
         $('#div_import , #div_info_import , #structures').hide('fast');
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_msg_csv').attr('class','valide').html("Fichier bien reçu ; "+responseJSON['value']+".");
+        $('#ajax_msg_csv').removeAttr('class').addClass('valide').html("Fichier bien reçu ; "+responseJSON['value']+".");
         $('#div_info_import , #structures').hide('fast');
         $('#ajax_msg_import').removeAttr('class').html('&nbsp;');
         $('#div_import').show('fast');
@@ -172,7 +172,7 @@ $(document).ready
       $("button").prop('disabled',true);
       var num = $('#ajax_import_num').html();
       var max = $('#ajax_import_max').html();
-      $('#ajax_msg_import').attr('class','loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
+      $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
       $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
       $('#div_info_import').show('fast');
       $('#structures').hide('fast').children('#table_action').children('tbody').html('');
@@ -197,7 +197,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_import').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_import').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
           },
           success : function(responseJSON)
@@ -205,7 +205,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_import').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_import').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               $('#puce_info_import').html('<li><a id="a_reprise_import" href="#">Reprendre la procédure à l\'étape ' + num + ' sur ' + max + '.</a></li>');
             }
             else
@@ -214,7 +214,7 @@ $(document).ready
               $('#structures tbody').append(responseJSON['value']);
               if(num > max)  // Utilisation de parseInt obligatoire sinon la comparaison des valeurs pose ici pb
               {
-                $('#ajax_msg_import').attr('class','valide').html('');
+                $('#ajax_msg_import').removeAttr('class').addClass('valide').html('');
                 $('#puce_info_import').html('<li>Import terminé !</li>');
                 $('#ajax_msg_csv , #ajax_msg_import').removeAttr('class').html('&nbsp;');
                 $('#div_import').hide('fast');
@@ -224,7 +224,7 @@ $(document).ready
               else
               {
                 $('#ajax_import_num').html(num);
-                $('#ajax_msg_import').attr('class','loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
+                $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
                 $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
                 importer();
               }
@@ -242,7 +242,7 @@ $(document).ready
       {
         num = $('#ajax_import_num').html();
         max = $('#ajax_import_max').html();
-        $('#ajax_msg_import').attr('class','loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
+        $('#ajax_msg_import').removeAttr('class').addClass('loader').html('Import en cours : étape ' + num + ' sur ' + max + '...');
         $('#puce_info_import').html('<li>Ne pas interrompre la procédure avant la fin du traitement !</li>');
         importer();
       }
@@ -302,7 +302,7 @@ $(document).ready
     var supprimer_structures_cochees = function(listing_id)
     {
       $("button").prop('disabled',true);
-      $('#ajax_supprimer').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_supprimer').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -312,7 +312,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_supprimer').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $("button").prop('disabled',false);
           },
           success : function(responseJSON)
@@ -320,7 +320,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_supprimer').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_supprimer').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
@@ -349,7 +349,7 @@ $(document).ready
         $("#table_action input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_supprimer').attr('class','erreur').html("Aucune structure cochée !");
+          $('#ajax_supprimer').removeAttr('class').addClass('erreur').html("Aucune structure cochée !");
           return false;
         }
         $('#ajax_supprimer').removeAttr('class').html('&nbsp;');

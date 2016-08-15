@@ -56,7 +56,7 @@ $(document).ready
         groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
         groupe_id   = groupe_val;
       }
-      $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -66,18 +66,18 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg').attr('class','valide').html("Demande réalisée !");
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
               $('#liste_eleves').html(responseJSON['value']);
             }
           }
@@ -134,7 +134,7 @@ $(document).ready
           if( (!reg_filename.test(masque)) || (!reg_extension.test(masque)) )
           {
             $('#f_photos').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
-            $('#ajax_msg_photos').attr('class','erreur').html('Indiquer correctement la forme des noms des fichiers contenus dans l\'archive.');
+            $('#ajax_msg_photos').removeAttr('class').addClass('erreur').html('Indiquer correctement la forme des noms des fichiers contenus dans l\'archive.');
             return false;
           }
           else
@@ -143,13 +143,13 @@ $(document).ready
             var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
             if( fichier_ext != 'zip' )
             {
-              $('#ajax_msg_photos').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
+              $('#ajax_msg_photos').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas l\'extension zip.');
               return false;
             }
             else
             {
               $("button").prop('disabled',true);
-              $('#ajax_msg_photos').attr('class','loader').html("En cours&hellip;");
+              $('#ajax_msg_photos').removeAttr('class').addClass('loader').html("En cours&hellip;");
               formulaire_photos.submit();
             }
           }
@@ -172,7 +172,7 @@ $(document).ready
     {
       $('#f_photos').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $("button").prop('disabled',false);
-      $('#ajax_msg_photos').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_photos').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -182,12 +182,12 @@ $(document).ready
       $("button").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_photos').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_photos').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_msg_photos').attr('class','valide').html('Demande traitée !');
+        $('#ajax_msg_photos').removeAttr('class').addClass('valide').html('Demande traitée !');
         $.fancybox( { 'href':responseJSON['value'] , 'type':'iframe' , 'width':'80%' , 'height':'80%' , 'centerOnScroll':true } );
         maj_affichage();
       }
@@ -231,13 +231,13 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( '.gif.jpg.jpeg.png.'.indexOf('.'+fichier_ext+'.') == -1 )
           {
-            $('#ajax_msg').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (gif jpg jpeg png).');
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (gif jpg jpeg png).');
             return false;
           }
           else
           {
             afficher_masquer_images_action('hide');
-            $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+            $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
             formulaire_photo.submit();
           }
         }
@@ -259,7 +259,7 @@ $(document).ready
     {
       $('#f_photo').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       afficher_masquer_images_action('show');
-      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -269,7 +269,7 @@ $(document).ready
       afficher_masquer_images_action('show');
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
@@ -309,7 +309,7 @@ $(document).ready
         var memo_div = $(this).parent();
         var user_id = memo_div.parent().attr('id').substring(4); // "div_" + id
         afficher_masquer_images_action('hide');
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -319,7 +319,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -327,7 +327,7 @@ $(document).ready
               afficher_masquer_images_action('show');
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {

@@ -46,7 +46,7 @@ $(document).ready
       'select, input',
       function()
       {
-        $('#ajax_msg').attr('class','alerte').html("Pensez à valider vos modifications !");
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html("Pensez à valider vos modifications !");
       }
     );
 
@@ -74,19 +74,19 @@ $(document).ready
         memo_action = $(this).attr('id');
         if( $("#select_periodes input:checked").length==0 || $("#select_classes_groupes input:checked").length==0 )
         {
-          $('#ajax_msg').attr('class','erreur').html("Sélectionnez dans les deux listes !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez dans les deux listes !");
           return false;
         }
         if(memo_action=='ajouter')
         {
           if( !test_dateITA( $("#f_date_debut").val() ) )
           {
-            $('#ajax_msg').attr('class','erreur').html("Date de début au format JJ/MM/AAAA incorrecte !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Date de début au format JJ/MM/AAAA incorrecte !");
             return false;
           }
           if( !test_dateITA( $("#f_date_fin").val() ) )
           {
-            $('#ajax_msg').attr('class','erreur').html("Date de fin au format JJ/MM/AAAA incorrecte !");
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html("Date de fin au format JJ/MM/AAAA incorrecte !");
             return false;
           }
         }
@@ -134,7 +134,7 @@ $(document).ready
     function envoyer_action_confirmee()
     {
       $('button').prop('disabled',true);
-      $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -145,7 +145,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('button').prop('disabled',false);
-            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -154,11 +154,11 @@ $(document).ready
             $('button').prop('disabled',false);
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg').attr('class','valide').html("Demande réalisée !");
+              $('#ajax_msg').removeAttr('class').addClass('valide').html("Demande réalisée !");
               $('#bilan').html(responseJSON['value']);
             }
           }
@@ -178,7 +178,7 @@ $(document).ready
         dataType : 'json',
         error : function(jqXHR, textStatus, errorThrown)
         {
-          $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+          $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           return false;
         },
         success : function(responseJSON)
@@ -186,7 +186,7 @@ $(document).ready
           initialiser_compteur();
           if(responseJSON['statut']==false)
           {
-            $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
           }
           else
           {

@@ -100,7 +100,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -136,7 +136,7 @@ $(document).ready
       if(readytogo)
       {
         $("#bouton_valider_sesamath").prop('disabled',true);
-        $('#ajax_msg_sesamath').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_sesamath').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -145,7 +145,7 @@ $(document).ready
     function retour_form_erreur_sesamath(jqXHR, textStatus, errorThrown)
     {
       $("#bouton_valider_sesamath").prop('disabled',false);
-      $('#ajax_msg_sesamath').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_sesamath').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -155,11 +155,11 @@ $(document).ready
       $("#bouton_valider_sesamath").prop('disabled',false);
       if(responseJSON['statut']==true)
       {
-        $('#ajax_msg_sesamath').attr('class','valide').html("Données enregistrées !");
+        $('#ajax_msg_sesamath').removeAttr('class').addClass('valide').html("Données enregistrées !");
       }
       else
       {
-        $('#ajax_msg_sesamath').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_sesamath').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 
@@ -190,7 +190,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -227,14 +227,14 @@ $(document).ready
       {
         if( (CONTACT_MODIFICATION_MAIL!='oui') && (CONTACT_MODIFICATION_MAIL!='non') && ($('#f_contact_courriel').val().lastIndexOf(CONTACT_MODIFICATION_MAIL)==-1) )
         {
-          $('#ajax_msg_contact').attr('class','erreur').html("Adresse de courriel restreinte au domaine '"+CONTACT_MODIFICATION_MAIL+"' par le webmestre.").show(); // Ajout show() sinon ici ça disparait...
+          $('#ajax_msg_contact').removeAttr('class').addClass('erreur').html("Adresse de courriel restreinte au domaine '"+CONTACT_MODIFICATION_MAIL+"' par le webmestre.").show(); // Ajout show() sinon ici ça disparait...
           readytogo = false;
         }
       }
       if(readytogo)
       {
         $("#bouton_valider_contact").prop('disabled',true);
-        $('#ajax_msg_contact').attr('class','loader').html("En cours&hellip;").show(); // Ajout show() sinon ici ça disparait...
+        $('#ajax_msg_contact').removeAttr('class').addClass('loader').html("En cours&hellip;").show(); // Ajout show() sinon ici ça disparait...
       }
       return readytogo;
     }
@@ -243,7 +243,7 @@ $(document).ready
     function retour_form_erreur_contact(jqXHR, textStatus, errorThrown)
     {
       $("#bouton_valider_contact").prop('disabled',false);
-      $('#ajax_msg_contact').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_contact').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -253,11 +253,11 @@ $(document).ready
       $("#bouton_valider_contact").prop('disabled',false);
      if(responseJSON['statut']==true)
       {
-        $('#ajax_msg_contact').attr('class','valide').html("Données enregistrées !");
+        $('#ajax_msg_contact').removeAttr('class').addClass('valide').html("Données enregistrées !");
       }
       else
       {
-        $('#ajax_msg_contact').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_contact').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 
@@ -271,7 +271,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_etablissement').attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_etablissement').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -307,7 +307,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -343,7 +343,7 @@ $(document).ready
       if(readytogo)
       {
         $("#bouton_valider_etablissement").prop('disabled',true);
-        $('#ajax_msg_etablissement').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_etablissement').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -352,7 +352,7 @@ $(document).ready
     function retour_form_erreur_etablissement(jqXHR, textStatus, errorThrown)
     {
       $("#bouton_valider_etablissement").prop('disabled',false);
-      $('#ajax_msg_etablissement').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_etablissement').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -362,11 +362,11 @@ $(document).ready
       $("#bouton_valider_etablissement").prop('disabled',false);
       if(responseJSON['statut']==true)
       {
-        $('#ajax_msg_etablissement').attr('class','valide').html("Données enregistrées !");
+        $('#ajax_msg_etablissement').removeAttr('class').addClass('valide').html("Données enregistrées !");
       }
       else
       {
-        $('#ajax_msg_etablissement').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_etablissement').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
     }
 
@@ -401,7 +401,7 @@ $(document).ready
       function()
       {
         simuler_affichage_annee_scolaire();
-        $('#ajax_msg_annee_scolaire').attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_annee_scolaire').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -412,7 +412,7 @@ $(document).ready
       function()
       {
         $("#bouton_valider_annee_scolaire").prop('disabled',true);
-        $('#ajax_msg_annee_scolaire').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_annee_scolaire').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -423,7 +423,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("#bouton_valider_annee_scolaire").prop('disabled',false);
-              $('#ajax_msg_annee_scolaire').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_annee_scolaire').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -432,11 +432,11 @@ $(document).ready
               $("#bouton_valider_annee_scolaire").prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_annee_scolaire').attr('class','valide').html("Donnée enregistrée !");
+                $('#ajax_msg_annee_scolaire').removeAttr('class').addClass('valide').html("Donnée enregistrée !");
               }
               else
               {
-                $('#ajax_msg_annee_scolaire').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_annee_scolaire').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               return false;
             }
@@ -454,7 +454,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_chefetabl').attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_chefetabl').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -463,7 +463,7 @@ $(document).ready
       function()
       {
         $("#bouton_valider_chefetabl").prop('disabled',true);
-        $('#ajax_msg_chefetabl').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_chefetabl').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -474,7 +474,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("#bouton_valider_chefetabl").prop('disabled',false);
-              $('#ajax_msg_chefetabl').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_chefetabl').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -483,11 +483,11 @@ $(document).ready
               $("#bouton_valider_chefetabl").prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_chefetabl').attr('class','valide').html("Choix enregistré !");
+                $('#ajax_msg_chefetabl').removeAttr('class').addClass('valide').html("Choix enregistré !");
               }
               else
               {
-                $('#ajax_msg_chefetabl').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_chefetabl').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               return false;
             }
@@ -505,7 +505,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_langue').attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_langue').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -514,7 +514,7 @@ $(document).ready
       function()
       {
         $("#bouton_valider_langue").prop('disabled',true);
-        $('#ajax_msg_langue').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_langue').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -525,7 +525,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("#bouton_valider_langue").prop('disabled',false);
-              $('#ajax_msg_langue').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_langue').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -534,11 +534,11 @@ $(document).ready
               $("#bouton_valider_langue").prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_langue').attr('class','valide').html("Donnée enregistrée !");
+                $('#ajax_msg_langue').removeAttr('class').addClass('valide').html("Donnée enregistrée !");
               }
               else
               {
-                $('#ajax_msg_langue').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_langue').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               return false;
             }
@@ -556,7 +556,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_ip_variable').attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_msg_ip_variable').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -565,7 +565,7 @@ $(document).ready
       function()
       {
         $("#bouton_valider_ip_variable").prop('disabled',true);
-        $('#ajax_msg_ip_variable').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_ip_variable').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -576,7 +576,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("#bouton_valider_ip_variable").prop('disabled',false);
-              $('#ajax_msg_ip_variable').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_ip_variable').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -585,11 +585,11 @@ $(document).ready
               $("#bouton_valider_ip_variable").prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_ip_variable').attr('class','valide').html("Choix enregistré !");
+                $('#ajax_msg_ip_variable').removeAttr('class').addClass('valide').html("Choix enregistré !");
               }
               else
               {
-                $('#ajax_msg_ip_variable').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_ip_variable').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               return false;
             }
@@ -629,7 +629,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_communautaire').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -641,7 +641,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_communautaire').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -664,7 +664,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#f_recherche_geo select').prop('disabled',false);
-            $('#ajax_msg_communautaire').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -677,7 +677,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_communautaire').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -700,7 +700,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#f_recherche_geo select').prop('disabled',false);
-            $('#ajax_msg_communautaire').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -713,7 +713,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_communautaire').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -736,7 +736,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#f_recherche_geo select').prop('disabled',false);
-            $('#ajax_msg_communautaire').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -749,7 +749,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_communautaire').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -772,7 +772,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#rechercher_uai').prop('disabled',false);
-            $('#ajax_msg_communautaire').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -785,7 +785,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_communautaire').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -804,7 +804,7 @@ $(document).ready
         $("#f_recherche_resultat").html('<li></li>').hide();
         if(mode=='geo')
         {
-          $('#ajax_msg_communautaire').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg_communautaire').removeAttr('class').addClass('loader').html("En cours&hellip;");
           $('#f_geo1').html('<option value="">&nbsp;</option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
           $('#f_geo2').html('<option value="">&nbsp;</option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
           $('#f_geo3').html('<option value="">&nbsp;</option>').fadeOut('fast'); // Ne pas utiliser "hide()" sinon pb de display block
@@ -838,7 +838,7 @@ $(document).ready
         if(geo1_val)
         {
           $('#f_recherche_geo select').prop('disabled',true);
-          $('#ajax_msg_communautaire').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg_communautaire').removeAttr('class').addClass('loader').html("En cours&hellip;");
           maj_geo2(geo1_val);
         }
         else
@@ -863,7 +863,7 @@ $(document).ready
         if(geo1_val && geo2_val)
         {
           $('#f_recherche_geo select').prop('disabled',true);
-          $('#ajax_msg_communautaire').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg_communautaire').removeAttr('class').addClass('loader').html("En cours&hellip;");
           maj_geo3(geo1_val,geo2_val);
         }
         else
@@ -886,7 +886,7 @@ $(document).ready
         if(geo3_val)
         {
           $('#f_recherche_geo select').prop('disabled',true);
-          $('#ajax_msg_communautaire').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg_communautaire').removeAttr('class').addClass('loader').html("En cours&hellip;");
           maj_resultat_geo(geo3_val);
         }
         else
@@ -909,7 +909,7 @@ $(document).ready
         // Vérifier le format du numéro UAI
         if(!test_uai_format(uai_val))
         {
-          $('#ajax_msg_communautaire').attr('class','alerte').html("Le numéro UAI doit comporter 7 chiffres suivis d'une lettre !");
+          $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html("Le numéro UAI doit comporter 7 chiffres suivis d'une lettre !");
           return false;
         }
         // Vérifier la géographie du numéro UAI
@@ -917,12 +917,12 @@ $(document).ready
         // Vérifier la clef de contrôle du numéro UAI
         if(!test_uai_clef(uai_val))
         {
-          $('#ajax_msg_communautaire').attr('class','alerte').html("Numéro UAI incorrect (clef de contrôle incompatible) !");
+          $('#ajax_msg_communautaire').removeAttr('class').addClass('alerte').html("Numéro UAI incorrect (clef de contrôle incompatible) !");
           return false;
         }
         // Si on arrive jusque là c'est que le n° UAI est valide
         $('#rechercher_uai').prop('disabled',true);
-        $('#ajax_msg_communautaire').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_communautaire').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_resultat_uai(uai_val);
       }
     );
@@ -948,7 +948,7 @@ $(document).ready
         $('#f_sesamath_uai2').val(tab_infos[2]); // (peut être vide)
         $('#f_sesamath_type_nom' ).val(denomination);
         $('#f_sesamath_type_nom2').val(denomination);
-        $('#ajax_msg_sesamath').attr('class','alerte').html('Pensez à valider pour confirmer votre sélection !');
+        $('#ajax_msg_sesamath').removeAttr('class').addClass('alerte').html('Pensez à valider pour confirmer votre sélection !');
         initialiser_compteur();
         $('#rechercher_annuler').click();
       }
@@ -992,13 +992,13 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( '.gif.jpg.jpeg.png.'.indexOf('.'+fichier_ext+'.') == -1 )
           {
-            $('#ajax_msg_logo').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (gif jpg jpeg png).');
+            $('#ajax_msg_logo').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension autorisée (gif jpg jpeg png).');
             return false;
           }
           else
           {
             $("#bouton_choisir_logo").prop('disabled',true);
-            $('#ajax_msg_logo').attr('class','loader').html("En cours&hellip;");
+            $('#ajax_msg_logo').removeAttr('class').addClass('loader').html("En cours&hellip;");
             formulaire_logo.submit();
           }
         }
@@ -1020,7 +1020,7 @@ $(document).ready
     {
       $('#f_logo').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $("#bouton_choisir_logo").prop('disabled',false);
-      $('#ajax_msg_logo').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_logo').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -1030,12 +1030,12 @@ $(document).ready
       $("#bouton_choisir_logo").prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_logo').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_logo').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
         initialiser_compteur();
-        $('#ajax_msg_logo').attr('class','valide').html('Logo ajouté');
+        $('#ajax_msg_logo').removeAttr('class').addClass('valide').html('Logo ajouté');
         $('#puce_logo').html(responseJSON['value']);
       }
     }
@@ -1051,7 +1051,7 @@ $(document).ready
       'q.supprimer',
       function()
       {
-        $('#ajax_upload').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_upload').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -1061,14 +1061,14 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_upload').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_upload').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_upload').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_upload').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {

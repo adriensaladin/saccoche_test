@@ -45,7 +45,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_uai_origine').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_uai_origine').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -57,7 +57,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_uai_origine').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_uai_origine').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -79,7 +79,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_groupe').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_groupe').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -96,7 +96,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_groupe').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_groupe').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -113,7 +113,7 @@ $(document).ready
         // type = $("#f_groupe option:selected").parent().attr('label');
         groupe_type = groupe_val.substring(0,1);
         groupe_id   = groupe_val.substring(1);
-        $('#ajax_msg_groupe').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_groupe').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type);
       }
       else
@@ -144,7 +144,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_annee').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_annee').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -156,7 +156,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_annee').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_annee').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -168,7 +168,7 @@ $(document).ready
       var annee_val = $("#f_annee option:selected").val();
       if( parseInt(annee_val,10) )
       {
-        $('#ajax_msg_annee').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_annee').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_periode(annee_val);
       }
       else
@@ -235,7 +235,7 @@ $(document).ready
           if(element.is("select")) {element.after(error);}
           else if(element.attr("type")=="checkbox") {element.parent().parent().next().after(error);}
         }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -271,7 +271,7 @@ $(document).ready
       if(readytogo)
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -281,7 +281,7 @@ $(document).ready
     {
       $('#bouton_valider').prop('disabled',false);
       var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-      $('#ajax_msg').attr('class','alerte').html(message);
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(message);
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -291,11 +291,11 @@ $(document).ready
       $('#bouton_valider').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg').attr('class','valide').html("Résultat ci-dessous.");
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Résultat ci-dessous.");
         $('#bilan').html('<hr /><ul class="puce"><li><a target="_blank" href="'+responseJSON['href']+'">'+responseJSON['texte']+'</a></li></ul>');
       }
     }

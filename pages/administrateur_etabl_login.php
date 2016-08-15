@@ -57,22 +57,23 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profi
 
 <h2>Affiner selon les profils</h2>
 
-<?php
-foreach($DB_TAB as $DB_ROW)
-{
-  echo'<form action="#" method="post">'.NL;
-  echo'<p>'.NL;
-  echo  '<label class="tab">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label>Modèle du nom d\'utilisateur <input type="text" id="f_login_'.$DB_ROW['user_profil_sigle'].'" name="f_login_'.$DB_ROW['user_profil_sigle'].'" value="'.$DB_ROW['user_profil_login_modele'].'" size="'.LOGIN_LONGUEUR_MAX.'" maxlength="'.LOGIN_LONGUEUR_MAX.'" /><br />'.NL;
-  echo  '<span class="tab"></span>Longueur minimale du mot de passe <select id="f_mdp_'.$DB_ROW['user_profil_sigle'].'" name="f_mdp_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'"','value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'" selected',$options).'</select><br />'.NL;
-  if($DB_ROW['user_profil_sigle']=='ELV')
+<form action="#" method="post">
+
+  <?php
+  foreach($DB_TAB as $DB_ROW)
   {
-    $checked = ($DB_ROW['user_profil_mdp_date_naissance']) ? ' checked' : '' ;
-    echo  '<span class="tab"></span><label for="f_birth_'.$DB_ROW['user_profil_sigle'].'"><input type="checkbox" id="f_birth_'.$DB_ROW['user_profil_sigle'].'" name="f_birth_'.$DB_ROW['user_profil_sigle'].'"'.$checked.'> Prendre la date de naissance comme mot de passe (format JJMMAAAA).</label><br />'.NL;
+    echo'<p>'.NL;
+    echo  '<label class="tab">'.$DB_ROW['user_profil_nom_court_pluriel'].' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$DB_ROW['user_profil_nom_long_pluriel'].'" /> :</label>Modèle du nom d\'utilisateur <input type="text" id="f_login_'.$DB_ROW['user_profil_sigle'].'" name="f_login_'.$DB_ROW['user_profil_sigle'].'" value="'.$DB_ROW['user_profil_login_modele'].'" size="'.LOGIN_LONGUEUR_MAX.'" maxlength="'.LOGIN_LONGUEUR_MAX.'" /><br />'.NL;
+    echo  '<span class="tab"></span>Longueur minimale du mot de passe <select id="f_mdp_'.$DB_ROW['user_profil_sigle'].'" name="f_mdp_'.$DB_ROW['user_profil_sigle'].'">'.str_replace('value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'"','value="'.$DB_ROW['user_profil_mdp_longueur_mini'].'" selected',$options).'</select><br />'.NL;
+    if($DB_ROW['user_profil_sigle']=='ELV')
+    {
+      $checked = ($DB_ROW['user_profil_mdp_date_naissance']) ? ' checked' : '' ;
+      echo  '<span class="tab"></span><label for="f_birth_'.$DB_ROW['user_profil_sigle'].'"><input type="checkbox" id="f_birth_'.$DB_ROW['user_profil_sigle'].'" name="f_birth_'.$DB_ROW['user_profil_sigle'].'"'.$checked.'> Prendre la date de naissance comme mot de passe (format JJMMAAAA).</label><br />'.NL;
+    }
+    echo  '<span class="tab"></span><button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label>'.NL;
+    echo'</p>'.NL;
   }
-  echo  '<span class="tab"></span><button id="bouton_valider_'.$DB_ROW['user_profil_sigle'].'" type="button" class="parametre">Valider.</button><label id="ajax_msg_'.$DB_ROW['user_profil_sigle'].'">&nbsp;</label>'.NL;
-  echo'</p>'.NL;
-  echo'</form>'.NL;
-}
-?>
+  ?>
+</form>
 
 <hr />

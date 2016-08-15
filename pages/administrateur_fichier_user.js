@@ -129,31 +129,31 @@ $(document).ready
           if( (f_action.indexOf('sconet')!=-1) && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
             $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
-            $('#ajax_msg').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
             return false;
           }
           else if ( (f_action.indexOf('base_eleves')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
             $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
-            $('#ajax_msg').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }
           else if ( (f_action.indexOf('factos')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
             $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
-            $('#ajax_msg').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }
           else if ( (f_action.indexOf('tableur')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
             $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
-            $('#ajax_msg').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
             return false;
           }
           else
           {
             $('#form_choix button').prop('disabled',true);
-            $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+            $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
             $('#ajax_retour').html("");
             formulaire_import.submit();
           }
@@ -176,7 +176,7 @@ $(document).ready
     {
       $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $('#form_choix button').prop('disabled',false);
-      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -186,7 +186,7 @@ $(document).ready
       $('#form_choix button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
@@ -231,7 +231,7 @@ $(document).ready
         $("#step li").removeAttr('class');
         $('#form_bilan fieldset table').remove();
         $("#step"+li_step).addClass("on");
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -241,7 +241,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -249,7 +249,7 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
@@ -293,7 +293,7 @@ $(document).ready
         if(nb_pb)
         {
           var s = (nb_pb>1) ? 's' : '';
-          $('#ajax_msg').attr('class','erreur').html(nb_pb+' ligne'+s+' de formulaire à compléter.');
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html(nb_pb+' ligne'+s+' de formulaire à compléter.');
           return false;
         }
         else
@@ -325,7 +325,7 @@ $(document).ready
             }
           );
           $('#form_bilan fieldset table').hide(0);
-          $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
           $.ajax
           (
             {
@@ -335,7 +335,7 @@ $(document).ready
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
                 return false;
               },
               success : function(responseJSON)
@@ -343,7 +343,7 @@ $(document).ready
                 initialiser_compteur();
                 if(responseJSON['statut']==false)
                 {
-                  $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                  $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
                 else
                 {
@@ -381,7 +381,7 @@ $(document).ready
           }
         );
         $('#form_bilan fieldset table').hide(0);
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -391,7 +391,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -399,7 +399,7 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
@@ -423,7 +423,7 @@ $(document).ready
       function()
       {
         $('#form_bilan fieldset table').remove();
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -433,7 +433,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -441,7 +441,7 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {

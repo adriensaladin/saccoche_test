@@ -1,12 +1,21 @@
 <?php
-/**
- * This file is part of FPDI
- *
- * @package   FPDI
- * @copyright Copyright (c) 2015 Setasign - Jan Slabon (http://www.setasign.com)
- * @license   http://opensource.org/licenses/mit-license The MIT License
- * @version   1.6.1
- */
+//
+//  FPDI - Version 1.5.2
+//
+//    Copyright 2004-2014 Setasign - Jan Slabon
+//
+//  Licensed under the Apache License, Version 2.0 (the "License");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
 
 /**
  * Class FilterASCII85
@@ -26,6 +35,7 @@ class FilterASCII85
             '~' => ord('~'),
             'z' => ord('z'),
             'u' => ord('u'),
+            'z' => ord('z'),
             '!' => ord('!')
         );
 
@@ -57,10 +67,8 @@ class FilterASCII85
             if ($state == 5) {
                 $state = 0;
                 $r = 0;
-                for ($j = 0; $j < 5; ++$j) {
-                    $r = (int)($r * 85 + $chn[$j]);
-                }
-
+                for ($j = 0; $j < 5; ++$j)
+                    $r = $r * 85 + $chn[$j];
                 $out .= chr($r >> 24);
                 $out .= chr($r >> 16);
                 $out .= chr($r >> 8);

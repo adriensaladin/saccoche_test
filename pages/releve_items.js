@@ -206,7 +206,7 @@ $(document).ready
     function afficher_prof_connecte()
     {
       $('#f_prof').html('<option value="'+user_id+'">'+user_texte+'</option>');
-      $('#modifier_prof').attr('class','form_ajouter');
+      $('#modifier_prof').removeAttr('class').addClass('form_ajouter');
       action_prof = 'ajouter';
     }
 
@@ -234,7 +234,7 @@ $(document).ready
             if(responseJSON['statut']==true)
             {
               $('#f_prof').html(responseJSON['value']);
-              $('#modifier_prof').attr('class','form_retirer');
+              $('#modifier_prof').removeAttr('class').addClass('form_retirer');
               action_prof = 'retirer';
             }
           }
@@ -271,7 +271,7 @@ $(document).ready
         if(groupe_id)
         {
           $('#zone_evals').removeAttr('class');
-          $('#ajax_maj_evals').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_maj_evals').removeAttr('class').addClass('loader').html("En cours&hellip;");
           $.ajax
           (
             {
@@ -281,7 +281,7 @@ $(document).ready
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
-                $('#ajax_maj_evals').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+                $('#ajax_maj_evals').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               },
               success : function(responseJSON)
               {
@@ -293,7 +293,7 @@ $(document).ready
                 }
                 else
                 {
-                  $('#ajax_maj_evals').attr('class','alerte').html(responseJSON['value']);
+                  $('#ajax_maj_evals').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 }
               }
             }
@@ -422,7 +422,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -434,7 +434,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_maj').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -452,7 +452,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -485,7 +485,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_maj').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -510,7 +510,7 @@ $(document).ready
         {
           groupe_type  = $("#f_groupe option:selected").parent().attr('label');
           eleves_ordre = $("#f_eleves_ordre option:selected").val();
-          $('#ajax_maj').attr('class','loader').html("En cours&hellip;");
+          $('#ajax_maj').removeAttr('class').addClass('loader').html("En cours&hellip;");
           if(PROFIL_TYPE=='directeur')
           {
             maj_matiere(groupe_id,matiere_id);
@@ -536,7 +536,7 @@ $(document).ready
         groupe_type  = $("#f_groupe option:selected").parent().attr('label');
         eleves_ordre = $("#f_eleves_ordre option:selected").val();
         $("#f_eleve").html('<option value="">&nbsp;</option>').parent().hide();
-        $('#ajax_maj').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_maj').removeAttr('class').addClass('loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type,eleves_ordre);
       }
     );
@@ -570,7 +570,7 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 action_matiere = (action_matiere=='ajouter') ? 'retirer' : 'ajouter' ;
-                $('#modifier_matiere').attr('class',"form_"+action_matiere);
+                $('#modifier_matiere').removeAttr('class').addClass("form_"+action_matiere);
                 $('#f_matiere').html(responseJSON['value']);
               }
             }
@@ -769,7 +769,7 @@ $(document).ready
             else {element.parent().next().next().after(error);}
           }
         }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -808,14 +808,14 @@ $(document).ready
       $('#ajax_msg').removeAttr('class').html("");
       if( ($('#f_type_individuel').is(':checked')) && (!$('#f_etat_acquisition').is(':checked')) && ($('#f_cases_nb option:selected').val()==0) )
       {
-        $('#ajax_msg').attr('class','erreur').html("Choisir au moins une indication à faire figurer sur le relevé individuel !");
+        $('#ajax_msg').removeAttr('class').addClass('erreur').html("Choisir au moins une indication à faire figurer sur le relevé individuel !");
         return false;
       }
       var readytogo = validation.form();
       if(readytogo)
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#bilan').html('');
       }
       return readytogo;
@@ -826,7 +826,7 @@ $(document).ready
     {
       $('#bouton_valider').prop('disabled',false);
       var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-      $('#ajax_msg').attr('class','alerte').html(message);
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(message);
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -836,11 +836,11 @@ $(document).ready
       $('#bouton_valider').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else if(responseJSON['direct']==true)
       {
-        $('#ajax_msg').attr('class','valide').html("Résultat ci-dessous.");
+        $('#ajax_msg').removeAttr('class').addClass('valide').html("Résultat ci-dessous.");
         $('#bilan').html(responseJSON['bilan']);
       }
       else if(responseJSON['direct']==false)
@@ -864,7 +864,7 @@ $(document).ready
       function()
       {
         $('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',true);
-        $('#ajax_msg_report').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_report').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -875,7 +875,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_report').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_report').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               $('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',false);
               return false;
             },
@@ -885,11 +885,11 @@ $(document).ready
               $('#form_report_bulletin button, #form_report_bulletin select').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_report').attr('class','valide').html(responseJSON['value']);
+                $('#ajax_msg_report').removeAttr('class').addClass('valide').html(responseJSON['value']);
               }
               else
               {
-                $('#ajax_msg_report').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_report').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

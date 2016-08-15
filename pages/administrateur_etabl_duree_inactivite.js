@@ -41,7 +41,7 @@ $(document).ready
       function()
       {
         profil = $(this).attr('id').substr(8); // f_delai_XXX
-        $('#ajax_msg_'+profil).attr('class','alerte').html("Pensez à valider !");
+        $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html("Pensez à valider !");
       }
     );
 
@@ -56,7 +56,7 @@ $(document).ready
         profil = $(this).attr('id').substr(15); // bouton_valider_XXX
         var delai = $('#f_delai_'+profil+' option:selected').val();
         $('#bouton_valider_'+profil).prop('disabled',true);
-        $('#ajax_msg_'+profil).attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_'+profil).removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -67,7 +67,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_valider_'+profil).prop('disabled',false);
-              $('#ajax_msg_'+profil).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -86,11 +86,11 @@ $(document).ready
                   $('select option[value='+delai+']').prop('selected',true);
                   $('label[id^=ajax_msg_]').removeAttr('class').html("");
                 }
-                $('#ajax_msg_'+profil).attr('class','valide').html("Valeur enregistrée !");
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('valide').html("Valeur enregistrée !");
               }
               else
               {
-                $('#ajax_msg_'+profil).attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_'+profil).removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

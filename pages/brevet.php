@@ -27,11 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? html(Lang::_("Fiches brevet")) : html(Lang::_("Notanet & Fiches brevet")) ;
-?>
 
-<p class="probleme">Cette section ne concerne le DNB que jusqu'en 2016.</p>
-
-<?php
 // Sous-Menu d'en-tête
 if($_SESSION['USER_PROFIL_TYPE']!='professeur')
 {

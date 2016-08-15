@@ -38,7 +38,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_debug').attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_debug').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -46,7 +46,7 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_phpCAS').attr('class','alerte').html("Enregistrer pour confirmer.");
+        $('#ajax_phpCAS').removeAttr('class').addClass('alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -59,7 +59,7 @@ $(document).ready
       function()
       {
         $('#bouton_debug').prop('disabled',true);
-        $('#ajax_debug').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_debug').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -70,7 +70,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_debug').prop('disabled',false);
-              $('#ajax_debug').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_debug').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -78,12 +78,12 @@ $(document).ready
               $('#bouton_debug').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_debug').attr('class','valide').html('Choix enregistrés.');
+                $('#ajax_debug').removeAttr('class').addClass('valide').html('Choix enregistrés.');
                 initialiser_compteur();
               }
               else
               {
-                $('#ajax_debug').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_debug').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               return false;
             }
@@ -101,7 +101,7 @@ $(document).ready
       function()
       {
         $('#bouton_phpCAS').prop('disabled',true);
-        $('#ajax_phpCAS').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_phpCAS').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -112,7 +112,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_phpCAS').prop('disabled',false);
-              $('#ajax_phpCAS').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_phpCAS').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -121,11 +121,11 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 initialiser_compteur();
-                $('#ajax_phpCAS').attr('class','valide').html('Choix enregistrés.');
+                $('#ajax_phpCAS').removeAttr('class').addClass('valide').html('Choix enregistrés.');
               }
               else
               {
-                $('#ajax_phpCAS').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_phpCAS').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               return false;
             }

@@ -45,7 +45,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_groupe').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_groupe').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#bouton_export').prop('disabled',true);
           },
           success : function(responseJSON)
@@ -53,13 +53,13 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==true)
             {
-              $('#ajax_msg_groupe').attr('class','valide').html("Affichage actualisé !");
+              $('#ajax_msg_groupe').removeAttr('class').addClass('valide').html("Affichage actualisé !");
               $('#f_eleve').html(responseJSON['value']).parent().show();
               $('#bouton_export').prop('disabled',false);
             }
             else
             {
-              $('#ajax_msg_groupe').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_groupe').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               $('#bouton_export').prop('disabled',true);
             }
           }
@@ -75,7 +75,7 @@ $(document).ready
         // type = $("#f_groupe option:selected").parent().attr('label');
         groupe_type = groupe_val.substring(0,1);
         groupe_id   = groupe_val.substring(1);
-        $('#ajax_msg_groupe').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_groupe').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $('#bouton_export').prop('disabled',true);
         maj_eleve(groupe_id,groupe_type);
       }
@@ -127,7 +127,7 @@ $(document).ready
         // grouper le select multiple
         if( $("#f_eleve input:checked").length==0 )
         {
-          $('#ajax_msg').attr('class','erreur').html("Sélectionnez au moins un élève !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Sélectionnez au moins un élève !");
           return false;
         }
         else
@@ -138,7 +138,7 @@ $(document).ready
         // on envoie
         $('#ajax_info').html("");
         $('#bouton_export').prop('disabled',true);
-        $('#ajax_msg').attr('class','loader').html("Extraction des saisies&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("Extraction des saisies&hellip;");
         initialiser_compteur();
         exporter(1,f_eleve);
       }
@@ -160,7 +160,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#bouton_export').prop('disabled',false);
-            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -168,7 +168,7 @@ $(document).ready
             if(responseJSON['statut']==false)
             {
               $('#bouton_export').prop('disabled',false);
-              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
@@ -176,7 +176,7 @@ $(document).ready
               etape++;
               if(etape<5)
               {
-                $('#ajax_msg').attr('class','loader').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('loader').html(responseJSON['value']);
                 exporter(etape,'');
               }
               else
@@ -230,13 +230,13 @@ $(document).ready
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
           if( '.xml.zip.'.indexOf('.'+fichier_ext+'.') == -1 )
           {
-            $('#ajax_msg').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+            $('#ajax_msg').removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
             return false;
           }
           else
           {
             $('#bouton_import').prop('disabled',true);
-            $('#ajax_msg').attr('class','loader').html("Récupération du fichier&hellip;");
+            $('#ajax_msg').removeAttr('class').addClass('loader').html("Récupération du fichier&hellip;");
             $('#ajax_retour').html("");
             formulaire_import.submit();
           }
@@ -259,7 +259,7 @@ $(document).ready
     {
       $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
       $('#bouton_import').prop('disabled',false);
-      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -269,7 +269,7 @@ $(document).ready
       if(responseJSON['statut']==false)
       {
         $('#bouton_import').prop('disabled',false);
-        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
@@ -285,14 +285,14 @@ $(document).ready
             submit  : function(event, value, message, formVals) {
               if(value)
               {
-                $('#ajax_msg').attr('class','loader').html('Analyse des matières&hellip;');
+                $('#ajax_msg').removeAttr('class').addClass('loader').html('Analyse des matières&hellip;');
                 initialiser_compteur();
                 importer(1);
               }
               else
               {
                 $('#bouton_import').prop('disabled',false);
-                $('#ajax_msg').attr('class','alerte').html('Importation annulée.');
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html('Importation annulée.');
               }
             }
           }
@@ -316,7 +316,7 @@ $(document).ready
           error : function(jqXHR, textStatus, errorThrown)
           {
             $('#bouton_import').prop('disabled',false);
-            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -324,7 +324,7 @@ $(document).ready
             if(responseJSON['statut']==false)
             {
               $('#bouton_import').prop('disabled',false);
-              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
@@ -332,7 +332,7 @@ $(document).ready
               etape++;
               if(etape<10)
               {
-                $('#ajax_msg').attr('class','loader').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('loader').html(responseJSON['value']);
                 importer(etape);
               }
               else

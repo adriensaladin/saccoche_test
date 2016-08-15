@@ -5,6 +5,6 @@ DROP TABLE IF EXISTS sacoche_officiel_archive_image;
 
 CREATE TABLE sacoche_officiel_archive_image (
   archive_image_md5     CHAR(32)   COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-  archive_image_contenu MEDIUMBLOB                         NOT NULL COMMENT "Archivage des images de sacoche_officiel_archive ici car cela fait gagner beaucoup de place (logo ou tampon de l'établissement inséré à chaque fois).",
+  archive_image_contenu MEDIUMBLOB                         NOT NULL,
   PRIMARY KEY (archive_image_md5)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Archive des images de sacoche_officiel_archive à part car cela fait gagner beaucoup de place (logo ou tampon de l'établissement inséré à chaque fois).";

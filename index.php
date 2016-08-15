@@ -239,10 +239,9 @@ if(!empty($_SESSION['CSS']))
 // Fichiers css & js
 $tab_pages_graphiques = array('brevet_fiches','officiel_accueil','releve_bilan_chronologique');
 $filename_js_normal = './pages/'.$PAGE.'.js';
-$jquery_version = ( ($_SESSION['BROWSER']['modele']!='explorer') || ($_SESSION['BROWSER']['version']>=9) ) ? '3' : '1' ;
+$jquery_version = ( ($_SESSION['BROWSER']['modele']!='explorer') || ($_SESSION['BROWSER']['version']>=9) ) ? '2' : '' ;
 Layout::add( 'css_file' , './_css/style.css'                              , 'mini' );
-Layout::add( 'js_file'  , './_js/jquery'.$jquery_version.'-librairies.js' , 'comm' ); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est source d'erreurs
-// Layout::add( 'js_file'  , './_js/jquery-migrate-3.0.0.js' , 'comm' );
+Layout::add( 'js_file'  , './_js/jquery'.$jquery_version.'-librairies.js' , 'comm' ); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est souce d'erreurs
 Layout::add( 'js_file'  , './_js/script.js'                               , 'pack' ); // La minification plante sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
 if(in_array($PAGE,$tab_pages_graphiques)) Layout::add( 'js_file' , './_js/highcharts.js'  , 'mini' );
 if(is_file($filename_js_normal))          Layout::add( 'js_file' , $filename_js_normal    , 'pack' );

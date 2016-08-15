@@ -37,7 +37,6 @@ $(document).ready
     var mode = false;
 
     // tri du tableau (avec jquery.tablesorter.js).
-    // Pas de tri sur le tableau des niveaux partagés car tri initial sur l'ordre du niveau
     $('#zone_perso   table.form').tablesorter({ headers:{2:{sorter:false}} });
     var tableau_tri_perso   = function(){ $('#zone_perso   table.form').trigger( 'sorton' , [ [[1,0],[0,0]] ] ); };
     var tableau_maj_perso   = function(){ $('#zone_perso   table.form').trigger( 'update' , [ true ] ); };
@@ -199,7 +198,7 @@ $(document).ready
 
     function maj_resultat_recherche(famille_id)
     {
-      $('#ajax_msg_recherche').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -209,7 +208,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_recherche').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -221,7 +220,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_msg_recherche').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -260,7 +259,7 @@ $(document).ready
       function()
       {
         var niveau_id = $(this).attr('id').substr(4); // add_
-        $('#ajax_msg_recherche').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_recherche').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -270,7 +269,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_recherche').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -278,7 +277,7 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_recherche').attr('class','valide').html("Niveau ajouté.");
+                $('#ajax_msg_recherche').removeAttr('class').addClass('valide').html("Niveau ajouté.");
                 var texte = $('#add_'+niveau_id).parent().text();
                 var pos_separe  = (texte.indexOf('|')==-1) ? 0 : texte.lastIndexOf('|')+2 ;
                 var pos_par_ouv = texte.lastIndexOf('(');
@@ -287,11 +286,12 @@ $(document).ready
                 var niveau_ref  = texte.substring(pos_par_ouv+1,pos_par_fer);
                 $('#zone_partage table.form tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#zone_partage table.form tbody').append('<tr id="id_'+niveau_id+'"><td>'+niveau_ref+'</td><td>'+niveau_nom+'</td><td class="nu"><q class="supprimer" title="Supprimer ce niveau."></q></td></tr>');
-                $('#add_'+niveau_id).attr('class',"ajouter_non").attr('title',"Niveau déjà choisi.");
+                $('#add_'+niveau_id).removeAttr('class').addClass("ajouter_non").attr('title',"Niveau déjà choisi.");
+                tableau_maj_partage();
               }
               else
               {
-                $('#ajax_msg_recherche').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_recherche').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -409,7 +409,7 @@ $(document).ready
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -419,7 +419,7 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -430,11 +430,11 @@ $(document).ready
       $('#form_gestion button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter_perso':

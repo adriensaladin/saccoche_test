@@ -53,8 +53,8 @@ $(document).ready
     (
       function()
       {
-        $('#ajax_msg_mode').attr('class','alerte').html("Penser à valider les modifications.");
-        $('#table_action thead q').attr('class',"ajouter_non").attr("title","Validez d'abord le mode d'identification.");
+        $('#ajax_msg_mode').removeAttr('class').addClass('alerte').html("Penser à valider les modifications.");
+        $('#table_action thead q').removeAttr('class').addClass("ajouter_non").attr("title","Validez d'abord le mode d'identification.");
       }
     );
 
@@ -207,7 +207,7 @@ $(document).ready
           // Pas de vérif particulière de l'empreinte du certificat non plus, ne sachant pas s'il peut y avoir plusieurs formats.
         }
         $("#bouton_valider_mode").prop('disabled',true);
-        $('#ajax_msg_mode').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_mode').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -218,7 +218,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("#bouton_valider_mode").prop('disabled',false);
-              $('#ajax_msg_mode').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_mode').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -227,12 +227,12 @@ $(document).ready
               $("#bouton_valider_mode").prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_mode').attr('class','valide').html("Mode de connexion enregistré !");
-                $('#table_action thead q').attr('class',"ajouter").attr("title","Ajouter une convention.");
+                $('#ajax_msg_mode').removeAttr('class').addClass('valide').html("Mode de connexion enregistré !");
+                $('#table_action thead q').removeAttr('class').addClass("ajouter").attr("title","Ajouter une convention.");
               }
               else
               {
-                $('#ajax_msg_mode').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_mode').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }
@@ -283,11 +283,11 @@ $(document).ready
         var f_annee = $('#f_annee option:selected').val();
         if(f_annee=='-1')
         {
-          $('#ajax_msg_ajout').attr('class','erreur').html("Période manquante !");
+          $('#ajax_msg_ajout').removeAttr('class').addClass('erreur').html("Période manquante !");
           return false;
         }
         $("#form_ajout button").prop('disabled',true);
-        $('#ajax_msg_ajout').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_ajout').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -298,7 +298,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $("#form_ajout button").prop('disabled',false);
-              $('#ajax_msg_ajout').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_ajout').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -307,7 +307,7 @@ $(document).ready
               $("#form_ajout button").prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_ajout').attr('class','valide').html("Convention ajoutée !");
+                $('#ajax_msg_ajout').removeAttr('class').addClass('valide').html("Convention ajoutée !");
                 $('#table_action tbody tr.vide').remove(); // En cas de tableau avec une ligne vide pour la conformité XHTML
                 $('#table_action tbody').prepend(responseJSON['tr']);
                 var convention_id = responseJSON['convention_id'];
@@ -316,7 +316,7 @@ $(document).ready
               }
               else
               {
-                $('#ajax_msg_ajout').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_ajout').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

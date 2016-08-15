@@ -489,6 +489,21 @@ public static function DB_compter_niveaux_etabl($with_specifiques)
 }
 
 /**
+ * compter_devoirs
+ *
+ * @param void
+ * @return int
+ */
+public static function DB_compter_devoirs_annees_scolaires_precedentes()
+{
+  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_devoir ';
+  $DB_SQL.= 'WHERE devoir_date<:devoir_date ';
+  $DB_VAR = array( ':devoir_date' => To::jour_debut_annee_scolaire('mysql') );
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * compter_users_suivant_statut
  *
  * @param string|array   $profil_type   'eleve' / 'professeur' / 'directeur' / 'administrateur' / ou par exemple array('eleve','professeur','directeur')
@@ -529,7 +544,7 @@ public static function DB_compter_users_suivant_statut($profil_type)
  * @param string $champ_valeur   la valeur testée
  * @param int    $user_id        inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @param string $profil_type    si transmis alors recherche parmi les utilisateurs de même type de profil (sconet_id|sconet_elenoet|reference), sinon alors parmi tous les utilisateurs de l'établissement (login|id_ent|id_gepi)
- * @return null|bool             NULL si pas trouvé, FALSE si trouvé mais identique à $user_id transmis, TRUE si trouvé ($user_id non transmis ou différent), l'id trouvé dans le cas exceptionnel d'un développeur pour le compte administrateur "superviseur"
+ * @return null|bool             NULL si pas trouvé, FALSE si trouvé mais identique à $user_id transmis, TRUE si trouvé ($user_id non transmis ou différent)
  */
 public static function DB_tester_utilisateur_identifiant($champ_nom,$champ_valeur,$user_id=NULL,$profil_type=NULL)
 {
@@ -547,10 +562,7 @@ public static function DB_tester_utilisateur_identifiant($champ_nom,$champ_valeu
   $find_user_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   if($find_user_id!==NULL)
   {
-    if( $_SESSION['USER_PROFIL_TYPE'] != 'developpeur' )
-    {
-      $find_user_id = ( $find_user_id && ($user_id!=$find_user_id) ) ? TRUE : FALSE ;
-    }
+    $find_user_id = ( $find_user_id && ($user_id!=$find_user_id) ) ? TRUE : FALSE ;
   }
   return $find_user_id;
 }
@@ -1166,14 +1178,14 @@ public static function DB_supprimer_jointures_parents_for_eleves($listing_eleve_
  * Supprimer un utilisateur avec tout ce qui en dépend
  *
  * La mise à jour de la table [sacoche_user_switch] s'effectue lors de l'initialisation annuelle.
- * 
+ *
  * @param int    $user_id
  * @param string $user_profil_sigle
  * @return void
  */
 public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
 {
-  $user_profil_type = isset($_SESSION['TAB_PROFILS_ADMIN']) ? $_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$user_profil_sigle] : 'administrateur' ;
+  $user_profil_type = $_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$user_profil_sigle];
   $DB_VAR = array(':user_id'=>$user_id);
   $DB_SQL = 'DELETE FROM sacoche_user ';
   $DB_SQL.= 'WHERE user_id=:user_id';
@@ -1184,11 +1196,6 @@ public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
   // Concernant sacoche_jointure_message_destinataire, pour les groupes cela est traité plus loin
   $DB_SQL = 'DELETE FROM sacoche_jointure_message_destinataire ';
   $DB_SQL.= 'WHERE destinataire_type="user" AND destinataire_id=:user_id';
-  if( $_SESSION['USER_PROFIL_TYPE'] == 'developpeur' )
-  {
-    // Cette fonction peut être appelée par un profil développeur pour le compte administrateur "superviseur" ; dans ce cas $_SESSION['TAB_PROFILS_ADMIN'] n'est alors pas défini.
-    return;
-  }
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   if($user_profil_type=='eleve')
   {

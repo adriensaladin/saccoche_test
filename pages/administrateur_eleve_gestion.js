@@ -351,7 +351,7 @@ $(document).ready
       {
         please_wait = true;
         $('#form_gestion button').prop('disabled',true);
-        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -361,7 +361,7 @@ $(document).ready
     {
       please_wait = false;
       $('#form_gestion button').prop('disabled',false);
-      $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -372,11 +372,11 @@ $(document).ready
       $('#form_gestion button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
-        $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+        $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
         switch (mode)
         {
           case 'ajouter':
@@ -422,7 +422,7 @@ $(document).ready
         $("input[name=f_ids]:checked").each(function(){listing_id.push($(this).val());});
         if(!listing_id.length)
         {
-          $('#ajax_msg_actions').attr('class','erreur').html("Aucun utilisateur coché !");
+          $('#ajax_msg_actions').removeAttr('class').addClass('erreur').html("Aucun utilisateur coché !");
           return false;
         }
         // On demande confirmation pour la suppression
@@ -442,7 +442,7 @@ $(document).ready
 
     function envoyer_action_confirmee(f_action,listing_id)
     {
-      $('#ajax_msg_actions').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg_actions').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $('#zone_actions button').prop('disabled',true);
       $.ajax
       (
@@ -453,7 +453,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_actions').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_actions').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             $('#zone_actions button').prop('disabled',false);
           },
           success : function(responseJSON)
@@ -462,11 +462,11 @@ $(document).ready
             $('#zone_actions button').prop('disabled',false);
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg_actions').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_msg_actions').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
             else
             {
-              $('#ajax_msg_actions').attr('class','valide').html("Demande réalisée.");
+              $('#ajax_msg_actions').removeAttr('class').addClass('valide').html("Demande réalisée.");
               var tab_ids = responseJSON['value'].split(',');
               for ( i=0 ; i<tab_ids.length ; i++ )
               {

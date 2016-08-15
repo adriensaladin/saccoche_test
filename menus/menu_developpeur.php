@@ -43,11 +43,10 @@ $tab_sous_menu = array
 (
   'information' => array
   (
-    'compte_accueil'          => array( 'texte' => "Accueil"                     , 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'          ),
-    'webmestre_info_serveur'  => array( 'texte' => "Caractéristiques du serveur" , 'class' => 'serveur_info'   , 'href' => 'page=webmestre_info_serveur'  ),
-    'webmestre_statistiques'  => array( 'texte' => "Statistiques d'utilisation"  , 'class' => 'statistiques'   , 'href' => 'page=webmestre_statistiques'  ), // multi-structures uniquement
-    'webmestre_log_actions'   => array( 'texte' => "Log des actions sensibles"   , 'class' => 'log_actions'    , 'href' => 'page=webmestre_log_actions'   ),
-    'developpeur_superviseur' => array( 'texte' => "Compte Superviseur"          , 'class' => 'administrateur' , 'href' => 'page=developpeur_superviseur' ),
+    'compte_accueil'         => array( 'texte' => "Accueil"                     , 'class' => 'compte_accueil' , 'href' => 'page=compte_accueil'         ),
+    'webmestre_info_serveur' => array( 'texte' => "Caractéristiques du serveur" , 'class' => 'serveur_info'   , 'href' => 'page=webmestre_info_serveur' ),
+    'webmestre_statistiques' => array( 'texte' => "Statistiques d'utilisation"  , 'class' => 'statistiques'   , 'href' => 'page=webmestre_statistiques' ), // multi-structures uniquement
+    'webmestre_log_actions'  => array( 'texte' => "Log des actions sensibles"   , 'class' => 'log_actions'    , 'href' => 'page=webmestre_log_actions'  ),
   ),
   'param_serveur' => array
   (

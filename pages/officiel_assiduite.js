@@ -132,23 +132,23 @@ $(document).ready
     {
 
       // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dans une boucle if{} !
+      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dasn une boucle if{} !
       function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
       {
         $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
         $('#form_fichier button').prop('disabled',false);
-        $('#ajax_msg_'+f_action).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+        $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
       }
 
       // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dans une boucle if{} !
+      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dasn une boucle if{} !
       function retour_form_valide_import(responseJSON)
       {
         $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
         $('#form_fichier button').prop('disabled',false);
         if(responseJSON['statut']==false)
         {
-          $('#ajax_msg_'+f_action).attr('class','alerte').html(responseJSON['value']);
+          $('#ajax_msg_'+f_action).removeAttr('class').addClass('alerte').html(responseJSON['value']);
         }
         else
         {
@@ -209,7 +209,7 @@ $(document).ready
           }
           else if (!id_periode_import)
           {
-            $('#ajax_msg_'+f_action).attr('class','erreur').html("Choisir d'abord la période concernée.");
+            $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html("Choisir d'abord la période concernée.");
             return false;
           }
           else
@@ -218,28 +218,28 @@ $(document).ready
             var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
             if ( (f_action=='import_sconet') && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
             {
-              $('#ajax_msg_'+f_action).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+              $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
               return false;
             }
             else if ( (f_action=='import_siecle') && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
             {
-              $('#ajax_msg_'+f_action).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+              $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
               return false;
             }
             else if ( (f_action=='import_gepi') && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
             {
-              $('#ajax_msg_'+f_action).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
+              $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
               return false;
             }
             else if ( (f_action=='import_pronote') && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
             {
-              $('#ajax_msg_'+f_action).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+              $('#ajax_msg_'+f_action).removeAttr('class').addClass('erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
               return false;
             }
             else
             {
               $('#form_fichier button').prop('disabled',true);
-              $('#ajax_msg_'+f_action).attr('class','loader').html("En cours&hellip;");
+              $('#ajax_msg_'+f_action).removeAttr('class').addClass('loader').html("En cours&hellip;");
               $('#ajax_retour').html("");
               formulaire_import.submit();
             }
@@ -278,7 +278,7 @@ $(document).ready
       function()
       {
         $('#zone_confirmer button').prop('disabled',true);
-        $('#ajax_msg_confirm').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_confirm').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -289,7 +289,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_confirmer button').prop('disabled',false);
-              $('#ajax_msg_confirm').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_confirm').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -297,7 +297,7 @@ $(document).ready
               $('#zone_confirmer button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_confirm').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_confirm').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
@@ -338,7 +338,7 @@ $(document).ready
         errorElement : "label",
         errorClass : "erreur",
         errorPlacement : function(error,element) { element.after(error); }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
+        // success: function(label) {label.text("ok").removeAttr('class').addClass('valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
@@ -373,7 +373,7 @@ $(document).ready
       if(readytogo)
       {
         $('button').prop('disabled',true);
-        $('#ajax_msg_manuel').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_manuel').removeAttr('class').addClass('loader').html("En cours&hellip;");
       }
       return readytogo;
     }
@@ -382,7 +382,7 @@ $(document).ready
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $('button').prop('disabled',false);
-      $('#ajax_msg_manuel').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg_manuel').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
@@ -391,7 +391,7 @@ $(document).ready
       $('button').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg_manuel').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg_manuel').removeAttr('class').addClass('alerte').html(responseJSON['value']);
       }
       else
       {
@@ -416,8 +416,8 @@ $(document).ready
       'input[type=text]',
       function()
       {
-        $('#ajax_msg_saisir').attr('class','alerte').html('Penser à enregistrer les modifications !');
-        $('#fermer_zone_saisir').attr('class',"annuler").html('Annuler / Retour');
+        $('#ajax_msg_saisir').removeAttr('class').addClass('alerte').html('Penser à enregistrer les modifications !');
+        $('#fermer_zone_saisir').removeAttr('class').addClass("annuler").html('Annuler / Retour');
         return false;
       }
     );
@@ -459,7 +459,7 @@ $(document).ready
             tab_infos.push( user_id + '.' + $('#td1_'+user_id).val() + '.' + $('#td2_'+user_id).val() + '.' + $('#td3_'+user_id).val() + '.' + $('#td4_'+user_id).val() );
           }
         );
-        $('#ajax_msg_saisir').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_saisir').removeAttr('class').addClass('loader').html("En cours&hellip;");
         // Les envoyer en ajax
         $.ajax
         (
@@ -471,7 +471,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#zone_saisir button').prop('disabled',false);
-              $('#ajax_msg_saisir').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_saisir').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -480,12 +480,12 @@ $(document).ready
               $('#zone_saisir button').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_saisir').attr('class','valide').html("Saisies enregistrées !");
-                $('#fermer_zone_saisir').attr('class',"retourner").html('Retour');
+                $('#ajax_msg_saisir').removeAttr('class').addClass('valide').html("Saisies enregistrées !");
+                $('#fermer_zone_saisir').removeAttr('class').addClass("retourner").html('Retour');
               }
               else
               {
-                $('#ajax_msg_saisir').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_saisir').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
             }
           }

@@ -42,33 +42,17 @@ INSERT INTO sacoche_livret_seuil (livret_page_ref, livret_colonne_id, livret_seu
 -- maitrise
 ('cycle2', 31,  0,  34),
 ('cycle2', 32, 35,  59),
-('cycle2', 33, 60,  80),
+('cycle2', 33, 60,  81),
 ('cycle2', 34, 81, 100),
 ('cycle3', 31,  0,  34),
 ('cycle3', 32, 35,  59),
-('cycle3', 33, 60,  80),
+('cycle3', 33, 60,  81),
 ('cycle3', 34, 81, 100),
 ('cycle4', 31,  0,  34),
 ('cycle4', 32, 35,  59),
-('cycle4', 33, 60,  80),
-('cycle4', 34, 81, 100),
--- position (si choisi)
-('6e'    , 41,  0,  24),
-('6e'    , 42, 25,  49),
-('6e'    , 43, 50,  74),
-('6e'    , 44, 75, 100),
-('5e'    , 41,  0,  24),
-('5e'    , 42, 25,  49),
-('5e'    , 43, 50,  74),
-('5e'    , 44, 75, 100),
-('4e'    , 41,  0,  24),
-('4e'    , 42, 25,  49),
-('4e'    , 43, 50,  74),
-('4e'    , 44, 75, 100),
-('3e'    , 41,  0,  24),
-('3e'    , 42, 25,  49),
-('3e'    , 43, 50,  74),
-('3e'    , 44, 75, 100);
+('cycle4', 33, 60,  81),
+('cycle4', 34, 81, 100);
+-- position    -> si choisi ultérieurement
 -- moyenne     -> sans objet
 -- pourcentage -> sans objet
 

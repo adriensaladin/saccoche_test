@@ -123,7 +123,7 @@ $(document).ready
         var element = $(this);
         var nb_demandes = $(this).val();
         var matiere_id = $(this).closest('table').attr('id').substring(4);
-        element.parent().find('label').attr('class','loader').html("En cours&hellip;");
+        element.parent().find('label').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -133,7 +133,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              element.parent().find('label').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              element.parent().find('label').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -141,11 +141,11 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==false)
               {
-                element.parent().find('label').attr('class','alerte').html(responseJSON['value']);
+                element.parent().find('label').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
-                element.parent().find('label').attr('class','valide').html("Valeur enregistrée.");
+                element.parent().find('label').removeAttr('class').addClass('valide').html("Valeur enregistrée.");
               }
             }
           }
@@ -339,7 +339,7 @@ $(document).ready
 
     function envoyer_action_confirmee()
     {
-      $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg_gestion').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -349,7 +349,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             return false;
           },
           success : function(responseJSON)
@@ -360,12 +360,12 @@ $(document).ready
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
-                $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+                $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
                 var partage     = $('#f_partage option:selected').val();
                 var information = $('#f_information').val();
                 tab_partage_etat[id_mat_niv] = partage;
@@ -386,12 +386,12 @@ $(document).ready
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
-                $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+                $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
                 var information = $('#f_information').val();
                 tab_information[ id_mat_niv] = information;
                 $('#'+ids).prev().prev().html(responseJSON['value']);
@@ -402,12 +402,12 @@ $(document).ready
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
-                $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+                $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
                 tab_calcul_methode[   id_mat_niv] = $('#f_methode option:selected'   ).val();
                 tab_calcul_limite[    id_mat_niv] = $('#f_limite option:selected'    ).val();
                 tab_calcul_retroactif[id_mat_niv] = $('#f_retroactif option:selected').val();
@@ -419,12 +419,12 @@ $(document).ready
             {
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_gestion').removeAttr('class').addClass('alerte').html(responseJSON['value']);
                 return false;
               }
               else
               {
-                $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
+                $('#ajax_msg_gestion').removeAttr('class').addClass('valide').html("Demande réalisée !");
                 $('#'+ids).parent().remove();
                 if( $('#mat_'+tab_ids[1]+' tbody tr').length == 1 )
                 {
@@ -502,7 +502,7 @@ $(document).ready
     var charger_formulaire_structures = function()
     {
       $('#rechercher').prop('disabled',true);
-      $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+      $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
       $.ajax
       (
         {
@@ -512,7 +512,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus)+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
+            $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus)+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
             return false;
           },
           success : function(responseJSON)
@@ -520,7 +520,7 @@ $(document).ready
             initialiser_compteur();
             if(responseJSON['statut']==false)
             {
-              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']+' <a href="#" id="charger_formulaire_structures">Veuillez essayer de nouveau.</a>');
             }
             else
             {
@@ -579,7 +579,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_matiere').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj_matiere').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -590,7 +590,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj_matiere').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_maj_matiere').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -629,7 +629,7 @@ $(document).ready
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_maj_niveau').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            $('#ajax_maj_niveau').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
           },
           success : function(responseJSON)
           {
@@ -640,7 +640,7 @@ $(document).ready
             }
             else
             {
-              $('#ajax_maj_niveau').attr('class','alerte').html(responseJSON['value']);
+              $('#ajax_maj_niveau').removeAttr('class').addClass('alerte').html(responseJSON['value']);
             }
           }
         }
@@ -691,11 +691,11 @@ $(document).ready
         var structure_id = $('#f_structure').val();
         if( (matiere_id==0) && (niveau_id==0) && (structure_id==0) )
         {
-          $('#ajax_msg').attr('class','erreur').html("Il faut préciser au moins un critère parmi matière / niveau / structure !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Il faut préciser au moins un critère parmi matière / niveau / structure !");
           return false;
         }
         $('#rechercher').prop('disabled',true);
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -706,7 +706,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#rechercher').prop('disabled',false);
-              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -714,7 +714,7 @@ $(document).ready
               $('#rechercher').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {
@@ -823,14 +823,14 @@ $(document).ready
         var niveau_nom  = $('#f_niveau_create option:selected').text();
         if(!niveau_id)
         {
-          $('#ajax_msg_choisir').attr('class','erreur').html('Choisir un niveau !');
+          $('#ajax_msg_choisir').removeAttr('class').addClass('erreur').html('Choisir un niveau !');
           return false;
         }
         var partageable = ( ( matiere_id <= ID_MATIERE_PARTAGEE_MAX ) && ( niveau_id <= ID_NIVEAU_PARTAGE_MAX ) ) ? true : false ;
         $('#ajax_msg_choisir').removeAttr('class').html('');
         var referentiel_id = $(this).val().substring(3);
         $('button').prop('disabled',true);
-        $('#ajax_msg_choisir').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_choisir').removeAttr('class').addClass('loader').html("En cours&hellip;");
         $.ajax
         (
           {
@@ -841,7 +841,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('button').prop('disabled',false);
-              $('#ajax_msg_choisir').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_choisir').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -850,7 +850,7 @@ $(document).ready
               $('button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_choisir').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_choisir').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               else
               {

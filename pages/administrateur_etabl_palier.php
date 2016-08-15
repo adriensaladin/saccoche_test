@@ -29,8 +29,6 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Paliers du socle"));
 ?>
 
-<p class="probleme">Cette section concerne le socle commun sur la période 2006-2016.<br />Aucun choix n'est à faire pour le nouveau socle 2016.</p>
-
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_paliers_socle">DOC : Paliers du socle</a></span></div>
 
 <hr />

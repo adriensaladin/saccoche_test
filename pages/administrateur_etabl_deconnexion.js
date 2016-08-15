@@ -58,12 +58,12 @@ $(document).ready
       function()
       {
         $('#bouton_valider').prop('disabled',true);
-        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').removeAttr('class').addClass('loader').html("En cours&hellip;");
         var url_deconnexion = $('#url_deconnexion').val();
         if( (url_deconnexion!='') && !testURL(url_deconnexion) )
         {
           $('#bouton_valider').prop('disabled',false);
-          $('#ajax_msg').attr('class','erreur').html("Adresse incorrecte !");
+          $('#ajax_msg').removeAttr('class').addClass('erreur').html("Adresse incorrecte !");
           $('#url_deconnexion').focus();
           return false;
         }
@@ -77,7 +77,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               $('#bouton_valider').prop('disabled',false);
-              $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg').removeAttr('class').addClass('alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               return false;
             },
             success : function(responseJSON)
@@ -86,13 +86,13 @@ $(document).ready
               $('#bouton_valider').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg').attr('class','valide').html("Valeur enregistrée !");
+                $('#ajax_msg').removeAttr('class').addClass('valide').html("Valeur enregistrée !");
                 // Il faut aussi modifier la valeur de cette variable js au cas où on cliquerait directement sur le bouton de déconnexion sans avoir changé de page
                 DECONNEXION_REDIR = url_deconnexion;
               }
               else
               {
-                $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg').removeAttr('class').addClass('alerte').html(responseJSON['value']);
               }
               return false;
             }

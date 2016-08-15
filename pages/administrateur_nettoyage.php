@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Nettoyer / Initialiser la base"));
 
 $label = (version_compare($_SESSION['VERSION_BASE'],VERSION_BASE_STRUCTURE,'=')) ? 'valide' : 'alerte' ;
-Layout::add( 'js_inline_before' , 'var nb_devoirs_annee_scolaire_precedente = '.( isset($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? $_SESSION['NB_DEVOIRS_ANTERIEURS'] : DB_STRUCTURE_COMMUN::DB_compter_devoirs_annees_scolaires_precedentes() ).';' );
+Layout::add( 'js_inline_before' , 'var nb_devoirs_annee_scolaire_precedente = '.DB_STRUCTURE_ADMINISTRATEUR::DB_compter_devoirs_annees_scolaires_precedentes().';' );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage">DOC : Nettoyage et initialisation annuelle de la base</a></span></p>

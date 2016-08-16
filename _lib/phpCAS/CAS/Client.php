@@ -2129,7 +2129,7 @@ class CAS_Client
         $dom = new DOMDocument();
         // Fix possible whitspace problems
         $dom->preserveWhiteSpace = false;
-        if ((@$dom->loadXML($text_response))) {
+        if (($dom->loadXML($text_response))) {
             $xPath = new DOMXpath($dom);
             $xPath->registerNamespace('samlp', 'urn:oasis:names:tc:SAML:1.0:protocol');
             $xPath->registerNamespace('saml', 'urn:oasis:names:tc:SAML:1.0:assertion');

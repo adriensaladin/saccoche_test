@@ -308,7 +308,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
 if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>0) ) )
 {
   $nb_jours_consideres = 7;
-  $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array( 0 => array( 'valeur'=>$_SESSION['USER_ID'] , 'classe_id'=>$_SESSION['ELEVE_CLASSE_ID'] ) ) : $_SESSION['OPT_PARENT_ENFANTS'] ;
+  $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'],'valeur'=>$_SESSION['ELEVE_CLASSE_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
   $nb_eleves = count($tab_eleves);
   foreach($tab_eleves as $tab_eleve_info)
   {

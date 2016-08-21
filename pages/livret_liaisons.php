@@ -255,7 +255,7 @@ Layout::add( 'js_inline_before' , 'var rubrique_join="'.$liaison_rubrique_join.'
     Les rubriques sans élément associé seront tout simplement ignorées.
   </p>
   <p>
-    <div class="astuce">Un paramétrage séparé est proposé pour le niveau 6e et les niveaux 5e-4e-3e.</div>
+    <div class="astuce">Un paramétrage séparé est proposé pour les niveau 6e et les niveaux 5e-4e-3e.</div>
     Ceci avec l'objectif de pouvoir gérer au mieux les différentes situations selon les référentiels de Cycle 3 utilisés&hellip;
   </p>
 </div>

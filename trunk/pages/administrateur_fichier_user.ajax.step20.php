@@ -160,7 +160,7 @@ if( ($import_origine=='sconet') && ($import_profil=='professeur') )
         'matiere_ordre'       => $matiere_ordre,
         'siecle_code_matiere' => $siecle_code_matiere,
         'siecle_code_gestion' => $siecle_code_gestion,
-        'siecle_libelle'      => ucfirst($siecle_libelle), // Quelques anomalies trouvées sans majuscule initiale
+        'siecle_libelle'      => $siecle_libelle, // Quelques anomalies de format trouvées ("ANGLAIS_BILANGUE" ou "anglais bilangue") mais c'est pour des matières ajoutées avec un code hors BCN (030A01 030B01 030A02)...
       );
     }
   }

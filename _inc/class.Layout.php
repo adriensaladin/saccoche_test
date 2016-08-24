@@ -323,21 +323,19 @@ class Layout
   }
 
   /**
-   * Méthode pour minifier un fichier css ou js
+   * Méthode pour compresser ou minifier un fichier css ou js
    * 
-   * Minification d'un fichier css ou js sur le serveur en production, avec date auto-insérée si besoin pour éviter tout souci de mise en cache.
-   * Il s'agit bien ici de "minification" et non de "compression" car la compression est à mettre en place au niveau du serveur (GZIP)
-   * (donc inutile de rendre le code obscur et de donner du travail supplémentaire au navigateur, comme le Packer de Dean Edwards avec base62 activé)
-   * Hors PROD on ne minifie pas pour faciliter le débugage.
-   * On peut toutefois forcer la minification avec GET['minify'] afin d'en tester le bon fonctionnement.
-   * Si pas de minification (hors PROD), on ajoute un GET dans l'URL pour forcer le navigateur à mettre à jour son cache.
+   * Compression ou minification d'un fichier css ou js sur le serveur en production, avec date auto-insérée si besoin pour éviter tout souci de mise en cache.
+   * Hors PROD on ne compresse/minifie pas pour faciliter le débugage.
+   * On peut toutefois forcer la compression/minification avec GET['minify'] afin d'en tester le bon fonctionnement.
+   * Si pas de compression (hors PROD), on ajoute un GET dans l'URL pour forcer le navigateur à mettre à jour son cache.
    * Attention cependant concernant cette dernière technique : avec les réglages standards d'Apache, ajouter un GET dans l'URL fait que beaucoup de navigateurs ne mettent pas le fichier en cache (donc il est rechargé tout le temps, même si le GET est le même) ; pas de souci si le serveur envoie un header avec une date d'expiration explicite...
    * 
-   * @param string $chemin  chemin complet vers le fichier
-   * @param string $methode "mini" | "comm"
-   * @return string         chemin vers le fichier à prendre en compte (à indiquer dans la page web) ; il sera relatif si non compressé, absolu si compressé
+   * @param string $chemin    chemin complet vers le fichier
+   * @param string $methode   soit "pack" soit "mini" soit "comm"
+   * @return string           chemin vers le fichier à prendre en compte (à indiquer dans la page web) ; il sera relatif si non compressé, absolu si compressé
    */
-  private static function compacter( $chemin , $methode )
+  private static function compacter($chemin,$methode)
   {
     if(substr($chemin,0,4)=='http')
     {
@@ -359,27 +357,30 @@ class Layout
       $fichier_compact_chemin     = ($tmp_appli) ? CHEMIN_DOSSIER_TMP.$fichier_compact_nom : CHEMIN_DOSSIER_PROJET_TMP.$fichier_compact_nom ; /* /!\ modif classe Sésamath /!\ */
       $fichier_compact_url        = ($tmp_appli) ?        URL_DIR_TMP.$fichier_compact_nom :        URL_DIR_PROJET_TMP.$fichier_compact_nom ; /* /!\ modif classe Sésamath /!\ */
       $fichier_compact_date       = (is_file($fichier_compact_chemin)) ? filemtime($fichier_compact_chemin) : 0 ;
-      // Sur le serveur en production, on minifie le fichier s'il ne l'est pas.
+      // Sur le serveur en production, on compresse le fichier s'il ne l'est pas.
       if($fichier_compact_date<$fichier_original_date)
       {
         $fichier_original_contenu = file_get_contents($fichier_original_chemin);
         $fichier_original_contenu = utf8_decode($fichier_original_contenu); // Attention, il faut envoyer à ces classes de l'iso et pas de l'utf8.
-        if( ($fichier_original_extension=='js') && ($methode=='mini') )
+        if( ($fichier_original_extension=='js') && ($methode=='pack') )
         {
-          $jSqueeze = new JSqueeze();
-          $fichier_compact_contenu = $jSqueeze->squeeze( $fichier_original_contenu , TRUE /*singleLine*/ , FALSE /*keepImportantComments*/ );
+          $myPacker = new JavaScriptPacker($fichier_original_contenu, 62, TRUE, FALSE);
+          $fichier_compact_contenu = trim($myPacker->pack());
+        }
+        elseif( ($fichier_original_extension=='js') && ($methode=='mini') )
+        {
+          $fichier_compact_contenu = trim(JSMin::minify($fichier_original_contenu));
         }
         elseif( ($fichier_original_extension=='js') && ($methode=='comm') )
         {
-          // Retrait des commentaires // ... et /* ... */ et /** ... */ et /*! ... */
+          // Retrait des commentaires // ... et /** ... */ et /*! ... */
           // Option de recherche "s" (PCRE_DOTALL) pour inclure les retours à la lignes (@see http://fr.php.net/manual/fr/reference.pcre.pattern.modifiers.php).
           $fichier_compact_contenu = trim(
             preg_replace( '#'.'(\n)+'.'#s' , "\n" , 
             preg_replace( '#'.'// '.'(.*?)'.'\n'.'#s' , '' , 
-            preg_replace( '#'.'/\*'.'(.*?)'.'\*/'.'#s' , '' , 
             preg_replace( '#'.'/\*!'.'(.*?)'.'\*/'.'#s' , '' , 
             preg_replace( '#'.'/\*\*'.'(.*?)'.'\*/'.'#s' , '' , 
-            $fichier_original_contenu ) ) ) ) ) );
+            $fichier_original_contenu ) ) ) ) );
         }
         elseif( ($fichier_original_extension=='css') && ($methode=='mini') )
         {
@@ -526,7 +527,7 @@ class Layout
    * 
    * @param string       $type      voir les types possibles dans la fonction
    * @param string|array $contenu   la chaine (si type "inline") ou le chemin du fichier (si type "file")
-   * @param string|int   $info      "mini" | "comm" | type de script | version de IE | NULL
+   * @param string|int   $info      "pack" | "mini" | "comm" | type de script | version de IE | NULL
    * @return void
    */
   public static function add( $type , $contenu , $info=NULL )

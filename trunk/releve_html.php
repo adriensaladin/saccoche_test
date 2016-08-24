@@ -76,9 +76,9 @@ Layout::add( 'browser_title' , 'Relevé HTML' );
 
 // Fichiers à inclure
 Layout::add( 'css_file' , './_css/style.css'            , 'mini' );
-Layout::add( 'js_file'  , './_js/jquery1-librairies.js' , 'comm' ); // Ne pas minifier ce fichier qui est déjà un assemblage de js compactés : le gain est quasi nul et cela est source d'erreurs
-Layout::add( 'js_file'  , './_js/script.js'             , 'pack' ); // La minification plante sur le contenu de testURL() avec le message Fatal error: Uncaught exception 'JSMinException' with message 'Unterminated string literal.'
-Layout::add( 'js_file'  , './pages/releve_html.js'      , 'pack' );
+Layout::add( 'js_file'  , './_js/jquery1-librairies.js' , 'comm' );
+Layout::add( 'js_file'  , './_js/script.js'             , 'mini' );
+Layout::add( 'js_file'  , './pages/releve_html.js'      , 'mini' );
 
 // Ultimes constantes javascript
 $display = (substr($FICHIER,0,10)=='evaluation') ? 'inline-block' : 'block' ; // 'inline-block' permet d'avoir le checkbox sur la même ligne, mais 'block' est plus adapté pour gagner en largeur ou quand le contenu est centré

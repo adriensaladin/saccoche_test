@@ -52,9 +52,11 @@ class HtmlArborescence
   {
     $input_all = ($aff_input) ? '<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q>' : '' ;
     $input_texte = '';
+    $comm_texte  = '';
     $coef_texte  = '';
     $cart_texte  = '';
     $socle_texte = '';
+    $s2016_texte = '';
     $lien_texte  = '';
     $lien_texte_avant = '';
     $lien_texte_apres = '';
@@ -360,8 +362,8 @@ class HtmlArborescence
           $label_texte_avant = '<label for="socle2016_'.$input_id.'">';
           $label_texte_apres = '</label>';
           $retour_html   .= '<li class="li_n2">'.$label_texte_avant.$input_texte.$composante_texte.$label_texte_apres.'</li>'.NL;
-          $retour_js     .= 'tab_socle['.$input_id.']="Cycle '.$cycle_id.' - '.$composante_texte.'";';
-          $retour_select .= '<option value="'.$input_id.'">Cycle '.$cycle_id.' - Domaine '.$domaine_texte.' - '.$composante_texte.'</option>';
+          $retour_js     .= 'tab_socle['.$input_id.']="Cycle '.$cycle_id.' - Domaine '.$domaine_id.' - '.$composante_texte.'";';
+          $retour_select .= '<option value="'.$input_id.'">Cycle '.$cycle_id.' - Domaine '.$domaine_id.' - '.$composante_texte.'</option>';
         }
         $retour_html .= '</ul>'.NL;
         $retour_html .= '</li>'.NL;

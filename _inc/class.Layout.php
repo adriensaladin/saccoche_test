@@ -506,20 +506,15 @@ class Layout
    */
   private static function inserer_js_inline($position)
   {
+    $string = '';
     if(!empty(Layout::${'tab_js_inline_'.$position}))
     {
       $string_js_inline = implode(NL,Layout::${'tab_js_inline_'.$position});
-      if(SERVEUR_TYPE == 'PROD')
-      {
-        $jSqueeze = new JSqueeze();
-        return '<script type="text/javascript">'.$jSqueeze->squeeze( $string_js_inline , TRUE /*singleLine*/ , FALSE /*keepImportantComments*/ ).'</script>'.NL;
-      }
-      else
-      {
-        return '<script type="text/javascript">'.NL.$string_js_inline.NL.'</script>'.NL;
-      }
+      $string .= '<script type="text/javascript">'.NL;
+      $string .= (SERVEUR_TYPE == 'PROD') ? trim(JSMin::minify($string_js_inline)).NL : $string_js_inline.NL ;
+      $string .= '</script>'.NL;
     }
-    return '';
+    return $string;
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

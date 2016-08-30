@@ -90,7 +90,7 @@ public static function DB_OPT_lister_elements_referentiels_prof( $prof_id , $gra
  */
 public static function DB_recuperer_socle2016_for_referentiels_matiere($matiere_id)
 {
-  $DB_SQL = 'SELECT item_id, socle_cycle_id, socle_composante_id, socle_cycle_nom, socle_domaine_ordre , socle_composante_nom ';
+  $DB_SQL = 'SELECT item_id, socle_cycle_id, socle_composante_id, socle_cycle_nom, socle_composante_nom ';
   $DB_SQL.= 'FROM sacoche_referentiel_domaine ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
@@ -103,13 +103,13 @@ public static function DB_recuperer_socle2016_for_referentiels_matiere($matiere_
   $DB_VAR = array( ':matiere_id' => $matiere_id );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   $DB_TAB_socle2016 = array();
-  // On retourne [item_id] => array( 'id' => array(cycle_id.composante_id) , 'nom' => array(cycle_nom.' - Domaine '.domaine_ordre.' - '.composante_nom) )
+  // On retourne [item_id] => array( 'id' => array(cycle_id.composante_id) , 'nom' => array(cycle_nom.' - '.composante_nom) )
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
       $DB_TAB_socle2016[$DB_ROW['item_id']]['id' ][] = $DB_ROW['socle_cycle_id'].$DB_ROW['socle_composante_id'];
-      $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][] = html($DB_ROW['socle_cycle_nom'].' - Domaine '.$DB_ROW['socle_domaine_ordre'].' - '.$DB_ROW['socle_composante_nom']);
+      $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][] = html($DB_ROW['socle_cycle_nom'].' - '.$DB_ROW['socle_composante_nom']);
     }
   }
   return $DB_TAB_socle2016;
@@ -125,7 +125,7 @@ public static function DB_recuperer_socle2016_for_referentiels_matiere($matiere_
  */
 public static function DB_recuperer_socle2016_for_referentiel_matiere_niveau( $matiere_id , $niveau_id , $format )
 {
-  $select_noms = ($format=='texte') ? ', socle_cycle_nom, socle_domaine_ordre, socle_composante_nom ' : '' ;
+  $select_noms = ($format=='texte') ? ', socle_cycle_nom, socle_composante_nom ' : '' ;
   $DB_SQL = 'SELECT item_id, socle_cycle_id, socle_composante_id '.$select_noms;
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
@@ -154,13 +154,13 @@ public static function DB_recuperer_socle2016_for_referentiel_matiere_niveau( $m
       );
     }
   }
-  // On retourne [item_id] => array( 'id' => array(cycle_id.composante_id) , 'nom' => array(cycle_nom.' - Domaine '.domaine_ordre.' - '.composante_nom) )
+  // On retourne [item_id] => array( 'id' => array(cycle_id.composante_id) , 'nom' => array(cycle_nom.' - '.composante_nom) )
   if( !empty($DB_TAB) && ($format=='texte') )
   {
     foreach($DB_TAB as $DB_ROW)
     {
       $DB_TAB_socle2016[$DB_ROW['item_id']]['id' ][] = $DB_ROW['socle_cycle_id'].$DB_ROW['socle_composante_id'];
-      $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][] = html($DB_ROW['socle_cycle_nom'].' - Domaine '.$DB_ROW['socle_domaine_ordre'].' - '.$DB_ROW['socle_composante_nom']);
+      $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][] = html($DB_ROW['socle_cycle_nom'].' - '.$DB_ROW['socle_composante_nom']);
     }
   }
   return $DB_TAB_socle2016;

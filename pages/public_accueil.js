@@ -33,7 +33,7 @@ $(document).ready
 
     function curseur()
     {
-      if( ($("#f_profil").val()!='structure') || GET_LOGIN )
+      if($("#f_profil").val()!='structure')
       {
         $('#f_password').focus();
       }
@@ -51,7 +51,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_action=initialiser'+'&f_base='+$("#f_base").val()+'&f_profil='+$("#f_profil").val()+'&get_mode='+encodeURIComponent(GET_MODE)+'&get_login='+encodeURIComponent(GET_LOGIN),
+          data : 'csrf='+CSRF+'&f_action=initialiser'+'&f_base='+$("#f_base").val()+'&f_profil='+$("#f_profil").val(),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {

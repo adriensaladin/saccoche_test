@@ -83,9 +83,15 @@ else
   $liens_autres_profils.= ($partenaire_possible) ? '<a class="anti_h2" href="index.php?partenaire">accès partenaire</a>' : '' ;
 }
 
+// Paramètres annexes éventuellement passés en GET
+$get_mode  = (isset($_GET['mode']))  ? Clean::id(    $_GET['mode']) : 'ent' ;
+$get_login = (isset($_GET['login'])) ? Clean::login($_GET['login']) : '' ;
+
 // Javascript
 Layout::add( 'js_inline_before' , 'var    LOGIN_LONGUEUR_MAX = '.   LOGIN_LONGUEUR_MAX.';' );
 Layout::add( 'js_inline_before' , 'var PASSWORD_LONGUEUR_MAX = '.PASSWORD_LONGUEUR_MAX.';' );
+Layout::add( 'js_inline_before' , 'var GET_MODE  = "'.$get_mode.'";' );
+Layout::add( 'js_inline_before' , 'var GET_LOGIN = "'.$get_login.'";' );
 
 // Protection contre les attaques par force brute des robots (piratage compte ou envoi intempestif de courriels)
 $_SESSION['FORCEBRUTE'][$PAGE] = array(

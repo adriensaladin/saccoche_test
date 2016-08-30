@@ -38,7 +38,7 @@ $courriel   = (isset($_POST['f_courriel']))   ? Clean::courriel($_POST['f_courri
 /*
  * Afficher le formulaire de choix des établissements (installation multi-structures)
  */
-function afficher_formulaire_etablissement($BASE,$profil)
+function afficher_formulaire_etablissement( $BASE , $profil )
 {
   $affichage = '';
   $options_structures = HtmlForm::afficher_select(DB_WEBMESTRE_SELECT::DB_OPT_structures_sacoche() , FALSE /*select_nom*/ , FALSE /*option_first*/ , $BASE /*selection*/ , 'zones_geo' /*optgroup*/ );
@@ -51,7 +51,7 @@ function afficher_formulaire_etablissement($BASE,$profil)
 /*
  * Afficher le nom d'un établissement, avec l'icône pour changer de structure si installation multi-structures
  */
-function afficher_nom_etablissement($BASE,$denomination)
+function afficher_nom_etablissement( $BASE , $denomination )
 {
   $changer = (HEBERGEUR_INSTALLATION=='multi-structures') ? ' - <a id="f_changer" href="#">changer</a>' : '' ;
   $affichage = '<label class="tab">Établissement :</label><input id="f_base" name="f_base" type="hidden" value="'.$BASE.'" /><em>'.html($denomination).'</em>'.$changer.'<br />'.NL;
@@ -65,8 +65,10 @@ function afficher_nom_etablissement($BASE,$denomination)
  * - si le mode de connexion est normal -> saisie login & mot de passe SACoche
  * - si l'établissement est configuré pour un autre mode de connexion -> au choix [ saisie login & mot de passe SACoche ] ou [ utilisation de l'authentification externe ]
  */
-function afficher_formulaire_identification($profil,$mode='normal',$nom='')
+function afficher_formulaire_identification( $profil , $mode='normal' , $nom='' )
 {
+  $get_mode  = (isset($_POST['get_mode']))  ? Clean::id(   $_POST['get_mode'])  : 'ent' ;
+  $get_login = (isset($_POST['get_login'])) ? Clean::login($_POST['get_login']) : '' ;
   $affichage = '';
   if($profil=='webmestre')
   {
@@ -91,18 +93,21 @@ function afficher_formulaire_identification($profil,$mode='normal',$nom='')
   }
   elseif($mode=='normal')
   {
-    $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="'.(LOGIN_LONGUEUR_MAX-5).'" maxlength="'.LOGIN_LONGUEUR_MAX.'" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
+    $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="'.(LOGIN_LONGUEUR_MAX-5).'" maxlength="'.LOGIN_LONGUEUR_MAX.'" type="text" value="'.html($get_login).'" tabindex="2" autocomplete="off" /><br />'.NL;
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="'.(PASSWORD_LONGUEUR_MAX-5).'" maxlength="'.PASSWORD_LONGUEUR_MAX.'" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '<span class="tab"></span><input id="f_mode" name="f_mode" type="hidden" value="normal" /><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
     $affichage .= '<span class="tab"></span><a id="lien_lost" href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact établissement ]</a>'.NL;
   }
   else
   {
+    $check_normal  = ( $get_mode == 'normal' ) ? ' checked' : '' ;
+    $check_externe = ( $get_mode == 'ent' )    ? ' checked' : '' ;
+    $class_normal  = ( $get_mode == 'normal' ) ? '' : ' class="hide"' ;
     $affichage .= '<label class="tab">Mode de connexion :</label>';
-    $affichage .=   '<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal" /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
-    $affichage .=   '<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'" checked /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'.NL;
-    $affichage .= '<fieldset id="fieldset_normal" class="hide">'.NL;
-    $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="'.(LOGIN_LONGUEUR_MAX-5).'" maxlength="'.LOGIN_LONGUEUR_MAX.'" type="text" value="" tabindex="2" autocomplete="off" /><br />'.NL;
+    $affichage .=   '<label for="f_mode_normal"><input type="radio" id="f_mode_normal" name="f_mode" value="normal"'.$check_normal.' /> formulaire <em>SACoche</em></label>&nbsp;&nbsp;&nbsp;';
+    $affichage .=   '<label for="f_mode_'.$mode.'"><input type="radio" id="f_mode_'.$mode.'" name="f_mode" value="'.$mode.'"'.$check_externe.' /> authentification extérieure <em>'.html($mode.'-'.$nom).'</em></label><br />'.NL;
+    $affichage .= '<fieldset id="fieldset_normal"'.$class_normal.'>'.NL;
+    $affichage .= '<label class="tab" for="f_login">Nom d\'utilisateur :</label><input id="f_login" name="f_login" size="'.(LOGIN_LONGUEUR_MAX-5).'" maxlength="'.LOGIN_LONGUEUR_MAX.'" type="text" value="'.html($get_login).'" tabindex="2" autocomplete="off" /><br />'.NL;
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="'.(PASSWORD_LONGUEUR_MAX-5).'" maxlength="'.PASSWORD_LONGUEUR_MAX.'" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '</fieldset>'.NL;
     $affichage .= '<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;

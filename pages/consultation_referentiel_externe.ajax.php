@@ -33,7 +33,6 @@ $matiere_id     = (isset($_POST['f_matiere_id']))     ? Clean::entier($_POST['f_
 $niveau_id      = (isset($_POST['f_niveau_id']))      ? Clean::entier($_POST['f_niveau_id'])      : 0;
 $structure_id   = (isset($_POST['f_structure_id']))   ? Clean::entier($_POST['f_structure_id'])   : 0;
 $referentiel_id = (isset($_POST['f_referentiel_id'])) ? Clean::entier($_POST['f_referentiel_id']) : 0;
-$maj_date_fr    = (isset($_POST['f_maj_date']))       ? Clean::date_fr($_POST['f_maj_date'])      : '' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher le formulaire des structures ayant partagées au moins un référentiel
@@ -50,8 +49,7 @@ if($action=='Afficher_structures') // La vérification concernant le nombre de c
 
 if($action=='Lister_referentiels') // La vérification concernant le nombre de contraintes s'effectue après
 {
-  $maj_date_mysql = To::date_french_to_mysql($maj_date_fr);
-  Json::end( TRUE , ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id , $maj_date_mysql ) );
+  Json::end( TRUE , ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

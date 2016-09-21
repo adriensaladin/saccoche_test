@@ -41,7 +41,7 @@ class DB_STRUCTURE_SOCLE extends DB
  */
 public static function DB_recuperer_associations_items_composantes($cycle_id)
 {
-  $DB_SQL = 'SELECT item_id , item_nom , matiere_ref , socle_composante_id , socle_domaine_id , ';
+  $DB_SQL = 'SELECT item_id , item_nom , matiere_ref , socle_composante_id , ';
   $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
   $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
@@ -52,7 +52,6 @@ public static function DB_recuperer_associations_items_composantes($cycle_id)
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_composante_id) ';
   $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND socle_cycle_id=:cycle_id ' ;
   $DB_SQL.= 'GROUP BY item_id, socle_composante_id ';
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
@@ -88,7 +87,7 @@ public static function DB_recuperer_associations_entrees_socle()
  * Retourner les piliers d'un palier donné
  *
  * @param int $palier_id   id du palier
- * @return array
+ * @return array|string
  */
 public static function DB_recuperer_piliers($palier_id)
 {

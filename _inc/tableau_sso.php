@@ -312,7 +312,7 @@ unset( $tab_csv_format , $tab_saml_param );
  *                                                                                                       https://envole-loir-et-cher.ac-orleans-tours.fr/
  *                                                                                                       https://envole-eure-et-loir.ac-orleans-tours.fr/
  * 
- * https://cas.scolastance.com/cas-asp       https://ddec64.itslearning.com/
+ * https://cas.scolastance.com/cas-asp
  * https://cas.scolastance.com/cas-ent74     http://ent74.scolastance.com/etablissements.aspx
  * https://cas.scolastance.com/cas-client    http://client.scolastance.com/etablissements.aspx
  * https://cas.scolastance.com/cas-demo      http://demo.scolastance.com/etablissements.aspx

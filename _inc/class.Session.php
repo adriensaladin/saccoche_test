@@ -183,7 +183,7 @@ class Session
     // Détecter si usage d'un appareil mobile (tablette, téléphone...).
     $_SESSION['BROWSER'] = Browser::caracteristiques_navigateur();
     $Mobile_Detect = new Mobile_Detect();
-    $_SESSION['BROWSER']['mobile'] = $Mobile_Detect->isMobile() || $Mobile_Detect->isTablet() ;
+    $_SESSION['BROWSER']['mobile'] = $Mobile_Detect->isMobile();
   }
 
   /*

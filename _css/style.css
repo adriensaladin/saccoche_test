@@ -225,10 +225,9 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.releve_grille         {background-position: 6px -2267px}
 #menu a.releve_items          {background-position: 6px -2307px}
 #menu a.releve_recherche      {background-position: 6px -2347px}
-#menu a.releve_socle2016      {background-position: 6px -2387px}
-#menu a.releve_socle          {background-position: 6px -2387px} /* attention : même décalage ; TODO à supprimer ultérieurement */
+#menu a.releve_socle          {background-position: 6px -2387px}
 #menu a.releve_synthese       {background-position: 6px -2427px}
-#menu a.releve_synthese_socle {background-position: 6px -2467px} /* TODO à supprimer ultérieurement */
+#menu a.releve_synthese_socle {background-position: 6px -2467px}
 #menu a.resilier              {background-position: 6px -2507px}
 #menu a.rss                   {background-position: 6px -2547px}
 #menu a.serveur_database      {background-position: 6px -2587px}

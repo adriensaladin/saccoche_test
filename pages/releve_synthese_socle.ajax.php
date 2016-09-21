@@ -235,7 +235,7 @@ if($type=='pourcentage')
         {
           extract($tab_item[$item_id]);  // $calcul_methode $calcul_limite
           // calcul du bilan de l'item
-          $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+          $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
           if($score!==FALSE)
           {
             // on détermine si il est acquis ou pas
@@ -359,7 +359,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 $releve_HTML .= ($affichage_checkbox) ? '<form id="form_synthese" action="#" method="post">'.NL : '' ;
 $releve_HTML .= '<table class="bilan"><thead>'.NL.$releve_HTML_head.'</thead><tbody>'.NL.$releve_HTML_body.'</tbody></table>'.NL;
 $releve_HTML .= ($affichage_checkbox) ? HtmlForm::afficher_synthese_exploitation('eleves').'</form>'.NL : '';
-$releve_HTML .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , ($type=='pourcentage') /*pourcentage_acquis*/ , ($type=='validation') /*etat_validation*/ , FALSE /*etat_maitrise*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ );
+$releve_HTML .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , ($type=='pourcentage') /*pourcentage_acquis*/ , ($type=='validation') /*etat_validation*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ );
 $releve_PDF->legende($type);
 
 // Chemins d'enregistrement

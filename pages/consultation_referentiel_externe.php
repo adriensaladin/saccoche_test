@@ -40,19 +40,16 @@ $select_famille_niveau  = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_
 ?>
 
 <form action="#" method="post">
-  <fieldset class="p">
+  <p>
     <label class="tab" for="f_famille_matiere">Famille de matières :</label><?php echo $select_famille_matiere ?><label id="ajax_maj_matiere">&nbsp;</label><br />
     <label class="tab" for="f_matiere">Matières :</label><select id="f_matiere" name="f_matiere"><option value="0">Toutes les matières</option></select>
-  </fieldset>
-  <fieldset class="p">
+  </p>
+  <p>
     <label class="tab" for="f_famille_niveau">Famille de niveaux :</label><?php echo $select_famille_niveau ?><label id="ajax_maj_niveau">&nbsp;</label><br />
     <label class="tab" for="f_niveau">Niveau :</label><select id="f_niveau" name="f_niveau"><option value="0">Tous les niveaux</option></select>
-  </fieldset>
-  <fieldset class="p">
-    <label class="tab" for="f_maj_date">Date de mise à jour :</label><input id="box_date" name="box_date" value="1" type="checkbox" checked /> <label for="box_date">sans restriction dans le temps</label><span class="hide">postérieure au <input id="f_maj_date" name="f_maj_date" size="8" type="text" value="<?php echo To::jour_debut_annee_scolaire('french') ?>" /><q class="date_calendrier" title="Cliquer sur cette image pour importer une date depuis un calendrier !"></q></span><br />
-    <label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select>
-  </fieldset>
-  <fieldset class="p">
+  </p>
+  <fieldset>
+    <label class="tab" for="f_structure"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Seules les structures partageant au moins un référentiel apparaissent." /> Structure :</label><select id="f_structure" name="f_structure"><option></option></select><br />
     <span class="tab"></span><button id="rechercher" type="button" class="rechercher" disabled>Lancer / Actualiser la recherche.</button><label id="ajax_msg">&nbsp;</label>
   </fieldset>
 </form>

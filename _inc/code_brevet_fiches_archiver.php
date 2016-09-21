@@ -135,7 +135,7 @@ foreach($tab_brevet_serie as $serie_ref)
 
 function suppression_sauts_de_ligne($texte)
 {
-  $tab_bad = Clean::tab_crlf();
+  $tab_bad = array( "\r\n" , "\r" , "\n" );
   $tab_bon = ' ';
   return str_replace( $tab_bad , $tab_bon , $texte );
 }

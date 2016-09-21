@@ -232,7 +232,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*s2016_count*/ , FALSE /*item_comm*/ );
     if(empty($DB_TAB))
     {
-      echo'<p class="danger">Vous n\'êtes rattaché à aucune matière, ou des matières sans référentiel, ou des référentiels sans items !</p>' ;
+      echo'<p class="danger">Vous n\'êtes rattaché à aucune matière, ou des matières ne comportant aucun référentiel !</p>' ;
     }
     else
     {

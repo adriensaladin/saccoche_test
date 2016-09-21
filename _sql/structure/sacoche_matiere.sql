@@ -2487,10 +2487,6 @@ INSERT INTO sacoche_matiere VALUES
 (9933, 0, 1,  99, 0, 255,      0, "D3"   , "D3 La formation de la personne et du citoyen"),
 (9934, 0, 1,  99, 0, 255,      0, "D4"   , "D4 Les systèmes naturels et les systèmes techniques"),
 (9935, 0, 1,  99, 0, 255,      0, "D5"   , "D5 Les représentations du monde et l'activité humaine"),
-(9941, 0, 1,  99, 0, 255,      0, "C23QM", "Questionner le monde (cycles 2-3)"),
-(9942, 0, 1,  99, 0, 255,      0, "C23ST", "Sciences et technologie (cycles 2-3)"),
-(9943, 0, 1,  99, 0, 255,      0, "C23EA", "Enseignements artistiques (cycles 2-3)"),
-(9944, 0, 1,  99, 0, 255,      0, "C23LV", "Langue vivante (cycles 2-3)"),
 (9991, 0, 1,  99, 0, 255,      0, "DOC"  , "Documentation"),
 (9992, 0, 1,  99, 0, 255,      0, "INFO" , "Informatique"),
 (9999, 0, 1,  99, 0, 255,      0, "TRANS", "Transversal");

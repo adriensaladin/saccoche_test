@@ -321,7 +321,7 @@ public static function DB_recuperer_arborescence_palier($palier_id=FALSE)
  */
 public static function DB_recuperer_socle2016_cycles()
 {
-  $DB_SQL = 'SELECT socle_cycle_id, socle_cycle_nom, socle_cycle_description ';
+  $DB_SQL = 'SELECT * ';
   $DB_SQL.= 'FROM sacoche_socle_cycle ';
   $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
@@ -335,7 +335,7 @@ public static function DB_recuperer_socle2016_cycles()
  */
 public static function DB_recuperer_socle2016_arborescence()
 {
-  $DB_SQL = 'SELECT socle_domaine_id, socle_domaine_ordre, socle_domaine_nom, socle_composante_id, socle_composante_nom ';
+  $DB_SQL = 'SELECT * ';
   $DB_SQL.= 'FROM sacoche_socle_domaine ';
   $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_domaine_id) ';
   $DB_SQL.= 'ORDER BY socle_domaine_ordre ASC, socle_composante_ordre ASC';
@@ -1081,29 +1081,15 @@ public static function DB_OPT_niveaux_matiere($matiere_id)
 /**
  * Retourner un tableau [valeur texte] des cycles du socle 2016
  *
- * @param bool   $only_used   TRUE pour restreindre à ceux auxquels au moins un item est relié
- * @return array|string
+ * @param void
+ * @return array
  */
-public static function DB_OPT_socle2016_cycles($only_used=FALSE)
+public static function DB_OPT_socle2016_cycles()
 {
-  if($only_used)
-  {
-    $join  = 'LEFT JOIN sacoche_jointure_referentiel_socle USING(socle_cycle_id) ';
-    $where = 'WHERE item_id IS NOT NULL ';
-    $group = 'GROUP BY socle_cycle_id ';
-  }
-  else
-  {
-    $join  = $where =  $group = '' ;
-  }
   $DB_SQL = 'SELECT socle_cycle_id AS valeur, socle_cycle_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_socle_cycle ';
-  $DB_SQL.= $join;
-  $DB_SQL.= $where;
-  $DB_SQL.= $group;
   $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC';
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucun item de référentiel n\'est relié au nouveau socle commun.' ;
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

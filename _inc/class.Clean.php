@@ -50,8 +50,27 @@ define( 'LATIN1_NOT_ACCENT' , utf8_decode('AAAAAAaaaaaaBbCcDdEEEEeeeeIIIIiiiiNnO
 class Clean
 {
 
-  // @see https://fr.wikipedia.org/wiki/Table_des_caract%C3%A8res_Unicode/U0000
-  private static $tab_ctrl = array(
+  // //////////////////////////////////////////////////
+  // Méthodes privées (internes)
+  // //////////////////////////////////////////////////
+
+  /**
+   * Pour supprimer les caractères de contrôle invisibles indésirables dans une chaîne.
+   *
+   * Il est arrivé d'en trouver dans des chaînes copiées-collées et ça pose problème, par exemple 
+   * - NUL pour les noms de fichiers "is_file() expects parameter 1 to be a valid path, string given"
+   * - RS | US pour la validation XML "Erreur XML ligne iii (> required)"
+   *
+   * Seuls quelques-uns (U+0009, U+000A, U+000D) sont normalisés pour le codage de textes
+   * et ont un comportement bien défini par Unicode.
+   * https://fr.wikipedia.org/wiki/Table_des_caract%C3%A8res_Unicode/U0000
+   *
+   * @param string
+   * @return string
+   */
+  private static function ctrl($text)
+  {
+    $tab_bad = array(
       "\x00" , // NUL Null (caractère de bourrage)
       "\x01" , // SOH Start of Header (début d'en-tête)
       "\x02" , // STX Start of Text (début de texte)
@@ -86,57 +105,7 @@ class Clean
       "\x1F" , // US  Unit Separator (séparateur de sous-articles)
       "\x7F" , // DEL (suppression)
     );
-
-  // //////////////////////////////////////////////////
-  // Méthode publique car la construction du tableau requière des instructions
-  // //////////////////////////////////////////////////
-
-  // @see https://fr.wikipedia.org/wiki/Fin_de_ligne
-  // LS et PS n'existent qu'en Unicode d'où cette définition un peu tordue
-  // à compter de PHP 7 c'est plus simple : https://secure.php.net/manual/fr/migration70.new-features.php#migration70.new-features.unicode-codepoint-escape-syntax
-  public static function tab_crlf()
-  {
-    return (version_compare(PHP_VERSION,'7','>=')) ?
-      array(
-        "\u{000D}\u{000A}", // CRLF
-        "\u{000D}", // CR
-        "\u{000A}", // LF
-        "\u{000B}", // VT
-        "\u{000C}", // FF
-        "\u{2028}", // LS
-        "\u{2029}", // PS
-      ) :
-      array(
-        json_decode('"\u000D\u000A"'), // CRLF
-        json_decode('"\u000D"'), // CR
-        json_decode('"\u000A"'), // LF
-        json_decode('"\u000B"'), // VT
-        json_decode('"\u000C"'), // FF
-        json_decode('"\u2028"'), // LS
-        json_decode('"\u2029"'), // PS
-      ) ;
-  }
-
-  // //////////////////////////////////////////////////
-  // Méthodes privées (internes)
-  // //////////////////////////////////////////////////
-
-  /**
-   * Pour supprimer les caractères de contrôle invisibles indésirables dans une chaîne.
-   *
-   * Il est arrivé d'en trouver dans des chaînes copiées-collées et ça pose problème, par exemple 
-   * - NUL pour les noms de fichiers "is_file() expects parameter 1 to be a valid path, string given"
-   * - RS | US pour la validation XML "Erreur XML ligne iii (> required)"
-   *
-   * Seuls quelques-uns (U+0009, U+000A, U+000D) sont normalisés pour le codage de textes
-   * et ont un comportement bien défini par Unicode.
-   *
-   * @param string
-   * @return string
-   */
-  private static function ctrl($text)
-  {
-    return str_replace( Clean::$tab_ctrl , "" , $text );
+    return str_replace( $tab_bad , "" , $text );
   }
 
   /**
@@ -162,7 +131,7 @@ class Clean
    */
   private static function lignes($text)
   {
-    return str_replace( Clean::tab_crlf() , "\n" , $text );
+    return str_replace( array("\r\n","\r","\n") , "\n" , $text );
   }
 
   /**

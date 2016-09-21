@@ -121,11 +121,7 @@ $select_legende      = HtmlForm::afficher_select(Form::$tab_select_legende      
 Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' );
 ?>
 
-<p class="probleme">
-  Cette section concerne le socle commun sur la période 2006-2016.<br />
-  Elle est laissée à disposition des établissements à l'étrangers n'ayant pas encore appliqué la réforme.<br />
-  Pour les autres, utiliser le menu <a href="./index.php?page=releve&amp;section=socle2016">Maîtrise du socle (2016)</a>.
-</p>
+<p class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2016 ; pour le nouveau socle un développement doit être effectué.</p>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle">DOC : Relevé de maîtrise du socle.</a></span></div>
 <hr />

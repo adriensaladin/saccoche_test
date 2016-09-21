@@ -46,6 +46,8 @@ if($version_base_structure_actuelle=='2015-12-16')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item ADD item_abbr VARCHAR(15) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" AFTER item_nom' );
     // ajout d'un paramètre
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "officiel_releve_aff_reference" , "1" )' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 
@@ -179,6 +181,8 @@ if($version_base_structure_actuelle=='2016-03-22')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN ( "officiel_archive_retrait_tampon_signature","officiel_archive_ajout_message_copie" )' );
     // ajout d'un paramètre
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ( "etablissement_chef_id" , "0" )' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     // ajout de champs à la table [sacoche_user]
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD eleve_lv1 TINYINT(3) UNSIGNED NOT NULL DEFAULT 100 COMMENT "Langue vivante 1 pour le livret scolaire." AFTER eleve_langue' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD eleve_lv2 TINYINT(3) UNSIGNED NOT NULL DEFAULT 100 COMMENT "Langue vivante 2 pour le livret scolaire." AFTER eleve_lv1' );
@@ -358,9 +362,9 @@ if($version_base_structure_actuelle=='2016-05-10')
   {
     $version_base_structure_actuelle = '2016-06-07';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // Ajout de matières
     if(empty($reload_sacoche_matiere))
     {
+      // Ajout de matières
       $insert = '
         ( 236, 0, 0,   2, 0, 255,  23600, "LGLIT", "Langue et littérature"),
         (3222, 0, 0,  32, 0, 255, 322200, "HANCY", "Hématologie - anatomocythopathologie"),
@@ -373,9 +377,9 @@ if($version_base_structure_actuelle=='2016-05-10')
         (9382, 0, 0,  93, 0, 255,  38200, "EST", "Estonien") ';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES '.$insert );
     }
-    // Ajout / Modification de niveaux
     if(empty($reload_sacoche_niveau))
     {
+      // Ajout de niveaux
       $insert = '
         ( 100027, 0, 0, 100, 100,    "6BC", "1001002711.", "Sixième bilangue de continuité"),
         ( 100028, 0, 0, 100, 100,   "6BCD", "1001002811.", "Sixième bilangue de continuité danse"),
@@ -444,6 +448,7 @@ if($version_base_structure_actuelle=='2016-05-10')
         ( 311238, 0, 0, 311, 311,  "1BTS2", "3112541221.", "1BTS2 forge"),
         ( 311239, 0, 0, 311, 311,  "2BTS2", "3112541222.", "2BTS2 forge") ';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES '.$insert );
+      // Modification de niveaux
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET niveau_nom = REPLACE(niveau_nom,"1BTS2","2BTS2") WHERE niveau_ref="2BTS2" ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET code_mef="2402213911.", niveau_nom="1CAP1 cuisine" WHERE niveau_id=240011' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET code_mef="2412213921.", niveau_nom="1CAP2 cuisine" WHERE niveau_id=241022' );
@@ -511,9 +516,9 @@ if($version_base_structure_actuelle=='2016-06-07')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
     // ajout du champ [item_comm]
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item ADD item_comm TEXT COLLATE utf8_unicode_ci NOT NULL COMMENT "Commentaire associé à l\'item, par exemple des échelles descriptives." AFTER item_lien' );
-    // Ajout de matières
     if(empty($reload_sacoche_matiere))
     {
+      // Ajout de matières
       $insert = '
         (9789, 0, 0,  97, 0, 255, 0, "BPAOO", "Artisanat et métiers d\'art - facteur d\'orgues option organier"),
         (9790, 0, 0,  97, 0, 255, 0, "BPAOT", "Artisanat et métiers d\'art - facteur d\'orgues option tuyautier"),
@@ -526,6 +531,8 @@ if($version_base_structure_actuelle=='2016-06-07')
         (9797, 0, 0,  97, 0, 255, 0, "BPRPI", "Réal. de prod. imprimés et plurimédia option B prod. imprimées"),
         (9798, 0, 0,  97, 0, 255, 0, "BPTIN", "Techniques d\'interventions sur installations nucléaires") ';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES '.$insert );
+      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
     }
   }
 }
@@ -765,44 +772,6 @@ if($version_base_structure_actuelle=='2016-08-12')
     if($connexion_nom=='logica_ent77')
     {
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="cas" WHERE parametre_nom="cas_serveur_root" ' );
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-08-29 => 2016-09-21
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2016-08-29')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2016-09-21';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // ajout d'un paramètre
-    $droit_socle_pourcentage_acquis = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="droit_socle_pourcentage_acquis"' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_socle_proposition_positionnement" , "'.$droit_socle_pourcentage_acquis.'")' );
-    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
-    // Ajout de matières
-    if(empty($reload_sacoche_matiere))
-    {
-      $insert = '
-        (9941, 0, 1,  99, 0, 255,      0, "C23QM", "Questionner le monde (cycles 2-3)"),
-        (9942, 0, 1,  99, 0, 255,      0, "C23ST", "Sciences et technologie (cycles 2-3)"),
-        (9943, 0, 1,  99, 0, 255,      0, "C23EA", "Enseignements artistiques (cycles 2-3)"),
-        (9944, 0, 1,  99, 0, 255,      0, "C23LV", "Langue vivante (cycles 2-3)") ';
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES '.$insert );
-      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
-    }
-    // recharger [sacoche_siecle_import] qui comportait un défaut de définition
-    if(empty($reload_sacoche_siecle_import))
-    {
-      $reload_sacoche_siecle_import = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_siecle_import.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
     }
   }
 }

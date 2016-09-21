@@ -388,36 +388,29 @@ public static function DB_supprimer_jointures_référentiel( $rubrique_type )
 /**
  * lister_colonnes_infos
  *
- * @param string $livret_colonne_type (facultatif)
+ * @param void
  * @return array
  */
-public static function DB_lister_colonnes_infos($livret_colonne_type=NULL)
+public static function DB_lister_colonnes_infos()
 {
-  $select = ($livret_colonne_type) ? '' : 'livret_colonne_type, ' ;
-  $where  = ($livret_colonne_type) ? 'WHERE livret_colonne_type=:livret_colonne_type ' : '' ;
-  $DB_SQL = 'SELECT '.$select.'livret_colonne_id, livret_colonne_ordre, livret_colonne_titre, livret_colonne_legende, livret_colonne_seuil_defaut_min, livret_colonne_seuil_defaut_max, livret_colonne_couleur_1 ';
+  $DB_SQL = 'SELECT livret_colonne_type, livret_colonne_id, livret_colonne_titre, livret_colonne_legende, livret_colonne_seuil_defaut_min, livret_colonne_seuil_defaut_max, livret_colonne_couleur_1 ';
   $DB_SQL.= 'FROM sacoche_livret_colonne ';
-  $DB_SQL.= $where;
   $DB_SQL.= 'ORDER BY livret_colonne_ordre ASC ';
-  $DB_VAR = array( ':livret_colonne_type' => $livret_colonne_type );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE );
 }
 
 /**
  * lister_seuils_valeurs
  *
- * @param string $livret_page_ref (facultatif)
+ * @param void
  * @return array
  */
-public static function DB_lister_seuils_valeurs($livret_page_ref=NULL)
+public static function DB_lister_seuils_valeurs()
 {
-  $where = ($livret_page_ref) ? 'WHERE livret_page_ref=:livret_page_ref ' : '' ;
   $DB_SQL = 'SELECT livret_colonne_id, livret_seuil_min, livret_seuil_max ';
   $DB_SQL.= 'FROM sacoche_livret_seuil ';
-  $DB_SQL.= $where;
   $DB_SQL.= 'ORDER BY livret_colonne_id ASC ';
-  $DB_VAR = array( ':livret_page_ref' => $livret_page_ref );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL , TRUE );
 }
 
 /**

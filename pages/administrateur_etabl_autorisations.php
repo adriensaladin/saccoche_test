@@ -104,14 +104,14 @@ $tab_droits  = array
   "Socle &rarr; Choix de la langue" => array
   (
     'dir_pers_lv',
-    array( 'droit_affecter_langue' , "affecter la langue vivante (socle 2006-2015)" , 'dir_prof_lv' ),
+    array( 'droit_affecter_langue' , "affecter la langue vivante" , 'dir_prof_lv' ),
   ),
   "Socle &rarr; Validations" => array
   (
     'dir_pers_pp',
-    array( 'droit_validation_entree' , "valider des items du socle (socle 2006-2015)"             , 'dir_pers' ),
-    array( 'droit_validation_pilier' , "valider des compétences du socle (socle 2006-2015)"       , 'dir_prof_pp' ),
-    array( 'droit_annulation_pilier' , "annuler des validations de compétences (socle 2006-2015)" , 'dir' ),
+    array( 'droit_validation_entree' , "valider des items du socle"             , 'dir_pers' ),
+    array( 'droit_validation_pilier' , "valider des compétences du socle"       , 'dir_prof_pp' ),
+    array( 'droit_annulation_pilier' , "annuler des validations de compétences" , 'dir' ),
   ),
   "Relevé d'items (matière ou pluridisciplinaire) & Bilan chronologique" => array
   (
@@ -124,10 +124,9 @@ $tab_droits  = array
   "Relevé de maîtrise du socle" => array
   (
     'parent_eleve',
-    array( 'droit_socle_acces'                      , "accéder au relevé avec les items évalués par élément du socle" , 'parent_eleve' ),
-    array( 'droit_socle_pourcentage_acquis'         , "afficher les pourcentages d'items acquis (socle 2006-2015)"    , 'parent_eleve' ),
-    array( 'droit_socle_etat_validation'            , "afficher les états de validation saisis (socle 2006-2015)"     , 'personne' ),
-    array( 'droit_socle_proposition_positionnement' , "afficher les propositions de positionnement (socle 2016)"      , 'parent_eleve' ),
+    array( 'droit_socle_acces'              , "accéder au relevé avec les items évalués par item du socle" , 'parent_eleve' ),
+    array( 'droit_socle_pourcentage_acquis' , "afficher les pourcentages d'items acquis"                   , 'parent_eleve' ),
+    array( 'droit_socle_etat_validation'    , "afficher les états de validation saisis"                    , 'personne' ),
   ),
   "Bilans officiels &rarr; Absences" => array
   (
@@ -150,7 +149,7 @@ $tab_droits  = array
     array( 'droit_officiel_bulletin_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_bulletin_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
   ),
-  "Bilans officiels &rarr; État de maîtrise du socle (socle 2006-2015)" => array
+  "Bilans officiels &rarr; État de maîtrise du socle" => array
   (
     'dir_pers_pp',
     array( 'droit_officiel_socle_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),

@@ -44,7 +44,7 @@ class PDF_item_tableau extends PDF
     $this->taille_police     = $this->cases_largeur*0.8;
     $this->taille_police     = min($this->taille_police,10); // pas plus de 10
     $this->taille_police     = max($this->taille_police,5);  // pas moins de 5
-    $this->cases_hauteur     = ( $this->page_hauteur_moins_marges - 2 - $hauteur_entete ) / ( $lignes_nb + 2 + $etiquette_facteur + $this->legende ); // -2 pour une petite marge - en-tête ; 2 lignes ajoutées + identité/item + légende
+    $this->cases_hauteur     = ($this->page_hauteur_moins_marges - 2 - $hauteur_entete) / ($lignes_nb+2+$etiquette_facteur); // -2 pour une petite marge - en-tête ; 2 lignes ajoutées + identité/item
     $this->etiquette_hauteur = $etiquette_facteur * $this->cases_hauteur;
     $this->cases_hauteur     = min($this->cases_hauteur,10); // pas plus de 10
     $this->cases_hauteur     = max($this->cases_hauteur,3);  // pas moins de 3
@@ -168,13 +168,6 @@ class PDF_item_tableau extends PDF
     $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf('% items acquis [**]'                  ) , 1 , 0 , 'C' , $this->fond , '' );
     $memo_x = $this->GetX();
     $this->SetXY($memo_x,$memo_y);
-  }
-
-  public function legende()
-  {
-    $this->lignes_hauteur = $this->cases_hauteur;
-    $ordonnee = $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*0.75;
-    $this->afficher_legende( 'score_bilan' /*type_legende*/ , $ordonnee /*ordonnée*/ );
   }
 
 }

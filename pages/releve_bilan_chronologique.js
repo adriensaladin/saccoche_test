@@ -584,6 +584,7 @@ $(document).ready
           f_compet_liste       : { required:"item(s) manquant(s)" },
           f_indicateur         : { required:"choix manquant" },
           f_conversion_sur_20  : { },
+          f_tri_mode           : { required:"choix manquant" },
           f_groupe             : { required:"groupe manquant" },
           f_groupe             : { required:"groupe manquant" },
           f_eleve              : { required:"élève manquant" },

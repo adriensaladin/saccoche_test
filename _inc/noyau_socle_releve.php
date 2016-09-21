@@ -277,7 +277,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 {
                   extract($tab_item[$item_id]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $matiere_nb_demandes $calcul_methode $calcul_limite
                   // calcul du bilan de l'item
-                  $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+                  $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
                   if($score!==FALSE)
                   {
                     // on détermine si il est acquis ou pas
@@ -485,7 +485,7 @@ if($make_html)
   $releve_HTML .= '<div class="astuce">Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL;
   $separation = (count($tab_eleve_infos)>1) ? '<hr />'.NL : '' ;
   // Légende identique pour tous les élèves car pas de codes de notation donc pas de codages spéciaux.
-  $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , $test_affichage_Pourcentage /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ , FALSE /*etat_maitrise*/ , $make_officiel , TRUE /*force_nb*/ ) : '' ;
+  $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , $test_affichage_Pourcentage /*etat_acquisition*/ , $test_affichage_Pourcentage /*pourcentage_acquis*/ , $test_affichage_Validation /*etat_validation*/ , $make_officiel , TRUE /*force_nb*/ ) : '' ;
 }
 if($make_pdf)
 {

@@ -385,7 +385,7 @@ if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $_SESSION['USER_ID'] , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*s2016_count*/ , TRUE /*item_comm*/ );
   if(empty($DB_TAB))
   {
-    echo'<p class="danger">Vous n\'êtes rattaché à aucune matière, ou des matières sans référentiel, ou des référentiels sans items !</p>' ;
+    echo'<p class="danger">Vous n\'êtes rattaché à aucune matière, ou des matières ne comportant aucun référentiel !</p>' ;
   }
   else
   {

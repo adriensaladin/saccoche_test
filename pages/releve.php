@@ -36,9 +36,8 @@ $tab_sous_menu = array(
   'items'               => Lang::_("Relevé d'items"),
   'synthese'            => Lang::_("Synthèse d'items"),
   'bilan_chronologique' => Lang::_("Bilan chronologique"),
-  'socle2016'           => Lang::_("Maîtrise du socle").' (2016)',
-  // 'socle'               => Lang::_("Relevé de maîtrise du socle"),
-  // 'synthese_socle'      => Lang::_("Synthèse de maîtrise du socle"),
+  'socle'               => Lang::_("Relevé de maîtrise du socle"),
+  'synthese_socle'      => Lang::_("Synthèse de maîtrise du socle"),
 );
 $tab_class_differente = array(
   'grille_referentiel'  => 'releve_grille',

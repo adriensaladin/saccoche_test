@@ -852,7 +852,7 @@ function getServerProtocole()
   {
     $tab_tr = array();
     $tab_tr[0] = '<tr><th>Suhosin <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.InfoServeur::commentaire('suhosin').'" /></th>';
-    if(version_compare(PHP_VERSION,'5.4','>='))
+    if(version_compare(PHP_VERSION,5.4,'>='))
     {
       $tab_tr[1] = '<tr><td class="hc">---</td></tr>';
     }
@@ -860,7 +860,7 @@ function getServerProtocole()
     {
       $tab_lignes   = array(1=>'get','post','request');
       $tab_colonnes = array(1=>'max_name_length','max_totalname_length','max_value_length','max_vars');
-      $tab_suhosin_options = (version_compare(PHP_VERSION,'5.3','<')) ? @ini_get_all( 'suhosin' ) : @ini_get_all( 'suhosin' , FALSE /*details*/ ) ; // http://fr.php.net/ini_get_all
+      $tab_suhosin_options = (version_compare(PHP_VERSION,5.3,'<')) ? @ini_get_all( 'suhosin' ) : @ini_get_all( 'suhosin' , FALSE /*details*/ ) ; // http://fr.php.net/ini_get_all
       foreach($tab_lignes as $i_ligne => $categorie)
       {
         $tab_tr[$i_ligne] = '<tr><td class="hc">'.$categorie.'</td>';
@@ -880,7 +880,7 @@ function getServerProtocole()
 
   public static function tableau_reglages_GD()
   {
-    $jpeg = (version_compare(PHP_VERSION,'5.3','<')) ? 'JPG' : 'JPEG' ;
+    $jpeg = (version_compare(PHP_VERSION,5.3,'<')) ? 'JPG' : 'JPEG' ;
     $tab_objets = array(
       'GD Version'       => 'Version', // 
       'FreeType Support' => 'Support FreeType', // Requis pour imagettftext()

@@ -428,7 +428,7 @@ $(document).ready
           f_colonne_bilan  : { required:true },
           f_colonne_vide   : { required:true },
           f_tri_objet      : { required:true },
-          f_tri_etat_mode  : { required:true },
+          f_tri_mode       : { required:true },
           f_repeter_entete : { required:false },
           f_retroactif     : { required:true },
           f_matiere        : { required:true },
@@ -462,7 +462,7 @@ $(document).ready
           f_colonne_bilan  : { required:"contenu manquant" },
           f_colonne_vide   : { required:"contenu manquant" },
           f_tri_objet      : { required:"choix manquant" },
-          f_tri_etat_mode  : { required:"choix manquant" },
+          f_tri_mode       : { required:"choix manquant" },
           f_repeter_entete : { },
           f_retroactif     : { required:"choix manquant" },
           f_matiere        : { required:"matière manquante" },
@@ -574,7 +574,7 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr('class').html('');
         // Mis dans le div bilan et pas balancé directement dans le fancybox sinon la mise en forme des liens nécessite un peu plus de largeur que le fancybox ne recalcule pas (et $.fancybox.update(); ne change rien).
-        // Malgré tout, pour Chrome par exemple, la largeur est mal calculée et provoque des retours à la ligne, d'où le minWidth ajouté.
+        // Malgré tout, pour Chrome par exemple, la largeur est mal clculée et provoque des retours à la ligne, d'où le minWidth ajouté.
         $('#bilan').html('<p class="noprint">Afin de préserver l\'environnement, n\'imprimer que si nécessaire !</p>'+responseJSON['bilan']);
         $.fancybox( { 'href':'#bilan' , onClosed:function(){$('#bilan').html("");} , 'centerOnScroll':true , 'minWidth':550 } );
       }

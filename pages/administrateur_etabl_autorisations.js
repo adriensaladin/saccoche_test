@@ -69,11 +69,8 @@ $(document).ready
       $('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
       $('#form_autorisations input[name="droit_socle_etat_validation"][value="TUT"]').parent().fadeTo(0,opacite_parent);
       $('#form_autorisations input[name="droit_socle_etat_validation"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
-      $('#form_autorisations input[name="droit_socle_proposition_positionnement"][value="TUT"]').parent().fadeTo(0,opacite_parent);
-      $('#form_autorisations input[name="droit_socle_proposition_positionnement"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
       $('#tr_droit_socle_pourcentage_acquis').fadeTo(0,opacite_ligne);
       $('#tr_droit_socle_etat_validation').fadeTo(0,opacite_ligne);
-      $('#tr_droit_socle_proposition_positionnement').fadeTo(0,opacite_ligne);
     }
     view_socle();
 

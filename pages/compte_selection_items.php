@@ -157,7 +157,7 @@ Layout::add( 'js_inline_before' , 'var tab_profs = new Array();' );
   if(empty($DB_TAB))
   {
     $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous n\'êtes rattaché à' : 'L\'établissement n\'a mis en place' ;
-    echo'<p class="danger">'.$phrase_debut.' aucune matière, ou des matières sans référentiel, ou des référentiels sans items !</p>' ;
+    echo'<p class="danger">'.$phrase_debut.' aucune matière, ou des matières ne comportant aucun référentiel !</p>' ;
   }
   else
   {

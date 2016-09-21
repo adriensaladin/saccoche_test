@@ -1178,6 +1178,13 @@ $(document).ready
       }
     );
 
+// ////////////////////////////////////////////////////////////////////////////////
+// La suite n'est à exécuter que si l'on est connecté.
+// Remarque : poursuivre l'analyse en l'état provoquerait des erreurs.
+// ////////////////////////////////////////////////////////////////////////////////
+    if(PAGE.substring(0,6)=='public') return false;
+// ////////////////////////////////////////////////////////////////////////////////
+
     /**
      * Plugin Impromptu - Options par défaut
      */
@@ -1191,20 +1198,25 @@ $(document).ready
 
     /**
      * Ajouter une méthode de tri au plugin TableSorter
-     * @see https://mottie.github.io/tablesorter/docs/example-parsers.html
      */
     $.tablesorter.addParser
     (
       {
+        // set a unique id
         id: 'date_fr',
-        format: function(s, table, cell, cellIndex)
+        is: function(date_fr)
+        {
+          // return false so this parser is not auto detected
+          return false;
+        },
+        format: function(date_fr)
         {
           // format your data for normalization
-          if(s=='-')
+          if(date_fr=='-')
           {
             return 99991231;
           }
-          tab_date = s.split('/');
+          tab_date = date_fr.split('/');
           if(tab_date.length==3)
           {
             return tab_date[2]+tab_date[1]+tab_date[0]; // Il s'agit bien d'une concaténation, pas d'une somme.
@@ -1214,32 +1226,10 @@ $(document).ready
             return 0;
           }
         },
+        // set type, either numeric or text
         type: 'numeric'
       }
     );
-
-    /**
-     * Ajouter une méthode de tri au plugin TableSorter
-     * @see https://mottie.github.io/tablesorter/docs/example-parsers.html
-     */
-    $.tablesorter.addParser
-    (
-      {
-        id: 'FromData',
-        format: function(s, table, cell, cellIndex)
-        {
-          return $(cell).attr('data-sort');
-        },
-        type: 'numeric'
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////
-// La suite n'est à exécuter que si l'on est connecté.
-// Remarque : poursuivre l'analyse en l'état provoquerait des erreurs.
-// ////////////////////////////////////////////////////////////////////////////////
-    if(PAGE.substring(0,6)=='public') return false;
-// ////////////////////////////////////////////////////////////////////////////////
 
     /**
      * MENU - Déploiement au clic (pas au survol car les "tunnels forcés invisibles" sont pénibles (http://www.pompage.net/traduction/menu-survol-et-utilisateurs).

@@ -94,23 +94,22 @@ $tab_sous_menu = array
   ),
   'releve' => array
   (
-    'releve_recherche'          => array( 'texte' => Lang::_("Recherche ciblée")                , 'class' => 'releve_recherche'      , 'href' => 'page=releve&amp;section=recherche'           ),
-    'releve_grille_referentiel' => array( 'texte' => Lang::_("Grille d'items d'un référentiel") , 'class' => 'releve_grille'         , 'href' => 'page=releve&amp;section=grille_referentiel'  ),
-    'releve_items'              => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items'               ),
-    'releve_synthese'           => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese'            ),
-    'releve_chronologique'      => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique' ),
-    'releve_socle2016'          => array( 'texte' => Lang::_("Maîtrise du socle").' (2016)'     , 'class' => 'releve_socle2016'      , 'href' => 'page=releve&amp;section=socle2016'           ),
- // 'releve_socle'              => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'               ),
- // 'releve_synthese_socle'     => array( 'texte' => Lang::_("Synthèse de maîtrise du socle")   , 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'      ),
+    'releve_recherche'          => array( 'texte' => Lang::_("Recherche ciblée")                , 'class' => 'releve_recherche'      , 'href' => 'page=releve&amp;section=recherche'             ),
+    'releve_grille_referentiel' => array( 'texte' => Lang::_("Grille d'items d'un référentiel") , 'class' => 'releve_grille'         , 'href' => 'page=releve&amp;section=grille_referentiel'    ),
+    'releve_items'              => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items'                 ),
+    'releve_synthese'           => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese'              ),
+    'releve_chronologique'      => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
+    'releve_socle'              => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'                 ),
+    'releve_synthese_socle'     => array( 'texte' => Lang::_("Synthèse de maîtrise du socle")   , 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'        ),
   ),
   'officiel' => array
   (
     'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")   , 'class' => 'officiel_assiduite' , 'href' => 'page=officiel&amp;section=assiduite'        ),
     'officiel_accueil_releve'   => array( 'texte' => Lang::_("Relevé d'évaluations") , 'class' => 'officiel_releve'    , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
     'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")    , 'class' => 'officiel_bulletin'  , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
- // 'officiel_accueil_palier1'  => array( 'texte' => Lang::_("Maîtrise du palier 1") , 'class' => 'officiel_palier1'   , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
- // 'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2") , 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
- // 'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3") , 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
+    'officiel_accueil_palier1'  => array( 'texte' => Lang::_("Maîtrise du palier 1") , 'class' => 'officiel_palier1'   , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
+    'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2") , 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
+    'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3") , 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
     'brevet_fiches'             => array( 'texte' => Lang::_("Fiches brevet")        , 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=fiches'             ),
   ),
 );
@@ -201,7 +200,7 @@ if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
 {
   $tab_sous_menu['releve']['releve_socle']['class'] .= ' disabled';
-  // $tab_sous_menu['releve']['releve_synthese_socle']['class'] .= ' disabled';
+  $tab_sous_menu['releve']['releve_synthese_socle']['class'] .= ' disabled';
 }
 
 // Import des absences / retards sur les bilans officiels (profils [professeur] et [directeur] uniquement).
@@ -211,7 +210,6 @@ if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUIT
 }
 
 // Bilans officiels relatifs aux paliers du socle restreint aux paliers en vigueur dans l'établissement
-/* TODO A RETIRER
 $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
 for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
 {
@@ -220,5 +218,5 @@ for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
     $tab_sous_menu['officiel']['officiel_accueil_palier'.$palier_id]['class'] .= ' disabled';
   }
 }
-*/
+
 ?>

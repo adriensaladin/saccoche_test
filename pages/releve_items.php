@@ -194,7 +194,7 @@ $tab_select_objet_releve = array(
 $select_objet_releve      = HtmlForm::afficher_select($tab_select_objet_releve            , 'f_objet'             /*select_nom*/ ,                      '' /*option_first*/ , $auto_select_objet                           /*selection*/ ,              '' /*optgroup*/ );
 $select_individuel_format = HtmlForm::afficher_select(Form::$tab_select_individuel_format , 'f_individuel_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['releve_individuel_format'] /*selection*/ ,              '' /*optgroup*/ );
 $select_synthese_format   = HtmlForm::afficher_select(Form::$tab_select_synthese_format   , 'f_synthese_format'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_synthese_format']  /*selection*/ ,              '' /*optgroup*/ );
-$select_tri_etat_mode     = HtmlForm::afficher_select(Form::$tab_select_tri_etat_mode     , 'f_tri_etat_mode'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_etat_mode']    /*selection*/ ,              '' /*optgroup*/ );
+$select_tri_mode          = HtmlForm::afficher_select(Form::$tab_select_tri_mode          , 'f_tri_mode'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_mode']         /*selection*/ ,              '' /*optgroup*/ );
 $select_groupe            = HtmlForm::afficher_select($tab_groupes                        , 'f_groupe'            /*select_nom*/ ,              $of_groupe /*option_first*/ , $sel_groupe                                  /*selection*/ , 'regroupements' /*optgroup*/ );
 $select_eleves_ordre      = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre      , 'f_eleves_ordre'      /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre']             /*selection*/ ,              '' /*optgroup*/ );
 $select_professeur        = HtmlForm::afficher_select($tab_profs                          , 'f_prof'              /*select_nom*/ ,                   FALSE /*option_first*/ , $_SESSION['USER_ID']                         /*selection*/ ,              '' /*optgroup*/ );
@@ -266,7 +266,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     </div>
     <div id="div_not_multimatiere_2">
       <div id="options_synthese" class="<?php echo $class_form_synthese ?>">
-        <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_synthese_format ?> <?php echo $select_tri_etat_mode ?><br />
+        <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_synthese_format ?> <?php echo $select_tri_mode ?><br />
         <span class="tab"></span><label for="f_repeter_entete"><input type="checkbox" id="f_repeter_entete" name="f_repeter_entete" value="1"<?php echo $check_repeter_entete ?> /> Répéter les entêtes de lignes et de colonnes (grand tableau, format <em>html</em>)</label>
       </div>
       <div id="option_with_coef" class="<?php echo $class_form_with_coef ?>">
@@ -330,7 +330,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/, FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*s2016_count*/ , FALSE /*item_comm*/ );
     if(empty($DB_TAB))
     {
-      echo'<p class="danger">Vous n\'êtes rattaché à aucune matière, ou des matières sans référentiel, ou des référentiels sans items !</p>' ;
+      echo'<p class="danger">Vous n\'êtes rattaché à aucune matière, ou des matières ne comportant aucun référentiel !</p>' ;
     }
     else
     {

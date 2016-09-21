@@ -188,7 +188,7 @@ if( ($action=='Afficher_bilan') && $pilier_id && count($tab_domaine) && count($t
         {
           extract($tab_item[$item_id]);  // $calcul_methode $calcul_limite
           // calcul du bilan de l'item
-          $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+          $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
           if($score!==FALSE)
           {
             // on détermine si il est acquis ou pas
@@ -298,7 +298,7 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id &
     {
       extract($tab_item[$item_id]);  // $item_ref $item_nom $matiere_id $calcul_methode $calcul_limite
       // calcul du bilan de l'item
-      $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+      $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
       if($score!==FALSE)
       {
         // on détermine si il est acquis ou pas
@@ -317,9 +317,7 @@ if( ($action=='Afficher_information') && $eleve_id && $pilier_id && $entree_id &
     Json::end( FALSE , 'Aucun item évalué n\'est relié avec cette entrée du socle !' );
   }
   // Retour
-  $class = 'A'.OutilBilan::determiner_etat_acquisition( $tab_score_socle_eleve['%'] );
-  $detail_acquisition = OutilBilan::afficher_nombre_acquisitions_par_etat( $tab_score_socle_eleve , FALSE /*detail_couleur*/ );
-  Json::add_row( 'stats' , '<span class="'.$class.'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.$detail_acquisition.')&nbsp;</span>' );
+  Json::add_row( 'stats' , '<span class="A'.OutilBilan::determiner_etat_acquisition($tab_score_socle_eleve['%']).'">&nbsp;'.$tab_score_socle_eleve['%'].'% acquis ('.OutilBilan::afficher_nombre_acquisitions_par_etat($tab_score_socle_eleve).')&nbsp;</span>' );
   Json::add_row( 'items' , implode('<br />',$tab_infos_socle_eleve) );
   Json::end( TRUE );
 }

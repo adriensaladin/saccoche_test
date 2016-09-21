@@ -34,6 +34,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
   $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
+  $tab_cycles   = DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles();
   $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
@@ -41,16 +42,17 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
   $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
+  $tab_cycles   = DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles();
   $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
   $tab_matieres = array();
-  $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( FALSE /*sans*/ );
+  $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/);
   $tab_paliers  = array();
+  $tab_cycles   = DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles();
   $of_p = FALSE;
 }
-$tab_cycles   = DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles( FALSE /*only_used*/ );
 
 $select_matiere = HtmlForm::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,    '' /*option_first*/ , Form::$tab_choix['matiere_id'] /*selection*/ ,              '' /*optgroup*/ );
 $select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ ,    '' /*option_first*/ , FALSE                          /*selection*/ , 'regroupements' /*optgroup*/ );

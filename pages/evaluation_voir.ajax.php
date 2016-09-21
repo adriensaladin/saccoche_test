@@ -190,7 +190,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $texte_comm  = ($DB_ROW['item_comm']) ? ' <img src="./_img/etat/comm_oui.png" title="'.convertCRtoBR(html(html($DB_ROW['item_comm']))).'" />' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
-    $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? OutilBilan::calculer_score( $tab_devoirs[$item_id]  ,$DB_ROW['referentiel_calcul_methode'] , $DB_ROW['referentiel_calcul_limite'] ) : FALSE ;
+    $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? OutilBilan::calculer_score($tab_devoirs[$item_id],$DB_ROW['referentiel_calcul_methode'],$DB_ROW['referentiel_calcul_limite']) : FALSE ;
     if($_SESSION['USER_PROFIL_TYPE']=='parent')    { $texte_demande_eval = '<q class="demander_non" title="Les demandes d\'évaluations s\'effectuent depuis un compte élève."></q>'; }
     elseif($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
     elseif(!$DB_ROW['matiere_nb_demandes'])        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
@@ -220,7 +220,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   $affichage = '<tr>'.implode('</tr><tr>',$tab_affich).'</tr>';
   // la légende, qui peut être personnalisée (codes AB, NN, etc.)
   $score_legende  = (Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_ETAT_ACQUISITION_AVEC_EVALUATION'])) ? TRUE : FALSE ;
-  $legende = Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*etat_maitrise*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ );
+  $legende = Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , $score_legende /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ );
   // Les commentaires texte ou audio
   $commentaire_texte = '';
   $commentaire_audio = '';

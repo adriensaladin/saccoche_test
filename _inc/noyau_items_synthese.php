@@ -148,14 +148,6 @@ if( !$item_nb && !$make_officiel ) // Dans le cas d'un bilan officiel, où l'on 
 $tab_liste_item = array_keys($tab_item);
 $liste_item = implode(',',$tab_liste_item);
 
-
-// Prendre la bonne référence de l'item
-foreach($tab_item as $item_id => $tab)
-{
-  $tab_item[$item_id][0]['item_ref'] = ($tab[0]['ref_perso']) ? $tab[0]['ref_perso'] : $tab[0]['ref_auto'] ;
-  unset( $tab_item[$item_id][0]['ref_perso'] , $tab_item[$item_id][0]['ref_auto'] );
-}
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,7 +262,7 @@ if(empty($is_appreciation_groupe))
         // le score bilan
         extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite $calcul_retroactif $synthese_ref
         $matiere_nb_demandes = $tab_matiere[$matiere_id]['matiere_nb_demandes'];
-        $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite ) ;
+        $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite) ;
         $tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref][$item_id] = $score;
         // le détail HTML
         if($make_html)
@@ -421,7 +413,7 @@ if( ($make_html) || ($make_graph) )
   $releve_HTML .= (!$make_graph) ? '<div class="astuce">Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail.'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
   $separation = (count($tab_eleve_infos)>1) ? '<hr class="breakafter" />'.NL : '' ;
   // Légende identique pour tous les élèves car pas de codes de notation donc pas de codages spéciaux.
-  $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*etat_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ) : '' ;
+  $legende_html = ($legende=='oui') ? Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $make_officiel , FALSE /*force_nb*/ ) : '' ;
   $width_barre = (!$make_officiel) ? 180 : 50 ;
   $width_texte = 900 - $width_barre;
 }

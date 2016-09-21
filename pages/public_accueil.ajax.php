@@ -111,7 +111,7 @@ function afficher_formulaire_identification( $profil , $mode='normal' , $nom='' 
     $affichage .= '<label class="tab" for="f_password">Mot de passe :</label><input id="f_password" name="f_password" size="'.(PASSWORD_LONGUEUR_MAX-5).'" maxlength="'.PASSWORD_LONGUEUR_MAX.'" type="password" value="" tabindex="3" autocomplete="off" /><br />'.NL;
     $affichage .= '</fieldset>'.NL;
     $affichage .= '<span class="tab"></span><input id="f_profil" name="f_profil" type="hidden" value="structure" /><input id="f_action" name="f_action" type="hidden" value="identifier" /><button id="f_submit" type="submit" tabindex="4" class="mdp_perso">Accéder à son espace.</button><label id="ajax_msg">&nbsp;</label><br />'.NL;
-    $affichage .= '<span class="tab"></span><a id="lien_lost"'.$class_normal.' href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact établissement ]</a>'.NL;
+    $affichage .= '<span class="tab"></span><a id="lien_lost" class="hide" href="#structure">[ Identifiants perdus ]</a> <a id="contact_admin" href="#contact_admin">[ Contact établissement ]</a>'.NL;
   }
   return $affichage;
 }

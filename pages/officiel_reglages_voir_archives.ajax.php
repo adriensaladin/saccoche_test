@@ -103,7 +103,7 @@ foreach($DB_TAB_Archives as $key => $DB_ROW)
 
 // Dossier accueillant les PDF
 $is_make_zip = ( ($nb_archives>1) || $uai_origine ) ? TRUE : FALSE;
-// TODO : UTILISER LE DOSSIER "OFFIFICIEL" AVEC UNE DUREE DE CONSERVATION D'1 SEMAINE
+// TODO : UTILISER LE DOSSIER "OFFICIEL" AVEC UNE DUREE DE CONSERVATION D'1 SEMAINE
 if($is_make_zip)
 {
   $chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().DS;

@@ -27,6 +27,10 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
+// 
+// VT et FF sont déjà nettoyés par Clean::ctrl()
+
+
 /*
  * Réciproque de html()
  * 
@@ -46,18 +50,21 @@ function html_decode($text)
  */
 function convertCRtoBR($text)
 {
-  return str_replace( array("\r\n","\r","\n") , '<br />' , $text );
+  return str_replace( Clean::tab_crlf() , '<br />' , $text );
 }
 
 /*
  * Conversion des retours chariot en JS pour textarea
+ * 
+ * "\x0D" = CR  Carriage Return (retour de chariot)
+ * "\x0A" = LF  Line Feed (saut de ligne / ligne suivante)
  * 
  * @param string
  * @return string
  */
 function convertCRtoJS($text)
 {
-  return str_replace( array("\r\n","\r","\n") , array('\r\n','\r','\n') , $text );
+  return str_replace( Clean::tab_crlf() , '\n' , $text );
 }
 
 /**

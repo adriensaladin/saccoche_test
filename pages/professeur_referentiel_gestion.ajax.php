@@ -34,6 +34,7 @@ $matiere_nom    = (isset($_POST['f_matiere_nom']))    ? Clean::texte($_POST['f_m
 $niveau_id      = (isset($_POST['f_niveau_id']))      ? Clean::entier($_POST['f_niveau_id'])              : 0;
 $niveau_nom     = (isset($_POST['f_niveau_nom']))     ? Clean::texte($_POST['f_niveau_nom'])              : '';
 $structure_id   = (isset($_POST['f_structure_id']))   ? Clean::entier($_POST['f_structure_id'])           : 0;
+$maj_date_fr    = (isset($_POST['f_maj_date']))       ? Clean::date_fr($_POST['f_maj_date'])              : '' ;
 $nb_demandes    = (isset($_POST['f_nb_demandes']))    ? Clean::entier($_POST['f_nb_demandes'])            : -1; // Changer le nb de demandes
 $partage        = (isset($_POST['f_partage']))        ? Clean::referentiel_partage($_POST['f_partage'])   : NULL; // Changer l'état de partage
 $methode        = (isset($_POST['f_methode']))        ? Clean::calcul_methode($_POST['f_methode'])        : NULL; // Changer le mode de calcul
@@ -81,7 +82,8 @@ if($action=='afficher_structures_partage')
 
 if($action=='lister_referentiels_communautaires') // La vérification concernant le nombre de contraintes s'effectue après
 {
-  Json::end( TRUE , ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id ) );
+  $maj_date_mysql = To::date_french_to_mysql($maj_date_fr);
+  Json::end( TRUE , ServeurCommunautaire::afficher_liste_referentiels( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $matiere_id , $niveau_id , $structure_id , $maj_date_mysql ) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

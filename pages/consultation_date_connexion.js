@@ -31,7 +31,7 @@ $(document).ready
   {
 
     // tri du tableau (avec jquery.tablesorter.js).
-    $('table#bilan').tablesorter({ headers:{1:{sorter:'date_fr'}} });
+    $('table#bilan').tablesorter();
     var tableau_tri = function(){ $('table#bilan').trigger( 'sorton' , [ [[1,1]] ] ); };
     var tableau_maj = function(){ $('table#bilan').trigger( 'update' , [ true ] ); };
     tableau_tri();

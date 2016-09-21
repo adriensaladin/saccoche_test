@@ -255,7 +255,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
       {
         extract($tab_item[$item_id]);  // $item_coef $calcul_methode $calcul_limite
         // calcul du bilan de l'item
-        $tab_score_item[$item_id] = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+        $tab_score_item[$item_id] = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
       }
       // calcul des bilans des scores
       $tableau_score_filtre = array_filter($tab_score_item,'non_vide');
@@ -328,7 +328,7 @@ if( $is_socle_item_pourcentage )
       {
         extract($tab_item[$item_id]);  // $calcul_methode $calcul_limite
         // calcul du bilan de l'item
-        $score = OutilBilan::calculer_score($tab_devoirs,$calcul_methode,$calcul_limite);
+        $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
         if($score!==FALSE)
         {
           // on détermine l'état d'acquisition et on enregistre les infos

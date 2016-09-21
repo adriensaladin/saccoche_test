@@ -57,6 +57,22 @@ $(document).ready
     // Afficher / masquer des options de la grille
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    $('#f_type_individuel').click
+    (
+      function()
+      {
+        $("#options_individuel").toggle();
+      }
+    );
+
+    $('#f_type_synthese').click
+    (
+      function()
+      {
+        $("#options_synthese").toggle();
+      }
+    );
+
     $('#f_groupe').change
     (
       function()
@@ -72,70 +88,6 @@ $(document).ready
         }
       }
     );
-
-    $('#f_mode_auto').click
-    (
-      function()
-      {
-        $("#div_matiere").hide();
-      }
-    );
-
-    $('#f_mode_manuel').click
-    (
-      function()
-      {
-        $("#div_matiere").show();
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Charger le select f_pilier en ajax
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    var maj_pilier = function()
-    {
-      $("#f_pilier").html('');
-      palier_id = $("#f_palier").val();
-      if(palier_id)
-      {
-        $('#ajax_maj_pilier').attr('class','loader').html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page=_maj_select_piliers',
-            data : 'f_palier='+palier_id+'&f_multiple=1',
-            dataType : 'json',
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $('#ajax_maj_pilier').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-            },
-            success : function(responseJSON)
-            {
-              initialiser_compteur();
-              if(responseJSON['statut']==true)
-              {
-                $('#ajax_maj_pilier').removeAttr('class').html('&nbsp;');
-                $('#f_pilier').html(responseJSON['value']);
-              }
-              else
-              {
-                $('#ajax_maj_pilier').attr('class','alerte').html(responseJSON['value']);
-              }
-            }
-          }
-        );
-      }
-      else
-      {
-        $('#ajax_maj_pilier').removeAttr('class').html("");
-      }
-    };
-
-    $("#f_palier").change( maj_pilier );
-
-    maj_pilier();
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Charger le select f_eleve en ajax
@@ -230,41 +182,43 @@ $(document).ready
       {
         rules :
         {
-          f_palier        : { required:true },
-          'f_pilier[]'    : { required:true },
-          f_groupe        : { required:true },
-          'f_eleve[]'     : { required:true },
-          f_eleves_ordre  : { required:true },
-          f_mode          : { required:true },
-          'f_matiere[]'   : { required:function(){return $('#f_mode_manuel').is(':checked');} },
-          f_only_presence : { required:false },
-          f_coef          : { required:false },
-          f_socle         : { required:false },
-          f_lien          : { required:false },
-          f_start         : { required:false },
-          f_couleur       : { required:true },
-          f_fond          : { required:true },
-          f_legende       : { required:true },
-          f_marge_min     : { required:true }
+          f_cycle                   : { required:true },
+          f_socle_detail            : { required:true },
+          'f_type[]'                : { required:true },
+          f_socle_individuel_format : { required:true },
+          f_socle_synthese_format   : { required:true },
+          f_tri_maitrise_mode       : { required:true },
+          f_groupe                  : { required:true },
+          'f_eleve[]'               : { required:true },
+          f_eleves_ordre            : { required:true },
+          f_socle_position          : { required:false },
+          f_only_presence           : { required:false },
+          f_lien                    : { required:false },
+          f_start                   : { required:false },
+          f_couleur                 : { required:true },
+          f_fond                    : { required:true },
+          f_legende                 : { required:true },
+          f_marge_min               : { required:true }
         },
         messages :
         {
-          f_palier        : { required:"palier manquant" },
-          'f_pilier[]'    : { required:"compétence(s) manquante(s)" },
-          f_groupe        : { required:"groupe manquant" },
-          'f_eleve[]'     : { required:"élève(s) manquant(s)" },
-          f_eleves_ordre  : { required:"ordre manquant" },
-          f_mode          : { required:"choix manquant" },
-          'f_matiere[]'   : { required:"matière(s) manquante(s)" },
-          f_only_presence : { },
-          f_coef          : { },
-          f_socle         : { },
-          f_lien          : { },
-          f_start         : { },
-          f_couleur       : { required:"couleur manquante" },
-          f_fond          : { required:"fond manquant" },
-          f_legende       : { required:"légende manquante" },
-          f_marge_min     : { required:"marge mini manquante" }
+          f_cycle                   : { required:"cycle manquant" },
+          f_socle_detail            : { required:"détail manquant" },
+          'f_type[]'                : { required:"type(s) manquant(s)" },
+          f_socle_individuel_format : { required:"choix manquant" },
+          f_socle_synthese_format   : { required:"choix manquant" },
+          f_tri_maitrise_mode       : { required:"choix manquant" },
+          f_groupe                  : { required:"groupe manquant" },
+          'f_eleve[]'               : { required:"élève(s) manquant(s)" },
+          f_eleves_ordre            : { required:"ordre manquant" },
+          f_socle_position          : { },
+          f_only_presence           : { },
+          f_lien                    : { },
+          f_start                   : { },
+          f_couleur                 : { required:"couleur manquante" },
+          f_fond                    : { required:"fond manquant" },
+          f_legende                 : { required:"légende manquante" },
+          f_marge_min               : { required:"marge mini manquante" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -302,7 +256,7 @@ $(document).ready
       function()
       {
         // récupération d'éléments
-        $('#f_palier_nom' ).val( $("#f_palier option:selected").text() );
+        $('#f_cycle_nom'  ).val( $("#f_cycle option:selected").text() );
         $('#f_groupe_nom' ).val( $("#f_groupe option:selected").text() );
         $('#f_groupe_type').val( groupe_type );
         $(this).ajaxSubmit(ajaxOptions);

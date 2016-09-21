@@ -104,7 +104,7 @@ if(!file_exists($fichier))
     $h_g_x = min($h_g_x1,$h_g_x2);
   }
   // Maintenant on peut connaître les dimensions de l'image finale
-  $largeur_finale = $b_d_x - $h_g_x + 2 ; // +2 car 1px de marge en bordure
+  $largeur_finale = $b_d_x - $h_g_x + 3 ; // +2 car 1px de marge en bordure
   $hauteur_finale = $b_d_y - $h_g_y + 2 ; // idem
   // Les caractères minuscules parmi g,j,p,q,y provoquent un décalage non pris en compte par imagettftext()
   // sur certains serveurs pour des librairies gd pourtant rigoureusement identiques (gd_info() renvoyant [GD Version] => bundled 2.0.34 compatible).

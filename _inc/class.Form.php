@@ -35,6 +35,11 @@ class Form
   // Tableaux prédéfinis
   // //////////////////////////////////////////////////
 
+  public static $tab_select_socle_detail = array(
+    array('valeur' => 'livret' , 'texte' => 'comme le Livret Scolaire (les 4 composantes du premier domaine + les 4 autres domaines dans leur globalité)') ,
+    array('valeur' => 'detail' , 'texte' => 'détaillé par composante (pour chacun des 5 domaines)') ,
+  );
+
   public static $tab_echelle = array(
     array('valeur' => 'fixe' , 'texte' => 'gradué de 0 à 20 (ou 100%)') ,
     array('valeur' => 'auto' , 'texte' => 'recentré en fonction des valeurs') ,
@@ -55,15 +60,30 @@ class Form
     array('valeur' => 'item'  , 'texte' => 'items en lignes (triés pour un élève donné)') ,
   );
 
+  public static $tab_select_socle_individuel_format = array(
+    array('valeur' => 'eleve'      , 'texte' => 'présenté par élève') ,
+    array('valeur' => 'composante' , 'texte' => 'présenté par composante') ,
+  );
+
+  public static $tab_select_socle_synthese_format = array(
+    array('valeur' => 'eleve'      , 'texte' => 'élèves en lignes (triés pour une composante donnée)') ,
+    array('valeur' => 'composante' , 'texte' => 'composantes en lignes (triées pour un élève donné)') ,
+  );
+
   public static $tab_select_only_etat = array(
     array('valeur' => 'tous'       , 'texte' => 'tous les états de réussite') ,
     array('valeur' => 'acquis'     , 'texte' => 'seulement les items réussis') ,
     array('valeur' => 'non_acquis' , 'texte' => 'seulement les items échoués') ,
   );
 
-  public static $tab_select_tri_mode = array(
+  public static $tab_select_tri_etat_mode = array(
     array('valeur' => 'score' , 'texte' => 'tri par score d\'acquisition (pour un tri unique)') ,
     array('valeur' => 'etat'  , 'texte' => 'tri par état d\'acquisition (pour un tri multiple)') ,
+  );
+
+  public static $tab_select_tri_maitrise_mode = array(
+    array('valeur' => 'score' , 'texte' => 'tri par pourcentage de maîtrise (pour un tri unique)') ,
+    array('valeur' => 'etat'  , 'texte' => 'tri par état de maîtrise (pour un tri multiple)') ,
   );
 
   public static $tab_select_orientation = array(
@@ -310,64 +330,69 @@ class Form
     $check_conversion_sur_20  = Outil::test_user_droit_specifique($_SESSION['DROIT_RELEVE_CONVERSION_SUR_20']) ? 1 : 0 ;
     $check_aff_lien           = (in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve'))) ? 1 : 0 ;
     Form::$tab_choix = array(
-      'eleves_ordre'             => 'alpha' ,
-      'matiere_id'               => 0 ,
-      'niveau_id'                => 0 ,
-      'palier_id'                => 0 ,
-      'cycle_id'                 => 0 ,
-      'orientation'              => 'portrait' ,
-      'couleur'                  => 'oui' ,
-      'fond'                     => 'gris' ,
-      'legende'                  => 'oui' , 
-      'marge_min'                => 5 ,
-      'pages_nb'                 => 'optimise' ,
-      'cart_detail'              => 'complet' ,
-      'cart_cases_nb'            => 1 ,
-      'cart_contenu'             => 'AVEC_nom_SANS_result' ,
-      'cart_hauteur'             => 'variable' ,
-      'cart_restriction_item'    => 0 ,
-      'cart_restriction_eleve'   => 0 ,
-      'repart_categorie_autre'   => 1 ,
-      'repart_ref_pourcentage'   => 'tous' ,
-      'only_etat'                => 'tous',
-      'only_niveau'              => 0 ,
-      'only_presence'            => 0 ,
-      'only_socle'               => 0 ,
-      'aff_reference'            => 1 ,
-      'aff_coef'                 => 0 ,
-      'aff_socle'                => 1 ,
-      'aff_comm'                 => 0 ,
-      'aff_lien'                 => $check_aff_lien ,
-      'aff_start'                => 0 ,
-      'aff_domaine'              => 0 ,
-      'aff_theme'                => 0 ,
-      'cases_nb'                 => 4 ,
-      'cases_largeur'            => 5 ,
-      'remplissage'              => 'plein' ,
-      'colonne_bilan'            => 'oui' ,
-      'colonne_vide'             => 0 ,
-      'type_generique'           => 0 ,
-      'type_individuel'          => $check_type_individuel ,
-      'type_synthese'            => 0 ,
-      'type_bulletin'            => 0 ,
-      'releve_individuel_format' => 'eleve',
-      'aff_etat_acquisition'     => $check_etat_acquisition ,
-      'aff_moyenne_scores'       => $check_moyenne_score ,
-      'aff_pourcentage_acquis'   => $check_pourcentage_acquis ,
-      'conversion_sur_20'        => $check_conversion_sur_20 ,
-      'indicateur'               => 'moyenne_scores' ,
-      'tableau_synthese_format'  => 'eleve',
-      'tableau_tri_mode'         => 'score',
-      'repeter_entete'           => 0 ,
-      'with_coef'                => 1 ,
-      'retroactif'               => 'auto' ,
-      'mode_synthese'            => 'predefini' ,
-      'fusion_niveaux'           => 1 ,
-      'aff_socle_PA'             => 1 ,
-      'aff_socle_EV'             => 1 ,
-      'type'                     => '' ,
-      'mode'                     => 'auto' ,
-      'echelle'                  => 'fixe' ,
+      'eleves_ordre'              => 'alpha' ,
+      'matiere_id'                => 0 ,
+      'niveau_id'                 => 0 ,
+      'palier_id'                 => 0 ,
+      'cycle_id'                  => 0 ,
+      'orientation'               => 'portrait' ,
+      'couleur'                   => 'oui' ,
+      'fond'                      => 'gris' ,
+      'legende'                   => 'oui' , 
+      'marge_min'                 => 5 ,
+      'pages_nb'                  => 'optimise' ,
+      'cart_detail'               => 'complet' ,
+      'cart_cases_nb'             => 1 ,
+      'cart_contenu'              => 'AVEC_nom_SANS_result' ,
+      'cart_hauteur'              => 'variable' ,
+      'cart_restriction_item'     => 0 ,
+      'cart_restriction_eleve'    => 0 ,
+      'repart_categorie_autre'    => 1 ,
+      'repart_ref_pourcentage'    => 'tous' ,
+      'only_etat'                 => 'tous',
+      'only_niveau'               => 0 ,
+      'only_presence'             => 0 ,
+      'only_socle'                => 0 ,
+      'aff_reference'             => 1 ,
+      'aff_coef'                  => 0 ,
+      'aff_socle'                 => 1 ,
+      'aff_comm'                  => 0 ,
+      'aff_lien'                  => $check_aff_lien ,
+      'aff_start'                 => 0 ,
+      'aff_domaine'               => 0 ,
+      'aff_theme'                 => 0 ,
+      'cases_nb'                  => 4 ,
+      'cases_largeur'             => 5 ,
+      'remplissage'               => 'plein' ,
+      'colonne_bilan'             => 'oui' ,
+      'colonne_vide'              => 0 ,
+      'type_generique'            => 0 ,
+      'type_individuel'           => $check_type_individuel ,
+      'type_synthese'             => 0 ,
+      'type_bulletin'             => 0 ,
+      'aff_etat_acquisition'      => $check_etat_acquisition ,
+      'aff_moyenne_scores'        => $check_moyenne_score ,
+      'aff_pourcentage_acquis'    => $check_pourcentage_acquis ,
+      'conversion_sur_20'         => $check_conversion_sur_20 ,
+      'indicateur'                => 'moyenne_scores' ,
+      'releve_individuel_format'  => 'eleve',
+      'tableau_synthese_format'   => 'eleve',
+      'socle_detail'              => 'livret',
+      'socle_individuel_format'   => 'eleve',
+      'socle_synthese_format'     => 'eleve',
+      'tableau_tri_etat_mode'     => 'score',
+      'tableau_tri_maitrise_mode' => 'score',
+      'repeter_entete'            => 0 ,
+      'with_coef'                 => 1 ,
+      'retroactif'                => 'auto' ,
+      'mode_synthese'             => 'predefini' ,
+      'fusion_niveaux'            => 1 ,
+      'aff_socle_PA'              => 1 ,
+      'aff_socle_EV'              => 1 ,
+      'aff_socle_position'        => 1 ,
+      'type'                      => '' ,
+      'mode'                      => 'auto' ,
+      'echelle'                   => 'fixe' ,
     );
   }
 
@@ -408,12 +433,12 @@ class Form
     switch($page)
     {
       case 'grille_referentiel' :
-        global $eleves_ordre,$matiere_id,$niveau_id,$type_generique,$type_individuel,$type_synthese,$tableau_synthese_format,$tableau_tri_mode,$repeter_entete,$retroactif,$only_etat,$only_socle,$aff_reference,$aff_coef,$aff_socle,$aff_comm,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_bilan,$colonne_vide,$orientation,$couleur,$fond,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('eleves_ordre','matiere_id','niveau_id','type_generique','type_individuel','type_synthese','tableau_synthese_format','tableau_tri_mode','repeter_entete','retroactif','only_etat','only_socle','aff_reference','aff_coef','aff_socle','aff_comm','aff_lien','cases_nb','cases_largeur','remplissage','colonne_bilan','colonne_vide','orientation','couleur','fond','legende','marge_min','pages_nb');
+        global $eleves_ordre,$matiere_id,$niveau_id,$type_generique,$type_individuel,$type_synthese,$tableau_synthese_format,$tableau_tri_etat_mode,$repeter_entete,$retroactif,$only_etat,$only_socle,$aff_reference,$aff_coef,$aff_socle,$aff_comm,$aff_lien,$cases_nb,$cases_largeur,$remplissage,$colonne_bilan,$colonne_vide,$orientation,$couleur,$fond,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','matiere_id','niveau_id','type_generique','type_individuel','type_synthese','tableau_synthese_format','tableau_tri_etat_mode','repeter_entete','retroactif','only_etat','only_socle','aff_reference','aff_coef','aff_socle','aff_comm','aff_lien','cases_nb','cases_largeur','remplissage','colonne_bilan','colonne_vide','orientation','couleur','fond','legende','marge_min','pages_nb');
         break;
       case 'releve_items' :
-        global $eleves_ordre,$matiere_id,$type_individuel,$type_synthese,$type_bulletin,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_synthese_format,$tableau_tri_mode,$repeter_entete,$with_coef,$retroactif,$only_etat,$only_socle,$aff_reference,$aff_coef,$aff_socle,$aff_comm,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$fond,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('eleves_ordre','matiere_id','type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_mode','repeter_entete','with_coef','retroactif','only_etat','only_socle','aff_reference','aff_coef','aff_socle','aff_comm','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','fond','legende','marge_min','pages_nb');
+        global $eleves_ordre,$matiere_id,$type_individuel,$type_synthese,$type_bulletin,$releve_individuel_format,$aff_etat_acquisition,$aff_moyenne_scores,$aff_pourcentage_acquis,$conversion_sur_20,$tableau_synthese_format,$tableau_tri_etat_mode,$repeter_entete,$with_coef,$retroactif,$only_etat,$only_socle,$aff_reference,$aff_coef,$aff_socle,$aff_comm,$aff_lien,$aff_domaine,$aff_theme,$cases_nb,$cases_largeur,$orientation,$couleur,$fond,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','matiere_id','type_individuel','type_synthese','type_bulletin','releve_individuel_format','aff_etat_acquisition','aff_moyenne_scores','aff_pourcentage_acquis','conversion_sur_20','tableau_synthese_format','tableau_tri_etat_mode','repeter_entete','with_coef','retroactif','only_etat','only_socle','aff_reference','aff_coef','aff_socle','aff_comm','aff_lien','aff_domaine','aff_theme','cases_nb','cases_largeur','orientation','couleur','fond','legende','marge_min','pages_nb');
         break;
       case 'bilan_chronologique' :
         global $eleves_ordre,$mode_synthese,$fusion_niveaux,$indicateur,$conversion_sur_20,$retroactif,$only_socle,$echelle;
@@ -422,6 +447,10 @@ class Form
       case 'releve_synthese' :
         global $eleves_ordre,$matiere_id,$mode_synthese,$fusion_niveaux,$retroactif,$only_socle,$only_niveau,$aff_coef,$aff_socle,$aff_lien,$aff_start,$couleur,$fond,$legende,$marge_min;
         $tab_choix_new = compact('eleves_ordre','matiere_id','mode_synthese','fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','fond','legende','marge_min');
+        break;
+      case 'releve_socle2016' :
+        global $eleves_ordre,$cycle_id,$socle_detail,$type_individuel,$type_synthese,$socle_individuel_format,$socle_synthese_format,$tableau_tri_maitrise_mode,$aff_socle_position,$only_presence,$aff_lien,$aff_start,$couleur,$fond,$legende,$marge_min;
+        $tab_choix_new = compact('eleves_ordre','cycle_id','socle_detail','type_individuel','type_synthese','socle_individuel_format','socle_synthese_format','tableau_tri_maitrise_mode','aff_socle_position','only_presence','aff_lien','aff_start','couleur','fond','legende','marge_min');
         break;
       case 'releve_socle' :
         global $eleves_ordre,$palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_start,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$fond,$legende,$marge_min;

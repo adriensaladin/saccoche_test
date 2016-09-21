@@ -32,6 +32,68 @@ class OutilBilan
   // Méthodes publiques
   // //////////////////////////////////////////////////
 
+
+/*
+Array
+(
+    [0] => Array
+        (
+            [SEUIL_MIN] => 0
+            [SEUIL_MAX] => 34
+            [COULEUR] => #e5f2fb
+            [LEGENDE] => Maîtrise insuffisante
+        )
+
+    [1] => Array
+        (
+            [SEUIL_MIN] => 35
+            [SEUIL_MAX] => 59
+            [COULEUR] => #cce5f7
+            [LEGENDE] => Maîtrise fragile
+        )
+
+    [2] => Array
+        (
+            [SEUIL_MIN] => 60
+            [SEUIL_MAX] => 80
+            [COULEUR] => #b3d9f4
+            [LEGENDE] => Maîtrise satisfaisante
+        )
+
+    [3] => Array
+        (
+            [SEUIL_MIN] => 81
+            [SEUIL_MAX] => 100
+            [COULEUR] => #9acef0
+            [LEGENDE] => Très bonne maîtrise
+        )
+
+)
+*/
+
+  /**
+   * Déterminer l'état de maitrise d'une composante du socle au vu du pourcentage d'items acquis transmis.
+   * 
+   * @param int    $pourcentage
+   * @param array  $SESSION_SOCLE     pour surcharger une éventuelle valeur de session via l'impression d'une archive
+   * @return int
+   */
+  public static function determiner_degre_maitrise( $pourcentage , $SESSION_SOCLE=NULL )
+  {
+    if($pourcentage === FALSE)
+    {
+      return FALSE;
+    }
+    $tab_socle_seuil = ($SESSION_SOCLE==NULL) ? $_SESSION['SOCLE'] : $SESSION_SOCLE ;
+    foreach( $tab_socle_seuil as $socle_id => $tab_socle_info )
+    {
+      if( ($pourcentage<=$tab_socle_info['SEUIL_MAX']) && ($pourcentage>=$tab_socle_info['SEUIL_MIN']) )
+      {
+        return $socle_id;
+      }
+    }
+  }
+
   /**
    * Déterminer l'état d'acquisition d'un item au vu du score transmis.
    * 
@@ -131,13 +193,15 @@ class OutilBilan
    * @param array  $SESSION_ACQUIS   pour surcharger une éventuelle valeur de session via l'impression d'une archive
    * @return string
    */
-  public static function afficher_nombre_acquisitions_par_etat( $tab_acquis , $SESSION_ACQUIS=NULL )
+  public static function afficher_nombre_acquisitions_par_etat( $tab_acquis , $detail_couleur , $SESSION_ACQUIS=NULL )
   {
     $tab_texte = array();
     $SESSION_ACQUIS = ($SESSION_ACQUIS==NULL) ? $_SESSION['ACQUIS'] : $SESSION_ACQUIS ;
     foreach( $SESSION_ACQUIS as $acquis_id => $tab_acquis_info )
     {
-      $tab_texte[] = $tab_acquis[$acquis_id].$tab_acquis_info['SIGLE'];
+      $span_avant = ($detail_couleur) ? '<span class="'.Html::$tab_couleur[$acquis_id].'" style="display:inline-block;padding:2px 1px">' : '' ;
+      $span_apres = ($detail_couleur) ? '</span>' : '' ;
+      $tab_texte[] = $span_avant.$tab_acquis[$acquis_id].$tab_acquis_info['SIGLE'].$span_apres;
     }
     krsort($tab_texte); // On commence par les acquis
     return implode(' ',$tab_texte);

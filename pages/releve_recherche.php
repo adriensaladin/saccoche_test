@@ -104,7 +104,7 @@ Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_
   if(empty($DB_TAB))
   {
     $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous n\'êtes rattaché à' : 'L\'établissement n\'a mis en place' ;
-    echo'<p class="danger">'.$phrase_debut.' aucune matière, ou des matières ne comportant aucun référentiel !</p>' ;
+    echo'<p class="danger">'.$phrase_debut.' aucune matière, ou des matières sans référentiel, ou des référentiels sans items !</p>' ;
   }
   else
   {

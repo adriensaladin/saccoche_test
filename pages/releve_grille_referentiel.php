@@ -107,7 +107,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_synthese_format = HtmlForm::afficher_select(Form::$tab_select_synthese_format , 'f_synthese_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_synthese_format'] /*selection*/ ,              '' /*optgroup*/ );
-$select_tri_mode        = HtmlForm::afficher_select(Form::$tab_select_tri_mode        , 'f_tri_mode'        /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_mode']        /*selection*/ ,              '' /*optgroup*/ );
+$select_tri_etat_mode   = HtmlForm::afficher_select(Form::$tab_select_tri_etat_mode   , 'f_tri_etat_mode'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_etat_mode']   /*selection*/ ,              '' /*optgroup*/ );
 $select_remplissage     = HtmlForm::afficher_select(Form::$tab_select_remplissage     , 'f_remplissage'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['remplissage']             /*selection*/ ,              '' /*optgroup*/ );
 $select_colonne_bilan   = HtmlForm::afficher_select(Form::$tab_select_colonne_bilan   , 'f_colonne_bilan'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['colonne_bilan']           /*selection*/ ,              '' /*optgroup*/ );
 $select_colonne_vide    = HtmlForm::afficher_select(Form::$tab_select_colonne_vide    , 'f_colonne_vide'    /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['colonne_vide']            /*selection*/ ,              '' /*optgroup*/ );
@@ -175,7 +175,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
         <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du relevé individuel." /> Opt. relevé :</label><?php echo $select_remplissage ?> <?php echo $select_colonne_bilan ?> <?php echo $select_colonne_vide ?><br />
       </span>
       <span id="options_synthese" class="<?php echo $class_form_synthese ?>">
-        <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_synthese_format ?> <?php echo $select_tri_mode ?><br />
+        <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_synthese_format ?> <?php echo $select_tri_etat_mode ?><br />
         <span class="tab"></span><label for="f_repeter_entete"><input type="checkbox" id="f_repeter_entete" name="f_repeter_entete" value="1"<?php echo $check_repeter_entete ?> /> Répéter les entêtes de lignes et de colonnes (grand tableau, format <em>html</em>)</label><br />
       </span>
     </span>

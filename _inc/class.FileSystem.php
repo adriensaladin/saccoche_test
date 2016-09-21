@@ -173,7 +173,7 @@ class FileSystem
   {
     // Lors du transfert FTP de fichiers, il arrive que les \r\n en fin de ligne soient convertis en \n, ce qui fait que md5_file() renvoie un résultat différent.
     // Pour y remédier on utilise son équivalent md5(file_get_contents()) couplé à un remplacement des caractères de fin de ligne.
-    return md5( str_replace( array("\r\n","\r","\n") , ' ' , file_get_contents($fichier) ) );
+    return md5( str_replace( Clean::tab_crlf() , ' ' , file_get_contents($fichier) ) );
   }
 
   // //////////////////////////////////////////////////

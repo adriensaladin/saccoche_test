@@ -750,11 +750,13 @@ class PDF extends FPDF
   }
   else
   {
-    $this->choisir_couleur_fond('A'.OutilBilan::determiner_etat_acquisition($tab_infos['%'],NULL,$this->SESSION['ACQUIS']).$this->couleur);
+    $etat_acquisition = OutilBilan::determiner_etat_acquisition( $tab_infos['%'] , NULL , $this->SESSION['ACQUIS'] );
+    $this->choisir_couleur_fond('A'.$etat_acquisition.$this->couleur);
     if($affich=='detail')
     {
+      $detail_acquisition = OutilBilan::afficher_nombre_acquisitions_par_etat( $tab_infos , FALSE /*detail_couleur*/ , $this->SESSION['ACQUIS'] );
       $this->SetFont('Arial' , $gras , $this->taille_police);
-      $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.OutilBilan::afficher_nombre_acquisitions_par_etat($tab_infos,$this->SESSION['ACQUIS']).')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $this->CellFit( $this->pourcentage_largeur , $this->cases_hauteur , To::pdf($tab_infos['%'].'% acquis ('.$detail_acquisition.')') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
     elseif($affich=='pourcentage')
     {
@@ -1299,6 +1301,7 @@ class PDF extends FPDF
     $nb_lignes_prevues = 0;
     $texte = '';
     $nb_saisies = count($tab_saisie);
+    $tab_crlf = Clean::tab_crlf();
     foreach($tab_saisie as $prof_id => $tab)
     {
       extract($tab);  // $prof_info $appreciation $note
@@ -1309,7 +1312,7 @@ class PDF extends FPDF
       else
       {
         $nom_auteur = '[ '.$prof_info.' ] '; // associer le nom de l'auteur avec l'appréciation si plusieurs appréciations pour une même rubrique
-        $appreciation_sans_br = str_replace( array("\r\n","\r","\n") , ' ' , $appreciation , $nombre_br );
+        $appreciation_sans_br = str_replace( $tab_crlf , ' ' , $appreciation , $nombre_br );
         $texte .= ($nombre_br<4-$nb_saisies) ? $nom_auteur.$appreciation."\n" : $nom_auteur.$appreciation_sans_br."\n" ;
       }
       $nb_lignes_prevues += $nb_lignes_appreciation_potentielle_par_prof_hors_intitule;

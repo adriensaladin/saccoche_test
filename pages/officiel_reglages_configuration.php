@@ -227,6 +227,7 @@ $matiere_liste = str_replace( ',' , '_' , $_SESSION['OFFICIEL']['BULLETIN_MOYENN
 
 <hr />
 
+<?php /* TODO A RETIRER
 <h2>État de maîtrise du socle</h2>
 
 <form action="#" method="post" id="form_socle">
@@ -258,6 +259,7 @@ $matiere_liste = str_replace( ',' , '_' , $_SESSION['OFFICIEL']['BULLETIN_MOYENN
 </form>
 
 <hr />
+*/ ?>
 
 <form action="#" method="post" id="zone_matieres" class="hide">
   <h3>Matieres sans moyennes</h3>

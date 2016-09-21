@@ -92,7 +92,7 @@ $(document).ready
       }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':750 , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minHeight':300 , 'minWidth':750 , 'centerOnScroll':true } );
     }
 
     /**
@@ -203,7 +203,7 @@ $(document).ready
         );
       }
       // Afficher la zone
-      $.fancybox( { 'href':'#form_destinataires' , onStart:function(){$('#form_destinataires').css("display","block");} , onClosed:function(){$('#form_destinataires').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_destinataires' , onStart:function(){$('#form_destinataires').css("display","block");} , onClosed:function(){$('#form_destinataires').css("display","none");} , 'modal':true , 'minHeight':300 , 'centerOnScroll':true } );
       $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
     };
 
@@ -216,7 +216,7 @@ $(document).ready
       // Ne pas changer ici la valeur de "mode" (qui est à "ajouter" ou "modifier").
       var message_contenu = $("#f_message_contenu").val();
       // Afficher la zone
-      $.fancybox( { 'href':'#form_message' , onStart:function(){$('#form_message').css("display","block");} , onClosed:function(){$('#form_message').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_message' , onStart:function(){$('#form_message').css("display","block");} , onClosed:function(){$('#form_message').css("display","none");} , 'modal':true , 'minHeight':300 , 'centerOnScroll':true } );
       $(document).tooltip("destroy");infobulle(); // Sinon, bug avec l'infobulle contenu dans le fancybox qui ne disparait pas au clic...
       $('#f_message').focus().val(unescapeHtml(message_contenu));
       afficher_textarea_reste( $('#f_message') , nb_caracteres_max );
@@ -486,7 +486,7 @@ $(document).ready
     (
       function()
       {
-        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':750 , 'centerOnScroll':true } );
+        $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minHeight':300 , 'minWidth':750 , 'centerOnScroll':true } );
         return false;
       }
     );

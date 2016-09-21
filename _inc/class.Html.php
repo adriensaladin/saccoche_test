@@ -41,7 +41,7 @@ class Html
   private static $tab_tri_etat = array( 'A1'=>0 , 'A2'=>1 , 'A3'=>2 , 'A4'=>3 , 'A5'=>4 , 'A6'=>5 );
 
   // sert pour indiquer la classe css d'un état d'acquisition
-  private static $tab_couleur = array( '1'=>'A1' , '2'=>'A2' , '3'=>'A3' , '4'=>'A4' , '5'=>'A5' , '6'=>'A6' );
+  public static $tab_couleur = array( '1'=>'A1' , '2'=>'A2' , '3'=>'A3' , '4'=>'A4' , '5'=>'A5' , '6'=>'A6' );
 
   // sert pour indiquer la légende des notes spéciales
   private static $tab_legende_notes_speciales_texte  = array('AB'=>'Absent','DI'=>'Dispensé','NE'=>'Non évalué','NF'=>'Non fait','NN'=>'Non noté','NR'=>'Non rendu');
@@ -178,8 +178,29 @@ class Html
     }
     $class = 'A'.OutilBilan::determiner_etat_acquisition($score);
     $affichage = (Html::$afficher_score) ? $score.$pourcent : '' ;
-    $tri = ($methode_tri=='score') ? sprintf("%03u",$score) : Html::$tab_tri_etat[$class] ;  // le sprintf et le tab_tri_etat servent pour le tri du tableau
-    return '<td class="hc '.$class.'"><i>'.$tri.'</i>'.$affichage.$checkbox.'</td>';
+    $tri = ($methode_tri=='score') ? $score : Html::$tab_tri_etat[$class] ;
+    return '<td class="hc '.$class.'" data-sort="'.$tri.'">'.$affichage.$checkbox.'</td>';
+  }
+
+  /**
+   * Afficher un degré de maitrise pour une sortie HTML.
+   *
+   * @param int|FALSE $indice
+   * @param int|FALSE $pourcentage
+   * @param string    $methode_tri    'score' | 'etat'
+   * @param string    $pourcent       '%' | ''
+   * @return string
+   */
+  public static function td_maitrise( $indice , $pourcentage , $methode_tri='score' , $pourcent='' )
+  {
+    if($pourcentage===FALSE)
+    {
+      return '<td class="hc">-</td>';
+    }
+    $class = 'M'.$indice;
+    $affichage = $pourcentage.$pourcent;
+    $tri = ($methode_tri=='pourcentage') ? $pourcentage : $indice ;
+    return '<td class="hc '.$class.'" data-sort="'.$tri.'">'.$affichage.'</td>';
   }
 
   /**
@@ -207,7 +228,7 @@ class Html
    * @param bool $highlight  FALSE par défaut, TRUE si un item a été surligné
    * @return string
    */
-  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $make_officiel , $force_nb = FALSE , $highlight = FALSE )
+  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $etat_maitrise , $make_officiel , $force_nb = FALSE , $highlight = FALSE )
   {
     // initialisation variables
     $retour = '';
@@ -249,8 +270,24 @@ class Html
       $retour .= '<div><b>États d\'acquisitions :</b>';
       foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
-        $texte_seuil = (Html::$afficher_score) ? $_SESSION['ACQUIS'][$acquis_id]['SEUIL_MIN'].' à '.$_SESSION['ACQUIS'][$acquis_id]['SEUIL_MAX'] : '' ;
-        $retour .= '<span class="cadre A'.$acquis_id.'">'.$texte_seuil.'</span>'.html($_SESSION['ACQUIS'][$acquis_id]['LEGENDE']);
+        $texte_seuil = (Html::$afficher_score) ? $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'] : '' ;
+        $retour .= '<span class="cadre A'.$acquis_id.'">'.$texte_seuil.'</span>'.html($tab_acquis_info['LEGENDE']);
+      }
+      $retour .= '</div>'.NL;
+    }
+    // légende états de maîtrise du socle
+    if($etat_maitrise)
+    {
+      if( Html::$afficher_score === NULL )
+      {
+        // En cas de bilan officiel, doit être déterminé avant
+        Html::$afficher_score = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']);
+      }
+      $retour .= '<div><b>États de maitrise :</b>';
+      foreach( $_SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
+      {
+        $texte_seuil = (Html::$afficher_score) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '' ;
+        $retour .= '<span class="cadre M'.$maitrise_id.'">'.$texte_seuil.'</span>'.html($tab_maitrise_info['LEGENDE']);
       }
       $retour .= '</div>'.NL;
     }
@@ -261,7 +298,7 @@ class Html
       foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
         $class = (!$force_nb) ? ' A'.$acquis_id : '' ;
-        $retour .= '<span class="cadre'.$class.'">'.html($_SESSION['ACQUIS'][$acquis_id]['SIGLE']).'</span>'.html($_SESSION['ACQUIS'][$acquis_id]['LEGENDE']);
+        $retour .= '<span class="cadre'.$class.'">'.html($tab_acquis_info['SIGLE']).'</span>'.html($tab_acquis_info['LEGENDE']);
       }
       $retour .= '</div>'.NL;
     }
@@ -272,7 +309,7 @@ class Html
       $retour .= '<div><b>Pourcentages d\'items acquis'.$endroit.' :</b>';
       foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
-        $texte = $_SESSION['ACQUIS'][$acquis_id]['SEUIL_MIN'].' à '.$_SESSION['ACQUIS'][$acquis_id]['SEUIL_MAX'];
+        $texte = $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'];
         $retour .= '<span class="cadre A'.$acquis_id.'">'.$texte.'</span>';
       }
       $retour .= '</div>'.NL;
@@ -337,9 +374,10 @@ class Html
       $texte = ($detail) ? '---' : '-' ; // Mettre qq chose sinon en mode daltonien le gris de la case se confond avec les autres couleurs.
       return '<'.$type_cellule.' class="hc">'.$texte.'</'.$type_cellule.'>' ;
     }
-    $class = 'A'.OutilBilan::determiner_etat_acquisition($tab_infos['%']);
+    $class = 'A'.OutilBilan::determiner_etat_acquisition( $tab_infos['%'] );
+    $detail_acquisition = OutilBilan::afficher_nombre_acquisitions_par_etat( $tab_infos , FALSE /*detail_couleur*/ );
     $style = ($largeur) ? ' style="width:'.$largeur.'px"' : '' ;
-    $texte = html($tab_infos['%'].'% acquis ('.OutilBilan::afficher_nombre_acquisitions_par_etat($tab_infos).')');
+    $texte = html($tab_infos['%'].'% acquis ('.$detail_acquisition.')');
     return ($detail) ? '<'.$type_cellule.' class="hc '.$class.'"'.$style.'>'.$texte.'</'.$type_cellule.'>' : '<'.$type_cellule.' class="'.$class.'" title="'.$texte.'"></'.$type_cellule.'>';
   }
 

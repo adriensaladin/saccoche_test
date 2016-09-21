@@ -196,6 +196,25 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Clic sur le checkbox pour choisir ou non une date de maj
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#box_date').click
+    (
+      function()
+      {
+        if($(this).is(':checked'))
+        {
+          $(this).next().show(0).next().hide(0);
+        }
+        else
+        {
+          $(this).next().hide(0).next().show(0).children('input').focus();
+        }
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le bouton pour chercher des référentiels partagés sur d'autres niveaux ou matières
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -203,12 +222,19 @@ $(document).ready
     (
       function()
       {
-        var matiere_id   = $('#f_matiere').val();
-        var niveau_id    = $('#f_niveau').val();
-        var structure_id = $('#f_structure').val();
-        if( (matiere_id==0) && (niveau_id==0) && (structure_id==0) )
+        var is_date_libre = $('#box_date').is(':checked');
+        var matiere_id    = $('#f_matiere').val();
+        var niveau_id     = $('#f_niveau').val();
+        var maj_date      = is_date_libre ? '01/01/1970' : $('#f_maj_date').val() ;
+        var structure_id  = $('#f_structure').val();
+        if( !test_dateITA( maj_date ) )
         {
-          $('#ajax_msg').attr('class','erreur').html("Il faut préciser au moins un critère parmi matière / niveau / structure !");
+          $('#ajax_msg').attr('class','erreur').html("Date incorrecte !");
+          return false;
+        }
+        if( (matiere_id==0) && (niveau_id==0) && (structure_id==0) && (is_date_libre) )
+        {
+          $('#ajax_msg').attr('class','erreur').html("Il faut préciser au moins un critère parmi matière / niveau / date / structure !");
           return false;
         }
         $('#rechercher').prop('disabled',true);
@@ -218,7 +244,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=Lister_referentiels'+'&f_matiere_id='+matiere_id+'&f_niveau_id='+niveau_id+'&f_structure_id='+structure_id,
+            data : 'csrf='+CSRF+'&f_action=Lister_referentiels'+'&f_matiere_id='+matiere_id+'&f_niveau_id='+niveau_id+'&f_structure_id='+structure_id+'&f_maj_date='+encodeURIComponent(maj_date),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

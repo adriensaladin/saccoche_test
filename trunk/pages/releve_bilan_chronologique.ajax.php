@@ -280,7 +280,7 @@ if(count($tab_date))
     {
       extract($tab_item[$item_id][0]);  // $item_coef $calcul_methode $calcul_limite $calcul_retroactif
       $rubrique_id = $tab_rubrique_for_item[$item_id];
-      $tab_score_eleve_item[$eleve_id][$rubrique_id][$item_id] = OutilBilan::calculer_score(array_slice($tab_eval[$eleve_id][$item_id],0,$nb_evals),$calcul_methode,$calcul_limite);
+      $tab_score_eleve_item[$eleve_id][$rubrique_id][$item_id] = OutilBilan::calculer_score( array_slice($tab_eval[$eleve_id][$item_id],0,$nb_evals) , $calcul_methode , $calcul_limite );
       $tab_rubrique_todo_moyenne[] = $rubrique_id;
     }
     // On (re)-calcule les moyennes des matières concernées

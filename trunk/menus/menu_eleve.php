@@ -69,11 +69,12 @@ $tab_sous_menu = array
   ),
   'releve' => array
   (
-    'releve_grille_referentiel' => array( 'texte' => Lang::_("Grille d'items d'un référentiel") , 'class' => 'releve_grille'   , 'href' => 'page=releve&amp;section=grille_referentiel'    ),
-    'releve_items'              => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'    , 'href' => 'page=releve&amp;section=items'                 ),
-    'releve_synthese'           => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese' , 'href' => 'page=releve&amp;section=synthese'              ),
-    'releve_chronologique'      => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'   , 'href' => 'page=releve&amp;section=bilan_chronologique'   ),
-    'releve_socle'              => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'    , 'href' => 'page=releve&amp;section=socle'                 ),
+    'releve_grille_referentiel' => array( 'texte' => Lang::_("Grille d'items d'un référentiel") , 'class' => 'releve_grille'   , 'href' => 'page=releve&amp;section=grille_referentiel'  ),
+    'releve_items'              => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'    , 'href' => 'page=releve&amp;section=items'               ),
+    'releve_synthese'           => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese' , 'href' => 'page=releve&amp;section=synthese'            ),
+    'releve_chronologique'      => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'   , 'href' => 'page=releve&amp;section=bilan_chronologique' ),
+    'releve_socle2016'          => array( 'texte' => Lang::_("Maîtrise du socle").' (2016)'     , 'class' => 'releve_socle'    , 'href' => 'page=releve&amp;section=socle2016'           ),
+ // 'releve_socle'              => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'    , 'href' => 'page=releve&amp;section=socle'               ),
   ),
   'officiel' => array
   (
@@ -118,7 +119,7 @@ if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 // Relevé de maîtrise du socle (profils [parent] et [eleve] uniquement).
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']))
 {
-  $tab_sous_menu['releve']['releve_socle']['class'] .= ' disabled';
+  $tab_sous_menu['releve']['releve_socle2016']['class'] .= ' disabled';
 }
 
 // Archives consultables des bilans officiels (profils [parent] et [eleve] uniquement).

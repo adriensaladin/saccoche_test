@@ -237,6 +237,7 @@ $tab_droits_par_page = array
   'releve_grille_referentiel'               => $tab_droits_profil_eleve_parent_prof_dir,
   'releve_items'                            => $tab_droits_profil_eleve_parent_prof_dir,
   'releve_socle'                            => $tab_droits_profil_eleve_parent_prof_dir,
+  'releve_socle2016'                        => $tab_droits_profil_eleve_parent_prof_dir,
   'releve_synthese'                         => $tab_droits_profil_eleve_parent_prof_dir,
   // Profils particuliers à gérer au cas par cas
   '_maj_select_eleves'                      => array( 'public'=>0 , 'eleve'=>0 , 'parent'=>1 , 'professeur'=>1 , 'directeur'=>1 , 'inspecteur'=>1 , 'administrateur'=>1 , 'webmestre'=>0 , 'developpeur'=>0 , 'partenaire'=>0 ),

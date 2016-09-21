@@ -57,6 +57,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFI
       $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
       $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
     }
+    /* TODO A RETIRER
     $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
     $tab_sous_menu = array(
       'accueil_palier1' => Lang::_("Maîtrise du palier 1"),
@@ -72,6 +73,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || (($_SESSION['USER_PROFI
         $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
       }
     }
+    */
   }
 }
 

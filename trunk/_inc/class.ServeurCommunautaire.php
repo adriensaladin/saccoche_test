@@ -93,7 +93,7 @@ class ServeurCommunautaire
     require(CHEMIN_DOSSIER_INCLUDE.'tableau_fichier_integrite.php');
     // Fabrication de la chaine
     $chaine = '';
-    $tab_crlf = array("\r\n","\r","\n");
+    $tab_crlf = Clean::tab_crlf();
     foreach($tab_fichier_integrite as $fichier)
     {
       // Lors du transfert FTP de fichiers, il arrive que les \r\n en fin de ligne soient convertis en \n, ce qui fait que md5_file() renvoie un résultat différent.
@@ -206,7 +206,7 @@ class ServeurCommunautaire
    * @param string    $information
    * @return string   "ok" ou un message d'erreur
    */
-  public static function envoyer_arborescence_XML($sesamath_id,$sesamath_key,$matiere_id,$niveau_id,$arbreXML,$information)
+  public static function envoyer_arborescence_XML( $sesamath_id , $sesamath_key , $matiere_id , $niveau_id , $arbreXML , $information )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'referentiel_uploader';
@@ -231,7 +231,7 @@ class ServeurCommunautaire
    * @param int       $referentiel_id
    * @return string   le XML ou un message d'erreur
    */
-  public static function recuperer_arborescence_XML($sesamath_id,$sesamath_key,$referentiel_id)
+  public static function recuperer_arborescence_XML( $sesamath_id , $sesamath_key , $referentiel_id )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'referentiel_downloader';
@@ -274,7 +274,7 @@ class ServeurCommunautaire
    * @param string    $sesamath_key
    * @return string   "ok" ou un message d'erreur
    */
-  public static function Sesamath_enregistrer_structure($sesamath_id,$sesamath_key)
+  public static function Sesamath_enregistrer_structure( $sesamath_id , $sesamath_key )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'structure_enregistrer';
@@ -373,7 +373,7 @@ class ServeurCommunautaire
    * @param string    $sesamath_key
    * @return string   '<option>...</option>' ou un message d'erreur
    */
-  public static function afficher_formulaire_structures_communautaires($sesamath_id,$sesamath_key)
+  public static function afficher_formulaire_structures_communautaires( $sesamath_id , $sesamath_key )
   {
     $tab_post = array();
     $tab_post['fichier']      = 'structures_afficher_formulaire';
@@ -391,9 +391,10 @@ class ServeurCommunautaire
    * @param int       $matiere_id
    * @param int       $niveau_id
    * @param int       $structure_id
+   * @param string    $maj_date_mysql
    * @return string   listing ou un message d'erreur
    */
-  public static function afficher_liste_referentiels($sesamath_id,$sesamath_key,$matiere_id,$niveau_id,$structure_id)
+  public static function afficher_liste_referentiels( $sesamath_id , $sesamath_key , $matiere_id , $niveau_id , $structure_id , $maj_date_mysql )
   {
     $tab_post = array();
     $tab_post['fichier']      = 'referentiels_afficher_liste';
@@ -402,6 +403,7 @@ class ServeurCommunautaire
     $tab_post['matiere_id']   = $matiere_id;
     $tab_post['niveau_id']    = $niveau_id;
     $tab_post['structure_id'] = $structure_id;
+    $tab_post['maj_date_sql'] = $maj_date_mysql;
     $tab_post['version_prog'] = VERSION_PROG; // Le service web doit être compatible
     $tab_post['version_base'] = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières modifiée...)
     return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post );
@@ -415,7 +417,7 @@ class ServeurCommunautaire
    * @param int       $referentiel_id
    * @return string   arborescence ou un message d'erreur
    */
-  public static function afficher_contenu_referentiel($sesamath_id,$sesamath_key,$referentiel_id)
+  public static function afficher_contenu_referentiel( $sesamath_id , $sesamath_key , $referentiel_id )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'referentiel_afficher_contenu';
@@ -437,7 +439,7 @@ class ServeurCommunautaire
    * @param string    $exportXML
    * @return string   le XML signé ou un message d'erreur
    */
-  public static function signer_exportLPC($sesamath_id,$sesamath_key,$exportXML)
+  public static function signer_exportLPC( $sesamath_id , $sesamath_key , $exportXML )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'lpc_signature';
@@ -461,7 +463,7 @@ class ServeurCommunautaire
    * @param string    $format_retour   'html' | 'json'
    * @return string   contenu html ou un message d'erreur
    */
-  public static function afficher_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_lien,$format_retour)
+  public static function afficher_liens_ressources( $sesamath_id , $sesamath_key , $item_id , $item_lien , $format_retour )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'liens_ressources_elaborer_editer';
@@ -486,7 +488,7 @@ class ServeurCommunautaire
    * @param string    $page_serialize   tableau sérializé
    * @return string   adresse html ou un message d'erreur
    */
-  public static function fabriquer_liens_ressources($sesamath_id,$sesamath_key,$item_id,$item_nom,$objet,$page_serialize)
+  public static function fabriquer_liens_ressources( $sesamath_id , $sesamath_key , $item_id , $item_nom , $objet , $page_serialize )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'liens_ressources_generer_actualiser';
@@ -511,7 +513,7 @@ class ServeurCommunautaire
    * @param string    $findme
    * @return string   contenu html ou un message d'erreur
    */
-  public static function rechercher_liens_ressources($sesamath_id,$sesamath_key,$item_id,$findme)
+  public static function rechercher_liens_ressources( $sesamath_id , $sesamath_key , $item_id , $findme )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'liens_ressources_rechercher';
@@ -530,7 +532,7 @@ class ServeurCommunautaire
    * @param string    $sesamath_key
    * @return string   contenu html ou un message d'erreur
    */
-  public static function rechercher_documents($sesamath_id,$sesamath_key)
+  public static function rechercher_documents( $sesamath_id , $sesamath_key )
   {
     $tab_post = array();
     $tab_post['fichier']        = 'ressources_afficher_liste';
@@ -550,7 +552,7 @@ class ServeurCommunautaire
    * @param string    $fichier_contenu
    * @return string   url du fichier ou un message d'erreur
    */
-  public static function uploader_ressource($sesamath_id,$sesamath_key,$matiere_ref,$fichier_nom,$fichier_contenu)
+  public static function uploader_ressource( $sesamath_id , $sesamath_key , $matiere_ref , $fichier_nom , $fichier_contenu )
   {
     $tab_post = array();
     $tab_post['fichier']         = 'ressource_uploader';

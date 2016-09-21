@@ -61,8 +61,8 @@ $select_groupe = HtmlForm::afficher_select($tab_groupes , 'f_groupe' /*select_no
   <table id="bilan" class="hsort">
     <thead>
       <tr>
-        <th>Utilisateur</th>
-        <th>Date</th>
+        <th data-sorter="text">Utilisateur</th>
+        <th data-sorter="date_fr">Date</th>
       </tr>
     </thead>
     <tbody>

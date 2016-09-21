@@ -43,7 +43,7 @@ class OutilCSV
   {
     $texte = trim($texte);
     $texte = str_replace('"','',$texte);
-    $texte = str_replace(array("\r\n","\n\n","\r\r","\r","\n"),'®',$texte);
+    $texte = str_replace(Clean::tab_crlf(),'®',$texte);
     return explode('®',$texte);
   }
 

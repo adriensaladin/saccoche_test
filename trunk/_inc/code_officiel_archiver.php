@@ -82,7 +82,7 @@ $liste_eleve_id = implode(',',array_keys($tab_eleve_id));
 
 function suppression_sauts_de_ligne($texte)
 {
-  $tab_bad = array( "\r\n" , "\r" , "\n" );
+  $tab_bad = Clean::tab_crlf();
   $tab_bon = ' ';
   return str_replace( $tab_bad , $tab_bon , $texte );
 }

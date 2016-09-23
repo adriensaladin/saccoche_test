@@ -217,11 +217,19 @@ if($liaison_rubrique_type=='matiere')
   if(DB_STRUCTURE_LIVRET::DB_tester_livret_matiere_siecle())
   {
     $DB_ROW = DB_STRUCTURE_SIECLE::DB_recuperer_import_date_annee('sts_emp_UAI');
-    $texte_info_rubriques = "Dernier import des matières de <em>siecle</em> en date du <b>".To::date_mysql_to_french($DB_ROW['siecle_import_date'])."</b>.";
-    $annee_scolaire = To::annee_scolaire('siecle');
-    if( $annee_scolaire != $DB_ROW['siecle_import_annee'] )
+    if( empty($DB_ROW) || is_null($DB_ROW['siecle_import_date']) )
     {
-      $texte_info_rubriques .= "<br /><b>Attention : aucun import trouvé pour cette année scolaire &rarr; vous devez mettre à jour en important le fichier issu de <em>STS-Web</em> !</b>";
+      $texte_info_rubriques = "Votre import des matières de <em>siecle</em> n'a pas été trouvé, probablement à cause d'un bug corrigé courant septembre 2016.";
+      $texte_info_rubriques .= "<br /><b>Merci de ré-importer le fichier issu de <em>STS-Web</em> avec les données des professeurs : aller jusqu'à l'étape 2 suffit.</b>";
+    }
+    else
+    {
+      $texte_info_rubriques = "Dernier import des matières de <em>siecle</em> en date du <b>".To::date_mysql_to_french($DB_ROW['siecle_import_date'])."</b>.";
+      $annee_scolaire = To::annee_scolaire('siecle');
+      if( $annee_scolaire != $DB_ROW['siecle_import_annee'] )
+      {
+        $texte_info_rubriques .= "<br /><b>Attention : aucun import trouvé pour cette année scolaire &rarr; vous devez mettre à jour en important le fichier issu de <em>STS-Web</em> !</b>";
+      }
     }
   }
   else

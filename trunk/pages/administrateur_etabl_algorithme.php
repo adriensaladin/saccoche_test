@@ -41,6 +41,8 @@ $tab_options['classique']    = 'Moyenne classique non pondérée (comptabiliser 
 $tab_options['bestof1']      = 'Utiliser uniquement la meilleure saisie (une seule réussite suffit donc).';
 $tab_options['bestof2']      = 'Utiliser seulement les 2 meilleures saisies (dont on effectue la moyenne).';
 $tab_options['bestof3']      = 'Utiliser seulement les 3 meilleures saisies (dont on effectue la moyenne).';
+$tab_options['frequencemin'] = 'Saisie la plus fréquente (en cas d\'égalité la moins bonne est retenue).';
+$tab_options['frequencemax'] = 'Saisie la plus fréquente (en cas d\'égalité la meilleure est retenue).';
 $options_methode = '';
 foreach($tab_options as $value => $texte)
 {

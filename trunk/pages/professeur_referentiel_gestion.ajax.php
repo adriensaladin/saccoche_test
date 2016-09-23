@@ -39,7 +39,7 @@ $nb_demandes    = (isset($_POST['f_nb_demandes']))    ? Clean::entier($_POST['f_
 $partage        = (isset($_POST['f_partage']))        ? Clean::referentiel_partage($_POST['f_partage'])   : NULL; // Changer l'état de partage
 $methode        = (isset($_POST['f_methode']))        ? Clean::calcul_methode($_POST['f_methode'])        : NULL; // Changer le mode de calcul
 $limite         = (isset($_POST['f_limite']))         ? Clean::calcul_limite($_POST['f_limite'],$methode) : NULL; // Changer le nb d'items pris en compte
-$retroactif     = (isset($_POST['f_retroactif']))     ? Clean::calcul_retroactif($_POST['f_retroactif'])  : NULL; // Changer le nb d'items pris en compte
+$retroactif     = (isset($_POST['f_retroactif']))     ? Clean::calcul_retroactif($_POST['f_retroactif'])  : NULL; // Changer la rétroactivité
 $information    = (isset($_POST['f_information']))    ? Clean::texte($_POST['f_information'])             : '';
 $referentiel_id = (isset($_POST['f_referentiel_id'])) ? Clean::entier($_POST['f_referentiel_id'])         : -1; // Référence du référentiel importé (0 si vierge), ou référence du référentiel à consulter
 $ids            = (isset($_POST['f_ids']))            ? $_POST['f_ids']                                   : '';
@@ -322,32 +322,37 @@ if( ($action=='calculer') && $matiere_id && $niveau_id && $matiere_nom && $nivea
     ':calcul_retroactif' => $retroactif,
   );
   $is_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , $tab_modifs );
-      if($retroactif=='non')    { $texte_retroactif = '(sur la période)';       }
-  elseif($retroactif=='oui')    { $texte_retroactif = '(rétroactivement)';      }
-  elseif($retroactif=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }
   if($limite==1)  // si une seule saisie prise en compte
   {
-    $retour = 'Seule la dernière saisie compte '.$texte_retroactif.'.';
+    $retour = 'Seule la dernière saisie compte';
   }
   elseif($methode=='classique')  // si moyenne classique
   {
-    $retour = ($limite==0) ? 'Moyenne de toutes les saisies '.$texte_retroactif.'.' : 'Moyenne des '.$limite.' dernières saisies '.$texte_retroactif.'.';
+    $retour = ($limite==0) ? 'Moyenne de toutes les saisies' : 'Moyenne des '.$limite.' dernières saisies';
   }
   elseif(in_array($methode,array('geometrique','arithmetique')))  // si moyenne geometrique | arithmetique
   {
     $seize = (($methode=='geometrique')&&($limite==5)) ? 1 : 0 ;
     $coefs = ($methode=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$limite-19) : substr('1/2/4/8/16/',0,2*$limite-12+$seize) ;
-    $retour = 'Les '.$limite.' dernières saisies &times;'.$coefs.' '.$texte_retroactif.'.';
+    $retour = 'Les '.$limite.' dernières saisies &times;'.$coefs;
   }
   elseif($methode=='bestof1')  // si meilleure note
   {
-    $retour = ($limite==0) ? 'Seule la meilleure saisie compte '.$texte_retroactif.'.' : 'Meilleure des '.$limite.' dernières saisies '.$texte_retroactif.'.';
+    $retour = ($limite==0) ? 'Seule la meilleure saisie compte' : 'Meilleure des '.$limite.' dernières saisies';
   }
   elseif(in_array($methode,array('bestof2','bestof3')))  // si 2 | 3 meilleures notes
   {
     $nb_best = (int)substr($methode,-1);
-    $retour = ($limite==0) ? 'Moyenne des '.$nb_best.' meilleures saisies '.$texte_retroactif.'.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$limite.' dernières '.$texte_retroactif.'.';
+    $retour = ($limite==0) ? 'Moyenne des '.$nb_best.' meilleures saisies' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$limite.' dernières';
   }
+  elseif(in_array($methode,array('frequencemin','frequencemax'))) // si note la plus fréquente
+  {
+    $note_si_egalite = (substr($methode,-3)=='min') ? 'malus' : 'bonus' ;
+    $retour = ($limite==0) ? 'Saisie la plus fréquente, '.$note_si_egalite.' si égalité' : 'Saisie la plus fréquente ('.$note_si_egalite.' si égalité) parmi les '.$limite.' dernières';
+  }
+      if($retroactif=='non')    { $retour .= ' (sur la période).';       }
+  elseif($retroactif=='oui')    { $retour .= ' (rétroactivement).';      }
+  elseif($retroactif=='annuel') { $retour .= ' (de l\'année scolaire).'; }
   // Notifications (rendues visibles ultérieurement)
   if($is_modif)
   {

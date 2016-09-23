@@ -32,45 +32,6 @@ class OutilBilan
   // Méthodes publiques
   // //////////////////////////////////////////////////
 
-
-/*
-Array
-(
-    [0] => Array
-        (
-            [SEUIL_MIN] => 0
-            [SEUIL_MAX] => 34
-            [COULEUR] => #e5f2fb
-            [LEGENDE] => Maîtrise insuffisante
-        )
-
-    [1] => Array
-        (
-            [SEUIL_MIN] => 35
-            [SEUIL_MAX] => 59
-            [COULEUR] => #cce5f7
-            [LEGENDE] => Maîtrise fragile
-        )
-
-    [2] => Array
-        (
-            [SEUIL_MIN] => 60
-            [SEUIL_MAX] => 80
-            [COULEUR] => #b3d9f4
-            [LEGENDE] => Maîtrise satisfaisante
-        )
-
-    [3] => Array
-        (
-            [SEUIL_MIN] => 81
-            [SEUIL_MAX] => 100
-            [COULEUR] => #9acef0
-            [LEGENDE] => Très bonne maîtrise
-        )
-
-)
-*/
-
   /**
    * Déterminer l'état de maitrise d'une composante du socle au vu du pourcentage d'items acquis transmis.
    * 
@@ -213,7 +174,7 @@ Array
    * N'est pas appelé depuis une classe PDF donc pas besoin de surcharge de $_SESSION['NOTE']
    * 
    * @param array  $tab_devoirs      $tab_devoirs[$i]['note'] = note
-   * @param string $calcul_methode   'geometrique' / 'arithmetique' / 'classique' / 'moyenne' / 'bestof'
+   * @param string $calcul_methode   "geometrique" | "arithmetique" | "classique" | "bestof1" | "bestof2" | "bestof3" | "frequencemin" | "frequencemax"
    * @param int    $calcul_limite    nb maxi d'éval à prendre en compte
    * @return int|FALSE
    */
@@ -241,7 +202,7 @@ Array
       $tab_note = array_slice($tab_note,-$calcul_limite);
       $nb_note = $calcul_limite;
     }
-    // 1. Calcul de la note en fonction de la méthode du référentiel : 'geometrique','arithmetique','classique'
+    // 1. Calcul de la note en fonction de la méthode du référentiel : "geometrique" | "arithmetique" | "classique"
     if(in_array($calcul_methode,array('geometrique','arithmetique','classique')))
     {
       // 1a. Initialisation
@@ -258,8 +219,8 @@ Array
       // 1c. Calcul final du score
       return round( $somme_point/$somme_coef , 0 );
     }
-    // 2. Calcul de la note en fonction de la méthode du référentiel : 'bestof1','bestof2','bestof3'
-    if(in_array($calcul_methode,array('bestof1','bestof2','bestof3')))
+    // 2. Calcul de la note en fonction de la méthode du référentiel : "bestof1" | "bestof2" | "bestof3" | "frequencemin" | "frequencemax"
+    else
     {
       // 2a. Initialisation
       $tab_notes = array();
@@ -270,9 +231,33 @@ Array
         $tab_notes[] = $tab_note[$num_devoir-1];
       }
       // 2c. Calcul final du score
-      rsort($tab_notes);
-      $tab_notes = array_slice( $tab_notes , 0 , $nb_best );
-      return round( array_sum($tab_notes)/count($tab_notes) , 0 );
+      if( substr($methode,0,6) == 'bestof' )
+      {
+        // "bestof1" | "bestof2" | "bestof3"
+        rsort($tab_notes);
+        $tab_notes = array_slice( $tab_notes , 0 , $nb_best );
+        return round( array_sum($tab_notes)/count($tab_notes) , 0 );
+      }
+      elseif( substr($methode,0,9) == 'frequence' )
+      {
+        // "frequencemin" | "frequencemax"
+        $tab_frequences = array_count_values($tab_notes);
+        arsort($tab_frequences);
+        list( $score , $frequence_max ) = each($tab_frequences);
+        unset($tab_frequences[$score]);
+        foreach($tab_frequences as $score_autre => $frequence)
+        {
+          if($frequence!=$frequence_max)
+          {
+            break;
+          }
+          if( ( ($methode=='frequencemin') && ($score_autre<$score) ) || ( ($methode=='frequencemax') && ($score_autre>$score) ) )
+          {
+            $score = $score_autre;
+          }
+        }
+        return $score;
+      }
     }
   }
 

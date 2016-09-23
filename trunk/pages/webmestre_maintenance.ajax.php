@@ -84,7 +84,8 @@ if($action=='verif_dir_etabl')
   {
     $tab_dossiers[$dossier_dir] = array_fill_keys ( FileSystem::lister_contenu_dossier($dossier_dir) , TRUE );
     unset($tab_dossiers[$dossier_dir]['index.htm']);
-    ksort($tab_dossiers[$dossier_dir],SORT_NATURAL);
+    $sort_flag = defined('SORT_NATURAL') ? SORT_NATURAL : SORT_STRING ; // SORT_NATURAL requière PHP 5.4.0
+    ksort($tab_dossiers[$dossier_dir],$sort_flag);
   }
   // On parcourt les sous-dossiers devant exister : ok ou création.
   foreach($tab_bases as $base_id)

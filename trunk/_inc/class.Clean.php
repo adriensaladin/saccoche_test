@@ -421,7 +421,7 @@ class Clean
 
   public static function calcul_methode($text)
   {
-    $tab = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3');
+    $tab = array('geometrique','arithmetique','classique','bestof1','bestof2','bestof3','frequencemin','frequencemax');
     return in_array($text,$tab) ? $text : NULL ;
   }
 
@@ -435,6 +435,8 @@ class Clean
       'bestof1'      => array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0),
       'bestof2'      => array(  2,3,4,5,6,7,8,9,10,15,20,30,40,50,0),
       'bestof3'      => array(    3,4,5,6,7,8,9,10,15,20,30,40,50,0),
+      'frequencemin' => array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0),
+      'frequencemax' => array(1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,0),
     );
     return ( isset($tab[$methode]) && in_array($text,$tab[$methode]) ) ? $text : NULL ;
   }

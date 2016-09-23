@@ -297,14 +297,15 @@ public static function DB_lister_users($profil_type,$statut,$liste_champs,$with_
  * @param string   $debut_nom         premières lettres du nom
  * @param string   $debut_prenom      premières lettres du prénom
  * @param string   $liste_parent_id   liste des id de parents
+ * @param bool     $order_enfant      pour forcer un tri par enfant
  * @return array
  */
-public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statut,$debut_nom='',$debut_prenom='',$liste_parent_id='')
+public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statut,$debut_nom='',$debut_prenom='',$liste_parent_id='',$order_enfant=FALSE)
 {
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
-  $test_date_sortie_parent = ($statut) ? 'parent.user_sortie_date>NOW() ' : 'parent.user_sortie_date<NOW() ' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
-  $test_date_sortie_enfant = ($statut) ? 'AND ( eleve.user_sortie_date>NOW() || eleve.user_id IS NULL ) ' : '' ; // Pour un compte parent actif, on compte les enfants actifs, tout en récupérant les parents rattachés à aucun enfant ; pour un compte parent inactif, aucun test afin de pouvoir aussi récupérer les parents rattachés à des enfants inactifs
+  $test_date_sortie = ($statut) ? 'user_sortie_date>NOW()' : 'user_sortie_date<NOW()' ; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
+  $order_enfant = ($order_enfant) ? 'eleve.user_nom ASC, ' : '' ;
   $DB_SQL = 'SELECT ' ;
   $DB_SQL.= ($with_adresse) ? 'parent.user_id, parent.user_genre, parent.user_nom, parent.user_prenom, sacoche_parent_adresse.*, ' : 'parent.*, ' ;
   $DB_SQL.= 'GROUP_CONCAT( CONCAT(eleve.user_nom," ",eleve.user_prenom," (resp légal ",resp_legal_num,")") SEPARATOR "§BR§") AS enfants_liste, ';
@@ -314,7 +315,7 @@ public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statu
   $DB_SQL.= ($with_adresse) ? 'LEFT JOIN sacoche_parent_adresse ON parent.user_id=sacoche_parent_adresse.parent_id ' : '' ;
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_parent_eleve ON parent.user_id=sacoche_jointure_parent_eleve.parent_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_user AS eleve ON sacoche_jointure_parent_eleve.eleve_id=eleve.user_id ';
-  $DB_SQL.= 'WHERE parent_profil.user_profil_type="parent" AND '.$test_date_sortie_parent.$test_date_sortie_enfant; 
+  $DB_SQL.= 'WHERE parent_profil.user_profil_type="parent" AND parent.'.$test_date_sortie.' AND ( eleve.user_sortie_date>NOW() || eleve.user_id IS NULL ) '; // Ce dernier test sert à pouvoir récupérer quand même les parents rattachés à aucun enfant.
   if(!$liste_parent_id)
   {
     $DB_SQL.= ($debut_nom)    ? 'AND parent.user_nom LIKE :nom ' : '' ;
@@ -325,7 +326,7 @@ public static function DB_lister_parents_avec_infos_enfants($with_adresse,$statu
     $DB_SQL.= 'AND parent.user_id IN('.$liste_parent_id.') ';
   }
   $DB_SQL.= 'GROUP BY parent.user_id ';
-  $DB_SQL.= 'ORDER BY parent.user_nom ASC, parent.user_prenom ASC ';
+  $DB_SQL.= 'ORDER BY '.$order_enfant.'parent.user_nom ASC, parent.user_prenom ASC ';
   $DB_VAR = array(
     ':nom'    => $debut_nom   .'%',
     ':prenom' => $debut_prenom.'%',

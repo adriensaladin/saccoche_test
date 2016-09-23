@@ -156,7 +156,7 @@ class PDF_Label extends FPDF {
     {
         parent::_putcatalog();
         // Disable the page scaling option in the printing dialog
-        // $this->_put('/ViewerPreferences <</PrintScaling /None>>');
+        $this->_put('/ViewerPreferences <</PrintScaling /None>>');
     }
 
 }

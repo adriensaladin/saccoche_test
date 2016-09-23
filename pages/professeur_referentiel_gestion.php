@@ -37,37 +37,32 @@ if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NU
 }
 
 // Pour remplir la cellule avec la méthode de calcul par défaut en cas de création d'un nouveau référentiel
+    if($_SESSION['CALCUL_RETROACTIF']=='non')    { $texte_retroactif = '(sur la période)';       }
+elseif($_SESSION['CALCUL_RETROACTIF']=='oui')    { $texte_retroactif = '(rétroactivement)';      }
+elseif($_SESSION['CALCUL_RETROACTIF']=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }
 if($_SESSION['CALCUL_LIMITE']==1)  // si une seule saisie prise en compte
 {
-  $calcul_texte = 'Seule la dernière saisie compte';
+  $calcul_texte = 'Seule la dernière saisie compte '.$texte_retroactif.'.';
 }
 elseif($_SESSION['CALCUL_METHODE']=='classique')  // si moyenne classique
 {
-  $calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne de toutes les saisies' : 'Moyenne des '.$_SESSION['CALCUL_LIMITE'].' dernières saisies';
+  $calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne de toutes les saisies '.$texte_retroactif.'.' : 'Moyenne des '.$_SESSION['CALCUL_LIMITE'].' dernières saisies '.$texte_retroactif.'.';
 }
 elseif(in_array($_SESSION['CALCUL_METHODE'],array('geometrique','arithmetique')))  // si moyenne geometrique | arithmetique
 {
   $seize = (($_SESSION['CALCUL_METHODE']=='geometrique')&&($_SESSION['CALCUL_LIMITE']==5)) ? 1 : 0 ;
   $coefs = ($_SESSION['CALCUL_METHODE']=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$_SESSION['CALCUL_LIMITE']-19) : substr('1/2/4/8/16/',0,2*$_SESSION['CALCUL_LIMITE']-12+$seize) ;
-  $calcul_texte = 'Les '.$_SESSION['CALCUL_LIMITE'].' dernières saisies &times;'.$coefs;
+  $calcul_texte = 'Les '.$_SESSION['CALCUL_LIMITE'].' dernières saisies &times;'.$coefs.' '.$texte_retroactif.'.';
 }
 elseif($_SESSION['CALCUL_METHODE']=='bestof1')  // si meilleure note
 {
-  $calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Seule la meilleure saisie compte' : 'Meilleure des '.$_SESSION['CALCUL_LIMITE'].' dernières saisies';
+  $calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Seule la meilleure saisie compte '.$texte_retroactif.'.' : 'Meilleure des '.$_SESSION['CALCUL_LIMITE'].' dernières saisies '.$texte_retroactif.'.';
 }
 elseif(in_array($_SESSION['CALCUL_METHODE'],array('bestof2','bestof3')))  // si 2 | 3 meilleures notes
 {
   $nb_best = (int)substr($_SESSION['CALCUL_METHODE'],-1);
-  $calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$_SESSION['CALCUL_LIMITE'].' dernières';
+  $calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies '.$texte_retroactif.'.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$_SESSION['CALCUL_LIMITE'].' dernières '.$texte_retroactif.'.';
 }
-elseif(in_array($_SESSION['CALCUL_METHODE'],array('frequencemin','frequencemax'))) // si note la plus fréquente
-{
-  $note_si_egalite = (substr($_SESSION['CALCUL_METHODE'],-3)=='min') ? 'malus' : 'bonus' ;
-  $calcul_texte = ($_SESSION['CALCUL_LIMITE']==0) ? 'Saisie la plus fréquente, '.$note_si_egalite.' si égalité' : 'Saisie la plus fréquente ('.$note_si_egalite.' si égalité) parmi les '.$_SESSION['CALCUL_LIMITE'].' dernières';
-}
-    if($_SESSION['CALCUL_RETROACTIF']=='non')    { $calcul_texte .= ' (sur la période).';       }
-elseif($_SESSION['CALCUL_RETROACTIF']=='oui')    { $calcul_texte .= ' (rétroactivement).';      }
-elseif($_SESSION['CALCUL_RETROACTIF']=='annuel') { $calcul_texte .= ' (de l\'année scolaire).'; }
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var calcul_methode          = "'.$_SESSION['CALCUL_METHODE'].'";' );
@@ -147,37 +142,32 @@ else
       foreach($DB_TAB as $DB_ROW)
       {
         // Définition de $methode_calcul_texte
+            if($DB_ROW['referentiel_calcul_retroactif']=='non')    { $texte_retroactif = '(sur la période)';       }
+        elseif($DB_ROW['referentiel_calcul_retroactif']=='oui')    { $texte_retroactif = '(rétroactivement)';      }
+        elseif($DB_ROW['referentiel_calcul_retroactif']=='annuel') { $texte_retroactif = '(de l\'année scolaire)'; }
         if($DB_ROW['referentiel_calcul_limite']==1)  // si une seule saisie prise en compte
         {
-          $methode_calcul_texte = 'Seule la dernière saisie compte';
+          $methode_calcul_texte = 'Seule la dernière saisie compte '.$texte_retroactif.'.';
         }
         elseif($DB_ROW['referentiel_calcul_methode']=='classique')  // si moyenne classique
         {
-          $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne de toutes les saisies' : 'Moyenne des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies';
+          $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne de toutes les saisies '.$texte_retroactif.'.' : 'Moyenne des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies '.$texte_retroactif.'.';
         }
         elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('geometrique','arithmetique')))  // si moyenne geometrique | arithmetique
         {
           $seize = (($DB_ROW['referentiel_calcul_methode']=='geometrique')&&($DB_ROW['referentiel_calcul_limite']==5)) ? 1 : 0 ;
           $coefs = ($DB_ROW['referentiel_calcul_methode']=='arithmetique') ? substr('1/2/3/4/5/6/7/8/9/',0,2*$DB_ROW['referentiel_calcul_limite']-19) : substr('1/2/4/8/16/',0,2*$DB_ROW['referentiel_calcul_limite']-12+$seize) ;
-          $methode_calcul_texte = 'Les '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies &times;'.$coefs;
+          $methode_calcul_texte = 'Les '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies &times;'.$coefs.' '.$texte_retroactif.'.';
         }
         elseif($DB_ROW['referentiel_calcul_methode']=='bestof1')  // si meilleure note
         {
-          $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Seule la meilleure saisie compte' : 'Meilleure des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies';
+          $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Seule la meilleure saisie compte '.$texte_retroactif.'.' : 'Meilleure des '.$DB_ROW['referentiel_calcul_limite'].' dernières saisies '.$texte_retroactif.'.';
         }
         elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('bestof2','bestof3')))  // si 2 | 3 meilleures notes
         {
           $nb_best = (int)substr($DB_ROW['referentiel_calcul_methode'],-1);
-          $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières';
+          $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Moyenne des '.$nb_best.' meilleures saisies '.$texte_retroactif.'.' : 'Moyenne des '.$nb_best.' meilleures saisies parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières '.$texte_retroactif.'.';
         }
-        elseif(in_array($DB_ROW['referentiel_calcul_methode'],array('frequencemin','frequencemax'))) // si note la plus fréquente
-        {
-          $note_si_egalite = (substr($DB_ROW['referentiel_calcul_methode'],-3)=='min') ? 'malus' : 'bonus' ;
-          $methode_calcul_texte = ($DB_ROW['referentiel_calcul_limite']==0) ? 'Saisie la plus fréquente, '.$note_si_egalite.' si égalité' : 'Saisie la plus fréquente ('.$note_si_egalite.' si égalité) parmi les '.$DB_ROW['referentiel_calcul_limite'].' dernières';
-        }
-            if($DB_ROW['referentiel_calcul_retroactif']=='non')    { $methode_calcul_texte .= ' (sur la période).';       }
-        elseif($DB_ROW['referentiel_calcul_retroactif']=='oui')    { $methode_calcul_texte .= ' (rétroactivement).';      }
-        elseif($DB_ROW['referentiel_calcul_retroactif']=='annuel') { $methode_calcul_texte .= ' (de l\'année scolaire).'; }
         $tab_colonne[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = '<td class="hc">'.str_replace('◄DATE►',Html::date_texte($DB_ROW['referentiel_partage_date']),$tab_partage[$DB_ROW['referentiel_partage_etat']]).'</td>'.'<td>'.$methode_calcul_texte.'</td>';
         Layout::add( 'js_inline_before' , '     tab_partage_etat["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_partage_etat'].'";' );
         Layout::add( 'js_inline_before' , '   tab_calcul_methode["'.$DB_ROW['matiere_id'].'_'.$DB_ROW['niveau_id'].'"] = "'.$DB_ROW['referentiel_calcul_methode'].'";' );
@@ -360,8 +350,6 @@ foreach($tab_options as $val)
         <option value="bestof1">La meilleure</option>
         <option value="bestof2">Les 2 meilleures</option>
         <option value="bestof3">Les 3 meilleures</option>
-        <option value="frequencemin">La plus fréquente (malus si égalité)</option>
-        <option value="frequencemax">La plus fréquente (bonus si égalité)</option>
       </select><select id="f_limite" name="f_limite">
         <?php echo $select_limite ?>
       </select><select id="f_retroactif" name="f_retroactif">

@@ -85,14 +85,23 @@ elseif($levenshtein) // (forcément)
             $parent_id1 = $DB_TAB_parents[1]['parent_id'];
             if( !isset($tab_parents_id[$parent_id0]) && !isset($tab_parents_id[$parent_id1]) )
             {
-              $tab_parents_id[] = $parent_id0;
-              $tab_parents_id[] = $parent_id1;
+              $tab_parents_id[$parent_id0] = $parent_id0;
+              $tab_parents_id[$parent_id1] = $parent_id1;
             }
           }
         }
       }
     }
-    $DB_TAB = count($tab_parents_id) ? DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( TRUE /*with_adresse*/ , TRUE /*statut*/ , '' /*debut_nom*/ , '' /*debut_prenom*/ , implode(',',$tab_parents_id), TRUE /*order_enfant*/ ) : array() ;
+    $DB_TAB = count($tab_parents_id) ? DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_avec_infos_enfants( TRUE /*with_adresse*/ , TRUE /*statut*/ , '' /*debut_nom*/ , '' /*debut_prenom*/ , implode(',',$tab_parents_id) ) : array() ;
+    // La requête précédente ne permet pas de trier sur le nom de l'élève ; du coup on trie a posteriori...
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $key => $DB_ROW)
+      {
+        $tab_parents_id[$DB_ROW['parent_id']] = $DB_ROW;
+      }
+      $DB_TAB = $tab_parents_id;
+    }
     // Préparation de l'export CSV
     $separateur = ';';
     $export_csv = 'NOM PRENOM'.$separateur.'ADRESSE L1'.$separateur.'ADRESSE L2'.$separateur.'ADRESSE L3'.$separateur.'ADRESSE L4'.$separateur.'ADRESSE CP'.$separateur.'ADRESSE COMMUNE'.$separateur.'ADRESSE PAYS'.$separateur.'RESPONSABILITES'."\r\n\r\n";

@@ -52,4 +52,10 @@ par
   $n = isset($this->PageInfo[1]['n']) ? $this->PageInfo[1]['n'] : 3 ;
 sinon erreur de variable indéfinie rencontrée :
 http://www.fpdf.org/phorum/read.php?f=1&i=66808&t=66808
-  
+
+Suite à une erreur sur un serveur dans PDF_Label.php
+$this->_put('/ViewerPreferences <</PrintScaling /None>>');
+a été remplacé par
+parent::_put('/ViewerPreferences <</PrintScaling /None>>');
+mais sans savoir si cela corrigeait qq chose,
+puis tout simplement commenté vu son peu d'importance.

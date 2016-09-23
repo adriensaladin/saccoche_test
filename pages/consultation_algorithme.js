@@ -41,6 +41,8 @@ $(document).ready
     tableau_limites_autorisees['bestof1']      = '.1.2.3.4.5.6.7.8.9.10.15.20.30.40.50.0.';
     tableau_limites_autorisees['bestof2']      =   '.2.3.4.5.6.7.8.9.10.15.20.30.40.50.0.';
     tableau_limites_autorisees['bestof3']      =     '.3.4.5.6.7.8.9.10.15.20.30.40.50.0.';
+    tableau_limites_autorisees['frequencemin'] = '.1.2.3.4.5.6.7.8.9.10.15.20.30.40.50.0.';
+    tableau_limites_autorisees['frequencemax'] = '.1.2.3.4.5.6.7.8.9.10.15.20.30.40.50.0.';
     // La fonction qui s'en occupe
     var actualiser_select_limite = function()
     {

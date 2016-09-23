@@ -743,7 +743,7 @@ if( ($import_origine=='tableur') && ($import_profil=='professeur') )
       {
         $tab_users_fichier['sconet_id'   ][] = 0;
         $tab_users_fichier['sconet_num'  ][] = 0;
-        $tab_users_fichier['reference'   ][] = Clean::ref($reference);
+        $tab_users_fichier['reference'   ][] = mb_substr( Clean::ref($reference) , 11);
         $tab_users_fichier['profil_sigle'][] = $profil;
         $tab_users_fichier['genre'       ][] = isset($tab_genre[$genre]) ? $tab_genre[$genre] : 'I' ;
         $tab_users_fichier['nom'         ][] = Clean::nom($nom);
@@ -843,7 +843,7 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
       {
         $tab_users_fichier['sconet_id'   ][] = 0;
         $tab_users_fichier['sconet_num'  ][] = 0;
-        $tab_users_fichier['reference'   ][] = Clean::ref($reference);
+        $tab_users_fichier['reference'   ][] = mb_substr( Clean::ref($reference) , 11);
         $tab_users_fichier['profil_sigle'][] = 'ELV';
         $tab_users_fichier['genre'       ][] = isset($tab_genre[$genre]) ? $tab_genre[$genre] : 'I' ;
         $tab_users_fichier['nom'         ][] = Clean::nom($nom);
@@ -977,7 +977,7 @@ if( ($import_origine=='tableur') && ($import_profil=='parent') )
         {
           $tab_users_fichier['sconet_id'   ][] = 0;
           $tab_users_fichier['sconet_num'  ][] = 0;
-          $tab_users_fichier['reference'   ][] = Clean::ref($reference);
+          $tab_users_fichier['reference'   ][] = mb_substr( Clean::ref($reference) , 11);
           $tab_users_fichier['profil_sigle'][] = 'TUT';
           $tab_users_fichier['genre'       ][] = isset($tab_genre[$genre]) ? $tab_genre[$genre] : 'I' ;
           $tab_users_fichier['nom'         ][] = Clean::nom($nom);

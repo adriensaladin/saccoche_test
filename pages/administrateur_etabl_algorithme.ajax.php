@@ -118,7 +118,7 @@ if($action=='enregistrer')
 
 if($action=='calculer')
 {
-  $type_calcul = (in_array($methode,array('geometrique','arithmetique','classique'))) ? 'moyenne' : 'bestof' ;
+  $type_calcul = (in_array($methode,array('geometrique','arithmetique','classique'))) ? 'moyenne' : 'bestof_or_frequence' ;
   $nb_devoirs_total = 4;
   $nb_lignes_total = pow($_SESSION['NOMBRE_CODES_NOTATION'],$nb_devoirs_total);
   $tab_lignes = array();
@@ -136,7 +136,7 @@ if($action=='calculer')
         $somme_coef = 0;
         $coef = 1;
       }
-      elseif($type_calcul=='bestof')
+      elseif($type_calcul=='bestof_or_frequence')
       {
         $tab_notes = array();
         $nb_best = (int)substr($methode,-1);
@@ -157,7 +157,7 @@ if($action=='calculer')
             // Calcul du coef de l'éventuel devoir suivant
             $coef = ($methode=='geometrique') ? $coef*2 : ( ($methode=='arithmetique') ? $coef+1 : 1 ) ;
           }
-          elseif($type_calcul=='bestof')
+          elseif($type_calcul=='bestof_or_frequence')
           {
             $tab_notes[] = $note_valeur[$code];
           }
@@ -168,11 +168,34 @@ if($action=='calculer')
       {
         $score = round( $somme_point/$somme_coef , 0 );
       }
-      elseif($type_calcul=='bestof')
+      elseif($type_calcul=='bestof_or_frequence')
       {
-        rsort($tab_notes);
-        $tab_notes = array_slice( $tab_notes , 0 , $nb_best );
-        $score = round( array_sum($tab_notes)/count($tab_notes) , 0 );
+        if( substr($methode,0,6) == 'bestof' )
+        {
+          // "bestof1" | "bestof2" | "bestof3"
+          rsort($tab_notes);
+          $tab_notes = array_slice( $tab_notes , 0 , $nb_best );
+          $score = round( array_sum($tab_notes)/count($tab_notes) , 0 );
+        }
+        elseif( substr($methode,0,9) == 'frequence' )
+        {
+          // "frequencemin" | "frequencemax"
+          $tab_frequences = array_count_values($tab_notes);
+          arsort($tab_frequences);
+          list( $score , $frequence_max ) = each($tab_frequences);
+          unset($tab_frequences[$score]);
+          foreach($tab_frequences as $score_autre => $frequence)
+          {
+            if($frequence!=$frequence_max)
+            {
+              break;
+            }
+            if( ( ($methode=='frequencemin') && ($score_autre<$score) ) || ( ($methode=='frequencemax') && ($score_autre>$score) ) )
+            {
+              $score = $score_autre;
+            }
+          }
+        }
       }
       // Ligne retournée
       $bg = 'A'.OutilBilan::determiner_etat_acquisition( $score , $acquis_seuil );

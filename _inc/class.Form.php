@@ -83,7 +83,7 @@ class Form
 
   public static $tab_select_tri_maitrise_mode = array(
     array('valeur' => 'score' , 'texte' => 'tri par pourcentage de maîtrise (pour un tri unique)') ,
-    array('valeur' => 'etat'  , 'texte' => 'tri par état de maîtrise (pour un tri multiple)') ,
+    array('valeur' => 'etat'  , 'texte' => 'tri par degré de maîtrise (pour un tri multiple)') ,
   );
 
   public static $tab_select_orientation = array(

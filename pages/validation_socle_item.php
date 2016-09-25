@@ -71,7 +71,7 @@ $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre 
 $select_matiere      = HtmlForm::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ , FALSE /*option_first*/ , TRUE                             /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
 ?>
 
-<p class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2016.</p>
+<p class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2015.</p>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_item">DOC : Valider des items du socle.</a></span></li>

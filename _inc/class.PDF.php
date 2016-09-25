@@ -527,7 +527,7 @@ class PDF extends FPDF
     $this->filigrane   = $filigrane;
     // Valeurs de session utilisées
     // Peuvent être surchargées lors de l'impression d'une archive d'un bilan officiel (sauf les 2 derniers qui ne sont pas utilisés dans cette situation).
-    $tab_clefs = array( 'OFFICIEL' , 'ACQUIS' , 'VALID' , 'NOTE' , 'NOTE_ACTIF' , 'NOMBRE_CODES_NOTATION' , 'DROIT_VOIR_SCORE_BILAN' , 'ENVELOPPE' , 'ETABLISSEMENT_DENOMINATION' );
+    $tab_clefs = array( 'OFFICIEL' , 'ACQUIS' , 'VALID' , 'SOCLE' , 'NOTE' , 'NOTE_ACTIF' , 'NOMBRE_CODES_NOTATION' , 'DROIT_VOIR_SCORE_BILAN' , 'ENVELOPPE' , 'ETABLISSEMENT_DENOMINATION' );
     foreach( $tab_clefs as $CLEF )
     {
       $this->SESSION[$CLEF] = ( $officiel && isset($session_archive[$CLEF]) ) ? $session_archive[$CLEF] : ( isset($_SESSION[$CLEF]) ? $_SESSION[$CLEF] : NULL ) ;
@@ -593,6 +593,18 @@ class PDF extends FPDF
       $b = hexdec(substr($tab_valid_info['GRIS'],5,2));
       $this->tab_couleur['V'.$valid_etat.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
     }
+    // Couleurs des degrés de maîtrise du socle ; il faut convertir l'hexadécimal en RVB décimal
+    foreach( $this->SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
+    {
+      $r = hexdec(substr($tab_maitrise_info['COULEUR'],1,2));
+      $v = hexdec(substr($tab_maitrise_info['COULEUR'],3,2));
+      $b = hexdec(substr($tab_maitrise_info['COULEUR'],5,2));
+      $this->tab_couleur['M'.$maitrise_id.'oui'] = array('r'=>$r,'v'=>$v,'b'=>$b);
+      $r = hexdec(substr($tab_maitrise_info['GRIS'],1,2));
+      $v = hexdec(substr($tab_maitrise_info['GRIS'],3,2));
+      $b = hexdec(substr($tab_maitrise_info['GRIS'],5,2));
+      $this->tab_couleur['M'.$maitrise_id.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
+    }
     // Lettres utilisées en remplacement des images Lomer pour du noir et blanc
     foreach( $this->SESSION['NOTE_ACTIF'] as $note_id )
     {
@@ -649,7 +661,7 @@ class PDF extends FPDF
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   /**
-   * @param string $couleur   gris_fonce | gris_moyen | gris_clair | blanc | V{x}oui | V{x}non | A{x}oui | A{x}non
+   * @param string $couleur   gris_fonce | gris_moyen | gris_clair | blanc | V{x}oui | V{x}non | A{x}oui | A{x}non | M{x}oui | M{x}non
    */
   public function choisir_couleur_fond($couleur)
   {
@@ -793,6 +805,26 @@ class PDF extends FPDF
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Méthode pour afficher un degré de maîtrise (valeur sur 100 et couleur de fond suivant l'indice du degré atteint)
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public function afficher_etat_maitrise( $indice , $pourcentage )
+  {
+    if($pourcentage===FALSE)
+    {
+      $this->choisir_couleur_fond('blanc');
+      $this->Cell( $this->cases_largeur , $this->cases_hauteur , '-' , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    }
+    else
+    {
+      $this->choisir_couleur_fond('M'.$indice.$this->couleur);
+      $this->SetFont('Arial' , '' , $this->taille_police-2);
+      $this->Cell( $this->cases_largeur , $this->cases_hauteur , $pourcentage , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $this->SetFont('Arial' , '' , $this->taille_police);
+    }
+  }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode pour afficher une barre avec les états des items acquis (rectangles par état d'acquisition et couleur de fond suivant le seuil)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -929,7 +961,9 @@ class PDF extends FPDF
     $this->SetXY($this->marge_gauche , $ordonnee);
     $case_hauteur = $hauteur*0.9;
     $case_largeur = $hauteur*0.9*1.5;
+    //
     // Afficher la légende des codes de notation
+    //
     if($type_legende=='codes_notation')
     {
       // Le texte des codes de notation étant personnalisable, il peut falloir condenser en largeur...
@@ -952,7 +986,6 @@ class PDF extends FPDF
       $largeur_texte = $this->GetStringWidth($texte);
       $ratio = min( 1 , $largeur_dispo_pour_texte / $largeur_texte );
       // On y va maintenant
-
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('Codes d\'évaluation :') , '');
       $this->SetFont('Arial' , '' , $size);
@@ -986,7 +1019,9 @@ class PDF extends FPDF
       $this->calculer_dimensions_images($memo_lomer_espace_largeur,$memo_lomer_espace_hauteur);
       $this->taille_police = $memo_taille_police;
     }
+    //
     // Afficher la légende de l'ancienneté de la notation
+    //
     if($type_legende=='anciennete_notation')
     {
       $this->SetFont('Arial' , 'B' , $size);
@@ -1005,7 +1040,9 @@ class PDF extends FPDF
         $this->Write($hauteur , To::pdf($texte) , '');
       }
     }
+    //
     // Afficher la légende des scores bilan
+    //
     if($type_legende=='score_bilan')
     {
       $this->SetFont('Arial' , 'B' , $size);
@@ -1020,7 +1057,26 @@ class PDF extends FPDF
         $this->Write($hauteur , To::pdf($tab_acquis_info['LEGENDE']) , '');
       }
     }
+    //
+    // Afficher la légende des degrés de maîtrise du socle
+    //
+    if($type_legende=='etat_maitrise')
+    {
+      $this->SetFont('Arial' , 'B' , $size);
+      $this->Write($hauteur , To::pdf('Degrés de maîtrise :') , '');
+      $this->SetFont('Arial' , '' , $size);
+      foreach( $this->SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
+      {
+        $texte_seuil = $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'];
+        $this->Write($hauteur , $espace , '');
+        $this->choisir_couleur_fond('M'.$maitrise_id.$this->couleur);
+        $this->Cell(3*$case_largeur , $case_hauteur , To::pdf($texte_seuil) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+        $this->Write($hauteur , To::pdf($tab_maitrise_info['LEGENDE']) , '');
+      }
+    }
+    //
     // Afficher la légende des états d'acquisition
+    //
     if($type_legende=='etat_acquisition')
     {
       $this->SetFont('Arial' , 'B' , $size);
@@ -1035,7 +1091,9 @@ class PDF extends FPDF
         $this->Write($hauteur , To::pdf($tab_acquis_info['LEGENDE']) , '');
       }
     }
+    //
     // Afficher la légende des pourcentages d'items acquis
+    //
     if($type_legende=='pourcentage_acquis')
     {
       $this->SetFont('Arial' , 'B' , $size);
@@ -1050,7 +1108,9 @@ class PDF extends FPDF
         $this->Cell(3*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       }
     }
+    //
     // Afficher la légende des états de validation
+    //
     if($type_legende=='etat_validation')
     {
       $this->SetFont('Arial' , 'B' , $size);

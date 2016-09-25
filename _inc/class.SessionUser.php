@@ -501,12 +501,12 @@ class SessionUser
         'LEGENDE'   => $DB_ROW_ACQUIS['acquis_legende'],
       );
     }
-    // États de maitrise - Pour l'instant juste des couleurs (plus marquées que les originales en 4 colonnes) afin de permettre l'initialisation du style CSS
+    // Degrés de maîtrise - Pour l'instant juste des couleurs (plus marquées que les originales en 4 colonnes) afin de permettre l'initialisation du style CSS
     $_SESSION['SOCLE'] = array(
-      1 => array( 'COULEUR' => '#dcebf4' , 'LEGENDE' => 'Maîtrise insuffisante'  ), // TSF =(204; 10;96)
-      2 => array( 'COULEUR' => '#92CDF4' , 'LEGENDE' => 'Maîtrise fragile'       ), // TSF =(204; 40;96)
-      3 => array( 'COULEUR' => '#49b0f4' , 'LEGENDE' => 'Maîtrise satisfaisante' ), // TSF =(204; 70;96)
-      4 => array( 'COULEUR' => '#0092F4' , 'LEGENDE' => 'Très bonne maîtrise'    ), // TSF =(204;100;96)
+      1 => array( 'COULEUR' => '#dcebf4' , 'GRIS' => SessionUser::$tab_dalton_css[4][0] , 'LEGENDE' => 'Maîtrise insuffisante'  ), // TSF =(204; 10;96)
+      2 => array( 'COULEUR' => '#92CDF4' , 'GRIS' => SessionUser::$tab_dalton_css[4][1] , 'LEGENDE' => 'Maîtrise fragile'       ), // TSF =(204; 40;96)
+      3 => array( 'COULEUR' => '#49b0f4' , 'GRIS' => SessionUser::$tab_dalton_css[4][2] , 'LEGENDE' => 'Maîtrise satisfaisante' ), // TSF =(204; 70;96)
+      4 => array( 'COULEUR' => '#0092F4' , 'GRIS' => SessionUser::$tab_dalton_css[4][3] , 'LEGENDE' => 'Très bonne maîtrise'    ), // TSF =(204;100;96)
     );
     // États de validation - Les couleurs pour les daltoniens servent aussi pour les impressions PDF en niveau de gris
     $_SESSION['VALID'] = array();
@@ -562,10 +562,10 @@ class SessionUser
     {
       $_SESSION['CSS'] .= 'table th.A'.$acquis_id.' , table td.A'.$acquis_id.' , div.A'.$acquis_id.' ,span.A'.$acquis_id.' ,label.A'.$acquis_id.' {background-color:'.$tab_acquis_info[$key_couleur].'}'.NL;
     }
-    // couleurs des états de maîtrise
-    foreach( $_SESSION['SOCLE'] as $socle_id => $tab_socle_info )
+    // couleurs des degrés de maîtrise
+    foreach( $_SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
     {
-      $_SESSION['CSS'] .= 'table th.M'.$socle_id.' , table td.M'.$socle_id.' , div.M'.$socle_id.' ,span.M'.$socle_id.' ,label.M'.$socle_id.' {background-color:'.$tab_socle_info['COULEUR'].'}'.NL;
+      $_SESSION['CSS'] .= 'table th.M'.$maitrise_id.' , table td.M'.$maitrise_id.' , div.M'.$maitrise_id.' ,span.M'.$maitrise_id.' ,label.M'.$maitrise_id.' {background-color:'.$tab_maitrise_info['COULEUR'].'}'.NL;
     }
     // couleurs des états de validation
     $_SESSION['CSS'] .= '#tableau_validation tbody th.down0 {background:'.$_SESSION['VALID'][0][$key_couleur].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;

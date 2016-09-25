@@ -134,15 +134,11 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
 ?>
 
 <p class="probleme">
-  Cette section concerne le socle commun associé à la réforme 2016.<br />
-  Il s'agit ici de bilans permettant d'estimer où se situe l'élève dans sa maîtrise du socle.<br />
-  Sa pertinence requière que les items des référentiels aient été reliés au nouveau socle commun par les enseignants.<br />
-  Les seuils sont ceux configurés pour le Livret Scolaire (voir le menu administrateur "Livret Scolaire").<br />
-  Concernant le positionnement final en fin de cycle, le menu "Livret Scolaire" (en cours d'élaboration) sera à utiliser.<br />
+  Ce menu concerne le socle commun associé à la réforme 2016.<br />
   Pour les établissements à l'étranger n'ayant pas encore appliqué la réforme, les menus pour l'ancien socle restent disponibles : <a href="./index.php?page=releve&amp;section=socle">relevé</a> et <a href="./index.php?page=releve&amp;section=synthese_socle">synthèse</a>.
 </p>
 
-<?php /* <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__releve_socle2016">DOC : Maîtrise du socle (2016).</a></span></div> */ ?>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__maitrise_socle2016">DOC : Maîtrise du socle (2016).</a></span></div>
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>

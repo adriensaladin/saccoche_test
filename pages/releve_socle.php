@@ -122,7 +122,7 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
 ?>
 
 <p class="probleme">
-  Cette section concerne le socle commun sur la période 2006-2016.<br />
+  Cette section concerne le socle commun sur la période 2006-2015.<br />
   Elle est laissée à disposition des établissements à l'étrangers n'ayant pas encore appliqué la réforme.<br />
   Pour les autres, utiliser le menu <a href="./index.php?page=releve&amp;section=socle2016">Maîtrise du socle (2016)</a>.
 </p>

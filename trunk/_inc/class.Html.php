@@ -183,7 +183,7 @@ class Html
   }
 
   /**
-   * Afficher un degré de maitrise pour une sortie HTML.
+   * Afficher un degré de maîtrise pour une sortie HTML.
    *
    * @param int|FALSE $indice
    * @param int|FALSE $pourcentage
@@ -275,7 +275,7 @@ class Html
       }
       $retour .= '</div>'.NL;
     }
-    // légende états de maîtrise du socle
+    // légende degrés de maîtrise du socle
     if($etat_maitrise)
     {
       if( Html::$afficher_score === NULL )
@@ -283,7 +283,7 @@ class Html
         // En cas de bilan officiel, doit être déterminé avant
         Html::$afficher_score = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']);
       }
-      $retour .= '<div><b>États de maitrise :</b>';
+      $retour .= '<div><b>Degrés de maîtrise :</b>';
       foreach( $_SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
       {
         $texte_seuil = (Html::$afficher_score) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '' ;

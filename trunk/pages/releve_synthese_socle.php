@@ -64,7 +64,7 @@ $select_legende      = HtmlForm::afficher_select(Form::$tab_select_legende      
 ?>
 
 <p class="probleme">
-  Cette section concerne le socle commun sur la période 2006-2016.<br />
+  Cette section concerne le socle commun sur la période 2006-2015.<br />
   Elle est laissée à disposition des établissements à l'étrangers n'ayant pas encore appliqué la réforme.<br />
   Pour les autres, utiliser le menu [ Maîtrise du socle (2016) ] ci-dessus.
 </p>

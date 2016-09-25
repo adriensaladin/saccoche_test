@@ -51,7 +51,6 @@ class PDF_item_tableau extends PDF
     $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
     $this->AddPage($this->orientation , 'A4');
     $this->SetAutoPageBreak(TRUE);
-    $this->calculer_dimensions_images($this->cases_largeur,$this->cases_hauteur);
   }
 
   public function entete( $titre_nom , $matiere_et_groupe , $texte_periode )

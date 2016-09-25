@@ -218,7 +218,7 @@ if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
   <?php
   if($tab_types[$BILAN_TYPE]['droit']=='SOCLE')
   {
-    echo'<li><span class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2016 ; elle ne doit plus être utilisée par les établissements ayant appliqué la réforme.</span></li>';
+    echo'<li><span class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2015 ; elle ne doit plus être utilisée par les établissements ayant appliqué la réforme.</span></li>';
   }
   ?>
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__<?php echo $tab_types[$BILAN_TYPE]['doc'] ?>">DOC : Bilan officiel &rarr; <?php echo $tab_types[$BILAN_TYPE]['titre'] ?></a></span></li>

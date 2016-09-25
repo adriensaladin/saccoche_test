@@ -230,7 +230,7 @@ class PDF_item_synthese extends PDF
       $this->CellFit( $this->page_largeur_moins_marges - 80 , $this->lignes_hauteur*1.5 , To::pdf($matiere_nom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , $this->fond );
       // Proportions acquis matière
       $this->SetFont('Arial' , 'B' , $this->taille_police);
-      $this->afficher_proportion_acquis( 80 , $this->lignes_hauteur*1.5 , $tab_infos_matiere , $total , $avec_texte_nombre , $avec_texte_code );
+      $this->afficher_proportion_acquis(80,$this->lignes_hauteur*1.5,$tab_infos_matiere,$total,$avec_texte_nombre,$avec_texte_code);
       // Interligne
       $this->SetXY($this->marge_gauche , $this->GetY() + $this->lignes_hauteur*1.5);
     }

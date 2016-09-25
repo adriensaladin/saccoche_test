@@ -291,8 +291,6 @@ function SACoche_autoload($class_name)
     'PDF_item_tableau'            => '_inc'.DS.'class.PDF_item_tableau.php' ,
     'PDF_socle_releve'            => '_inc'.DS.'class.PDF_socle_releve.php' ,
     'PDF_socle_synthese'          => '_inc'.DS.'class.PDF_socle_synthese.php' ,
-    'PDF_socle2016_releve'        => '_inc'.DS.'class.PDF_socle2016_releve.php' ,
-    'PDF_socle2016_synthese'      => '_inc'.DS.'class.PDF_socle2016_synthese.php' ,
     'PDF_trombinoscope'           => '_inc'.DS.'class.PDF_trombinoscope.php' ,
     'RSS'                         => '_inc'.DS.'class.RSS.php' ,
     'SACocheLog'                  => '_inc'.DS.'class.SACocheLog.php' ,

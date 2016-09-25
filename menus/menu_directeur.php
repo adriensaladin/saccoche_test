@@ -91,7 +91,7 @@ $tab_sous_menu = array
     'releve_items'              => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items'               ),
     'releve_synthese'           => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese'            ),
     'releve_chronologique'      => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique' ),
-    'releve_socle2016'          => array( 'texte' => Lang::_("Maîtrise du socle").' (2016)'     , 'class' => 'releve_socle2016'      , 'href' => 'page=releve&amp;section=socle2016'           ),
+    'releve_socle2016'          => array( 'texte' => Lang::_("Maîtrise du socle").' (2016)'     , 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle2016'           ),
  // 'releve_socle'              => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'               ),
  // 'releve_synthese_socle'     => array( 'texte' => Lang::_("Synthèse de maîtrise du socle")   , 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'      ),
   ),

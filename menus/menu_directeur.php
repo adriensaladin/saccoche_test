@@ -187,7 +187,7 @@ if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 // Relevé de maîtrise du socle & Synthèse de maîtrise du socle
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
 {
-  // $tab_sous_menu['releve']['releve_socle']['class'] .= ' disabled';
+  $tab_sous_menu['releve']['releve_socle']['class'] .= ' disabled';
   // $tab_sous_menu['releve']['releve_synthese_socle']['class'] .= ' disabled';
 }
 

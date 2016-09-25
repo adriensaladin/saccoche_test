@@ -231,14 +231,14 @@ class OutilBilan
         $tab_notes[] = $tab_note[$num_devoir-1];
       }
       // 2c. Calcul final du score
-      if( substr($methode,0,6) == 'bestof' )
+      if( substr($calcul_methode,0,6) == 'bestof' )
       {
         // "bestof1" | "bestof2" | "bestof3"
         rsort($tab_notes);
         $tab_notes = array_slice( $tab_notes , 0 , $nb_best );
         return round( array_sum($tab_notes)/count($tab_notes) , 0 );
       }
-      elseif( substr($methode,0,9) == 'frequence' )
+      elseif( substr($calcul_methode,0,9) == 'frequence' )
       {
         // "frequencemin" | "frequencemax"
         $tab_frequences = array_count_values($tab_notes);
@@ -251,7 +251,7 @@ class OutilBilan
           {
             break;
           }
-          if( ( ($methode=='frequencemin') && ($score_autre<$score) ) || ( ($methode=='frequencemax') && ($score_autre>$score) ) )
+          if( ( ($calcul_methode=='frequencemin') && ($score_autre<$score) ) || ( ($calcul_methode=='frequencemax') && ($score_autre>$score) ) )
           {
             $score = $score_autre;
           }

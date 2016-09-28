@@ -1949,7 +1949,7 @@ if($action=='importer_saisie_csv')
     'P' => 'P' , 'p' => 'P' ,
   );
 
-  $scores_autorises = '0123456789AaDdNnEeFfRrPp';
+  $scores_autorises = '123456789AaDdNnEeFfRrPp';
   foreach ($tab_lignes as $ligne_contenu)
   {
     $tab_elements = str_getcsv($ligne_contenu,$separateur);

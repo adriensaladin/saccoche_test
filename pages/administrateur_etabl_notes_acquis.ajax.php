@@ -58,10 +58,10 @@ if( ($action=='save_notes') && isset($_POST['notes_actif']) && isset($_POST['not
     $TAB_NOTE[$note_id]['IMAGE']   = (isset($_POST['note_image_'  .$note_id])) ? Clean::txt_note($_POST['note_image_'  .$note_id]) : '' ;
     $TAB_NOTE[$note_id]['SIGLE']   = (isset($_POST['note_sigle_'  .$note_id])) ? Clean::txt_note($_POST['note_sigle_'  .$note_id]) : '' ;
     $TAB_NOTE[$note_id]['LEGENDE'] = (isset($_POST['note_legende_'.$note_id])) ? Clean::txt_note($_POST['note_legende_'.$note_id]) : '' ;
-    $TAB_NOTE[$note_id]['CLAVIER'] = (isset($_POST['note_clavier_'.$note_id])) ? Clean::entier(  $_POST['note_clavier_'.$note_id]) : NULL ;
+    $TAB_NOTE[$note_id]['CLAVIER'] = (isset($_POST['note_clavier_'.$note_id])) ? Clean::entier(  $_POST['note_clavier_'.$note_id]) : 0 ;
     if($TAB_NOTE[$note_id]['ACTIF'])
     {
-      if( is_null($TAB_NOTE[$note_id]['VALEUR']) || !$TAB_NOTE[$note_id]['IMAGE'] || !$TAB_NOTE[$note_id]['SIGLE'] || !$TAB_NOTE[$note_id]['LEGENDE'] || is_null($TAB_NOTE[$note_id]['CLAVIER']) )
+      if( is_null($TAB_NOTE[$note_id]['VALEUR']) || !$TAB_NOTE[$note_id]['IMAGE'] || !$TAB_NOTE[$note_id]['SIGLE'] || !$TAB_NOTE[$note_id]['LEGENDE'] || !$TAB_NOTE[$note_id]['CLAVIER'] )
       {
         Json::end( FALSE , 'Erreur avec les données transmises !' );
       }

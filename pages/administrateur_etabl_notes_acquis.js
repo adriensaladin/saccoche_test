@@ -277,7 +277,7 @@ $(document).ready
                 $('#note_clavier_'+note_id).focus();
                 return false;
               }
-              if( ( clavier < 0 ) || ( clavier > 10 ) )
+              if( ( clavier < 1 ) || ( clavier > 10 ) )
               {
                 $('#ajax_msg_notes').attr('class','erreur').html("Touche #"+note_id+" : nombre entre 1 et 9 requis.").show();
                 $('#note_clavier_'+note_id).focus();

@@ -37,7 +37,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 87, // effectuée (% actuel)
+    'statut'     => 100, // effectuée (% actuel)
     'langue'     => array( 'code' => 'en'  , 'nom' => 'Anglais' ),
     'pays'       => array( 'code' => '150' , 'nom' => 'Europe' ),
     'traducteur' => array(
@@ -48,7 +48,7 @@ $tab_langues_traduction = array(
     'document'   => 'https://sacoche.sesamath.net/_docs/traduction_en_150_precisions.ods',
   ),
   array(
-    'statut'     => 78, // effectuée (% actuel)
+    'statut'     => 85, // effectuée (% actuel)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'CO' , 'nom' => 'Colombie' ),
     'traducteur' => array(
@@ -56,7 +56,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 77, // effectuée (% actuel)
+    'statut'     => 84, // effectuée (% actuel)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'ES' , 'nom' => 'Espagne' ),
     'traducteur' => array(
@@ -64,20 +64,12 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 91, // effectuée (% actuel)
+    'statut'     => 100, // effectuée (% actuel)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'MX' , 'nom' => 'Mexique' ),
     'traducteur' => array(
       array( 'nom' => 'Xavier Courrian' , 'mail' => 'xavier.courrian@ac-bordeaux.fr' ),
       array( 'nom' => 'Patricia Núñez'  , 'mail' => NULL ),
-    ),
-  ),
-  array(
-    'statut'     => 0, // en attente
-    'langue'     => array( 'code' => 'eu' , 'nom' => 'Basque' ),
-    'pays'       => array( 'code' => 'FR' , 'nom' => 'France' ),
-    'traducteur' => array(
-      array( 'nom' => 'Daniel Elduayen' , 'mail' => 'elduayendaniel@gmail.com' ),
     ),
   ),
   array(
@@ -101,15 +93,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 84, // effectuée (% actuel)
-    'langue'     => array( 'code' => 'pt' , 'nom' => 'Portugais' ),
-    'pays'       => array( 'code' => 'PT'  , 'nom' => 'Portugal' ),
-    'traducteur' => array(
-      array( 'nom' => 'Luis Batista' , 'mail' => 'batista.6008@gmail.com' ),
-    ),
-  ),
-  array(
-    'statut'     => 91, // effectuée (% actuel)
+    'statut'     => 100, // effectuée (% actuel)
     'langue'     => array( 'code' => 'rcf' , 'nom' => 'Créole réunionnais' ),
     'pays'       => array( 'code' => 'RE'  , 'nom' => 'La Réunion' ),
     'traducteur' => array(
@@ -117,7 +101,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 91, // effectuée (% actuel)
+    'statut'     => 100, // effectuée (% actuel)
     'langue'     => array( 'code' => 'vi' , 'nom' => 'Vietnamien' ),
     'pays'       => array( 'code' => 'VN' , 'nom' => 'Vietnam' ),
     'traducteur' => array(

@@ -41,22 +41,20 @@ class DB_STRUCTURE_LIVRET extends DB
  */
 public static function DB_initialiser_jointures_livret_classes()
 {
+  // Vérifier qu'il y a au moins une classe associée au livret
+  $DB_SQL = 'SELECT COUNT(*) ';
+  $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
+  if( DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL) )
+  {
+    return TRUE;
+  }
   // Vérifier qu'il y a au moins une classe dans l'établissement
   $DB_SQL = 'SELECT COUNT(*) ';
   $DB_SQL.= 'FROM sacoche_groupe ';
   $DB_SQL.= 'WHERE groupe_type="classe" ';
-  $nb_classes = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  if( !$nb_classes )
+  if( !DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL) )
   {
     return FALSE;
-  }
-  // Vérifier que les classes sont associées au livret
-  $DB_SQL = 'SELECT COUNT(DISTINCT groupe_id) ';
-  $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
-  $nb_classes_livret = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  if( $nb_classes_livret == $nb_classes )
-  {
-    return TRUE;
   }
   // Fonction pour essayer de déterminer le bon type de période associé à une classe
   function determiner_periode_probable( $listing_periodes , $periode_nb )
@@ -77,15 +75,14 @@ public static function DB_initialiser_jointures_livret_classes()
   $DB_SQL.= 'COUNT( periode_id ) AS periode_nb, GROUP_CONCAT(periode_livret) AS listing_periodes ';
   $DB_SQL.= 'FROM sacoche_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_groupe_periode USING(groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_periode USING(periode_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING(niveau_id) ';
-  $DB_SQL.= 'WHERE groupe_type="classe" AND jointure_periode IS NULL ';
+  $DB_SQL.= 'WHERE groupe_type="classe" ';
   $DB_SQL.= 'GROUP BY groupe_id ';
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   foreach($DB_TAB as $DB_ROW)
   {
-    $jointure_periode = determiner_periode_probable( $DB_ROW['listing_periodes'] , $DB_ROW['periode_nb'] );
+    $jointure_periode = determiner_periode_probable( $listing_periodes , $periode_nb );
     switch($DB_ROW['niveau_ordre'])
     {
       case 3 : // GS
@@ -254,7 +251,7 @@ public static function DB_ajouter_livret_matiere( $matiere_id , $matiere_ordre ,
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * lister_rubriques
+ * lister_rubriques_avec_jointures_référentiels
  *
  * CONCAT_WS a une syntaxe un peu différente de CONCAT et ici 2 avantages :
  * - si un champ est NULL, les autres éléments sont retournés, avec que CONCAT renvoie NULL dans ce cas
@@ -263,37 +260,19 @@ public static function DB_ajouter_livret_matiere( $matiere_id , $matiere_ordre ,
  * @param string   $rubrique_type
  * @return array
  */
-public static function DB_lister_rubriques( $rubrique_type )
+public static function DB_lister_rubriques_avec_jointures_référentiels( $rubrique_type )
 {
   $test_livret_matiere = ( substr($rubrique_type,3) == 'matiere' ) ? TRUE : FALSE ;
   $origine  = ($test_livret_matiere) ? 'matiere' : 'rubrique' ;
   $champ_id = ($test_livret_matiere) ? 'livret_matiere_id AS livret_rubrique_id' : 'livret_rubrique_id' ;
   $select   = ($test_livret_matiere) ? 'livret_siecle_libelle' : 'CONCAT_WS( " - ", livret_rubrique_titre, livret_rubrique_sous_titre)' ;
-  $where    = ($test_livret_matiere) ? '' : 'WHERE livret_rubrique_type=:rubrique_type ' ;
-  $DB_SQL = 'SELECT '.$champ_id.', '.$select.' AS livret_rubrique_nom ';
+  $where    = ($test_livret_matiere) ? '' : 'sacoche_livret_rubrique.livret_rubrique_type=:rubrique_type AND' ;
+  $DB_SQL = 'SELECT '.$champ_id.', '.$select.' AS livret_rubrique_nom, GROUP_CONCAT(element_id SEPARATOR ",") AS listing_elements ';
   $DB_SQL.= 'FROM sacoche_livret_'.$origine.' ';
-  $DB_SQL.= $where;
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel ON sacoche_livret_'.$origine.'.livret_'.$origine.'_id = sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id ';
+  $DB_SQL.= 'WHERE '.$where.' (sacoche_livret_jointure_referentiel.livret_rubrique_type=:rubrique_type OR sacoche_livret_jointure_referentiel.livret_rubrique_type IS NULL ) ';
+  $DB_SQL.= 'GROUP BY livret_rubrique_id ';
   $DB_SQL.= 'ORDER BY livret_'.$origine.'_ordre ASC ';
-  $DB_VAR = array( ':rubrique_type' => $rubrique_type );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_jointures_rubriques_référentiels
- *
- * CONCAT_WS a une syntaxe un peu différente de CONCAT et ici 2 avantages :
- * - si un champ est NULL, les autres éléments sont retournés, avec que CONCAT renvoie NULL dans ce cas
- * - si un champ est NULL ou vide, il n'est pas concaténé, alors qu'avec CONCAT on obtient un séparateur suivi de rien
- *
- * @param string   $rubrique_type
- * @return array
- */
-public static function DB_lister_jointures_rubriques_référentiels( $rubrique_type )
-{
-  $DB_SQL = 'SELECT livret_rubrique_ou_matiere_id, GROUP_CONCAT(element_id SEPARATOR ",") AS listing_elements ';
-  $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-  $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type ';
-  $DB_SQL.= 'GROUP BY livret_rubrique_ou_matiere_id ';
   $DB_VAR = array( ':rubrique_type' => $rubrique_type );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

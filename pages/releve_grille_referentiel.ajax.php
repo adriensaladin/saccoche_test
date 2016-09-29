@@ -538,7 +538,6 @@ if( $type_generique || $type_individuel )
   // Initialiser au cas où $aff_coef / $aff_socle / $aff_comm / $aff_lien sont à 0
   $texte_coef       = '';
   $texte_socle      = '';
-  $texte_s2016      = '';
   $texte_comm       = '';
   $texte_lien_avant = '';
   $texte_lien_apres = '';
@@ -588,7 +587,7 @@ if( $type_generique || $type_individuel )
             {
               foreach($tab_item[$theme_id] as $item_id => $tab)
               {
-                extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_lien
+                extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien
                 if($aff_coef)
                 {
                   $texte_coef = '['.$item_coef.'] ';

@@ -39,7 +39,7 @@ if( $result === FALSE )
 if( is_int($result) )
 {
   $s = ($result>1) ? 's' : '' ;
-  echo'<p class="danger">Des associations de classe au livret scolaire n\'était pas enregistrées.<br /><em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />Vérifiez et ajustez si besoin (étape "Classes" ci-dessus).</p>'.NL;
+  echo'<p class="danger">Aucune association de classe au livret scolaire n\'était enregistrée.<br /><em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />Vérifiez et ajustez si besoin (étape "Classes" ci-dessus).</p>'.NL;
 }
 
 // Fabriquer les options de formulaires

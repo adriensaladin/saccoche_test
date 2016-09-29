@@ -200,7 +200,7 @@ public static function DB_recuperer_dates_periode( $groupe_id , $periode_id )
  * @param int  $prof_id      passer 0 pour une recherche sur toutes les matières de l'établissement (profil directeur) plutôt que d'un prof donné
  * @param int  $matiere_id   passer 0 pour une recherche sur toutes les matières d'un prof plutôt que sur une matière
  * @param int  $niveau_id    passer 0 pour une recherche sur tous les niveaux
- * @param bool $only_socle   "TRUE" pour ne retourner que les items reliés au socle (TODO : ne tester à terme que le socle 2016)
+ * @param bool $only_socle   "TRUE" pour ne retourner que les items reliés au socle
  * @param bool $only_item    "TRUE" pour ne retourner que les lignes d'items, "FALSE" pour l'arborescence complète, sans forcément descendre jusqu'à l'items (valeurs NULL retournées)
  * @param bool $socle_nom    avec ou pas le nom des items du socle associés
  * @param bool $s2016_count  avec ou pas le nb de liaisons au socle 2016
@@ -225,7 +225,7 @@ public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $nive
   $where_matiere     = ($matiere_id)  ? 'AND matiere_id=:matiere_id ' : '' ;
   $where_niveau      = ($niveau_id)   ? 'AND niveau_id=:niveau_id ' : 'AND niveau_actif=1 ' ;
   $where_item        = ($only_item)   ? 'AND item_id IS NOT NULL ' : '' ;
-  $where_socle       = ($only_socle)  ? 'AND ( entree_id !=0 OR socle_composante_id IS NOT NULL ) ' : '' ;
+  $where_socle       = ($only_socle)  ? 'AND entree_id !=0 ' : '' ;
   $group_s2016       = ($s2016_count) ? 'GROUP BY sacoche_referentiel_item.item_id ' : '' ;
   $order_matiere     = (!$matiere_id) ? 'matiere_nom ASC, '  : '' ;
   $order_niveau      = (!$niveau_id)  ? 'niveau_ordre ASC, ' : '' ;

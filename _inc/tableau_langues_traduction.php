@@ -48,14 +48,6 @@ $tab_langues_traduction = array(
     'document'   => 'https://sacoche.sesamath.net/_docs/traduction_en_150_precisions.ods',
   ),
   array(
-    'statut'     => 0, // en attente
-    'langue'     => array( 'code' => 'eu' , 'nom' => 'Basque' ),
-    'pays'       => array( 'code' => 'FR' , 'nom' => 'France' ),
-    'traducteur' => array(
-      array( 'nom' => 'Daniel Elduayen' , 'mail' => 'elduayendaniel@gmail.com' ),
-    ),
-  ),
-  array(
     'statut'     => 78, // effectuée (% actuel)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'CO' , 'nom' => 'Colombie' ),
@@ -78,6 +70,14 @@ $tab_langues_traduction = array(
     'traducteur' => array(
       array( 'nom' => 'Xavier Courrian' , 'mail' => 'xavier.courrian@ac-bordeaux.fr' ),
       array( 'nom' => 'Patricia Núñez'  , 'mail' => NULL ),
+    ),
+  ),
+  array(
+    'statut'     => 0, // en attente
+    'langue'     => array( 'code' => 'eu' , 'nom' => 'Basque' ),
+    'pays'       => array( 'code' => 'FR' , 'nom' => 'France' ),
+    'traducteur' => array(
+      array( 'nom' => 'Daniel Elduayen' , 'mail' => 'elduayendaniel@gmail.com' ),
     ),
   ),
   array(

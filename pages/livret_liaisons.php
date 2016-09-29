@@ -160,25 +160,29 @@ else
   }
 }
 
-// Une requête pour récupérer les rubriques avec les jointures vers les référentiels
+// Une requête pour récupérer les rubriques
 $tab_rubrique = array();
-$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_rubriques_avec_jointures_référentiels( $get_rubrique_type );
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_rubriques( $get_rubrique_type );
 foreach($DB_TAB as $DB_ROW)
 {
   $rubrique_id  = $DB_ROW['livret_rubrique_id'];
   $rubrique_nom = $DB_ROW['livret_rubrique_nom'] ;
   $tab_rubrique[$rubrique_id] = array( 'join'=>array() , 'nom'=>$rubrique_nom );
-  if( $DB_ROW['listing_elements'] )
+}
+
+// Une requête pour récupérer les jointures rubriques / référentiels déjà établies
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_jointures_rubriques_référentiels( $get_rubrique_type );
+foreach($DB_TAB as $DB_ROW)
+{
+  $rubrique_id  = $DB_ROW['livret_rubrique_ou_matiere_id'];
+  $tab_element_id = explode( ',' , $DB_ROW['listing_elements'] );
+  foreach($tab_element_id as $element_id)
   {
-    $tab_element_id = explode( ',' , $DB_ROW['listing_elements'] );
-    foreach($tab_element_id as $element_id)
-    {
-      $tab_rubrique[$rubrique_id]['join'][$tab_element[$element_id]['ordre']] = array(
-        'id'  => $element_id ,
-        'nom' => $tab_element[$element_id]['nom']
-      );
-      $tab_element[$element_id]['used'] = TRUE;
-    }
+    $tab_rubrique[$rubrique_id]['join'][$tab_element[$element_id]['ordre']] = array(
+      'id'  => $element_id ,
+      'nom' => $tab_element[$element_id]['nom']
+    );
+    $tab_element[$element_id]['used'] = TRUE;
   }
 }
 

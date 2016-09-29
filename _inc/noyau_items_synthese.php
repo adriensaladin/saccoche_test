@@ -58,6 +58,7 @@ if( ($make_html) || ($make_pdf) || ($make_graph) )
   );
   if(!$aff_coef)  { $texte_coef       = ''; }
   if(!$aff_socle) { $texte_socle      = ''; }
+  if(!$aff_socle) { $texte_s2016      = ''; }
   if(!$aff_lien)  { $texte_lien_avant = ''; }
   if(!$aff_lien)  { $texte_lien_apres = ''; }
   $toggle_class = ($aff_start) ? 'toggle_moins' : 'toggle_plus' ;
@@ -114,7 +115,7 @@ if(empty($is_appreciation_groupe))
 {
   if($synthese_modele=='matiere')
   {
-    list($tab_item,$tab_synthese) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $liste_eleve , $matiere_id , $only_socle , $only_niveau , $mode_synthese , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin );
+    list($tab_item,$tab_synthese) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $liste_eleve , $matiere_id , $only_socle , $only_niveau , $mode_synthese , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin , $aff_socle );
     $tab_matiere[$matiere_id] = array(
       'matiere_nom'         => $matiere_nom,
       'matiere_nb_demandes' => DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id),
@@ -123,7 +124,7 @@ if(empty($is_appreciation_groupe))
   elseif($synthese_modele=='multimatiere')
   {
     $matiere_id = 0;
-    list($tab_item,$tab_synthese,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $liste_eleve , $matiere_id , $only_socle , $only_niveau , 'predefini' /*mode_synthese*/ , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin );
+    list($tab_item,$tab_synthese,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $liste_eleve , $matiere_id , $only_socle , $only_niveau , 'predefini' /*mode_synthese*/ , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin , $aff_socle );
   }
 }
 else
@@ -268,7 +269,7 @@ if(empty($is_appreciation_groupe))
       foreach($tab_eval[$eleve_id] as $item_id => $tab_devoirs)
       {
         // le score bilan
-        extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $calcul_methode $calcul_limite $calcul_retroactif $synthese_ref
+        extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_lien $matiere_id $calcul_methode $calcul_limite $calcul_retroactif $synthese_ref
         $matiere_nb_demandes = $tab_matiere[$matiere_id]['matiere_nb_demandes'];
         $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite ) ;
         $tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref][$item_id] = $score;
@@ -285,6 +286,7 @@ if(empty($is_appreciation_groupe))
             if($aff_socle)
             {
               $texte_socle = ($item_socle) ? '[S] ' : '[–] ';
+              $texte_s2016 = ($item_s2016) ? '[S] ' : '[–] ';
             }
             if($aff_lien)
             {
@@ -297,7 +299,7 @@ if(empty($is_appreciation_groupe))
             elseif(!$item_cart)                            { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
             else                                           { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
             $pourcentage = ($afficher_score) ? $score.'%' : '&nbsp;' ;
-            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<div><span class="pourcentage A'.$indice.'">'.$pourcentage.'</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval.'</div>';
+            $tab_infos_detail_synthese[$eleve_id][$synthese_ref][] = '<div><span class="pourcentage A'.$indice.'">'.$pourcentage.'</span> '.$texte_coef.$texte_socle.$texte_s2016.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval.'</div>';
           }
         }
       }

@@ -183,12 +183,12 @@ if( ($objet=='matieres') || ($objet=='matiere_niveau') )
 
 if($objet=='matiere_synthese')
 {
-  list( $tab_item , $tab_rubrique ) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $eleve_id , $matiere_id , $only_socle , 0 /*only_niveau*/ , $mode_synthese , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin );
+  list( $tab_item , $tab_rubrique ) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_synthese( $eleve_id , $matiere_id , $only_socle , 0 /*only_niveau*/ , $mode_synthese , $fusion_niveaux , $date_mysql_debut , $date_mysql_fin , FALSE /*aff_socle*/ );
 }
 
 if($objet=='selection')
 {
-  list( $tab_item, /*tab_matiere*/ ) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin , 0 /*aff_domaine*/ , 0 /*aff_theme*/ );
+  list( $tab_item, /*tab_matiere*/ ) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin , 0 /*aff_domaine*/ , 0 /*aff_theme*/ , 0 /*aff_socle*/ );
 }
 
 $item_nb = count($tab_item);

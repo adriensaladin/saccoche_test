@@ -80,6 +80,7 @@ if( ($make_html) || ($make_pdf) )
   $info_ponderation_courte   = ($with_coef) ? 'pondérée'   : 'simple' ;
   if(!$aff_coef)  { $texte_coef  = ''; }
   if(!$aff_socle) { $texte_socle = ''; }
+  if(!$aff_socle) { $texte_s2016 = ''; }
   if(!$aff_comm)  { $texte_comm  = ''; }
   if(!$aff_lien)  { $texte_lien_avant = ''; }
   if(!$aff_lien)  { $texte_lien_apres = ''; }
@@ -134,7 +135,7 @@ if(empty($is_appreciation_groupe))
 {
   if($releve_modele=='matiere')
   {
-    $tab_item_infos = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ ) ;
+    $tab_item_infos = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $aff_socle , $type_synthese /*with_abrev*/ ) ;
       $tab_matiere[$matiere_id] = array(
         'matiere_nom'         => $matiere_nom,
         'matiere_nb_demandes' => DB_STRUCTURE_DEMANDE::DB_recuperer_demandes_autorisees_matiere($matiere_id),
@@ -143,23 +144,23 @@ if(empty($is_appreciation_groupe))
   elseif($releve_modele=='multimatiere')
   {
     $matiere_id = -1;
-    list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ );
+    list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_bilan( $liste_eleve , $matiere_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $aff_socle , $type_synthese /*with_abrev*/ );
   }
   else
   {
     if($releve_modele=='selection')
     {
       $liste_items = implode(',',$tab_items);
-      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $liste_eleve , $liste_items , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ );
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_selection( $liste_eleve , $liste_items , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $aff_socle , $type_synthese /*with_abrev*/ );
     }
     elseif($releve_modele=='evaluation')
     {
       $liste_evals = implode(',',$tab_evals);
-      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_devoirs( $liste_eleve , $liste_evals , $only_socle , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ );
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_devoirs( $liste_eleve , $liste_evals , $only_socle , $aff_domaine , $aff_theme , $aff_socle , $type_synthese /*with_abrev*/ );
     }
     elseif($releve_modele=='professeur')
     {
-      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur( $liste_eleve , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $type_synthese /*with_abrev*/ );
+      list($tab_item_infos,$tab_matiere) = DB_STRUCTURE_BILAN::DB_recuperer_arborescence_professeur( $liste_eleve , $prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin , $aff_domaine , $aff_theme , $aff_socle , $type_synthese /*with_abrev*/ );
     }
     // Si les items sont issus de plusieurs matières, alors on les regroupe en une seule.
     if(count($tab_matiere)>1)
@@ -375,7 +376,7 @@ if(empty($is_appreciation_groupe))
             // Pour chaque item...
             foreach($tab_eval[$eleve_id][$matiere_id] as $item_id => $tab_devoirs)
             {
-              extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_comm $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
+              extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_comm $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
               // calcul du bilan de l'item
               $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
               if( ($only_etat=='tous') || OutilBilan::tester_acquisition( $score , $only_etat ) )
@@ -812,6 +813,7 @@ if($type_individuel)
                     if($aff_socle)
                     {
                       $texte_socle = ($item_socle) ? '[S] ' : '[–] ';
+                      $texte_s2016 = ($item_s2016) ? '[S] ' : '[–] ';
                     }
                     if($aff_comm)
                     {
@@ -837,11 +839,11 @@ if($type_individuel)
                       elseif(!$item_cart)                            { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
                       else                                           { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$tab_score_eleve_item[$eleve_id][$matiere_id][$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>'; }
                       $td_ref = ($longueur_ref_max) ? '<td>'.$item_ref.'</td>' : '' ;
-                      $releve_HTML_table_body .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_socle.$texte_comm.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</td>';
+                      $releve_HTML_table_body .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_socle.$texte_s2016.$texte_comm.$texte_lien_avant.$texte_fluo_avant.html($item_nom).$texte_fluo_apres.$texte_lien_apres.$texte_demande_eval.'</td>';
                     }
                     if($make_pdf)
                     {
-                      $item_texte = $texte_coef.$texte_socle.$item_nom;
+                      $item_texte = $texte_coef.$texte_socle.$texte_s2016.$item_nom;
                       $releve_PDF->debut_ligne_item( $item_ref , $item_texte );
                       if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'debut_ligne_item' , array( $item_ref , $item_texte ) ); }
                     }

@@ -937,8 +937,8 @@ msgid "Mod. accomp."
 msgstr "Mod. accomp."
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/livret.php:48
-msgid "Edition du livret"
-msgstr "Edition du livret"
+msgid "Édition du livret"
+msgstr "Édition du livret"
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/livret.php:49
 msgid "Export LSUN"

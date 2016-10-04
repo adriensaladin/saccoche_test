@@ -95,8 +95,8 @@ $tab_sous_menu = array
   (
     'administrateur_periode'        => array( 'texte' => Lang::_("Périodes")                  , 'class' => 'periode'           , 'href' => 'page=administrateur_periode'        ),
     'officiel_reglages'             => array( 'texte' => Lang::_("Synthèses / Bilans")        , 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' ),
-    'brevet_accueil'                => array( 'texte' => Lang::_("Notanet & Fiches brevet")   , 'class' => 'officiel_brevet'   , 'href' => 'page=brevet&amp;section=accueil'    ),
     'livret_accueil'                => array( 'texte' => Lang::_("Livret Scolaire")           , 'class' => 'marianne'          , 'href' => 'page=livret&amp;section=accueil'    ),
+    'brevet_accueil'                => array( 'texte' => Lang::_("Notanet & Fiches brevet")   , 'class' => 'officiel_brevet'   , 'href' => 'page=brevet&amp;section=accueil'    ),
     'administrateur_classe'         => array( 'texte' => Lang::_("Classes")                   , 'class' => 'groupe'            , 'href' => 'page=administrateur_classe'         ),
     'administrateur_groupe'         => array( 'texte' => Lang::_("Groupes")                   , 'class' => 'groupe'            , 'href' => 'page=administrateur_groupe'         ),
     'administrateur_eleve'          => array( 'texte' => Lang::_("Élèves")                    , 'class' => 'eleve'             , 'href' => 'page=administrateur_eleve'          ),

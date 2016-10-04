@@ -27,11 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Livret Scolaire"));
-?>
 
-<p class="travaux">Interfaces en prévision de la gestion du <em>Livret Scolaire</em> dans <em>SACoche</em>.</p>
-
-<?php
 // Sous-Menu d'en-tête
 if($_SESSION['USER_PROFIL_TYPE']!='professeur')
 {
@@ -45,8 +41,8 @@ if($_SESSION['USER_PROFIL_TYPE']!='professeur')
     'ap'        => '5) '.Lang::_("A.P."),
     'parcours'  => '6) '.Lang::_("Parcours"),
     'modaccomp' => '7) '.Lang::_("Mod. accomp."),
-    'edition'   => '8) '.Lang::_("Edition du livret"),
-    'export'    => '9) '.Lang::_("Export LSUN"),
+    'edition'   => '8) '.Lang::_("Édition du livret"),
+    'export'    => '9) '.Lang::_("Export LSU"),
   );
   foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
   {
@@ -55,13 +51,10 @@ if($_SESSION['USER_PROFIL_TYPE']!='professeur')
   }
 }
 
-/*
-// TODO : ENVIRONNEMENT EN TRAVAUX POUR QUELQUES MOIS...
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
-  $SECTION = 'fiches';
+  $SECTION = 'edition';
 }
-*/
 
 // Afficher la bonne page et appeler le bon js / ajax par la suite
 $fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
@@ -70,10 +63,14 @@ if(is_file($fichier_section))
   $PAGE = $PAGE.'_'.$SECTION ;
   require($fichier_section);
 }
+else if($SECTION=='export')
+{
+  echo'<p class="travaux">Fonctionnalité disponible ultérieurement (mise à disposition envisagée vers novembre 2016).</p>'.NL;
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
 else
 {
-  echo'<p class="danger">Page disponible ultérieurement&hellip;</p>'.NL;
-  // echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>'.NL;
+  echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 ?>

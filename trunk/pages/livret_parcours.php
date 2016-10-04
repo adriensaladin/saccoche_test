@@ -45,6 +45,9 @@ foreach($DB_TAB as $key => $TAB)
 
 if(!$parcours_code)
 {
+  echo'<ul class="puce">';
+  echo'  <li><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_livret_scolaire#toggle_parcours">DOC : Réglages du Livret Scolaire &rarr; Parcours</a></span></li>';
+  echo'</ul>';
   echo'<p>Choisir un type de parcours :</p>'.NL;
   echo'<ul class="puce">'.NL;
   foreach($DB_TAB as $key => $TAB)
@@ -67,9 +70,9 @@ $txt_ecole = ($parcours_code!='P_AVN') ? 'de l\'École Élémentaire et' : '' ;
 
 <ul class="puce">
   <li><span class="astuce">Le <b><?php echo html($livret_parcours_type_nom) ?></b> concerne les <b>élèves <?php echo $txt_ecole ?> du Collège</b>.</span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo html($livret_parcours_type_url_sitegouv) ?>">Documents et informations ministérielles.</a></span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo html($livret_parcours_type_url_txtofficiel) ?>">Texte officiel.</a></span></li>
-  <li>Dans sa forme, le livret scolaire restreint à un parcours de ce type par classe et impose de le rattacher à un enseignant.</li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_parcours">DOC : Réglages du Livret Scolaire &rarr; Parcours</a></span></li>
+  <!-- <li><span class="manuel"><a class="pop_up" href="<?php echo html($livret_parcours_type_url_sitegouv) ?>">Documents et informations ministérielles.</a></span></li> -->
+  <!-- <li><span class="manuel"><a class="pop_up" href="<?php echo html($livret_parcours_type_url_txtofficiel) ?>">Texte officiel.</a></span></li> -->
 </ul>
 
 <hr />

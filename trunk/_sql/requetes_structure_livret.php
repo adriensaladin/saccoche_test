@@ -54,7 +54,7 @@ public static function DB_initialiser_jointures_livret_classes()
   $DB_SQL = 'SELECT COUNT(DISTINCT groupe_id) ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $nb_classes_livret = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  if( $nb_classes_livret == $nb_classes )
+  if( ( $nb_classes_livret == $nb_classes ) || ( $nb_classes_livret == $nb_classes - 1 ) ) // Pas de modif dans le cas d'une classe spéciale éventuelle (inactifs...)
   {
     return TRUE;
   }
@@ -281,10 +281,6 @@ public static function DB_lister_rubriques( $rubrique_type )
 /**
  * lister_jointures_rubriques_référentiels
  *
- * CONCAT_WS a une syntaxe un peu différente de CONCAT et ici 2 avantages :
- * - si un champ est NULL, les autres éléments sont retournés, avec que CONCAT renvoie NULL dans ce cas
- * - si un champ est NULL ou vide, il n'est pas concaténé, alors qu'avec CONCAT on obtient un séparateur suivi de rien
- *
  * @param string   $rubrique_type
  * @return array
  */
@@ -487,6 +483,24 @@ public static function DB_modifier_seuils( $page_ref , $tab_seuils )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * lister_jointures_classes_livret
+ *
+ * @param int   $groupe_id   facultatif, pour restreindre à une classe donnée
+ * @return array
+ */
+public static function DB_lister_jointures_classes_livret()
+{
+  $DB_SQL = 'SELECT groupe_id, livret_page_ref, sacoche_livret_jointure_groupe.livret_page_periodicite, jointure_periode, jointure_etat, ';
+  $DB_SQL.= 'livret_page_rubrique_type, periode_id, jointure_date_debut, jointure_date_fin ';
+  $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING(livret_page_ref) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_periode ON ( sacoche_livret_jointure_groupe.livret_page_periodicite = "periode" AND sacoche_livret_jointure_groupe.jointure_periode = sacoche_periode.periode_livret ) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_groupe_periode USING(groupe_id, periode_id) ';
+  $DB_SQL.= 'ORDER BY groupe_id,livret_page_ordre, periode_ordre ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * lister_classes_avec_jointures_livret
  *
  * @param int   $groupe_id   facultatif, pour restreindre à une classe donnée
@@ -540,6 +554,32 @@ public static function DB_ajouter_jointure_groupe( $groupe_id , $page_ref , $pag
     $DB_VAR[':jointure_periode'] = $jointure_periode;
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
+}
+
+/**
+ * modifier_jointure_groupe
+ *
+ * @param int      $groupe_id    id du groupe (en fait, obligatoirement une classe)
+ * @param string   $page_ref
+ * @param string   $page_periodicite
+ * @param string   $jointure_periode
+ * @param string   $etat         nouvel état
+ * @return int     0 ou 1 si modifié
+ */
+public static function DB_modifier_jointure_groupe( $groupe_id , $page_ref , $page_periodicite , $jointure_periode , $etat )
+{
+  $DB_SQL = 'UPDATE sacoche_livret_jointure_groupe ';
+  $DB_SQL.= 'SET jointure_etat=:etat ';
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND livret_page_periodicite=:page_periodicite AND jointure_periode=:jointure_periode ';
+  $DB_VAR = array(
+    ':groupe_id'        => $groupe_id,
+    ':page_ref'         => $page_ref,
+    ':page_periodicite' => $page_periodicite,
+    ':jointure_periode' => $jointure_periode,
+    ':etat'             => $etat,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**

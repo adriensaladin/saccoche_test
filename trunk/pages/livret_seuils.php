@@ -27,7 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Notation / Seuils"));
+?>
 
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_seuils">DOC : Réglages du Livret Scolaire &rarr; Notation / Seuils</a></span></li>
+</ul>
+
+<?php
 // On liste les pages et leurs paramètres principaux
 $DB_TAB_pages = DB_STRUCTURE_LIVRET::DB_lister_pages( TRUE /*with_info_classe*/ );
 

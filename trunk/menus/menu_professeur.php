@@ -48,17 +48,17 @@ $tab_sous_menu = array
 (
   'information' => array
   (
-    'compte_accueil'                   => array( 'texte' => Lang::_("Accueil")                                  , 'class' => 'compte_accueil'   , 'href' => 'page=compte_accueil'                   ),
-    'compte_cnil'                      => array( 'texte' => Lang::_("Données personnelles")                     , 'class' => 'compte_cnil'      , 'href' => 'page=compte_cnil'                      ),
+    'compte_accueil'                   => array( 'texte' => Lang::_("Accueil")                                 , 'class' => 'compte_accueil'   , 'href' => 'page=compte_accueil'                   ),
+    'compte_cnil'                      => array( 'texte' => Lang::_("Données personnelles")                    , 'class' => 'compte_cnil'      , 'href' => 'page=compte_cnil'                      ),
     'consultation_codes_couleurs'      => array( 'texte' => Lang::_("Codes de notation / États d'acquisition") , 'class' => 'etabl_couleurs'   , 'href' => 'page=consultation_codes_couleurs'      ),
-    'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")                     , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
-    'consultation_date_connexion'      => array( 'texte' => Lang::_("Date de dernière connexion")               , 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
-    'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")                       , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
-    'export_fichier'                   => array( 'texte' => Lang::_("Export de données")                        , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
-    'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")                     , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
-    'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")                    , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
-    'consultation_referentiel_externe' => array( 'texte' => Lang::_("Référentiels partagés")                    , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),
-    'consultation_trombinoscope'       => array( 'texte' => Lang::_("Trombinoscope")                            , 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       ),
+    'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")                    , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
+    'consultation_date_connexion'      => array( 'texte' => Lang::_("Date de dernière connexion")              , 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
+    'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")                      , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
+    'export_fichier'                   => array( 'texte' => Lang::_("Export de données")                       , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
+    'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")                    , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
+    'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")                   , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
+    'consultation_referentiel_externe' => array( 'texte' => Lang::_("Référentiels partagés")                   , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),
+    'consultation_trombinoscope'       => array( 'texte' => Lang::_("Trombinoscope")                           , 'class' => 'trombinoscope'    , 'href' => 'page=consultation_trombinoscope'       ),
   ),
   'parametrage' => array
   (
@@ -111,6 +111,7 @@ $tab_sous_menu = array
  // 'officiel_accueil_palier1'  => array( 'texte' => Lang::_("Maîtrise du palier 1") , 'class' => 'officiel_palier1'   , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
  // 'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2") , 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
  // 'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3") , 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
+    'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")      , 'class' => 'marianne'           , 'href' => 'page=livret&amp;section=edition'            ),
     'brevet_fiches'             => array( 'texte' => Lang::_("Fiches brevet")        , 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=fiches'             ),
   ),
 );

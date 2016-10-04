@@ -39,7 +39,7 @@ if( $result === FALSE )
 if( is_int($result) )
 {
   $s = ($result>1) ? 's' : '' ;
-  echo'<p class="danger">Des associations de classe au livret scolaire n\'était pas enregistrées.<br /><em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />Vérifiez et ajustez si besoin (étape "Classes" ci-dessus).</p>'.NL;
+  echo'<p class="danger">Des associations de classe au livret scolaire n\'étaient pas enregistrées.<br /><em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />Vérifiez et ajustez si besoin (étape "Classes" ci-dessus).</p>'.NL;
 }
 
 // Supprimer les liaisons du livret aux divers éléments de référentiels supprimés, car ce n'est pas fait automatiquement au fur et à mesure
@@ -80,10 +80,10 @@ foreach($DB_TAB as $DB_ROW)
 
 ?>
 
-<p>
-  <!-- <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__notanet_fiches_brevet#toggle_etape2_epreuves">DOC : Notanet &amp; Fiches brevet &rarr; Définition des épreuves</a></span><br /> -->
-  <span class="astuce">Effectuer dans l'ordre les étapes ci-dessus.</span>
-</p>
+<ul class="puce">
+  <li><span class="astuce">Effectuer dans l'ordre les étapes ci-dessus.</span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire">DOC : Réglages du Livret Scolaire</a></span></li>
+</ul>
 
 <hr />
 
@@ -100,7 +100,6 @@ foreach($DB_TAB as $DB_ROW)
       <th>E.P.I.</th>
       <th>A.P.</th>
       <th>Parcours</th>
-      <th>Édition</th>
     </tr>
   </thead>
   <tbody>
@@ -134,7 +133,7 @@ foreach($DB_TAB as $DB_ROW)
         echo  '<td class="nu">'.$vignette.'</td>';
         echo  '<td>'.$moment.'</td>';
         echo  '<td>'.$objet.'</td>';
-        echo  '<td colspan="6" class="hc">Aucune classe associée à cette partie du livret.</td>';
+        echo  '<td colspan="5" class="hc">Aucune classe associée à cette partie du livret.</td>';
         echo'</tr>'.NL;
       }
       else
@@ -230,7 +229,6 @@ foreach($DB_TAB as $DB_ROW)
         echo  '<td>'.$epi.'</td>';
         echo  '<td>'.$ap.'</td>';
         echo  '<td>'.$parcours.'</td>';
-        echo  '<td class="fluo">à venir</td>';
         echo'</tr>'.NL;
       }
     }

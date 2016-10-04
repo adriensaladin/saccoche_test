@@ -27,7 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Rubriques / Liaisons"));
+?>
 
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_liaisons">DOC : Réglages du Livret Scolaire &rarr; Rubriques / Liaisons</a></span></li>
+</ul>
+
+<?php
 // On récupère l'éventuel type de rubrique
 $get_rubrique_type = isset($_GET['ref']) ? Clean::code($_GET['ref']) : '' ;
 
@@ -85,14 +91,15 @@ if(!isset($liaison_rubrique_type))
 $TITRE .= ' &rarr; '.html($livret_page_moment);
 ?>
 
+<hr />
+
 <?php if($liaison_rubrique_type=='socle'): /* * * * * * CYCLE2 | CYCLE3 | CYCLE4 * * * * * */ ?>
 
 <?php echo $livret_vignettes ?>
-<ul class="puce ml">
-  <li>Les liaisons des items des référentiels au composantes du socle commun sont effectuées par les enseignants (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_modifier_contenu">DOC</a></span>).</span></li>
-  <li>Voici un bilan des liaisons actuelles, aussi consultable via le menu <a href="./index.php?page=export_fichier">[Informations] [Export de données]</a>.</li>
-</ul>
-<hr />
+<p>
+  Les liaisons des items des référentiels au composantes du socle commun sont effectuées par les enseignants (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_modifier_contenu">DOC</a></span>).</span><br />
+  Voici un bilan des liaisons actuelles, aussi consultable via le menu <a href="./index.php?page=export_fichier">[Informations] [Export de données]</a>.
+</p>
 <p id="socle_liaisons">
 </p>
 <?php
@@ -247,38 +254,10 @@ Layout::add( 'js_inline_before' , 'var rubrique_type="'.$get_rubrique_type.'";' 
 Layout::add( 'js_inline_before' , 'var rubrique_join="'.$liaison_rubrique_join.'";' );
 ?>
 
-<?php if($liaison_rubrique_type=='matiere'): /* * * * * * SOUS-BOUCLE 6E | 5E-4E-3E * * * * * */ ?>
-
-<div class="p accueil64 alert64">
-  <div class="danger">L'export du <em>Livret Scolaire</em> vers l'application ministérielle pour les relevés périodiques des classes de collège s'annonce particulièrement complexe.</div>
-  <div>En effet, il requiert, entre autres, d'utiliser les matières correspondant strictement aux services des enseignants (avec "modalités d'élections" associées&hellip;).</div>
-  <p>
-    Concernant les établissements <em>sans</em> accès à <em>siecle</em> (par exemple les lycées français à l'étranger), les matières utilisées sont les rubriques du modèle officiel.<br />
-    Dans ce cas il n'y a pas d'export vers l'application nationale.
-  </p>
-  <p>
-    Concernant les établissements utilisant <em>siecle</em>, les matières utilisées sont celles issues de <em>STS-Web</em>.<br />
-    Elles sont récupérées et mises à jour par <em>SACoche</em> lors de <a href="./index.php?page=administrateur_fichier_user"><b>l'import des personnels de l'établissement</b></a> depuis <em>siecle</em>.
-  </p>
-  <div class="danger"><?php echo $texte_info_rubriques ?></div>
-  <p>
-    <div class="astuce">Il est inutile d'essayer d'utiliser toutes les rubriques du livret ci-dessous.</div>
-    Au contraire, mieux vaut aller au plus simple en ne renseignant que l'essentiel pour éviter des complications ultérieures.<br />
-    Les rubriques sans élément associé seront tout simplement ignorées.
-  </p>
-  <p>
-    <div class="astuce">Un paramétrage séparé est proposé pour le niveau 6e et les niveaux 5e-4e-3e.</div>
-    Ceci avec l'objectif de pouvoir gérer au mieux les différentes situations selon les référentiels de Cycle 3 utilisés&hellip;
-  </p>
-</div>
-<hr />
-
-<?php endif /* * * * * * FIN SOUS-BOUCLE * * * * * */ ?>
-
 <h2>Choix général</h2>
 <?php echo $livret_vignettes ?>
 <form action="#" method="post" id="form_gestion">
-  <p><span class="manuel">Documentation à venir ultérieurement&hellip;</p>
+  <p>&nbsp;</p>
   <p>Type de liaison aux référentiels : <select id="rubrique_join" name="rubrique_join"><?php echo $select_jointure ?></select></p>
   <p>&nbsp;</p>
 </form>
@@ -301,6 +280,12 @@ Layout::add( 'js_inline_before' , 'var rubrique_join="'.$liaison_rubrique_join.'
 <hr />
 
 <h2>Rubriques du livret</h2>
+
+<?php if($liaison_rubrique_type=='matiere'): /* * * * * * SOUS-BOUCLE 6E | 5E-4E-3E * * * * * */ ?>
+
+<p class="danger"><?php echo $texte_info_rubriques ?></p>
+
+<?php endif /* * * * * * FIN SOUS-BOUCLE * * * * * */ ?>
 
 <form action="#" method="post" id="form_rubrique">
 <?php echo implode('<p />',$tab_html_rubrique); ?>

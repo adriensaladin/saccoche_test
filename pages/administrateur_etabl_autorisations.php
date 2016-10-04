@@ -102,12 +102,12 @@ $tab_droits  = array
     array( 'droit_voir_etat_acquisition_avec_evaluation' , "afficher l'état d'acquisition avec le résultat d'une évaluation" , 'personne' ),
   ),
   "Socle &rarr; Choix de la langue" => array
-  (
+  ( // TODO : DROIT A SUPPRIMER
     'dir_pers_lv',
     array( 'droit_affecter_langue' , "affecter la langue vivante (socle 2006-2015)" , 'dir_prof_lv' ),
   ),
   "Socle &rarr; Validations" => array
-  (
+  ( // TODO : DROITS A SUPPRIMER
     'dir_pers_pp',
     array( 'droit_validation_entree' , "valider des items du socle (socle 2006-2015)"             , 'dir_pers' ),
     array( 'droit_validation_pilier' , "valider des compétences du socle (socle 2006-2015)"       , 'dir_prof_pp' ),
@@ -150,8 +150,16 @@ $tab_droits  = array
     array( 'droit_officiel_bulletin_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_bulletin_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
   ),
-  "Bilans officiels &rarr; État de maîtrise du socle (socle 2006-2015)" => array
+  "Bilans officiels &rarr; Livret Scolaire Unique" => array
   (
+    'dir_pers_pp',
+    array( 'droit_officiel_livret_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
+    array( 'droit_officiel_livret_corriger_appreciation' , "corriger l'appréciation d'un collègue"      , 'dir' ),
+    array( 'droit_officiel_livret_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
+    array( 'droit_officiel_livret_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
+  ),
+  "Bilans officiels &rarr; État de maîtrise du socle (socle 2006-2015)" => array
+  ( // TODO : DROITS A SUPPRIMER
     'dir_pers_pp',
     array( 'droit_officiel_socle_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
     array( 'droit_officiel_socle_corriger_appreciation' , "corriger l'appréciation d'un collègue"      , 'dir' ),
@@ -159,7 +167,7 @@ $tab_droits  = array
     array( 'droit_officiel_socle_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
   ),
   "Fiches brevet (fiches scolaires pour le jury du DNB)" => array
-  (
+  ( // TODO : DROITS A SUPPRIMER
     'dir_pers_pp',
     array( 'droit_fiche_brevet_modifier_statut'       , "modifier le statut (accès saisies&hellip;)"    , 'dir' ),
     array( 'droit_fiche_brevet_corriger_appreciation' , "corriger l'appréciation d'un collègue"         , 'dir' ),
@@ -171,8 +179,9 @@ $tab_droits  = array
     'tous',
     array( 'droit_officiel_releve_voir_archive'   , "accéder aux copies des relevés d'évaluations"      , 'dir_pers' ),
     array( 'droit_officiel_bulletin_voir_archive' , "accéder aux copies des bulletins scolaires"        , 'dir_pers' ),
-    array( 'droit_officiel_socle_voir_archive'    , "accéder aux copies des états de maîtrise du socle" , 'dir_pers' ),
-    array( 'droit_fiche_brevet_voir_archive'      , "accéder aux copies des fiches brevet pour le jury" , 'dir_pers' ),
+    array( 'droit_officiel_livret_voir_archive'   , "accéder aux copies du Livret Scolaire Unique"      , 'dir_pers' ),
+    array( 'droit_officiel_socle_voir_archive'    , "accéder aux copies des états de maîtrise du socle" , 'dir_pers' ), // TODO : DROIT A SUPPRIMER
+    array( 'droit_fiche_brevet_voir_archive'      , "accéder aux copies des fiches brevet pour le jury" , 'dir_pers' ), // TODO : DROIT A SUPPRIMER
   ),
 );
 

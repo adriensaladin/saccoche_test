@@ -937,7 +937,7 @@ msgid "Mod. accomp."
 msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/livret.php:48
-msgid "Édition du livret"
+msgid "Edition du livret"
 msgstr ""
 
 #: D:\WEB\www\sites_SESAMATH_PRINCIPAL\site_sesamath__sacoche\trunk\sacoche\pages/livret.php:49

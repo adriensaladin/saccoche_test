@@ -503,10 +503,10 @@ class SessionUser
     }
     // Degrés de maîtrise - Pour l'instant juste des couleurs (plus marquées que les originales en 4 colonnes) afin de permettre l'initialisation du style CSS
     $_SESSION['SOCLE'] = array(
-      1 => array( 'COULEUR' => '#E5F4FF' , 'GRIS' => SessionUser::$tab_dalton_css[4][0] , 'LEGENDE' => 'Maîtrise insuffisante'  ), // TSV =(204; 10;100)
-      2 => array( 'COULEUR' => '#91CBF2' , 'GRIS' => SessionUser::$tab_dalton_css[4][1] , 'LEGENDE' => 'Maîtrise fragile'       ), // TSV =(204; 40; 95)
-      3 => array( 'COULEUR' => '#44A7E5' , 'GRIS' => SessionUser::$tab_dalton_css[4][2] , 'LEGENDE' => 'Maîtrise satisfaisante' ), // TSV =(204; 70; 90)
-      4 => array( 'COULEUR' => '#0082D8' , 'GRIS' => SessionUser::$tab_dalton_css[4][3] , 'LEGENDE' => 'Très bonne maîtrise'    ), // TSV =(204;100; 85)
+      1 => array( 'COULEUR' => '#dcebf4' , 'GRIS' => SessionUser::$tab_dalton_css[4][0] , 'LEGENDE' => 'Maîtrise insuffisante'  ), // TSF =(204; 10;96)
+      2 => array( 'COULEUR' => '#92CDF4' , 'GRIS' => SessionUser::$tab_dalton_css[4][1] , 'LEGENDE' => 'Maîtrise fragile'       ), // TSF =(204; 40;96)
+      3 => array( 'COULEUR' => '#49b0f4' , 'GRIS' => SessionUser::$tab_dalton_css[4][2] , 'LEGENDE' => 'Maîtrise satisfaisante' ), // TSF =(204; 70;96)
+      4 => array( 'COULEUR' => '#0092F4' , 'GRIS' => SessionUser::$tab_dalton_css[4][3] , 'LEGENDE' => 'Très bonne maîtrise'    ), // TSF =(204;100;96)
     );
     // États de validation - Les couleurs pour les daltoniens servent aussi pour les impressions PDF en niveau de gris
     $_SESSION['VALID'] = array();

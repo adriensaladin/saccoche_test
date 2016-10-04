@@ -65,7 +65,7 @@ function photo_file_to_base($user_id,$fichier_chemin)
     return'Le fichier transmis n\'est pas un fichier image !';
   }
   // vérifier les dimensions
-  if( ($image_largeur>2048) || ($image_hauteur>2048) )
+  if( ($image_largeur>1024) || ($image_hauteur>1024) )
   {
     FileSystem::supprimer_fichier($fichier_chemin);
     return'Le fichier transmis a des dimensions trop grandes ('.$image_largeur.' sur '.$image_hauteur.') !';
@@ -186,7 +186,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   }
   // Pour l'affichage du retour
   $thead = '<tr><td colspan="2">Import d\'un fichier de photos zippées le '.date('d/m/Y H:i:s').'</td></tr>';
-  $tbody = array( 'r' => '' , 'v' => '' );
+  $tbody = '';
   // Traiter les fichier un à un
   $tab_fichier = FileSystem::lister_contenu_dossier($dossier_temp);
   foreach($tab_fichier as $fichier_nom)
@@ -195,11 +195,11 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
     $nb_user_find = count($tab_user_id);
     if($nb_user_find == 0)
     {
-      $tbody['r'] .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Pas de correspondance trouvée.</td></tr>';
+      $tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Pas de correspondance trouvée.</td></tr>';
     }
     elseif($nb_user_find > 1)
     {
-      $tbody['r'] .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Plusieurs correspondances trouvées.</td></tr>';
+      $tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>Plusieurs correspondances trouvées.</td></tr>';
     }
     else
     {
@@ -208,11 +208,11 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
       $result = photo_file_to_base($user_id,$dossier_temp.$fichier_nom);
       if(is_string($result))
       {
-        $tbody['r'] .= '<tr><td class="r">'.html($fichier_nom).'</td><td>'.$result.'</td></tr>';
+        $tbody .= '<tr><td class="r">'.html($fichier_nom).'</td><td>'.$result.'</td></tr>';
       }
       else
       {
-        $tbody['v'] .= '<tr><td class="v">'.html($fichier_nom).'</td><td>Image prise en compte.</td></tr>';
+        $tbody .= '<tr><td class="v">'.html($fichier_nom).'</td><td>Image prise en compte.</td></tr>';
       }
     }
   }
@@ -220,7 +220,7 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   FileSystem::supprimer_dossier($dossier_temp);
   // Enregistrement du rapport
   $fichier_nom = 'rapport_zip_photos_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.html';
-  FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody['r'].$tbody['v'] );
+  FileSystem::fabriquer_fichier_rapport( $fichier_nom , $thead , $tbody );
   // retour
   Json::end( TRUE , URL_DIR_EXPORT.$fichier_nom );
 }

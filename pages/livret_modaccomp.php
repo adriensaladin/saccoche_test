@@ -37,7 +37,10 @@ $select_modaccomp = HtmlForm::afficher_select($tab_modaccomp , 'f_modaccomp'   /
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_modaccomp">DOC : Réglages du Livret Scolaire &rarr; Modalités d'accompagnement</a></span></li>
+  <li>Selon les spécifications qui nous ont été transmises, les <b>modalités d'accompagnement</b> dont bénéficient les élèves sont à renseigner pour le livret scolaire.</li>
+  <li>Dans sa forme, nous ne savons pas encore où cela y apparaitra.</li>
+  <li>Documents et informations ministérielles : <span class="manuel"><a class="pop_up" href="http://eduscol.education.fr/cid99430/l-accompagnement-personnalise-rentree-2016.html">PAI - PPS - PAP - PPRE</a></span> - <span class="manuel"><a class="pop_up" href="http://eduscol.education.fr/cid86144/plan-d-accompagnement-personnalise.html">PAP</a></span> - <span class="manuel"><a class="pop_up" href="http://eduscol.education.fr/pid23273/programme-personnalise-de-reussite-educative.html">PPRE</a></span> - <span class="manuel"><a class="pop_up" href="http://eduscol.education.fr/cid46765/sections-d-enseignement-general-et-professionnel-adapte.html">SEGPA</a></span> - <span class="manuel"><a class="pop_up" href="http://eduscol.education.fr/cid53163/les-unites-localisees-pour-l-inclusion-scolaire-ulis.html">ULIS</a></span> - <span class="manuel"><a class="pop_up" href="http://eduscol.education.fr/pid28783/scolariser-les-eleves-allophones-et-les-enfants-des-familles-itinerantes.html">UPE2A</a></span></li>
+  <li><span class="astuce">Concernant les <b>PPRE</b>, un complément d'information de leur contenu est attendu.</span></li>
 </ul>
 
 <hr />

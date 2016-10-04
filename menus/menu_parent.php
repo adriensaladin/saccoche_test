@@ -46,13 +46,13 @@ $tab_sous_menu = array
 (
   'information' => array
   (
-    'compte_accueil'                   => array( 'texte' => Lang::_("Accueil")                                 , 'class' => 'compte_accueil'   , 'href' => 'page=compte_accueil'                   ),
-    'compte_cnil'                      => array( 'texte' => Lang::_("Données personnelles")                    , 'class' => 'compte_cnil'      , 'href' => 'page=compte_cnil'                      ),
+    'compte_accueil'                   => array( 'texte' => Lang::_("Accueil")                                  , 'class' => 'compte_accueil'   , 'href' => 'page=compte_accueil'                   ),
+    'compte_cnil'                      => array( 'texte' => Lang::_("Données personnelles")                     , 'class' => 'compte_cnil'      , 'href' => 'page=compte_cnil'                      ),
     'consultation_codes_couleurs'      => array( 'texte' => Lang::_("Codes de notation / États d'acquisition") , 'class' => 'etabl_couleurs'   , 'href' => 'page=consultation_codes_couleurs'      ),
-    'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")                    , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
-    'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")                      , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
-    'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")                    , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
-    'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")                   , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
+    'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")                     , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
+    'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")                       , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
+    'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")                     , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
+    'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")                    , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
   ),
   'parametrage' => array
   (

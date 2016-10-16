@@ -594,7 +594,7 @@ public static function DB_lister_result_eleves_items( $liste_eleve_id , $liste_i
   $join_matiere   = ($matiere_id<=0) ? 'LEFT JOIN sacoche_matiere USING (matiere_id) ' : '' ;
   $order_matiere  = ($matiere_id<=0) ? 'matiere_ordre ASC, ' : '' ;
   $where_prof     = ($onlyprof) ? 'AND sacoche_saisie.prof_id=:prof_id ' : '' ;
-  $DB_SQL = 'SELECT eleve_id , '.$select_matiere.' , niveau_id , item_id , '; // niveau_id utilisé seulement par releve_bilan_chronologique.ajax.php dans un cas précis...
+  $DB_SQL = 'SELECT eleve_id , '.$select_matiere.' , niveau_id , item_id , sacoche_saisie.prof_id AS prof_id , '; // niveau_id utilisé seulement par releve_bilan_chronologique.ajax.php dans un cas précis... ; prof_id utilisé seulement pour le livret à partir des enseignants...
   $DB_SQL.= ($onlynote) ? 'saisie_note AS note ' : 'saisie_note AS note , saisie_date AS date , saisie_info AS info ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_devoir USING (devoir_id) ';

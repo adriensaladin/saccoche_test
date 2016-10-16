@@ -335,7 +335,7 @@ public static function DB_recuperer_socle2016_cycles()
  */
 public static function DB_recuperer_socle2016_arborescence()
 {
-  $DB_SQL = 'SELECT socle_domaine_id, socle_domaine_ordre, socle_domaine_nom, socle_composante_id, socle_composante_nom ';
+  $DB_SQL = 'SELECT socle_domaine_id, socle_domaine_ordre, socle_domaine_nom_simple, socle_composante_id, socle_composante_nom_simple ';
   $DB_SQL.= 'FROM sacoche_socle_domaine ';
   $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_domaine_id) ';
   $DB_SQL.= 'ORDER BY socle_domaine_ordre ASC, socle_composante_ordre ASC';

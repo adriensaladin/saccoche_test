@@ -448,7 +448,7 @@ public static function DB_lister_officiel_assiduite( $periode_id , $tab_eleve_id
  */
 public static function DB_lister_profs_principaux($classe_id)
 {
-  $DB_SQL = 'SELECT user_genre, user_nom, user_prenom ';
+  $DB_SQL = 'SELECT user_id, user_genre, user_nom, user_prenom ';
   $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'WHERE groupe_id=:groupe_id AND jointure_pp=:pp AND user_sortie_date>NOW() ';

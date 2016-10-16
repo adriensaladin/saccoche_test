@@ -162,11 +162,14 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   {
     require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
     $tab_memo_ent_possible = array();
+    $tab_corse_dep = array('2A','2B');
+    $tab_corse_uai = array('620','720');
     foreach($tab_connexion_mode as $connexion_mode => $mode_texte)
     {
       foreach($tab_connexion_info[$connexion_mode] as $connexion_ref => $tab_infos)
       {
         list($departement,$connexion_nom) = explode('|',$connexion_ref);
+        $departement = str_replace( $tab_corse_dep , $tab_corse_uai , $departement );
         if( ($uai_departement==$departement) && $tab_infos['etat'] )
         {
           $tab_memo_ent_possible[$connexion_ref] = $connexion_nom;

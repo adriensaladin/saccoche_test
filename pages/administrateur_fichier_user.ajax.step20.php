@@ -119,66 +119,50 @@ if( ($import_origine=='sconet') && ($import_profil=='professeur') )
   /* **********************************************************************************************
    * Mettre à jour au passage les matières du Livret Scolaire
    * **********************************************************************************************/
-  // Ordre à partir de "code_gestion"
-  $tab_ordre = array( 1 => 
-    "FRANC" , "MATHS" ,
-    "HIGCV" , "HI-GE" , "EMC" ,
-    "ALL1" , "AGL1" , "ARA1" , "CHI1" , "DAN1" , "ESP1" , "ITA1" , "JAP1" , "POR1" , "NEE1" , "POL1" , "RUS1" ,
-    "ALL2" , "AGL2" , "ARA2" , "CHI2" , "DAN2" , "ESP2" , "ITA2" , "JAP2" , "POR2" , "NEE2" , "POL2" , "RUS2" ,
-    "EPS" , "A-PLA" , "EDMUS" , "SVT" , "TECHN" , "PH-CH" ,
-    "LCALA" , "LCAGR"
-  );
-  $ordre_matiere_personnalisee = count($tab_ordre) + 1;
-  // On récupère les matières de la base afin de conserver les ids
-  $tab_matiere_base = array();
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_livret_matiere();
-  if(!empty($DB_TAB))
-  {
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_matiere_base[(string)$DB_ROW['livret_siecle_code_gestion']] = $DB_ROW['livret_matiere_id'];
-    }
-  }
-  // On récupère les matières du fichier
-  $tab_matiere_fichier = array();
   if( ($xml->NOMENCLATURES) && ($xml->NOMENCLATURES->MATIERES) && ($xml->NOMENCLATURES->MATIERES->MATIERE) )
   {
+    // Matières issues de SIECLE dans la BDD
+    $tab_matiere_siecle_bdd = array();
+    $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matiere_siecle();
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_matiere_siecle_bdd[(string) $DB_ROW['matiere_ref']] = $DB_ROW['matiere_id'];
+    }
     foreach ($xml->NOMENCLATURES->MATIERES->MATIERE as $matiere)
     {
       $siecle_code_matiere = (string) $matiere->attributes()->CODE; // (string) obligatoire car série de chiffres commençant souvent par 0...
       $siecle_code_gestion = (string) $matiere->CODE_GESTION;
       $siecle_libelle      = (string) $matiere->LIBELLE_EDITION;
-      $matiere_ordre = array_search( $siecle_code_gestion , $tab_ordre );
-      if( $matiere_ordre === FALSE )
+      if(isset($tab_matiere_siecle_bdd[$siecle_code_gestion]))
       {
-        $matiere_ordre = $ordre_matiere_personnalisee;
-        $ordre_matiere_personnalisee++;
+        // matière déjà tagguée SIECLE dans la base : RAS
+        unset($tab_matiere_siecle_bdd[$siecle_code_gestion]);
       }
-      $matiere_id = isset($tab_matiere_base[$siecle_code_gestion]) ? $tab_matiere_base[$siecle_code_gestion] : NULL ;
-      $tab_matiere_fichier[] = array(
-        'matiere_id'          => $matiere_id,
-        'matiere_ordre'       => $matiere_ordre,
-        'siecle_code_matiere' => $siecle_code_matiere,
-        'siecle_code_gestion' => $siecle_code_gestion,
-        'siecle_libelle'      => $siecle_libelle, // Quelques anomalies de format trouvées ("ANGLAIS_BILANGUE" ou "anglais bilangue") mais c'est pour des matières ajoutées avec un code hors BCN (030A01 030B01 030A02)...
-      );
+      else
+      {
+        $matiere_id = DB_STRUCTURE_MATIERE::DB_tester_matiere_reference($siecle_code_gestion);
+        if( $matiere_id )
+        {
+          // matière connue : la tagguer "SIECLE"
+          DB_STRUCTURE_MATIERE::DB_modifier_matiere_siecle( $matiere_id , 1 );
+        }
+        else
+        {
+          // matière à ajouter comme matière spécifique
+          DB_STRUCTURE_MATIERE::DB_ajouter_matiere_specifique( $siecle_code_gestion /*matiere_ref*/ , $siecle_libelle /*matiere_nom*/ , $siecle_code_gestion /*matiere_code*/ );
+        }
+      }
     }
-  }
-  // On vide (soit pour un changement de modèle soit pour des matières en moins par rapport à l'an passé)...
-  DB_STRUCTURE_LIVRET::DB_vider_livret_matiere();
-  // ... et on re-remplit la table, en commançant par les id à conserver...
-  foreach($tab_matiere_fichier as $key => $tab)
-  {
-    if( $tab['matiere_id'] !== NULL )
+    foreach($tab_matiere_siecle_bdd as $matiere_id)
     {
-      DB_STRUCTURE_LIVRET::DB_ajouter_livret_matiere( $tab['matiere_id'] , $tab['matiere_ordre'] , $tab['siecle_code_matiere'] , $tab['siecle_code_gestion'] , $tab['siecle_libelle'] );
-      unset($tab_matiere_fichier[$key]);
+      // matière plus dans SIECLE : retirer le tag
+      DB_STRUCTURE_MATIERE::DB_modifier_matiere_siecle( $matiere_id , 0 );
+      if( $matiere_id > ID_MATIERE_PARTAGEE_MAX )
+      {
+        // si matière spécifique, la rendre visible au cas où elle ne l'était pas
+        DB_STRUCTURE_MATIERE::DB_modifier_matiere_partagee( $matiere_id , 1 ); // Fonction mal nommée pour cet usage détourné, mais ça fait le job !!!
+      }
     }
-  }
-  // ... puis maintenant avec de nouveaux id, sans boucher les trous éventuels pour supprimer ultérieurement les jointures obsolètes.
-  foreach($tab_matiere_fichier as $key => $tab)
-  {
-    DB_STRUCTURE_LIVRET::DB_ajouter_livret_matiere( $tab['matiere_id'] , $tab['matiere_ordre'] , $tab['siecle_code_matiere'] , $tab['siecle_code_gestion'] , $tab['siecle_libelle'] );
   }
   /*
    * Les matières des profs peuvent être récupérées de 2 façons :

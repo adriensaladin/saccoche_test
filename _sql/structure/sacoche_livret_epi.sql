@@ -5,7 +5,7 @@ CREATE TABLE sacoche_livret_epi (
   livret_epi_theme_code VARCHAR(7)   COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   livret_page_ref       VARCHAR(6)   COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   groupe_id             MEDIUMINT(8) UNSIGNED                NOT NULL DEFAULT 0,
-  livret_epi_titre      VARCHAR(50)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  livret_epi_titre      VARCHAR(128)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (livret_epi_id),
   UNIQUE KEY livret_epi (livret_epi_theme_code, livret_page_ref, groupe_id),
   KEY livret_page_ref (livret_page_ref),

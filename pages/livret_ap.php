@@ -40,24 +40,86 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Accompagnemen
 $page_ordre_longueur = 3;
 $page_ordre_format   = '%0'.$page_ordre_longueur.'u';
 
-// Javascript
-Layout::add( 'js_inline_before' , 'var tab_page_ordre = new Array();' );
-
-$select_page = '<option value="">&nbsp;</option>';
-
 // Formulaire select_page avec ordres associés, si au moins une classe est associée à la page
+$select_page = '<option value="">&nbsp;</option>';
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_pages_for_dispositif( 'ap' );
-
 if(empty($DB_TAB))
 {
   echo'<p class="danger">Aucune classe n\'est associée à une page du livret concernée par ce dispositif !<br />Si besoin, commencez par <a href="./index.php?page=livret&amp;section=classes">associer les classes au livret scolaire</a>.</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-
+Layout::add( 'js_inline_before' , 'var tab_page_ordre = new Array();' );
+Layout::add( 'js_inline_before' , 'var tab_rubrique_join = new Array();' );
 foreach($DB_TAB as $DB_ROW)
 {
   $select_page .= '<option value="'.$DB_ROW['livret_page_ref'].'">'.html($DB_ROW['livret_page_moment']).'</option>';
   Layout::add( 'js_inline_before' , 'tab_page_ordre["'.html($DB_ROW['livret_page_moment']).'"]="'.sprintf($page_ordre_format,$DB_ROW['livret_page_ordre']).'";' );
+  Layout::add( 'js_inline_before' , 'tab_rubrique_join["'.html($DB_ROW['livret_page_ref']).'"]="'.$DB_ROW['livret_page_rubrique_join'].'";' );
+}
+
+// Formulaire select_matiere si au moins une matière est associée à la page
+$select_c3_matiere = '';
+$select_c4_matiere = '';
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_matieres_alimentees();
+if(empty($DB_TAB))
+{
+  echo'<p class="danger">Aucune matiere du livret n\'est associée aux référentiels !<br />Si besoin, commencez par <a href="./index.php?page=livret&amp;section=liaisons">associer les référentiels au livret scolaire</a>.</p>'.NL;
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+foreach($DB_TAB as $DB_ROW)
+{
+  ${'select_'.$DB_ROW['livret_rubrique_type']} .= '<option value="'.$DB_ROW['matiere_id'].'">'.html($DB_ROW['matiere_nom']).'</option>';
+}
+$select_c3_matiere = ($select_c3_matiere) ? '<option value="">&nbsp;</option>'.$select_c3_matiere : '<option value="" disabled>aucune matière du livret associée à ce niveau de classe !</option>' ;
+$select_c4_matiere = ($select_c4_matiere) ? '<option value="">&nbsp;</option>'.$select_c4_matiere : '<option value="" disabled>aucune matière du livret associée à ce niveau de classe !</option>' ;
+Layout::add( 'js_inline_before' , '// <![CDATA[' );
+Layout::add( 'js_inline_before' , 'var select_c3_matiere="'.str_replace('"','\"',$select_c3_matiere).'";' );
+Layout::add( 'js_inline_before' , 'var select_c4_matiere="'.str_replace('"','\"',$select_c4_matiere).'";' );
+Layout::add( 'js_inline_before' , '// ]]>' );
+
+// Liste des personnels de l'établissement ; select_prof en complément du tab_prof[] sinon le parcours du tableau suit l'ordre des ids et perd donc l'ordre alphabétique
+$select_prof = '';
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('all');
+if(empty($DB_TAB))
+{
+  echo'<p class="danger">Aucun professeur n\'est enregistré dans l\'établissement !<br />Commencez par importer les utilisateurs.</p>'.NL;
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+Layout::add( 'js_inline_before' , 'var tab_prof = new Array();' );
+foreach($DB_TAB as $DB_ROW)
+{
+  Layout::add( 'js_inline_before' , 'tab_prof['.$DB_ROW['valeur'].']="'.html($DB_ROW['texte']).'";' );
+  $select_prof .= '<option value="'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</option>';
+}
+Layout::add( 'js_inline_before' , '// <![CDATA[' );
+Layout::add( 'js_inline_before' , 'var select_prof="'.str_replace('"','\"',$select_prof).'";' );
+Layout::add( 'js_inline_before' , '// ]]>' );
+
+// Nettoyer si AP associé à une matière qui n'est plus alimentée
+$nb_delete = DB_STRUCTURE_LIVRET::DB_nettoyer_jointure_dispositif_matiere( 'ap' );
+if($nb_delete)
+{
+  $s = ($nb_delete>1) ? 's' : '' ;
+  echo'<p class="danger">'.$nb_delete.' association'.$s.' d\'enseignant'.$s.' supprimée'.$s.' car matière du livret désormais plus alimentée par les référentiels.</p>'.NL;
+  // Nettoyer si AP associé à aucun enseignant
+  $nb_delete = DB_STRUCTURE_LIVRET::DB_nettoyer_dispositif_sans_prof( 'ap' );
+  if($nb_delete)
+  {
+    $s = ($nb_delete>1) ? 's' : '' ;
+    echo'<p class="danger">'.$nb_delete.' dispositif'.$s.' supprimé'.$s.' en conséquence faute d\'enseignant(s) rattaché(s).</p>'.NL;
+  }
+}
+
+// Formulaires f_matiere_* et f_prof_*
+$select_f_nombre = '';
+$p_matiere_prof = '';
+for( $nb=1 ; $nb<=15 ; $nb++)
+{
+  $select_f_nombre .= '<option value="'.$nb.'">'.$nb.'</option>';
+  $p_matiere_prof .= '<p id="join_'.$nb.'" class="hide">';
+  $p_matiere_prof .=   '<label class="tab" for="f_matiere_'.$nb.'">Matière '.$nb.' :</label><select id="f_matiere_'.$nb.'" name="f_matiere_'.$nb.'"><option></option></select><br />';
+  $p_matiere_prof .=   '<label class="tab" for="f_prof_'.$nb.'">Professeur '.$nb.' :</label><select id="f_prof_'.$nb.'" name="f_prof_'.$nb.'"><option></option></select>';
+  $p_matiere_prof .= '</p>'."\r\n";
 }
 ?>
 
@@ -107,29 +169,10 @@ foreach($DB_TAB as $DB_ROW)
     <p>
       <label class="tab" for="f_page">Moment :</label><select id="f_page" name="f_page"><?php echo $select_page ?></select><br />
       <label class="tab" for="f_groupe">Classe :</label><select id="f_groupe" name="f_groupe"><option></option></select><br />
-      <label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" type="text" value="" size="40" maxlength="50" /><br />
-      <label class="tab" for="f_nombre">Nombre disciplines :</label><select id="f_nombre" name="f_nombre"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select>
+      <label class="tab" for="f_titre">Titre :</label><input id="f_titre" name="f_titre" type="text" value="" size="50" maxlength="125" /><br />
+      <label class="tab" for="f_nombre">Nombre disciplines :</label><select id="f_nombre" name="f_nombre"><?php echo $select_f_nombre ?></select>
     </p>
-    <p id="join_1" class="hide">
-      <label class="tab" for="f_matiere_1">Matière 1 :</label><select id="f_matiere_1" name="f_matiere_1"><option></option></select><br />
-      <label class="tab" for="f_prof_1">Professeur 1 :</label><select id="f_prof_1" name="f_prof_1"><option></option></select>
-    </p>
-    <p id="join_2" class="hide">
-      <label class="tab" for="f_matiere_2">Matière 2 :</label><select id="f_matiere_2" name="f_matiere_2"><option></option></select><br />
-      <label class="tab" for="f_prof_2">Professeur 2 :</label><select id="f_prof_2" name="f_prof_2"><option></option></select>
-    </p>
-    <p id="join_3" class="hide">
-      <label class="tab" for="f_matiere_3">Matière 3 :</label><select id="f_matiere_3" name="f_matiere_3"><option></option></select><br />
-      <label class="tab" for="f_prof_3">Professeur 3 :</label><select id="f_prof_3" name="f_prof_3"><option></option></select>
-    </p>
-    <p id="join_4" class="hide">
-      <label class="tab" for="f_matiere_4">Matière 4 :</label><select id="f_matiere_4" name="f_matiere_4"><option></option></select><br />
-      <label class="tab" for="f_prof_4">Professeur 4 :</label><select id="f_prof_4" name="f_prof_4"><option></option></select>
-    </p>
-    <p id="join_5" class="hide">
-      <label class="tab" for="f_matiere_5">Matière 5 :</label><select id="f_matiere_5" name="f_matiere_5"><option></option></select><br />
-      <label class="tab" for="f_prof_5">Professeur 5 :</label><select id="f_prof_5" name="f_prof_5"><option></option></select>
-    </p>
+    <?php echo $p_matiere_prof ?>
     <p class="astuce">L'action réalisée est renseignée ultérieurement via le commentaire sur la classe.</p>
   </div>
   <div id="gestion_delete">

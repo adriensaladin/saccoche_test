@@ -35,6 +35,7 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var mode = false;
+    var action_prof = 'ajouter';
 
     // tri du tableau (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{3:{sorter:false}} });
@@ -46,12 +47,13 @@ $(document).ready
     // Mettre à jour la liste des professeurs de la classe
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_prof( groupe_id , prof_id )
+    function maj_f_prof( groupe_id , prof_id , force_select_prof )
     {
       $('#f_prof').html('<option></option>');
       $('#ajax_msg_gestion').removeAttr('class').html("");
       if(groupe_id)
       {
+        var is_all = (action_prof == 'retirer') ? 1 : 0 ;
         $('#bouton_valider').prop('disabled',true);
         $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
         $.ajax
@@ -59,7 +61,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_livret',
-            data : 'f_select=profs'+'&f_groupe_id='+groupe_id+'&f_prof_id='+prof_id,
+            data : 'f_select=profs'+'&f_groupe_id='+groupe_id+'&f_prof_id='+prof_id+'&f_is_all='+is_all,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -68,11 +70,20 @@ $(document).ready
             success : function(responseJSON)
             {
               initialiser_compteur();
+              $('#modifier_prof').attr('class','form_'+action_prof);
               $('#bouton_valider').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                $('#ajax_msg_gestion').removeAttr('class').html("");
-                $('#f_prof').html(responseJSON['value']);
+                if( prof_id && force_select_prof && ( responseJSON['value'].indexOf(' selected>') == -1 ) && (action_prof=='ajouter') )
+                {
+                  action_prof = 'retirer' ;
+                  maj_f_prof( groupe_id , prof_id , false /*force_select_prof*/ );
+                }
+                else
+                {
+                  $('#ajax_msg_gestion').removeAttr('class').html("");
+                  $('#f_prof').html(responseJSON['value']);
+                }
               }
               else
               {
@@ -90,7 +101,19 @@ $(document).ready
       {
         var groupe_id = $(this).val();
         var prof_id   = $('#f_prof option:selected').val();
-        maj_f_prof( groupe_id , prof_id );
+        maj_f_prof( groupe_id , prof_id , false /*force_select_prof*/ );
+      }
+    );
+
+
+    $("#modifier_prof").click
+    (
+      function()
+      {
+        action_prof = (action_prof=='ajouter') ? 'retirer' : 'ajouter' ;
+        var groupe_id = $('#f_groupe option:selected').val();
+        var prof_id   = $('#f_prof option:selected').val();
+        maj_f_prof( groupe_id , prof_id , false /*force_select_prof*/ );
       }
     );
 
@@ -98,7 +121,7 @@ $(document).ready
     // Mettre à jour la liste des classes associées à un moment
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_groupe( page_ref , groupe_id , prof_id )
+    function maj_f_groupe( page_ref , groupe_id , prof_id , force_select_prof )
     {
       $('#f_groupe').html('<option></option>');
       $('#f_prof').html('<option></option>');
@@ -128,7 +151,7 @@ $(document).ready
                 $('#f_groupe').html(responseJSON['value']);
                 if( $('#f_groupe option:selected').val() )
                 {
-                  maj_f_prof( groupe_id , prof_id );
+                  maj_f_prof( groupe_id , prof_id , force_select_prof );
                 }
               }
               else
@@ -148,7 +171,7 @@ $(document).ready
         var page_ref  = $(this).val();
         var groupe_id = $('#f_groupe option:selected').val();
         var prof_id   = $('#f_prof option:selected').val();
-        maj_f_groupe( page_ref , groupe_id , prof_id );
+        maj_f_groupe( page_ref , groupe_id , prof_id , false /*force_select_prof*/ );
       }
     );
 
@@ -158,11 +181,12 @@ $(document).ready
 
     function afficher_form_gestion( mode , id , page_ref , groupe_id , prof_id , delete_txt )
     {
+      action_prof = 'ajouter';
       $('#f_action').val(mode);
       $('#f_id').val(id);
       // Ci-dessous, les guillemets autour des valeurs transmises évitent une erreur en cas de valeur vide.
       $('#f_page option[value="'+page_ref+'"]').prop('selected',true);
-      maj_f_groupe( page_ref , groupe_id , prof_id );
+      maj_f_groupe( page_ref , groupe_id , prof_id , true /*force_select_prof*/ );
       // pour finir
       $('#gestion_titre_action').html( mode[0].toUpperCase() + mode.substring(1) );
       if(mode!='supprimer')

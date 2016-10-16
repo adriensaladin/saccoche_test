@@ -338,8 +338,8 @@ class HtmlArborescence
     {
       $domaine_id    = $DB_ROW['socle_domaine_id'];
       $composante_id = $DB_ROW['socle_composante_id'];
-      $tab_domaine[$domaine_id] = html($DB_ROW['socle_domaine_ordre'].' '.$DB_ROW['socle_domaine_nom']);
-      $tab_composante[$domaine_id][$composante_id] = html($DB_ROW['socle_composante_nom']);
+      $tab_domaine[$domaine_id] = html($DB_ROW['socle_domaine_ordre'].' '.$DB_ROW['socle_domaine_nom_simple']);
+      $tab_composante[$domaine_id][$composante_id] = html($DB_ROW['socle_composante_nom_simple']);
     }
     // Affichage de l'arborescence
     $span_avant = '<span>';

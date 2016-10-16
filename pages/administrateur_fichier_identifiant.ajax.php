@@ -599,7 +599,7 @@ if($action=='import_ent')
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
   $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[$tab_infos_csv['csv_entete']]); // Déterminer la nature du séparateur
   // CSV avec ordre des champs variables : utiliser la 1ère ligne pour déterminer l'emplacement des données
   if( $tab_infos_csv['csv_entete'] && !$tab_infos_csv['csv_ordre'] )
   {

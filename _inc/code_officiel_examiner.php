@@ -48,15 +48,6 @@ $liste_rubrique_id = implode(',',$tab_rubrique_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
-$tab_types = array
-(
-  'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
-  'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
-  'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
-  'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
-  'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
-);
-
 // On vérifie les paramètres
 
 if( (!isset($tab_types[$BILAN_TYPE])) || !$periode_id || !$classe_id || (!count($tab_rubrique_id)) )
@@ -91,7 +82,8 @@ $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement
                              : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_id , 2 /*actuels_et_anciens*/ , $periode_id ) ;
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun élève évalué sur la période trouvé dans ce regroupement !' );
+  $groupe_nom = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+  Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$groupe_nom.' !' );
 }
 $tab_eleve_id = array();
 foreach($DB_TAB as $DB_ROW)

@@ -382,7 +382,7 @@ class Clean
   public static function fichier($text)      { return Clean::only_filechars(       Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::ctrl( trim($text) ) ) ) ) ); }
   public static function id($text)           { return Clean::only_letters_numbers( Clean::perso_strtolower( Clean::accents( Clean::ligatures( Clean::ctrl( trim($text) ) ) ) ) ); }
   public static function param_chemin($text) { return str_replace(array('.','/','\\'),'', Clean::ctrl( trim($text) ) ); } // Contre l'exploitation d'une vulnérabilité "include PHP" (http://www.certa.ssi.gouv.fr/site/CERTA-2003-ALE-003/).
-  public static function zip_filename($text) { return mb_detect_encoding($text,'CP850',TRUE) ? Clean::fichier(iconv('CP850','UTF-8',$text)) : Clean::fichier($text) ; } //  filenames stored in the ZIP archives created on non-Unix systems are encoded in CP850 http://fr.php.net/manual/fr/function.zip-entry-name.php#87130
+  public static function zip_filename($text) { return perso_mb_detect_encoding_utf8($text) ? Clean::fichier($text) : Clean::fichier(iconv('CP850','UTF-8',$text)) ; } //  filenames stored in the ZIP archives created on non-Unix systems are encoded in CP850 http://fr.php.net/manual/fr/function.zip-entry-name.php#87130
   public static function password($text)     { return Clean::ctrl( trim($text) ); }
   public static function ref($text)          { return Clean::perso_strtoupper( Clean::ctrl( trim($text) ) ); }
   public static function uai($text)          { return Clean::only_letters_numbers( Clean::perso_strtoupper( Clean::ctrl( trim($text) ) ) ); }

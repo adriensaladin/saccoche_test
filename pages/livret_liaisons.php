@@ -225,7 +225,7 @@ foreach($tab_rubrique as $rubrique_id => $tab_info)
 if($liaison_rubrique_type=='matiere')
 {
   
-  if(DB_STRUCTURE_LIVRET::DB_tester_livret_matiere_siecle())
+  if(DB_STRUCTURE_MATIERE::DB_tester_matiere_siecle())
   {
     $DB_ROW = DB_STRUCTURE_SIECLE::DB_recuperer_import_date_annee('sts_emp_UAI');
     if( empty($DB_ROW) || is_null($DB_ROW['siecle_import_date']) )

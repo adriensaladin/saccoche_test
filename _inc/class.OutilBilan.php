@@ -36,21 +36,21 @@ class OutilBilan
    * Déterminer l'état de maitrise d'une composante du socle au vu du pourcentage d'items acquis transmis.
    * 
    * @param int    $pourcentage
-   * @param array  $SESSION_SOCLE     pour surcharger une éventuelle valeur de session via l'impression d'une archive
+   * @param array  $SESSION_LIVRET   pour surcharger une éventuelle valeur de session via l'impression d'une archive
    * @return int
    */
-  public static function determiner_degre_maitrise( $pourcentage , $SESSION_SOCLE=NULL )
+  public static function determiner_degre_maitrise( $pourcentage , $SESSION_LIVRET=NULL )
   {
     if($pourcentage === FALSE)
     {
       return FALSE;
     }
-    $tab_socle_seuil = ($SESSION_SOCLE==NULL) ? $_SESSION['SOCLE'] : $SESSION_SOCLE ;
-    foreach( $tab_socle_seuil as $socle_id => $tab_socle_info )
+    $tab_livret_seuil = ($SESSION_LIVRET==NULL) ? $_SESSION['LIVRET'] : $SESSION_LIVRET ;
+    foreach( $tab_livret_seuil as $maitrise_id => $tab_maitrise_info )
     {
-      if( ($pourcentage<=$tab_socle_info['SEUIL_MAX']) && ($pourcentage>=$tab_socle_info['SEUIL_MIN']) )
+      if( ($pourcentage<=$tab_maitrise_info['SEUIL_MAX']) && ($pourcentage>=$tab_maitrise_info['SEUIL_MIN']) )
       {
-        return $socle_id;
+        return $maitrise_id;
       }
     }
   }

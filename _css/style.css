@@ -786,6 +786,8 @@ table.bilan th.domaine {background:#99F;}
 table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.gif) no-repeat center center;}
 table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
 table.bilan_synthese tr.vide td{font-size:0;height:6px}
+table.livret td{min-width:3em}
+
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux du socle : #tableau_validation                                                  */

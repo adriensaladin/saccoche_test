@@ -923,23 +923,6 @@ if($version_base_structure_actuelle=='2016-10-03')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ADD matiere_siecle TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT "Si présente dans import SIECLE." AFTER matiere_active ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ADD INDEX matiere_siecle (matiere_siecle) ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref="BPMV" WHERE matiere_id=9739 ' );
-      // avant de poser une clef unique sur matiere_ref, il faut s'assurer qu'il n'y a pas de doublon à cause d'une matière personnalisée (normalement non, mais qd la matière officielle a été rajoutée après coup...)
-      $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT GROUP_CONCAT(matiere_id SEPARATOR ",") AS liste_matiere_id, matiere_ref, COUNT(matiere_id) AS nombre FROM sacoche_matiere GROUP BY matiere_ref HAVING nombre>1 ');
-      if(!empty($DB_TAB))
-      {
-        foreach($DB_TAB as $DB_ROW)
-        {
-          $tab_matiere_id = explode(',',$DB_ROW['liste_matiere_id']);
-          sort($tab_matiere_id);
-          unset($tab_matiere_id[0]);
-          foreach($tab_matiere_id as $i => $matiere_id)
-          {
-            $fin = $i+1;
-            $matiere_ref = (strlen($DB_ROW['matiere_ref'])<5) ? $DB_ROW['matiere_ref'].$fin : substr($DB_ROW['matiere_ref'],0,4).$fin;
-            DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref="'.$matiere_ref.'" WHERE matiere_id='.$matiere_id );
-          }
-        }
-      }
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ADD UNIQUE matiere_ref (matiere_ref) ' );
     }
     // modifier [sacoche_livret_jointure_referentiel]

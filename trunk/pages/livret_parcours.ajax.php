@@ -35,7 +35,7 @@ $page_ref      = (isset($_POST['f_page']))     ? Clean::id($_POST['f_page'])    
 $groupe_id     = (isset($_POST['f_groupe']))   ? Clean::entier($_POST['f_groupe']) : 0;
 $prof_id       = (isset($_POST['f_prof']))     ? Clean::entier($_POST['f_prof'])   : 0;
 
-if( !$parcours_code || !$page_ref || !$groupe_id || !$prof_id || !DB_STRUCTURE_LIVRET::DB_tester_page_avec_dispositif( $page_ref , 'parcours' , $parcours_code ) )
+if( !$parcours_code || !$page_ref || !DB_STRUCTURE_LIVRET::DB_tester_page_avec_dispositif( $page_ref , 'parcours' , $parcours_code ) )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
@@ -44,7 +44,7 @@ if( !$parcours_code || !$page_ref || !$groupe_id || !$prof_id || !DB_STRUCTURE_L
 // Ajouter un nouveau parcours
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='ajouter') || ($action=='dupliquer') )
+if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $prof_id )
 {
   // Vérifier que le parcours est disponible
   if( DB_STRUCTURE_LIVRET::DB_tester_parcours( $parcours_code , $page_ref , $groupe_id ) )
@@ -71,7 +71,7 @@ if( ($action=='ajouter') || ($action=='dupliquer') )
 // Modifier un parcours existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $parcours_id )
+if( ($action=='modifier') && $parcours_id && $groupe_id && $prof_id )
 {
   // Vérifier que le parcours est disponible
   if( DB_STRUCTURE_LIVRET::DB_tester_parcours( $parcours_code , $page_ref , $groupe_id , $parcours_id ) )

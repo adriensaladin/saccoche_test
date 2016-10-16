@@ -467,6 +467,7 @@ class PDF extends FPDF
   private $releve_format   = '';
   private $synthese_modele = '';
   private $afficher_score  = NULL;
+  private $afficher_degre  = NULL;
   // idem
   private $cases_nb              = 0;
   private $cases_largeur         = 0;
@@ -527,7 +528,7 @@ class PDF extends FPDF
     $this->filigrane   = $filigrane;
     // Valeurs de session utilisées
     // Peuvent être surchargées lors de l'impression d'une archive d'un bilan officiel (sauf les 2 derniers qui ne sont pas utilisés dans cette situation).
-    $tab_clefs = array( 'OFFICIEL' , 'ACQUIS' , 'VALID' , 'SOCLE' , 'NOTE' , 'NOTE_ACTIF' , 'NOMBRE_CODES_NOTATION' , 'DROIT_VOIR_SCORE_BILAN' , 'ENVELOPPE' , 'ETABLISSEMENT_DENOMINATION' );
+    $tab_clefs = array( 'OFFICIEL' , 'ACQUIS' , 'VALID' , 'LIVRET' , 'NOTE' , 'NOTE_ACTIF' , 'NOMBRE_CODES_NOTATION' , 'DROIT_VOIR_SCORE_BILAN' , 'DROIT_VOIR_SCORE_MAITRISE' , 'ENVELOPPE' , 'ETABLISSEMENT_DENOMINATION' );
     foreach( $tab_clefs as $CLEF )
     {
       $this->SESSION[$CLEF] = ( $officiel && isset($session_archive[$CLEF]) ) ? $session_archive[$CLEF] : ( isset($_SESSION[$CLEF]) ? $_SESSION[$CLEF] : NULL ) ;
@@ -535,7 +536,8 @@ class PDF extends FPDF
     // Pour un bilan officiel on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
     $forcer_profil_sigle  = ($this->officiel) ? 'TUT'    : NULL ;
     $forcer_profil_type   = ($this->officiel) ? 'parent' : NULL ;
-    $this->afficher_score = Outil::test_user_droit_specifique( $this->SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
+    $this->afficher_score = Outil::test_user_droit_specifique( $this->SESSION['DROIT_VOIR_SCORE_BILAN']    , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
+    $this->afficher_degre = Outil::test_user_droit_specifique( $this->SESSION['DROIT_VOIR_SCORE_MAITRISE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
     // Déclaration de la police pour la rendre disponible même si non présente sur le serveur
     $this->AddFont('Arial','' ,'arial.php');
     $this->AddFont('Arial','B','arialbd.php');
@@ -594,7 +596,7 @@ class PDF extends FPDF
       $this->tab_couleur['V'.$valid_etat.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
     }
     // Couleurs des degrés de maîtrise du socle ; il faut convertir l'hexadécimal en RVB décimal
-    foreach( $this->SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
+    foreach( $this->SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
     {
       $r = hexdec(substr($tab_maitrise_info['COULEUR'],1,2));
       $v = hexdec(substr($tab_maitrise_info['COULEUR'],3,2));
@@ -808,7 +810,7 @@ class PDF extends FPDF
   // Méthode pour afficher un degré de maîtrise (valeur sur 100 et couleur de fond suivant l'indice du degré atteint)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function afficher_etat_maitrise( $indice , $pourcentage )
+  public function afficher_degre_maitrise( $indice , $pourcentage )
   {
     if($pourcentage===FALSE)
     {
@@ -818,8 +820,9 @@ class PDF extends FPDF
     else
     {
       $this->choisir_couleur_fond('M'.$indice.$this->couleur);
+      $affichage = ($this->afficher_degre) ? $pourcentage : '' ;
       $this->SetFont('Arial' , '' , $this->taille_police-2);
-      $this->Cell( $this->cases_largeur , $this->cases_hauteur , $pourcentage , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       $this->SetFont('Arial' , '' , $this->taille_police);
     }
   }
@@ -949,7 +952,7 @@ class PDF extends FPDF
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Méthode pour afficher la légende ( $type_legende = 'codes_notation' | 'anciennete_notation' | 'etat_acquisition' | 'pourcentage_acquis' | 'etat_validation' )
+  // Méthode pour afficher la légende ( $type_legende = 'codes_notation' | 'anciennete_notation' | 'score_bilan' | 'degre_maitrise' | 'etat_acquisition' | 'pourcentage_acquis' | 'etat_validation' )
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public function afficher_legende( $type_legende , $ordonnee , $force_nb = FALSE )
@@ -1060,17 +1063,17 @@ class PDF extends FPDF
     //
     // Afficher la légende des degrés de maîtrise du socle
     //
-    if($type_legende=='etat_maitrise')
+    if($type_legende=='degre_maitrise')
     {
       $this->SetFont('Arial' , 'B' , $size);
       $this->Write($hauteur , To::pdf('Degrés de maîtrise :') , '');
       $this->SetFont('Arial' , '' , $size);
-      foreach( $this->SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
+      foreach( $this->SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
       {
-        $texte_seuil = $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'];
+        $texte_seuil = ($this->afficher_degre) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '' ;
         $this->Write($hauteur , $espace , '');
         $this->choisir_couleur_fond('M'.$maitrise_id.$this->couleur);
-        $this->Cell(3*$case_largeur , $case_hauteur , To::pdf($texte_seuil) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+        $this->Cell(2*$case_largeur , $case_hauteur , To::pdf($texte_seuil) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
         $this->Write($hauteur , To::pdf($tab_maitrise_info['LEGENDE']) , '');
       }
     }

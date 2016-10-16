@@ -99,6 +99,7 @@ $tab_droits  = array
     array( 'droit_voir_param_notes_acquis'               , "voir le paramètrage des codes et des états d'acquisition"        , 'tous' ),
     array( 'droit_voir_param_algorithme'                 , "voir et simuler l'algorithme de calcul"                          , 'tous' ),
     array( 'droit_voir_score_bilan'                      , "voir les scores des items (bilans)"                              , 'tous' ),
+    array( 'droit_voir_score_maitrise'                   , "voir les scores des degrés de maîtrise (socle 2016)"             , 'tous' ),
     array( 'droit_voir_etat_acquisition_avec_evaluation' , "afficher l'état d'acquisition avec le résultat d'une évaluation" , 'personne' ),
   ),
   "Socle &rarr; Choix de la langue" => array

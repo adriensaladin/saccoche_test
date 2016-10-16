@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
-"POT-Creation-Date: 2016-09-26 15:10+0100\n"
-"PO-Revision-Date: 2016-09-26 15:10+0100\n"
+"POT-Creation-Date: 2016-10-16 11:07+0100\n"
+"PO-Revision-Date: 2016-10-16 11:09+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: pt_PT\n"
@@ -22,7 +22,7 @@ msgstr ""
 # Laisser en majuscules.
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/_inc/class.SessionUser.php:604
 msgid "MENU"
-msgstr ""
+msgstr "MENU"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:38
@@ -46,7 +46,7 @@ msgstr "Configurações pessoais"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:42
 msgid "Administration générale"
-msgstr "Administração"
+msgstr "Administração geral"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:43
 msgid "Gestion courante"
@@ -57,7 +57,7 @@ msgstr "Gestão corrente"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_eleve.php:49
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_parent.php:49
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_professeur.php:51
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:40
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:36
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_accueil.php:29
 msgid "Accueil"
 msgstr "Início"
@@ -78,7 +78,6 @@ msgstr "Exportação de dados"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:53
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_log_actions.php:29
-#, fuzzy
 msgid "Log des actions sensibles"
 msgstr "Registo das ações críticas"
 
@@ -104,10 +103,11 @@ msgstr "Referenciais em uso"
 msgid "Identité de l'établissement"
 msgstr "Identificação da escola"
 
+# ENT = Environment numèrique de travail; ATD = Ambiente de trabalho digital
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:60
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_etabl_connexion.php:29
 msgid "Mode d'identification / Connecteur ENT"
-msgstr "Tipo de acesso /  Redirecionamento e acesso ENT"
+msgstr "Modo de identificação /  Ligação a partir de ATD"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:61
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_etabl_deconnexion.php:29
@@ -127,7 +127,7 @@ msgstr "Matérias"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:64
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_etabl_palier.php:29
 msgid "Paliers du socle"
-msgstr "Níveis do quadro de competências"
+msgstr "Níveis do quadro de referência"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:65
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:52
@@ -166,7 +166,6 @@ msgstr "Formato das senhas de acesso"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:73
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_etabl_duree_inactivite.php:29
-#, fuzzy
 msgid "Délai avant déconnexion"
 msgstr "Fim de sessão por inactividade"
 
@@ -259,33 +258,34 @@ msgstr "Periodos"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:97
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:72
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:29
-#, fuzzy
 msgid "Synthèses / Bilans"
-msgstr "Sínteses / Avaliações"
+msgstr "Sínteses / Relatórios"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:98
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:107
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet.php:29
-msgid "Notanet & Fiches brevet"
-msgstr "Notanet e Fichas escolares"
-
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:99
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:106
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_professeur.php:114
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_accueil.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_ap.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_classes.php:29
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_edition.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_epi.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_liaisons.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_modaccomp.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_parcours.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_seuils.php:29
 msgid "Livret Scolaire"
-msgstr ""
+msgstr "Processo do aluno"
+
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:99
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:107
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet.php:29
+msgid "Notanet & Fiches brevet"
+msgstr "Notanet e Fichas escolares"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:100
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_classe.php:29
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:41
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:37
 msgid "Classes"
 msgstr "Turmas"
 
@@ -306,9 +306,8 @@ msgstr "Pais"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:104
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_professeur.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_professeur_gestion.php:29
-#, fuzzy
 msgid "Professeurs / Personnels"
-msgstr "Professores / Pessoal auxiliar"
+msgstr "Professores / Pessoal"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:105
 msgid "Administrateurs"
@@ -353,7 +352,6 @@ msgstr "Listas / Sínteses"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_eleve.php:42
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_parent.php:42
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_professeur.php:44
-#, fuzzy
 msgid "Bilans officiels"
 msgstr "Relatórios oficiais"
 
@@ -387,7 +385,7 @@ msgstr "Estatísticas globais"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_professeur.php:61
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/consultation_trombinoscope.php:29
 msgid "Trombinoscope"
-msgstr ""
+msgstr "Album fotográfico"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:68
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_eleve.php:62
@@ -480,7 +478,6 @@ msgstr "Síntese de itens"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_professeur.php:101
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_bilan_chronologique.php:29
-#, fuzzy
 msgid "Bilan chronologique"
 msgstr "Relatório cronológico"
 
@@ -491,7 +488,7 @@ msgstr "Relatório cronológico"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve.php:39
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_socle2016.php:29
 msgid "Maîtrise du socle"
-msgstr ""
+msgstr "Nível de desempenho no quadro de referência"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:100
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_professeur.php:108
@@ -573,7 +570,7 @@ msgstr "Avaliar os alunos selecionados"
 msgid "Évaluer un élève à la volée"
 msgstr "Avaliação continua de um aluno"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_professeur.php:114
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_professeur.php:115
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet_fiches.php:29
 msgid "Fiches brevet"
@@ -650,7 +647,7 @@ msgstr "Escolher a língua estrangeira para o quadro de referência comum"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_eleve_langue.php:29
 msgid "Affecter les LV pour le Livret Scolaire"
-msgstr ""
+msgstr "Afetar as línguas estrangeiras ao processo do aluno"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_eleve_photo.php:29
 msgid "Photos des élèves"
@@ -790,11 +787,11 @@ msgstr "Autoavaliações em curso"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:39
 msgid "Bilans officiels ouverts à la saisie"
-msgstr "Avaliações oficiais abertas para preenchimento"
+msgstr "Relatórios oficiais por preencher"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:39
 msgid "Nouveaux bilans officiels à consulter"
-msgstr "Novas avaliações oficiais a consultar"
+msgstr "Novos relatórios oficiais por consultar"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:42
 msgid "Informations d'accueil"
@@ -832,7 +829,7 @@ msgstr "Bom dia %s."
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:112
 msgid "Heureux de faire votre connaissance ; bonne découverte de SACoche !"
-msgstr "Prazer em conhecê-lo(a) ; votos de boa descoberta do SACoche"
+msgstr "Prazer em conhecê-lo(a) ; votos de boa descoberta do SACoche!"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:113
 msgid "Déjà de retour ? Décidément on ne se quitte plus !"
@@ -867,27 +864,27 @@ msgid "Toujours là %s ? Pas de souci, restez le temps que vous voulez !"
 msgstr "Sempre por cá %s.? Não há problema. Fique o tempo que necessitar!"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:132
-#, fuzzy, php-format
+#, php-format
 msgid "Vous êtes dans l'environnement %s."
-msgstr "Você está ambientado."
+msgstr "Você está ambientado %s."
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:143
 msgid "Élève(s) affecté(s) dans une classe associé(s) à votre compte :"
 msgstr "Aluno(s) colocado(s) numa turma associada à sua conta:"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:241
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:244
 msgid "Notifications à consulter"
 msgstr "Notificações a consultar"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:259
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:262
 msgid "Message"
 msgstr "Mensagem"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:267
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:270
 msgid "Afin de préserver l'environnement, n'imprimer que si nécessaire !"
 msgstr "A fim de preservar o ambiente, imprima apenas se necessário!"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:549
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:552
 msgid "Le saviez-vous ?"
 msgstr "Sabia?"
 
@@ -911,56 +908,59 @@ msgstr "Referenciais partilhados (servidor comunitário)"
 msgid "Référentiels en place (dans l'établissement)"
 msgstr "Referenciais em uso (na escola)"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:42
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_liaisons.php:29
 msgid "Rubriques / Liaisons"
-msgstr ""
+msgstr "Rubricas / Ligações"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:43
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:39
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_seuils.php:29
 msgid "Notation / Seuils"
-msgstr ""
+msgstr "Notação / Gama de valores"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:44
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:40
 msgid "E.P.I."
-msgstr ""
+msgstr "Ens. prático Interdisciplinar"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:45
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:41
 msgid "A.P."
-msgstr ""
+msgstr "Apoio personalizado"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:46
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:42
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_parcours.php:29
 msgid "Parcours"
-msgstr ""
+msgstr "Percursos"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:47
+# égal à 178 ?
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:43
 msgid "Mod. accomp."
-msgstr ""
+msgstr "Mod. acomp."
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:48
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:44
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_edition.php:29
 msgid "Édition du livret"
-msgstr ""
+msgstr "Edição da ficha biográfica"
 
-#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:49
-msgid "Export LSUN"
-msgstr ""
+#: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:45
+msgid "Export LSU"
+msgstr "Exportação da PEUD"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_ap.php:29
 msgid "Accompagnement Personnalisé"
-msgstr ""
+msgstr "Acompanhamento persoalizado"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_classes.php:29
 msgid "Affectation des classes"
-msgstr ""
+msgstr "Atribuição de turmas"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_epi.php:29
 msgid "Enseignements Pratiques Interdisciplinaires"
-msgstr ""
+msgstr "Ensino prático interdisciplinar"
 
+# égal a 172 ?
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_modaccomp.php:29
 msgid "Modalités d'accompagnement"
-msgstr ""
+msgstr "Modalidades de acompanhamento"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:36
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_ordre_matieres.php:29
@@ -974,20 +974,18 @@ msgstr "Formato de síntese por referencial"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_configuration.php:29
-#, fuzzy
 msgid "Configuration des bilans officiels"
-msgstr "Configuração das avaliações oficiais"
+msgstr "Configuração dos relatórios oficiais"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:39
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_mise_en_page.php:29
-#, fuzzy
 msgid "Mise en page des bilans officiels"
-msgstr "Formatação das avaliações oficiais"
+msgstr "Formatação dos relatórios oficiais"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:40
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_voir_archives.php:29
 msgid "Archives des bilans officiels"
-msgstr ""
+msgstr "Arquivo dos relatórios oficiais"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_accueil.php:35
 msgid "Maîtrise du palier 1"
@@ -1002,9 +1000,8 @@ msgid "Maîtrise du palier 3"
 msgstr "Domínio do nível 3"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_voir_archive.php:29
-#, fuzzy
 msgid "Archives consultables des bilans officiels"
-msgstr "Ficheiros para consulta das avaliações oficiais"
+msgstr "Ficheiros para consulta dos relatórios oficiais"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/professeur_groupe_besoin.php:29
 msgid "Gérer ses groupes de besoin"
@@ -1024,7 +1021,7 @@ msgstr "Lista dos itens selecionados"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_items.php:190
 msgid "Relevé d'items d'évaluations sélectionnées"
-msgstr ""
+msgstr "Lista de itens das avaliações selecionadas"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_items.php:191
 msgid "Relevé d'items d'un enseignant"
@@ -1032,7 +1029,7 @@ msgstr "Lista de itens de um professor"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_socle.php:29
 msgid "Relevé de maîtrise du socle"
-msgstr ""
+msgstr "Lista de nível de desempenho no quadro de referência"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_synthese.php:99
 msgid "Synthèse d'une matière"
@@ -1044,7 +1041,7 @@ msgstr "Síntese pluridisciplinar"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_synthese_socle.php:29
 msgid "Synthèse de maîtrise du socle"
-msgstr ""
+msgstr "Síntese de nível de desempenho no quadro de referência"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle_pilier.php:29
@@ -1060,3 +1057,10 @@ msgstr "Anular uma competência validada do quadro de referência"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle_fichier.php:29
 msgid "Import / Export de validations du socle"
 msgstr "Importação / Exportação de validações do quadro de referência"
+
+#~ msgid "Edition du livret"
+#~ msgstr "Edição da ficha biográfica"
+
+# Livret Scolaire Unique Numérique = Processo Escolar Unico Digital
+#~ msgid "Export LSUN"
+#~ msgstr "Exportação da PEUD"

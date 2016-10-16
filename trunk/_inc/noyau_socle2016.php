@@ -84,12 +84,12 @@ foreach($DB_TAB as $DB_ROW)
   if( $DB_ROW['socle_domaine_id'] != $socle_domaine_id )
   {
     $socle_domaine_id  = $DB_ROW['socle_domaine_id'];
-    $tab_socle_domaine[$socle_domaine_id] = $DB_ROW['socle_domaine_nom'];
+    $tab_socle_domaine[$socle_domaine_id] = $DB_ROW['socle_domaine_nom_simple'];
   }
-  $DB_ROW['socle_composante_id' ] = ( ($socle_detail=='detail') || ($socle_domaine_id==1) ) ? $DB_ROW['socle_composante_id' ] : $socle_domaine_id*10 ;
-  $DB_ROW['socle_composante_nom'] = ( ($socle_detail=='detail') || ($socle_domaine_id==1) ) ? $DB_ROW['socle_composante_nom'] : 'Toutes composantes confondues' ;
+  $DB_ROW['socle_composante_id' ]        = ( ($socle_detail=='detail') || ($socle_domaine_id==1) ) ? $DB_ROW['socle_composante_id' ]        : $socle_domaine_id*10 ;
+  $DB_ROW['socle_composante_nom_simple'] = ( ($socle_detail=='detail') || ($socle_domaine_id==1) ) ? $DB_ROW['socle_composante_nom_simple'] : 'Toutes composantes confondues' ;
   $socle_composante_id = $DB_ROW['socle_composante_id'];
-  $tab_socle_composante[$socle_domaine_id][$socle_composante_id] = $DB_ROW['socle_composante_nom'];
+  $tab_socle_composante[$socle_domaine_id][$socle_composante_id] = $DB_ROW['socle_composante_nom_simple'];
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -170,9 +170,9 @@ if($liste_item_id)
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_seuils_valeurs('cycle'.$cycle_id);
 foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
 {
-  $id = $livret_colonne_id - 30 ; // 1 2 3 4
-  $_SESSION['SOCLE'][$id]['SEUIL_MIN'] = $DB_ROW[0]['livret_seuil_min'];
-  $_SESSION['SOCLE'][$id]['SEUIL_MAX'] = $DB_ROW[0]['livret_seuil_max'];
+  $id = $livret_colonne_id % 10 ; // 1 2 3 4
+  $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW[0]['livret_seuil_min'];
+  $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW[0]['livret_seuil_max'];
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,6 +217,9 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 // Elaboration du bilan relatif au socle, en HTML et PDF => Tableaux et variables pour mémoriser les infos ; dans cette partie on ne fait que les calculs (aucun affichage)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+$afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] );
+
+
 // Pour chaque élève évalué...
 foreach($tab_eval as $eleve_id => $tab_eval_eleve)
 {
@@ -249,7 +252,8 @@ foreach($tab_eval as $eleve_id => $tab_eval_eleve)
       {
         if( $make_html && $type_individuel )
         {
-          $tab_infos_eleve_composante[$eleve_id][$socle_composante_id][] = '<span class="pourcentage A'.$indice.'">'.$score.'%</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
+          $pourcentage = ($afficher_score) ? $score.'%' : '&nbsp;' ;
+          $tab_infos_eleve_composante[$eleve_id][$socle_composante_id][] = '<span class="pourcentage A'.$indice.'">'.$pourcentage.'</span> '.$texte_coef.$texte_socle.$texte_lien_avant.html($item_ref.' - '.$item_nom).$texte_lien_apres.$texte_demande_eval;
         }
         $tab_score_eleve_composante[$eleve_id][$socle_composante_id][$indice]++;
         $tab_score_eleve_composante[$eleve_id][$socle_composante_id]['nb']++;
@@ -378,7 +382,7 @@ if($type_individuel)
             if($make_html)
             {
               $releve_HTML_individuel .=  $separation.'<h2>'.html($sous_titre).'</h2>'.NL;
-              $releve_HTML_individuel .=  '<table><tbody>'.NL;
+              $releve_HTML_individuel .=  '<table class="livret"><tbody>'.NL;
             }
             if($make_pdf)
             {
@@ -400,7 +404,7 @@ if($type_individuel)
                     $pourcentage = $tab_infos['%'];
                     $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
                     if($make_html) { $releve_HTML_individuel .= Html::td_maitrise( $indice , $pourcentage , $tableau_tri_maitrise_mode , '%' /*pourcent*/ ); }
-                    if($make_pdf)  { $releve_PDF_individuel->afficher_etat_maitrise( $indice , $pourcentage ); }
+                    if($make_pdf)  { $releve_PDF_individuel->afficher_degre_maitrise( $indice , $pourcentage ); }
                   }
                   if($make_html)
                   {
@@ -431,7 +435,7 @@ if($type_individuel)
             // Légende
             if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
             {
-              if($make_html) { $releve_HTML_individuel .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $aff_socle_position /*etat_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
+              if($make_html) { $releve_HTML_individuel .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $aff_socle_position /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
               if($make_pdf)  { $releve_PDF_individuel->legende($aff_socle_position); }
             }
           }
@@ -463,7 +467,7 @@ if($type_individuel)
           {
             $releve_HTML_individuel .=  $separation.'<h2>'.html($sous_titre).'</h2>'.NL;
             $releve_HTML_individuel .=  '<h3>'.html($socle_composante_nom).'</h3>'.NL;
-            $releve_HTML_individuel .=  '<table><tbody>'.NL;
+            $releve_HTML_individuel .=  '<table class="livret"><tbody>'.NL;
           }
           if($make_pdf)
           {
@@ -490,7 +494,7 @@ if($type_individuel)
                     $pourcentage = $tab_infos['%'];
                     $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
                     if($make_html) { $releve_HTML_individuel .= Html::td_maitrise( $indice , $pourcentage , $tableau_tri_maitrise_mode , '%' /*pourcent*/ ); }
-                    if($make_pdf)  { $releve_PDF_individuel->afficher_etat_maitrise( $indice , $pourcentage ); }
+                    if($make_pdf)  { $releve_PDF_individuel->afficher_degre_maitrise( $indice , $pourcentage ); }
                   }
                   if($make_html)
                   {
@@ -522,7 +526,7 @@ if($type_individuel)
           // Légende
           if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
           {
-            if($make_html) { $releve_HTML_individuel .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $aff_socle_position /*etat_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
+            if($make_html) { $releve_HTML_individuel .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $aff_socle_position /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
             if($make_pdf)  { $releve_PDF_individuel->legende($aff_socle_position); }
           }
         }
@@ -620,7 +624,7 @@ if($type_synthese)
               $pourcentage = $tab_score_eleve_composante[$eleve_id][$socle_composante_id]['%'];
               $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
               if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $indice , $pourcentage , $tableau_tri_maitrise_mode , '' /*pourcent*/ ); }
-              if($make_pdf)  { $releve_PDF_synthese->afficher_etat_maitrise( $indice , $pourcentage ); }
+              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $indice , $pourcentage ); }
             }
           }
         }
@@ -652,7 +656,7 @@ if($type_synthese)
               $pourcentage = $tab_score_eleve_composante[$eleve_id][$socle_composante_id]['%'];
               $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
               if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $indice , $pourcentage , $tableau_tri_maitrise_mode , '' /*pourcent*/ ); }
-              if($make_pdf)  { $releve_PDF_synthese->afficher_etat_maitrise( $indice , $pourcentage ); }
+              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $indice , $pourcentage ); }
             }
           }
           if($make_html) { $releve_HTML_table_body .= '</tr>'.NL; }
@@ -684,7 +688,7 @@ if($type_synthese)
   // Légende
   if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
   {
-    if($make_html) { $releve_HTML_synthese .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , TRUE /*etat_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
+    if($make_html) { $releve_HTML_synthese .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , TRUE /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
     if($make_pdf)  { $releve_PDF_synthese->legende(); }
   }
   $script = $affichage_direct ? '$("#table_s").tablesorter();' : 'function tri(){$("#table_s").tablesorter();}' ;

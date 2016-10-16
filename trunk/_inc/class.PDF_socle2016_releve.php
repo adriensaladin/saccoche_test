@@ -123,7 +123,7 @@ class PDF_socle2016_releve extends PDF
     $ordonnee = $this->GetY() + $this->lignes_hauteur*0.5 ;
     if($aff_socle_position)
     {
-      $this->afficher_legende( 'etat_maitrise'    /*type_legende*/ , $ordonnee /*ordonnée*/ );
+      $this->afficher_legende( 'degre_maitrise'    /*type_legende*/ , $ordonnee /*ordonnée*/ );
       $ordonnee = $this->GetY();
     }
     $this->afficher_legende( 'etat_acquisition' /*type_legende*/ , $ordonnee /*ordonnée*/ );

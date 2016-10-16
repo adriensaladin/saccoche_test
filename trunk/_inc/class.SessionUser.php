@@ -502,7 +502,7 @@ class SessionUser
       );
     }
     // Degrés de maîtrise - Pour l'instant juste des couleurs (plus marquées que les originales en 4 colonnes) afin de permettre l'initialisation du style CSS
-    $_SESSION['SOCLE'] = array(
+    $_SESSION['LIVRET'] = array(
       1 => array( 'COULEUR' => '#E5F4FF' , 'GRIS' => SessionUser::$tab_dalton_css[4][0] , 'LEGENDE' => 'Maîtrise insuffisante'  ), // TSV =(204; 10;100)
       2 => array( 'COULEUR' => '#91CBF2' , 'GRIS' => SessionUser::$tab_dalton_css[4][1] , 'LEGENDE' => 'Maîtrise fragile'       ), // TSV =(204; 40; 95)
       3 => array( 'COULEUR' => '#44A7E5' , 'GRIS' => SessionUser::$tab_dalton_css[4][2] , 'LEGENDE' => 'Maîtrise satisfaisante' ), // TSV =(204; 70; 90)
@@ -563,7 +563,7 @@ class SessionUser
       $_SESSION['CSS'] .= 'table th.A'.$acquis_id.' , table td.A'.$acquis_id.' , div.A'.$acquis_id.' ,span.A'.$acquis_id.' ,label.A'.$acquis_id.' {background-color:'.$tab_acquis_info[$key_couleur].'}'.NL;
     }
     // couleurs des degrés de maîtrise
-    foreach( $_SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
+    foreach( $_SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
     {
       $_SESSION['CSS'] .= 'table th.M'.$maitrise_id.' , table td.M'.$maitrise_id.' , div.M'.$maitrise_id.' ,span.M'.$maitrise_id.' ,label.M'.$maitrise_id.' {background-color:'.$tab_maitrise_info['COULEUR'].'}'.NL;
     }

@@ -30,6 +30,8 @@ $(document).ready
   function()
   {
 
+    var nb_caracteres_max = 250;
+
     // tri du tableau (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{3:{sorter:false},4:{sorter:false}} });
     var tableau_tri = function(){ $('#table_action').trigger( 'sorton' , [ [[0,0],[1,0],[2,0]] ] ); };
@@ -47,6 +49,19 @@ $(document).ready
       function()
       {
         $('#ajax_msg').attr('class','alerte').html("Pensez à valider vos modifications !");
+      }
+    );
+
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Indiquer le nombre de caractères restant autorisés dans le textarea
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#input_commentaire, #f_commentaire').keyup
+    (
+      function()
+      {
+        afficher_textarea_reste( $(this) , nb_caracteres_max );
       }
     );
 
@@ -117,7 +132,8 @@ $(document).ready
       {
         if($(this).val()=='PPRE')
         {
-          $('#p_commentaire').show(0).children('input').focus();
+          $('#p_commentaire').show(0).children('textarea').focus();
+          afficher_textarea_reste( $('#input_commentaire') , nb_caracteres_max );
         }
         else
         {
@@ -167,7 +183,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=associer'+'&f_modaccomp='+f_modaccomp+'&f_commentaire='+f_commentaire+'&f_eleve='+tab_eleve,
+            data : 'csrf='+CSRF+'&f_action=associer'+'&f_modaccomp='+f_modaccomp+'&f_commentaire='+encodeURIComponent(f_commentaire)+'&f_eleve='+tab_eleve,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -182,7 +198,11 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 $('#ajax_msg').attr('class','valide').html("Demande réalisée !");
-                $('#table_action tbody').html(responseJSON['value']);
+                $('#table_action tbody').html(responseJSON['html']);
+                if( typeof(responseJSON['script']) !== 'undefined' )
+                {
+                  eval( responseJSON['script'] );
+                }
                 tableau_maj();
               }
               else
@@ -196,7 +216,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Intercepter la touche entrée car dasn le cas d'un seul champ input de type text la soumission est sinon incontrôlée
+    // Intercepter la touche entrée car dans le cas d'un seul champ input de type text la soumission est sinon incontrôlée
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#form_select').submit
@@ -231,7 +251,11 @@ $(document).ready
           if(responseJSON['statut']==true)
           {
             $('#ajax_msg').removeAttr('class').html("");
-            $('#table_action tbody').html(responseJSON['value']);
+            $('#table_action tbody').prepend(responseJSON['html']);
+            if( typeof(responseJSON['script']) !== 'undefined' )
+            {
+              eval( responseJSON['script'] );
+            }
             tableau_maj();
           }
           else
@@ -302,18 +326,18 @@ $(document).ready
         var objet_tds   = objet_tr.find('td');
         var classe_nom  = objet_tds.eq(0).html();
         var eleve_nom   = objet_tds.eq(1).html();
-        var commentaire = objet_tds.eq(3).text();
         var tab_id      = objet_tr.attr('id').split('_'); // id_..._...
         var eleve_id    = tab_id[1];
+        var commentaire = tab_commentaire[eleve_id];
         $('#b_classe').html(classe_nom);
         $('#b_eleve').html(eleve_nom);
         $('#ppre_eleve').val(eleve_id);
-        $('#f_commentaire').val(commentaire);
         // pour finir
         $('#ajax_msg_gestion').removeAttr('class').html("");
         $('#form_gestion label[generated=true]').removeAttr('class').html("");
         $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
-        $('#f_commentaire').focus();
+        $('#f_commentaire').focus().val(unescapeHtml(commentaire));
+        afficher_textarea_reste( $('#f_commentaire') , nb_caracteres_max );
       }
     );
 
@@ -362,11 +386,11 @@ $(document).ready
       {
         rules :
         {
-          f_commentaire : { required:true , maxlength:127 }
+          f_commentaire : { required:true , maxlength:nb_caracteres_max }
         },
         messages :
         {
-          f_commentaire : { required:"commentaire manquant" , maxlength:"127 caractères maximum" }
+          f_commentaire : { required:"commentaire manquant" , maxlength:nb_caracteres_max+" caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -443,7 +467,8 @@ $(document).ready
       else
       {
         $('#ajax_msg_gestion').attr('class','valide').html("Demande réalisée !");
-        $( '#id_'+$('#ppre_eleve').val()+'_PPRE' ).find('td').eq(3).html( $('#f_commentaire').val() + '<q class="modifier" title="Modifier ce commentaire."></q>' );
+        $( '#id_'+$('#ppre_eleve').val()+'_PPRE' ).find('td').eq(3).html( responseJSON['html'] );
+        eval( responseJSON['script'] );
         tableau_maj();
         $.fancybox.close();
       }

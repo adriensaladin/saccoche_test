@@ -113,11 +113,11 @@ foreach($DB_TAB_pages as $DB_ROW_page)
     $td = '' ;
     foreach( $DB_TAB_colonne as $DB_ROW_colonne )
     {
-      $input_id = 'seuil_'.$DB_ROW_page['livret_page_ref'].'_'.$DB_ROW_colonne['livret_colonne_id'];
-      $readonly_min = ( $DB_TAB_seuils[$DB_ROW_colonne['livret_colonne_id']][0]['livret_seuil_min'] ==   0 ) ? ' readonly' : '' ;
-      $readonly_max = ( $DB_TAB_seuils[$DB_ROW_colonne['livret_colonne_id']][0]['livret_seuil_max'] == 100 ) ? ' readonly' : '' ;
-      $input_min = '<input type="number" min="0" max="99"  class="hc" id="'.$input_id.'_min" name="'.$input_id.'_min" value="'.$DB_TAB_seuils[$DB_ROW_colonne['livret_colonne_id']][0]['livret_seuil_min'].'" data-defaut="'.$DB_ROW_colonne['livret_colonne_seuil_defaut_min'].'"'.$readonly_min.' />';
-      $input_max = '<input type="number" min="1" max="100" class="hc" id="'.$input_id.'_max" name="'.$input_id.'_max" value="'.$DB_TAB_seuils[$DB_ROW_colonne['livret_colonne_id']][0]['livret_seuil_max'].'" data-defaut="'.$DB_ROW_colonne['livret_colonne_seuil_defaut_max'].'"'.$readonly_max.' />';
+      $id_page_col = $DB_ROW_page['livret_page_ref'].'_'.$DB_ROW_colonne['livret_colonne_id'];
+      $readonly_min = ( $DB_TAB_seuils[$id_page_col][0]['livret_seuil_min'] ==   0 ) ? ' readonly' : '' ;
+      $readonly_max = ( $DB_TAB_seuils[$id_page_col][0]['livret_seuil_max'] == 100 ) ? ' readonly' : '' ;
+      $input_min = '<input type="number" min="0" max="99"  class="hc" id="seuil_'.$id_page_col.'_min" name="seuil_'.$id_page_col.'_min" value="'.$DB_TAB_seuils[$id_page_col][0]['livret_seuil_min'].'" data-defaut="'.$DB_ROW_colonne['livret_colonne_seuil_defaut_min'].'"'.$readonly_min.' />';
+      $input_max = '<input type="number" min="1" max="100" class="hc" id="seuil_'.$id_page_col.'_max" name="seuil_'.$id_page_col.'_max" value="'.$DB_TAB_seuils[$id_page_col][0]['livret_seuil_max'].'" data-defaut="'.$DB_ROW_colonne['livret_colonne_seuil_defaut_max'].'"'.$readonly_max.' />';
       $td .= '<td style="background-color:'.$DB_ROW_colonne['livret_colonne_couleur_1'].';text-align:center;width:12em"><p><b>'.html($DB_ROW_colonne['livret_colonne_legende']).'</b></p><p>'.$input_min.'~'.$input_max.'</p></td>';
     }
     $td .= '<td class="nu"><button name="initialiser" type="button" class="retourner">Seuils par défaut</button></td>' ;

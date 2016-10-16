@@ -59,7 +59,7 @@ if(!$parcours_code)
 }
 
 // On met de côté les informations du parcours choisi
-extract($DB_TAB[$parcours_code][0]); // $livret_parcours_type_nom ; $livret_parcours_type_url_sitegouv $livret_parcours_type_url_txtofficiel
+extract($DB_TAB[$parcours_code][0]); // $livret_parcours_type_nom
 
 // On complète le titre de la page
 $TITRE .= ' &rarr; '.html($livret_parcours_type_nom);
@@ -71,8 +71,6 @@ $txt_ecole = ($parcours_code!='P_AVN') ? 'de l\'École Élémentaire et' : '' ;
 <ul class="puce">
   <li><span class="astuce">Le <b><?php echo html($livret_parcours_type_nom) ?></b> concerne les <b>élèves <?php echo $txt_ecole ?> du Collège</b>.</span></li>
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_parcours">DOC : Réglages du Livret Scolaire &rarr; Parcours</a></span></li>
-  <!-- <li><span class="manuel"><a class="pop_up" href="<?php echo html($livret_parcours_type_url_sitegouv) ?>">Documents et informations ministérielles.</a></span></li> -->
-  <!-- <li><span class="manuel"><a class="pop_up" href="<?php echo html($livret_parcours_type_url_txtofficiel) ?>">Texte officiel.</a></span></li> -->
 </ul>
 
 <hr />
@@ -146,7 +144,7 @@ foreach($DB_TAB as $DB_ROW)
     <p>
       <label class="tab" for="f_page">Moment :</label><select id="f_page" name="f_page"><?php echo $select_page ?></select><br />
       <label class="tab" for="f_groupe">Classe :</label><select id="f_groupe" name="f_groupe"><option></option></select><br />
-      <label class="tab" for="f_prof">Professeur <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Enseignant en charge d'indiquer une appréciation sur le livret." /> :</label><select id="f_prof" name="f_prof"><option></option></select>
+      <label class="tab" for="f_prof">Professeur <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Enseignant en charge d'indiquer une appréciation sur le livret." /> :</label><select id="f_prof" name="f_prof"><option></option></select><button id="modifier_prof" type="button" class="form_ajouter">&plusmn;</button>
     </p>
     <p class="astuce">Le projet mis en &oelig;uvre est renseigné ultérieurement via le commentaire sur la classe.</p>
   </div>

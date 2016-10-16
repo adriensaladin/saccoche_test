@@ -110,7 +110,7 @@ if( ($action=='ajouter_perso') && $ref && $nom )
     Json::end( FALSE , 'Référence déjà utilisée !' );
   }
   // Insérer l'enregistrement
-  $id = DB_STRUCTURE_MATIERE::DB_ajouter_matiere_specifique($ref,$nom);
+  $id = DB_STRUCTURE_MATIERE::DB_ajouter_matiere_specifique( $ref , $nom );
   // Afficher le retour
   Json::end( TRUE ,  array( 'id'=>$id , 'ref'=>html($ref) , 'nom'=>html($nom) ) );
 }

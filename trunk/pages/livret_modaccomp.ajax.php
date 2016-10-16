@@ -68,6 +68,8 @@ if($action=='modifier_commentaire')
   $eleve_id = $tab_eleve[0];
   DB_STRUCTURE_LIVRET::DB_modifier_eleve_modaccomp( 'PPRE' , $eleve_id , $commentaire );
   // on s'arrête là
+  Json::add_row( 'script' , 'tab_commentaire['.$eleve_id.']="'.convertCRtoJS(html($commentaire)).'";' );
+  Json::add_row( 'html'   , html(Outil::afficher_texte_tronque($commentaire,50)).' <q class="modifier" title="Modifier ce commentaire."></q>' );
   Json::end( TRUE );
 }
 
@@ -114,16 +116,24 @@ if(empty($DB_TAB))
 }
 foreach($DB_TAB as $DB_ROW)
 {
-  $q_modifier = ($DB_ROW['info_complement']) ? '<q class="modifier" title="Modifier ce commentaire."></q>' : '' ;
-  Json::add_str('<tr id="id_'.$DB_ROW['user_id'].'_'.$DB_ROW['livret_modaccomp_code'].'">');
-  Json::add_str(  '<td>'.html($DB_ROW['groupe_nom']).'</td>');
-  Json::add_str(  '<td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td>');
-  Json::add_str(  '<td>'.$DB_ROW['livret_modaccomp_code'].'</td>');
-  Json::add_str(  '<td>'.html($DB_ROW['info_complement']).$q_modifier.'</td>');
-  Json::add_str(  '<td class="nu">');
-  Json::add_str(    '<q class="supprimer" title="Retirer ce dispositif (aucune confirmation ne sera demandée)."></q>');
-  Json::add_str(  '</td>');
-  Json::add_str('</tr>');
+  if($DB_ROW['info_complement'])
+  {
+    $info_complement = html(Outil::afficher_texte_tronque($DB_ROW['info_complement'],50)).' <q class="modifier" title="Modifier ce commentaire."></q>';
+    Json::add_row( 'script' , 'tab_commentaire['.$DB_ROW['user_id'].']="'.convertCRtoJS(html($DB_ROW['info_complement'])).'";' );
+  }
+  else
+  {
+    $info_complement = '-' ;
+  }
+  Json::add_row( 'html' , '<tr id="id_'.$DB_ROW['user_id'].'_'.$DB_ROW['livret_modaccomp_code'].'">');
+  Json::add_row( 'html' ,   '<td>'.html($DB_ROW['groupe_nom']).'</td>');
+  Json::add_row( 'html' ,   '<td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td>');
+  Json::add_row( 'html' ,   '<td>'.$DB_ROW['livret_modaccomp_code'].'</td>');
+  Json::add_row( 'html' ,   '<td>'.$info_complement.'</td>');
+  Json::add_row( 'html' ,   '<td class="nu">');
+  Json::add_row( 'html' ,     '<q class="supprimer" title="Retirer ce dispositif (aucune confirmation ne sera demandée)."></q>');
+  Json::add_row( 'html' ,   '</td>');
+  Json::add_row( 'html' , '</tr>');
 }
 Json::end( TRUE );
 ?>

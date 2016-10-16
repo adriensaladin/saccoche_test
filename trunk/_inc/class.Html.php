@@ -53,8 +53,11 @@ class Html
     'adulte' => array( 'I'=>'' , 'M'=>'M.'       , 'F'=>'Mme'     ) ,
   );
   
-  // A renseigner une fois au début mais pas à chaque appel de Html::td_score();
+  // A renseigner une fois au début mais pas à chaque appel
   public static $afficher_score = NULL;
+  
+  // A renseigner une fois au début mais pas à chaque appel
+  public static $afficher_degre = NULL;
 
   // //////////////////////////////////////////////////
   // Méthodes publiques
@@ -193,12 +196,17 @@ class Html
    */
   public static function td_maitrise( $indice , $pourcentage , $methode_tri='score' , $pourcent='' )
   {
+    if( Html::$afficher_degre === NULL )
+    {
+      // En cas de bilan officiel, doit être déterminé avant
+      Html::$afficher_degre = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_MAITRISE']);
+    }
     if($pourcentage===FALSE)
     {
       return '<td class="hc">-</td>';
     }
     $class = 'M'.$indice;
-    $affichage = $pourcentage.$pourcent;
+    $affichage = (Html::$afficher_degre) ? $pourcentage.$pourcent : '' ;
     $tri = ($methode_tri=='pourcentage') ? $pourcentage : $indice ;
     return '<td class="hc '.$class.'" data-sort="'.$tri.'">'.$affichage.'</td>';
   }
@@ -228,7 +236,7 @@ class Html
    * @param bool $highlight  FALSE par défaut, TRUE si un item a été surligné
    * @return string
    */
-  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $etat_maitrise , $make_officiel , $force_nb = FALSE , $highlight = FALSE )
+  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $degre_maitrise , $make_officiel , $force_nb = FALSE , $highlight = FALSE )
   {
     // initialisation variables
     $retour = '';
@@ -276,18 +284,18 @@ class Html
       $retour .= '</div>'.NL;
     }
     // légende degrés de maîtrise du socle
-    if($etat_maitrise)
+    if($degre_maitrise)
     {
-      if( Html::$afficher_score === NULL )
+      if( Html::$afficher_degre === NULL )
       {
         // En cas de bilan officiel, doit être déterminé avant
-        Html::$afficher_score = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_BILAN']);
+        Html::$afficher_degre = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_MAITRISE']);
       }
       $retour .= '<div><b>Degrés de maîtrise :</b>';
-      foreach( $_SESSION['SOCLE'] as $maitrise_id => $tab_maitrise_info )
+      foreach( $_SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
       {
-        $texte_seuil = (Html::$afficher_score) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '' ;
-        $retour .= '<span class="cadre M'.$maitrise_id.'">'.$texte_seuil.'</span>'.html($tab_maitrise_info['LEGENDE']);
+        $texte_seuil = (Html::$afficher_degre) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' ;
+        $retour .= '<span class="cadre maitrise M'.$maitrise_id.'">'.$texte_seuil.'</span>'.html($tab_maitrise_info['LEGENDE']);
       }
       $retour .= '</div>'.NL;
     }

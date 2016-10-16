@@ -1176,7 +1176,7 @@ if($type_individuel)
           // Relevé de notes - Légende
           if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') && empty($is_appreciation_groupe) )
           {
-            if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*etat_maitrise*/ , $make_officiel , FALSE /*force_nb*/ , $highlight_id ); }
+            if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ , $highlight_id ); }
             if($make_pdf)  { $releve_PDF->legende(); }
             if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'legende' , array() ); }
           }
@@ -1409,7 +1409,7 @@ if($type_individuel)
         // Relevé de notes - Légende
         if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
         {
-          if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*etat_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
+          if($make_html) { $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , $aff_etat_acquisition /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
           if($make_pdf)  { $releve_PDF->legende(); }
         }
       }
@@ -1588,7 +1588,7 @@ if($type_synthese)
   if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
   {
     if($make_pdf)  { $releve_PDF->legende(); }
-    if($make_html) { $releve_HTML_synthese .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , TRUE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*etat_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
+    if($make_html) { $releve_HTML_synthese .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , TRUE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
   }
   $script = $affichage_direct ? '$("#table_s").tablesorter();' : 'function tri(){$("#table_s").tablesorter();}' ;
   $releve_HTML_synthese .= ($affichage_checkbox) ? HtmlForm::afficher_synthese_exploitation('eleves + eleves-items + items').'</form>'.NL : '';

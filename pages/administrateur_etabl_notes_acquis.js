@@ -510,14 +510,12 @@ $(document).ready
                 $('#acquis_valeur_'+acquis_id).focus();
                 return false;
               }
-              /*
               if( ( etat_min==-1 ) && ( valeur != 0 ) )
               {
                 $('#ajax_msg_acquis').attr('class','erreur').html("État #"+acquis_id+" : valeur 0 requise pour le premier état.").show();
                 $('#acquis_valeur_'+acquis_id).focus();
                 return false;
               }
-              */
               if( valeur < etat_min )
               {
                 $('#ajax_msg_acquis').attr('class','erreur').html("État #"+acquis_id+" : valeurs croissantes requises.").show();

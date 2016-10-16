@@ -48,13 +48,12 @@ $(document).ready
     // Mettre à jour la liste des professeurs associés à une classe et à une matière
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_prof( page_ref , groupe_id , select_numero , matiere_id , prof_id , force_select_prof )
+    function maj_f_prof( groupe_id , select_numero , matiere_id , prof_id )
     {
       $('#f_prof_'+select_numero).html('<option></option>');
       $('#ajax_msg_gestion').removeAttr('class').html("");
       if( groupe_id && matiere_id )
       {
-        var rubrique_join = tab_rubrique_join[page_ref];
         $('#bouton_valider').prop('disabled',true);
         $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
         $.ajax
@@ -62,7 +61,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_livret',
-            data : 'f_select=profs_matiere'+'&f_page_ref='+page_ref+'&f_rubrique_join='+rubrique_join+'&f_groupe_id='+groupe_id+'&f_matiere_id='+matiere_id+'&f_prof_id='+prof_id,
+            data : 'f_select=profs_matiere'+'&f_groupe_id='+groupe_id+'&f_matiere_id='+matiere_id+'&f_prof_id='+prof_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -75,59 +74,7 @@ $(document).ready
               if(responseJSON['statut']==true)
               {
                 $('#ajax_msg_gestion').removeAttr('class').html("");
-                eval( responseJSON['script'] );
-                var select_prof_copie = select_prof;
-                var options = '<option value="">&nbsp;</option>';
-                var nb_meilleure_suggestion = tab_meilleure_suggestion.length;
-                if(nb_meilleure_suggestion)
-                {
-                  options += '<optgroup label="Meilleures suggestions">';
-                  for(i in tab_meilleure_suggestion)
-                  {
-                    id = tab_meilleure_suggestion[i];
-                    new_option = '<option value="'+id+'">'+tab_prof[id]+'</option>';
-                    options += new_option;
-                    select_prof_copie = select_prof_copie.replace(new_option,'');
-                    select_prof_copie = select_prof_copie.replace('<option value="'+id+'">'+tab_prof[id]+'</option>','');
-                  }
-                  options += '</optgroup>';
-                }
-                var nb_autres_propositions = tab_autres_propositions.length;
-                if(nb_autres_propositions)
-                {
-                  label = (nb_meilleure_suggestion) ? 'Autres' : 'Meilleures' ;
-                  options += '<optgroup label="'+label+' propositions">';
-                  for(i in tab_autres_propositions)
-                  {
-                    id = tab_autres_propositions[i];
-                    new_option = '<option value="'+id+'">'+tab_prof[id]+'</option>';
-                    options += new_option;
-                    select_prof_copie = select_prof_copie.replace(new_option,'');
-                  }
-                  options += '</optgroup>';
-                }
-                var nb_profs = tab_prof.length;
-                if( nb_profs > nb_autres_propositions + nb_meilleure_suggestion )
-                {
-                  options += '<optgroup label="Personnels restants">';
-                  options += select_prof_copie;
-                  options += '</optgroup>';
-                }
-                if( prof_id && force_select_prof )
-                {
-                  options = options.replace('value="'+prof_id+'"','value="'+prof_id+'" selected');
-                }
-                else if ( nb_meilleure_suggestion == 1 )
-                {
-                  prof_id = tab_meilleure_suggestion[0];
-                  options = options.replace('value="'+prof_id+'"','value="'+prof_id+'" selected');
-                }
-                else if ( !nb_meilleure_suggestion && ( nb_autres_propositions == 1 ) )
-                {
-                  prof_id = tab_autres_propositions[0];
-                  options = options.replace('value="'+prof_id+'"','value="'+prof_id+'" selected');
-                }
-                $('#f_prof_'+select_numero).html(options);
+                $('#f_prof_'+select_numero).html(responseJSON['value']);
               }
               else
               {
@@ -143,12 +90,11 @@ $(document).ready
     (
       function()
       {
-        var page_ref      = $('#f_page option:selected').val();
         var select_numero = $(this).attr('id').substr(10);
-        var groupe_id     = $('#f_groupe option:selected').val();
-        var matiere_id    = $(this).val();
-        var prof_id       = $('#f_prof_'+select_numero+' option:selected').val();
-        maj_f_prof( page_ref , groupe_id , select_numero , matiere_id , prof_id , false /*force_select_prof*/ );
+        var groupe_id  = $('#f_groupe option:selected').val();
+        var matiere_id = $(this).val();
+        var prof_id    = $('#f_prof_'+select_numero+' option:selected').val();
+        maj_f_prof( groupe_id , select_numero , matiere_id , prof_id );
       }
     );
 
@@ -156,22 +102,46 @@ $(document).ready
     // Mettre à jour la liste des matières associées à une classe
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_matiere( page_ref , groupe_id , select_numero , matiere_id , prof_id , force_select_prof )
+    function maj_f_matiere( groupe_id , select_numero , matiere_id , prof_id )
     {
       $('#f_matiere_'+select_numero).html('<option></option>');
       $('#f_prof_'+select_numero).html('<option></option>');
-      if( page_ref && groupe_id )
+      $('#ajax_msg_gestion').removeAttr('class').html("");
+      if( groupe_id )
       {
-        var options = (page_ref=='6e') ? select_c3_matiere : select_c4_matiere ;
-        $('#f_matiere_'+select_numero).html(options);
-        if(matiere_id)
-        {
-          $('#f_matiere_'+select_numero+' option[value='+matiere_id+']').prop('selected',true);
-          if( $('#f_matiere_'+select_numero+' option:selected').val() )
+        $('#bouton_valider').prop('disabled',true);
+        $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
+        $.ajax
+        (
           {
-            maj_f_prof( page_ref , groupe_id , select_numero , matiere_id , prof_id , force_select_prof );
+            type : 'POST',
+            url : 'ajax.php?page=_maj_select_livret',
+            data : 'f_select=matieres'+'&f_groupe_id='+groupe_id+'&f_matiere_id='+matiere_id,
+            dataType : 'json',
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('#ajax_msg_gestion').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            },
+            success : function(responseJSON)
+            {
+              initialiser_compteur();
+              $('#bouton_valider').prop('disabled',false);
+              if(responseJSON['statut']==true)
+              {
+                $('#ajax_msg_gestion').removeAttr('class').html("");
+                $('#f_matiere_'+select_numero).html(responseJSON['value']);
+                if( $('#f_matiere_'+select_numero+' option:selected').val() )
+                {
+                  maj_f_prof( groupe_id , select_numero , matiere_id , prof_id );
+                }
+              }
+              else
+              {
+                $('#ajax_msg_gestion').attr('class','alerte').html(responseJSON['value']);
+              }
+            }
           }
-        }
+        );
       }
     }
 
@@ -179,13 +149,12 @@ $(document).ready
     (
       function()
       {
-        var page_ref  = $('#f_page option:selected').val();
         var groupe_id = $(this).val();
         for( var select_numero=1 ; select_numero<=memo_nombre ; select_numero++ )
         {
           var matiere_id = $('#f_matiere_'+select_numero+' option:selected').val();
           var prof_id    = $('#f_prof_'+select_numero+' option:selected').val();
-          maj_f_matiere( page_ref , groupe_id , select_numero , matiere_id , prof_id , false /*force_select_prof*/ );
+          maj_f_matiere( groupe_id , select_numero , matiere_id , prof_id );
         }
       }
     );
@@ -194,12 +163,12 @@ $(document).ready
     // Mettre à jour la liste des classes associées à un moment
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_groupe( page_ref , groupe_id , tab_join , force_select_prof )
+    function maj_f_groupe( page_ref , groupe_id , tab_join )
     {
       memo_nombre = Math.max( tab_join.length , 2 );
       $('#f_nombre option[value="'+memo_nombre+'"]').prop('selected',true);
       $('#f_groupe').html('<option></option>');
-      for( var i=1 ; i<=15 ; i++ )
+      for( var i=1 ; i<=5 ; i++ )
       {
         $('#f_matiere_'+i).html('<option></option>');
         $('#f_prof_'+i).html('<option></option>');
@@ -238,13 +207,12 @@ $(document).ready
                 $('#f_groupe').html(responseJSON['value']);
                 if( $('#f_groupe option:selected').val() )
                 {
-                  groupe_id = $('#f_groupe option:selected').val(); // au cas où ce ne serait pas la classe transmise trouvée sans le select mais un select avec une classe unique
                   var select_numero = 0;
                   for(var i in tab_join)
                   {
                     select_numero++;
                     var tab_id = tab_join[i].split('_');
-                    maj_f_matiere( page_ref , groupe_id , select_numero , tab_id[0] /*matiere_id*/ , tab_id[1] /*prof_id*/ , force_select_prof );
+                    maj_f_matiere( groupe_id , select_numero , tab_id[0] /*matiere_id*/ , tab_id[1] /*prof_id*/ );
                   }
                 }
               }
@@ -271,7 +239,7 @@ $(document).ready
           var prof_id    = $('#f_prof_'+i+' option:selected').val();
           tab_join[i-1] = matiere_id+'_'+prof_id;
         }
-        maj_f_groupe( page_ref , groupe_id , tab_join , false /*force_select_prof*/ );
+        maj_f_groupe( page_ref , groupe_id , tab_join );
       }
     );
 
@@ -284,7 +252,7 @@ $(document).ready
       function()
       {
         var nombre = $(this).val();
-        for( var i=1 ; i<=15 ; i++ )
+        for( var i=1 ; i<=5 ; i++ )
         {
           if(i<=nombre)
           {
@@ -318,7 +286,7 @@ $(document).ready
       $('#f_page option[value="'+page_ref+'"]').prop('selected',true);
       $('#f_theme option[value="'+theme_code+'"]').prop('selected',true);
       $('#f_titre').val(titre);
-      maj_f_groupe( page_ref , groupe_id , join_ids.split(' ') , true /*force_select_prof*/ );
+      maj_f_groupe( page_ref , groupe_id , join_ids.split(' ') );
       // pour finir
       $('#gestion_titre_action').html( mode[0].toUpperCase() + mode.substring(1) );
       if(mode!='supprimer')
@@ -334,7 +302,7 @@ $(document).ready
       }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       $('#form_gestion label[generated=true]').removeAttr('class').html("");
-      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
+      $.fancybox( { 'href':'#form_gestion' , onStart:function(){$('#form_gestion').css("display","block");} , onClosed:function(){$('#form_gestion').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
     }
 
     /**
@@ -427,76 +395,36 @@ $(document).ready
           f_page      : { required:true },
           f_groupe    : { required:true },
           f_theme     : { required:true },
-          f_nombre    : { required:true, min:2, max:15 },
-          f_matiere_1  : { required:true },
-          f_matiere_2  : { required:true },
-          f_matiere_3  : { required:function(){return memo_nombre>=3;} },
-          f_matiere_4  : { required:function(){return memo_nombre>=4;} },
-          f_matiere_5  : { required:function(){return memo_nombre>=5;} },
-          f_matiere_6  : { required:function(){return memo_nombre>=6;} },
-          f_matiere_7  : { required:function(){return memo_nombre>=7;} },
-          f_matiere_8  : { required:function(){return memo_nombre>=8;} },
-          f_matiere_9  : { required:function(){return memo_nombre>=9;} },
-          f_matiere_10 : { required:function(){return memo_nombre>=10;} },
-          f_matiere_11 : { required:function(){return memo_nombre>=11;} },
-          f_matiere_12 : { required:function(){return memo_nombre>=12;} },
-          f_matiere_13 : { required:function(){return memo_nombre>=13;} },
-          f_matiere_14 : { required:function(){return memo_nombre>=14;} },
-          f_matiere_15 : { required:function(){return memo_nombre>=15;} },
-          f_prof_1     : { required:true },
-          f_prof_2     : { required:true },
-          f_prof_3     : { required:function(){return memo_nombre>=3;} },
-          f_prof_4     : { required:function(){return memo_nombre>=4;} },
-          f_prof_5     : { required:function(){return memo_nombre>=5;} },
-          f_prof_6     : { required:function(){return memo_nombre>=6;} },
-          f_prof_7     : { required:function(){return memo_nombre>=7;} },
-          f_prof_8     : { required:function(){return memo_nombre>=8;} },
-          f_prof_9     : { required:function(){return memo_nombre>=9;} },
-          f_prof_10    : { required:function(){return memo_nombre>=10;} },
-          f_prof_11    : { required:function(){return memo_nombre>=11;} },
-          f_prof_12    : { required:function(){return memo_nombre>=12;} },
-          f_prof_13    : { required:function(){return memo_nombre>=13;} },
-          f_prof_14    : { required:function(){return memo_nombre>=14;} },
-          f_prof_15    : { required:function(){return memo_nombre>=15;} },
-          f_titre     : { required:true , maxlength:125 }
+          f_nombre    : { required:true, min:2, max:5 },
+          f_matiere_1 : { required:true },
+          f_matiere_2 : { required:true },
+          f_matiere_3 : { required:function(){return memo_nombre<=3;} },
+          f_matiere_4 : { required:function(){return memo_nombre<=4;} },
+          f_matiere_5 : { required:function(){return memo_nombre<=5;} },
+          f_prof_1    : { required:true },
+          f_prof_2    : { required:true },
+          f_prof_3    : { required:function(){return memo_nombre<=3;} },
+          f_prof_4    : { required:function(){return memo_nombre<=4;} },
+          f_prof_5    : { required:function(){return memo_nombre<=5;} },
+          f_titre     : { required:true , maxlength:50 }
         },
         messages :
         {
-          f_page       : { required:"moment manquant" },
-          f_groupe     : { required:"classe manquante" },
-          f_theme      : { required:"thème manquant" },
-          f_nombre     : { required:"nombre manquant", min:"2 minimum", max:"15 maximum" },
-          f_matiere_1  : { required:"matière manquante" },
-          f_matiere_2  : { required:"matière manquante" },
-          f_matiere_3  : { required:"matière manquante" },
-          f_matiere_4  : { required:"matière manquante" },
-          f_matiere_5  : { required:"matière manquante" },
-          f_matiere_6  : { required:"matière manquante" },
-          f_matiere_7  : { required:"matière manquante" },
-          f_matiere_8  : { required:"matière manquante" },
-          f_matiere_9  : { required:"matière manquante" },
-          f_matiere_10 : { required:"matière manquante" },
-          f_matiere_11 : { required:"matière manquante" },
-          f_matiere_12 : { required:"matière manquante" },
-          f_matiere_13 : { required:"matière manquante" },
-          f_matiere_14 : { required:"matière manquante" },
-          f_matiere_15 : { required:"matière manquante" },
-          f_prof_1     : { required:"professeur manquant" },
-          f_prof_2     : { required:"professeur manquant" },
-          f_prof_3     : { required:"professeur manquant" },
-          f_prof_4     : { required:"professeur manquant" },
-          f_prof_5     : { required:"professeur manquant" },
-          f_prof_6     : { required:"professeur manquant" },
-          f_prof_7     : { required:"professeur manquant" },
-          f_prof_8     : { required:"professeur manquant" },
-          f_prof_9     : { required:"professeur manquant" },
-          f_prof_10    : { required:"professeur manquant" },
-          f_prof_11    : { required:"professeur manquant" },
-          f_prof_12    : { required:"professeur manquant" },
-          f_prof_13    : { required:"professeur manquant" },
-          f_prof_14    : { required:"professeur manquant" },
-          f_prof_15    : { required:"professeur manquant" },
-          f_titre      : { required:"titre manquant" , maxlength:"125 caractères maximum" }
+          f_page      : { required:"moment manquant" },
+          f_groupe    : { required:"classe manquante" },
+          f_theme     : { required:"thème manquant" },
+          f_nombre    : { required:"nombre manquant", min:"2 minimum", max:"5 maximum" },
+          f_matiere_1 : { required:"matière manquante" },
+          f_matiere_2 : { required:"matière manquante" },
+          f_matiere_3 : { required:"matière manquante" },
+          f_matiere_4 : { required:"matière manquante" },
+          f_matiere_5 : { required:"matière manquante" },
+          f_prof_1    : { required:"professeur manquant" },
+          f_prof_2    : { required:"professeur manquant" },
+          f_prof_3    : { required:"professeur manquant" },
+          f_prof_4    : { required:"professeur manquant" },
+          f_prof_5    : { required:"professeur manquant" },
+          f_titre     : { required:"titre manquant" , maxlength:"50 caractères maximum" }
         },
         errorElement : "label",
         errorClass : "erreur",

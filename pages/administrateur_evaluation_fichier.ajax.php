@@ -489,24 +489,21 @@ if( ($action=='import') && ($etape==3) )
     }
   }
   // On compare avec la base (on se base sur le nom)
-  if( !empty($tab_base_matiere_id) && !empty($tab_base_niveau_id) )
+  $listing_matiere_id = implode(',',$tab_base_matiere_id);
+  $listing_niveau_id  = implode(',',$tab_base_niveau_id);
+  $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiels_domaines_cibles($listing_matiere_id,$listing_niveau_id);
+  foreach($DB_TAB as $key => $DB_ROW)
   {
-    $listing_matiere_id = implode(',',$tab_base_matiere_id);
-    $listing_niveau_id  = implode(',',$tab_base_niveau_id);
-    $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiels_domaines_cibles($listing_matiere_id,$listing_niveau_id);
-    foreach($DB_TAB as $key => $DB_ROW)
+    if( isset($tab_referentiel[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']]) )
     {
-      if( isset($tab_referentiel[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']]) )
+      $tab_referentiel[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = TRUE;
+      foreach($tab_base_referentiel_to_domaine[ $DB_ROW['matiere_id'].'x'.$DB_ROW['niveau_id'] ] as $domaine_id)
       {
-        $tab_referentiel[$DB_ROW['matiere_id']][$DB_ROW['niveau_id']] = TRUE;
-        foreach($tab_base_referentiel_to_domaine[ $DB_ROW['matiere_id'].'x'.$DB_ROW['niveau_id'] ] as $domaine_id)
+        if( $tab_domaine[$domaine_id]['nom'] == $DB_ROW['domaine_nom'] )
         {
-          if( $tab_domaine[$domaine_id]['nom'] == $DB_ROW['domaine_nom'] )
-          {
-            $tab_domaine[$domaine_id]['base_id'] = (int)$DB_ROW['domaine_id'];
-            unset($DB_TAB[$key]);
-            break;
-          }
+          $tab_domaine[$domaine_id]['base_id'] = (int)$DB_ROW['domaine_id'];
+          unset($DB_TAB[$key]);
+          break;
         }
       }
     }
@@ -604,20 +601,17 @@ if( ($action=='import') && ($etape==4) )
     }
   }
   // On compare avec la base (on se base sur le nom)
-  if(!empty($tab_base_domaine_id))
+  $listing_domaine_id  = implode(',',$tab_base_domaine_id);
+  $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiels_themes_cibles($listing_domaine_id);
+  foreach($DB_TAB as $key => $DB_ROW)
   {
-    $listing_domaine_id  = implode(',',$tab_base_domaine_id);
-    $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiels_themes_cibles($listing_domaine_id);
-    foreach($DB_TAB as $key => $DB_ROW)
+    foreach($tab_base_domaine_to_theme[$DB_ROW['domaine_id']] as $theme_id)
     {
-      foreach($tab_base_domaine_to_theme[$DB_ROW['domaine_id']] as $theme_id)
+      if( $tab_theme[$theme_id]['nom'] == $DB_ROW['theme_nom'] )
       {
-        if( $tab_theme[$theme_id]['nom'] == $DB_ROW['theme_nom'] )
-        {
-          $tab_theme[$theme_id]['base_id'] = (int)$DB_ROW['theme_id'];
-          unset($DB_TAB[$key]);
-          break;
-        }
+        $tab_theme[$theme_id]['base_id'] = (int)$DB_ROW['theme_id'];
+        unset($DB_TAB[$key]);
+        break;
       }
     }
   }
@@ -705,20 +699,17 @@ if( ($action=='import') && ($etape==5) )
     }
   }
   // On compare avec la base (on se base sur le nom)
-  if(!empty($tab_base_theme_id))
+  $listing_theme_id = implode(',',$tab_base_theme_id);
+  $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiels_items_cibles($listing_theme_id);
+  foreach($DB_TAB as $key => $DB_ROW)
   {
-    $listing_theme_id = implode(',',$tab_base_theme_id);
-    $DB_TAB = DB_STRUCTURE_REFERENTIEL::DB_recuperer_referentiels_items_cibles($listing_theme_id);
-    foreach($DB_TAB as $key => $DB_ROW)
+    foreach($tab_base_theme_to_item[$DB_ROW['theme_id']] as $item_id)
     {
-      foreach($tab_base_theme_to_item[$DB_ROW['theme_id']] as $item_id)
+      if( $tab_item[$item_id]['nom'] == $DB_ROW['item_nom'] )
       {
-        if( $tab_item[$item_id]['nom'] == $DB_ROW['item_nom'] )
-        {
-          $tab_item[$item_id]['base_id'] = (int)$DB_ROW['item_id'];
-          unset($DB_TAB[$key]);
-          break;
-        }
+        $tab_item[$item_id]['base_id'] = (int)$DB_ROW['item_id'];
+        unset($DB_TAB[$key]);
+        break;
       }
     }
   }

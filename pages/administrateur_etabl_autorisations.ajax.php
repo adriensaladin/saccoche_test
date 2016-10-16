@@ -60,7 +60,6 @@ $tab_objet_profils['droit_voir_etat_acquisition_avec_evaluation'] = $tab_profils
 $tab_objet_profils['droit_voir_grilles_items']                    = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_voir_referentiels']                     = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_voir_score_bilan']                      = $tab_profils_possibles['tous'];
-$tab_objet_profils['droit_voir_score_maitrise']                   = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_releve_etat_acquisition']          = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_releve_moyenne_score']             = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_releve_pourcentage_acquis']        = $tab_profils_possibles['parent_eleve'];

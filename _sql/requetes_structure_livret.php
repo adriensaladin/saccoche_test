@@ -180,85 +180,78 @@ public static function DB_recuperer_page_info($page_ref)
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Matières du livret
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
- * recuperer_periode_info
+ * tester_livret_matiere_siecle
  *
- * @param string   $periode_livret
- * @return array
+ * @param void
+ * @return bool
  */
-public static function DB_recuperer_periode_info($periode_livret)
+public static function DB_tester_livret_matiere_siecle()
 {
-  $DB_SQL = 'SELECT periode_id, jointure_date_debut, jointure_date_fin ';
-  $DB_SQL.= 'FROM sacoche_periode ';
-  $DB_SQL.= 'WHERE periode_livret=:periode_livret ';
-  $DB_VAR = array( ':periode_livret' => $periode_livret );
-  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT (livret_siecle_code_gestion IS NOT NULL) AS is_siecle ';
+  $DB_SQL.= 'FROM sacoche_livret_matiere ';
+  $DB_SQL.= 'GROUP BY is_siecle ';
+  // Normalement, livret_siecle_code_gestion est renseigné pour tout ou rien, donc une seule ligne est retournée.
+  return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
- * recuperer_page_info
+ * lister_livret_matiere
  *
- * @param string   $page_ref
+ * @param void
  * @return array
  */
-public static function DB_recuperer_page_groupe_info( $groupe_id , $page_ref , $page_periodicite , $jointure_periode )
+public static function DB_lister_livret_matiere()
 {
-  $DB_SQL = 'SELECT jointure_etat, sacoche_livret_page.*, groupe_nom ';
-  $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING (livret_page_ref) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'WHERE livret_page_ref=:page_ref ';
-  $DB_VAR = array(
-    ':groupe_id'        => $groupe_id,
-    ':page_ref'         => $page_ref,
-    ':page_periodicite' => $page_periodicite,
-    ':jointure_periode' => $jointure_periode,
-  );
-  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  $DB_SQL = 'SELECT * ';
+  $DB_SQL.= 'FROM sacoche_livret_matiere ';
+  $DB_SQL.= 'ORDER BY livret_matiere_ordre ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
- * recuperer_bilan_officiel_infos
+ * vider_livret_matiere
  *
- * @param int    $classe_id
- * @param int    $periode_id
- * @param string $bilan_type
- * @return array
+ * @param void
+ * @return void
  */
-public static function DB_recuperer_bilan_officiel_infos( $classe_id , $periode_id , $bilan_type )
+public static function DB_vider_livret_matiere()
 {
-  $DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin, officiel_'.$bilan_type.', periode_nom, groupe_nom ';
-  $DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
-  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
-  $DB_SQL.= 'WHERE groupe_id=:classe_id AND periode_id=:periode_id ';
+  $DB_SQL = 'TRUNCATE sacoche_livret_matiere';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * ajouter_livret_matiere
+ *
+ * @param int    $matiere_id
+ * @param int    $matiere_ordre
+ * @param string $siecle_code_matiere
+ * @param string $siecle_code_gestion
+ * @param string $siecle_libelle
+ * @return void
+ */
+public static function DB_ajouter_livret_matiere( $matiere_id , $matiere_ordre , $siecle_code_matiere , $siecle_code_gestion , $siecle_libelle )
+{
+  $DB_SQL = 'INSERT INTO sacoche_livret_matiere( livret_matiere_id , livret_matiere_ordre , livret_siecle_code_matiere , livret_siecle_code_gestion , livret_siecle_libelle) ';
+  $DB_SQL.= 'VALUES ( :matiere_id , :matiere_ordre , :siecle_code_matiere , :siecle_code_gestion , :siecle_libelle ) ';
   $DB_VAR = array(
-    ':classe_id'  => $classe_id,
-    ':periode_id' => $periode_id,
+    ':matiere_id'          => $matiere_id,
+    ':matiere_ordre'       => $matiere_ordre,
+    ':siecle_code_matiere' => $siecle_code_matiere,
+    ':siecle_code_gestion' => $siecle_code_gestion,
+    ':siecle_libelle'      => $siecle_libelle,
   );
-  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rubriques & Jointures rubriques / référentiels
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * lister_matieres_alimentees
- *
- * @param void
- * @return array
- */
-public static function DB_lister_matieres_alimentees()
-{
-  $DB_SQL = 'SELECT livret_rubrique_type, matiere_id, matiere_nom ';
-  $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-  $DB_SQL.= 'INNER JOIN sacoche_matiere ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_matiere.matiere_id ';
-  $DB_SQL.= 'WHERE matiere_siecle=1 OR matiere_active=1 ';
-  $DB_SQL.= 'GROUP BY livret_rubrique_type, matiere_id ';
-  $DB_SQL.= 'ORDER BY matiere_nom ASC ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
 
 /**
  * lister_rubriques
@@ -272,20 +265,15 @@ public static function DB_lister_matieres_alimentees()
  */
 public static function DB_lister_rubriques( $rubrique_type )
 {
-  if( substr($rubrique_type,3) == 'matiere' )
-  {
-    $DB_SQL = 'SELECT matiere_id AS livret_rubrique_id, CONCAT( REPLACE( REPLACE(matiere_siecle,"1","SIECLE") , "0","REFÉRENTIEL AUTRE" ) , " - ", matiere_nom ) AS livret_rubrique_nom ';
-    $DB_SQL.= 'FROM sacoche_matiere ';
-    $DB_SQL.= 'WHERE matiere_siecle=1 OR matiere_active=1 ';
-    $DB_SQL.= 'ORDER BY matiere_siecle DESC, matiere_ordre ASC ';
-  }
-  else
-  {
-    $DB_SQL = 'SELECT livret_rubrique_id, CONCAT_WS( " - ", livret_rubrique_titre, livret_rubrique_sous_titre) AS livret_rubrique_nom ';
-    $DB_SQL.= 'FROM sacoche_livret_rubrique ';
-    $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type ';
-    $DB_SQL.= 'ORDER BY livret_rubrique_ordre ASC ';
-  }
+  $test_livret_matiere = ( substr($rubrique_type,3) == 'matiere' ) ? TRUE : FALSE ;
+  $origine  = ($test_livret_matiere) ? 'matiere' : 'rubrique' ;
+  $champ_id = ($test_livret_matiere) ? 'livret_matiere_id AS livret_rubrique_id' : 'livret_rubrique_id' ;
+  $select   = ($test_livret_matiere) ? 'livret_siecle_libelle' : 'CONCAT_WS( " - ", livret_rubrique_titre, livret_rubrique_sous_titre)' ;
+  $where    = ($test_livret_matiere) ? '' : 'WHERE livret_rubrique_type=:rubrique_type ' ;
+  $DB_SQL = 'SELECT '.$champ_id.', '.$select.' AS livret_rubrique_nom ';
+  $DB_SQL.= 'FROM sacoche_livret_'.$origine.' ';
+  $DB_SQL.= $where;
+  $DB_SQL.= 'ORDER BY livret_'.$origine.'_ordre ASC ';
   $DB_VAR = array( ':rubrique_type' => $rubrique_type );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -294,160 +282,16 @@ public static function DB_lister_rubriques( $rubrique_type )
  * lister_jointures_rubriques_référentiels
  *
  * @param string   $rubrique_type
- * @param int      $rubrique_id   facultatif, pour restreindre à une rubrique
  * @return array
  */
-public static function DB_lister_jointures_rubriques_référentiels( $rubrique_type , $rubrique_id=NULL )
+public static function DB_lister_jointures_rubriques_référentiels( $rubrique_type )
 {
-  $where_rubrique = ($rubrique_id) ? 'AND livret_rubrique_ou_matiere_id=:rubrique_id ' : '' ;
   $DB_SQL = 'SELECT livret_rubrique_ou_matiere_id, GROUP_CONCAT(element_id SEPARATOR ",") AS listing_elements ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
   $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type ';
   $DB_SQL.= 'GROUP BY livret_rubrique_ou_matiere_id ';
-  $DB_VAR = array(
-    ':rubrique_type' => $rubrique_type,
-    ':rubrique_id'   => $rubrique_id,
-  );
+  $DB_VAR = array( ':rubrique_type' => $rubrique_type );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * recuperer_arborescence_professeur
- * Retourner l'arborescence des items travaillés par des élèves donnés (ou un seul), durant une période donnée, par un professeur donné
- *
- * @param string $liste_eleve_id   id des élèves séparés par des virgules ; il peut n'y avoir qu'un id, en particulier si c'est un élève qui demande un bilan
- * @param string $liste_prof_id    id du prof
- * @param int    $only_socle       1 pour ne retourner que les items reliés au socle, 0 sinon (TODO : ne tester à terme que le socle 2016)
- * @param string $date_mysql_debut
- * @param string $date_mysql_fin
- * @param int    $aff_domaine      1 pour préfixer avec les noms des domaines, 0 sinon
- * @param int    $aff_theme        1 pour préfixer avec les noms des thèmes, 0 sinon
- * @param int    $aff_socle        1 pour afficher si liaison au socle, 0 sinon (TODO : ne tester à terme que le socle 2016)
- * @param int    $with_abrev       1 pour récupérer l'abréviation éventuelle pour une synthèse, 0 sinon
- * @return array
- */
-public static function DB_recuperer_items_profs( $liste_eleve_id , $liste_prof_id , $only_socle , $date_mysql_debut , $date_mysql_fin )
-{
-  $join_s2016       = ($only_socle)   ? 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
-  $where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-  $where_prof       = (strpos($liste_prof_id,','))  ? 'prof_id IN('.$liste_prof_id.') '      : 'prof_id='.$liste_prof_id.' ' ;   // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-  $where_socle      = ($only_socle)                 ? 'AND ( entree_id !=0 OR socle_composante_id IS NOT NULL ) ' : '' ;
-  $where_date_debut = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '        : '';
-  $where_date_fin   = ($date_mysql_fin)             ? 'AND saisie_date<=:date_fin '          : '';
-  $DB_SQL = 'SELECT item_id , prof_id , ';
-  $DB_SQL.= 'item_coef , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
-  $DB_SQL.= 'FROM sacoche_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= $join_s2016;
-  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND '.$where_eleve.$where_prof.$where_socle.$where_date_debut.$where_date_fin;
-  $DB_SQL.= 'GROUP BY item_id, prof_id ';
-  $DB_VAR = array(
-    ':date_debut' => $date_mysql_debut,
-    ':date_fin'   => $date_mysql_fin,
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * recuperer_items_jointures_rubriques
- *
- * @param string   $rubrique_type
- * @param string   $rubrique_join
- * @param int      $rubrique_id   facultatif, pour restreindre à une rubrique
- * @return array
- */
-public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , $rubrique_join , $rubrique_id=NULL )
-{
-  $where_rubrique = ($rubrique_id) ? 'AND rubrique_id=:rubrique_id ' : '' ;
-  $group_by       = ($rubrique_id) ? 'item_id ' : 'rubrique_id, item_id ' ;
-  $DB_SQL = 'SELECT livret_rubrique_ou_matiere_id AS rubrique_id , item_id ';
-  $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  if( $rubrique_join == 'matiere' )
-  {
-    $DB_SQL.= 'INNER JOIN sacoche_referentiel_domaine ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_domaine.matiere_id ';
-    $DB_SQL.= 'INNER JOIN sacoche_referentiel_theme USING (domaine_id) ';
-    $DB_SQL.= 'INNER JOIN sacoche_referentiel_item USING (theme_id) ';
-  }
-  if( $rubrique_join == 'domaine' )
-  {
-    $DB_SQL.= 'INNER JOIN sacoche_referentiel_theme ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_theme.domaine_id ';
-    $DB_SQL.= 'INNER JOIN sacoche_referentiel_item USING (theme_id) ';
-  }
-  if( $rubrique_join == 'theme' )
-  {
-    $DB_SQL.= 'INNER JOIN sacoche_referentiel_item ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_item.theme_id ';
-  }
-  if( $rubrique_join == 'item' )
-  {
-    $DB_SQL.= 'INNER JOIN sacoche_referentiel_item ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_theme.item_id ';
-  }
-  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND livret_rubrique_type=:rubrique_type '.$where_rubrique;
-  $DB_SQL.= 'GROUP BY '.$group_by;
-  $DB_VAR = array(
-    ':rubrique_type' => $rubrique_type,
-    ':rubrique_id'   => $rubrique_id,
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * recuperer_items_jointures_rubriques
- *
- * @param string   $rubrique_type
- * @param string   $rubrique_join
- * @param int      $matiere_id
- * @param int      $classe_id   facultatif, pour restreindre à une classe
- * @return array
- */
-public static function DB_recuperer_profs_jointure_rubrique( $rubrique_type , $rubrique_join , $matiere_id , $classe_id )
-{
-  $join_classe  = ($classe_id) ? 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ' : '' ;
-  $where_classe = ($classe_id) ? 'AND groupe_id=:groupe_id ' : '' ;
-  $DB_SQL = 'SELECT DISTINCT user_id ';
-  $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-  if( $rubrique_join == 'user' )
-  {
-    $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_referentiel.element_id = sacoche_user.user_id ';
-  }
-  else
-  {
-    if( $rubrique_join == 'matiere' )
-    {
-      $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_livret_jointure_referentiel.element_id = sacoche_matiere.matiere_id ';
-    }
-    if( $rubrique_join == 'domaine' )
-    {
-      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_domaine.domaine_id ';
-    }
-    if( $rubrique_join == 'theme' )
-    {
-      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_theme.theme_id ';
-      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-    }
-    if( $rubrique_join == 'item' )
-    {
-      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_item.item_id ';
-      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
-      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-    }
-    $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
-    $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-  }
-  $DB_SQL.= $join_classe;
-  $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type AND livret_rubrique_ou_matiere_id=:matiere_id AND user_sortie_date>NOW() '.$where_classe;
-  $DB_VAR = array(
-    ':rubrique_type' => $rubrique_type,
-    ':matiere_id'    => $matiere_id,
-    ':groupe_id'     => $classe_id,
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE);
 }
 
 /**
@@ -480,8 +324,8 @@ public static function DB_tester_page_jointure_rubrique( $rubrique_type , $rubri
     $DB_SQL1.= 'FROM sacoche_livret_page ';
     $DB_SQL1.= 'WHERE livret_page_rubrique_type=:rubrique_type AND livret_page_rubrique_join=:rubrique_join ';
     $DB_SQL2 = 'SELECT 1 ';
-    $DB_SQL2.= 'FROM sacoche_matiere ';
-    $DB_SQL2.= 'WHERE matiere_id=:rubrique_id AND ( matiere_active=1 OR matiere_siecle=1 ) ';
+    $DB_SQL2.= 'FROM sacoche_livret_matiere ';
+    $DB_SQL2.= 'WHERE livret_matiere_id=:rubrique_id ';
     $DB_VAR = array(
       ':rubrique_type' => $rubrique_type,
       ':rubrique_join' => $rubrique_join,
@@ -584,9 +428,8 @@ public static function DB_lister_colonnes_infos($livret_colonne_type=NULL)
  */
 public static function DB_lister_seuils_valeurs($livret_page_ref=NULL)
 {
-  $select = ($livret_page_ref) ? 'livret_colonne_id ' : 'CONCAT(livret_page_ref,"_",livret_colonne_id) AS livret_colonne_id ' ;
-  $where  = ($livret_page_ref) ? 'WHERE livret_page_ref=:livret_page_ref ' : '' ;
-  $DB_SQL = 'SELECT '.$select.', livret_seuil_min, livret_seuil_max ';
+  $where = ($livret_page_ref) ? 'WHERE livret_page_ref=:livret_page_ref ' : '' ;
+  $DB_SQL = 'SELECT livret_colonne_id, livret_seuil_min, livret_seuil_max ';
   $DB_SQL.= 'FROM sacoche_livret_seuil ';
   $DB_SQL.= $where;
   $DB_SQL.= 'ORDER BY livret_colonne_id ASC ';
@@ -634,6 +477,7 @@ public static function DB_modifier_seuils( $page_ref , $tab_seuils )
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
 }
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Jointures livret / groupe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -772,7 +616,7 @@ public static function DB_supprimer_jointure_groupe( $groupe_id , $page_ref , $p
 public static function DB_lister_pages_for_dispositif( $dispositif , $parcours_code=NULL )
 {
   $test = ($dispositif!='parcours') ? ' = 1 ' : ' LIKE "%'.$parcours_code.'%" ' ;
-  $DB_SQL = 'SELECT livret_page_ref, livret_page_ordre, livret_page_moment, livret_page_rubrique_join ';
+  $DB_SQL = 'SELECT livret_page_ref, livret_page_ordre, livret_page_moment ';
   $DB_SQL.= 'FROM sacoche_livret_page ';
   $DB_SQL.= 'INNER JOIN sacoche_livret_jointure_groupe USING(livret_page_ref) ';
   $DB_SQL.= 'WHERE livret_page_'.$dispositif.$test;
@@ -798,50 +642,6 @@ public static function DB_tester_page_avec_dispositif( $page_ref , $dispositif ,
   $DB_SQL.= 'WHERE livret_page_ref=:page_ref AND livret_page_'.$dispositif.$test;
   $DB_VAR = array( ':page_ref' => $page_ref );
   return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Supprimer les jointures prof / dispositif dépendant d'une matière plus alimentée
- *
- * @param string   $dispositif     ap | epi
- * @return int
- */
-public static function DB_nettoyer_jointure_dispositif_matiere( $dispositif )
-{
-  $DB_SQL = 'DELETE sacoche_livret_jointure_'.$dispositif.'_prof ';
-  $DB_SQL.= 'FROM sacoche_livret_jointure_'.$dispositif.'_prof ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_'.$dispositif.' USING(livret_'.$dispositif.'_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING(livret_page_ref) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_referentiel ON sacoche_livret_page.livret_page_rubrique_type = sacoche_livret_jointure_referentiel.livret_rubrique_type AND sacoche_livret_jointure_'.$dispositif.'_prof.matiere_id = livret_rubrique_ou_matiere_id ';
-  $DB_SQL.= 'WHERE livret_rubrique_ou_matiere_id IS NULL ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
-}
-
-/**
- * Supprimer les dispositifs non reliés à un enseignant
- *
- * @param string   $dispositif     ap | epi
- * @return int
- */
-public static function DB_nettoyer_dispositif_sans_prof( $dispositif )
-{
-  $nb_prof_min = ($dispositif=='ap') ? 1 : 2 ;
-  $DB_SQL = 'SELECT livret_'.$dispositif.'_id AS dispositif_id ';
-  $DB_SQL.= 'FROM sacoche_livret_'.$dispositif.' ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_'.$dispositif.'_prof USING(livret_'.$dispositif.'_id) ';
-  $DB_SQL.= 'GROUP BY livret_'.$dispositif.'_id ';
-  $DB_SQL.= 'HAVING COUNT(prof_id)<'.$nb_prof_min;
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $nb_delete = count($DB_TAB);
-  if($nb_delete)
-  {
-    foreach($DB_TAB as $DB_ROW)
-    {
-      call_user_func_array( array('DB_STRUCTURE_LIVRET', 'DB_supprimer_'.$dispositif), array($DB_ROW['dispositif_id']) );
-    }
-  }
-  return $nb_delete;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1467,8 +1267,8 @@ public static function DB_supprimer_jointure_referentiel_obsolete()
   // Les liaisons aux matières du Livret Scolaire
   $DB_SQL = 'DELETE sacoche_livret_jointure_referentiel ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_matiere.matiere_id ';
-  $DB_SQL.= 'WHERE livret_rubrique_type IN ("c3_matiere","c4_matiere") AND sacoche_matiere.matiere_id IS NULL ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_matiere ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_livret_matiere.livret_matiere_id ';
+  $DB_SQL.= 'WHERE livret_rubrique_type IN ("c3_matiere","c4_matiere") AND sacoche_livret_matiere.livret_matiere_id IS NULL ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
@@ -1487,201 +1287,6 @@ public static function DB_vider_livret()
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_modaccomp_eleve' , NULL);
   // TODO : A AJOUTER LE MOMENT VENU...
   // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie' , NULL);
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Saisies
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * recuperer_saisies_eleves
- *
- * @param string $livret_page_ref
- * @param string $livret_page_periodicite
- * @param string $jointure_periode
- * @param string $liste_eleve_id
- * @param int    $prof_id     Pour restreindre aux saisies d'un prof.
- * @param bool   $with_periodes_avant    On récupère aussi les données des périodes antérieures.
- * @param bool   $only_synthese_generale Pour restreindre aux synthèses générales.
- * @return array
- */
-public static function DB_recuperer_saisies_eleves( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $liste_eleve_id , $prof_id , $with_periodes_avant , $only_synthese_generale )
-{
-  $select_periode = ($with_periodes_avant) ? ', jointure_periode ' : '' ;
-  $where_periode  = ($with_periodes_avant) ? '' : 'AND jointure_periode=:jointure_periode' ;
-  $where_rubrique = ($only_synthese_generale) ? 'AND rubrique_type=:rubrique_type' : '' ;
-  $where_prof     = ($prof_id) ? 'AND prof_id=:prof_id ' : '' ;
-  $order_periode  = ($with_periodes_avant) ? 'jointure_periode ASC, ' : '' ;
-  $DB_SQL = 'SELECT rubrique_type, rubrique_id, saisie_id AS eleve_id, saisie_nature, saisie_valeur, prof_id, user_genre, user_nom, user_prenom '.$select_periode;
-  $DB_SQL.= 'FROM sacoche_livret_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_saisie.prof_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE livret_page_ref=:livret_page_ref AND livret_page_periodicite=:livret_page_periodicite '.$where_periode.' '.$where_rubrique.' AND saisie_objet=:saisie_objet AND saisie_id IN ('.$liste_eleve_id.') '.$where_prof;
-  $DB_SQL.= 'ORDER BY '.$order_periode.' user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(
-    ':livret_page_ref'         => $livret_page_ref,
-    ':livret_page_periodicite' => $livret_page_periodicite,
-    ':jointure_periode'        => $jointure_periode,
-    ':rubrique_type'           => 'synthese',
-    ':saisie_objet'            => 'eleve',
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * recuperer_saisies_classe
- *
- * @param string $livret_page_ref
- * @param string $livret_page_periodicite
- * @param string $jointure_periode
- * @param int    $classe_id
- * @param int    $prof_id     Pour restreindre aux saisies d'un prof.
- * @param bool   $with_periodes_avant    On récupère aussi les données des périodes antérieures.
- * @param bool   $only_synthese_generale Pour restreindre aux synthèses générales.
- * @return array
- */
-public static function DB_recuperer_saisies_classe( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $classe_id , $prof_id , $with_periodes_avant , $only_synthese_generale )
-{
-  $select_periode = ($with_periodes_avant) ? ', jointure_periode ' : '' ;
-  $where_periode  = ($with_periodes_avant) ? '' : 'AND jointure_periode=:jointure_periode' ;
-  $where_rubrique = ($only_synthese_generale) ? 'AND rubrique_type=:rubrique_type' : '' ;
-  $where_prof     = ($prof_id) ? 'AND prof_id=:prof_id ' : '' ;
-  $order_periode  = ($with_periodes_avant) ? 'jointure_periode ASC, ' : '' ;
-  $DB_SQL = 'SELECT rubrique_type, rubrique_id, saisie_id AS eleve_id, saisie_nature, saisie_valeur, prof_id, user_genre, user_nom, user_prenom '.$select_periode;
-  $DB_SQL.= 'FROM sacoche_livret_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_saisie.prof_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE livret_page_ref=:livret_page_ref AND livret_page_periodicite=:livret_page_periodicite '.$where_periode.' '.$where_rubrique.' AND saisie_objet=:saisie_objet AND saisie_id=:saisie_id '.$where_prof;
-  $DB_SQL.= 'ORDER BY '.$order_periode.' user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array(
-    ':livret_page_ref'         => $livret_page_ref,
-    ':livret_page_periodicite' => $livret_page_periodicite,
-    ':jointure_periode'        => $jointure_periode,
-    ':rubrique_type'           => 'synthese',
-    ':saisie_objet'            => 'classe',
-    ':saisie_id'               => $classe_id,
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * recuperer_saisies_eleves_positions
- *
- * @param string $livret_page_ref
- * @param string $livret_page_periodicite
- * @param string $jointure_periode
- * @param string $rubrique_type
- * @param string $liste_eleve_id
- * @return array
- */
-public static function DB_recuperer_saisies_eleves_positions( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $rubrique_type , $liste_eleve_id )
-{
-  $DB_SQL = 'SELECT saisie_id AS eleve_id, rubrique_id, saisie_valeur, prof_id ';
-  $DB_SQL.= 'FROM sacoche_livret_saisie ';
-  $DB_SQL.= 'WHERE livret_page_ref=:livret_page_ref AND livret_page_periodicite=:livret_page_periodicite AND jointure_periode=:jointure_periode AND rubrique_type=:rubrique_type AND saisie_objet=:saisie_objet AND saisie_id IN ('.$liste_eleve_id.') AND saisie_nature=:saisie_nature ';
-  $DB_SQL.= ($tri_matiere) ? 'ORDER BY matiere_ordre ASC ' : '' ;
-  $DB_VAR = array(
-    ':livret_page_ref'         => $livret_page_ref,
-    ':livret_page_periodicite' => $livret_page_periodicite,
-    ':jointure_periode'        => $jointure_periode,
-    ':rubrique_type'           => $rubrique_type,
-    ':saisie_objet'            => 'eleve',
-    ':saisie_nature'           => 'position',
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * recuperer_saisies_eleves_positions
- *
- * @param string $livret_page_ref
- * @param string $livret_page_periodicite
- * @param string $jointure_periode
- * @param string $rubrique_type
- * @param int    $classe_id
- * @return array
- */
-public static function DB_recuperer_classe_moyennes( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $rubrique_type , $classe_id )
-{
-  $DB_SQL = 'SELECT rubrique_id, saisie_valeur ';
-  $DB_SQL.= 'FROM sacoche_livret_saisie ';
-  $DB_SQL.= 'WHERE livret_page_ref=:livret_page_ref AND livret_page_periodicite=:livret_page_periodicite AND jointure_periode=:jointure_periode AND rubrique_type=:rubrique_type AND saisie_objet=:saisie_objet AND saisie_id=saisie_id AND saisie_nature=:saisie_nature ';
-  $DB_SQL.= ($tri_matiere) ? 'ORDER BY matiere_ordre ASC ' : '' ;
-  $DB_VAR = array(
-    ':livret_page_ref'         => $livret_page_ref,
-    ':livret_page_periodicite' => $livret_page_periodicite,
-    ':jointure_periode'        => $jointure_periode,
-    ':rubrique_type'           => $rubrique_type,
-    ':saisie_objet'            => 'classe',
-    ':saisie_id'               => $classe_id,
-    ':saisie_nature'           => 'position',
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_saisie
- *
- * @param string  $livret_page_ref
- * @param string  $livret_page_periodicite
- * @param string  $jointure_periode
- * @param string  $rubrique_type
- * @param int     $rubrique_id
- * @param string  $saisie_objet
- * @param int     $saisie_id
- * @param string  $saisie_nature
- * @param decimal $saisie_valeur
- * @param int     $prof_id
- * @return void
- */
-public static function DB_modifier_saisie( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $rubrique_type , $rubrique_id , $saisie_objet , $saisie_id , $saisie_nature , $saisie_valeur , $prof_id )
-{
-  // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
-  // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
-  $DB_SQL = 'INSERT INTO sacoche_livret_saisie ( livret_page_ref,  livret_page_periodicite,  jointure_periode,  rubrique_type,  rubrique_id,  saisie_objet,  saisie_id,  saisie_nature,  saisie_valeur,  prof_id) ';
-  $DB_SQL.= 'VALUES                            (:livret_page_ref, :livret_page_periodicite, :jointure_periode, :rubrique_type, :rubrique_id, :saisie_objet, :saisie_id, :saisie_nature, :saisie_valeur, :prof_id) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE saisie_valeur=:saisie_valeur, prof_id=:prof_id ';
-  $DB_VAR = array(
-    ':livret_page_ref'         => $livret_page_ref,
-    ':livret_page_periodicite' => $livret_page_periodicite,
-    ':jointure_periode'        => $jointure_periode,
-    ':rubrique_type'           => $rubrique_type,
-    ':rubrique_id'             => $rubrique_id,
-    ':saisie_objet'            => $saisie_objet,
-    ':saisie_id'               => $saisie_id,
-    ':saisie_nature'           => $saisie_nature,
-    ':saisie_valeur'           => $saisie_valeur,
-    ':prof_id'                 => $prof_id,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * supprimer_saisie
- *
- * @param string  $livret_page_ref
- * @param string  $livret_page_periodicite
- * @param string  $jointure_periode
- * @param string  $rubrique_type
- * @param int     $rubrique_id
- * @param string  $saisie_objet
- * @param int     $saisie_id
- * @param string  $saisie_nature   forcément "position"
- * @return void
- */
-public static function DB_supprimer_saisie( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $rubrique_type , $rubrique_id , $saisie_objet , $saisie_id , $saisie_nature )
-{
-  $DB_SQL = 'DELETE FROM sacoche_livret_saisie ';
-  $DB_SQL.= 'WHERE livret_page_ref=:livret_page_ref AND livret_page_periodicite=:livret_page_periodicite AND jointure_periode=:jointure_periode AND rubrique_type=:rubrique_type AND rubrique_id=:rubrique_id AND saisie_objet=:saisie_objet AND saisie_id=:saisie_id AND saisie_nature=:saisie_nature ';
-  $DB_VAR = array(
-    ':livret_page_ref'         => $livret_page_ref,
-    ':livret_page_periodicite' => $livret_page_periodicite,
-    ':jointure_periode'        => $jointure_periode,
-    ':rubrique_type'           => $rubrique_type,
-    ':rubrique_id'             => $rubrique_id,
-    ':saisie_objet'            => $saisie_objet,
-    ':saisie_id'               => $saisie_id,
-    ':saisie_nature'           => $saisie_nature,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 }

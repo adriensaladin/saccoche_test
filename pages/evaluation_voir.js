@@ -200,7 +200,6 @@ $(document).ready
       {
         rules :
         {
-          f_groupe     : { required:true },
           f_eleve      : { required:true },
           f_prof       : { required:false },
           f_date_debut : { required:true , dateITA:true },
@@ -208,7 +207,6 @@ $(document).ready
         },
         messages :
         {
-          f_groupe     : { required:"groupe manquant" },
           f_eleve      : { required:"élève manquant" },
           f_prof       : { },
           f_date_debut : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },

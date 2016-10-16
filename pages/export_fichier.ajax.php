@@ -575,8 +575,8 @@ if( ($type_export=='jointure_socle2016_matiere') && $cycle_id && $cycle_nom )
   {
     $socle_domaine_id    = $DB_ROW['socle_domaine_id'];
     $socle_composante_id = $DB_ROW['socle_composante_id'];
-    $tab_socle_domaine[$socle_domaine_id] = $DB_ROW['socle_domaine_ordre'].' '.$DB_ROW['socle_domaine_nom_simple'];
-    $tab_socle_composante[$socle_domaine_id][$socle_composante_id] = $DB_ROW['socle_composante_nom_simple'];
+    $tab_socle_domaine[$socle_domaine_id] = $DB_ROW['socle_domaine_ordre'].' '.$DB_ROW['socle_domaine_nom'];
+    $tab_socle_composante[$socle_domaine_id][$socle_composante_id] = $DB_ROW['socle_composante_nom'];
   }
   // Récupération des données des référentiels liés aux composantes du socle
   $tab_jointure = array();

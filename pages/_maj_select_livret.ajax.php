@@ -30,61 +30,33 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$select        = (isset($_POST['f_select']))        ? Clean::lettres($_POST['f_select'])       : '';
-$page_ref      = (isset($_POST['f_page_ref']))      ? Clean::id(     $_POST['f_page_ref'])     : '';
-$groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier( $_POST['f_groupe_id'])    : 0;
-$matiere_id    = (isset($_POST['f_matiere_id']))    ? Clean::entier( $_POST['f_matiere_id'])   : 0;
-$prof_id       = (isset($_POST['f_prof_id']))       ? Clean::entier( $_POST['f_prof_id'])      : 0;
-$rubrique_join = (isset($_POST['f_rubrique_join'])) ? Clean::texte( $_POST['f_rubrique_join']) : '';
-$is_all        = (isset($_POST['f_is_all']))        ? Clean::entier( $_POST['f_is_all'])       : 0;
+$select     = (isset($_POST['f_select']))     ? Clean::lettres($_POST['f_select'])     : '';
+$page_ref   = (isset($_POST['f_page_ref']))   ? Clean::id(     $_POST['f_page_ref'])   : '';
+$groupe_id  = (isset($_POST['f_groupe_id']))  ? Clean::entier( $_POST['f_groupe_id'])  : 0;
+$matiere_id = (isset($_POST['f_matiere_id'])) ? Clean::entier( $_POST['f_matiere_id']) : 0;
+$prof_id    = (isset($_POST['f_prof_id']))    ? Clean::entier( $_POST['f_prof_id'])    : 0;
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas particulier d'une recherche de profs potentiellement associées à une classe & une matière du livret
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($select=='profs_matiere') && $page_ref && $rubrique_join && $groupe_id && $matiere_id )
-{
-  $rubrique_type = ($page_ref=='6e') ? 'c3_matiere' : 'c4_matiere' ;
-  $tab_meilleure_suggestion = DB_STRUCTURE_LIVRET::DB_recuperer_profs_jointure_rubrique( $rubrique_type , $rubrique_join , $matiere_id , $groupe_id );
-  $tab_autres_propositions  = DB_STRUCTURE_LIVRET::DB_recuperer_profs_jointure_rubrique( $rubrique_type , $rubrique_join , $matiere_id , NULL );
-  $tab_meilleure_suggestion = empty($tab_meilleure_suggestion) ? array() : array_keys($tab_meilleure_suggestion);
-  $tab_autres_propositions  = empty($tab_autres_propositions)  ? array() : array_keys($tab_autres_propositions);
-  $tab_autres_propositions = array_values(array_diff( $tab_autres_propositions , $tab_meilleure_suggestion ));
-  Json::add_row( 'script' , 'tab_meilleure_suggestion='.json_encode($tab_meilleure_suggestion).';' );
-  Json::add_row( 'script' , 'tab_autres_propositions=' .json_encode($tab_autres_propositions).';' );
-  Json::end( TRUE );
-}
-
-else if( ($select=='groupes') && $page_ref )
+if( ($select=='groupes') && $page_ref )
 {
   $DB_TAB = DB_STRUCTURE_LIVRET::DB_OPT_groupes_for_page( $page_ref );
   $selection = $groupe_id;
 }
 
-/*
 else if( ($select=='matieres') && $groupe_id )
 {
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_matieres_groupe( $groupe_id );
   $selection = $matiere_id;
 }
+
 else if( ($select=='profs_matiere') && $groupe_id && $matiere_id )
 {
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe_matiere( $groupe_id , $matiere_id );
   $selection = $prof_id;
 }
-*/
-
 
 else if( ($select=='profs') && $groupe_id )
 {
-  if(!$is_all)
-  {
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe_matiere( $groupe_id );
-  }
-  else
-  {
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('all');
-  }
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe_matiere( $groupe_id );
   $selection = $prof_id;
 }
 

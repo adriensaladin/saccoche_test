@@ -207,8 +207,7 @@ $(document).ready
     var memo_section       = '';
     var memo_classe        = 0;
     var memo_groupe        = 0;
-    var memo_page_ref      = '';
-    var memo_periode       = '';
+    var memo_periode       = 0;
     var memo_eleve         = 0;
     var memo_rubrique_nom  = 0;
     var memo_rubrique_type = '';
@@ -223,18 +222,18 @@ $(document).ready
     var memo_classe_last   = 0;
 
     var tab_classe_action_to_section = new Array();
-    tab_classe_action_to_section['modifier']     = 'livret_saisir';
-    tab_classe_action_to_section['tamponner']    = 'livret_saisir';
-    tab_classe_action_to_section['detailler']    = 'livret_examiner';
-    tab_classe_action_to_section['voir']         = 'livret_consulter';
-    tab_classe_action_to_section['imprimer']     = 'livret_imprimer';
-    tab_classe_action_to_section['voir_archive'] = 'livret_imprimer';
+    tab_classe_action_to_section['modifier']     = 'officiel_saisir';
+    tab_classe_action_to_section['tamponner']    = 'officiel_saisir';
+    tab_classe_action_to_section['detailler']    = 'officiel_examiner';
+    tab_classe_action_to_section['voir']         = 'officiel_consulter';
+    tab_classe_action_to_section['imprimer']     = 'officiel_imprimer';
+    tab_classe_action_to_section['voir_archive'] = 'officiel_imprimer';
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Clic sur une image action
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_accueil td q').click
+    $('#table_accueil q').click
     (
       function()
       {
@@ -246,12 +245,11 @@ $(document).ready
         if(typeof(memo_section)!='undefined')
         {
           var tab_ids = $(this).parent().attr('id').split('_');
-          memo_classe   = tab_ids[1];
-          memo_groupe   = tab_ids[2];
-          memo_page_ref = tab_ids[3];
-          memo_periode  = tab_ids[4];
+          memo_classe  = tab_ids[1];
+          memo_groupe  = tab_ids[2];
+          memo_periode = tab_ids[3];
           $('#f_objet').val(memo_objet);
-          if( (memo_section=='livret_saisir') || (memo_section=='livret_consulter') )
+          if( (memo_section=='officiel_saisir') || (memo_section=='officiel_consulter') )
           {
             // Masquer le tableau ; Afficher la zone action et charger son contenu
             $('#cadre_statut , #table_accueil').hide(0);
@@ -261,7 +259,7 @@ $(document).ready
               {
                 type : 'POST',
                 url : 'ajax.php?page='+PAGE,
-                data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+                data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
                 dataType : 'json',
                 error : function(jqXHR, textStatus, errorThrown)
                 {
@@ -298,14 +296,14 @@ $(document).ready
               }
             );
           }
-          else if(memo_section=='livret_examiner')
+          else if(memo_section=='officiel_examiner')
           {
             // Masquer le tableau ; Afficher la zone de choix des rubriques
             $('#cadre_statut , #table_accueil').hide(0);
             $('#zone_action_classe h2').html('Recherche de saisies manquantes');
             $('#zone_chx_rubriques').show(0);
           }
-          else if(memo_section=='livret_imprimer')
+          else if(memo_section=='officiel_imprimer')
           {
             // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
@@ -363,9 +361,9 @@ $(document).ready
           }
           else
           {
+            $("#f_upload_bilan_type").val( BILAN_TYPE );
             $("#f_upload_classe"    ).val( memo_classe );
             $("#f_upload_groupe"    ).val( memo_groupe );
-            $("#f_upload_page_ref"  ).val( memo_page_ref );
             $("#f_upload_periode"   ).val( memo_periode );
             $("#f_upload_objet"     ).val( $('#f_objet').val() );
             $("#f_upload_mode"      ).val( $('#f_mode').val() );
@@ -432,7 +430,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+'livret_importer'+'&f_action='+'enregistrer_saisie_csv'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_import_info='+$('#f_import_info').val()+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+'officiel_importer'+'&f_action='+'enregistrer_saisie_csv'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_import_info='+$('#f_import_info').val()+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -518,7 +516,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir|livret_consulter] Navigation d'un élève à un autre
+    // [officiel_saisir|officiel_consulter] Navigation d'un élève à un autre
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function charger_nouvel_eleve(eleve_id,reload)
@@ -536,7 +534,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'charger'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'charger'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -673,7 +671,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur le bouton pour afficher le formulaire "Saisie déportée"
+    // [officiel_saisir] Clic sur le bouton pour afficher le formulaire "Saisie déportée"
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -689,7 +687,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+'livret_importer'+'&f_action='+'generer_csv_vierge'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+'officiel_importer'+'&f_action='+'generer_csv_vierge'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -716,7 +714,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir|livret_consulter] Clic sur le bouton pour afficher les liens "archiver / imprimer des saisies"
+    // [officiel_saisir|officiel_consulter] Clic sur le bouton pour afficher les liens "archiver / imprimer des saisies"
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -731,7 +729,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir|livret_consulter] Clic sur un lien pour archiver / imprimer des saisies
+    // [officiel_saisir|officiel_consulter] Clic sur un lien pour archiver / imprimer des saisies
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_archiver_imprimer button').click
@@ -746,7 +744,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+f_action+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_action='+f_action+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -773,7 +771,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_consulter] Clic sur le bouton pour tester l'impression finale d'un bilan
+    // [officiel_consulter] Clic sur le bouton pour tester l'impression finale d'un bilan
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -790,7 +788,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+"1"+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+"1"+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -816,8 +814,8 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur le bouton pour ajouter une appréciation (une note ne s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL)
-    // [livret_saisir] Clic sur le bouton pour modifier une note ou une saisie d'appréciation
+    // [officiel_saisir] Clic sur le bouton pour ajouter une appréciation (une note ne s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL)
+    // [officiel_saisir] Clic sur le bouton pour modifier une note ou une saisie d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function afficher_textarea_appreciation_ou_input_moyenne(obj_lieu,champ_contenu)
@@ -896,7 +894,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Indiquer le nombre de caractères restant autorisés dans le textarea
+    // [officiel_saisir] Indiquer le nombre de caractères restant autorisés dans le textarea
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -920,7 +918,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur un bouton pour annuler une saisie de note ou d'appréciation
+    // [officiel_saisir] Clic sur un bouton pour annuler une saisie de note ou d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -946,7 +944,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur un bouton pour valider une saisie de note ou d'appréciation
+    // [officiel_saisir] Clic sur un bouton pour valider une saisie de note ou d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -989,7 +987,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'enregistrer_'+memo_rubrique_type+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'enregistrer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1025,7 +1023,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur le bouton pour supprimer une saisie de note ou d'appréciation
+    // [officiel_saisir] Clic sur le bouton pour supprimer une saisie de note ou d'appréciation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -1045,7 +1043,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'supprimer_'+memo_rubrique_type+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'supprimer_'+memo_rubrique_type+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1079,7 +1077,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur le bouton pour recalculer un positionnement (soit effacée - NULL - soit figée car reportée manuellement)
+    // [officiel_saisir] Clic sur le bouton pour recalculer une note (soit effacée - NULL - soit figée car reportée manuellement)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -1099,7 +1097,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_position'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_note'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1126,7 +1124,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_examiner] Charger le contenu (résultat de l'examen pour une classe)
+    // [officiel_examiner] Charger le contenu (résultat de l'examen pour une classe)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#lancer_recherche').click
@@ -1147,7 +1145,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1181,7 +1179,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_imprimer] Lancer l'impression pour une liste d'élèves
+    // [officiel_imprimer] Lancer l'impression pour une liste d'élèves
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function imprimer(etape)
@@ -1192,7 +1190,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+etape+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+etape+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -1250,7 +1248,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_imprimer] Charger la liste de choix des élèves, et si les bulletins sont déjà imprimés
+    // [officiel_imprimer] Charger la liste de choix des élèves, et si les bulletins sont déjà imprimés
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function charger_formulaire_imprimer()
@@ -1265,7 +1263,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -1294,7 +1292,7 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_examiner|livret_imprimer] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
+    // [officiel_examiner|officiel_imprimer] Actualiser l'état enabled/disabled des options du formulaire de navigation dans les classes, masquer les boutons de navigation
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function masquer_element_navigation_choix_classe()
@@ -1321,7 +1319,7 @@ $(document).ready
       var numero = 0;
       tab_id_option_to_numero = new Array();
       tab_numero_to_id_option = new Array();
-      var indice = (memo_section=='livret_examiner') ? 'examiner' : ( (memo_objet=='imprimer') ? 'imprimer' : 'voir_pdf' ) ;
+      var indice = (memo_section=='officiel_examiner') ? 'examiner' : ( (memo_objet=='imprimer') ? 'imprimer' : 'voir_pdf' ) ;
       $('#go_selection_classe option').each
       (
         function()
@@ -1342,7 +1340,7 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_examiner|livret_imprimer] Navigation d'une classe à une autre
+    // [officiel_examiner|officiel_imprimer] Navigation d'une classe à une autre
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function charger_nouvelle_classe(classe_groupe_id)
@@ -1354,11 +1352,11 @@ $(document).ready
       var tab_indices = classe_groupe_id.toString().split('_'); // Sans toString() on obtient "error: split is not a function"
       memo_classe = tab_indices[0];
       memo_groupe = tab_indices[1];
-      if(memo_section=='livret_imprimer')
+      if(memo_section=='officiel_imprimer')
       {
         charger_formulaire_imprimer();
       }
-      else if(memo_section=='livret_examiner')
+      else if(memo_section=='officiel_examiner')
       {
         $('#form_choix_classe button , #form_choix_classe select').prop('disabled',true);
         $('#zone_resultat_classe').html('<label class="loader">En cours&hellip;</label>');
@@ -1367,7 +1365,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_page='+BILAN_TYPE+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1432,7 +1430,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir|livret_consulter] Afficher le formulaire pour signaler ou corriger une faute
+    // [officiel_saisir|officiel_consulter] Afficher le formulaire pour signaler ou corriger une faute
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -1482,7 +1480,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir|livret_consulter] Indiquer le nombre de caractères restant autorisés dans le textarea
+    // [officiel_saisir|officiel_consulter] Indiquer le nombre de caractères restant autorisés dans le textarea
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#f_message_contenu').keyup
@@ -1494,7 +1492,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir|livret_consulter] Clic sur le bouton pour fermer le cadre de rédaction d'un signalement d'une faute (annuler / retour)
+    // [officiel_saisir|officiel_consulter] Clic sur le bouton pour fermer le cadre de rédaction d'un signalement d'une faute (annuler / retour)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#annuler_signaler_corriger').click
@@ -1509,7 +1507,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir|livret_consulter] Valider le formulaire pour signaler ou corriger une faute
+    // [officiel_saisir|officiel_consulter] Valider le formulaire pour signaler ou corriger une faute
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#valider_signaler_corriger').click
@@ -1563,7 +1561,7 @@ $(document).ready
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_section='+'livret_saisir'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
+              data : 'csrf='+CSRF+'&f_section='+'officiel_saisir'+'&f_bilan_type='+BILAN_TYPE+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {

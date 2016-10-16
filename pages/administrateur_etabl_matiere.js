@@ -57,17 +57,8 @@ $(document).ready
       $('#f_ref').val(ref);
       $('#f_nom').val(nom);
       // pour finir
-      if( mode=='ajouter_perso' )
-      {
-        var matiere_type = 'spécifique' ;
-        var titre = "Ajouter une matière "+matiere_type
-      }
-      else
-      {
-        var matiere_type = (id>ID_MATIERE_PARTAGEE_MAX) ? 'spécifique' : 'partagée' ;
-        var titre = mode[0].toUpperCase() + mode.substring(1) + " une matière "+matiere_type
-      }
-      $('#form_gestion h2').html(titre);
+      var matiere_type = (id>ID_MATIERE_PARTAGEE_MAX) ? 'spécifique' : 'partagée' ;
+      $('#form_gestion h2').html(mode[0].toUpperCase() + mode.substring(1) + " une matière "+matiere_type);
       if(mode!='supprimer')
       {
         $('#gestion_edit').show(0);

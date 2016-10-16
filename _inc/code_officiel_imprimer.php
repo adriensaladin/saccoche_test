@@ -52,6 +52,15 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 $tab_objet  = array('imprimer','voir_archive');
 $tab_action = array('initialiser','imprimer');
 
+$tab_types = array
+(
+  'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+  'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+  'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+  'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+  'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
+);
+
 $file_memo = CHEMIN_DOSSIER_EXPORT.'imprimer_officiel_'.$_SESSION['BASE'].'_'.session_id().'.txt';
 
 // On vérifie les paramètres principaux

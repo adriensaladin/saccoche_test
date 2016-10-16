@@ -29,7 +29,7 @@ INSERT INTO sacoche_livret_colonne (livret_colonne_id, livret_colonne_type, livr
 (24, "objectif"   , 4, "Objectifs d'apprentissage",         "Dépassés"               , 90, 100, "#9acef0", "#a6d4f2"),
 (31, "maitrise"   , 1, "Maîtrise des composantes du socle", "Maîtrise insuffisante"  ,  0,  34, "#e5f2fb", "#f2f8fd"),
 (32, "maitrise"   , 2, "Maîtrise des composantes du socle", "Maîtrise fragile"       , 35,  59, "#cce5f7", "#d8ecf9"),
-(33, "maitrise"   , 3, "Maîtrise des composantes du socle", "Maîtrise satisfaisante" , 60,  80, "#b3d9f4", "#bfdff6"),
+(33, "maitrise"   , 3, "Maîtrise des composantes du socle", "Maîtrise satisfaisante" , 60,  81, "#b3d9f4", "#bfdff6"),
 (34, "maitrise"   , 4, "Maîtrise des composantes du socle", "Très bonne maîtrise"    , 81, 100, "#9acef0", "#a6d4f2"),
 (41, "position"   , 1, "Échelle",                           "1 sur 4"                ,  0,  24, "#dbe5f1", ""),
 (42, "position"   , 2, "Échelle",                           "2 sur 4"                , 25,  49, "#8db3e2", ""),

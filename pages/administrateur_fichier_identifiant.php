@@ -58,8 +58,8 @@ $select_groupe = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupem
       <optgroup label="Rapprochement automatisé des comptes avec un ENT">
         <option value="import_id_lcs">Environnement LCS.</option>
         <option value="import_id_argos">ENT ARGOS (académie de Bordeaux).</option>
-        <option disabled value="import_id_entlibre_essonne">ENT Libre des collèges de l'Essonne.</option><?php /* Webservices non finalisé ??? */ ?>
-        <option disabled value="import_id_entlibre_picardie">ENT Libre LÉO des lycées de Picardie.</option><?php /* Webservices non finalisé ??? */ ?>
+        <option disabled value="import_id_entlibre_essonne">ENT Libre des collèges de l'Essonne.</option>
+        <option disabled value="import_id_entlibre_picardie">ENT Libre LÉO des lycées de Picardie.</option>
         <?php if( IS_HEBERGEMENT_SESAMATH && ($_SESSION['BASE']>=CONVENTION_ENT_ID_ETABL_MAXI) ): ?>
           <option value="import_id_entlibre_test">ENT Libre Plateforme de test.</option>
         <?php endif; ?>

@@ -28,136 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-/*
-TODO : notes temporaires à virer
-SUPPRIMÉ : $BILAN_TYPE
-$make_officiel = TRUE;
-$make_brevet   = FALSE;
-$releve_modele            = 'multimatiere';
-$synthese_modele          = 'multimatiere' ;
-$releve_individuel_format = 'eleve';
-$aff_etat_acquisition     = $_SESSION['OFFICIEL']['RELEVE_ETAT_ACQUISITION'];
-$aff_moyenne_scores       = $_SESSION['OFFICIEL']['RELEVE_MOYENNE_SCORES'];
-$aff_pourcentage_acquis   = $_SESSION['OFFICIEL']['RELEVE_POURCENTAGE_ACQUIS'];
-$conversion_sur_20        = $_SESSION['OFFICIEL']['RELEVE_CONVERSION_SUR_20'];
-$with_coef                = 1; // Il n'y a que des relevés par matière et pas de synthèse commune : on prend en compte les coefficients pour chaque relevé matière.
-$matiere_id               = TRUE;
-$matiere_nom              = '';
-$retroactif               = $_SESSION['OFFICIEL']['RELEVE_RETROACTIF']; // C'est un relevé de notes sur une période donnée : aller chercher les notes antérieures serait curieux !
-$fusion_niveaux           = $_SESSION['OFFICIEL']['BULLETIN_FUSION_NIVEAUX'];
-$only_etat                = $_SESSION['OFFICIEL']['RELEVE_ONLY_ETAT'];
-$only_socle               = $_SESSION['OFFICIEL']['RELEVE_ONLY_SOCLE'];
-$only_niveau              = 0; // pas jugé utile de le mettre en option...
-$niveau_id                = 0; // Niveau transmis uniquement si on restreint sur un niveau : pas jugé utile de le mettre en option...
-$aff_reference            = $_SESSION['OFFICIEL']['RELEVE_AFF_REFERENCE'];
-$aff_coef                 = $_SESSION['OFFICIEL']['RELEVE_AFF_COEF'];
-$aff_socle                = $_SESSION['OFFICIEL']['RELEVE_AFF_SOCLE'];
-$aff_comm                 = 0; // Sans intérêt, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-$aff_lien                 = 0; // Sans intérêt, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-$aff_start                = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-$aff_domaine              = $_SESSION['OFFICIEL']['RELEVE_AFF_DOMAINE'];
-$aff_theme                = $_SESSION['OFFICIEL']['RELEVE_AFF_THEME'];
-$couleur                  = $_SESSION['OFFICIEL']['RELEVE_COULEUR'];
-$fond                     = $_SESSION['OFFICIEL']['RELEVE_FOND'];
-$legende                  = $_SESSION['OFFICIEL']['RELEVE_LEGENDE'];
-$marge_gauche             = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
-$marge_droite             = $_SESSION['OFFICIEL']['MARGE_DROITE'];
-$marge_haut               = $_SESSION['OFFICIEL']['MARGE_HAUT'];
-$marge_bas                = $_SESSION['OFFICIEL']['MARGE_BAS'];
-$pages_nb                 = $_SESSION['OFFICIEL']['RELEVE_PAGES_NB'];
-$cases_nb                 = $_SESSION['OFFICIEL']['RELEVE_CASES_NB'];
-$cases_largeur            = 5; // pas jugé utile de le mettre en option...
-$highlight_id             = 0; // Ne sert que pour le relevé d'items d'une matière
-$tab_type[]               = 'individuel';
-$type_individuel          = 1;
-$type_synthese            = 0;
-$type_bulletin            = 0;
-$tab_matiere_id           = $tab_matiere_id;
-$palier_id                = (int)substr($BILAN_TYPE,-1);
-$palier_nom               = 'Palier '.$palier_id;
-$only_presence            = $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'];
-$aff_socle_PA             = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
-$aff_socle_EV             = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
-$mode                     = 'auto';
-$nom_bilan_html           = 'releve_HTML_individuel';
-*/
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '' ;
 $section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : '' ;
-
-$OBJET         = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])               : '';
-$ACTION        = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])              : '';
-$mode          = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])                : '';
-$PAGE_REF      = (isset($_POST['f_page_ref']))     ? Clean::texte($_POST['f_page_ref'])            : '';
-$periode       = (isset($_POST['f_periode']))      ? Clean::texte($_POST['f_periode'])             : '';
-$classe_id     = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])             : 0;
-$groupe_id     = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])             : 0;
-$eleve_id      = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])               : 0;
-$rubrique_type = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])           : '';
-$rubrique_id   = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])           : 0;
-$prof_id       = (isset($_POST['f_prof']))         ? Clean::entier($_POST['f_prof'])               : 0; // id du prof dont on corrige l'appréciation
-$appreciation  = (isset($_POST['f_appreciation'])) ? Clean::appreciation($_POST['f_appreciation']) : '';
-$moyenne       = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moyenne'])           : -1;
-$import_info   = (isset($_POST['f_import_info']))  ? Clean::texte($_POST['f_import_info'])         : '';
-$etape         = (isset($_POST['f_etape']))        ? Clean::entier($_POST['f_etape'])              : 0;
-$page_parite   = (isset($_POST['f_parite']))       ? Clean::entier($_POST['f_parite'])             : 0;
-
-$is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
-
-// Tableaux communs utiles
-
-$tab_periode_livret = array(
-  'periodeT1' => 'Trimestre 1/3' ,
-  'periodeT2' => 'Trimestre 2/3' ,
-  'periodeT3' => 'Trimestre 3/3' ,
-  'periodeS1' => 'Semestre 1/2'  ,
-  'periodeS2' => 'Semestre 2/2'  ,
-  'cycle'     => 'Fin de cycle'  ,
-  'college'   => 'Fin du collège',
-);
-
-// Vérification période + extraction des infos sur la période
-
-if( !isset($tab_periode_livret[$periode]) )
-{
-  Json::end( FALSE , 'Période "'.html($periode).'" inconnue !' );
-}
-if(substr($periode,0,7)=='periode')
-{
-  $PAGE_PERIODICITE = 'periode';
-  $JOINTURE_PERIODE = substr($periode,7);
-  $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_periode_info($JOINTURE_PERIODE);
-  if(empty($DB_ROW))
-  {
-    Json::end( FALSE , 'Période transmise "'.html($JOINTURE_PERIODE).'" indéfinie !' );
-  }
-  $periode_id = $DB_ROW['periode_id'];
-  $date_debut = $DB_ROW['jointure_date_debut'];
-  $date_fin   = $DB_ROW['jointure_date_fin'];
-}
-else
-{
-  $PAGE_PERIODICITE = $periode;
-  $JOINTURE_PERIODE = '';
-  $periode_id       = 0;
-  $date_debut       = NULL;
-  $date_fin         = NULL;
-}
-$periode_nom = $tab_periode_livret[$periode];
-
-// Récupérer et mettre en session les seuils pour le palier
-
-$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_seuils_valeurs($PAGE_REF);
-foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
-{
-  $id = $livret_colonne_id % 10 ; // 1 2 3 (4)
-  $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW[0]['livret_seuil_min'];
-  $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW[0]['livret_seuil_max'];
-}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Saisir    : affichage des données d'un élève | enregistrement/suppression d'une appréciation ou d'une note | recalculer une note
@@ -166,16 +42,25 @@ foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
 // Imprimer  : affichage de la liste des élèves | étape d'impression PDF
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array( $section , array('livret_saisir','livret_examiner','livret_consulter','livret_imprimer','livret_importer') ) )
+  $tab_types = array
+  (
+    'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+    'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+    'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+    'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+    'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
+  );
+
+if( in_array( $section , array('officiel_saisir','officiel_examiner','officiel_consulter','officiel_imprimer','officiel_importer') ) )
 {
-  if( ($section=='livret_consulter') && ($action=='imprimer') )
+  if( ($section=='officiel_consulter') && ($action=='imprimer') )
   {
     // Il s'agit d'un test d'impression d'un bilan non encore clos (on vérifiera quand même par la suite que les conditions sont respectées (état du bilan, droit de l'utilisateur)
-    $section = 'livret_imprimer';
+    $section = 'officiel_imprimer';
     $_POST['f_objet'] = 'imprimer';
     $is_test_impression = TRUE;
   }
-  require(CHEMIN_DOSSIER_INCLUDE.'fonction_livret.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'fonction_bulletin.php');
   require(CHEMIN_DOSSIER_INCLUDE.'code_'.$section.'.php');
   // Normalement, on est stoppé avant.
   Json::end( FALSE , 'Problème de code : point d\'arrêt manquant !' );

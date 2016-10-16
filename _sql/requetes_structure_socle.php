@@ -36,14 +36,11 @@ class DB_STRUCTURE_SOCLE extends DB
 /**
  * Lister les items des référentiels reliés au socle
  *
- * @param int    $cycle_id   id du cycle
- * @param string $liste_composante_id   facultatif, pour restreindre à 1 ou plusieurs composantes
+ * @param int $cycle_id   id du cycle
  * @return array
  */
-public static function DB_recuperer_associations_items_composantes( $cycle_id , $liste_composante_id=NULL )
+public static function DB_recuperer_associations_items_composantes($cycle_id)
 {
-  $where_composante = ($liste_composante_id) ? 'AND socle_composante_id IN('.$liste_composante_id.') ' : '' ;
-  $group_by         = ($liste_composante_id) ? 'item_id ' : 'item_id, socle_composante_id ' ;
   $DB_SQL = 'SELECT item_id , item_nom , matiere_ref , socle_composante_id , socle_domaine_id , ';
   $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
   $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso ';
@@ -56,8 +53,8 @@ public static function DB_recuperer_associations_items_composantes( $cycle_id , 
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_composante_id) ';
-  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND socle_cycle_id=:cycle_id '.$where_composante;
-  $DB_SQL.= 'GROUP BY '.$group_by;
+  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND socle_cycle_id=:cycle_id ' ;
+  $DB_SQL.= 'GROUP BY item_id, socle_composante_id ';
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array( ':cycle_id' => $cycle_id );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -228,7 +225,7 @@ public static function DB_lister_infos_items( $liste_item_id , $detail )
     $DB_SQL.= 'item_coef , item_cart , item_lien , '; // Besoin pour l'élève s'il veut formuler une demande d'évaluation
     $DB_SQL.= 'matiere_id , matiere_nb_demandes , '; // Besoin pour l'élève s'il ajoute l'item aux demandes d'évaluations
   }
-  $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
+  $DB_SQL.= 'referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
   $DB_SQL.= 'FROM sacoche_referentiel_item ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';

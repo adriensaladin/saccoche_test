@@ -54,6 +54,15 @@ $separateur = ';';
 $tab_objet  = array('modifier','tamponner');
 $tab_action = array('generer_csv_vierge','uploader_saisie_csv','enregistrer_saisie_csv');
 
+$tab_types = array
+(
+  'releve'   => array( 'droit'=>'RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
+  'bulletin' => array( 'droit'=>'BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
+  'palier1'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
+  'palier2'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
+  'palier3'  => array( 'droit'=>'SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
+);
+
 // On vérifie les paramètres principaux
 
 if( (!in_array($ACTION,$tab_action)) || (!isset($tab_types[$BILAN_TYPE])) || (!in_array($OBJET,$tab_objet)) || !$periode_id || !$classe_id )
@@ -112,12 +121,11 @@ if($ACTION!='enregistrer_saisie_csv')
   }
 
   // Élèves concernés
-  $groupe_nom = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
   $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 2 /*actuels_et_anciens*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_nom,user_prenom' /*champs*/ , $periode_id )
                                : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_id , 2 /*actuels_et_anciens*/ , $periode_id ) ;
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$groupe_nom.' !' );
+    Json::end( FALSE , 'Aucun élève évalué sur la période trouvé dans ce regroupement !' );
   }
   $csv_lignes_eleves = ($BILAN_TYPE=='bulletin') ? array( 0 => 'groupe_'.$groupe_id.$separateur.'"Classe / Groupe"'.$separateur ) : array() ;
   $tab_eleve_id      = ($BILAN_TYPE=='bulletin') ? array( 0 => 'Classe / Groupe' )                                                : array() ;

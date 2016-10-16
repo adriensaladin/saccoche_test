@@ -35,8 +35,7 @@ $tab_periode_livret = array(
   'periodeS1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2'  ),
   'periodeS2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2'  ),
   'cycle'     => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin de cycle'  ),
-  // On n'affiche pas le bilan "Fin de collège" qui n'aura probablement pas lieu d'être (autre modif plus bas)
-  // 'college'   => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin du collège'),
+  'college'   => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin du collège'),
 );
 
 $tab_etats = array
@@ -184,6 +183,8 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
 // Javascript
 Layout::add( 'js_inline_before' , 'var USER_ID               = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var TODAY_FR              = "'.TODAY_FR.'";' );
+Layout::add( 'js_inline_before' , 'var BILAN_TYPE            = "LIVRET";' ); // TODO SUPPRIMER ?
+Layout::add( 'js_inline_before' , 'var CONVERSION_SUR_20     = '.$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'].';' ); // TODO SUPPRIMER ?
 Layout::add( 'js_inline_before' , 'var BACKGROUND_COLORS     = ['.implode(',',$tab_css_couleurs).'];' );
 Layout::add( 'js_inline_before' , 'var URL_IMPORT            = "'.URL_DIR_IMPORT.'";' );
 Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = 600;' );
@@ -226,28 +227,24 @@ if(empty($DB_TAB))
 $tab_join_classe_periode = array();
 foreach($DB_TAB as $DB_ROW)
 {
-  // On n'affiche pas le bilan "Fin de collège" qui n'aura probablement pas lieu d'être (autre modif plus haut)
-  if( $DB_ROW['livret_page_periodicite'] != 'college' )
+  $periode = $DB_ROW['livret_page_periodicite'].$DB_ROW['jointure_periode'];
+  $tab_periode_livret[$periode]['used'] = TRUE;
+  if($DB_ROW['periode_id'])
   {
-    $periode = $DB_ROW['livret_page_periodicite'].$DB_ROW['jointure_periode'];
-    $tab_periode_livret[$periode]['used'] = TRUE;
-    if($DB_ROW['periode_id'])
-    {
-      $tab_periode_livret[$periode]['defined'] = TRUE;
-    }
-    if( $DB_ROW['jointure_date_debut'] && $DB_ROW['jointure_date_fin'] )
-    {
-      $tab_periode_livret[$periode]['dates'] = TRUE;
-    }
-    $tab_join_classe_periode[$DB_ROW['groupe_id']][$periode] = array(
-      'page_ref'      => $DB_ROW['livret_page_ref'],
-      'etat'          => $DB_ROW['jointure_etat'],
-      'rubrique_type' => $DB_ROW['livret_page_rubrique_type'],
-      'periode_id'    => $DB_ROW['periode_id'],
-      'date_debut'    => $DB_ROW['jointure_date_debut'],
-      'date_fin'      => $DB_ROW['jointure_date_fin'],
-    );
+    $tab_periode_livret[$periode]['defined'] = TRUE;
   }
+  if( $DB_ROW['jointure_date_debut'] && $DB_ROW['jointure_date_fin'] )
+  {
+    $tab_periode_livret[$periode]['dates'] = TRUE;
+  }
+  $tab_join_classe_periode[$DB_ROW['groupe_id']][$periode] = array(
+    'page_ref'      => $DB_ROW['livret_page_ref'],
+    'etat'          => $DB_ROW['jointure_etat'],
+    'rubrique_type' => $DB_ROW['livret_page_rubrique_type'],
+    'periode_id'    => $DB_ROW['periode_id'],
+    'date_debut'    => $DB_ROW['jointure_date_debut'],
+    'date_fin'      => $DB_ROW['jointure_date_fin'],
+  );
 }
 $tab_periode_pb = array( 'undefined' => array() , 'pbdates' => 0 );
 foreach($tab_periode_livret as $periode => $tab)
@@ -268,7 +265,7 @@ foreach($tab_periode_livret as $periode => $tab)
 if(!empty($tab_periode_pb['undefined']))
 {
   $consigne = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? ' <a href="./index.php?page=administrateur_periode">Paramétrer les périodes.</a>' : '<br />Un administrateur doit <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_periodes#toggle_gestion_periodes">paramétrer les périodes</a></span>.' ;
-  echo'<p><label class="erreur">Désignation des périodes pour le livret scolaire non effectuée pour "'.implode(' + ',$tab_periode_pb['undefined']).'" !'.$consigne.'</label></p>'.NL;
+  echo'<p><label class="erreur">Désignation des périodes pour le livret scolaire non effectuée pour "'.implode(' + ',$tab_periode_pb).'" !'.$consigne.'</label></p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 if($tab_periode_pb['pbdates'])
@@ -723,9 +720,9 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
     <label id="msg_import">&nbsp;</label>
     <input type="hidden" name="f_action" value="uploader_saisie_csv" />
     <input type="hidden" name="f_section" value="officiel_importer" />
+    <input type="hidden" id="f_upload_bilan_type" name="f_bilan_type" value="" />
     <input type="hidden" id="f_upload_classe" name="f_classe" value="" />
     <input type="hidden" id="f_upload_groupe" name="f_groupe" value="" />
-    <input type="hidden" id="f_upload_page_ref" name="f_page_ref" value="" />
     <input type="hidden" id="f_upload_periode" name="f_periode" value="" />
     <input type="hidden" id="f_upload_objet" name="f_objet" value="" />
     <input type="hidden" id="f_upload_mode" name="f_mode" value="" />

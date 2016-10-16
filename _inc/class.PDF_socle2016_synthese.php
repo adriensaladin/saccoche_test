@@ -108,7 +108,7 @@ class PDF_socle2016_synthese extends PDF
   {
     $this->lignes_hauteur = $this->cases_hauteur;
     $ordonnee = $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*0.75;
-    $this->afficher_legende( 'degre_maitrise' /*type_legende*/ , $ordonnee /*ordonnée*/ );
+    $this->afficher_legende( 'etat_maitrise' /*type_legende*/ , $ordonnee /*ordonnée*/ );
   }
 
 }

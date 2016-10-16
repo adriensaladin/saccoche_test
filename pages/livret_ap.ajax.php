@@ -28,38 +28,45 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action    = (isset($_POST['f_action'])) ? Clean::texte( $_POST['f_action']) : '';
-$ap_id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])     : 0;
-$page_ref  = (isset($_POST['f_page']))   ? Clean::id(    $_POST['f_page'])   : '';
-$groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0;
-$nombre    = (isset($_POST['f_nombre'])) ? Clean::entier($_POST['f_nombre']) : 0;
-$titre     = (isset($_POST['f_titre']))  ? Clean::texte( $_POST['f_titre'])  : '';
+$action       = (isset($_POST['f_action']))    ? Clean::texte( $_POST['f_action'])    : '';
+$ap_id        = (isset($_POST['f_id']))        ? Clean::entier($_POST['f_id'])        : 0;
+$page_ref     = (isset($_POST['f_page']))      ? Clean::id(    $_POST['f_page'])      : '';
+$groupe_id    = (isset($_POST['f_groupe']))    ? Clean::entier($_POST['f_groupe'])    : 0;
+$nombre       = (isset($_POST['f_nombre']))    ? Clean::entier($_POST['f_nombre'])    : 0;
+$matiere_id_1 = (isset($_POST['f_matiere_1'])) ? Clean::entier($_POST['f_matiere_1']) : 0;
+$prof_id_1    = (isset($_POST['f_prof_1']))    ? Clean::entier($_POST['f_prof_1'])    : 0;
+$matiere_id_2 = (isset($_POST['f_matiere_2'])) ? Clean::entier($_POST['f_matiere_2']) : 0;
+$prof_id_2    = (isset($_POST['f_prof_2']))    ? Clean::entier($_POST['f_prof_2'])    : 0;
+$matiere_id_3 = (isset($_POST['f_matiere_3'])) ? Clean::entier($_POST['f_matiere_3']) : 0;
+$prof_id_3    = (isset($_POST['f_prof_3']))    ? Clean::entier($_POST['f_prof_3'])    : 0;
+$matiere_id_4 = (isset($_POST['f_matiere_4'])) ? Clean::entier($_POST['f_matiere_4']) : 0;
+$prof_id_4    = (isset($_POST['f_prof_4']))    ? Clean::entier($_POST['f_prof_4'])    : 0;
+$matiere_id_5 = (isset($_POST['f_matiere_5'])) ? Clean::entier($_POST['f_matiere_5']) : 0;
+$prof_id_5    = (isset($_POST['f_prof_5']))    ? Clean::entier($_POST['f_prof_5'])    : 0;
+$titre        = (isset($_POST['f_titre']))     ? Clean::texte( $_POST['f_titre'])     : '';
 
-$test_matiere_prof = TRUE;
-$tab_matiere_prof = array();
-for( $num=1 ; $num<=$nombre ; $num++)
-{
-  ${'matiere_id_'.$num} = (isset($_POST['f_matiere_'.$num])) ? Clean::entier($_POST['f_matiere_'.$num]) : 0;
-  ${'prof_id_'.$num}    = (isset($_POST['f_prof_'.$num]))    ? Clean::entier($_POST['f_prof_'.$num])    : 0;
-  $test_matiere_prof = $test_matiere_prof && ${'matiere_id_'.$num} && ${'prof_id_'.$num} ;
-  $tab_matiere_prof[] = ${'matiere_id_'.$num}.'~'.${'prof_id_'.$num};
-}
+$test2 = ( ($nombre>=2) && ( !$matiere_id_2 || !$prof_id_2 ) ) ? TRUE : FALSE ;
+$test3 = ( ($nombre>=3) && ( !$matiere_id_3 || !$prof_id_3 ) ) ? TRUE : FALSE ;
+$test4 = ( ($nombre>=4) && ( !$matiere_id_4 || !$prof_id_4 ) ) ? TRUE : FALSE ;
+$test5 = ( ($nombre>=5) && ( !$matiere_id_5 || !$prof_id_5 ) ) ? TRUE : FALSE ;
 
-if( !$page_ref || !$titre || !DB_STRUCTURE_LIVRET::DB_tester_page_avec_dispositif( $page_ref , 'ap' ) )
+if( !$page_ref || !$groupe_id || ($nombre<1) || ($nombre>5) || !$matiere_id_1 || !$prof_id_1 || $test2 || $test3 || $test4 || $test5 || !$titre || !DB_STRUCTURE_LIVRET::DB_tester_page_avec_dispositif( $page_ref , 'ap' ) )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
+}
+
+$tab_matiere_prof = array( $matiere_id_1.'~'.$prof_id_1 , $matiere_id_2.'~'.$prof_id_2 , $matiere_id_3.'~'.$prof_id_3 , $matiere_id_4.'~'.$prof_id_4 , $matiere_id_5.'~'.$prof_id_5 );
+if( count(array_unique($tab_matiere_prof)) != $nombre+1 )
+{
+  Json::end( FALSE , 'Couples { matière / enseignant } identiques !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ajouter un nouvel accompagnement personnalisé
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $test_matiere_prof && ($nombre>=1) && ($nombre<=15) )
+if( ($action=='ajouter') || ($action=='dupliquer') )
 {
-  if( count(array_unique($tab_matiere_prof)) != $nombre )
-  {
-    Json::end( FALSE , 'Couples { matière / enseignant } identiques !' );
-  }
   // Vérifier que l'accompagnement personnalisé est disponible
   // => Sans objet car il peut y avoir plusieurs AP sur une même classe.
   // Insérer l'enregistrement
@@ -89,12 +96,8 @@ if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $test_matier
 // Modifier un accompagnement personnalisé existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $ap_id && $groupe_id && $test_matiere_prof && ($nombre>=1) && ($nombre<=15) )
+if( ($action=='modifier') && $ap_id )
 {
-  if( count(array_unique($tab_matiere_prof)) != $nombre )
-  {
-    Json::end( FALSE , 'Couples { matière / enseignant } identiques !' );
-  }
   // Vérifier que l'accompagnement personnalisé est disponible
   // => Sans objet car il peut y avoir plusieurs AP sur une même classe.
   // Mettre à jour l'enregistrement

@@ -34,9 +34,6 @@ $tab_modaccomp = DB_STRUCTURE_LIVRET::DB_OPT_modaccomp();
 
 $select_eleve     = HtmlForm::afficher_select($tab_groupes   , 'select_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
 $select_modaccomp = HtmlForm::afficher_select($tab_modaccomp , 'f_modaccomp'   /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ );
-
-// Javascript
-Layout::add( 'js_inline_before' , 'var tab_commentaire = new Array();' );
 ?>
 
 <ul class="puce">
@@ -57,8 +54,7 @@ Layout::add( 'js_inline_before' , 'var tab_commentaire = new Array();' );
       <?php echo $select_modaccomp ?>
       <p id="p_commentaire" class="hide">
         <b>Commentaire :</b><br />
-        <textarea name="f_commentaire" id="input_commentaire" rows="5" cols="40"></textarea><br />
-        <label id="input_commentaire_reste"></label>
+        <input id="input_commentaire" name="f_commentaire" type="text" value="" size="50" maxlength="127" />
       </p>
     </td>
     <td class="nu" style="width:25em">
@@ -90,8 +86,7 @@ Layout::add( 'js_inline_before' , 'var tab_commentaire = new Array();' );
   <p>
     <label class="tab">Classe :</label><b id="b_classe"></b><br />
     <label class="tab">Élève :</label><b id="b_eleve"></b><br />
-    <label class="tab" for="f_commentaire">Commentaire :</label><textarea name="f_commentaire" id="f_commentaire" rows="5" cols="40"></textarea><br />
-    <span class="tab"></span><label id="f_commentaire_reste"></label>
+    <label class="tab" for="f_commentaire">Commentaire :</label><input id="f_commentaire" name="f_commentaire" type="text" value="" size="50" maxlength="127" />
   </p>
   <p>
     <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="modifier_commentaire" /><input id="ppre_eleve" name="f_eleve" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>

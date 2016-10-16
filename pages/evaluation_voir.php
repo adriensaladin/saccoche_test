@@ -236,7 +236,7 @@ Layout::add( 'js_inline_before' , 'var user_profil = "'.$_SESSION['USER_PROFIL_T
       <tr><td class="nu" colspan="7"></td></tr>
     </tbody>
   </table>
-  <?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*degre_maitrise*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ ); ?>
+  <?php echo Html::legende( TRUE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*etat_maitrise*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ ); ?>
   <div>
     <h3>Commentaire éventuel</h3>
     <textarea name="f_msg_data" id="f_msg_texte" rows="5" cols="100"></textarea><br />

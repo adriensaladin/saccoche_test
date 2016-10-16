@@ -233,7 +233,7 @@ $(document).ready
     // Clic sur une image action
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_accueil td q').click
+    $('#table_accueil q').click
     (
       function()
       {

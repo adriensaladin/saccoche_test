@@ -56,12 +56,12 @@ if( ($action=='save_notes') && isset($_POST['notes_actif']) && isset($_POST['not
     $TAB_NOTE[$note_id]['ACTIF']   = ($is_note_actif)                          ? 1                                                 : 0 ;
     $TAB_NOTE[$note_id]['VALEUR']  = (isset($_POST['note_valeur_' .$note_id])) ? Clean::entier(  $_POST['note_valeur_' .$note_id]) : NULL ;
     $TAB_NOTE[$note_id]['IMAGE']   = (isset($_POST['note_image_'  .$note_id])) ? Clean::txt_note($_POST['note_image_'  .$note_id]) : '' ;
-    $TAB_NOTE[$note_id]['SIGLE']   = (isset($_POST['note_sigle_'  .$note_id])) ? Clean::txt_note($_POST['note_sigle_'  .$note_id]) : NULL ;
+    $TAB_NOTE[$note_id]['SIGLE']   = (isset($_POST['note_sigle_'  .$note_id])) ? Clean::txt_note($_POST['note_sigle_'  .$note_id]) : '' ;
     $TAB_NOTE[$note_id]['LEGENDE'] = (isset($_POST['note_legende_'.$note_id])) ? Clean::txt_note($_POST['note_legende_'.$note_id]) : '' ;
     $TAB_NOTE[$note_id]['CLAVIER'] = (isset($_POST['note_clavier_'.$note_id])) ? Clean::entier(  $_POST['note_clavier_'.$note_id]) : NULL ;
     if($TAB_NOTE[$note_id]['ACTIF'])
     {
-      if( is_null($TAB_NOTE[$note_id]['VALEUR']) || !$TAB_NOTE[$note_id]['IMAGE'] || is_null($TAB_NOTE[$note_id]['SIGLE']) || !$TAB_NOTE[$note_id]['LEGENDE'] || is_null($TAB_NOTE[$note_id]['CLAVIER']) )
+      if( is_null($TAB_NOTE[$note_id]['VALEUR']) || !$TAB_NOTE[$note_id]['IMAGE'] || !$TAB_NOTE[$note_id]['SIGLE'] || !$TAB_NOTE[$note_id]['LEGENDE'] || is_null($TAB_NOTE[$note_id]['CLAVIER']) )
       {
         Json::end( FALSE , 'Erreur avec les données transmises !' );
       }
@@ -118,11 +118,11 @@ if( ($action=='save_acquis') && isset($_POST['acquis_actif']) && isset($_POST['a
     $TAB_ACQUIS[$acquis_id]['VALEUR']    = (isset($_POST['acquis_valeur_'.$acquis_id]))        ? Clean::entier(  $_POST['acquis_valeur_' .$acquis_id])        : NULL ;
     $TAB_ACQUIS[$acquis_id]['COULEUR']   = (isset($_POST['acquis_color_'  .$acquis_id]))       ? Clean::texte(   $_POST['acquis_color_'.$acquis_id])          : '' ;
     $TAB_ACQUIS[$acquis_id]['GRIS']      = ($is_acquis_actif) ? SessionUser::$tab_dalton_css[$nombre_etats_acquisition][array_search($acquis_id,$tab_acquis_actif)] : '';
-    $TAB_ACQUIS[$acquis_id]['SIGLE']     = (isset($_POST['acquis_sigle_'  .$acquis_id]))       ? Clean::txt_note($_POST['acquis_sigle_'  .$acquis_id])        : NULL ;
+    $TAB_ACQUIS[$acquis_id]['SIGLE']     = (isset($_POST['acquis_sigle_'  .$acquis_id]))       ? Clean::txt_note($_POST['acquis_sigle_'  .$acquis_id])        : '' ;
     $TAB_ACQUIS[$acquis_id]['LEGENDE']   = (isset($_POST['acquis_legende_'.$acquis_id]))       ? Clean::txt_note($_POST['acquis_legende_'.$acquis_id])        : '' ;
     if($TAB_ACQUIS[$acquis_id]['ACTIF'])
     {
-      if( is_null($TAB_ACQUIS[$acquis_id]['SEUIL_MIN']) || is_null($TAB_ACQUIS[$acquis_id]['SEUIL_MAX']) || is_null($TAB_ACQUIS[$acquis_id]['VALEUR']) || !$TAB_ACQUIS[$acquis_id]['COULEUR'] || is_null($TAB_ACQUIS[$acquis_id]['SIGLE']) || !$TAB_ACQUIS[$acquis_id]['LEGENDE'] )
+      if( is_null($TAB_ACQUIS[$acquis_id]['SEUIL_MIN']) || is_null($TAB_ACQUIS[$acquis_id]['SEUIL_MAX']) || is_null($TAB_ACQUIS[$acquis_id]['VALEUR']) || !$TAB_ACQUIS[$acquis_id]['COULEUR'] || !$TAB_ACQUIS[$acquis_id]['SIGLE'] || !$TAB_ACQUIS[$acquis_id]['LEGENDE'] )
       {
         Json::end( FALSE , 'Erreur avec les données transmises !' );
       }

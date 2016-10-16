@@ -96,20 +96,6 @@ public static function DB_lister_matieres_etablissement($order_by_name)
 }
 
 /**
- * lister_matiere_siecle
- *
- * @param void
- * @return array
- */
-public static function DB_lister_matiere_siecle()
-{
-  $DB_SQL = 'SELECT matiere_id , matiere_ref ';
-  $DB_SQL.= 'FROM sacoche_matiere ';
-  $DB_SQL.= 'WHERE matiere_siecle=1 ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * lister_jointure_professeurs_matieres
  *
  * @param void
@@ -148,41 +134,22 @@ public static function DB_tester_matiere_reference($matiere_ref,$matiere_id=FALS
 }
 
 /**
- * tester_matiere_siecle
- *
- * @param void
- * @return bool
- */
-public static function DB_tester_matiere_siecle()
-{
-  $DB_SQL = 'SELECT COUNT(*) ';
-  $DB_SQL.= 'FROM sacoche_matiere ';
-  $DB_SQL.= 'WHERE matiere_siecle=1 ';
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * ajouter_matiere_specifique
  *
  * @param string $matiere_ref
  * @param string $matiere_nom
- * @param string $matiere_code si transmis, matière issue d'un import SIECLE
  * @return int
  */
-public static function DB_ajouter_matiere_specifique( $matiere_ref , $matiere_nom , $matiere_code="" )
+public static function DB_ajouter_matiere_specifique($matiere_ref,$matiere_nom)
 {
-  $matiere_active = ($matiere_code) ? 0 : 1 ;
-  $matiere_siecle = ($matiere_code) ? 1 : 0 ;
-  $DB_SQL = 'INSERT INTO sacoche_matiere(matiere_active, matiere_siecle, matiere_usuelle, matiere_famille_id, matiere_nb_demandes, matiere_ordre, matiere_code, matiere_ref, matiere_nom) ';
-  $DB_SQL.= 'VALUES(                    :matiere_active,:matiere_siecle,:matiere_usuelle,:matiere_famille_id,:matiere_nb_demandes,:matiere_ordre,:matiere_code,:matiere_ref,:matiere_nom)';
+  $DB_SQL = 'INSERT INTO sacoche_matiere(matiere_active, matiere_usuelle, matiere_famille_id, matiere_nb_demandes, matiere_ordre, matiere_ref, matiere_nom) ';
+  $DB_SQL.= 'VALUES(                    :matiere_active,:matiere_usuelle,:matiere_famille_id,:matiere_nb_demandes,:matiere_ordre,:matiere_ref,:matiere_nom)';
   $DB_VAR = array(
-    ':matiere_active'      => $matiere_active,
-    ':matiere_siecle'      => $matiere_siecle,
+    ':matiere_active'      => 1,
     ':matiere_usuelle'     => 0,
     ':matiere_famille_id'  => 0,
     ':matiere_nb_demandes' => 0,
     ':matiere_ordre'       => 255,
-    ':matiere_code'        => $matiere_code,
     ':matiere_ref'         => $matiere_ref,
     ':matiere_nom'         => $matiere_nom,
   );
@@ -254,25 +221,6 @@ public static function DB_modifier_matiere_ordre($matiere_id,$matiere_ordre)
   $DB_VAR = array(
     ':matiere_id'    => $matiere_id,
     ':matiere_ordre' => $matiere_ordre,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_matiere_ordre
- *
- * @param int   $matiere_id
- * @param int   $matiere_siecle
- * @return void
- */
-public static function DB_modifier_matiere_siecle($matiere_id,$matiere_siecle)
-{
-  $DB_SQL = 'UPDATE sacoche_matiere ';
-  $DB_SQL.= 'SET matiere_siecle=:matiere_siecle ';
-  $DB_SQL.= 'WHERE matiere_id=:matiere_id ';
-  $DB_VAR = array(
-    ':matiere_id'     => $matiere_id,
-    ':matiere_siecle' => $matiere_siecle,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

@@ -101,13 +101,13 @@ if($nb_delete)
 {
   $s = ($nb_delete>1) ? 's' : '' ;
   echo'<p class="danger">'.$nb_delete.' association'.$s.' d\'enseignant'.$s.' supprimée'.$s.' car matière du livret désormais plus alimentée par les référentiels.</p>'.NL;
-  // Nettoyer si EPI associé à moins de 2 enseignants
-  $nb_delete = DB_STRUCTURE_LIVRET::DB_nettoyer_dispositif_sans_prof( 'epi' );
-  if($nb_delete)
-  {
-    $s = ($nb_delete>1) ? 's' : '' ;
-    echo'<p class="danger">'.$nb_delete.' dispositif'.$s.' supprimé'.$s.' en conséquence faute d\'enseignant(s) rattaché(s).</p>'.NL;
-  }
+}
+// Nettoyer si EPI associé à moins de 2 enseignants / matières
+$nb_delete = DB_STRUCTURE_LIVRET::DB_nettoyer_dispositif_sans_prof( 'epi' );
+if($nb_delete)
+{
+  $s = ($nb_delete>1) ? 's' : '' ;
+  echo'<p class="danger">'.$nb_delete.' dispositif'.$s.' supprimé'.$s.' faute d\'enseignants / matières rattachés.</p>'.NL;
 }
 
 // On liste les thèmes des epis

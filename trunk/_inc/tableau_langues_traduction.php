@@ -105,7 +105,7 @@ $tab_langues_traduction = array(
     'langue'     => array( 'code' => 'pt' , 'nom' => 'Portugais' ),
     'pays'       => array( 'code' => 'PT'  , 'nom' => 'Portugal' ),
     'traducteur' => array(
-      array( 'nom' => 'Luis Batista' , 'mail' => 'batista.6008@gmail.com' ),
+      array( 'nom' => 'Luís Batista' , 'mail' => 'batista.6008@gmail.com' ),
     ),
   ),
   array(

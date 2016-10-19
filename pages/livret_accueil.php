@@ -77,7 +77,6 @@ foreach($DB_TAB as $DB_ROW)
 {
   $tab_nb['parcours'][$DB_ROW['livret_page_ref']][$DB_ROW['livret_parcours_type_code']] = $DB_ROW['nombre'];
 }
-
 ?>
 
 <ul class="puce">

@@ -101,13 +101,13 @@ if($nb_delete)
 {
   $s = ($nb_delete>1) ? 's' : '' ;
   echo'<p class="danger">'.$nb_delete.' association'.$s.' d\'enseignant'.$s.' supprimée'.$s.' car matière du livret désormais plus alimentée par les référentiels.</p>'.NL;
-}
-// Nettoyer si AP associé à aucun enseignant / matière
-$nb_delete = DB_STRUCTURE_LIVRET::DB_nettoyer_dispositif_sans_prof( 'ap' );
-if($nb_delete)
-{
-  $s = ($nb_delete>1) ? 's' : '' ;
-  echo'<p class="danger">'.$nb_delete.' dispositif'.$s.' supprimé'.$s.' faute d\'enseignant(s) / matière(s) rattaché(s).</p>'.NL;
+  // Nettoyer si AP associé à aucun enseignant
+  $nb_delete = DB_STRUCTURE_LIVRET::DB_nettoyer_dispositif_sans_prof( 'ap' );
+  if($nb_delete)
+  {
+    $s = ($nb_delete>1) ? 's' : '' ;
+    echo'<p class="danger">'.$nb_delete.' dispositif'.$s.' supprimé'.$s.' en conséquence faute d\'enseignant(s) rattaché(s).</p>'.NL;
+  }
 }
 
 // Formulaires f_matiere_* et f_prof_*

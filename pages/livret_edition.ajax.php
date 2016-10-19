@@ -80,26 +80,6 @@ $aff_socle_PA             = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
 $aff_socle_EV             = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
 $mode                     = 'auto';
 $nom_bilan_html           = 'releve_HTML_individuel';
-  if(!$aff_coef)  { $texte_coef       = ''; }
-  if(!$aff_socle) { $texte_socle      = ''; }
-  if(!$aff_socle) { $texte_s2016      = ''; }
-  if(!$aff_lien)  { $texte_lien_avant = ''; }
-  if(!$aff_lien)  { $texte_lien_apres = ''; }
-  $toggle_class = ($aff_start) ? 'toggle_moins' : 'toggle_plus' ;
-  $toggle_etat  = ($aff_start) ? '' : ' class="hide"' ;
-  $avec_texte_nombre = ( !$make_officiel || $_SESSION['OFFICIEL']['BULLETIN_ACQUIS_TEXTE_NOMBRE'] ) ? TRUE : FALSE ;
-  $avec_texte_code   = ( !$make_officiel || $_SESSION['OFFICIEL']['BULLETIN_ACQUIS_TEXTE_CODE']   ) ? TRUE : FALSE ;
-$tab_precision_retroactif = array
-(
-  'auto'   => 'notes antérieures selon référentiels',
-  'oui'    => 'avec notes antérieures',
-  'non'    => 'sans notes antérieures',
-  'annuel' => 'notes antérieures de l\'année scolaire',
-);
-$precision_socle  = $only_socle  ? ', restriction au socle' : '' ;
-$precision_niveau = $only_niveau ? ', restriction au niveau de l\'élève' : '' ;
-$texte_periode = 'Du '.$date_debut.' au '.$date_fin.'.';
-$texte_precision = $tab_precision_retroactif[$retroactif].$precision_socle.$precision_niveau.'.';
 */
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -150,26 +130,22 @@ if(substr($periode,0,7)=='periode')
 {
   $PAGE_PERIODICITE = 'periode';
   $JOINTURE_PERIODE = substr($periode,7);
-  $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_periode_info( $JOINTURE_PERIODE , $classe_id );
+  $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_periode_info($JOINTURE_PERIODE);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'Jointure période/classe transmise indéfinie !' );
+    Json::end( FALSE , 'Période transmise "'.html($JOINTURE_PERIODE).'" indéfinie !' );
   }
-  $periode_id       = $DB_ROW['periode_id'];
-  $date_mysql_debut = $DB_ROW['jointure_date_debut'];
-  $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-  $date_debut = To::date_mysql_to_french($date_mysql_debut);
-  $date_fin   = To::date_mysql_to_french($date_mysql_fin);
+  $periode_id = $DB_ROW['periode_id'];
+  $date_debut = $DB_ROW['jointure_date_debut'];
+  $date_fin   = $DB_ROW['jointure_date_fin'];
 }
 else
 {
   $PAGE_PERIODICITE = $periode;
   $JOINTURE_PERIODE = '';
   $periode_id       = 0;
-  $date_mysql_debut = NULL;
-  $date_mysql_fin   = NULL;
-  $date_debut = '';
-  $date_fin   = '';
+  $date_debut       = NULL;
+  $date_fin         = NULL;
 }
 $periode_nom = $tab_periode_livret[$periode];
 

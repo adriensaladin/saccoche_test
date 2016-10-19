@@ -1056,29 +1056,6 @@ if($version_base_structure_actuelle=='2016-10-03')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-10-10 => 2016-10-19
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2016-10-10')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2016-10-19';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // modification sacoche_parametre (paramètres CAS pour ENT)
-    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
-    if( ($connexion_nom=='entlibre_essonne') || ($connexion_nom=='entlibre_picardie') )
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="cas" WHERE parametre_nom="cas_serveur_root" ' );
-    }
-    else if($connexion_nom=='pentila_nero')
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="ent.pentilanero.fr" WHERE parametre_nom="cas_serveur_host" ' );
-    }
-  }
-}
-
 /*
     // nouvelle table [sacoche_livret_saisie]
     $reload_sacoche_livret_saisie = TRUE;

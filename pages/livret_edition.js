@@ -238,6 +238,9 @@ $(document).ready
     (
       function()
       {
+        $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition envisagée vers novembre 2016.'+'</p>' , {'centerOnScroll':true} );
+        return false;
+        
         memo_objet = $(this).attr('class');
         memo_section = tab_classe_action_to_section[memo_objet];
         if(typeof(memo_section)!='undefined')
@@ -250,8 +253,6 @@ $(document).ready
           $('#f_objet').val(memo_objet);
           if( (memo_section=='livret_saisir') || (memo_section=='livret_consulter') )
           {
-            $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition espérée fin novembre 2016.'+'</p>' , {'centerOnScroll':true} );
-            return false;
             // Masquer le tableau ; Afficher la zone action et charger son contenu
             $('#cadre_statut , #table_accueil').hide(0);
             $('#zone_action_eleve').html('<label class="loader">En cours&hellip;</label>').show(0);
@@ -260,7 +261,7 @@ $(document).ready
               {
                 type : 'POST',
                 url : 'ajax.php?page='+PAGE,
-                data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
+                data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
                 dataType : 'json',
                 error : function(jqXHR, textStatus, errorThrown)
                 {
@@ -299,21 +300,14 @@ $(document).ready
           }
           else if(memo_section=='livret_examiner')
           {
-            $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true} );
-            return false;
             // Masquer le tableau ; Afficher la zone de choix des rubriques
-            /*
             $('#cadre_statut , #table_accueil').hide(0);
             $('#zone_action_classe h2').html('Recherche de saisies manquantes');
             $('#zone_chx_rubriques').show(0);
-            */
           }
           else if(memo_section=='livret_imprimer')
           {
-            $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition espérée fin novembre 2016.'+'</p>' , {'centerOnScroll':true} );
-            return false;
             // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
-            /*
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
             configurer_form_choix_classe();
             $('#cadre_statut , #table_accueil').hide(0);
@@ -321,7 +315,6 @@ $(document).ready
             $('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
             $('#zone_action_classe , #zone_'+memo_objet).show(0);
             charger_formulaire_imprimer();
-            */
           }
         }
       }

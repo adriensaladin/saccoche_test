@@ -65,7 +65,7 @@ if(is_file($fichier_section))
 }
 else if($SECTION=='export')
 {
-  echo'<p class="travaux">Fonctionnalité disponible ultérieurement (mise à disposition espérée fin novembre 2016).</p>'.NL;
+  echo'<p class="travaux">Fonctionnalité disponible ultérieurement (mise à disposition envisagée vers novembre 2016).</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 else

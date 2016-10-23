@@ -32,7 +32,7 @@
 class PDF_socle2016_releve extends PDF
 {
 
-  public function initialiser( $socle_individuel_format , $eleve_nb , $composante_nb , $eleve_nb_moyen , $composante_nb_moyen )
+  public function initialiser( $socle_individuel_format , $eleve_nb , $composante_nb , $eleve_nb_moyen , $composante_nb_moyen , $pages_nb_methode )
   {
     $hauteur_entete = 10;
     $largeur = $this->page_largeur_moins_marges / 16;
@@ -42,17 +42,26 @@ class PDF_socle2016_releve extends PDF
     $this->SetAutoPageBreak(FALSE);
     $lignes_nb  = ($socle_individuel_format=='eleve') ? $composante_nb_moyen : $eleve_nb_moyen ;
     $parties_nb = ($socle_individuel_format=='eleve') ? $eleve_nb            : $composante_nb ;
-    // Dans ce cas on met plusieurs parties par page si possible : on calcule maintenant combien et la hauteur de ligne à prendre
-    $hauteur_dispo_par_page     = $this->page_hauteur_moins_marges ;
-    $lignes_nb_total            = $parties_nb * ( 1 + 1 + $lignes_nb + ($this->legende*2) + 1 ) ; // eleves|composantes * [ intitulé-structure + lignes + légende + interligne ]
-    $hauteur_ligne_moyenne      = 6;
-    $lignes_nb_moyen_par_page   = $hauteur_dispo_par_page / $hauteur_ligne_moyenne ;
-    $nb_page_moyen              = max( 1 , round( $lignes_nb_total / $lignes_nb_moyen_par_page ) ); // max 1 pour éviter une division par zéro
-    $parties_nb_par_page         = ceil( $parties_nb / $nb_page_moyen ) ;
-    // $nb_page_calcule = ceil( $parties_nb / $parties_nb_par_page ) ; // devenu inutile
-    $lignes_nb_moyen_partie      = $lignes_nb_total / $parties_nb ;
-    $lignes_nb_calcule_par_page = $parties_nb_par_page * $lignes_nb_moyen_partie ; // $lignes_nb/$nb_page_calcule ne va pas car une partie peut alors être considéré à cheval sur 2 pages
-    $hauteur_ligne_calcule      = $hauteur_dispo_par_page / $lignes_nb_calcule_par_page ;
+    $lignes_nb_par_partie   = 1 + 1 + $lignes_nb + ($this->legende*2) + 1; // intitulé-structure + lignes + légende + interligne
+    $hauteur_dispo_par_page = $this->page_hauteur_moins_marges ;
+    if($pages_nb_methode=='optimise')
+    {
+      // Dans ce cas on met plusieurs parties par page si possible : on calcule maintenant combien et la hauteur de ligne à prendre
+      $lignes_nb_total            = $parties_nb * $lignes_nb_par_partie ; // eleves|composantes * lignes_nb_par_partie
+      $hauteur_ligne_moyenne      = 6;
+      $lignes_nb_moyen_par_page   = $hauteur_dispo_par_page / $hauteur_ligne_moyenne ;
+      $nb_page_moyen              = max( 1 , round( $lignes_nb_total / $lignes_nb_moyen_par_page ) ); // max 1 pour éviter une division par zéro
+      $parties_nb_par_page         = ceil( $parties_nb / $nb_page_moyen ) ;
+      // $nb_page_calcule = ceil( $parties_nb / $parties_nb_par_page ) ; // devenu inutile
+      $lignes_nb_moyen_partie      = $lignes_nb_total / $parties_nb ;
+      $lignes_nb_calcule_par_page = $parties_nb_par_page * $lignes_nb_moyen_partie ; // $lignes_nb/$nb_page_calcule ne va pas car une partie peut alors être considéré à cheval sur 2 pages
+      $hauteur_ligne_calcule      = $hauteur_dispo_par_page / $lignes_nb_calcule_par_page ;
+    }
+    else
+    {
+      // Dans ce cas on met une seule partie par page
+      $hauteur_ligne_calcule      = $hauteur_dispo_par_page / $lignes_nb_par_partie ;
+    }
     $this->lignes_hauteur = round( $hauteur_ligne_calcule , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
     $this->lignes_hauteur = min ( $this->lignes_hauteur , 7.5 ) ;
     $this->cases_hauteur  = $this->lignes_hauteur ;
@@ -63,10 +72,9 @@ class PDF_socle2016_releve extends PDF
     $this->SetXY( 0 , 0 );
   }
 
-  public function entete( $titre , $sous_titre , $nb_lignes )
+  public function entete( $titre , $sous_titre , $nb_lignes , $pages_nb_methode )
   {
-    // On prend une nouvelle page PDF pour chaque élève en cas d'affichage d'un palier avec tous les piliers ; pour un seul pilier, on étudie la place restante... tout en forçant une nouvelle page pour le 1er élève
-    if($this->GetY()==0)
+    if( ($this->GetY()==0) || ($pages_nb_methode=='augmente') )
     {
       $this->AddPage($this->orientation , 'A4');
     }

@@ -204,11 +204,13 @@ class Form
   );
 
   public static $tab_select_recherche_objet = array(
-    array('valeur' => 'matiere_items_bilanMS'   , 'optgroup'=>1 , 'texte' => 'moyenne des scores d\'acquisition') ,
-    array('valeur' => 'matiere_items_bilanPA'   , 'optgroup'=>1 , 'texte' => 'pourcentage d\'items acquis') ,
-    array('valeur' => 'socle_item_pourcentage'  , 'optgroup'=>2 , 'texte' => 'pourcentage d\'items disciplinaires acquis') ,
-    array('valeur' => 'socle_item_validation'   , 'optgroup'=>2 , 'texte' => 'état de validation') ,
-    array('valeur' => 'socle_pilier_validation' , 'optgroup'=>3 , 'texte' => 'état de validation') ,
+    array('valeur' => 'matiere_items_bilanMS'         , 'optgroup'=>1 , 'texte' => 'moyenne des scores d\'acquisition') ,
+    array('valeur' => 'matiere_items_bilanPA'         , 'optgroup'=>1 , 'texte' => 'pourcentage d\'items acquis') ,
+    array('valeur' => 'socle2016_domaine_maitrise'    , 'optgroup'=>2 , 'texte' => 'degré de maîtrise d\'un domaine') ,
+    array('valeur' => 'socle2016_composante_maitrise' , 'optgroup'=>2 , 'texte' => 'degré de maîtrise d\'une composante') ,
+    array('valeur' => 'socle_item_pourcentage'        , 'optgroup'=>3 , 'texte' => 'pourcentage d\'items disciplinaires acquis') ,
+    array('valeur' => 'socle_item_validation'         , 'optgroup'=>3 , 'texte' => 'état de validation') ,
+    array('valeur' => 'socle_pilier_validation'       , 'optgroup'=>4 , 'texte' => 'état de validation') ,
   );
 
   public static $tab_select_statut = array(
@@ -260,8 +262,9 @@ class Form
     ),
     'objet_recherche' => array(
       1 => 'item(s) matière(s)',
-      2 => 'item du socle',
-      3 => 'compétence du socle',
+      2 => 'socle 2016',
+      3 => 'item du socle 2006-2015',
+      4 => 'compétence du socle 2006-2015',
     ),
     'officiel_type' => array(
       'sacoche' => 'SACoche',
@@ -449,8 +452,8 @@ class Form
         $tab_choix_new = compact('eleves_ordre','matiere_id','mode_synthese','fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','fond','legende','marge_min');
         break;
       case 'releve_socle2016' :
-        global $eleves_ordre,$cycle_id,$socle_detail,$type_individuel,$type_synthese,$socle_individuel_format,$socle_synthese_format,$tableau_tri_maitrise_mode,$aff_socle_position,$only_presence,$aff_lien,$aff_start,$couleur,$fond,$legende,$marge_min;
-        $tab_choix_new = compact('eleves_ordre','cycle_id','socle_detail','type_individuel','type_synthese','socle_individuel_format','socle_synthese_format','tableau_tri_maitrise_mode','aff_socle_position','only_presence','aff_lien','aff_start','couleur','fond','legende','marge_min');
+        global $eleves_ordre,$cycle_id,$socle_detail,$type_individuel,$type_synthese,$socle_individuel_format,$socle_synthese_format,$tableau_tri_maitrise_mode,$aff_socle_position,$only_presence,$aff_lien,$aff_start,$couleur,$fond,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','cycle_id','socle_detail','type_individuel','type_synthese','socle_individuel_format','socle_synthese_format','tableau_tri_maitrise_mode','aff_socle_position','only_presence','aff_lien','aff_start','couleur','fond','legende','marge_min','pages_nb');
         break;
       case 'releve_socle' :
         global $eleves_ordre,$palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_start,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$fond,$legende,$marge_min;

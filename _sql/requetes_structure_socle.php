@@ -37,16 +37,18 @@ class DB_STRUCTURE_SOCLE extends DB
  * Lister les items des référentiels reliés au socle
  *
  * @param int    $cycle_id   id du cycle
+ * @param string $liste_domaine_id      facultatif, pour restreindre à 1 ou plusieurs domaines
  * @param string $liste_composante_id   facultatif, pour restreindre à 1 ou plusieurs composantes
  * @return array
  */
-public static function DB_recuperer_associations_items_composantes( $cycle_id , $liste_composante_id=NULL )
+public static function DB_recuperer_associations_items_composantes( $cycle_id , $liste_domaine_id=NULL , $liste_composante_id=NULL )
 {
+  $select_id        = ($liste_domaine_id | $liste_composante_id) ? 'item_id ' : 'item_id , item_nom , matiere_ref , socle_composante_id , socle_domaine_id , ' ;
+  $select_ref       = ($liste_domaine_id | $liste_composante_id) ? '' : 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso ' ;
+  $where_domaine    = ($liste_domaine_id)    ? 'AND socle_domaine_id IN('.$liste_domaine_id.') '       : '' ;
   $where_composante = ($liste_composante_id) ? 'AND socle_composante_id IN('.$liste_composante_id.') ' : '' ;
-  $group_by         = ($liste_composante_id) ? 'item_id ' : 'item_id, socle_composante_id ' ;
-  $DB_SQL = 'SELECT item_id , item_nom , matiere_ref , socle_composante_id , socle_domaine_id , ';
-  $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';
-  $DB_SQL.= 'CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso ';
+  $group_by         = ($liste_domaine_id)    ? 'item_id, socle_domaine_id ' : 'item_id, socle_composante_id ' ;
+  $DB_SQL = 'SELECT '.$select_id.$select_ref;
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -56,7 +58,7 @@ public static function DB_recuperer_associations_items_composantes( $cycle_id , 
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_composante_id) ';
-  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND socle_cycle_id=:cycle_id '.$where_composante;
+  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND socle_cycle_id=:cycle_id '.$where_domaine.$where_composante;
   $DB_SQL.= 'GROUP BY '.$group_by;
   $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC, domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
   $DB_VAR = array( ':cycle_id' => $cycle_id );

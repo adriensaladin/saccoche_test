@@ -46,6 +46,7 @@ $couleur                   = (isset($_POST['f_couleur']))                 ? Clea
 $fond                      = (isset($_POST['f_fond']))                    ? Clean::texte($_POST['f_fond'])                    : '';
 $legende                   = (isset($_POST['f_legende']))                 ? Clean::texte($_POST['f_legende'])                 : '';
 $marge_min                 = (isset($_POST['f_marge_min']))               ? Clean::entier($_POST['f_marge_min'])              : 0;
+$pages_nb                  = (isset($_POST['f_pages_nb']))                ? Clean::texte($_POST['f_pages_nb'])                : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( is_array($_POST['f_eleve']) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_type  = (isset($_POST['f_type']))  ? ( is_array($_POST['f_type'])  ? $_POST['f_type']  : explode(',',$_POST['f_type'])  ) : array() ;
@@ -101,7 +102,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUP
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
 
-if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$tableau_tri_maitrise_mode || !$couleur || !$fond || !$legende || !$marge_min || !$eleves_ordre )
+if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$tableau_tri_maitrise_mode || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || !$eleves_ordre )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }

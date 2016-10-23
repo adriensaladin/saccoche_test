@@ -198,8 +198,7 @@ $(document).ready
           f_couleur                 : { required:true },
           f_fond                    : { required:true },
           f_legende                 : { required:true },
-          f_marge_min               : { required:true },
-          f_pages_nb                : { required:true }
+          f_marge_min               : { required:true }
         },
         messages :
         {
@@ -219,8 +218,7 @@ $(document).ready
           f_couleur                 : { required:"couleur manquante" },
           f_fond                    : { required:"fond manquant" },
           f_legende                 : { required:"légende manquante" },
-          f_marge_min               : { required:"marge mini manquante" },
-          f_pages_nb                : { required:"nb pages manquant" }
+          f_marge_min               : { required:"marge mini manquante" }
         },
         errorElement : "label",
         errorClass : "erreur",

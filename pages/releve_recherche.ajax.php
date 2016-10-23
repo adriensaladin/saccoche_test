@@ -46,21 +46,6 @@ $tab_compet_liste = Clean::map('entier',$tab_compet_liste);
 $compet_liste  = implode(',',$tab_compet_liste);
 $compet_nombre = count($tab_compet_liste);
 
-// domaine ou composante du socle 2016
-$cycle_id = $domaine_id = $composante_id = 0 ;
-if( ($critere_objet=='socle2016_domaine_maitrise') && !empty($_POST['f_select_domaine']) )
-{
-  list( $cycle_id , $domaine_id ) = explode('_',$_POST['f_select_domaine']) + array_fill(0,2,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
-  $cycle_id   = Clean::entier($cycle_id);
-  $domaine_id = Clean::entier($domaine_id);
-}
-if( ($critere_objet=='socle2016_composante_maitrise') && !empty($_POST['f_select_composante']) )
-{
-  list( $cycle_id , $composante_id ) = explode('_',$_POST['f_select_composante']) + array_fill(0,2,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
-  $cycle_id      = Clean::entier($cycle_id);
-  $composante_id = Clean::entier($composante_id);
-}
-
 // item ou pilier socle
 $socle_item_id   = (isset($_POST['f_socle_item_id'])) ? Clean::entier($_POST['f_socle_item_id']) : 0;
 $socle_pilier_id = (isset($_POST['f_select_pilier'])) ? Clean::entier($_POST['f_select_pilier']) : 0;
@@ -71,25 +56,21 @@ $tab_matiere_id = (isset($_POST['f_matiere'])) ? ( (is_array($_POST['f_matiere']
 $tab_matiere_id = array_filter( Clean::map('entier',$tab_matiere_id) , 'positif' );
 
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$critere_tab_seuil_acquis   = ( isset($_POST['f_critere_seuil_acquis'])   && is_array($_POST['f_critere_seuil_acquis'])   ) ? $_POST['f_critere_seuil_acquis']   : array();
-$critere_tab_seuil_maitrise = ( isset($_POST['f_critere_seuil_maitrise']) && is_array($_POST['f_critere_seuil_maitrise']) ) ? $_POST['f_critere_seuil_maitrise'] : array();
-$critere_tab_seuil_valide   = ( isset($_POST['f_critere_seuil_valide'])   && is_array($_POST['f_critere_seuil_acquis'])   ) ? $_POST['f_critere_seuil_valide']   : array();
-$nb_criteres_acquis   = count($critere_tab_seuil_acquis);
-$nb_criteres_maitrise = count($critere_tab_seuil_maitrise);
-$nb_criteres_valide   = count($critere_tab_seuil_valide);
+$critere_tab_seuil_acquis = ( (isset($_POST['f_critere_seuil_acquis'])) && (is_array($_POST['f_critere_seuil_acquis'])) ) ? $_POST['f_critere_seuil_acquis'] : array();
+$critere_tab_seuil_valide = ( (isset($_POST['f_critere_seuil_valide'])) && (is_array($_POST['f_critere_seuil_acquis'])) ) ? $_POST['f_critere_seuil_valide'] : array();
+$nb_criteres_acquis = count($critere_tab_seuil_acquis);
+$nb_criteres_valide = count($critere_tab_seuil_valide);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Vérification des données transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$is_matiere_items_bilanMS     = ( ($critere_objet=='matiere_items_bilanMS')         && $compet_nombre              && $nb_criteres_acquis )   ? TRUE : FALSE ;
-$is_matiere_items_bilanPA     = ( ($critere_objet=='matiere_items_bilanPA')         && $compet_nombre              && $nb_criteres_acquis )   ? TRUE : FALSE ;
-$is_s2016_domaine_maitrise    = ( ($critere_objet=='socle2016_domaine_maitrise')    && $cycle_id && $domaine_id    && $nb_criteres_maitrise ) ? TRUE : FALSE ;
-$is_s2016_composante_maitrise = ( ($critere_objet=='socle2016_composante_maitrise') && $cycle_id && $composante_id && $nb_criteres_maitrise ) ? TRUE : FALSE ;
-$is_socle_item_pourcentage    = ( ($critere_objet=='socle_item_pourcentage')        && $socle_item_id              && $nb_criteres_acquis )   ? TRUE : FALSE ;
-$is_socle_item_validation     = ( ($critere_objet=='socle_item_validation')         && $socle_item_id              && $nb_criteres_valide )   ? TRUE : FALSE ;
-$is_socle_pilier_validation   = ( ($critere_objet=='socle_pilier_validation')       && $socle_pilier_id            && $nb_criteres_valide )   ? TRUE : FALSE ;
-$critere_valide = ( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA || $is_s2016_domaine_maitrise || $is_s2016_composante_maitrise || $is_socle_item_pourcentage || $is_socle_item_validation || $is_socle_pilier_validation ) ? TRUE : FALSE ;
+$is_matiere_items_bilanMS   = ( ($critere_objet=='matiere_items_bilanMS')   && $compet_nombre   && $nb_criteres_acquis ) ? TRUE : FALSE ;
+$is_matiere_items_bilanPA   = ( ($critere_objet=='matiere_items_bilanPA')   && $compet_nombre   && $nb_criteres_acquis ) ? TRUE : FALSE ;
+$is_socle_item_pourcentage  = ( ($critere_objet=='socle_item_pourcentage')  && $socle_item_id   && $nb_criteres_acquis ) ? TRUE : FALSE ;
+$is_socle_item_validation   = ( ($critere_objet=='socle_item_validation')   && $socle_item_id   && $nb_criteres_valide ) ? TRUE : FALSE ;
+$is_socle_pilier_validation = ( ($critere_objet=='socle_pilier_validation') && $socle_pilier_id && $nb_criteres_valide ) ? TRUE : FALSE ;
+$critere_valide = ( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA || $is_socle_item_pourcentage || $is_socle_item_validation || $is_socle_pilier_validation ) ? TRUE : FALSE ;
 
 $tab_types = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
 
@@ -125,7 +106,7 @@ foreach($tab_eleve as $DB_ROW)
   $tab_eleve_id[] = $DB_ROW['user_id'];
   $tab_eleve_langue[$DB_ROW['user_id']] = $DB_ROW['eleve_langue'];
 }
-$liste_eleve_id = implode(',',$tab_eleve_id);
+$liste_eleve = implode(',',$tab_eleve_id);
 
 // Pour un professeur on vérifie que ce sont bien ses élèves
 if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') )
@@ -171,55 +152,19 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
     );
   }
   // Un directeur effectuant une recherche sur un grand nombre d'items pour tous les élèves de l'établissement peut provoquer un dépassement de mémoire.
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve_id , $compet_liste , 0 /*matiere_id*/ , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , TRUE /*onlynote*/ );
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $compet_liste , 0 /*matiere_id*/ , NULL /*date_mysql_debut*/ , NULL /*date_mysql_fin*/ , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , TRUE /*onlynote*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
   }
 }
 
-// =====> Cas n°3 : degré de maîtrise d'un domaine du socle 2016
-// =====> Cas n°4 : degré de maîtrise d'une composante du socle 2016
-
-if( $is_s2016_domaine_maitrise || $is_s2016_composante_maitrise )
-{
-  // Récupération de la liste des items
-  $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes( $cycle_id , $domaine_id , $composante_id );
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $tab_item[$DB_ROW['item_id']] = $DB_ROW['item_id'];
-  }
-  if(count($tab_item))
-  {
-    $liste_item_id = implode(',',$tab_item);
-    $tab_item = array();
-    $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve_id , $liste_item_id , 0 /*matiere_id*/ , FALSE /*date_mysql_debut*/ , FALSE /*date_mysql_fin*/ , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , TRUE /*onlynote*/ , FALSE /*first_order_by_date*/ );
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
-      $tab_item[$DB_ROW['item_id']] = TRUE;
-    }
-    if(count($tab_item))
-    {
-      $liste_item_id = implode(',',array_keys($tab_item));
-      $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , FALSE /*detail*/ );
-      foreach($DB_TAB as $DB_ROW)
-      {
-        $tab_item[$DB_ROW['item_id']] = array(
-          'calcul_methode' => $DB_ROW['calcul_methode'],
-          'calcul_limite'  => $DB_ROW['calcul_limite'],
-        );
-      }
-    }
-  }
-}
-
-// =====> Cas n°5 : pourcentage d'items disciplinaires acquis d'un item du socle
+// =====> Cas n°3 : pourcentage d'items disciplinaires acquis d'un item du socle
 
 if( $is_socle_item_pourcentage )
 {
   $is_langue = (in_array($socle_item_id,$tab_langue_items)) ? TRUE : FALSE ;
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_palier_sans_infos_items($liste_eleve_id , $socle_item_id , $_SESSION['USER_PROFIL_TYPE']);
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_palier_sans_infos_items($liste_eleve , $socle_item_id , $_SESSION['USER_PROFIL_TYPE']);
   foreach($DB_TAB as $DB_ROW)
   {
     $test_comptabilise = ($mode=='auto') ? ( !$is_langue || in_array($DB_ROW['matiere_id'],$tab_langues[$tab_eleve_langue[$DB_ROW['eleve_id']]]['tab_matiere_id']) ) : in_array($DB_ROW['matiere_id'],$tab_matiere_id) ;
@@ -241,18 +186,10 @@ if( $is_socle_item_pourcentage )
       );
     }
   }
-  // Récupérer et mettre en session les seuils pour le palier
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_seuils_valeurs('cycle'.$cycle_id);
-  foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
-  {
-    $id = $livret_colonne_id % 10 ; // 1 2 3 4
-    $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW[0]['livret_seuil_min'];
-    $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW[0]['livret_seuil_max'];
-  }
 }
 
-// =====> Cas n°6 : état de validation d'un item du socle
-// =====> Cas n°7 : état de validation d'un pilier du socle
+// =====> Cas n°4 : état de validation d'un item du socle
+// =====> Cas n°5 : état de validation d'un pilier du socle
 
 if( $is_socle_item_validation || $is_socle_pilier_validation )
 {
@@ -266,7 +203,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
   // Maintenant on complète avec les valeurs de la base
   if($is_socle_item_validation)
   {
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($liste_eleve_id,$socle_item_id,$domaine_id=0,$pilier_id=0,$palier_id=0);
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_entree($liste_eleve,$socle_item_id,$domaine_id=0,$pilier_id=0,$palier_id=0);
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_user_validation[$DB_ROW['user_id']] = array('etat'=>$DB_ROW['validation_entree_etat'],'date'=>To::date_mysql_to_french($DB_ROW['validation_entree_date']),'info'=>$DB_ROW['validation_entree_info']);
@@ -274,7 +211,7 @@ if( $is_socle_item_validation || $is_socle_pilier_validation )
   }
   elseif($is_socle_pilier_validation)
   {
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($liste_eleve_id,$socle_pilier_id,$palier_id=0);
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_jointure_user_pilier($liste_eleve,$socle_pilier_id,$palier_id=0);
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_user_validation[$DB_ROW['user_id']] = array('etat'=>$DB_ROW['validation_pilier_etat'],'date'=>To::date_mysql_to_french($DB_ROW['validation_pilier_date']),'info'=>$DB_ROW['validation_pilier_info']);
@@ -316,7 +253,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
       $tab_score_item = array();
       foreach($tab_eval[$eleve_id] as $item_id => $tab_devoirs)
       {
-        extract($tab_item[$item_id]); // $item_coef $calcul_methode $calcul_limite
+        extract($tab_item[$item_id]);  // $item_coef $calcul_methode $calcul_limite
         // calcul du bilan de l'item
         $tab_score_item[$item_id] = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
       }
@@ -373,53 +310,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
   }
 }
 
-// =====> Cas n°3 : degré de maîtrise d'un domaine du socle 2016
-// =====> Cas n°4 : degré de maîtrise d'une composante du socle 2016
-
-if( $is_s2016_domaine_maitrise || $is_s2016_composante_maitrise )
-{
-  $tab_init_score = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array( 'nb'=>0 , '%'=>FALSE ) ;
-  // Pour chaque élève...
-  foreach($tab_eleve_id as $eleve_id)
-  {
-    $tab_score_eleve[$eleve_id] = $tab_init_score;
-    // Si cet élève a été évalué...
-    if(isset($tab_eval[$eleve_id]))
-    {
-      // Pour chaque item évalué...
-      foreach($tab_eval[$eleve_id] as $item_id => $tab_devoirs)
-      {
-        extract($tab_item[$item_id]); // $calcul_methode $calcul_limite
-        // calcul du bilan de l'item
-        $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
-        if($score!==FALSE)
-        {
-          // on détermine si il est acquis ou pas
-          $indice = OutilBilan::determiner_etat_acquisition( $score );
-          $tab_score_eleve[$eleve_id][$indice]++;
-          $tab_score_eleve[$eleve_id]['nb']++;
-        }
-      }
-      // On calcule les pourcentages d'acquisition à partir du nombre d'items de chaque état
-      $tab_score_eleve[$eleve_id]['%'] = ($tab_score_eleve[$eleve_id]['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_score_eleve[$eleve_id] , $tab_score_eleve[$eleve_id]['nb'] ) : FALSE ;
-    }
-  }
-  // On ne garde que les lignes qui satisfont au critère demandé
-  $tab_tr = array();
-  foreach($tab_eleve as $tab)
-  {
-    extract($tab);  // $user_id $user_nom $user_prenom $eleve_langue
-    $pourcentage = $tab_score_eleve[$user_id]['%'];
-    $indice = OutilBilan::determiner_degre_maitrise($pourcentage) ;
-    if( in_array( $indice , $critere_tab_seuil_maitrise ) )
-    {
-      $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-      $tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_maitrise( $indice , $pourcentage , 'score' /*methode_tri*/ , '%' /*pourcent*/ ).'</tr>';
-    }
-  }
-}
-
-// =====> Cas n°5 : pourcentage d'items disciplinaires acquis d'un item du socle
+// =====> Cas n°3 : pourcentage d'items disciplinaires acquis d'un item du socle
 
 if( $is_socle_item_pourcentage )
 {
@@ -465,8 +356,8 @@ if( $is_socle_item_pourcentage )
   }
 }
 
-// =====> Cas n°6 : état de validation d'un item du socle
-// =====> Cas n°7 : état de validation d'un pilier du socle
+// =====> Cas n°4 : état de validation d'un item du socle
+// =====> Cas n°5 : état de validation d'un pilier du socle
 
 if( $is_socle_item_validation || $is_socle_pilier_validation )
 {

@@ -30,15 +30,6 @@ $TITRE = html(Lang::_("Recherche ciblée"));
 
 // Fabrication des éléments select du formulaire
 
-$select_critere_seuil_maitrise = '';
-$tab_options = array( 1=>'Maîtrise insuffisante' , 2=>'Maîtrise fragile' , 3=>'Maîtrise satisfaisante' , 4=>'Très bonne maîtrise' );
-foreach($tab_options as $val => $txt)
-{
-  $class   = ($val==1) ? ' class="check"' : '' ;
-  $checked = ($val==1) ? ' checked'       : '' ;
-  $select_critere_seuil_maitrise .= '<label for="f_critere_seuil_maitrise_'.$val.'"'.$class.'><input type="checkbox" name="f_critere_seuil_maitrise[]" id="f_critere_seuil_maitrise_'.$val.'" value="'.$val.'"'.$checked.' /> '.html($txt).'</label>';
-}
-
 $select_critere_seuil_acquis = '';
 foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
 {
@@ -58,13 +49,11 @@ foreach($tab_options as $val => $txt)
 
 $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl(FALSE/*sans*/) ;
 
-$select_groupe          = HtmlForm::afficher_select($tab_groupes                                                      , 'f_groupe'            /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,   'regroupements' /*optgroup*/ );
-$select_critere_objet   = HtmlForm::afficher_select(Form::$tab_select_recherche_objet                                 , 'f_critere_objet'     /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'objet_recherche' /*optgroup*/ );
-$select_matiere         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()                      , 'f_matiere'           /*select_nom*/ , FALSE /*option_first*/ , TRUE  /*selection*/ ,                '' /*optgroup*/ , TRUE /*multiple*/);
-$select_domaines        = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_socle2016_domaines()                  , 'f_select_domaine'    /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,          'cycles' /*optgroup*/ );
-$select_composantes     = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_socle2016_composantes()               , 'f_select_composante' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,        'domaines' /*optgroup*/ );
-$select_piliers         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers()                     , 'f_select_pilier'     /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,         'paliers' /*optgroup*/ );
-$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,                '' /*optgroup*/ );
+$select_groupe          = HtmlForm::afficher_select($tab_groupes                                                      , 'f_groupe'          /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,   'regroupements' /*optgroup*/ );
+$select_critere_objet   = HtmlForm::afficher_select(Form::$tab_select_recherche_objet                                 , 'f_critere_objet'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ , 'objet_recherche' /*optgroup*/ );
+$select_matiere         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl()                      , 'f_matiere'         /*select_nom*/ , FALSE /*option_first*/ , TRUE  /*selection*/ ,                '' /*optgroup*/ , TRUE /*multiple*/);
+$select_piliers         = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_paliers_piliers()                     , 'f_select_pilier'   /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,         'paliers' /*optgroup*/ );
+$select_selection_items = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_selection_items($_SESSION['USER_ID']) , 'f_selection_items' /*select_nom*/ ,    '' /*option_first*/ , FALSE /*selection*/ ,                '' /*optgroup*/ );
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_ETATS_ACQUISITION']-1).';' );
@@ -81,12 +70,6 @@ Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_
   <span id="span_matiere_items" class="hide">
     <label class="tab">Item(s) matière(s) :</label><input id="f_matiere_items_nombre" name="f_matiere_items_nombre" size="10" type="text" value="" readonly /><input id="f_matiere_items_liste" name="f_matiere_items_liste" type="text" value="" class="invisible" /><q class="choisir_compet" title="Voir ou choisir les items."></q><br />
   </span>
-  <span id="span_domaine_maitrise" class="hide">
-    <label class="tab" for="f_select_domaine">Domaine (socle 2016) :</label><?php echo $select_domaines ?><br />
-  </span>
-  <span id="span_composante_maitrise" class="hide">
-    <label class="tab" for="f_select_composante">Composante (s. 2016) :</label><?php echo $select_composantes ?><br />
-  </span>
   <span id="span_socle_item" class="hide">
     <label class="tab">Item du socle :</label><input id="f_socle_item_nom" name="f_socle_item_nom" size="90" maxlength="256" type="text" value="" readonly /><input id="f_socle_item_id" name="f_socle_item_id" type="text" value="0" class="invisible" /><q class="choisir_compet" title="Sélectionner un item du socle commun."></q><br />
   </span>
@@ -100,9 +83,6 @@ Layout::add( 'js_inline_before' , 'var max_etats_acquis  = '.($_SESSION['NOMBRE_
     <label class="tab">Items récoltés :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto" checked /> Automatique (recommandé) <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Items de tous les référentiels de langue, sauf pour la compétence 2 où on ne prend que les items des référentiels de la langue associée à l'élève." /></label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel" /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label>
     <div id="div_matiere" class="hide"><span class="tab"></span><span id="f_matiere" class="select_multiple"><?php echo $select_matiere ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></div>
   </div>
-  <span id="span_maitrise" class="hide">
-    <label class="tab" for="f_critere_seuil_maitrise">Degré(s) :</label><span id="f_critere_seuil_maitrise" class="select_multiple"><?php echo $select_critere_seuil_maitrise ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span><br />
-  </span>
   <span id="span_acquisition" class="hide">
     <label class="tab" for="f_critere_seuil_acquis">État(s) :</label><span id="f_critere_seuil_acquis" class="select_multiple"><?php echo $select_critere_seuil_acquis ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span><br />
   </span>

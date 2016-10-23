@@ -1107,58 +1107,6 @@ public static function DB_OPT_socle2016_cycles($only_used=FALSE)
 }
 
 /**
- * Retourner un tableau [valeur texte optgroup] des domaines du socle 2016 pour les référentiels en place dans l'établissement
- *
- * @param void
- * @return array|string
- */
-public static function DB_OPT_socle2016_domaines()
-{
-  $DB_SQL = 'SELECT CONCAT(socle_cycle_id,"_",socle_domaine_id) AS valeur, CONCAT(socle_cycle_nom," - Domaine ",socle_domaine_ordre," : ",socle_domaine_nom_simple) AS texte, socle_cycle_id AS optgroup, socle_cycle_nom AS optgroup_info ';
-  $DB_SQL.= 'FROM sacoche_jointure_referentiel_socle ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_cycle USING(socle_cycle_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_composante_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_domaine USING (socle_domaine_id) ';
-  $DB_SQL.= 'GROUP BY socle_cycle_id, socle_domaine_id ';
-  $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC, socle_domaine_ordre ASC';
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $tab_optgroup = array();
-  foreach($DB_TAB as $key => $DB_ROW)
-  {
-    $tab_optgroup[$DB_ROW['optgroup']] = $DB_ROW['optgroup_info'];
-    unset($DB_TAB[$key]['optgroup_info']);
-  }
-  Form::$tab_select_optgroup['cycles'] = $tab_optgroup;
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucun item de référentiel n\'est rattaché au socle 2016.' ;
-}
-
-/**
- * Retourner un tableau [valeur texte optgroup] des composantes du socle 2016 pour les référentiels en place dans l'établissement
- *
- * @param void
- * @return array|string
- */
-public static function DB_OPT_socle2016_composantes()
-{
-  $DB_SQL = 'SELECT CONCAT(socle_cycle_id,"_",socle_composante_id) AS valeur, CONCAT(socle_cycle_nom," - Domaine ",socle_domaine_ordre," - Composante ",socle_composante_ordre," : ",socle_composante_nom_simple) AS texte, CONCAT(socle_cycle_id,"_",socle_domaine_id) AS optgroup, CONCAT(socle_cycle_nom," - Domaine ",socle_domaine_ordre," : ",socle_domaine_nom_simple) AS optgroup_info ';
-  $DB_SQL.= 'FROM sacoche_jointure_referentiel_socle ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_cycle USING(socle_cycle_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_composante_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_domaine USING (socle_domaine_id) ';
-  $DB_SQL.= 'GROUP BY socle_cycle_id, socle_composante_id ';
-  $DB_SQL.= 'ORDER BY socle_cycle_ordre ASC, socle_domaine_ordre ASC, socle_composante_ordre ASC';
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $tab_optgroup = array();
-  foreach($DB_TAB as $key => $DB_ROW)
-  {
-    $tab_optgroup[$DB_ROW['optgroup']] = $DB_ROW['optgroup_info'];
-    unset($DB_TAB[$key]['optgroup_info']);
-  }
-  Form::$tab_select_optgroup['domaines'] = $tab_optgroup;
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucun item de référentiel n\'est rattaché au socle 2016.' ;
-}
-
-/**
  * Retourner un tableau [valeur texte] des paliers du socle de l'établissement
  *
  * @param void

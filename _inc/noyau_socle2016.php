@@ -364,7 +364,7 @@ if($type_individuel)
   {
     if($make_pdf)
     {
-      $releve_PDF_individuel->initialiser( $socle_individuel_format , $eleve_nb , $composante_nb , $eleve_nb_moyen , $composante_nb_moyen , $pages_nb );
+      $releve_PDF_individuel->initialiser( $socle_individuel_format , $eleve_nb , $composante_nb , $eleve_nb_moyen , $composante_nb_moyen );
     }
     // Pour chaque élève...
     foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
@@ -387,7 +387,7 @@ if($type_individuel)
             if($make_pdf)
             {
               $nb_lignes  = $tab_contenu_presence['eleve'][$eleve_id];
-              $releve_PDF_individuel->entete( $titre , $sous_titre , $nb_lignes , $pages_nb );
+              $releve_PDF_individuel->entete( $titre , $sous_titre , $nb_lignes );
             }
             // Pour chaque domaine / composante...
             foreach($tab_socle_domaine as $socle_domaine_id => $socle_domaine_nom)

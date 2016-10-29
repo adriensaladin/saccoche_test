@@ -1809,7 +1809,7 @@ INSERT INTO sacoche_matiere VALUES
 (3731, 0, 0, 0,  37, 0, 255, "373100", "ISCNU", "Informatique et sciences du numérique"),
 (3732, 0, 0, 0,  37, 0, 255, "373200", "SIGET", "Systèmes d'information de gestion"),
 (3733, 0, 0, 0,  37, 0, 255, "373300", "SYSIG", "Système d'information de gestion"),
-(3734, 0, 0, 0,  37, 0, 255, "373400", "SISR" , "Solutions d'infrastructure, systèmes et réseaux"),
+(3734, 0, 0, 0,  37, 0, 255, "373400", "SISR" , "Solutions d’infrastructure, systèmes et réseaux"),
 (3735, 0, 0, 0,  37, 0, 255, "373500", "SLAM" , "Solutions logicielles et applications métiers"),
 (3736, 0, 0, 0,  37, 0, 255, "373600", "PRPEN", "Projets personnalisés encadrés"),
 (3737, 0, 0, 0,  37, 0, 255, "373700", "ICN"  , "Informatique et création numérique"),

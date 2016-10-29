@@ -241,7 +241,7 @@ if( $is_socle_item_pourcentage )
       );
     }
   }
-  // Récupérer et mettre en session les seuils pour les degrés de maîtrise du livret
+  // Récupérer et mettre en session les seuils pour le palier
   $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_seuils_valeurs('cycle'.$cycle_id);
   foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
   {

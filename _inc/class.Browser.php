@@ -85,7 +85,7 @@ class Browser
   {
     $tab_retour = array( 'modele'=>'' , 'version'=>0 );
     // Variable à analyser
-    $UserAgent = ($UserAgent) ? Clean::lower($UserAgent) : ( isset($_SERVER['HTTP_USER_AGENT']) ? Clean::lower($_SERVER['HTTP_USER_AGENT']) : '' ) ;
+    $UserAgent = ($UserAgent) ? strtolower($UserAgent) : ( isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '' ) ;
     // Détection du navigateur et si possible de sa version
     if(strstr($UserAgent,'Edge'))
     {
@@ -164,7 +164,7 @@ class Browser
     $tab_chaine = array();
     foreach(Browser::$tab_navigo as $navigo_ref => $navigo_name)
     {
-      $tab_chaine[$navigo_ref] = '<a target="_blank" href="'.constant(Clean::upper($navigo_ref).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo_ref.'">'.ucfirst($navigo_ref).' '.constant(Clean::upper($navigo_ref).'_VERSION_LAST').'</span></a>';
+      $tab_chaine[$navigo_ref] = '<a target="_blank" href="'.constant(strtoupper($navigo_ref).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo_ref.'">'.ucfirst($navigo_ref).' '.constant(strtoupper($navigo_ref).'_VERSION_LAST').'</span></a>';
     }
     // Affichage
     return $tab_chaine;
@@ -184,8 +184,8 @@ class Browser
     {
       if($tab_return['modele']==$navigo_ref)
       {
-        $version_mini_requise    = constant(Clean::upper($navigo_ref).'_VERSION_MINI_REQUISE');
-        $version_mini_conseillee = constant(Clean::upper($navigo_ref).'_VERSION_MINI_CONSEILLEE');
+        $version_mini_requise    = constant(strtoupper($navigo_ref).'_VERSION_MINI_REQUISE');
+        $version_mini_conseillee = constant(strtoupper($navigo_ref).'_VERSION_MINI_CONSEILLEE');
         if($tab_return['version']<$version_mini_requise)
         {
           $alerte = 'Votre navigateur est trop ancien pour utiliser <em>SACoche</em> ! '.$navigo_name.' est utilisable à partir de sa version '.$version_mini_requise.'.';

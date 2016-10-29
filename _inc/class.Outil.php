@@ -350,8 +350,8 @@ class Outil
   public static function pourcentage_commun( $string1 , $string2 )
   {
     // levenshtein() est sensible à la casse
-    $string1 = Clean::lower($string1);
-    $string2 = Clean::lower($string2);
+    $string1 = strtolower($string1);
+    $string2 = strtolower($string2);
     // levenshtein() requiert des arguments < 256 caractères (renvoie -1 sinon)
     $string1_longueur = min( mb_strlen($string1) , 255 );
     if($string1_longueur==255)

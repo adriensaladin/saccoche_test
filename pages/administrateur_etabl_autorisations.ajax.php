@@ -115,7 +115,7 @@ if(count($tab_profils_inconnus))
 
 DB_STRUCTURE_COMMUN::DB_modifier_parametres( array($f_objet=>$f_profils) );
 // ne pas oublier de mettre aussi à jour la session
-$_SESSION[Clean::upper($f_objet)] = $f_profils;
+$_SESSION[strtoupper($f_objet)] = $f_profils;
 Json::end( TRUE );
 
 ?>

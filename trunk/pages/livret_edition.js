@@ -210,11 +210,17 @@ $(document).ready
     var memo_page_ref      = '';
     var memo_periode       = '';
     var memo_eleve         = 0;
-    var memo_rubrique_nom  = 0;
-    var memo_rubrique_type = '';
+    var memo_action        = ''; // pour distinguer ajouter / modifier
+    var memo_conteneur     = [];
+    var memo_saisie_id     = 0;
+    var memo_objet_id      = '';
+    var memo_rubrique_type = ''; // eval | socle | epi | ap | parcours | synthese | viesco
     var memo_rubrique_id   = 0;
+    var memo_saisie_objet  = ''; // position | appreciation | elements
+    var memo_page_colonne  = ''; // objectif | position | moyenne | pourcentage
     var memo_html          = '';
-    var memo_long_max      = '';
+    var memo_div_assiduite = '';
+    var memo_long_max      = 0;
     var memo_auto_next     = false;
     var memo_auto_prev     = false;
     var memo_eleve_first   = 0;
@@ -283,9 +289,9 @@ $(document).ready
                       // A priori on ne passe jamais là car ce n'est que poru les bulletins et on commence toujours par l'éppréciation sur la classe
                       eval( responseJSON['script'] );
                     }
-                    memo_eleve       = $('#go_selection_eleve option:selected').val();
-                    memo_eleve_first = $('#go_selection_eleve option:first').val();
-                    memo_eleve_last  = $('#go_selection_eleve option:last').val();
+                    memo_eleve       =  parseInt( $('#go_selection_eleve option:selected').val() , 10 );
+                    memo_eleve_first =  parseInt( $('#go_selection_eleve option:first'   ).val() , 10 );
+                    memo_eleve_last  =  parseInt( $('#go_selection_eleve option:last'    ).val() , 10 );
                     masquer_element_navigation_choix_eleve();
                     if($('#voir_photo').length==0)
                     {
@@ -439,7 +445,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+'livret_importer'+'&f_action='+'enregistrer_saisie_csv'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_import_info='+$('#f_import_info').val()+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+'livret_importer'+'&f_action='+'enregistrer_saisie_csv'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_import_info='+$('#f_import_info').val()+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -543,7 +549,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'charger'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'charger'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&'+$('#form_hidden').serialize(),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -576,7 +582,7 @@ $(document).ready
               {
                 memo_auto_next = false;
                 memo_auto_prev = false;
-                $('#'+memo_rubrique_nom).find('button').click();
+                $('#'+memo_objet_id).find('button').click();
               }
             }
           }
@@ -603,7 +609,7 @@ $(document).ready
       '#go_premier_eleve',
       function()
       {
-        var eleve_id = $('#go_selection_eleve option:first').val();
+        var eleve_id = parseInt( $('#go_selection_eleve option:first').val() , 10 );
         charger_nouvel_eleve(eleve_id,false);
       }
     );
@@ -614,7 +620,7 @@ $(document).ready
       '#go_dernier_eleve',
       function()
       {
-        var eleve_id = $('#go_selection_eleve option:last').val();
+        var eleve_id = parseInt( $('#go_selection_eleve option:last').val() , 10 );
         charger_nouvel_eleve(eleve_id,false);
       }
     );
@@ -627,7 +633,7 @@ $(document).ready
       {
         if( $('#go_selection_eleve option:selected').prev().length )
         {
-          var eleve_id = $('#go_selection_eleve option:selected').prev().val();
+          var eleve_id = parseInt( $('#go_selection_eleve option:selected').prev().val() , 10 );
           charger_nouvel_eleve(eleve_id,false);
         }
       }
@@ -641,7 +647,7 @@ $(document).ready
       {
         if( $('#go_selection_eleve option:selected').next().length )
         {
-          var eleve_id = $('#go_selection_eleve option:selected').next().val();
+          var eleve_id = parseInt( $('#go_selection_eleve option:selected').next().val() , 10 );
           charger_nouvel_eleve(eleve_id,false);
         }
       }
@@ -653,7 +659,7 @@ $(document).ready
       '#go_selection_eleve',
       function()
       {
-        var eleve_id = $('#go_selection_eleve option:selected').val();
+        var eleve_id = parseInt( $('#go_selection_eleve option:selected').val() , 10 );
         charger_nouvel_eleve(eleve_id,false);
       }
     );
@@ -674,7 +680,7 @@ $(document).ready
           $('#change_mode').attr('class',"stats").html('Interface graphique');
           $('#f_mode').val('texte');
         }
-        var eleve_id = $('#go_selection_eleve option:selected').val();
+        var eleve_id = parseInt( $('#go_selection_eleve option:selected').val() , 10 );
         charger_nouvel_eleve(eleve_id,true);
       }
     );
@@ -689,6 +695,9 @@ $(document).ready
       '#saisir_deport',
       function()
       {
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true} );
+        return false;
+        /*
         $('#msg_import').removeAttr('class').html("");
         $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
         $.ajax
@@ -696,7 +705,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+'livret_importer'+'&f_action='+'generer_csv_vierge'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+'livret_importer'+'&f_action='+'generer_csv_vierge'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -719,6 +728,7 @@ $(document).ready
             }
           }
         );
+        */
       }
     );
 
@@ -732,8 +742,12 @@ $(document).ready
       '#archiver_imprimer',
       function()
       {
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true} );
+        return false;
+        /*
         $('#ajax_msg_archiver_imprimer').removeAttr('class').html("");
         $.fancybox( { 'href':'#zone_archiver_imprimer' , onStart:function(){$('#zone_archiver_imprimer').css("display","block");} , onClosed:function(){$('#zone_archiver_imprimer').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
+        */
       }
     );
 
@@ -753,7 +767,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+f_action+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_action='+f_action+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -789,6 +803,9 @@ $(document).ready
       '#simuler_impression',
       function()
       {
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true} );
+        return false;
+        /*
         $('#f_parite').val(0);
         $('#f_listing_eleves').val(memo_eleve);
         $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
@@ -797,7 +814,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+"1"+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+"1"+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -819,66 +836,14 @@ $(document).ready
             }
           }
         );
+        */
       }
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur le bouton pour ajouter une appréciation (une note ne s'ajoute pas, mais elle peut se modifier ou se recalculer si NULL)
-    // [livret_saisir] Clic sur le bouton pour modifier une note ou une saisie d'appréciation
+    // [livret_saisir] Clic sur le bouton pour ajouter une appréciation (un positionnement ou des éléments du programme ne s'ajoutent pas, mais peuvent se modifier ou se recalculer si NULL)
+    // [livret_saisir] Clic sur le bouton pour modifier un positionnement ou une appréciation ou des éléments du programme
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function afficher_textarea_appreciation_ou_input_moyenne(obj_lieu,champ_contenu)
-    {
-      // fabriquer le formulaire textarea ou input
-      if(memo_rubrique_type=='appr')
-      {
-        memo_html = obj_lieu.closest('td').html();
-        memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
-        var nb_lignes = parseInt(memo_long_max/100,10);
-        var formulaire_saisie = '<div class="ti"><b>Appréciation / Conseils pour progresser [ '+$('#go_selection_eleve option:selected').text()+' ] :</b></div>'
-                              + '<div class="ti"><textarea id="f_appreciation" name="f_appreciation" rows="'+nb_lignes+'" cols="125"></textarea></div>'
-                              + '<div class="ti"><label id="f_appreciation_reste"></label></div>'
-                              + '<div class="ti"><button id="valider_appr_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider_appr" type="button" class="valider">Valider</button> <button id="valider_appr_suivant" type="button" class="valider_next">Suivant</button> <button id="annuler_appr_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler_appr" type="button" class="annuler">Annuler</button> <button id="annuler_appr_suivant" type="button" class="annuler_next">Suivant</button><label id="ajax_msg_appr">&nbsp;</label></div>';
-      }
-      if(memo_rubrique_type=='note')
-      {
-        memo_html = obj_lieu.closest('tr').html();
-        var pourcent = (CONVERSION_SUR_20) ? '' : '%' ;
-        var texte    = (CONVERSION_SUR_20) ? 'en note sur 20' : 'en pourcentage' ;
-        var formulaire_saisie = '<div><b>Moyenne '+texte+' [ '+$('#go_selection_eleve option:selected').text()+' ] :</b> <input id="f_moyenne" name="f_moyenne" type="text" size="3" value="" />'+pourcent+'</div>'
-                              + '<div><button id="valider_note_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider_note" type="button" class="valider">Valider</button> <button id="valider_note_suivant" type="button" class="valider_next">Suivant</button> <button id="annuler_note_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler_note" type="button" class="annuler">Annuler</button> <button id="annuler_note_suivant" type="button" class="annuler_next">Suivant</button><label id="ajax_msg_note">&nbsp;</label></div>';
-      }
-      // modif affichage
-      $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
-      obj_lieu.closest('td').html(formulaire_saisie);
-      if(memo_eleve==memo_eleve_first)
-      {
-        $('#valider_'+memo_rubrique_type+'_precedent , #annuler_'+memo_rubrique_type+'_precedent').css('visibility','hidden');
-      }
-      if(memo_eleve==memo_eleve_last)
-      {
-        $('#valider_'+memo_rubrique_type+'_suivant , #annuler_'+memo_rubrique_type+'_suivant').css('visibility','hidden');
-      }
-      // finalisation (remplissage et focus)
-      if(memo_rubrique_type=='appr')
-      {
-        // report d'une appréciation préremplie
-        var is_report = (memo_rubrique_id) ? APP_RUBRIQUE_REPORT : APP_GENERALE_REPORT ;
-        if( !champ_contenu && is_report )
-        {
-          champ_contenu = (memo_rubrique_id) ? APP_RUBRIQUE_MODELE : APP_GENERALE_MODELE ;
-        }
-        $('#f_appreciation').focus().html(champ_contenu);
-        afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
-        window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
-      }
-      if(memo_rubrique_type=='note')
-      {
-        var valeur = (CONVERSION_SUR_20) ? parseFloat(champ_contenu,10) : parseInt(champ_contenu.substr(0,champ_contenu.length-1),10) ;
-        valeur = (isNaN(valeur)) ? '' : valeur ;
-        $('#f_moyenne').focus().val(valeur);
-      }
-    }
 
     $('#zone_action_eleve').on
     (
@@ -886,19 +851,139 @@ $(document).ready
       'button.ajouter , button.modifier',
       function()
       {
-        memo_rubrique_nom  = $(this).closest('tr').attr('id');
-        var tab_ids = memo_rubrique_nom.split('_');
-        memo_rubrique_type = tab_ids[0]; // note | appr
+        memo_action = $(this).attr('class'); // ajouter | modifier
+        memo_conteneur = $(this).parent().parent();
+        // Récupération des principaux identifiants
+        memo_saisie_id  = $(this).parent().attr('data-id');
+        memo_objet_id   = memo_conteneur.attr('id');
+        var tab_ids     = memo_objet_id.split('_');
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | synthese | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
-        if($(this).attr('class')=='modifier')
+        memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
+        // Contenu de la saisie existante
+        if(memo_action=='ajouter')
         {
-          var contenu = (memo_rubrique_type=='appr') ? $(this).parent().next().html() : $(this).closest('td').prev().html() ;
+          var saisie_contenu = '' ;
+        }
+        else if(memo_saisie_objet!='elements')
+        {
+          var saisie_contenu = $(this).parent().next().html();
         }
         else
         {
-          var contenu = '' ;
+          var saisie_contenu = '';
+          // http://www.w3schools.com/jsref/prop_node_nodetype.asp
+          $(this).parent().next().find('div').contents().filter( function(){return this.nodeType == 3;} ).each( function(){saisie_contenu+=$(this).text().trim()+"\n";} );
         }
-        afficher_textarea_appreciation_ou_input_moyenne( $(this) , contenu );
+        if(memo_rubrique_type=='viesco')
+        {
+           memo_div_assiduite = ($('#div_assiduite').length) ? $('#div_assiduite').html() : '' ;
+        }
+        // Désactiver les autres boutons d'action
+        $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
+        // 1/3 Fabriquer un formulaire de saisie textarea
+        if( (memo_saisie_objet=='appreciation') || (memo_saisie_objet=='elements') )
+        {
+          memo_html = memo_conteneur.html();
+          if( (memo_rubrique_type=='eval') || (memo_rubrique_type=='socle') )
+          {
+            var texte = (memo_saisie_objet=='appreciation') ? 'Acquisitions / Conseils' : 'Principaux éléments travaillés' ;
+          }
+          else if(memo_rubrique_type=='epi')
+          {
+            var texte = (memo_eleve) ? 'Implication de l’élève' : 'Projet réalisé' ;
+          }
+          else if(memo_rubrique_type=='ap')
+          {
+            var texte = (memo_eleve) ? 'Implication de l’élève' : 'Action réalisée' ;
+          }
+          else if(memo_rubrique_type=='parcours')
+          {
+            var texte = (memo_eleve) ? 'Implication de l’élève' : 'Projet mis en oeuvre' ;
+          }
+          else if(memo_rubrique_type=='synthese')
+          {
+            var texte = (memo_eleve) ? 'Synthèse / Conseils' : 'Synthèse' ;
+          }
+          else if(memo_rubrique_type=='viesco')
+          {
+            var texte = 'Vie scolaire';
+          }
+          memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
+          var nb_lignes = parseInt(memo_long_max/100,10);
+          var formulaire_saisie = '<div><b>'+texte+' [ '+$('#go_selection_eleve option:selected').text()+' ] :</b></div>'
+                                + '<div><textarea id="f_'+memo_saisie_objet+'" name="f_'+memo_saisie_objet+'" rows="'+nb_lignes+'" cols="125"></textarea></div>'
+                                + '<div><label id="f_'+memo_saisie_objet+'_reste"></label></div>'
+                                + '<div><button id="valider_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider" type="button" class="valider">Valider</button> <button id="valider_suivant" type="button" class="valider_next">Suivant</button></div>'
+                                + '<div><button id="annuler_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler" type="button" class="annuler">Annuler</button> <button id="annuler_suivant" type="button" class="annuler_next">Suivant</button></div>'
+                                + '<div><label id="ajax_msg'+memo_saisie_objet+'">&nbsp;</label></div>';
+          memo_conteneur.html(formulaire_saisie);
+        }
+        // 2/3 Fabriquer un formulaire de saisie input[type=number]
+        else if( (memo_page_colonne=='moyenne') || (memo_saisie_objet=='pourcentage') )
+        {
+          memo_html = memo_conteneur.html();
+          var max      = (memo_page_colonne=='moyenne') ? 40  : 200 ; // Le meilleur code de notation pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
+          var pourcent = (memo_page_colonne=='moyenne') ? ''  : '%' ;
+          var step     = (memo_page_colonne=='moyenne') ? 0.1 : 1 ;
+          var formulaire_saisie = '<div><b>Positionnement [ '+$('#go_selection_eleve option:selected').text()+' ] :</b> <input id="f_position" name="f_position" type="number" min="0" max="'+max+'" step="'+step+'" value="" />'+pourcent+'</div>'
+                                + '<div><button id="valider_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider" type="button" class="valider">Valider</button> <button id="valider_suivant" type="button" class="valider_next">Suivant</button></div>'
+                                + '<div><button id="annuler_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler" type="button" class="annuler">Annuler</button> <button id="annuler_suivant" type="button" class="annuler_next">Suivant</button></div>'
+                                + '<div><label id="ajax_msg'+memo_saisie_objet+'">&nbsp;</label></div>';
+          memo_conteneur.html(formulaire_saisie);
+        }
+        // 3/3 Fabriquer un formulaire de saisie input[type=radio]
+        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') )
+        {
+          memo_html = memo_conteneur.parent().html();
+          var id_debut = memo_rubrique_type+'_'+memo_rubrique_id+'_'+memo_saisie_objet+'_';
+          for( var i=1 ; i<5 ; i++ )
+          {
+            $('#'+id_debut+i).html('<input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" />');
+          }
+          var formulaire_saisie = '<div><button id="valider_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider" type="button" class="valider">Valider</button> <button id="valider_suivant" type="button" class="valider_next">Suivant</button></div>'
+                                + '<div><button id="annuler_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler" type="button" class="annuler">Annuler</button> <button id="annuler_suivant" type="button" class="annuler_next">Suivant</button></div>'
+                                + '<div><label id="ajax_msg'+memo_saisie_objet+'">&nbsp;</label></div>';
+          memo_conteneur.html(formulaire_saisie);
+        }
+        // modif affichage
+        if(memo_eleve==memo_eleve_first)
+        {
+          $('#valider_precedent , #annuler_precedent').css('visibility','hidden');
+        }
+        if(memo_eleve==memo_eleve_last)
+        {
+          $('#valider_suivant , #annuler_suivant').css('visibility','hidden');
+        }
+        // finalisation (remplissage et focus)
+        if( (memo_saisie_objet=='appreciation') || (memo_saisie_objet=='elements') )
+        {
+          // report d'une appréciation préremplie
+          var is_report = (memo_rubrique_id) ? APP_RUBRIQUE_REPORT : APP_GENERALE_REPORT ;
+          if( !saisie_contenu && is_report )
+          {
+            saisie_contenu = (memo_rubrique_id) ? APP_RUBRIQUE_MODELE : APP_GENERALE_MODELE ;
+          }
+          $('#f_'+memo_saisie_objet).focus().html(saisie_contenu);
+          afficher_textarea_reste( $('#f_'+memo_saisie_objet) , memo_long_max );
+          window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
+        }
+        else if( (memo_page_colonne=='moyenne') || (memo_saisie_objet=='pourcentage') )
+        {
+          // report d'un positionnement numérique
+          var valeur = (memo_page_colonne=='moyenne') ? parseFloat(saisie_contenu,10) : parseInt(saisie_contenu.substr(0,saisie_contenu.length-1),10) ;
+          valeur = (isNaN(valeur)) ? '' : valeur ;
+          $('#f_'+memo_saisie_objet).focus().val(valeur);
+        }
+        else if( (memo_page_colonne=='objectif') || (memo_saisie_objet=='position') )
+        {
+          // report d'un positionnement sur une échelle
+          if(saisie_contenu)
+          {
+            $('#f_position_'+i).prop('checked',true).focus();
+          }
+        }
       }
     );
 
@@ -909,7 +994,7 @@ $(document).ready
     $('#zone_action_eleve').on
     (
       'keyup',
-      '#f_appreciation',
+      '#f_appreciation, #f_elements',
       function()
       {
         afficher_textarea_reste($(this),memo_long_max);
@@ -927,80 +1012,92 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur un bouton pour annuler une saisie de note ou d'appréciation
+    // [livret_saisir] Clic sur un bouton pour annuler une saisie de positionnement / appréciation / éléments du programme
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
     (
       'click',
-      '#annuler_appr , #annuler_appr_suivant , #annuler_appr_precedent , #annuler_note , #annuler_note_suivant , #annuler_note_precedent',
+      '#annuler , #annuler_suivant , #annuler_precedent , #annuler , #annuler_suivant , #annuler_precedent',
       function()
       {
-        if(memo_rubrique_type=='appr')
+        memo_auto_next = ($(this).attr('id')=='annuler_suivant')   ? true : false ;
+        memo_auto_prev = ($(this).attr('id')=='annuler_precedent') ? true : false ;
+        if( (memo_saisie_objet!='position') || (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
         {
-          $(this).closest('td').html(memo_html);
+          memo_conteneur.html(memo_html);
         }
-        else if(memo_rubrique_type=='note')
+        else
         {
-          $(this).closest('tr').html(memo_html);
+          memo_conteneur.parent().html(memo_html);
         }
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
-        memo_auto_next = ($(this).attr('id')=='annuler_'+memo_rubrique_type+'_suivant')   ? true : false ;
-        memo_auto_prev = ($(this).attr('id')=='annuler_'+memo_rubrique_type+'_precedent') ? true : false ;
         if(memo_auto_next) { $('#go_suivant_eleve').click(); }
         if(memo_auto_prev) { $('#go_precedent_eleve').click(); }
       }
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur un bouton pour valider une saisie de note ou d'appréciation
+    // [livret_saisir] Clic sur un bouton pour valider une saisie de positionnement / appréciation / éléments du programme
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
     (
       'click',
-      '#valider_appr , #valider_appr_suivant , #valider_appr_precedent , #valider_note , #valider_note_suivant , #valider_note_precedent',
+      '#valider , #valider_suivant , #valider_precedent , #valider , #valider_suivant , #valider_precedent',
       function()
       {
-        if(memo_rubrique_type=='appr')
+        // appréciation préremplie
+        if( (memo_saisie_objet=='appreciation') || (memo_saisie_objet=='elements') )
         {
-          if( !$.trim($('#f_appreciation').val()).length )
+          if( !$.trim($('#f_'+memo_saisie_objet).val()).length )
           {
-            $('#ajax_msg_'+memo_rubrique_type).attr('class','erreur').html("Absence d'appréciation !");
-            $('#f_appreciation').focus();
+            $('#ajax_msg_'+memo_saisie_objet).attr('class','erreur').html("Absence de saisie !");
+            $('#f_'+memo_saisie_objet).focus();
             return false;
           }
         }
-        if(memo_rubrique_type=='note')
+        // positionnement numérique
+        else if( (memo_page_colonne=='moyenne') || (memo_saisie_objet=='pourcentage') )
         {
-          var note = parseFloat($('#f_moyenne').val(),10);
-          if( isNaN(note) )
+          var position = parseFloat($('#f_moyenne').val(),10);
+          if( isNaN(position) )
           {
-            $('#ajax_msg_'+memo_rubrique_type).attr('class','erreur').html("Moyenne incorrecte !");
+            $('#ajax_msg_'+memo_saisie_objet).attr('class','erreur').html("Saisie incorrecte !");
             $('#f_moyenne').focus();
             return false;
           }
-          if( (note<0) || ((note>40)&&(CONVERSION_SUR_20)) || ((note>200)&&(!CONVERSION_SUR_20)) ) // Le meilleur code de notation pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
+          if( (position<0) || ((position>40)&&(memo_page_colonne=='moyenne')) || ((position>200)&&(memo_page_colonne=='pourcentage')) ) // Le meilleur code de notation pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
           {
-            $('#ajax_msg_'+memo_rubrique_type).attr('class','erreur').html("Valeur incorrecte !");
+            $('#ajax_msg_'+memo_saisie_objet).attr('class','erreur').html("Valeur incorrecte !");
             $('#f_moyenne').focus();
             return false;
           }
         }
-        memo_auto_next = ($(this).attr('id')=='valider_'+memo_rubrique_type+'_suivant')   ? true : false ;
-        memo_auto_prev = ($(this).attr('id')=='valider_'+memo_rubrique_type+'_precedent') ? true : false ;
+        // positionnement sur une échelle
+        else if( (memo_page_colonne=='objectif') || (memo_saisie_objet=='position') )
+        {
+          position = $("input[name=f_position]:checked").val();
+          if(typeof(position)=='undefined')
+          {
+            $('#ajax_msg_'+memo_saisie_objet).attr('class','erreur').html("Absence de positionnement !");
+            return false;
+          }
+        }
+        memo_auto_next = ($(this).attr('id')=='valider_suivant')   ? true : false ;
+        memo_auto_prev = ($(this).attr('id')=='valider_precedent') ? true : false ;
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
-        $('#ajax_msg_'+memo_rubrique_type).attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg_'+memo_saisie_objet).attr('class','loader').html("En cours&hellip;");
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'enregistrer_'+memo_rubrique_type+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+memo_action+'_saisie'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_saisie_id='+memo_saisie_id+'&f_rubrique_type='+memo_rubrique_type+'&f_rubrique_id='+memo_rubrique_id+'&f_saisie_objet='+memo_saisie_objet+'&f_page_colonne='+memo_page_colonne+'&'+$('#form_hidden').serialize()+'&'+$('#zone_resultat_eleve').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg_'+memo_rubrique_type).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg'+memo_saisie_objet).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               return false;
             },
@@ -1010,17 +1107,26 @@ $(document).ready
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg_'+memo_rubrique_type).attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg'+memo_saisie_objet).attr('class','alerte').html(responseJSON['value']);
               }
               else
               {
-                if(memo_rubrique_type=='appr')
+                if( (memo_saisie_objet!='position') || (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
                 {
-                  $('#ajax_msg_'+memo_rubrique_type).closest('td').html(responseJSON['value']);
+                  if(memo_rubrique_type=='viesco')
+                  {
+                     responseJSON['value'] += '<div id="div_assiduite" class="notnow i">'+memo_div_assiduite+'</div>';
+                  }
+                  memo_conteneur.html(responseJSON['value']);
                 }
-                else if(memo_rubrique_type=='note')
+                else
                 {
-                  $('#ajax_msg_'+memo_rubrique_type).closest('tr').html(responseJSON['value']);
+                  memo_conteneur.parent().html(memo_html);
+                  for( var i=1 ; i<5 ; i++ )
+                  {
+                    $('#eval_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                  }
+                  $('#eval_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
                 }
                 if(memo_auto_next) { $('#go_suivant_eleve').click(); }
                 if(memo_auto_prev) { $('#go_precedent_eleve').click(); }
@@ -1032,7 +1138,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur le bouton pour supprimer une saisie de note ou d'appréciation
+    // [livret_saisir] Clic sur le bouton pour supprimer un positionnement ou une appréciation ou des éléments du programme
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -1041,18 +1147,29 @@ $(document).ready
       'button.supprimer',
       function()
       {
-        var obj_bouton = $(this);
-        memo_rubrique_nom  = $(this).closest('tr').attr('id');
-        var tab_ids = memo_rubrique_nom.split('_');
-        memo_rubrique_type = tab_ids[0]; // note | appr
+        memo_action = $(this).attr('class'); // supprimer
+        memo_conteneur = $(this).parent().parent();
+        // Récupération des principaux identifiants
+        memo_saisie_id  = $(this).parent().attr('data-id');
+        memo_objet_id   = memo_conteneur.attr('id');
+        var tab_ids     = memo_objet_id.split('_');
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | synthese | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
+        memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
+        // Contenu de la saisie existante
+        if(memo_rubrique_type=='viesco')
+        {
+           memo_div_assiduite = ($('#div_assiduite').length) ? $('#div_assiduite').html() : '' ;
+        }
+        // Désactiver les autres boutons d'action
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'supprimer_'+memo_rubrique_type+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+memo_action+'_saisie'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_saisie_id='+memo_saisie_id+'&f_rubrique_type='+memo_rubrique_type+'&f_rubrique_id='+memo_rubrique_id+'&f_saisie_objet='+memo_saisie_objet+'&f_page_colonne='+memo_page_colonne+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1070,13 +1187,22 @@ $(document).ready
               }
               else
               {
-                if(memo_rubrique_type=='appr')
+                if( (memo_saisie_objet!='position') || (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
                 {
-                  obj_bouton.closest('td').html(responseJSON['value']);
+                  if(memo_rubrique_type=='viesco')
+                  {
+                     responseJSON['value'] += '<div id="div_assiduite" class="notnow i">'+memo_div_assiduite+'</div>';
+                  }
+                  memo_conteneur.html(responseJSON['value']);
                 }
-                else if(memo_rubrique_type=='note')
+                else
                 {
-                  obj_bouton.closest('tr').html(responseJSON['value']);
+                  // memo_conteneur.parent().html(memo_html); // Pas besoin ici car il n'y a pas eu de remplacement du contenu
+                  for( var i=1 ; i<5 ; i++ )
+                  {
+                    $('#eval_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                  }
+                  $('#eval_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
                 }
               }
             }
@@ -1084,6 +1210,10 @@ $(document).ready
         );
       }
     );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // DEVEL STOP ICI !!!!!!!!!!!!!!!!!!!!!!!!
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // [livret_saisir] Clic sur le bouton pour recalculer un positionnement (soit effacée - NULL - soit figée car reportée manuellement)
@@ -1095,18 +1225,28 @@ $(document).ready
       'button.nettoyer',
       function()
       {
-        var obj_bouton = $(this);
-        memo_rubrique_nom  = $(this).closest('tr').attr('id');
-        var tab_ids = memo_rubrique_nom.split('_');
-        memo_rubrique_type = tab_ids[0]; // note | appr
+        memo_action = $(this).attr('class'); // supprimer
+        memo_conteneur = $(this).parent().parent();
+        // Récupération des principaux identifiants
+        memo_saisie_id  = $(this).parent().attr('data-id');
+        memo_objet_id   = memo_conteneur.attr('id');
+        var tab_ids     = memo_objet_id.split('_');
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | synthese | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
-        $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
+        memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
+        // Contenu de la saisie existante
+        if(memo_rubrique_type=='viesco')
+        {
+           memo_div_assiduite = ($('#div_assiduite').length) ? $('#div_assiduite').html() : '' ;
+        }
+        // Désactiver les autres boutons d'action
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_position'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_position'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1124,7 +1264,7 @@ $(document).ready
               }
               else
               {
-                obj_bouton.closest('tr').html(responseJSON['value']);
+                // obj_bouton.closest('tr').html(responseJSON['value']); à revoir
               }
             }
           }
@@ -1154,7 +1294,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1199,7 +1339,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+etape+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'imprimer'+'&f_etape='+etape+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -1272,7 +1412,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page='+PAGE,
-          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+          data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'initialiser'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {
@@ -1374,7 +1514,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -1570,7 +1710,7 @@ $(document).ready
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_section='+'livret_saisir'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode'+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
+              data : 'csrf='+CSRF+'&f_section='+'livret_saisir'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {

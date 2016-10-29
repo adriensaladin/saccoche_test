@@ -43,7 +43,7 @@ FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_so
 // Retenir qu'un import a été effectué
 $nom_variable = 'date_last_import_'.$import_profil.'s';
 DB_STRUCTURE_COMMUN::DB_modifier_parametres( array( $nom_variable => TODAY_MYSQL ) );
-$_SESSION[strtoupper($nom_variable)] = TODAY_MYSQL;
+$_SESSION[Clean::upper($nom_variable)] = TODAY_MYSQL;
 // Game over
 Json::add_str('<p><label class="valide">Fichiers temporaires effacés, procédure d\'import terminée !</label></p>'.NL);
 Json::add_str('<ul class="puce p"><li><a href="#" id="retourner_depart">Retour au départ.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);

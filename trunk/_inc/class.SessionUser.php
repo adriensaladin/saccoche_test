@@ -235,7 +235,7 @@ class SessionUser
     );
     foreach($DB_TAB_PARAM as $DB_ROW_PARAM)
     {
-      $parametre_nom = strtoupper($DB_ROW_PARAM['parametre_nom']);
+      $parametre_nom = Clean::upper($DB_ROW_PARAM['parametre_nom']);
       // Certains paramètres sont de type entier.
       $parametre_valeur = (in_array($parametre_nom,$tab_type_entier)) ? (int) $DB_ROW_PARAM['parametre_valeur'] : $DB_ROW_PARAM['parametre_valeur'] ;
       // Certains paramètres sont à enregistrer sous forme de tableau.

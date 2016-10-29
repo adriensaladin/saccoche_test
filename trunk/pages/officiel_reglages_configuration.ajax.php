@@ -187,7 +187,7 @@ if( isset($tab_variables[$objet]) )
     $variable_nom    = $objet.'_'.$option;
     $variable_valeur = ${$variable_nom};
     // On modifie la session
-    $_SESSION['OFFICIEL'][strtoupper($variable_nom)] = $variable_valeur;
+    $_SESSION['OFFICIEL'][Clean::upper($variable_nom)] = $variable_valeur;
     // Pour modifier dans la base
     $tab_parametres['officiel_'.$variable_nom] = $variable_valeur;
   }

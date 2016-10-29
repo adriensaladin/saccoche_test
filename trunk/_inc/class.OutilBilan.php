@@ -48,11 +48,12 @@ class OutilBilan
     $tab_livret_seuil = ($SESSION_LIVRET==NULL) ? $_SESSION['LIVRET'] : $SESSION_LIVRET ;
     foreach( $tab_livret_seuil as $maitrise_id => $tab_maitrise_info )
     {
-      if( ($pourcentage<=$tab_maitrise_info['SEUIL_MAX']) && ($pourcentage>=$tab_maitrise_info['SEUIL_MIN']) )
+      if($pourcentage<=$tab_maitrise_info['SEUIL_MAX']) // On ne teste pas ($pourcentage>=$tab_maitrise_info['SEUIL_MIN']) car une valeur décimale saisie manuellement peut tomber entre les deux.
       {
         return $maitrise_id;
       }
     }
+    return $maitrise_id; // Dans le cas d'un pourcentage > 100
   }
 
   /**

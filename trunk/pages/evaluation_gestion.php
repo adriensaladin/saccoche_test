@@ -231,7 +231,7 @@ if($TYPE=='groupe')
   $tab_options = array('classe'=>'','groupe'=>'','besoin'=>'');
   foreach($DB_TAB as $DB_ROW)
   {
-    $groupe = strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
+    $groupe = Clean::upper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
     $tab_options[$DB_ROW['groupe_type']] .= '<option value="'.$groupe.'">'.html($DB_ROW['groupe_nom']).'</option>';
     Layout::add( 'js_inline_before' , 'tab_groupe["'.$groupe.'"]="'.html($DB_ROW['groupe_nom']).'";' );
   }

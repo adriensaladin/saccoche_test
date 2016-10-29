@@ -211,7 +211,7 @@ foreach($tab_droits as $titre => $tab_infos_paragraphe)
     list( $droit_key , $droit_txt , $i_profils_defaut ) = $tab_infos_ligne;
     Layout::add( 'js_inline_before' , 'tab_init["'.$droit_key.'"] = new Array();' );
     $affichage .= '<tr id="tr_'.$droit_key.'"><th>'.$droit_txt.'</th>';
-    $tab_check = explode(',',$_SESSION[strtoupper($droit_key)]);
+    $tab_check = explode(',',$_SESSION[Clean::upper($droit_key)]);
     $check_pp    = (in_array('ONLY_PP'   ,$tab_check)) ? TRUE : FALSE ;
     $check_coord = (in_array('ONLY_COORD',$tab_check)) ? TRUE : FALSE ;
     $check_lv    = (in_array('ONLY_LV'   ,$tab_check)) ? TRUE : FALSE ;

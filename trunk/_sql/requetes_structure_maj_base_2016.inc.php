@@ -1079,12 +1079,113 @@ if($version_base_structure_actuelle=='2016-10-10')
   }
 }
 
-/*
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2016-10-19 => 2016-10-29
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2016-10-19')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2016-10-29';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // modification sacoche_parametre (paramètres CAS pour ENT)
+    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
+    if($connexion_nom=='itop_marne')
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="www.ent-marne.fr" WHERE parametre_nom="cas_serveur_host" ' );
+    }
+    // recharger [sacoche_livret_modaccomp]
+    if(empty($reload_sacoche_livret_modaccomp))
+    {
+      $reload_sacoche_livret_modaccomp = TRUE;
+      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_modaccomp.sql');
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+      DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    }
+    // recharger [sacoche_livret_rubrique]
+    if(empty($reload_sacoche_livret_rubrique))
+    {
+      $reload_sacoche_livret_rubrique = TRUE;
+      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_rubrique.sql');
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+      DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    }
+    // Adaptations aux nouveaux indices de [sacoche_livret_rubrique]
+    $tab_modifs = array(
+      'c3_domaine' => array(
+        146 => 206,
+        145 => 205,
+        144 => 204,
+        143 => 203,
+        142 => 202,
+        141 => 201,
+        133 => 191,
+        132 => 181,
+        131 => 171,
+        123 => 163,
+        122 => 162,
+        121 => 161,
+        111 => 151,
+        103 => 143,
+        102 => 142,
+        101 => 141,
+         94 => 134,
+         93 => 133,
+         92 => 132,
+         91 => 131,
+      ),
+      'c2_domaine' => array(
+         84 => 124,
+         83 => 123,
+         82 => 122,
+         81 => 121,
+         76 => 111,
+         75 => 102,
+         74 => 101,
+         73 =>  92,
+         72 =>  91,
+         71 =>  81,
+         63 =>  73,
+         62 =>  72,
+         61 =>  71,
+         54 =>  64,
+         53 =>  63,
+         52 =>  62,
+         51 =>  61,
+      ),
+      'c1_theme' => array(
+         45 =>  55,
+         44 =>  54,
+         43 =>  53,
+         42 =>  52,
+         41 =>  51,
+         34 =>  44,
+         33 =>  43,
+         32 =>  42,
+         31 =>  41,
+         24 =>  32,
+         23 =>  31,
+      ),
+    );
+    foreach( $tab_modifs as $rubrique_type => $tab_ids )
+    {
+      foreach( $tab_ids as $id_old => $id_new )
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_jointure_referentiel SET livret_rubrique_ou_matiere_id='.$id_new.' WHERE livret_rubrique_ou_matiere_id='.$id_old.' AND livret_rubrique_type="'.$rubrique_type.'" ' );
+      }
+    }
     // nouvelle table [sacoche_livret_saisie]
     $reload_sacoche_livret_saisie = TRUE;
     $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_saisie.sql');
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
     DB::close(SACOCHE_STRUCTURE_BD_NAME);
-*/
+    // nouvelle table [sacoche_livret_saisie_jointure_prof]
+    $reload_sacoche_livret_saisie_jointure_prof = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_saisie_jointure_prof.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+  }
+}
 
 ?>

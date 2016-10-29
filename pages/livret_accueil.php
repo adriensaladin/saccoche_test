@@ -209,7 +209,7 @@ foreach($DB_TAB as $DB_ROW)
           foreach($tab_parcours_code as $parcours_code)
           {
             $parcours_aff   = substr($parcours_code,2);
-            $parcours_get   = strtolower($parcours_aff);
+            $parcours_get   = Clean::lower($parcours_aff);
             $parcours_nb    = isset($tab_nb['parcours'][$DB_ROW['livret_page_ref']][$parcours_code]) ? $tab_nb['parcours'][$DB_ROW['livret_page_ref']][$parcours_code] : 0 ;
             $parcours_class = ($parcours_nb) ? 'bf' : 'bj' ;
             $s              = ($parcours_nb>1) ? 's' : '' ;

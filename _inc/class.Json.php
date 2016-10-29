@@ -88,6 +88,10 @@ class Json
     }
     $tab_valeur = is_array($value) ? $value : array( 'value' => $value ) ;
     $json_retour = json_encode( array_merge($tab_statut,$tab_valeur) );
+    if($json_retour===FALSE)
+    {
+      $json_retour = "Une erreur est survenue lors de la conversion JSON.";
+    }
     // Normalement, le serveur Sésamath ne gzip pas les "petites" réponses (<512 ou 1024 octets).
     // Mais c'est basé sur le Content-Length, donc s'il n'y en a pas, il gzip toujours.
     // Du coup, quand PHP renvoie du json, c'est mieux d'indiquer Content-Length.

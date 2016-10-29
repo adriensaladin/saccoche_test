@@ -1050,7 +1050,7 @@ class FileSystem
       return 'Le nom du fichier ne doit pas contenir le caractère NULL !';
     }
     // Vérification de l'extension
-    $extension = strtolower(pathinfo($fichier_tmp_nom,PATHINFO_EXTENSION));
+    $extension = Clean::lower(pathinfo($fichier_tmp_nom,PATHINFO_EXTENSION));
     if( ($tab_extensions_autorisees!==NULL) && (!in_array($extension,$tab_extensions_autorisees)) )
     {
       return 'L\'extension du fichier transmis n\'est pas conforme !';

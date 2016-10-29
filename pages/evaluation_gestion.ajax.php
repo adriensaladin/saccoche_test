@@ -249,7 +249,7 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       $date_affich   = To::date_mysql_to_french($DB_ROW['devoir_date']);
       $date_visible  = ($DB_ROW['devoir_date']==$DB_ROW['devoir_visible_date']) ? 'identique'  : To::date_mysql_to_french($DB_ROW['devoir_visible_date']) ;
       $date_autoeval = ($DB_ROW['devoir_autoeval_date']===NULL)                 ? 'sans objet' : To::date_mysql_to_french($DB_ROW['devoir_autoeval_date']) ;
-      $ref = $DB_ROW['devoir_id'].'_'.strtoupper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
+      $ref = $DB_ROW['devoir_id'].'_'.Clean::upper($DB_ROW['groupe_type']{0}).$DB_ROW['groupe_id'];
       $cs = ($DB_ROW['items_nombre']>1) ? 's' : '';
       $us = ($type=='groupe') ? '' : ( ($DB_ROW['users_nombre']>1) ? 's' : '' );
       $eleves_bulle = (($type=='selection') && ($DB_ROW['users_nombre']<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;
@@ -449,7 +449,7 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   // Afficher le retour
   $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
-  $ref = $devoir_id2.'_'.strtoupper($groupe_type{0}).$groupe_id;
+  $ref = $devoir_id2.'_'.Clean::upper($groupe_type{0}).$groupe_id;
   $cs = ($nb_items >1) ? 's' : '' ;
   $us = ($nb_eleves>1) ? 's' : '' ;
   $eleves_bulle = (($type=='selection') && ($nb_eleves<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;
@@ -668,7 +668,7 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   // Afficher le retour
   $date_visible  = ($date_visible==$date)         ? 'identique'  : $date_visible  ;
   $date_autoeval = ($date_autoeval=='00/00/0000') ? 'sans objet' : $date_autoeval ;
-  $ref = $devoir_id.'_'.strtoupper($groupe_type{0}).$groupe_id;
+  $ref = $devoir_id.'_'.Clean::upper($groupe_type{0}).$groupe_id;
   $cs = ($nb_items>1)  ? 's' : '' ;
   $us = ($nb_eleves>1) ? 's' : '' ;
   $eleves_bulle = (($type=='selection') && ($nb_eleves<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;

@@ -51,7 +51,7 @@ if($action=='select_logo')
   $options_logo = '';
   foreach($tab_files as $file)
   {
-    $extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
+    $extension = Clean::lower(pathinfo($file,PATHINFO_EXTENSION));
     if(in_array($extension,$tab_ext_images))
     {
       $selected = ($file==HEBERGEUR_LOGO) ? ' selected' : '' ;
@@ -72,7 +72,7 @@ if($action=='listing_logos')
   $li_logos = '';
   foreach($tab_files as $file)
   {
-    $extension = strtolower(pathinfo($file,PATHINFO_EXTENSION));
+    $extension = Clean::lower(pathinfo($file,PATHINFO_EXTENSION));
     if(in_array($extension,$tab_ext_images))
     {
       $li_logos .= '<li>'.html($file).' <img alt="'.html($file).'" src="'.URL_DIR_LOGO.html($file).'" /><q class="supprimer" title="Supprimer cette image du serveur (aucune confirmation ne sera demandée)."></q></li>';

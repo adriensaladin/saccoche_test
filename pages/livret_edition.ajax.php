@@ -109,22 +109,26 @@ $texte_precision = $tab_precision_retroactif[$retroactif].$precision_socle.$prec
 $action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '' ;
 $section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : '' ;
 
-$OBJET         = (isset($_POST['f_objet']))        ? Clean::texte($_POST['f_objet'])               : '';
-$ACTION        = (isset($_POST['f_action']))       ? Clean::texte($_POST['f_action'])              : '';
-$mode          = (isset($_POST['f_mode']))         ? Clean::texte($_POST['f_mode'])                : '';
-$PAGE_REF      = (isset($_POST['f_page_ref']))     ? Clean::texte($_POST['f_page_ref'])            : '';
-$periode       = (isset($_POST['f_periode']))      ? Clean::texte($_POST['f_periode'])             : '';
-$classe_id     = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_classe'])             : 0;
-$groupe_id     = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])             : 0;
-$eleve_id      = (isset($_POST['f_user']))         ? Clean::entier($_POST['f_user'])               : 0;
-$rubrique_type = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])           : '';
-$rubrique_id   = (isset($_POST['f_rubrique']))     ? Clean::entier($_POST['f_rubrique'])           : 0;
-$prof_id       = (isset($_POST['f_prof']))         ? Clean::entier($_POST['f_prof'])               : 0; // id du prof dont on corrige l'appréciation
-$appreciation  = (isset($_POST['f_appreciation'])) ? Clean::appreciation($_POST['f_appreciation']) : '';
-$moyenne       = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moyenne'])           : -1;
-$import_info   = (isset($_POST['f_import_info']))  ? Clean::texte($_POST['f_import_info'])         : '';
-$etape         = (isset($_POST['f_etape']))        ? Clean::entier($_POST['f_etape'])              : 0;
-$page_parite   = (isset($_POST['f_parite']))       ? Clean::entier($_POST['f_parite'])             : 0;
+$OBJET         = (isset($_POST['f_objet']))         ? Clean::texte($_POST['f_objet'])               : '';
+$ACTION        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])              : '';
+$mode          = (isset($_POST['f_mode']))          ? Clean::texte($_POST['f_mode'])                : '';
+$PAGE_REF      = (isset($_POST['f_page_ref']))      ? Clean::texte($_POST['f_page_ref'])            : '';
+$periode       = (isset($_POST['f_periode']))       ? Clean::texte($_POST['f_periode'])             : '';
+$classe_id     = (isset($_POST['f_classe']))        ? Clean::entier($_POST['f_classe'])             : 0;
+$groupe_id     = (isset($_POST['f_groupe']))        ? Clean::entier($_POST['f_groupe'])             : 0;
+$eleve_id      = (isset($_POST['f_user']))          ? Clean::entier($_POST['f_user'])               : 0;
+$saisie_id     = (isset($_POST['f_saisie_id']))     ? Clean::entier($_POST['f_saisie_id'])          : 0;
+$rubrique_type = (isset($_POST['f_rubrique_type'])) ? Clean::texte($_POST['f_rubrique_type'])       : '';
+$rubrique_id   = (isset($_POST['f_rubrique_id']))   ? Clean::entier($_POST['f_rubrique_id'])        : 0;
+$saisie_objet  = (isset($_POST['f_saisie_objet']))  ? Clean::texte($_POST['f_saisie_objet'])        : '';
+$page_colonne  = (isset($_POST['f_page_colonne']))  ? Clean::texte($_POST['f_page_colonne'])        : '';
+$prof_id       = (isset($_POST['f_prof']))          ? Clean::entier($_POST['f_prof'])               : 0; // id du prof dont on corrige l'appréciation
+$appreciation  = (isset($_POST['f_appreciation']))  ? Clean::appreciation($_POST['f_appreciation']) : '';
+$elements      = (isset($_POST['f_elements']))      ? Clean::appreciation($_POST['f_elements'])     : '';
+$position      = (isset($_POST['f_position']))      ? Clean::decimal($_POST['f_position'])          : -1;
+$import_info   = (isset($_POST['f_import_info']))   ? Clean::texte($_POST['f_import_info'])         : '';
+$etape         = (isset($_POST['f_etape']))         ? Clean::entier($_POST['f_etape'])              : 0;
+$page_parite   = (isset($_POST['f_parite']))        ? Clean::entier($_POST['f_parite'])             : 0;
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
@@ -173,8 +177,7 @@ else
 }
 $periode_nom = $tab_periode_livret[$periode];
 
-// Récupérer et mettre en session les seuils pour le palier
-
+// Récupérer et mettre en session les infos sur les seuils enregistrés
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_seuils_valeurs($PAGE_REF);
 foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
 {

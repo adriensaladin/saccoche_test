@@ -266,7 +266,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       // Récupération au passage des profs associés aux saisies
       $tab_eval = array();
       $tab_prof = array();
-      $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , TRUE /*onlynote*/ , FALSE /*first_order_by_date*/ );
+      $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ , FALSE /*first_order_by_date*/ );
       foreach($DB_TAB as $DB_ROW)
       {
         if($tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']])
@@ -358,7 +358,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       // Récupération au passage des profs associés aux saisies
       $tab_eval = array();
       $tab_prof = array();
-      $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , TRUE /*onlynote*/ , FALSE /*first_order_by_date*/ );
+      $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ , FALSE /*first_order_by_date*/ );
       foreach($DB_TAB as $DB_ROW)
       {
         if( $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] && isset($tab_join_item_prof[$DB_ROW['item_id']][$DB_ROW['prof_id']]) )
@@ -796,7 +796,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
         else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
         // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
         $tab_eval = array();
-        $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , TRUE /*onlynote*/ , FALSE /*first_order_by_date*/ );
+        $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ , FALSE /*first_order_by_date*/ );
         foreach($DB_TAB as $DB_ROW)
         {
           $retro_item = $tab_item_infos[$DB_ROW['item_id']]['calcul_retroactif'];
@@ -841,7 +841,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
         else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
         // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
         $tab_eval = array();
-        $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , TRUE /*onlynote*/ , FALSE /*first_order_by_date*/ );
+        $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ , FALSE /*first_order_by_date*/ );
         foreach($DB_TAB as $DB_ROW)
         {
           if( isset($tab_join_item_prof[$DB_ROW['item_id']][$DB_ROW['prof_id']]) )

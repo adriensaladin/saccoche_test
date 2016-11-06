@@ -1185,6 +1185,11 @@ if($version_base_structure_actuelle=='2016-10-19')
     $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_saisie_jointure_prof.sql');
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
     DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // nouvelle table [sacoche_livret_saisie_saisie_memo_detail]
+    $reload_sacoche_livret_saisie_saisie_memo_detail = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_saisie_saisie_memo_detail.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
   }
 }
 

@@ -173,14 +173,27 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
   }
 }
 
+// Pour variable js BACKGROUND_COLORS
+$tab_css_couleurs = array();
+$key_couleur = $_SESSION['USER_DALTONISME'] ? 'GRIS' : 'COULEUR' ;
+foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+{
+  $tab_css_couleurs[$acquis_id] = '"'.$tab_acquis_info[$key_couleur].'"';
+}
+
 // Javascript
 Layout::add( 'js_inline_before' , 'var USER_ID               = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var TODAY_FR              = "'.TODAY_FR.'";' );
+Layout::add( 'js_inline_before' , 'var BACKGROUND_COLORS     = ['.implode(',',$tab_css_couleurs).'];' );
 Layout::add( 'js_inline_before' , 'var URL_IMPORT            = "'.URL_DIR_IMPORT.'";' );
-Layout::add( 'js_inline_before' , 'var POURCENTAGE_MAXI      = '.$_SESSION['NOTE'][$_SESSION['NOMBRE_CODES_NOTATION']]['VALEUR'].';' );
-Layout::add( 'js_inline_before' , 'var MOYENNE_MAXI          = '.($_SESSION['NOTE'][$_SESSION['NOMBRE_CODES_NOTATION']]['VALEUR']/5).';' );
-Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = '.min($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'],600).';' ); // max 600 spécification LSU
-Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'].';' ); // max 999 vs 1000 dans les spécifications LSU
+Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = 600;' );
+Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = 1000;' );
+Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_REPORT   = 0;' ); // TODO SUPPRIMER ?
+Layout::add( 'js_inline_before' , 'var APP_GENERALE_REPORT   = 0;' ); // TODO SUPPRIMER ?
+Layout::add( 'js_inline_before' , '// <![CDATA[' ); // TODO SUPPRIMER ?
+Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_MODELE   = "";' ); // TODO SUPPRIMER ?
+Layout::add( 'js_inline_before' , 'var APP_GENERALE_MODELE   = "";' ); // TODO SUPPRIMER ?
+Layout::add( 'js_inline_before' , '// ]]>' ); // TODO SUPPRIMER ?
 
 // Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
 if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
@@ -582,7 +595,6 @@ if($affichage_formulaire_statut)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaire de choix des matières pour une recherche de saisies manquantes. -> zone_chx_rubriques
 // Paramètres supplémentaires envoyés pour éviter d'avoir à les retrouver à chaque fois. -> form_hidden
-// TODO : partie non reprise
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $form_hidden = '';
@@ -636,7 +648,6 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
 <?php
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaires utilisés pour les opérations ultérieures sur les bilans.
-// TODO : partie non reprise
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 ?>
 
@@ -697,7 +708,6 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
 <?php
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaire pour afficher le résultat de l'analyse d'un fichier CSV et demander confirmation.
-// TODO : partie non reprise
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:grey}' ); // Pour le rapport d'analyse
 ?>

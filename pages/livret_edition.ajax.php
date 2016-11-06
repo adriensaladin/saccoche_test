@@ -102,50 +102,12 @@ $texte_periode = 'Du '.$date_debut.' au '.$date_fin.'.';
 $texte_precision = $tab_precision_retroactif[$retroactif].$precision_socle.$precision_niveau.'.';
 */
 
-$action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '' ;
-$section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : '' ;
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Signaler une faute ou la correction d'une faute
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( !$section && ( ($action=='signaler_faute') || ($action=='corriger_faute') ) )
-{
-  $destinataire_id = (isset($_POST['f_destinataire_id'])) ? Clean::entier($_POST['f_destinataire_id']) : 0;
-  $message_contenu = (isset($_POST['f_message_contenu'])) ? Clean::texte($_POST['f_message_contenu'])  : '' ;
-  if( !$destinataire_id || !$message_contenu )
-  {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
-  }
-  // Notification (qui est envoyée de suite)
-  $abonnement_ref = 'bilan_officiel_appreciation';
-  $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_avec_informations( $abonnement_ref , $destinataire_id );
-  $destinataires_nb = count($DB_TAB);
-  if(!$destinataires_nb)
-  {
-    // Normalement impossible, l'abonnement des personnels à ce type de de notification étant obligatoire
-    Json::end( FALSE , 'Destinataire non trouvé ! !' );
-  }
-  $notification_debut = ($action=='signaler_faute') ? 'Signalement effectué par ' : 'Correction apportée par ' ;
-  $notification_contenu = $notification_debut.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".$message_contenu."\r\n";
-  foreach($DB_TAB as $DB_ROW)
-  {
-    // 1 seul passage en fait
-    $notification_statut = ( (COURRIEL_NOTIFICATION=='oui') && ($DB_ROW['jointure_mode']=='courriel') && $DB_ROW['user_email'] ) ? 'envoyée' : 'consultable' ;
-    DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_visible( $DB_ROW['user_id'] , $abonnement_ref , $notification_statut , $notification_contenu );
-    if($notification_statut=='envoyée')
-    {
-      $destinataire = $DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' <'.$DB_ROW['user_email'].'>';
-      $notification_contenu .= Sesamail::texte_pied_courriel( array('no_reply','notif_individuelle','signature') , $DB_ROW['user_email'] );
-      $courriel_bilan = Sesamail::mail( $destinataire , 'Notification - Erreur appréciation livret scolaire' , $notification_contenu , NULL );
-    }
-  }
-  Json::end( TRUE );
-}
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : '' ;
+$section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : '' ;
 
 $OBJET         = (isset($_POST['f_objet']))         ? Clean::texte($_POST['f_objet'])               : '';
 $ACTION        = (isset($_POST['f_action']))        ? Clean::texte($_POST['f_action'])              : '';
@@ -227,7 +189,7 @@ foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Saisir    : affichage des données d'un élève | enregistrement/suppression d'une appréciation ou d'une note | recalculer une note
 // Examiner  : recherche des saisies manquantes (notes et appréciations)
-// Consulter : affichage des données d'un élève (HTML) | détail d'une rubrique pour un élève
+// Consulter : affichage des données d'un élève (HTML)
 // Imprimer  : affichage de la liste des élèves | étape d'impression PDF
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -247,6 +209,44 @@ if( in_array( $section , array('livret_saisir','livret_examiner','livret_consult
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Signaler une faute
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='signaler_faute') || ($action=='corriger_faute') )
+{
+  $destinataire_id = (isset($_POST['f_destinataire_id'])) ? Clean::entier($_POST['f_destinataire_id']) : 0;
+  $message_contenu = (isset($_POST['f_message_contenu'])) ? Clean::texte($_POST['f_message_contenu'])  : '' ;
+  if( !$destinataire_id || !$message_contenu )
+  {
+    Json::end( FALSE , 'Erreur avec les données transmises !' );
+  }
+  // Notification (qui est envoyée de suite)
+  $abonnement_ref = 'bilan_officiel_appreciation';
+  $DB_TAB = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_avec_informations( $abonnement_ref , $destinataire_id );
+  $destinataires_nb = count($DB_TAB);
+  if(!$destinataires_nb)
+  {
+    // Normalement impossible, l'abonnement des personnels à ce type de de notification étant obligatoire
+    Json::end( FALSE , 'Destinataire non trouvé ! !' );
+  }
+  $notification_debut = ($action=='signaler_faute') ? 'Signalement effectué par ' : 'Correction apportée par ' ;
+  $notification_contenu = $notification_debut.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).' :'."\r\n\r\n".$message_contenu."\r\n";
+  foreach($DB_TAB as $DB_ROW)
+  {
+    // 1 seul passage en fait
+    $notification_statut = ( (COURRIEL_NOTIFICATION=='oui') && ($DB_ROW['jointure_mode']=='courriel') && $DB_ROW['user_email'] ) ? 'envoyée' : 'consultable' ;
+    DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_visible( $DB_ROW['user_id'] , $abonnement_ref , $notification_statut , $notification_contenu );
+    if($notification_statut=='envoyée')
+    {
+      $destinataire = $DB_ROW['user_prenom'].' '.$DB_ROW['user_nom'].' <'.$DB_ROW['user_email'].'>';
+      $notification_contenu .= Sesamail::texte_pied_courriel( array('no_reply','notif_individuelle','signature') , $DB_ROW['user_email'] );
+      $courriel_bilan = Sesamail::mail( $destinataire , 'Notification - Erreur appréciation bilan officiel' , $notification_contenu , NULL );
+    }
+  }
+  Json::end( TRUE );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Générer un archivage des saisies
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -262,7 +262,7 @@ $tab_actions = array
 
 if( isset($tab_actions[$action]) )
 {
-  require(CHEMIN_DOSSIER_INCLUDE.'code_livret_archiver.php');
+  require(CHEMIN_DOSSIER_INCLUDE.'code_officiel_archiver.php');
   // Normalement, on est stoppé avant.
   Json::end( FALSE , 'Problème de code : point d\'arrêt manquant !' );
 }

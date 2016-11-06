@@ -68,7 +68,6 @@ class Layout
   private static $is_rss               = NULL;    // insertion (ou pas) du flux RSS
   private static $is_add_noscript      = NULL;    // pour ajouter une balise <noscript> au début du <body>
   private static $is_server_xss_head   = NULL;    // pour indiquer si le serveur est déjà configuré pour envoyer un header "X-XSS-Protection"
-  private static $is_minify            = NULL;    // pour indiquer s'il faut minifier les js / css
   private static $body_class           = NULL;    // classe (facultative) de l'élément <body>
 
   /**
@@ -348,22 +347,7 @@ class Layout
     $fichier_original_chemin = $chemin;
     $fichier_original_date   = filemtime($fichier_original_chemin);
     $fichier_original_url    = $fichier_original_chemin.'?t='.$fichier_original_date;
-    if(is_null(Layout::$is_minify))
-    {
-      if( defined('FORCE_MINIFY') || isset($_GET['minify']) )
-      {
-        Layout::$is_minify = TRUE;
-      }
-      else if( defined('FORCE_NO_MINIFY') || isset($_GET['no-minify']) )
-      {
-        Layout::$is_minify = FALSE;
-      }
-      else
-      {
-        Layout::$is_minify = (SERVEUR_TYPE == 'PROD') ? TRUE : FALSE;
-      }
-    }
-    if(Layout::$is_minify)
+    if( (SERVEUR_TYPE == 'PROD') || defined('FORCE_MINIFY') || isset($_GET['minify']) )
     {
       // On peut se permettre d'enregistrer les js et css en dehors de leur dossier d'origine car les répertoires sont tous de mêmes niveaux.
       // En cas d'appel depuis le site du projet il faut éventuellement respecter le chemin vers le site du projet.

@@ -54,10 +54,9 @@ $(document).ready
       function()
       {
         var tab_infos = $(this).attr('id').split('_');
-        var objet     = tab_infos[0];
         var page_ref  = tab_infos[1];
         $('#ajax_msg_'+page_ref).attr('class','alerte').html("Enregistrer pour confirmer.");
-        if( objet=='choix' )
+        if( $(this).attr('type')=='radio' )
         {
           if( $(this).attr('value') == 'position' )
           {

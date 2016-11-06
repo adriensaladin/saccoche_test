@@ -169,7 +169,7 @@ else
 
 // Une requête pour récupérer les rubriques
 $tab_rubrique = array();
-$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_rubriques( $get_rubrique_type , FALSE /*for_edition*/ );
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_rubriques( $get_rubrique_type , TRUE /*is_concat*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   $rubrique_id  = $DB_ROW['livret_rubrique_id'];

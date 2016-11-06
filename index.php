@@ -237,7 +237,7 @@ if(!empty($_SESSION['CSS']))
 }
 
 // Fichiers css & js
-$tab_pages_graphiques = array('brevet_fiches','officiel_accueil','releve_bilan_chronologique','livret_edition');
+$tab_pages_graphiques = array('brevet_fiches','officiel_accueil','releve_bilan_chronologique');
 $filename_js_normal = './pages/'.$PAGE.'.js';
 $jquery_version = ( ($_SESSION['BROWSER']['modele']!='explorer') || ($_SESSION['BROWSER']['version']>=9) ) ? '3' : '1' ;
 Layout::add( 'css_file' , './_css/style.css'                              , 'mini' );

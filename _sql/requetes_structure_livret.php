@@ -266,27 +266,6 @@ public static function DB_lister_correspondances_matieres_uniques( $rubrique_typ
 }
 
 /**
- * lister_correspondances_matieres_uniques
- *
- * @param string   $rubrique_type
- * @param int      $matiere_livret_id
- * @return int
- */
-public static function DB_recuperer_correspondance_matiere_unique( $rubrique_type , $matiere_livret_id )
-{
-  $DB_SQL = 'SELECT GROUP_CONCAT(element_id) AS matiere_referentiel_id '; // matiere_referentiel_id sera en fait un id unique, on utilise GROUP_CONCAT et GROUP BY pour le COUNT() 
-  $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-  $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type AND livret_rubrique_ou_matiere_id=:matiere_livret_id ';
-  $DB_SQL.= 'GROUP BY livret_rubrique_ou_matiere_id ';
-  $DB_SQL.= 'HAVING COUNT(element_id)=1 ';
-  $DB_VAR = array(
-    ':rubrique_type'     => $rubrique_type,
-    ':matiere_livret_id' => $matiere_livret_id,
-  );
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * lister_matieres_alimentees
  *
  * @param void
@@ -297,7 +276,7 @@ public static function DB_lister_matieres_alimentees()
   $DB_SQL = 'SELECT livret_rubrique_type, matiere_id, matiere_nom ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
   $DB_SQL.= 'INNER JOIN sacoche_matiere ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_matiere.matiere_id ';
-  $DB_SQL.= 'WHERE livret_rubrique_type IN("c3_matiere","c4_matiere") AND ( matiere_siecle=1 OR matiere_active=1 ) ';
+  $DB_SQL.= 'WHERE matiere_siecle=1 OR matiere_active=1 ';
   $DB_SQL.= 'GROUP BY livret_rubrique_type, matiere_id ';
   $DB_SQL.= 'ORDER BY matiere_nom ASC ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
@@ -311,44 +290,25 @@ public static function DB_lister_matieres_alimentees()
  * - si un champ est NULL ou vide, il n'est pas concaténé, alors qu'avec CONCAT on obtient un séparateur suivi de rien
  *
  * @param string   $rubrique_type
- * @param bool     $for_edition
+ * @param bool     $is_concat
  * @return array
  */
-public static function DB_lister_rubriques( $rubrique_type , $for_edition )
+public static function DB_lister_rubriques( $rubrique_type , $is_concat )
 {
-  $rubrique_ids = $livret_ids = '' ;
   if( substr($rubrique_type,3) == 'matiere' )
   {
-    if($for_edition)
-    {
-      $rubrique_nom = 'matiere_nom AS rubrique, NULL AS sous_rubrique ' ;
-      $rubrique_ids = ', matiere_id AS rubrique_id_elements, matiere_id AS rubrique_id_appreciation, matiere_id AS rubrique_id_position ' ;
-      $livret_ids   = ', matiere_code AS rubrique_id_livret ' ;
-      $order_by     = 'matiere_ordre ASC ';
-    }
-    else
-    {
-      $rubrique_nom = 'CONCAT( REPLACE( REPLACE(matiere_siecle,"1","SIECLE") , "0","REFÉRENTIEL AUTRE" ) , " - ", matiere_nom ) AS livret_rubrique_nom ' ;
-      $order_by     = 'matiere_siecle DESC, matiere_ordre ASC ';
-    }
-    $DB_SQL = 'SELECT matiere_id AS livret_rubrique_id, '.$rubrique_nom.$rubrique_ids.$livret_ids;
+    $rubrique_nom = ($is_concat) ? 'CONCAT( REPLACE( REPLACE(matiere_siecle,"1","SIECLE") , "0","REFÉRENTIEL AUTRE" ) , " - ", matiere_nom ) AS livret_rubrique_nom ' : 'matiere_nom AS rubrique, NULL AS sous_rubrique ' ;
+    $rubrique_ids = ($is_concat) ? '' : ', matiere_id AS rubrique_id_elements, matiere_id AS rubrique_id_appreciation, matiere_id AS rubrique_id_position ' ;
+    $DB_SQL = 'SELECT matiere_id AS livret_rubrique_id, '.$rubrique_nom.$rubrique_ids;
     $DB_SQL.= 'FROM sacoche_matiere ';
     $DB_SQL.= 'WHERE matiere_siecle=1 OR matiere_active=1 ';
-    $DB_SQL.= 'ORDER BY '.$order_by;
+    $DB_SQL.= 'ORDER BY matiere_siecle DESC, matiere_ordre ASC ';
   }
   else
   {
-    if($for_edition)
-    {
-      $rubrique_nom = 'livret_rubrique_domaine AS rubrique, livret_rubrique_sous_domaine AS sous_rubrique ' ;
-      $rubrique_ids = ', livret_rubrique_id_elements AS rubrique_id_elements, livret_rubrique_id_appreciation AS rubrique_id_appreciation, livret_rubrique_id_position AS rubrique_id_position ' ;
-      $livret_ids   = ', livret_rubrique_code_livret AS rubrique_id_livret ' ;
-    }
-    else
-    {
-      $rubrique_nom = 'CONCAT_WS( " - ", livret_rubrique_domaine, livret_rubrique_sous_domaine) AS livret_rubrique_nom ' ;
-    }
-    $DB_SQL = 'SELECT livret_rubrique_id, '.$rubrique_nom.$rubrique_ids.$livret_ids;
+    $rubrique_nom = ($is_concat) ? 'CONCAT_WS( " - ", livret_rubrique_domaine, livret_rubrique_sous_domaine) AS livret_rubrique_nom ' : 'livret_rubrique_domaine AS rubrique, livret_rubrique_sous_domaine AS sous_rubrique ' ;
+    $rubrique_ids = ($is_concat) ? '' : ', livret_rubrique_id_elements AS rubrique_id_elements, livret_rubrique_id_appreciation AS rubrique_id_appreciation, livret_rubrique_id_position AS rubrique_id_position ' ;
+    $DB_SQL = 'SELECT livret_rubrique_id, '.$rubrique_nom.$rubrique_ids;
     $DB_SQL.= 'FROM sacoche_livret_rubrique ';
     $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type ';
     $DB_SQL.= 'ORDER BY livret_rubrique_ordre ASC ';
@@ -401,7 +361,7 @@ public static function DB_recuperer_items_profs( $liste_eleve_id , $liste_prof_i
   $where_socle      = ($only_socle)                 ? 'AND ( entree_id !=0 OR socle_composante_id IS NOT NULL ) ' : '' ;
   $where_date_debut = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '        : '';
   $where_date_fin   = ($date_mysql_fin)             ? 'AND saisie_date<=:date_fin '          : '';
-  $DB_SQL = 'SELECT item_id , prof_id , item_nom , ';
+  $DB_SQL = 'SELECT item_id , prof_id , ';
   $DB_SQL.= 'item_coef , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite , referentiel_calcul_retroactif AS calcul_retroactif ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
@@ -411,7 +371,7 @@ public static function DB_recuperer_items_profs( $liste_eleve_id , $liste_prof_i
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
   $DB_SQL.= $join_s2016;
-  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND '.$where_eleve.'AND '.$where_prof.$where_socle.$where_date_debut.$where_date_fin;
+  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND '.$where_eleve.$where_prof.$where_socle.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY item_id, prof_id ';
   $DB_VAR = array(
     ':date_debut' => $date_mysql_debut,
@@ -432,8 +392,8 @@ public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , 
 {
   $rubrique_champ = (substr($rubrique_type,3)=='domaine') ? 'livret_rubrique_id_position' : 'livret_rubrique_ou_matiere_id' ;
   $join_rubrique  = (substr($rubrique_type,3)=='domaine') ? 'INNER JOIN sacoche_livret_rubrique ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_livret_rubrique.livret_rubrique_id ' : '' ;
-  $where_rubrique = ($rubrique_id) ? 'AND '.$rubrique_champ.'=:rubrique_id ' : '' ;
-  $group_by       = ($rubrique_id) ? 'item_id ' : $rubrique_champ.', item_id ' ;
+  $where_rubrique = ($rubrique_id) ? 'AND rubrique_id=:rubrique_id ' : '' ;
+  $group_by       = ($rubrique_id) ? 'item_id ' : 'rubrique_id, item_id ' ;
   $DB_SQL = 'SELECT '.$rubrique_champ.' AS rubrique_id , item_id ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
   $DB_SQL.= $join_rubrique;
@@ -538,7 +498,6 @@ public static function DB_recuperer_profs_jointure_rubrique( $rubrique_type , $r
  * @param string   $rubrique_join
  * @return array
  */
-/*
 public static function DB_recuperer_profs_jointure_rubriques( $rubrique_type , $rubrique_join )
 {
   $DB_SQL = 'SELECT user_id, livret_rubrique_ou_matiere_id ';
@@ -576,42 +535,6 @@ public static function DB_recuperer_profs_jointure_rubriques( $rubrique_type , $
   $DB_VAR = array( ':rubrique_type' => $rubrique_type );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
-*/
-
-/**
- * Lister les professeurs ayant évalué des élèves donnés sur une période donnée.
- *
- * @param int    $classe_id
- * @param string $liste_eleve_id
- * @param string $date_mysql_debut
- * @param string $date_mysql_fin
- * @return array
- */
-/*
-public static function DB_recuperer_profs_jointure_eval_eleves( $classe_id , $liste_eleve_id , $date_mysql_debut , $date_mysql_fin )
-{
-  if($liste_eleve_id)
-  {
-    $DB_SQL = 'SELECT eleve_id, prof_id ';
-    $DB_SQL.= 'FROM sacoche_saisie ';
-    $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND saisie_date>="'.$date_mysql_debut.'" AND saisie_date<="'.$date_mysql_fin.'" ';
-  }
-  else
-  {
-    $DB_SQL = 'SELECT 0 AS eleve_id, prof_id ';
-    $DB_SQL.= 'FROM sacoche_user ';
-    $DB_SQL.= 'LEFT JOIN sacoche_saisie ON sacoche_user.user_id = sacoche_saisie.eleve_id ';
-    $DB_SQL.= 'WHERE eleve_classe_id=:classe_id AND saisie_date>="'.$date_mysql_debut.'" AND saisie_date<="'.$date_mysql_fin.'" ';
-    $DB_SQL.= 'GROUP BY prof_id ';
-  }
-  $DB_VAR = array(
-    ':classe_id'        => $classe_id,
-    ':date_mysql_debut' => $date_mysql_debut,
-    ':date_mysql_fin'   => $date_mysql_fin,
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-*/
 
 /**
  * tester_page_jointure_rubrique
@@ -624,7 +547,7 @@ public static function DB_recuperer_profs_jointure_eval_eleves( $classe_id , $li
 
 public static function DB_tester_page_jointure_rubrique( $rubrique_type , $rubrique_join , $rubrique_id )
 {
-  if( in_array( $rubrique_type , array('c1_theme','c2_domaine','c3_domaine') ) )
+  if( $rubrique_join != 'matiere' )
   {
     $DB_SQL = 'SELECT 1 ';
     $DB_SQL.= 'FROM sacoche_livret_page ';
@@ -762,18 +685,16 @@ public static function DB_lister_seuils_valeurs($livret_page_ref=NULL)
  *
  * @param string $page_ref
  * @param string $colonne
- * @param int    $moy_classe
  * @return void
  */
-public static function DB_modifier_page_colonne( $page_ref , $colonne , $moy_classe )
+public static function DB_modifier_page_colonne( $page_ref , $colonne )
 {
   $DB_SQL = 'UPDATE sacoche_livret_page ';
-  $DB_SQL.= 'SET livret_page_colonne=:colonne, livret_page_moyenne_classe=:moy_classe ';
+  $DB_SQL.= 'SET livret_page_colonne=:colonne ';
   $DB_SQL.= 'WHERE livret_page_ref=:page_ref ';
   $DB_VAR = array(
-    ':page_ref'   => $page_ref,
-    ':colonne'    => $colonne,
-    ':moy_classe' => $moy_classe,
+    ':page_ref' => $page_ref,
+    ':colonne'  => $colonne,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -895,9 +816,8 @@ public static function DB_ajouter_jointure_groupe( $groupe_id , $page_ref , $pag
  */
 public static function DB_modifier_jointure_groupe( $groupe_id , $page_ref , $page_periodicite , $jointure_periode , $etat )
 {
-  $update_date = ($etat=='5complet') ? ', jointure_date_verrou=NOW() ' : '' ;
   $DB_SQL = 'UPDATE sacoche_livret_jointure_groupe ';
-  $DB_SQL.= 'SET jointure_etat=:etat '.$update_date;
+  $DB_SQL.= 'SET jointure_etat=:etat ';
   $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND livret_page_periodicite=:page_periodicite AND jointure_periode=:jointure_periode ';
   $DB_VAR = array(
     ':groupe_id'        => $groupe_id,
@@ -1708,14 +1628,10 @@ public static function DB_recuperer_donnees_eleves( $livret_page_ref , $livret_p
   $where_rubrique = ($liste_rubrique_type) ? 'AND rubrique_type IN('.$liste_rubrique_type.') ' : '' ;
   $where_prof     = ($prof_id) ? 'AND ( sacoche_livret_saisie.prof_id IN('.$prof_id.',0) OR sacoche_livret_saisie_jointure_prof.prof_id='.$prof_id.' ) ' : '' ;
   $order_periode  = ($with_periodes_avant) ? 'ORDER BY jointure_periode ASC ' : '' ;
-  $DB_SQL = 'SELECT livret_saisie_id, rubrique_type, rubrique_id, cible_id AS eleve_id, saisie_objet, saisie_valeur, saisie_origine, ';
-  $DB_SQL.= 'sacoche_livret_saisie.prof_id AS user_id, user_genre, user_nom, user_prenom, ';
-  $DB_SQL.= 'GROUP_CONCAT(sacoche_livret_saisie_jointure_prof.prof_id) AS listing_profs, ';
-  $DB_SQL.= 'acquis_detail '.$select_periode;
+  $DB_SQL = 'SELECT livret_saisie_id, rubrique_type, rubrique_id, cible_id AS eleve_id, saisie_objet, saisie_valeur, saisie_origine, sacoche_livret_saisie.prof_id AS user_id, user_genre, user_nom, user_prenom, GROUP_CONCAT(sacoche_livret_saisie_jointure_prof.prof_id) AS listing_profs  '.$select_periode;
   $DB_SQL.= 'FROM sacoche_livret_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_saisie.prof_id=sacoche_user.user_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_saisie_jointure_prof USING(livret_saisie_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_saisie_memo_detail USING(livret_saisie_id) ';
   $DB_SQL.= 'WHERE livret_page_ref=:livret_page_ref AND livret_page_periodicite=:livret_page_periodicite '.$where_periode.$where_rubrique.' AND cible_nature=:cible_nature AND cible_id IN ('.$liste_eleve_id.') '.$where_prof;
   $DB_SQL.= 'GROUP BY (livret_saisie_id) ';
   $DB_SQL.= $order_periode;
@@ -1885,23 +1801,6 @@ public static function DB_modifier_saisie_jointure_prof( $livret_saisie_id , $pr
 }
 
 /**
- * DB_modifier_saisie_memo_detail
- *
- * @param int     $livret_saisie_id
- * @param string  $acquis_detail
- * @return void
- */
-public static function DB_modifier_saisie_memo_detail( $livret_saisie_id , $acquis_detail )
-{
-  $DB_SQL = 'INSERT IGNORE INTO sacoche_livret_saisie_memo_detail ( livret_saisie_id,  acquis_detail) VALUES (:livret_saisie_id, :acquis_detail) ';
-  $DB_VAR = array(
-    ':livret_saisie_id' => $livret_saisie_id,
-    ':acquis_detail'    => $acquis_detail,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * DB_supprimer_saisie
  * Ne peut être qu'une note calculée automatiquement, car pour le reste un champ vide est enregistré
  *
@@ -1911,10 +1810,7 @@ public static function DB_modifier_saisie_memo_detail( $livret_saisie_id , $acqu
  */
 public static function DB_supprimer_saisie( $livret_saisie_id )
 {
-  $DB_SQL = 'DELETE sacoche_livret_saisie, sacoche_livret_saisie_jointure_prof, sacoche_livret_saisie_memo_detail ';
-  $DB_SQL.= 'FROM sacoche_livret_saisie ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_saisie_jointure_prof USING (livret_saisie_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_saisie_memo_detail USING (livret_saisie_id) ';
+  $DB_SQL = 'DELETE FROM sacoche_livret_saisie ';
   $DB_SQL.= 'WHERE livret_saisie_id=:livret_saisie_id ';
   $DB_VAR = array(
     ':livret_saisie_id' => $livret_saisie_id,

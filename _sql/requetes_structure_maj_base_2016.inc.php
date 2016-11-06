@@ -1188,33 +1188,4 @@ if($version_base_structure_actuelle=='2016-10-19')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-10-29 => 2016-11-06
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2016-10-29')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2016-11-06';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // ajout colonne à [sacoche_livret_page]
-    if(empty($reload_sacoche_livret_page))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_page ADD livret_page_moyenne_classe TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT "Modifiable pour 6e 5e 4e 3e." AFTER livret_page_colonne ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_page SET livret_page_moyenne_classe=1 WHERE livret_page_colonne="moyenne" ' );
-    }
-    // ajout colonne à [sacoche_livret_jointure_groupe]
-    if(empty($reload_sacoche_livret_jointure_groupe))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_jointure_groupe ADD jointure_date_verrou DATE DEFAULT NULL AFTER jointure_etat ' );
-    }
-    // nouvelle table [sacoche_livret_saisie_memo_detail]
-    $reload_sacoche_livret_saisie_memo_detail = TRUE;
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_saisie_memo_detail.sql');
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    DB::close(SACOCHE_STRUCTURE_BD_NAME);
-  }
-}
-
 ?>

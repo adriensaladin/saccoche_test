@@ -466,7 +466,6 @@ class PDF extends FPDF
   private $releve_modele   = '';
   private $releve_format   = '';
   private $synthese_modele = '';
-  private $livret_modele   = '';
   private $afficher_score  = NULL;
   private $afficher_degre  = NULL;
   // idem
@@ -608,26 +607,6 @@ class PDF extends FPDF
       $b = hexdec(substr($tab_maitrise_info['GRIS'],5,2));
       $this->tab_couleur['M'.$maitrise_id.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
     }
-    // Couleurs pour le Livret Scolaire
-    $this->tab_couleur['livret_gris']           = array('r'=>243,'v'=>243,'b'=>244);
-    $this->tab_couleur['livret_bleu_fonce']     = array('r'=>  0,'v'=>150,'b'=>213);
-    $this->tab_couleur['livret_bleu_clair']     = array('r'=>226,'v'=>240,'b'=>250);
-    $this->tab_couleur['livret_vert_fonce']     = array('r'=>174,'v'=>212,'b'=> 77);
-    $this->tab_couleur['livret_vert_clair']     = array('r'=>232,'v'=>243,'b'=>206);
-    $this->tab_couleur['livret_titre_eval']     = array('r'=> 21,'v'=>149,'b'=>214); // #1595D6
-    $this->tab_couleur['livret_titre_ap']       = array('r'=>225,'v'=>238,'b'=>248); // #E1EEF8
-    $this->tab_couleur['livret_titre_epi']      = array('r'=>225,'v'=>238,'b'=>248); // #E1EEF8
-    $this->tab_couleur['livret_titre_parcours'] = array('r'=>225,'v'=>238,'b'=>248); // #E1EEF8
-    $this->tab_couleur['livret_titre_bilan']    = array('r'=>173,'v'=>212,'b'=> 78); // #ADD44E
-    $this->tab_couleur['livret_titre_viesco']   = array('r'=>247,'v'=>146,'b'=> 55); // #F79237
-    $this->tab_couleur['livret_fond_eval']      = array('r'=>219,'v'=>229,'b'=>241); // #DBE5F1
-    $this->tab_couleur['livret_fond_ap']        = array('r'=>238,'v'=>245,'b'=>251); // #EEF5FB
-    $this->tab_couleur['livret_fond_epi']       = array('r'=>238,'v'=>245,'b'=>251); // #EEF5FB
-    $this->tab_couleur['livret_fond_parcours']  = array('r'=>238,'v'=>245,'b'=>251); // #EEF5FB
-    $this->tab_couleur['livret_fond_modaccomp'] = array('r'=>150,'v'=>179,'b'=>213); // #96B3D5
-    $this->tab_couleur['livret_fond_bilan']     = array('r'=>236,'v'=>245,'b'=>215); // #ECF5D7
-    $this->tab_couleur['livret_fond_viesco']    = array('r'=>254,'v'=>208,'b'=>163); // #FED0A3
-
     // Lettres utilisées en remplacement des images Lomer pour du noir et blanc
     foreach( $this->SESSION['NOTE_ACTIF'] as $note_id )
     {
@@ -924,10 +903,10 @@ class PDF extends FPDF
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Méthode pour afficher une signature ou un logo d'établissement d'un bilan officiel ou pour le livret scolaire
+  // Méthode pour afficher une signature ou un logo d'établissement d'un bilan officiel
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function afficher_image( $largeur_bloc , $hauteur_autorisee , $tab_image , $img_objet /* signature | logo | logo_seul */ )
+  private function afficher_image( $largeur_bloc , $hauteur_autorisee , $tab_image , $img_objet /* signature | logo | logo_seul */ )
   {
     extract( $tab_image , EXTR_PREFIX_ALL , 'img' ); // $img_contenu , $img_format , $img_largeur , $img_hauteur
     $img_largeur *= $this->coef_conv_pixel_to_mm;

@@ -341,68 +341,60 @@ else
 // Compter le nombre de lignes à afficher par élève par matière
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($make_pdf)
+$tab_nb_lignes = array();
+$tab_nb_lignes_par_matiere = array();
+$nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] ) ? 1+max(6,$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR']/100) : 0 ;
+$nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                                           ? 1.3 : 0 ;
+$nb_lignes_prof_principal                      = ( $make_officiel && ($affichage_prof_principal) )                                      ? 1.3 : 0 ;
+$nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE'] )           ? 1.3 : 0 ;
+$nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + 1 : 0 ;
+$nb_lignes_matiere_marge    = 1 ;
+$nb_lignes_matiere_intitule = 2 ;
+$nb_lignes_matiere_intitule_et_marge = $nb_lignes_matiere_marge + $nb_lignes_matiere_intitule ;
+
+foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
-
-  $tab_nb_lignes = array();
-  $tab_nb_lignes_par_matiere = array();
-  $nb_lignes_appreciation_generale_avec_intitule = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] ) ? 1+max(6,$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR']/100) : 0 ;
-  $nb_lignes_assiduite                           = ( $make_officiel && ($affichage_assiduite) )                                           ? 1.3 : 0 ;
-  $nb_lignes_prof_principal                      = ( $make_officiel && ($affichage_prof_principal) )                                      ? 1.3 : 0 ;
-  $nb_lignes_supplementaires                     = ( $make_officiel && $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE'] )           ? 1.3 : 0 ;
-  $nb_lignes_legendes                            = ($legende=='oui') ? 0.5 + 1 : 0 ;
-  $nb_lignes_matiere_marge    = 1 ;
-  $nb_lignes_matiere_intitule = 2 ;
-  $nb_lignes_matiere_intitule_et_marge = $nb_lignes_matiere_marge + $nb_lignes_matiere_intitule ;
-
-  foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
+  foreach($tab_matiere as $matiere_id => $tab)
   {
-    foreach($tab_matiere as $matiere_id => $tab)
+    if(isset($tab_score_eleve_item[$eleve_id][$matiere_id]))
     {
-      if(isset($tab_score_eleve_item[$eleve_id][$matiere_id]))
+      // Ne pas compter les lignes de synthèses dont aucun item n'a été évalué
+      foreach($tab_score_eleve_item[$eleve_id][$matiere_id] as $synthese_ref => $tab_items)
       {
-        // Ne pas compter les lignes de synthèses dont aucun item n'a été évalué
-        foreach($tab_score_eleve_item[$eleve_id][$matiere_id] as $synthese_ref => $tab_items)
+        $nb_items_evalues = count(array_filter($tab_items,'non_vide'));
+        if(!$nb_items_evalues)
         {
-          $nb_items_evalues = count(array_filter($tab_items,'non_vide'));
-          if(!$nb_items_evalues)
-          {
-            unset($tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref]);
-          }
+          unset($tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref]);
         }
-        // Compter la longueur de chaque appréciation
-        $nb_lignes_appreciation_intermediaire = 0;
-        if(isset($tab_saisie[$eleve_id][$matiere_id]))
-        {
-          foreach($tab_saisie[$eleve_id][$matiere_id] as $prof_id => $tab)
-          {
-            if($prof_id) // Sinon c'est la note.
-            {
-              $nb_lignes_appreciation_intermediaire += max( 2 , ceil(strlen($tab['appreciation'])/100), min( substr_count($tab['appreciation'],"\n") + 1 , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'] / 100 ) );
-            }
-          }
-        }
-        $nb_lignes_rubriques = count($tab_score_eleve_item[$eleve_id][$matiere_id]) ;
-        $nb_lignes_appreciations = ( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) && (isset($tab_saisie[$eleve_id][$matiere_id])) ) ? $nb_lignes_appreciation_intermediaire + 1 : 0 ; // + 1 pour "Appréciation / Conseils pour progresser"
-        $tab_nb_lignes[$eleve_id][$matiere_id] = $nb_lignes_matiere_intitule_et_marge + max($nb_lignes_rubriques,$nb_lignes_appreciations) ;
       }
+      // Compter la longueur de chaque appréciation
+      $nb_lignes_appreciation_intermediaire = 0;
+      if(isset($tab_saisie[$eleve_id][$matiere_id]))
+      {
+        foreach($tab_saisie[$eleve_id][$matiere_id] as $prof_id => $tab)
+        {
+          if($prof_id) // Sinon c'est la note.
+          {
+            $nb_lignes_appreciation_intermediaire += max( 2 , ceil(strlen($tab['appreciation'])/100), min( substr_count($tab['appreciation'],"\n") + 1 , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'] / 100 ) );
+          }
+        }
+      }
+      $nb_lignes_rubriques = count($tab_score_eleve_item[$eleve_id][$matiere_id]) ;
+      $nb_lignes_appreciations = ( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR']) && (isset($tab_saisie[$eleve_id][$matiere_id])) ) ? $nb_lignes_appreciation_intermediaire + 1 : 0 ; // + 1 pour "Appréciation / Conseils pour progresser"
+      $tab_nb_lignes[$eleve_id][$matiere_id] = $nb_lignes_matiere_intitule_et_marge + max($nb_lignes_rubriques,$nb_lignes_appreciations) ;
     }
   }
-
-  // Calcul des totaux une unique fois par élève
-  $tab_nb_lignes_total_eleve = array();
-  foreach($tab_nb_lignes as $eleve_id => $tab)
-  {
-    $tab_nb_lignes_total_eleve[$eleve_id] = array_sum($tab);
-  }
-  $nb_lignes_total = array_sum($tab_nb_lignes_total_eleve);
-
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Nombre de boucles par élève (entre 1 et 3 pour les bilans officiels, dans ce cas $tab_destinataires[] est déjà complété ; une seule dans les autres cas).
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Calcul des totaux une unique fois par élève
+$tab_nb_lignes_total_eleve = array();
+foreach($tab_nb_lignes as $eleve_id => $tab)
+{
+  $tab_nb_lignes_total_eleve[$eleve_id] = array_sum($tab);
+}
+$nb_lignes_total = array_sum($tab_nb_lignes_total_eleve);
 
+// Nombre de boucles par élève (entre 1 et 3 pour les bilans officiels, dans ce cas $tab_destinataires[] est déjà complété ; une seule dans les autres cas).
 if(!isset($tab_destinataires))
 {
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
@@ -519,7 +511,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         $matiere_nom = $tab_matiere[$matiere_id]['matiere_nom'];
         if( (!$make_officiel) || ($make_action=='tamponner') || (($make_action=='modifier')&&(in_array($matiere_id,$tab_matiere_id))) || (($make_action=='examiner')&&(in_array($matiere_id,$tab_matiere_id))) || ($make_action=='consulter') || ($make_action=='imprimer') )
         {
-          // Bulletin - Interface graphique
+         // Bulletin - Interface graphique
           if($make_graph)
           {
             $tab_graph_data['categories'][$matiere_id] = '"'.addcslashes($matiere_nom,'"').'"';
@@ -527,7 +519,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             {
               $tab_graph_data['series_data_'.$acquis_id][$matiere_id] = $tab_infos_matiere['total'][$acquis_id];
             }
-            if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
+           if($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
             {
               if($eleve_id) // Si appréciation sur le groupe alors pas de courbe élève
               {
@@ -574,7 +566,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           $nb_syntheses = count($tab_infos_matiere);
           if($nb_syntheses)
           {
-            $hauteur_ligne_synthese = ( ($make_officiel) && ($make_pdf) ) ? ( $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ) / count($tab_infos_matiere) : 1 ;
+            $hauteur_ligne_synthese = ($make_officiel) ? ( $tab_nb_lignes[$eleve_id][$matiere_id] - $nb_lignes_matiere_intitule_et_marge ) / count($tab_infos_matiere) : 1 ;
             foreach($tab_infos_matiere as $synthese_ref => $tab_infos_synthese)
             {
               $tab_infos_synthese = array_filter($tab_infos_synthese,'non_zero'); // Retirer les valeurs nulles
@@ -926,7 +918,7 @@ if( $make_graph && (count($tab_graph_data)) )
     $tickInterval = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ?  5 :  25 ;
     Json::add_row( 'script' , 'ChartOptions.yAxis[1] = { min: 0, max: '.$ymax.', tickInterval: '.$tickInterval.', gridLineColor: "#C0D0E0", title: { style: { color: "#333" } , text: "Moyennes" }, opposite: true };' );
   }
-  // Séries de valeurs ; la classe avant l'élève pour être positionnée en dessous
+  // Séries de valeurs
   $tab_graph_series = array();
   foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
   {

@@ -65,11 +65,6 @@ $tab_colonne_choix = array(
   'position'    => "Échelle de 1 à 4",
 );
 
-$tab_moyenne_choix = array(
-  1 => "Avec",
-  0 => "Sans",
-);
-
 $nb_pages = 0;
 
 foreach($DB_TAB_pages as $DB_ROW_page)
@@ -112,15 +107,6 @@ foreach($DB_TAB_pages as $DB_ROW_page)
         $radio_id   = $radio_name.'_'.$choix_value;
         $checked = ($choix_value==$DB_ROW_page['livret_page_colonne']) ? ' checked' : '' ;
         echo'<label for="'.$radio_id.'"><input type="radio" name="'.$radio_name.'" id="'.$radio_id.'" value="'.$choix_value.'"'.$checked.' /> '.$choix_txt.'</label>&nbsp;&nbsp;&nbsp;';
-      }
-      echo'<br />';
-      echo'<label class="tab">Moyenne classe :</label>';
-      foreach($tab_moyenne_choix as $moyenne_value => $moyenne_txt)
-      {
-        $radio_name = 'moyenne_'.$DB_ROW_page['livret_page_ref'];
-        $radio_id   = $radio_name.'_'.$moyenne_value;
-        $checked = ($moyenne_value==$DB_ROW_page['livret_page_moyenne_classe']) ? ' checked' : '' ;
-        echo'<label for="'.$radio_id.'"><input type="radio" name="'.$radio_name.'" id="'.$radio_id.'" value="'.$moyenne_value.'"'.$checked.' /> '.$moyenne_txt.'</label>&nbsp;&nbsp;&nbsp;';
       }
       echo'</p>';
     }

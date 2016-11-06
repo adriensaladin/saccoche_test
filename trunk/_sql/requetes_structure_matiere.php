@@ -84,13 +84,16 @@ public static function DB_lister_matieres($is_specifique)
  * lister_matieres_etablissement
  *
  * @param bool   $order_by_name      si FALSE, prendre le champ matiere_ordre
+ * @param bool   $with_siecle        si TRUE, prendre aussi les matières trouvées dans un import SIECLE
  * @return array
  */
-public static function DB_lister_matieres_etablissement($order_by_name)
+public static function DB_lister_matieres_etablissement( $order_by_name , $with_siecle=FALSE )
 {
-  $DB_SQL = 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre, matiere_ref, matiere_nom ';
+  $matiere_nom  = ($with_siecle) ? 'CONCAT( REPLACE( REPLACE(matiere_siecle,"1","SIECLE") , "0","REFÉRENTIEL AUTRE" ) , " - ", matiere_nom ) AS matiere_nom ' : 'matiere_nom ' ;
+  $where_siecle = ($with_siecle) ? ' OR matiere_siecle=1 ' : '' ;
+  $DB_SQL = 'SELECT matiere_id, matiere_nb_demandes, matiere_ordre, matiere_ref, '.$matiere_nom;
   $DB_SQL.= 'FROM sacoche_matiere ';
-  $DB_SQL.= 'WHERE matiere_active=1 ';
+  $DB_SQL.= 'WHERE matiere_active=1 '.$where_siecle;
   $DB_SQL.= ($order_by_name) ? 'ORDER BY matiere_nom ASC' : 'ORDER BY matiere_ordre ASC, matiere_nom ASC' ;
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }

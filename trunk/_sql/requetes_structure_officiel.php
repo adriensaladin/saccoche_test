@@ -159,6 +159,35 @@ public static function DB_recuperer_bilan_officiel_saisies_classe( $officiel_typ
 }
 
 /**
+ * DB_recuperer_bulletin_saisie_precise
+ *
+ * @param int    $periode_id
+ * @param int    $eleve_ou_classe_id
+ * @param int    $rubrique_id
+ * @param string $saisie_type   cible_nature
+ * @param string $saisie_objet   position | appreciation
+ * @return array  tableau dans le cas d'appréciations multiples
+ */
+public static function DB_recuperer_bulletin_saisie_precise( $periode_id , $eleve_ou_classe_id , $rubrique_id , $saisie_type , $saisie_objet )
+{
+  $select = ($saisie_objet=='position') ? 'saisie_note' : 'saisie_appreciation' ;
+  $where  = ($saisie_objet=='position') ? 'prof_id=0'   : 'prof_id!=0' ;
+  $DB_SQL = 'SELECT prof_id , '.$select.' AS saisie_valeur ';
+  $DB_SQL.= 'FROM sacoche_officiel_saisie ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_officiel_saisie.prof_id=sacoche_user.user_id ';
+  $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:eleve_ou_classe_id AND rubrique_id=:rubrique_id AND '.$where.' AND saisie_type=:saisie_type ';
+  $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
+  $DB_VAR = array(
+    ':officiel_type'      => 'bulletin',
+    ':periode_id'         => $periode_id,
+    ':eleve_ou_classe_id' => $eleve_ou_classe_id,
+    ':rubrique_id'        => $rubrique_id,
+    ':saisie_type'        => $saisie_type,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * recuperer_bilan_officiel_notes_eleves_periode
  *
  * @param int     $periode_id
@@ -358,7 +387,7 @@ public static function DB_recuperer_officiel_archive_avec_infos( $listing_eleve 
 public static function DB_lister_officiel_archive( $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $tab_eleve_id , $with_infos , $only_profil_non_vu='' )
 {
   $champ_consultation = 'archive_date_consultation_'.$only_profil_non_vu;
-  $select         = (!$with_infos) ? 'sacoche_officiel_archive.* ' : 'user_id, archive_date_generation, archive_date_consultation_eleve, archive_date_consultation_parent ' ;
+  $select         = ($with_infos) ? 'sacoche_officiel_archive.* ' : 'user_id, archive_date_generation, archive_date_consultation_eleve, archive_date_consultation_parent ' ;
   // where
   $where_etabl    = ($structure_uai)      ? 'structure_uai=:structure_uai AND '   : '' ;
   $where_annee    = ($annee_scolaire)     ? 'annee_scolaire=:annee_scolaire AND ' : '' ;

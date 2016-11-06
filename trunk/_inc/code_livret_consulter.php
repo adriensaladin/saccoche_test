@@ -43,18 +43,21 @@ if(empty($DB_ROW))
 {
   Json::end( FALSE , 'Association classe / livret introuvable !' );
 }
-$BILAN_ETAT         = $DB_ROW['jointure_etat'];
-$PAGE_MOMENT        = $DB_ROW['livret_page_moment'];
-$PAGE_TITRE_CLASSE  = $DB_ROW['livret_page_titre_classe'];
-$PAGE_RESUME        = $DB_ROW['livret_page_resume'];
-$PAGE_RUBRIQUE_TYPE = $DB_ROW['livret_page_rubrique_type'];
-$PAGE_RUBRIQUE_JOIN = $DB_ROW['livret_page_rubrique_join'];
-$PAGE_COLONNE       = $DB_ROW['livret_page_colonne'];
-$PAGE_EPI           = $DB_ROW['livret_page_epi'];
-$PAGE_AP            = $DB_ROW['livret_page_ap'];
-$PAGE_PARCOURS      = $DB_ROW['livret_page_parcours'];
-$PAGE_VIE_SCOLAIRE  = $DB_ROW['livret_page_vie_scolaire'];
-$classe_nom         = $DB_ROW['groupe_nom'];
+
+$BILAN_ETAT          = $DB_ROW['jointure_etat'];
+$PAGE_MOMENT         = $DB_ROW['livret_page_moment'];
+$PAGE_TITRE_CLASSE   = $DB_ROW['livret_page_titre_classe'];
+$PAGE_RESUME         = $DB_ROW['livret_page_resume'];
+$PAGE_RUBRIQUE_TYPE  = $DB_ROW['livret_page_rubrique_type'];
+$PAGE_RUBRIQUE_JOIN  = $DB_ROW['livret_page_rubrique_join'];
+$PAGE_COLONNE        = $DB_ROW['livret_page_colonne'];
+$PAGE_MOYENNE_CLASSE = $DB_ROW['livret_page_moyenne_classe'];
+$PAGE_EPI            = $DB_ROW['livret_page_epi'];
+$PAGE_AP             = $DB_ROW['livret_page_ap'];
+$PAGE_PARCOURS       = $DB_ROW['livret_page_parcours'];
+$PAGE_VIE_SCOLAIRE   = $DB_ROW['livret_page_vie_scolaire'];
+$classe_nom          = $DB_ROW['groupe_nom'];
+$BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere')) ? 'college' : 'ecole' ;
 
 if( in_array($BILAN_ETAT,array('1vide','5complet')) )
 {
@@ -118,7 +121,7 @@ if($ACTION=='initialiser')
   $form_choix_eleve .= ($PAGE_PERIODICITE!='cycle') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
   $form_choix_eleve .= '</div></form><hr />';
   $eleve_id = 0;
-  // (re)calculer les positionnements des élèves
+  // (re)calculer les données du livret
   if( ($PAGE_REF!='brevet') && ($PAGE_COLONNE!='rien') ) // TODO : enlever le test "rien" si ce n'est pas autorisé (pour l'instant ce n'est même pas implémenté...)
   {
     // Attention ! On doit calculer des moyennes de classe, pas de groupe !
@@ -136,7 +139,7 @@ if($ACTION=='initialiser')
       }
       $liste_eleve_id = implode(',',$tab_eleve_id_tmp);
     }
-    calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
+    calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] );
   }
 }
 
@@ -216,7 +219,6 @@ $make_graph    = ( ($PAGE_PERIODICITE!='cycle') && ($mode=='graphique') ) ? TRUE
 $droit_corriger_appreciation = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_CORRIGER_APPRECIATION'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
 
 $groupe_type              = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
-$orientation              = ($PAGE_REF!='cycle1') ? 'portrait' : 'paysage' ;
 $eleves_ordre             = 'alpha';
 $tab_eleve                = array($eleve_id); // tableau de l'unique élève à considérer
 $liste_eleve              = (string)$eleve_id;

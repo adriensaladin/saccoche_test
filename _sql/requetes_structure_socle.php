@@ -211,7 +211,7 @@ public static function DB_lister_eleves_cibles_actuels_avec_sconet_id( $listing_
 }
 
 /**
- * Récupérer les informations associées à une liste d'items ; au minimum calcul_methode & calcul_limite, sinon davantage
+ * Récupérer les informations associées à une liste d'items ; au minimum les paramètres de l'algorithme de calcul, sinon davantage
  *
  * Complément de la fonction DB_lister_result_eleves_palier_sans_infos_items().
  *

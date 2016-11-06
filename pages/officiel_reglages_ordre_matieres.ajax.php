@@ -40,7 +40,7 @@ if(count($tab_id))
 {
   $nb_modifs = 0;
   // récupérer les ordres des matières pour les comparer (et ne mettre à jour que ce qui a changé).
-  $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( FALSE /*order_by_name*/ );
+  $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( FALSE /*order_by_name*/ , TRUE /*with_siecle*/ );
   $tab_ordre_avant = array();
   foreach($DB_TAB as $DB_ROW)
   {

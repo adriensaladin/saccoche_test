@@ -53,8 +53,8 @@ hr {display:block;height:1px;margin:1ex 0;border-top:1px dotted #66F;}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
 del{text-decoration:line-through;color:#999}
 kbd{display:inline-block;font-size:90%;font-weight:bold;line-height:1.4;margin:1px;padding:1px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
-audio.prof{vertical-align:middle;width:300px;}
-audio.eleve{vertical-align:middle;width:600px;}
+audio.prof{vertical-align:middle;width:300px}
+audio.eleve{vertical-align:middle;width:600px}
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em} .ml{margin-left:3em}
 .i{font-style:italic} .u{text-decoration:underline} .b{font-weight:bold}
 .hide{display:none}
@@ -62,11 +62,11 @@ audio.eleve{vertical-align:middle;width:600px;}
 .breakafter{page-break-after:always}
 .fd{float:right;margin-right:1em}
 .avant{color:#666;background-color:#FFC;font-size:12px}
-.avant b{color:#333;}
+.avant b{color:#333}
 .notnow{color:#666}
 .now{color:#000;background-color:#FF9;font-size:13px} /* 13px pour rétablir la taille des boutons dans les bilans officiels */
 .fluo{background:#FF0} /* pas de padding sinon pose souci pour du texte dans un tableau */
-div.appreciation,div.elements{white-space:pre-wrap}
+div.appreciation,span.appreciation,div.elements{white-space:pre-wrap}
 div.bordertop{border-top:1px dashed #999;margin-top:2px}
 span.pourcentage{display:inline-block;width:3em;padding-right:3px;text-align:right}
 td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
@@ -164,7 +164,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu li a    {line-height:43px} /* pour le premier bouton (boussole) */
 #menu li li a {line-height:43px} /* dans le reste du menu déroulant ; si modification, @see memoriser_menu() in ./_inc/class.SessionUser.php */
 
-#menu a {background:transparent url(../_img/sprite_menu_25.png) 0 20px no-repeat;padding-left:25px;}
+#menu a {background:transparent url(../_img/sprite_menu_25.png) 0 20px no-repeat;padding-left:25px}
 #menu a.boussole              {background-position: 6px    13px} /* ( line_height 43 - img_hauteur 16 - 1 ) / 2 */
 #menu a.fleche                {background-position: 6px   -27px}
 #menu a.administrateur        {background-position: 6px   -67px}
@@ -465,14 +465,14 @@ a.cocher_rien {padding-left:19px;background:transparent no-repeat top left url("
 a[target=_blank] {padding-right:14px;background:transparent no-repeat     right url("data:image/gif;base64,R0lGODlhCgAKAKK+AABjzgBj/zGczmOczpzO/////wAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQBCgAFACwAAAAACgAKAAADJVha0b5iLDaDWAFoEAgGSlcQV8Z4RDOYxJCCFzgGhVxPt7LtSwIAOw==");} /* puce_popup_onglet */
 a.pop_up         {padding-right:18px;background:transparent no-repeat top right url("data:image/gif;base64,R0lGODlhDgAPAKIEAABQzv///53K/77i/wCFAABIvuLy/wAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAEADgAOAAADOQi6zPUwvlCaZSHrbYzaQUeMxPBpnTGQJhBYJCF8DSvT3aCXQo/rOkDP5wIAg8NZ0ZL8HAdJ4sWSAAA7");} /* puce_popup_window */
 a.lien_mail      {padding-left :15px;background:transparent no-repeat top left  url("data:image/gif;base64,R0lGODlhDAAOAMQAAJ2dzp3K+sby9u7eup2h1s7//6q23tb//66dstLm8r7u+v//5vbKlf/eler//52q3qre/66uyv//9v/ymbbm//rGgaHW/97//5226rLO7u7Gnc6+tqWlzr66vubm5gAAACH5BAEKAB8ALAAAAAAMAA4AAAVn4CeKQDmeXzdNTQecnNo0TFUho2bPjKYhr4hkSBwMEJwScbhYRAQGgCHikSwGmwjgEHVcEoCEwyEVPLaHA2DsAFPOhQLncogLFAACgALIKCgUEBYWASUWBoCCAQEYeiWLjVInJignIQA7");} /* puce_mail */
-a.no_puce        {padding-right:0;background:transparent;}
+a.no_puce        {padding-right:0;background:transparent}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Images cliquables                                                                                   */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 q {background:transparent url(../_img/sprite_action_13.png) 0 20px no-repeat;width:16px;height:16px;display:inline-block;vertical-align:middle;margin-left:4px;quotes:none}
-q:before, q:after {content: "";} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
+q:before, q:after {content: ""} /* patch pour Safari : voir par exemple http://forum.alsacreations.com/topic-4-41216-1-Resolu-Modifier-le-style-des-citations-quotqquot.html */
 q.activer            {background-position: 0     0px}
 q.actualiser         {background-position: 0   -20px}
 q.ajouter            {background-position: 0   -40px}
@@ -573,7 +573,7 @@ span.droit_z {width:16px;height:16px;display:inline-block;margin:auto 2px;} /* 4
 
 /* Affichage des message ajax dans des champs <label> */
 label.alerte , label.erreur , label.loader , label.valide , label.astuce {padding-left:19px;padding-bottom:1px;background:transparent no-repeat top left;}
-form label.alerte , form label.erreur , form label.loader , form label.valide , form label.astuce {margin-left:5px;}
+form label.alerte , form label.erreur , form label.loader , form label.valide , form label.astuce {margin-left:5px}
 label.alerte {color:#A00;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAA8FBMVEUAAADouDnotjjZmSTmsjTotTfbnCbgpi3otjflsDPmtDbsvz3eoyvntTfotzjrvDzrvDzjrDHpuTrmszbUjh3mszbNgBPJeQ7lsDTDbQbjrTHiqi/BaAO/ZADWoj3+/O/+/PP02lzz11f13F356JT++uf12lj+++vRiBj110///vnx04T++u3puTn888X89uHx16D89tb147/y1lT12VP23WPeoyrIdAvCagTbnSbYliHlu2jtyHH36sjdsUf679XhqS/y2JT036nw04/6657nwH3w0ozry1f45Yvlv4j677Xov2Lgpy3Sk0TMfhHrzquByH+SAAAAHnRSTlMAA1rx/s5aDBIw+wPKad6V3pa4rIckJLhLS/Cj46PpUlYpAAAAsElEQVQY03XP1Q7CQBBA0cXd3bbbrcMidcHd4f//hgIBSgjzMMk9yTwM+DOJbMj3BZlOJ+XtaJeaBqMeyM8Rt8x9OtZtsysyi70hvSAQyoPkq/2jNgMhTYbhZ0fiY46GEPeUQOQBhY3A0hOImf66eO9SEPUYWt+qGtsXyy6EBtyOd09UTZL3FQCqR3TgeYwxL0m6cK6BuoIoQijKXURA1yZonAzDth1HFC+maVmtn79vaXwWBrYtRuMAAAAASUVORK5CYII=");} /* ajax_alerte */
 label.erreur {color:#A00;background-image:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABCFBMVEUAAADjbG3YYlzeamfOW064SirJWEe6TTDPXU+1SynhaWq4Syq5TC6/UznCUjzPYVPRXlPGVULfamrgaWrWY1vUYFjhbGzibW3HV0XpWU3////sX1T5k372hGzmV031op72rKHjbmPwjHfnenLvhH3uko+9UDTvZVTmWVD93NbqW0/6nYvDTjP7qp3vj4D71M3aY2DzeGPcZmP6uq/OUD33r6XsaF3XXVHgZVzLWUm3Sivzc13WYFT8x7r4jHb1pqHyrar6mofgaWrzp6P4tqjMW0zbVkv2gmjwhXDnXVn0tKq8SzDpY1vqg334hnD4w775y8T6o5Hie3X0joHxnZbxnJbpf3jviHkpMtHkAAAAGXRSTlMAU+fnU/NTIiJTfX3n533y9PT08n1+IiPyYA6PqQAAALRJREFUGNNtjkUSwkAUBXF3DwwQBeKOu7vD/Y/CTEJW0Lvu+r/quf5SjHg1xZMLOe7OMBf5uidSvq/Pp6x+48URtQogL2QX7EwiARgviRL6ipxkHpBViGoaCRi8pkhWLNTHOw6DpoNt2QJrPxswKPh544QXCh4JDDALjr7HYMiv8WYTea1VF6IwhJIEXuGwFvShP4iG+HrdCX3c0fVOP2xPDaQNimEowQ/dJpiINw6xKLr/5QMq8hgf8baEVQAAAABJRU5ErkJggg==");} /* ajax_erreur */
 label.loader {color:#139;background-image:url("data:image/gif;base64,R0lGODlhEAAQALMDAExxuoGdzixZquLq9p223mGJxs7e9rLK5r7O7jhhrpGq2mmNxtbm9qW+5nGVxgAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQFAAAPACwAAAAAEAAQAAAEUPDJ+QyjmBo78hzdxnQHgoFgdR2l+aEUi7hvVlJC4k0E8Qg5nUfRawATwgyR0PglPT0KAJAJBDDTKcUaUEizj8LiwfV+w2IH+borpHcYsScCACH5BAUAAA8ALAAAAAAQABAAAARS8Mn5Br13WExFqttjMJfgfZsxho+ZfJPKsC1MjRQAcNOBPDod7+BDBHccIuIn5D18lMICQyBcClIHRVFtRLOPQODBJXijU3FA8ag61WznRMyJAAAh+QQFAAAPACwAAAAAEAAQAAAEUvDJ+USimAp7swRAxT1DBoLVNZTYGU6rh2LsVCzeZDBPcTs5w27gWwA9QkbplpPsKIFA5oDARAMKyoFanVyzBMJji+h6pYpwY2zOpAnr5iTsiQAAIfkEBQAADwAsAAAAABAAEAAABFHwyfkAoJham2dZ1fYICVZ8TjiSpYdSAmuCGEkFQTcNEh4ougHv4QN2hBOcTjKcEAgZAwOjeDYoBmnzUSVcD4hHlrF9PB8HcFi6TCPCywm4EwEAIfkEBQAADwAsAAAAABAAEAAABFHwyflWoZg6e7MMwbMVFwBgChhaj2lSKUi5JyVj70QQ3pQIj8ZO0Uv8BEIC0WMUAHc9yY+COHgGGETVihlgJ9qDlWGYeLPWAbn8+F7XUQrZEwEAIfkEBQAADwAsAAAAABAAEAAABFPwyflCoJgqe7MkxLNZz1JgDahUl2OeU0qsk1vAE5iZFHJ4EwDggfD9PEJh8XDMJIc+oERIYRgyCQFmYL1OElnthGvwDh5ggXhiHZ+zUsngHB97IgAh+QQFAAAPACwAAAAAEAAQAAAET/DJ+QihmDar8kTHsxFdEGAIGFqPYp6fSrkmGmL1xBjetBSPwY7ncfwKQgMxYywAdz3JDzPIAACeQXVyvWa0j4Tg0cVSw+Kxt5dIRyliTwQAIfkECQAADwAsAAAAABAAEAAABFHwyfnQoZgie7NkRsU9BIENYGg9TalQqBFOLfFSYFae3hQEk8Ggp/gBH0KiUTLsPX6UhCCzKGAS0unEUbVOsIIpAPDgFrxf8Zhcda7JzsnYEwEAOw==");} /* ajax_loader */
@@ -583,61 +583,61 @@ label.astuce {color:#139;background-image:url("data:image/png;base64,iVBORw0KGgo
 form label.tab {line-height:1.6em;display:inline-block;text-align:right;width:11em;margin-right:0.5em;font-weight:bold}
 form span.radio{line-height:1.6em;display:inline-block;text-align:right;width:25em;margin-right:  1em;font-weight:bold}
 form span.tab{line-height:2em;margin-left:11.5em}
-form label.mini{width:6em;}
+form label.mini{width:6em}
 form span.mini{line-height:2em;margin-left:6.5em}
 #zone_ressources label.tab{width:6em}
 #zone_ressources span.tab{margin-left:6.5em}
 
 /* Boutons de validation */
 button{background:#DDF url(../_img/sprite_bouton_9.png) 0 20px no-repeat;padding:0 1px 0 19px;margin:1px 0;color:#139;border:1px solid #66F;line-height:17px;text-indent:0}
-button.actualiser        {background-position: 2px    1px}
-button.ajouter           {background-position: 2px  -19px}
-button.annuler           {background-position: 2px  -39px}
-button.annuler_next      {background-position: 2px  -59px}
-button.annuler_prev      {background-position: 2px  -79px}
-button.colorer           {background-position: 2px  -99px}
-button.corriger          {background-position: 2px -119px}
-button.dump_export       {background-position: 2px -139px}
-button.eclair            {background-position: 2px -159px}
-button.enregistrer_start {background-position: 2px -179px}
-button.enregistrer_stop  {background-position: 2px -199px}
-button.fichier_export    {background-position: 2px -219px}
-button.fichier_import    {background-position: 2px -239px}
-button.form_ajouter      {background-position: 2px -259px}
-button.form_retirer      {background-position: 2px -279px}
-button.generer           {background-position: 2px -299px}
-button.go_dernier        {background-position: 2px -319px}
-button.go_precedent      {background-position: 2px -339px}
-button.go_premier        {background-position: 2px -359px}
-button.go_suivant        {background-position: 2px -379px}
-button.groupe_ajouter    {background-position: 2px -399px}
-button.groupe_retirer    {background-position: 2px -419px}
-button.imprimer          {background-position: 2px -439px}
-button.mail_ecrire       {background-position: 2px -459px}
-button.mail_envoyer      {background-position: 2px -479px}
-button.mdp_groupe        {background-position: 2px -499px}
-button.mdp_perso         {background-position: 2px -519px}
-button.modifier          {background-position: 2px -539px}
-button.nettoyer          {background-position: 2px -559px}
-button.parametre         {background-position: 2px -579px}
-button.periode_ajouter   {background-position: 2px -599px}
-button.periode_retirer   {background-position: 2px -619px}
-button.rechercher        {background-position: 2px -639px}
-button.referencer_lien   {background-position: 2px -659px}
-button.retourner         {background-position: 2px -679px}
-button.signaler          {background-position: 2px -699px}
-button.stats             {background-position: 2px -719px}
-button.supprimer         {background-position: 2px -739px}
-button.texte             {background-position: 2px -759px}
-button.user_ajouter      {background-position: 2px -779px}
-button.user_desactiver   {background-position: 2px -799px}
-button.valider           {background-position: 2px -819px}
-button.valider_next      {background-position: 2px -839px}
-button.valider_prev      {background-position: 2px -859px}
-button.voir_photo        {background-position: 2px -879px}
+button.actualiser        {background-position: 2px    0px}
+button.ajouter           {background-position: 2px  -20Px}
+button.annuler           {background-position: 2px  -40px}
+button.annuler_next      {background-position: 2px  -60px}
+button.annuler_prev      {background-position: 2px  -80px}
+button.colorer           {background-position: 2px -100px}
+button.corriger          {background-position: 2px -120px}
+button.dump_export       {background-position: 2px -140px}
+button.eclair            {background-position: 2px -160px}
+button.enregistrer_start {background-position: 2px -180px}
+button.enregistrer_stop  {background-position: 2px -200px}
+button.fichier_export    {background-position: 2px -220px}
+button.fichier_import    {background-position: 2px -240px}
+button.form_ajouter      {background-position: 2px -260px}
+button.form_retirer      {background-position: 2px -280px}
+button.generer           {background-position: 2px -300px}
+button.go_dernier        {background-position: 2px -320px}
+button.go_precedent      {background-position: 2px -340px}
+button.go_premier        {background-position: 2px -360px}
+button.go_suivant        {background-position: 2px -380px}
+button.groupe_ajouter    {background-position: 2px -400px}
+button.groupe_retirer    {background-position: 2px -420px}
+button.imprimer          {background-position: 2px -440px}
+button.mail_ecrire       {background-position: 2px -460px}
+button.mail_envoyer      {background-position: 2px -480px}
+button.mdp_groupe        {background-position: 2px -500px}
+button.mdp_perso         {background-position: 2px -520px}
+button.modifier          {background-position: 2px -540px}
+button.nettoyer          {background-position: 2px -560px}
+button.parametre         {background-position: 2px -580px}
+button.periode_ajouter   {background-position: 2px -600px}
+button.periode_retirer   {background-position: 2px -620px}
+button.rechercher        {background-position: 2px -640px}
+button.referencer_lien   {background-position: 2px -660px}
+button.retourner         {background-position: 2px -680px}
+button.signaler          {background-position: 2px -700px}
+button.stats             {background-position: 2px -720px}
+button.supprimer         {background-position: 2px -740px}
+button.texte             {background-position: 2px -760px}
+button.user_ajouter      {background-position: 2px -780px}
+button.user_desactiver   {background-position: 2px -800px}
+button.valider           {background-position: 2px -820px}
+button.valider_next      {background-position: 2px -840px}
+button.valider_prev      {background-position: 2px -860px}
+button.voir_photo        {background-position: 2px -880px}
 
-button{width:auto;overflow:visible;} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
-button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer;} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
+button{width:auto;overflow:visible} /* patch pour IE : voir http://jehiah.cz/archive/button-width-in-ie */
+button:hover,button.hover{background-color:#EEF;color:#D41;cursor:pointer} /* button.hover pour une compatibilité avec AjaxUpload (pour background, car pas mieux pour cursor) */
 *[disabled]{opacity:0.5} /* background-color:#FFF;color:#888;border:1px solid #BBF */
 button[disabled]:hover,button[disabled].hover{cursor:not-allowed}
 button img{width:16px;height:16px}
@@ -721,13 +721,13 @@ table.simulation td.nu {border:none}
 
 table.scor_eval th, table.scor_eval td {text-align:center}
 table.scor_eval thead th {vertical-align:bottom}
-table.scor_eval thead td {background:#FFF;border:none;}
+table.scor_eval thead td {background:#FFF;border:none}
 table.scor_eval tfoot th {text-align:right;padding-right:1ex;font-style:italic;background:#EEF}
 table.scor_eval tfoot td {}
 table.scor_eval tbody th {white-space:normal;font-weight:normal;text-align:left}
 table.scor_eval tbody td {vertical-align:middle;font-weight:bold;background:#DDF;font-size:90%}
 table.scor_eval th, table.saisir td {padding:0}
-table.scor_eval tbody td img {vertical-align:middle;}
+table.scor_eval tbody td img {vertical-align:middle}
 table.scor_eval tbody td input {vertical-align:middle;font-size:0;color:#FFF;margin:0;border:2px solid #FFF}
 table.scor_eval tbody.h td input {width:22px;height:16px}
 table.scor_eval tbody.v td input {width:12px;height:22px}
@@ -780,9 +780,9 @@ span.prev_year, td.prev_year {background-color:#AAA}
 
 table.bilan, table.bilan_synthese {font-size:85%;margin-top:1em;margin-bottom:1em}
 table.bilan tfoot th, table.bilan tfoot td {background:#DDF;text-align:right}
-table.bilan tfoot td.nu {background:#FFF;}
+table.bilan tfoot td.nu {background:#FFF}
 table.bilan_synthese {margin-top:1em;margin-bottom:1em}
-table.bilan th.domaine {background:#99F;}
+table.bilan th.domaine {background:#99F}
 table.bilan th.info {width:9px;height:9px;background:#DDF url(../_img/info_mini.gif) no-repeat center center;}
 table.bilan_synthese th, table.bilan_synthese td {padding:0 1px}
 table.bilan_synthese tr.vide td{font-size:0;height:6px}
@@ -791,8 +791,8 @@ table.bilan_synthese tr.vide td{font-size:0;height:6px}
 /* Styles pour les éléments du livret scolaire                                                         */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-table.livret td{vertical-align:top}
-
+table.livret img {vertical-align:text-bottom}
+table.livret td {white-space:normal}
 table.livret td , table.livret th {vertical-align:middle}
 table.livret td.eval , table.livret th.eval {background:#96B3D5}
 table.livret td.pos1 , table.livret th.pos1 {background:#E1EEF9;text-align:center}
@@ -803,12 +803,13 @@ table.livret td.nu {text-align:left}
 
 h4.eval                 {background:#1595D6;padding:1ex;text-align:center;color:#FFF;font-weight:bold;letter-spacing:0.1em;margin:1ex 0;}
 h4.ap,h4.epi,h4.parcours{background:#E1EEF8;padding:1ex;text-align:left  ;color:#000;font-weight:bold;letter-spacing:0.1em;margin-top:1ex}
-h4.synthese             {background:#ADD44E;padding:1ex;text-align:center;color:#FFF;font-weight:bold;letter-spacing:0.1em;margin:1ex 0;}
+h4.bilan                {background:#ADD44E;padding:1ex;text-align:center;color:#FFF;font-weight:bold;letter-spacing:0.1em;margin:1ex 0;}
 h4.viesco               {background:#F79237;padding:1ex;text-align:center;color:#FFF;font-weight:bold;letter-spacing:0.1em;margin:1ex 0;}
 
+div.eval                   {background:#DBE5F1;padding:1ex} /*inusité, sauf dans la doc via un autre CSS */
 div.ap,div.epi,div.parcours{background:#EEF5FB;padding:1ex}
 div.modaccomp              {background:#96B3D5;padding:1ex;margin:1ex 0;}
-div.synthese               {background:#ECF5D7;padding:1ex}
+div.bilan                  {background:#ECF5D7;padding:1ex}
 div.viesco                 {background:#FED0A3;padding:1ex}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -821,9 +822,9 @@ div.viesco                 {background:#FED0A3;padding:1ex}
 #tableau_validation tbody th {height:15px}
 #tableau_validation tbody th:hover {opacity:1;cursor:pointer}
 #tableau_validation tbody th.nu:hover {cursor:default}
-#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:1%;padding:0;line-height:1em;} /* Pour indiquer les scores calculés ; 0% pour font-size pose problème au navigateur Safari. */
+#tableau_validation tbody td {text-align:center;vertical-align:middle;font-size:1%;padding:0;line-height:1em} /* Pour indiquer les scores calculés ; 0% pour font-size pose problème au navigateur Safari. */
 #tableau_validation tbody td:hover {cursor:pointer}
-#tableau_validation tbody td.V3 {background:#FFF;}
+#tableau_validation tbody td.V3 {background:#FFF}
 #tableau_validation tbody td.V3:hover {cursor:default}
 #tableau_validation tfoot td{border:0}
 #tableau_validation tfoot td.L100{background:#FFF url(../_img/drapeau/100.gif) no-repeat center center;}
@@ -951,7 +952,7 @@ span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;backgro
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 #zone_elaboration_referentiel li, #referentiel_edit {line-height:1.5em}  /* évite que la hauteur des lignes varie lors de la modification de leur contenu en ajax */
-#zone_elaboration_referentiel i.tab {display:inline-block;width:5em;}
+#zone_elaboration_referentiel i.tab {display:inline-block;width:5em}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Affichage de l'item du socle dans la zone de validation d'un item ou d'un pilier                    */
@@ -974,9 +975,9 @@ span.gradient_inner{display:inline-block;height:0.9em;vertical-align:top;backgro
 /* Liste à puce pour les étapes lors d'un import de fichier                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-ul.puce li  { margin-left:2em;margin-top:2px;}
-#step li    { margin-left:2em;color:#777;}
-#step li.on {font-weight:bold;color:#000;}
+ul.puce li  { margin-left:2em;margin-top:2px}
+#step li    { margin-left:2em;color:#777}
+#step li.on {font-weight:bold;color:#000}
 ul.puce li , #step li.on {list-style:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAICAMAAAD+zz7+AAAARVBMVEUAAACBndSgtd9Lc8NVe8c7Y7R7mNOIoterveNDbcBcgMiSq9uvweRxkc89Zrhois2kueA2WqM+aLuNptiYr905X6wuTYtON3v6AAAAAXRSTlMAQObYZgAAAElJREFUCNdVjIEKgCAMRGduzqlZZvX/n9oFQXpwBw+OR38CTTGPUXVh3RL7I7EBS4lxX86cu1ol9wKo4yaVvqc0YblG1d1mM/oAgSUCQYxehQIAAAAASUVORK5CYII=");} /* puce_li */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -1005,7 +1006,7 @@ ul.puce li , #step li.on {list-style:url("data:image/png;base64,iVBORw0KGgoAAAAN
 a.puce_plus  {font-weight:normal;padding-left:12px;background:transparent no-repeat left url("data:image/gif;base64,R0lGODlhCQAJALMCAAAAAIiH0rq637u74NHR0dzc3OXl5ezs7PHx8fT09Pn5+f7+/gAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAAACQAJAAAEKHCESYNcOK+5lALeFiwIApTiAqyrmBQFACfTQRDAfUxG7xsBQYUiiAAAOw==");} /* toggle_mini_plus */
 a.puce_moins {font-weight:normal;padding-left:12px;background:transparent no-repeat left url("data:image/gif;base64,R0lGODlhCQAJALO+AAAAAIiH0rq637u74NHR0dzc3OXl5ezs7PHx8fT09Pn5+f7+/gAAAAAAAAAAAAAAACH/C05FVFNDQVBFMi4wAwEAAAAh+QQACgAAACwAAAAACQAJAAAEJHCESYNcOK+5lPdbsCAkGS5AmoZJ4brJdBA0fUxGrhuBUFGCCAA7");} /* toggle_mini_moins */
 
-.toggle_plus , .toggle_moins , .toggle_none {display:inline-block;vertical-align:text-top;width:16px;height:16px;}
+.toggle_plus , .toggle_moins , .toggle_none {display:inline-block;vertical-align:text-top;width:16px;height:16px}
 .toggle_plus  {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAKEDAAAAAImF0rq63v///ywAAAAAEAAQAAACMFSOmTbt/w6cTkIApn1Yh9lBmxNG34ClajZY69qMTVmdHGuCeK17FCX7tQyK4kFQAAA7");} /* toggle_maxi_plus */
 .toggle_moins {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAKEDAAAAAImF0rq63v///ywAAAAAEAAQAAACJlSOmTbt/w6cTtJpbwwa5j5YwEiWjVimJweurft+nazRV2Ao+iEUADs=");} /* toggle_maxi_moins */
 .toggle_none  {background:no-repeat center center url("data:image/gif;base64,R0lGODdhEAAQAMIFALW10cTC6Nzc7tzc/t3d/////////////ywAAAAAEAAQAAADNSix3K0kyjkXvdJSAK6enBdcIfVJZTUSXOt2hPa+0Rml2QrCKsnnkQEKJqzpMD2kSeFoLgQJADs=");} /* toggle_maxi_none */
@@ -1079,8 +1080,8 @@ div.td_souris img.on {background-color:#FF0}
 /* Pour la gestion privée (livre d'or, RSS)                                                            */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-form.encadre fieldset{margin:3ex 0.5em 0 0.5em;padding:1em 0.5em 0.25ex;background:#EEF;border:1px solid #66F;}
-form.encadre legend{position:absolute;margin-top:-2em;margin-left:15em;padding:0 5px 0 0;background:#EEF;border:1px solid #66F;color:#D74C12;}
+form.encadre fieldset{margin:3ex 0.5em 0 0.5em;padding:1em 0.5em 0.25ex;background:#EEF;border:1px solid #66F}
+form.encadre legend{position:absolute;margin-top:-2em;margin-left:15em;padding:0 5px 0 0;background:#EEF;border:1px solid #66F;color:#D74C12}
 form.encadre fieldset.new{background:#CFC}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

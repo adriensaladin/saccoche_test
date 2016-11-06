@@ -968,7 +968,7 @@ $(document).ready
             $('#f_moyenne').focus();
             return false;
           }
-          if( (note<0) || ((note>40)&&(CONVERSION_SUR_20)) || ((note>200)&&(!CONVERSION_SUR_20)) ) // Le meilleur code de notation pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
+          if( (note<0) || ((note>MOYENNE_MAXI)&&(CONVERSION_SUR_20)) || ((note>POURCENTAGE_MAXI)&&(!CONVERSION_SUR_20)) )
           {
             $('#ajax_msg_'+memo_rubrique_type).attr('class','erreur').html("Valeur incorrecte !");
             $('#f_moyenne').focus();

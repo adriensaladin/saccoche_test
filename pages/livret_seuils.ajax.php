@@ -28,9 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action   = (isset($_POST['f_action']))         ? Clean::texte($_POST['f_action'])      : '';
-$page_ref = (isset($_POST['f_page_ref']))       ? Clean::id($_POST['f_page_ref'])       : '';
-$colonne  = (isset($_POST['choix_'.$page_ref])) ? Clean::id($_POST['choix_'.$page_ref]) : '';
+$action     = (isset($_POST['f_action']))           ? Clean::texte($_POST['f_action'])            : '';
+$page_ref   = (isset($_POST['f_page_ref']))         ? Clean::id($_POST['f_page_ref'])             : '';
+$colonne    = (isset($_POST['choix_'.$page_ref]))   ? Clean::id($_POST['choix_'.$page_ref])       : '';
+$moy_classe = (isset($_POST['moyenne_'.$page_ref])) ? Clean::entier($_POST['moyenne_'.$page_ref]) : '';
 
 $tab_colonne_choix = array('moyenne','pourcentage','position');
 $tab_colonne_id = array(
@@ -55,6 +56,10 @@ if( empty($DB_ROW) || !$DB_ROW['livret_page_rubrique_type'] /*brevet*/ )
 if( in_array( $DB_ROW['livret_page_colonne'] , $tab_colonne_choix ) )
 {
   if( !in_array( $colonne , $tab_colonne_choix ) )
+  {
+    Json::end( FALSE , 'Erreur avec les données transmises !' );
+  }
+  else if( ($moy_classe !== 0 ) && ( $moy_classe !== 1 ) )
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
@@ -84,9 +89,9 @@ if($tab_verif_id)
   }
   DB_STRUCTURE_LIVRET::DB_modifier_seuils( $page_ref , $tab_seuils );
 }
-if( in_array( $colonne , $tab_colonne_choix )  && ( $colonne != $DB_ROW['livret_page_colonne'] ) )
+if( in_array( $colonne , $tab_colonne_choix )  && ( ( $colonne != $DB_ROW['livret_page_colonne'] ) || ( $moy_classe != $DB_ROW['livret_page_moyenne_classe'] ) ) )
 {
-  DB_STRUCTURE_LIVRET::DB_modifier_page_colonne( $page_ref , $colonne );
+  DB_STRUCTURE_LIVRET::DB_modifier_page_colonne( $page_ref , $colonne , $moy_classe );
 }
 
 Json::end( TRUE );

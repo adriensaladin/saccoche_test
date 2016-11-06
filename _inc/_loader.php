@@ -289,6 +289,7 @@ function SACoche_autoload($class_name)
     'PDF_item_releve'             => '_inc'.DS.'class.PDF_item_releve.php' ,
     'PDF_item_synthese'           => '_inc'.DS.'class.PDF_item_synthese.php' ,
     'PDF_item_tableau'            => '_inc'.DS.'class.PDF_item_tableau.php' ,
+    'PDF_livret_scolaire'         => '_inc'.DS.'class.PDF_livret_scolaire.php' ,
     'PDF_socle_releve'            => '_inc'.DS.'class.PDF_socle_releve.php' ,
     'PDF_socle_synthese'          => '_inc'.DS.'class.PDF_socle_synthese.php' ,
     'PDF_socle2016_releve'        => '_inc'.DS.'class.PDF_socle2016_releve.php' ,
@@ -524,8 +525,9 @@ $is_hebergement_sesamath = (mb_strpos(URL_BASE,SERVEUR_PROJET)!==FALSE) ? TRUE :
 define('IS_HEBERGEMENT_SESAMATH', $is_hebergement_sesamath);
 // define('IS_HEBERGEMENT_SESAMATH', TRUE);
 
-// Pour forcer la minification des js et css y compris sur un serveur local
+// Pour forcer la minification des js et css y compris sur un serveur local (ou le contraire, y compris sur un serveur en prod)
 // define('FORCE_MINIFY' , TRUE);
+// define('FORCE_NO_MINIFY' , TRUE);
 
 // indiquer si une convention Établissement-ENT est requise et à compter de quand
 define('CONVENTION_ENT_REQUISE'         ,TRUE);

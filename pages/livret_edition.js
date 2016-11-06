@@ -49,15 +49,11 @@ $(document).ready
       chart: {
         renderTo: 'div_graphique_synthese',
         alignTicks: false,
-        type: 'column',
+        type: 'line',
         spacingTop: 10
        },
-      colors: 
-        BACKGROUND_COLORS
-      ,
       title: {
-        style: { color: '#333' } ,
-        text: null // Pourrait être MAJ ensuite
+        text: null
       },
       xAxis: {
         labels: {
@@ -66,24 +62,11 @@ $(document).ready
         },
         categories: [] // MAJ ensuite
       },
-      yAxis: [
-        {
-          labels: { enabled: false },
-          min: 0,
-          max: 100,
-          gridLineWidth: 0,
-          title: { style: { color: '#333' } , text: 'Items acquis' }
-        },
-        {} // MAJ ensuite
-      ],
+      yAxis: {} // MAJ ensuite
+      ,
       tooltip: {
         formatter: function() {
           return this.series.name +' : '+ (this.y);
-        }
-      },
-      plotOptions: {
-        column: {
-          stacking: 'percent'
         }
       },
       series: [] // MAJ ensuite
@@ -214,7 +197,7 @@ $(document).ready
     var memo_conteneur     = [];
     var memo_saisie_id     = 0;
     var memo_objet_id      = '';
-    var memo_rubrique_type = ''; // eval | socle | epi | ap | parcours | synthese | viesco
+    var memo_rubrique_type = ''; // eval | socle | epi | ap | parcours | bilan | viesco
     var memo_rubrique_id   = 0;
     var memo_saisie_objet  = ''; // position | appreciation | elements
     var memo_page_colonne  = ''; // objectif | position | moyenne | pourcentage
@@ -256,11 +239,14 @@ $(document).ready
           $('#f_objet').val(memo_objet);
           if( (memo_section=='livret_saisir') || (memo_section=='livret_consulter') )
           {
-            $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition espérée fin novembre 2016.'+'</p>' , {'centerOnScroll':true} );
-            return false;
+            if(memo_periode=='cycle')
+            {
+              $.fancybox( '<p class="travaux">'+'Bilans de fin de cycle non prioritaires&hellip; Développement prévu début 2017.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+              return false;
+            }
             // Masquer le tableau ; Afficher la zone action et charger son contenu
             $('#cadre_statut , #table_accueil').hide(0);
-            $('#zone_action_eleve').html('<label class="loader">En cours&hellip;</label>').show(0);
+            $('#zone_action_eleve').html('<label class="loader">Initialisation en cours&hellip;</label>').show(0);
             $.ajax
             (
               {
@@ -305,7 +291,7 @@ $(document).ready
           }
           else if(memo_section=='livret_examiner')
           {
-            $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true} );
+            $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
             return false;
             // Masquer le tableau ; Afficher la zone de choix des rubriques
             /*
@@ -316,10 +302,9 @@ $(document).ready
           }
           else if(memo_section=='livret_imprimer')
           {
-            $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition espérée fin novembre 2016.'+'</p>' , {'centerOnScroll':true} );
-            return false;
+            // $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition espérée fin novembre 2016.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+            // return false;
             // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
-            /*
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
             configurer_form_choix_classe();
             $('#cadre_statut , #table_accueil').hide(0);
@@ -327,7 +312,6 @@ $(document).ready
             $('#report_periode').html( $('#periode_'+memo_periode).text()+' :' );
             $('#zone_action_classe , #zone_'+memo_objet).show(0);
             charger_formulaire_imprimer();
-            */
           }
         }
       }
@@ -695,7 +679,7 @@ $(document).ready
       '#saisir_deport',
       function()
       {
-        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true} );
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
         return false;
         /*
         $('#msg_import').removeAttr('class').html("");
@@ -710,7 +694,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-              $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
               return false;
             },
             success : function(responseJSON)
@@ -718,7 +702,7 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
               }
               else
               {
@@ -742,7 +726,7 @@ $(document).ready
       '#archiver_imprimer',
       function()
       {
-        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true} );
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
         return false;
         /*
         $('#ajax_msg_archiver_imprimer').removeAttr('class').html("");
@@ -803,7 +787,7 @@ $(document).ready
       '#simuler_impression',
       function()
       {
-        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true} );
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
         return false;
         /*
         $('#f_parite').val(0);
@@ -819,7 +803,7 @@ $(document).ready
             error : function(jqXHR, textStatus, errorThrown)
             {
               var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-              $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
               return false;
             },
             success : function(responseJSON)
@@ -827,7 +811,7 @@ $(document).ready
               initialiser_compteur();
               if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
               }
               else
               {
@@ -857,7 +841,7 @@ $(document).ready
         memo_saisie_id  = $(this).parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
-        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | synthese | viesco
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
         memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
@@ -866,15 +850,15 @@ $(document).ready
         {
           var saisie_contenu = '' ;
         }
-        else if(memo_saisie_objet!='elements')
-        {
-          var saisie_contenu = $(this).parent().next().html();
-        }
-        else
+        else if(memo_saisie_objet=='elements')
         {
           var saisie_contenu = '';
           // http://www.w3schools.com/jsref/prop_node_nodetype.asp
-          $(this).parent().next().find('div').contents().filter( function(){return this.nodeType == 3;} ).each( function(){saisie_contenu+=$(this).text().trim()+"\n";} );
+          $(this).parent().prev().find('div').contents().filter( function(){return this.nodeType == 3;} ).each( function(){saisie_contenu+=$(this).text().trim()+"\n";} );
+        }
+        else
+        {
+          var saisie_contenu = $(this).parent().prev().html();
         }
         if(memo_rubrique_type=='viesco')
         {
@@ -902,7 +886,7 @@ $(document).ready
           {
             var texte = (memo_eleve) ? 'Implication de l’élève' : 'Projet mis en oeuvre' ;
           }
-          else if(memo_rubrique_type=='synthese')
+          else if(memo_rubrique_type=='bilan')
           {
             var texte = (memo_eleve) ? 'Synthèse / Conseils' : 'Synthèse' ;
           }
@@ -912,25 +896,26 @@ $(document).ready
           }
           memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
           var nb_lignes = parseInt(memo_long_max/100,10);
+          var cols = ( (memo_rubrique_type=='eval') || (memo_rubrique_type=='socle') ) ? 50 : 125 ;
           var formulaire_saisie = '<div><b>'+texte+' [ '+$('#go_selection_eleve option:selected').text()+' ] :</b></div>'
-                                + '<div><textarea id="f_'+memo_saisie_objet+'" name="f_'+memo_saisie_objet+'" rows="'+nb_lignes+'" cols="125"></textarea></div>'
+                                + '<div><textarea id="f_'+memo_saisie_objet+'" name="f_'+memo_saisie_objet+'" rows="'+nb_lignes+'" cols="'+cols+'"></textarea></div>'
                                 + '<div><label id="f_'+memo_saisie_objet+'_reste"></label></div>'
                                 + '<div><button id="valider_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider" type="button" class="valider">Valider</button> <button id="valider_suivant" type="button" class="valider_next">Suivant</button></div>'
                                 + '<div><button id="annuler_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler" type="button" class="annuler">Annuler</button> <button id="annuler_suivant" type="button" class="annuler_next">Suivant</button></div>'
-                                + '<div><label id="ajax_msg'+memo_saisie_objet+'">&nbsp;</label></div>';
+                                + '<div><label id="ajax_msg_'+memo_saisie_objet+'">&nbsp;</label></div>';
           memo_conteneur.html(formulaire_saisie);
         }
         // 2/3 Fabriquer un formulaire de saisie input[type=number]
-        else if( (memo_page_colonne=='moyenne') || (memo_saisie_objet=='pourcentage') )
+        else if( (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
         {
           memo_html = memo_conteneur.html();
-          var max      = (memo_page_colonne=='moyenne') ? 40  : 200 ; // Le meilleur code de notation pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
+          var max      = (memo_page_colonne=='moyenne') ? MOYENNE_MAXI : POURCENTAGE_MAXI ;
           var pourcent = (memo_page_colonne=='moyenne') ? ''  : '%' ;
-          var step     = (memo_page_colonne=='moyenne') ? 0.1 : 1 ;
+          var step     = (memo_page_colonne=='moyenne') ? 0.5 : 1 ;
           var formulaire_saisie = '<div><b>Positionnement [ '+$('#go_selection_eleve option:selected').text()+' ] :</b> <input id="f_position" name="f_position" type="number" min="0" max="'+max+'" step="'+step+'" value="" />'+pourcent+'</div>'
                                 + '<div><button id="valider_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider" type="button" class="valider">Valider</button> <button id="valider_suivant" type="button" class="valider_next">Suivant</button></div>'
                                 + '<div><button id="annuler_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler" type="button" class="annuler">Annuler</button> <button id="annuler_suivant" type="button" class="annuler_next">Suivant</button></div>'
-                                + '<div><label id="ajax_msg'+memo_saisie_objet+'">&nbsp;</label></div>';
+                                + '<div><label id="ajax_msg_'+memo_saisie_objet+'">&nbsp;</label></div>';
           memo_conteneur.html(formulaire_saisie);
         }
         // 3/3 Fabriquer un formulaire de saisie input[type=radio]
@@ -942,9 +927,9 @@ $(document).ready
           {
             $('#'+id_debut+i).html('<input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" />');
           }
-          var formulaire_saisie = '<div><button id="valider_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider" type="button" class="valider">Valider</button> <button id="valider_suivant" type="button" class="valider_next">Suivant</button></div>'
-                                + '<div><button id="annuler_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler" type="button" class="annuler">Annuler</button> <button id="annuler_suivant" type="button" class="annuler_next">Suivant</button></div>'
-                                + '<div><label id="ajax_msg'+memo_saisie_objet+'">&nbsp;</label></div>';
+          var formulaire_saisie = '<div><button id="valider_precedent" type="button" class="valider_prev" title="Valider & Précédent">&nbsp;</button> <button id="valider" type="button" class="valider" title="Valider">&nbsp;</button> <button id="valider_suivant" type="button" class="valider_next" title="Valider & Suivant">&nbsp;</button></div>'
+                                + '<div><button id="annuler_precedent" type="button" class="annuler_prev" title="Annuler & Précédent">&nbsp;</button> <button id="annuler" type="button" class="annuler" title="Annuler">&nbsp;</button> <button id="annuler_suivant" type="button" class="annuler_next" title="Annuler & Suivant">&nbsp;</button></div>'
+                                + '<div><label id="ajax_msg_'+memo_saisie_objet+'">&nbsp;</label></div>';
           memo_conteneur.html(formulaire_saisie);
         }
         // modif affichage
@@ -959,29 +944,23 @@ $(document).ready
         // finalisation (remplissage et focus)
         if( (memo_saisie_objet=='appreciation') || (memo_saisie_objet=='elements') )
         {
-          // report d'une appréciation préremplie
-          var is_report = (memo_rubrique_id) ? APP_RUBRIQUE_REPORT : APP_GENERALE_REPORT ;
-          if( !saisie_contenu && is_report )
-          {
-            saisie_contenu = (memo_rubrique_id) ? APP_RUBRIQUE_MODELE : APP_GENERALE_MODELE ;
-          }
           $('#f_'+memo_saisie_objet).focus().html(saisie_contenu);
           afficher_textarea_reste( $('#f_'+memo_saisie_objet) , memo_long_max );
           window.scrollBy(0,100); // Pour avoir à l'écran les bouton de validation et d'annulation situés en dessous du textarea
         }
-        else if( (memo_page_colonne=='moyenne') || (memo_saisie_objet=='pourcentage') )
+        else if( (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
         {
           // report d'un positionnement numérique
           var valeur = (memo_page_colonne=='moyenne') ? parseFloat(saisie_contenu,10) : parseInt(saisie_contenu.substr(0,saisie_contenu.length-1),10) ;
           valeur = (isNaN(valeur)) ? '' : valeur ;
           $('#f_'+memo_saisie_objet).focus().val(valeur);
         }
-        else if( (memo_page_colonne=='objectif') || (memo_saisie_objet=='position') )
+        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') )
         {
           // report d'un positionnement sur une échelle
           if(saisie_contenu)
           {
-            $('#f_position_'+i).prop('checked',true).focus();
+            $('#f_position_'+saisie_contenu).prop('checked',true).focus();
           }
         }
       }
@@ -1058,24 +1037,24 @@ $(document).ready
           }
         }
         // positionnement numérique
-        else if( (memo_page_colonne=='moyenne') || (memo_saisie_objet=='pourcentage') )
+        else if( (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
         {
-          var position = parseFloat($('#f_moyenne').val(),10);
+          var position = parseFloat($('#f_position').val(),10);
           if( isNaN(position) )
           {
             $('#ajax_msg_'+memo_saisie_objet).attr('class','erreur').html("Saisie incorrecte !");
-            $('#f_moyenne').focus();
+            $('#f_position').focus();
             return false;
           }
-          if( (position<0) || ((position>40)&&(memo_page_colonne=='moyenne')) || ((position>200)&&(memo_page_colonne=='pourcentage')) ) // Le meilleur code de notation pouvant être configuré jusqu'à 200, des moyennes peuvent théoriquement atteindre des sommets...
+          if( (position<0) || ((position>MOYENNE_MAXI)&&(memo_page_colonne=='moyenne')) || ((position>POURCENTAGE_MAXI)&&(memo_page_colonne=='pourcentage')) )
           {
             $('#ajax_msg_'+memo_saisie_objet).attr('class','erreur').html("Valeur incorrecte !");
-            $('#f_moyenne').focus();
+            $('#f_position').focus();
             return false;
           }
         }
         // positionnement sur une échelle
-        else if( (memo_page_colonne=='objectif') || (memo_saisie_objet=='position') )
+        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') )
         {
           position = $("input[name=f_position]:checked").val();
           if(typeof(position)=='undefined')
@@ -1153,7 +1132,7 @@ $(document).ready
         memo_saisie_id  = $(this).parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
-        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | synthese | viesco
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
         memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
@@ -1169,11 +1148,11 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+memo_action+'_saisie'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_saisie_id='+memo_saisie_id+'&f_rubrique_type='+memo_rubrique_type+'&f_rubrique_id='+memo_rubrique_id+'&f_saisie_objet='+memo_saisie_objet+'&f_page_colonne='+memo_page_colonne+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action=supprimer_saisie'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_saisie_id='+memo_saisie_id+'&f_rubrique_type='+memo_rubrique_type+'&f_rubrique_id='+memo_rubrique_id+'&f_saisie_objet='+memo_saisie_objet+'&f_page_colonne='+memo_page_colonne+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               return false;
             },
@@ -1183,7 +1162,7 @@ $(document).ready
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
               }
               else
               {
@@ -1212,45 +1191,37 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // DEVEL STOP ICI !!!!!!!!!!!!!!!!!!!!!!!!
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur le bouton pour recalculer un positionnement (soit effacée - NULL - soit figée car reportée manuellement)
+    // [livret_saisir] Clic sur le bouton pour recalculer un positionnement ou une appréciation ou des éléments du programme (soit effacé - NULL - soit figé car saisi manuellement)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
     (
       'click',
-      'button.nettoyer',
+      'button.eclair',
       function()
       {
-        memo_action = $(this).attr('class'); // supprimer
+        memo_action = $(this).attr('class'); // eclair (!)
         memo_conteneur = $(this).parent().parent();
         // Récupération des principaux identifiants
         memo_saisie_id  = $(this).parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
-        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | synthese | viesco
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
         memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
-        // Contenu de la saisie existante
-        if(memo_rubrique_type=='viesco')
-        {
-           memo_div_assiduite = ($('#div_assiduite').length) ? $('#div_assiduite').html() : '' ;
-        }
         // Désactiver les autres boutons d'action
+        $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
         $.ajax
         (
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_position'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&'+$('#form_hidden').serialize(),
+            data : 'csrf='+CSRF+'&f_section='+memo_section+'&f_action='+'recalculer_saisie'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_saisie_id='+memo_saisie_id+'&f_rubrique_type='+memo_rubrique_type+'&f_rubrique_id='+memo_rubrique_id+'&f_saisie_objet='+memo_saisie_objet+'&f_page_colonne='+memo_page_colonne+'&'+$('#form_hidden').serialize(),
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true} );
+              $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+' Veuillez recommencer.'+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               return false;
             },
@@ -1260,11 +1231,23 @@ $(document).ready
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
               }
               else
               {
-                // obj_bouton.closest('tr').html(responseJSON['value']); à revoir
+                if( (memo_saisie_objet!='position') || (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
+                {
+                  memo_conteneur.html(responseJSON['value']);
+                }
+                else
+                {
+                  // memo_conteneur.parent().html(memo_html); // Pas besoin ici car il n'y a pas eu de remplacement du contenu
+                  for( var i=1 ; i<5 ; i++ )
+                  {
+                    $('#eval_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                  }
+                  $('#eval_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
+                }
               }
             }
           }
@@ -1588,17 +1571,24 @@ $(document).ready
       'button.signaler , button.corriger',
       function()
       {
-        var objet        = $(this).attr('class');
-        var tab_ids      = $(this).closest('tr').attr('id').split('_');
-        var prof_id      = parseInt( tab_ids[2] , 10 );
-        memo_rubrique_id = parseInt( tab_ids[1] , 10 );
-        $('#f_action').val(objet+'_faute');
-        $('#zone_signaler_corriger h2').html(objet[0].toUpperCase() + objet.substring(1) + " une faute");
+        memo_action = $(this).attr('class'); // signaler | corriger
+        memo_conteneur = $(this).parent().parent();
+        // Récupération des principaux identifiants
+        memo_saisie_id  = $(this).parent().attr('data-id');
+        memo_objet_id   = memo_conteneur.attr('id');
+        var tab_ids     = memo_objet_id.split('_');
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
+        memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
+        memo_saisie_objet  = tab_ids[2]; // appreciation
+        var prof_id        = parseInt( tab_ids[3] , 10 );
+        // Préparation de l'affichage
+        $('#f_action').val(memo_action+'_faute');
+        $('#zone_signaler_corriger h2').html(memo_action[0].toUpperCase() + memo_action.substring(1) + " une faute");
         var appreciation_contenu = $(this).parent().next().html();
-        var message_contenu = $('h1').text()+' - '+$('#periode_'+memo_periode).text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
+        var message_contenu = 'Livret Scolaire - '+$('#periode_'+memo_periode).text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
         $('#f_destinataire_id').val(prof_id);
         // Affichage supplémentaire si correction de l'appréciation
-        if(objet=='corriger')
+        if(memo_action=='corriger')
         {
           if( prof_id != USER_ID )
           {
@@ -1608,14 +1598,14 @@ $(document).ready
           {
             $('#section_signaler').hide(0);
           }
-          memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
+          memo_long_max = (memo_rubrique_type!='bilan') ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
           var nb_lignes = parseInt(memo_long_max/100,10);
           message_contenu += 'je me suis permis de corriger l\'appréciation en remplaçant " .......... " par " .......... ".';
           $('#section_corriger').html('<div><label for="f_appreciation" class="tab">Appréciation  :</label><textarea name="f_appreciation" id="f_appreciation" rows="'+nb_lignes+'" cols="100"></textarea></div>'+'<div><span class="tab"></span><label id="f_appreciation_reste"></label></div>').show(0);
           $('#f_appreciation').focus().html(unescapeHtml(appreciation_contenu));
           afficher_textarea_reste( $('#f_appreciation') , memo_long_max );
         }
-        else if(objet=='signaler')
+        else if(memo_action=='signaler')
         {
           message_contenu += 'je pense qu\'il y a un souci dans l\'appréciation "'+appreciation_contenu+'" : ..........';
           $('#section_corriger').html("").hide(0);
@@ -1710,7 +1700,7 @@ $(document).ready
             {
               type : 'POST',
               url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_section='+'livret_saisir'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_rubrique='+memo_rubrique_id+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
+              data : 'csrf='+CSRF+'&f_section='+'livret_saisir'+'&f_classe='+memo_classe+'&f_groupe='+memo_groupe+'&f_page_ref='+memo_page_ref+'&f_periode='+memo_periode+'&f_user='+memo_eleve+'&f_saisie_id='+memo_saisie_id+'&f_rubrique_type='+memo_rubrique_type+'&f_rubrique_id='+memo_rubrique_id+'&f_saisie_objet='+memo_saisie_objet+'&f_prof='+prof_id+'&'+$('#form_hidden').serialize()+'&'+$('#zone_signaler_corriger').serialize(),
               dataType : 'json',
               error : function(jqXHR, textStatus, errorThrown)
               {
@@ -1729,7 +1719,7 @@ $(document).ready
                 }
                 else
                 {
-                  $('#appr_'+memo_rubrique_id+'_'+prof_id).find('div.appreciation').html(responseJSON['value']);
+                  $('#'+memo_objet_id).find('div.appreciation').html(responseJSON['value']);
                   $('#ajax_msg_signaler_corriger').removeAttr('class').html("");
                   $('#annuler_signaler_corriger').click();
                 }
@@ -1737,6 +1727,21 @@ $(document).ready
             }
           );
         }
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // [livret_saisir|livret_consulter] Clic sur le bouton pour voir le détail des items évalués
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#zone_action_eleve').on
+    (
+      'click',
+      'a.voir_detail',
+      function()
+      {
+        var id = $(this).attr('data-id');
+        $.fancybox( { 'href':'#detail_'+id , onStart:function(){$('#detail_'+id).css("display","block");} , onClosed:function(){$('#detail_'+id).css("display","none");} , 'centerOnScroll':true , 'minWidth':600 } );
       }
     );
 

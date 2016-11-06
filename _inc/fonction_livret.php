@@ -44,11 +44,9 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  * @param string $liste_eleve_id
  * @param string $only_socle
  * @param string $retroactif   oui|non|annuel|auto
- * @param bool   $memo_moyennes_classe
- * @param bool   $memo_moyennes_generale
  * @return void
  */
-function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $only_socle , $retroactif , $memo_moyennes_classe , $memo_moyennes_generale )
+function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $only_socle , $retroactif )
 {
   if(!$liste_eleve_id) return FALSE;
   $RUBRIQUE_TYPE = ($PAGE_COLONNE=='maitrise') ? 'socle' : 'eval' ;
@@ -124,13 +122,18 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
               if(!isset($tab_donnees_livret[$clef]))
               {
                 $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $rubrique_type , $rubrique_id , $cible_nature , $cible_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
-                $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' );
+                $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
               }
               else if( ($tab_donnees_livret[$clef]['valeur']!==$saisie_valeur) && ($tab_donnees_livret[$clef]['origine']!='saisie') )
               {
                 $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
                 DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
-                $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' );
+                $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
+              }
+              else
+              {
+                $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
+                $tab_donnees_livret[$clef]['find'] = TRUE;
               }
             }
           }
@@ -139,7 +142,6 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       }
     }
   }
-  // TODO : Restreindre en interdisant des rapprochements selon la LV1 ou la LV2 de l'élève.
   //
   // Cas 1/2 : Positionnement du socle en fin de cycle
   //
@@ -328,6 +330,30 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
           if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
       elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
       else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
+      // Si on connait les langues associées aux élèves, alors on essaye de limiter les confusions LV1 / LV2.
+      // (car si un prof d'anglais est relié à Anglais LV1 et Anglais LV2 alors les 2 lignes remplies à l'identique vont sinon apparaître sur le livret de l'élève)
+      $tab_rubrique_a_eviter = array();
+      $tab_id_lv1 = array_fill ( 315 , 12 , TRUE ); // de 315 à 326
+      $tab_id_lv2 = array_fill ( 327 , 12 , TRUE ); // de 327 à 338
+      // Attention : l'identifiant de langue enregistré est le code du pays, pas l'identifiant matière de SACoche...
+      require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
+      $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( $liste_eleve_id , 'user_id,eleve_lv1,eleve_lv2' );
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $tab_rubrique_a_eviter[$DB_ROW['user_id']] = array();
+        $matiere_id_lv1 = ($DB_ROW['eleve_lv1']!=100) ? $tab_langues[$DB_ROW['eleve_lv1']]['tab_matiere_id'][2] : 0 ;
+        if(isset($tab_id_lv1[$matiere_id_lv1]))
+        {
+          $tab_rubrique_a_eviter[$DB_ROW['user_id']] += $tab_id_lv1;
+          unset($tab_rubrique_a_eviter[$DB_ROW['user_id']][$matiere_id_lv1]);
+        }
+        $matiere_id_lv2 = ($DB_ROW['eleve_lv1']!=100) ? $tab_langues[$DB_ROW['eleve_lv2']]['tab_matiere_id'][3] : 0 ;
+        if(isset($tab_id_lv2[$matiere_id_lv2]))
+        {
+          $tab_rubrique_a_eviter[$DB_ROW['user_id']] += $tab_id_lv2;
+          unset($tab_rubrique_a_eviter[$DB_ROW['user_id']][$matiere_id_lv2]);
+        }
+      }
       // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
       // Récupération au passage des profs associés aux saisies
       $tab_eval = array();
@@ -343,8 +369,11 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
             // on enregistre les infos
             foreach($tab_join_prof_rubrique[$DB_ROW['prof_id']] as $rubrique_id)
             {
-              $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
-              $tab_prof[$rubrique_id][$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
+              if(!isset($tab_rubrique_a_eviter[$DB_ROW['eleve_id']][$rubrique_id]))
+              {
+                $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
+                $tab_prof[$rubrique_id][$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
+              }
             }
           }
         }
@@ -446,65 +475,62 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       }
     }
   }
-  // On passe aux moyennes de classe
-  if( $memo_moyennes_classe || TRUE ) // A calculer dans tous les cas, car indique aussi l'accès des profs aux rubriques
+  // On passe aux moyennes de classe, que l'on calcule dans tous les cas, car leur livret_saisie_id indique aussi l'accès des profs aux rubriques
+  // Calculer les moyennes de classe
+  $tab_moyennes_calculees = array();
+  foreach($tab_positions_calculees as $rubrique_id => $tab_positions)
   {
-    // Calculer les moyennes de classe
-    $tab_moyennes_calculees = array();
-    foreach($tab_positions_calculees as $rubrique_id => $tab_positions)
+    $somme   = array_sum($tab_positions);
+    $nombre  = count( array_filter($tab_positions,'non_vide') );
+    $moyenne = ($nombre) ? round($somme/$nombre,0) : NULL ;
+    $tab_moyennes_calculees[$rubrique_id] = $moyenne;
+  }
+  // Comparer les moyennes calculées avec les moyennes enregistrées
+  foreach($tab_moyennes_calculees as $rubrique_id => $moyenne_calculee)
+  {
+    $delete_saisie = FALSE;
+    $clef = $RUBRIQUE_TYPE.$rubrique_id.'classe'.$classe_id.'position';
+    if(!isset($tab_donnees_livret[$clef]))
     {
-      $somme   = array_sum($tab_positions);
-      $nombre  = count( array_filter($tab_positions,'non_vide') );
-      $moyenne = ($nombre) ? round($somme/$nombre,0) : NULL ;
-      $tab_moyennes_calculees[$rubrique_id] = $moyenne;
+      $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $RUBRIQUE_TYPE , $rubrique_id , 'classe' , $classe_id , 'position' , $moyenne_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
+      $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $moyenne_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
     }
-    // Comparer les moyennes calculées avec les moyennes enregistrées
-    foreach($tab_moyennes_calculees as $rubrique_id => $moyenne_calculee)
+    else if($tab_donnees_livret[$clef]['valeur']!==$moyenne_calculee)
     {
-      $delete_saisie = FALSE;
-      $clef = $RUBRIQUE_TYPE.$rubrique_id.'classe'.$classe_id.'position';
-      if(!isset($tab_donnees_livret[$clef]))
+      $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
+      DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'position' /*$saisie_objet*/ , $moyenne_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
+      $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $moyenne_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
+      // On ne supprime pas une moyenne NULL pour conserver les liaisons des profs aux élèves notés ABS etc.
+      /*
+      if(is_null($moyenne_calculee))
       {
-        $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $RUBRIQUE_TYPE , $rubrique_id , 'classe' , $classe_id , 'position' , $moyenne_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-        $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $moyenne_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
+        DB_STRUCTURE_LIVRET::DB_supprimer_saisie( $livret_saisie_id );
+        unset($tab_donnees_livret[$clef]);
+        $delete_saisie = TRUE;
       }
-      else if($tab_donnees_livret[$clef]['valeur']!==$moyenne_calculee)
+      */
+    }
+    else
+    {
+      $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
+      $tab_donnees_livret[$clef]['find'] = TRUE;
+    }
+    // Ajout imparfait : on ajoute sans vérifier s'il y a des différences, on n'enlève pas...
+    if( !$delete_saisie && ($PAGE_COLONNE!='maitrise') )
+    {
+      foreach($tab_prof[$rubrique_id] as $eleve_id => $tab)
       {
-        $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
-        DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'position' /*$saisie_objet*/ , $moyenne_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-        $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $moyenne_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
-        // On ne supprime pas une moyenne NULL pour conserver les liaisons des profs aux élèves notés ABS etc.
-        /*
-        if(is_null($moyenne_calculee))
+        $tab_prof_classe = array();
+        foreach($tab as $prof_id)
         {
-          DB_STRUCTURE_LIVRET::DB_supprimer_saisie( $livret_saisie_id );
-          unset($tab_donnees_livret[$clef]);
-          $delete_saisie = TRUE;
+          $tab_prof_classe[$prof_id] = $prof_id;
         }
-        */
       }
-      else
+      if( $tab_donnees_livret[$clef]['listing_profs'] != implode(',',$tab_prof_classe) )
       {
-        $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
-        $tab_donnees_livret[$clef]['find'] = TRUE;
-      }
-      // Ajout imparfait : on ajoute sans vérifier s'il y a des différences, on n'enlève pas...
-      if( !$delete_saisie && ($PAGE_COLONNE!='maitrise') )
-      {
-        foreach($tab_prof[$rubrique_id] as $eleve_id => $tab)
+        foreach($tab_prof_classe as $prof_id)
         {
-          $tab_prof_classe = array();
-          foreach($tab as $prof_id)
-          {
-            $tab_prof_classe[$prof_id] = $prof_id;
-          }
-        }
-        if( $tab_donnees_livret[$clef]['listing_profs'] != implode(',',$tab_prof_classe) )
-        {
-          foreach($tab_prof_classe as $prof_id)
-          {
-            DB_STRUCTURE_LIVRET::DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id );
-          }
+          DB_STRUCTURE_LIVRET::DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id );
         }
       }
     }
@@ -594,13 +620,13 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       }
     }
   }
-  // Il peut aussi falloir supprimer des positions ou des moyennes calculées ou imposées précédemment mais qui n'ont plus lieu d'être car les notes ont été supprimées, ou les items déplacés, ou supprimés depuis...
-  // Pour les éléments de programmes et les appréciations, on les laisse au cas où...
+  // Il peut aussi falloir supprimer des données calculées ou imposées précédemment mais qui n'ont plus lieu d'être car les notes ont été supprimées, ou les items déplacés, ou supprimés depuis...
+  // Pour les appréciations, on les laisse au cas où...
   if(!empty($tab_donnees_livret))
   {
     foreach($tab_donnees_livret as $clef => $tab)
     {
-      if( (substr($clef,-8)=='position') && !isset($tab['find']) )
+      if( !isset($tab['find']) && in_array( substr($clef,-8), array('position','elements') ) )
       {
         DB_STRUCTURE_LIVRET::DB_supprimer_saisie( $tab['id'] );
       }
@@ -677,8 +703,6 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
   }
   // Reste donc le cas d'un positionnement à recalculer ou d'éléments de programme à déterminer (pour un élève)
   // Dans les deux cas il faut récupérer les items évalués
-  //
-  // TODO : Restreindre en interdisant des rapprochements selon la LV1 ou la LV2 de l'élève.
   //
   // Cas 1/2 : Positionnement du socle en fin de cycle
   //

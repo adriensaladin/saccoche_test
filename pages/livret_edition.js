@@ -302,8 +302,8 @@ $(document).ready
           }
           else if(memo_section=='livret_imprimer')
           {
-            // $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition espérée fin novembre 2016.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
-            // return false;
+            $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition espérée fin novembre 2016.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+            return false;
             // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
             configurer_form_choix_classe();

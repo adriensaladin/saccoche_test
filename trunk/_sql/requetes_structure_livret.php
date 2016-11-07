@@ -1872,11 +1872,19 @@ public static function DB_modifier_saisie( $livret_saisie_id , $saisie_objet , $
  *
  * @param int     $livret_saisie_id
  * @param int     $prof_id
+ * @param bool    $delete
  * @return void
  */
-public static function DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id )
+public static function DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id , $delete=FALSE )
 {
-  $DB_SQL = 'INSERT IGNORE INTO sacoche_livret_saisie_jointure_prof ( livret_saisie_id,  prof_id) VALUES (:livret_saisie_id, :prof_id) ';
+  if(!$delete)
+  {
+    $DB_SQL = 'INSERT IGNORE INTO sacoche_livret_saisie_jointure_prof ( livret_saisie_id,  prof_id) VALUES (:livret_saisie_id, :prof_id) ';
+  }
+  else
+  {
+    $DB_SQL = 'DELETE FROM sacoche_livret_saisie_jointure_prof WHERE livret_saisie_id=:livret_saisie_id AND prof_id=:prof_id ';
+  }
   $DB_VAR = array(
     ':livret_saisie_id' => $livret_saisie_id,
     ':prof_id'          => $prof_id,

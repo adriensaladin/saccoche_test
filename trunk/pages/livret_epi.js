@@ -139,7 +139,7 @@ $(document).ready
       }
     }
 
-    $("select[id^=f_matiere").change
+    $("select[id^=f_matiere]").change
     (
       function()
       {

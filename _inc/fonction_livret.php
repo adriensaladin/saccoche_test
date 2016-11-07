@@ -263,7 +263,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
       else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
       // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
-      // Récupération au passage des profs associés aux saisies
+      // Récupération au passage des profs associés aux saisies, mais uniquement sur la période en cours !!!
       $tab_eval = array();
       $tab_prof = array();
       $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ , FALSE /*first_order_by_date*/ );
@@ -278,7 +278,10 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
             foreach($tab_join_item_rubrique[$DB_ROW['item_id']] as $rubrique_id)
             {
               $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
-              $tab_prof[$rubrique_id][$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
+              if($DB_ROW['date']>=$date_mysql_debut)
+              {
+                $tab_prof[$rubrique_id][$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
+              }
             }
           }
         }
@@ -355,7 +358,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         }
       }
       // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
-      // Récupération au passage des profs associés aux saisies
+      // Récupération au passage des profs associés aux saisies, mais uniquement sur la période en cours !!!
       $tab_eval = array();
       $tab_prof = array();
       $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve_id , $liste_item_id , -1 /*matiere_id*/ , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ , FALSE /*first_order_by_date*/ );
@@ -372,7 +375,10 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
               if(!isset($tab_rubrique_a_eviter[$DB_ROW['eleve_id']][$rubrique_id]))
               {
                 $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
-                $tab_prof[$rubrique_id][$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
+                if($DB_ROW['date']>=$date_mysql_debut)
+                {
+                  $tab_prof[$rubrique_id][$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
+                }
               }
             }
           }
@@ -462,14 +468,20 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
         $tab_donnees_livret[$clef]['find'] = TRUE;
       }
-      // Ajout imparfait : on ajoute sans vérifier s'il y a des différences, on n'enlève pas...
       if($PAGE_COLONNE!='maitrise')
       {
         if( $tab_donnees_livret[$clef]['listing_profs'] != implode(',',$tab_prof[$rubrique_id][$eleve_id]) )
         {
-          foreach($tab_prof[$rubrique_id][$eleve_id] as $prof_id)
+          $tab_profs_livret = explode(',',$tab_donnees_livret[$clef]['listing_profs']);
+          $tab_add = array_diff( $tab_prof[$rubrique_id][$eleve_id] , $tab_profs_livret );
+          $tab_del = array_diff( $tab_profs_livret , $tab_prof[$rubrique_id][$eleve_id] );
+          foreach($tab_add as $prof_id)
           {
             DB_STRUCTURE_LIVRET::DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id );
+          }
+          foreach($tab_del as $prof_id)
+          {
+            DB_STRUCTURE_LIVRET::DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id , TRUE /*delete*/ );
           }
         }
       }
@@ -515,7 +527,6 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
       $tab_donnees_livret[$clef]['find'] = TRUE;
     }
-    // Ajout imparfait : on ajoute sans vérifier s'il y a des différences, on n'enlève pas...
     if( !$delete_saisie && ($PAGE_COLONNE!='maitrise') )
     {
       foreach($tab_prof[$rubrique_id] as $eleve_id => $tab)
@@ -528,9 +539,16 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       }
       if( $tab_donnees_livret[$clef]['listing_profs'] != implode(',',$tab_prof_classe) )
       {
-        foreach($tab_prof_classe as $prof_id)
+        $tab_profs_livret = explode(',',$tab_donnees_livret[$clef]['listing_profs']);
+        $tab_add = array_diff( $tab_prof_classe , $tab_profs_livret );
+        $tab_del = array_diff( $tab_profs_livret , $tab_prof_classe );
+        foreach($tab_add as $prof_id)
         {
           DB_STRUCTURE_LIVRET::DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id );
+        }
+        foreach($tab_del as $prof_id)
+        {
+          DB_STRUCTURE_LIVRET::DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id , TRUE /*delete*/ );
         }
       }
     }

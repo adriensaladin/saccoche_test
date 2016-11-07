@@ -273,61 +273,64 @@ if($make_pdf)
     // AQUIS SCOLAIRES
     foreach($tab_rubriques['eval'] as $livret_rubrique_id => $tab_rubrique)
     {
-      // récup éléments travaillés
-      $id_rubrique_elements = $livret_rubrique_id ; // On force une ligne par sous-rubrique, donc pas $tab_rubriques['eval'][$livret_rubrique_id]['elements'];
-      $elements_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_elements]['elements']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_elements]['elements'] : $tab_saisie_initialisation ;
-      // récup appréciation
-      $id_rubrique_appreciation = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
-      $appreciation_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation'] : $tab_saisie_initialisation ;
-      $tab_profs_appreciation = is_null($appreciation_info['listing_profs']) ? array() : explode(',',$appreciation_info['listing_profs']) ;
-      // Domaine d’enseignement
-      $id_premiere_sous_rubrique = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
-      if($BILAN_TYPE_ETABL=='college')
+      if(isset($tab_rubriques['eval'][$livret_rubrique_id]['used'][$eleve_id]))
       {
-        $nb_lignes_domaine = 3; // forfait pour matière + nom prof(s)
-      }
-      else
-      {
-        $nombre_sous_rubriques = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) : 0 ;
-        if( $nombre_sous_rubriques == 1 )
+        // récup éléments travaillés
+        $id_rubrique_elements = $livret_rubrique_id ; // On force une ligne par sous-rubrique, donc pas $tab_rubriques['eval'][$livret_rubrique_id]['elements'];
+        $elements_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_elements]['elements']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_elements]['elements'] : $tab_saisie_initialisation ;
+        // récup appréciation
+        $id_rubrique_appreciation = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
+        $appreciation_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation'] : $tab_saisie_initialisation ;
+        $tab_profs_appreciation = is_null($appreciation_info['listing_profs']) ? array() : explode(',',$appreciation_info['listing_profs']) ;
+        // Domaine d’enseignement
+        $id_premiere_sous_rubrique = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
+        if($BILAN_TYPE_ETABL=='college')
         {
-          $nb_lignes_domaine = 3; // forfait pour une rubrique sans sous-rubriques
+          $nb_lignes_domaine = 3; // forfait pour matière + nom prof(s)
         }
         else
         {
-          $nb_lignes_domaine = 2; // forfait pour une rubrique avec sous-rubriques
+          $nombre_sous_rubriques = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) : 0 ;
+          if( $nombre_sous_rubriques == 1 )
+          {
+            $nb_lignes_domaine = 3; // forfait pour une rubrique sans sous-rubriques
+          }
+          else
+          {
+            $nb_lignes_domaine = 2; // forfait pour une rubrique avec sous-rubriques
+          }
         }
-      }
-      // Principaux éléments du programme travaillés durant la période
-      $nb_lignes_elements = 0;
-      if($elements_info['saisie_valeur'])
-      {
-        $tab_valeurs = array_slice( json_decode($elements_info['saisie_valeur'], TRUE) , 0 , 3 );
-        foreach($tab_valeurs as $texte => $nb_used)
+        // Principaux éléments du programme travaillés durant la période
+        $nb_lignes_elements = 0;
+        if($elements_info['saisie_valeur'])
         {
-          $nb_lignes_elements += max( 2 , ceil(strlen($texte)/100) );
+          $tab_valeurs = array_slice( json_decode($elements_info['saisie_valeur'], TRUE) , 0 , 3 );
+          foreach($tab_valeurs as $texte => $nb_used)
+          {
+            $nb_lignes_elements += max( 2 , ceil(strlen($texte)/100) );
+          }
         }
-      }
-      // Acquisitions, progrès et difficultés éventuelles
-      $nombre_rubriques_regroupees = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) : 0 ;
-      $nb_lignes_appreciation = 0;
-      if( ( $nombre_rubriques_regroupees == 1 ) || !isset($tab_deja_affiche[$eleve_id][$id_rubrique_appreciation]) )
-      {
-        if($appreciation_info['saisie_valeur'])
+        // Acquisitions, progrès et difficultés éventuelles
+        $nombre_rubriques_regroupees = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) : 0 ;
+        $nb_lignes_appreciation = 0;
+        if( ( $nombre_rubriques_regroupees == 1 ) || !isset($tab_deja_affiche[$eleve_id][$id_rubrique_appreciation]) )
         {
-          $appreciation = $appreciation_info['saisie_valeur'];
-          $nb_lignes_appreciation += max( 2 , ceil(strlen($appreciation)/100), min( substr_count($appreciation,"\n") + 1 , $app_rubrique_longueur / 100 ) );
+          if($appreciation_info['saisie_valeur'])
+          {
+            $appreciation = $appreciation_info['saisie_valeur'];
+            $nb_lignes_appreciation += max( 2 , ceil(strlen($appreciation)/100), min( substr_count($appreciation,"\n") + 1 , $app_rubrique_longueur / 100 ) );
+          }
         }
-      }
-      $tab_deja_affiche[$eleve_id][$id_premiere_sous_rubrique] = TRUE;
-      if($livret_rubrique_id==$id_premiere_sous_rubrique)
-      {
-        $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique] = array( $nb_lignes_domaine , $nb_lignes_elements , $nb_lignes_appreciation );
-      }
-      else
-      {
-        $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique][0] += $nb_lignes_domaine;
-        $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique][1] += $nb_lignes_elements;
+        $tab_deja_affiche[$eleve_id][$id_premiere_sous_rubrique] = TRUE;
+        if($livret_rubrique_id==$id_premiere_sous_rubrique)
+        {
+          $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique] = array( $nb_lignes_domaine , $nb_lignes_elements , $nb_lignes_appreciation );
+        }
+        else
+        {
+          $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique][0] += $nb_lignes_domaine;
+          $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique][1] += $nb_lignes_elements;
+        }
       }
     }
     foreach($tab_nb_lignes_eleve_eval[$eleve_id] as $id_premiere_sous_rubrique => $tab_nb)

@@ -48,7 +48,7 @@ $tab_langues_traduction = array(
     'document'   => 'https://sacoche.sesamath.net/_docs/traduction_en_150_precisions.ods',
   ),
   array(
-    'statut'     => 60, // en attente
+    'statut'     => 100, // effectuée (% actuel)
     'langue'     => array( 'code' => 'eu' , 'nom' => 'Basque' ),
     'pays'       => array( 'code' => 'FR' , 'nom' => 'France' ),
     'traducteur' => array(

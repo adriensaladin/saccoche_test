@@ -615,16 +615,16 @@ class PDF extends FPDF
     $this->tab_couleur['livret_vert_fonce']     = array('r'=>174,'v'=>212,'b'=> 77);
     $this->tab_couleur['livret_vert_clair']     = array('r'=>232,'v'=>243,'b'=>206);
     $this->tab_couleur['livret_titre_eval']     = array('r'=> 21,'v'=>149,'b'=>214); // #1595D6
-    $this->tab_couleur['livret_titre_ap']       = array('r'=>225,'v'=>238,'b'=>248); // #E1EEF8
-    $this->tab_couleur['livret_titre_epi']      = array('r'=>225,'v'=>238,'b'=>248); // #E1EEF8
-    $this->tab_couleur['livret_titre_parcours'] = array('r'=>225,'v'=>238,'b'=>248); // #E1EEF8
+    $this->tab_couleur['livret_titre_ap']       = array('r'=>150,'v'=>179,'b'=>213); // #96B3D5
+    $this->tab_couleur['livret_titre_epi']      = array('r'=>150,'v'=>179,'b'=>213); // #96B3D5
+    $this->tab_couleur['livret_titre_parcours'] = array('r'=>150,'v'=>179,'b'=>213); // #96B3D5
     $this->tab_couleur['livret_titre_bilan']    = array('r'=>173,'v'=>212,'b'=> 78); // #ADD44E
     $this->tab_couleur['livret_titre_viesco']   = array('r'=>247,'v'=>146,'b'=> 55); // #F79237
     $this->tab_couleur['livret_fond_eval']      = array('r'=>219,'v'=>229,'b'=>241); // #DBE5F1
-    $this->tab_couleur['livret_fond_ap']        = array('r'=>238,'v'=>245,'b'=>251); // #EEF5FB
-    $this->tab_couleur['livret_fond_epi']       = array('r'=>238,'v'=>245,'b'=>251); // #EEF5FB
-    $this->tab_couleur['livret_fond_parcours']  = array('r'=>238,'v'=>245,'b'=>251); // #EEF5FB
-    $this->tab_couleur['livret_fond_modaccomp'] = array('r'=>150,'v'=>179,'b'=>213); // #96B3D5
+    $this->tab_couleur['livret_fond_ap']        = array('r'=>225,'v'=>238,'b'=>248); // ##E1EEF8 ou #EEF5FB ('r'=>238,'v'=>245,'b'=>251) pour plus clair
+    $this->tab_couleur['livret_fond_epi']       = array('r'=>225,'v'=>238,'b'=>248); // ##E1EEF8 ou #EEF5FB ('r'=>238,'v'=>245,'b'=>251) pour plus clair
+    $this->tab_couleur['livret_fond_parcours']  = array('r'=>225,'v'=>238,'b'=>248); // ##E1EEF8 ou #EEF5FB ('r'=>238,'v'=>245,'b'=>251) pour plus clair
+    $this->tab_couleur['livret_fond_modaccomp'] = array('r'=>225,'v'=>238,'b'=>248); // ##E1EEF8 ou #EEF5FB ('r'=>238,'v'=>245,'b'=>251) pour plus clair
     $this->tab_couleur['livret_fond_bilan']     = array('r'=>236,'v'=>245,'b'=>215); // #ECF5D7
     $this->tab_couleur['livret_fond_viesco']    = array('r'=>254,'v'=>208,'b'=>163); // #FED0A3
 
@@ -1279,6 +1279,14 @@ class PDF extends FPDF
   public function officiel_ligne_tag( $eleve_genre , $date_naissance , $eleve_INE , $tag_date_heure_initiales , $ligne_largeur )
   {
     $element_largeur = $ligne_largeur / ( 3 - intval(empty($date_naissance)) - intval(empty($eleve_INE)) );
+    // INE
+    if($eleve_INE)
+    {
+      $taille_police = 8 ;
+      $ligne_hauteur = $taille_police*0.4 ;
+      $this->SetFont('Arial' , '' , $taille_police);
+      $this->Cell( $element_largeur , $ligne_hauteur , To::pdf($eleve_INE) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    }
     // Date de naissance
     if($date_naissance)
     {
@@ -1286,15 +1294,7 @@ class PDF extends FPDF
       $taille_police = 8 ;
       $ligne_hauteur = $taille_police*0.4 ;
       $this->SetFont('Arial' , '' , $taille_police);
-      $this->Cell( $element_largeur , $ligne_hauteur , To::pdf($ne_le.$date_naissance) , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    }
-    // INE
-    if($eleve_INE)
-    {
-      $taille_police = 8 ;
-      $ligne_hauteur = $taille_police*0.4 ;
-      $this->SetFont('Arial' , '' , $taille_police);
-      $this->Cell( $element_largeur , $ligne_hauteur , To::pdf($eleve_INE) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->Cell( $element_largeur , $ligne_hauteur , To::pdf($ne_le.$date_naissance) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
     }
     // Tag date heure initiales
     $taille_police = 5 ;

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SACoche\n"
-"POT-Creation-Date: 2016-10-16 11:11+0100\n"
-"PO-Revision-Date: 2016-10-16 11:11+0100\n"
+"POT-Creation-Date: 2016-11-09 13:37+0100\n"
+"PO-Revision-Date: 2016-11-09 13:39+0100\n"
 "Last-Translator: Thomas CRESPIN <contact-sacoche@sesamath.net>\n"
 "Language-Team: SACoche Traductions <sacoche_translation@sesamath.net>\n"
 "Language: eu_FR\n"
@@ -22,7 +22,7 @@ msgstr ""
 # Laisser en majuscules.
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/_inc/class.SessionUser.php:604
 msgid "MENU"
-msgstr ""
+msgstr "MENUA"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_directeur.php:38
@@ -286,7 +286,7 @@ msgstr "Notanet & Brebetaren fitxak"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_classe.php:29
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:37
 msgid "Classes"
-msgstr "Gelak"
+msgstr "Klaseak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/menus/menu_administrateur.php:101
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_groupe.php:29
@@ -587,20 +587,20 @@ msgstr "Gelak (kudeaketa)"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_groupe.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_periode.php:38
 msgid "Périodes & classes / groupes"
-msgstr "Garaiak & gelak / taldeak"
+msgstr "Garaiak & klaseak / taldeak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_classe.php:39
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_eleve.php:38
 msgid "Élèves & classes"
-msgstr "Ikasleak & gelak"
+msgstr "Ikasleak & klaseak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_classe.php:40
 msgid "Professeurs & classes"
-msgstr "Irakasleak & gelak"
+msgstr "Irakasleak & klaseak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_classe_gestion.php:29
 msgid "Gérer les classes"
-msgstr "Gelak kudeatu"
+msgstr "Klaseak kudeatu"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_eleve.php:37
 msgid "Élèves (gestion)"
@@ -722,339 +722,344 @@ msgstr "Langile & gaiak / Langile koordinatzaile"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/administrateur_resilier.php:29
 msgid "Résilier l'inscription de l'établissement"
-msgstr ""
+msgstr "Ikastegiaren harpidetza deuseztatu."
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet.php:40
 msgid "Étape n°1 : Séries"
-msgstr ""
+msgstr "1. urratsa: Serieak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet.php:41
 msgid "Étape n°2 : Épreuves"
-msgstr ""
+msgstr "2. urratsa: Frogak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet.php:42
 msgid "Étape n°3 : Notes"
-msgstr ""
+msgstr "3. urratsa: Notak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet.php:43
 msgid "Étape n°4 : Export Notanet"
-msgstr ""
+msgstr "4. urratsa: Export Notanet"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet.php:44
 msgid "Étape n°5 : Fiches brevet"
-msgstr ""
+msgstr "5. urratsa: Brebeta fitxak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet_epreuves.php:29
 msgid "Étape n°2 - Indiquer les référentiels à utiliser et la manière d'en extraire une note"
-msgstr ""
+msgstr "2. urratsa: Erabili beharreko erreferentzialak eta notak ateratzeko moldea finkatu "
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet_fiches.php:29
 msgid "Étape n°5 - Fiches brevet"
-msgstr ""
+msgstr "5. urratsa: brebeta fitxak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet_moyennes.php:29
 msgid "Étape n°3 - Calculer et contrôler les notes pour chaque élève"
-msgstr ""
+msgstr "3. urratsa: ikasle bakoitzeko notak kalkulatu eta kontrolatu"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet_notanet.php:29
 msgid "Étape n°4 - Générer le fichier d'export pour Notanet"
-msgstr ""
+msgstr "4. urratsa: export fitxategia sortu Notanetentzat"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/brevet_series.php:29
 msgid "Étape n°1 - Indiquer la série des élèves concernés"
-msgstr ""
+msgstr "1. urratsa: dagokien ikasleen seriea finkatu"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:29
 msgid "Bienvenue dans votre espace identifié"
-msgstr ""
+msgstr "Ongi etorri zure identifikatutako gunera"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:37
 msgid "Items récents à retravailler"
-msgstr ""
+msgstr "Berriz landu beharreko item berriak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:37
 msgid "Items récents à améliorer"
-msgstr ""
+msgstr "Hobetu beharreko item berriak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:38
 msgid "Notes à saisir"
-msgstr ""
+msgstr "Sartu beharreko notak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:38
 msgid "Auto-évaluations en cours"
-msgstr ""
+msgstr "Egiten ari diren autoebaluaketak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:39
 msgid "Bilans officiels ouverts à la saisie"
-msgstr ""
+msgstr "Betetzeko prest diren bilan ofizialak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:39
 msgid "Nouveaux bilans officiels à consulter"
-msgstr ""
+msgstr "Kontsultatzeko bilan ofizial berriak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:42
 msgid "Informations d'accueil"
-msgstr ""
+msgstr "Harrera informazioak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:46
 msgid "Évaluations prévues"
-msgstr ""
+msgstr "Aurreikusitako ebaluaketak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:47
 msgid "Résultats récents"
-msgstr ""
+msgstr "Berriki izandako emaitzak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:49
 msgid "Items récents les mieux réussis"
-msgstr ""
+msgstr "Hobekien lortutako item berriak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:50
 msgid "Demandes d'évaluations"
-msgstr ""
+msgstr "Ebaluatzeko eskaerak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:54
 msgid "Astuce du moment"
-msgstr ""
+msgstr "Uneko amarrua"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:55
 msgid "Protégeons l'environnement"
-msgstr ""
+msgstr "Ingurumena babes dezagun"
 
-# Conserver "%s".
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:111
 #, php-format
 msgid "Bonjour %s."
-msgstr ""
+msgstr "Egun on %s."
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:112
 msgid "Heureux de faire votre connaissance ; bonne découverte de SACoche !"
-msgstr ""
+msgstr "Urte askotako; bidai on SACoche barnean!"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:113
 msgid "Déjà de retour ? Décidément on ne se quitte plus !"
-msgstr ""
+msgstr "Berriz hemen? "
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:114
 msgid "Bonne navigation, et merci de votre fidélité !"
-msgstr ""
+msgstr "Nabigazio on; miolesker zure fideltasunarengatik!"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:115
 msgid "Content de vous retrouver après cette pause de quelques jours !"
-msgstr ""
+msgstr "Azken egunotako pausa ondoren, zu berriz ikusteagatik pozik!"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:116
 msgid "Quel plaisir de vous revoir : le temps semble long sans vous !"
-msgstr ""
+msgstr "A zer plazerra zu berriz ikustea: zu gabe denbora luzea da!"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:117
 msgid "On ne s'était pas vu depuis trop longtemps : vous nous avez manqué !"
-msgstr ""
+msgstr "Aspalditik ez ginen elkar ikusten: faltan bota zaitut!"
 
 # Conserver "%s".
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:123
 #, php-format
 msgid "Encore là %s ? Vous avez raison, faites comme chez vous !"
-msgstr ""
+msgstr "Oraindik hor %s ? Arrazoin duzu, etxean bezala egizu !"
 
 # Conserver "%s".
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:129
 #, php-format
 msgid "Toujours là %s ? Pas de souci, restez le temps que vous voulez !"
-msgstr ""
+msgstr "Hor beti %s ? problemarik ez, nahi duzun bezain bat egon !"
 
 # Conserver "%s".
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:132
 #, php-format
 msgid "Vous êtes dans l'environnement %s."
-msgstr ""
+msgstr " %s -ren gunean zaude."
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:143
 msgid "Élève(s) affecté(s) dans une classe associé(s) à votre compte :"
-msgstr ""
+msgstr "Zure kontuari loturiko klase bateko ikaslea(k)"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:244
 msgid "Notifications à consulter"
-msgstr ""
+msgstr "Kontsultazeko jakinarazpenak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:262
 msgid "Message"
-msgstr ""
+msgstr "Mezua"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:270
 msgid "Afin de préserver l'environnement, n'imprimer que si nécessaire !"
-msgstr ""
+msgstr "Ingurumena zaintzearren, beharrezkoa ez bada ez inprimatu!"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_accueil.php:552
 msgid "Le saviez-vous ?"
-msgstr ""
+msgstr "Bazenekien?"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_langue.php:29
 msgid "Choisir sa langue"
-msgstr ""
+msgstr "Hizkuntza hautatu"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_password.php:29
 msgid "Changer son mot de passe"
-msgstr ""
+msgstr "Pasahitza aldatu"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/compte_selection_items.php:29
 msgid "Gérer ses regroupements d'items"
-msgstr ""
+msgstr "Norberaren item multzoak kudeatu"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/consultation_referentiel_externe.php:29
 msgid "Référentiels partagés (serveur communautaire)"
-msgstr ""
+msgstr "Partekatutako erreferentzialak (komunitatearen zerbitzaria)"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/consultation_referentiel_interne.php:29
 msgid "Référentiels en place (dans l'établissement)"
-msgstr ""
+msgstr "Martxan diren erreferentzialak (ikastetxean)"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_liaisons.php:29
 msgid "Rubriques / Liaisons"
-msgstr ""
+msgstr "Atalak / Loturak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:39
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_seuils.php:29
 msgid "Notation / Seuils"
-msgstr ""
+msgstr "Notazioak / Mugak"
 
 # Abréviation de "Enseignements Pratiques Interdisciplinaires"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:40
 msgid "E.P.I."
-msgstr ""
+msgstr "G.I.P."
 
 # Abréviation de "Accompagnement Personnalisé"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:41
 msgid "A.P."
-msgstr ""
+msgstr "L.P."
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:42
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_parcours.php:29
 msgid "Parcours"
-msgstr ""
+msgstr "Ibilbidea"
 
 # Abréviation de "Modalités d'accompagnement"
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:43
 msgid "Mod. accomp."
-msgstr ""
+msgstr "Laguntza mol."
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:44
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_edition.php:29
 msgid "Édition du livret"
-msgstr ""
+msgstr "Liburuxkaren edizioa"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret.php:45
 msgid "Export LSU"
-msgstr ""
+msgstr "Export LSU"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_ap.php:29
 msgid "Accompagnement Personnalisé"
-msgstr ""
+msgstr "Laguntza Pertsonalizatua"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_classes.php:29
 msgid "Affectation des classes"
-msgstr ""
+msgstr "Klaseen sailkatzea"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_epi.php:29
 msgid "Enseignements Pratiques Interdisciplinaires"
-msgstr ""
+msgstr "Gai-arteko Irakaskuntza Praktikoak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/livret_modaccomp.php:29
 msgid "Modalités d'accompagnement"
-msgstr ""
+msgstr "Laguntza moldeak"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:36
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_ordre_matieres.php:29
 msgid "Ordre d'affichage des matières"
-msgstr ""
+msgstr "Ikasgaien bistaratze ordena"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:37
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_format_synthese.php:29
 msgid "Format de synthèse par référentiel"
-msgstr ""
+msgstr "Sintesi formatua erreferentziaka"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_configuration.php:29
 msgid "Configuration des bilans officiels"
-msgstr ""
+msgstr "Bilan ofizialen konfigurazioa"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:39
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_mise_en_page.php:29
 msgid "Mise en page des bilans officiels"
-msgstr ""
+msgstr "Bilan ofizialen orrialdearen prestatzea"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel.php:40
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_reglages_voir_archives.php:29
 msgid "Archives des bilans officiels"
-msgstr ""
+msgstr "Bilan ofizialen artxiboa"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_accueil.php:35
 msgid "Maîtrise du palier 1"
-msgstr ""
+msgstr "1. mailartearen jabetasuna"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_accueil.php:36
 msgid "Maîtrise du palier 2"
-msgstr ""
+msgstr "2. mailartearen jabetasuna"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_accueil.php:37
 msgid "Maîtrise du palier 3"
-msgstr ""
+msgstr "3. mailartearen jabetasuna"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/officiel_voir_archive.php:29
 msgid "Archives consultables des bilans officiels"
-msgstr ""
+msgstr "Bilan ofizialek artxiboak kontsultagarri"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/professeur_groupe_besoin.php:29
 msgid "Gérer ses groupes de besoin"
-msgstr ""
+msgstr "Behar multzoen kudeaketa"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_items.php:187
 msgid "Relevé d'items d'une matière"
-msgstr ""
+msgstr "Ikasgai baten itemen zerrenda"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_items.php:188
 msgid "Relevé d'items pluridisciplinaire"
-msgstr ""
+msgstr "Ikasgaien arteko itemen zerrenda"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_items.php:189
 msgid "Relevé d'items sélectionnés"
-msgstr ""
+msgstr "Hautatutako itemen zerrenda"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_items.php:190
 msgid "Relevé d'items d'évaluations sélectionnées"
-msgstr ""
+msgstr "Hautatutako ebaluaketa itemen zerrenda"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_items.php:191
 msgid "Relevé d'items d'un enseignant"
-msgstr ""
+msgstr "Irakasle baten itemen zerrenda"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_socle.php:29
 msgid "Relevé de maîtrise du socle"
-msgstr ""
+msgstr "Enborraren jabetasunaren zerrenda"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_synthese.php:99
 msgid "Synthèse d'une matière"
-msgstr ""
+msgstr "Ikasgai baten sintesia"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_synthese.php:100
 msgid "Synthèse pluridisciplinaire"
-msgstr ""
+msgstr "Ikasgaien arteko sintesia"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/releve_synthese_socle.php:29
 msgid "Synthèse de maîtrise du socle"
-msgstr ""
+msgstr "Enborraren jabetsunaren sintesia"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle.php:38
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle_pilier.php:29
 msgid "Valider les compétences (piliers) du socle"
-msgstr ""
+msgstr "Enborraren konpetentziak (oinarriak) balioztatu"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle.php:39
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle_pilier_annuler.php:29
 msgid "Annuler une compétence validée du socle"
-msgstr ""
+msgstr "Enborrean balioztutako konpetentzia baliogabetu"
 
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle.php:40
 #: D:/WEB/www/sites_SESAMATH_PRINCIPAL/site_sesamath__sacoche/trunk/sacoche/pages/validation_socle_fichier.php:29
 msgid "Import / Export de validations du socle"
-msgstr ""
+msgstr "Enborraren balioztatzeen Import / Export"
+
+#~ msgid "Edition du livret"
+#~ msgstr "Liburuxkaren edizioa"
+
+#~ msgid "Export LSUN"
+#~ msgstr "Export LSUN"

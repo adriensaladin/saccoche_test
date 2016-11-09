@@ -58,6 +58,5 @@ Du coup, j'ai généré [certificats/certificats.txt] qui est la concaténation 
 
 En cas de souci avec un ENT, on peut vérifier manuellement la validité de son certificat
  avec l'un de ces services efficaces et explicatifs :
-https://www.ssllabs.com/ssltest/analyze.html
-https://www.sslshopper.com/ssl-checker.html
 https://ssltools.websecurity.symantec.com/checker/views/certCheck.jsp
+https://www.sslshopper.com/ssl-checker.html

@@ -28,8 +28,6 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Édition du livret"));
 
-$tab_puce_info = array();
-
 $tab_periode_livret = array(
   'periodeT1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 1/3' ),
   'periodeT2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 2/3' ),
@@ -187,8 +185,20 @@ Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFI
 // Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
 if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
 {
-  $tab_puce_info[] = '<li><span class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</span></li>';
+  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
 }
+?>
+
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_livret_scolaire">DOC : Bilan officiel &rarr; Livret Scolaire</a></span></li>
+  <li><span class="astuce"><?php echo($affichage_formulaire_statut) ? 'Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.' : '<a title="'.$profils_modifier_statut.'" href="#">Profils pouvant modifier le statut d\'un bilan.</a>' ; ?></span></li>
+</ul>
+
+<div id="cadre_photo"><button id="voir_photo" type="button" class="voir_photo">Photo</button></div>
+
+<hr />
+
+<?php
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des jointures livret / classes / périodes
@@ -200,7 +210,6 @@ if(empty($DB_TAB))
   echo'<p><label class="erreur">Aucune association de classe au livret scolaire enregistrée !</label></p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-$tab_page_ref = array();
 $tab_join_classe_periode = array();
 foreach($DB_TAB as $DB_ROW)
 {
@@ -225,7 +234,6 @@ foreach($DB_TAB as $DB_ROW)
       'date_debut'    => $DB_ROW['jointure_date_debut'],
       'date_fin'      => $DB_ROW['jointure_date_fin'],
     );
-    $tab_page_ref[] = $DB_ROW['livret_page_ref'];
   }
 }
 $tab_periode_pb = array( 'undefined' => array() , 'pbdates' => 0 );
@@ -257,35 +265,6 @@ if($tab_periode_pb['pbdates'])
   echo'<p><label class="erreur">Association datée des périodes aux classes non effectuée pour '.$tab_periode_pb['pbdates'].' période'.$s.' !'.$consigne.'</label></p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-
-// Besoin de connaitre le chef d'établissement
-if( count( array_intersect( $tab_page_ref , array('6e','5e','4e','3e','cycle1','cycle2','cycle3','cycle4') ) ) )
-{
-  $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_chef_etabl_infos($_SESSION['ETABLISSEMENT']['CHEF_ID']);
-  if(empty($DB_ROW))
-  {
-    $consigne = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? ' <a href="./index.php?page=administrateur_etabl_identite">Identité de l\'établissement.</a>' : '<br />Un administrateur doit <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure#toggle_chef_etablissement">désigner cette personne</a></span>.' ;
-    echo'<p><label class="erreur">Chef d\'établissement ou directeur d\'école non désigné !'.$consigne.'</label></p>'.NL;
-    return; // Ne pas exécuter la suite de ce fichier inclus.
-  }
-  else
-  {
-    $tab_puce_info[] = '<li><span class="astuce">Le chef d\'établissement ou directeur d\'école désigné est '.To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure#toggle_chef_etablissement">DOC</a></span>).</span></li>';
-  }
-}
-?>
-
-<ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_livret_scolaire">DOC : Bilan officiel &rarr; Livret Scolaire</a></span></li>
-  <?php echo implode('',$tab_puce_info); ?>
-  <li><span class="astuce"><?php echo($affichage_formulaire_statut) ? 'Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.' : '<a title="'.$profils_modifier_statut.'" href="#">Profils pouvant modifier le statut d\'un bilan.</a>' ; ?></span></li>
-</ul>
-
-<div id="cadre_photo"><button id="voir_photo" type="button" class="voir_photo">Photo</button></div>
-
-<hr />
-
-<?php
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des classes de l'établissement.
@@ -650,6 +629,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
     <input type="hidden" id="f_listing_rubriques" name="f_listing_rubriques" value="" />
     <input type="hidden" id="f_listing_eleves" name="f_listing_eleves" value="" />
     <input type="hidden" id="f_mode" name="f_mode" value="texte" />
+    <input type="hidden" id="f_parite" name="f_parite" value="" />
   </div>
 </form>
 
@@ -669,10 +649,6 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
   <hr />
   <div id="zone_resultat_classe"></div>
   <div id="zone_imprimer" class="hide">
-    <p>
-      <span class="danger">L'impression finale devrait être effectuée une unique fois lorsque le bilan est complet.</span><br />
-      <span class="astuce">Pour tester l'impression d'un bilan non finalisé, utiliser la fonctionnalité de <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_simuler_impression">simulation de l'impression finale</a></span>.</span>
-    </p>
     <form action="#" method="post" id="form_choix_eleves">
       <table id="table_action" class="form t9">
         <thead>
@@ -688,13 +664,16 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
       </table>
     </form>
     <p class="ti">
+      <label for="check_parite"><input id="check_parite" type="checkbox" checked /> Insérer des pages blanches si nécessaire pour forcer un nombre de pages pair par bilan (utile pour une impression recto-verso en série).</label>
+    </p>
+    <p class="ti">
       <button id="valider_imprimer" type="button" class="valider">Lancer l'impression</button><label id="ajax_msg_imprimer">&nbsp;</label>
     </p>
   </div>
   <div id="zone_voir_archive" class="hide">
     <p>
-      <span class="astuce">Ces bilans sont les exemplaires archivés sans les coordonnées des responsables légaux.</span><br />
-      <span class="danger">Les autres exemplaires doivent être conservés par la personne ayant effectué l'impression PDF.</span>
+      <span class="astuce">Ces bilans ne sont que des copies, laissées à disposition pour information jusqu'à la fin de l'année scolaire.</span><br />
+      <span class="danger">Les originaux doivent être archivés par la personne ayant effectué l'impression PDF.</span>
     </p>
     <table class="t9">
       <thead>

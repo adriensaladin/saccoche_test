@@ -4,10 +4,7 @@ DROP TABLE IF EXISTS sacoche_officiel_archive;
 -- Attention : pour un champ DATE ou DATETIME, DEFAULT NOW() ne fonctionne qu`à partir de MySQL 5.6.5
 -- Attention : pour un champ DATE ou DATETIME, la configuration NO_ZERO_DATE (incluse dans le mode strict de MySQL 5.7.4 à 5.7.7), interdit les valeurs en dehors de 1000-01-01 00:00:00 à 9999-12-31 23:59:59
 
--- 4 colonnes archive_md5_image* car pour le bilan LSU de fin de cycle 2 on peut avoir logo EN + logo école + signature instit + signature directeur
-
 CREATE TABLE sacoche_officiel_archive (
-  officiel_archive_id              MEDIUMINT(8)             UNSIGNED                NOT NULL AUTO_INCREMENT,
   user_id                          MEDIUMINT(8)             UNSIGNED                NOT NULL DEFAULT 0,
   structure_uai                    CHAR(8)                  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   annee_scolaire                   VARCHAR(9)               COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
@@ -24,8 +21,6 @@ CREATE TABLE sacoche_officiel_archive (
   archive_md5_image1               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,
   archive_md5_image2               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,
   archive_md5_image3               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,
-  archive_md5_image4               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,
-  PRIMARY KEY (officiel_archive_id),
   UNIQUE KEY archive_id (user_id,structure_uai,annee_scolaire,archive_type,archive_ref,periode_id),
   KEY structure_uai (structure_uai),
   KEY annee_scolaire (annee_scolaire),

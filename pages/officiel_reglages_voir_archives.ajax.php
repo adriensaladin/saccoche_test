@@ -77,15 +77,15 @@ if( !$nb_archives )
 {
   Json::end( FALSE , 'Aucune archive trouvée satisfaisant aux conditions demandées !' );
 }
-if( $nb_archives>250 )
+if( $nb_archives>500 )
 {
-  Json::end( FALSE , 'Plus de 250 archives trouvées : veuillez ajouter un critère de sélection.' );
+  Json::end( FALSE , 'Plus de 500 archives trouvées : veuillez ajouter un critère de sélection.' );
 }
 
 // Remplacement des md5 par les images
 foreach($DB_TAB_Archives as $key => $DB_ROW)
 {
-  for( $image_num=1 ; $image_num<=4 ; $image_num++)
+  for( $image_num=1 ; $image_num<=3 ; $image_num++)
   {
     $image_md5 = $DB_ROW['archive_md5_image'.$image_num];
     if( $image_md5 && isset($DB_TAB_Images[$image_md5][0]) )
@@ -120,13 +120,11 @@ foreach($DB_TAB_Archives as $DB_ROW)
 {
   // Instanciation de la classe
   $tab_classname = array(
-    'livret'   => 'PDF_livret_scolaire',
-    'bulletin' => 'PDF_item_synthese',
-    'releve'   => 'PDF_item_releve',
-    'palier'   => 'PDF_socle_releve', // non implémenté en attente de la mise en place de la refonte du socle -> à virer
+    'sacoche_bulletin' => 'PDF_item_synthese',
+    'sacoche_releve'   => 'PDF_item_releve',
+    'sacoche_palier'   => 'PDF_socle_releve', // non implémenté en attente de la msie en place de la refonte du socle
   );
-  $key = ($DB_ROW['archive_type']=='sacoche') ? $DB_ROW['archive_ref'] : 'livret' ;
-  $classname = $tab_classname[$key];
+  $classname = $tab_classname[$DB_ROW['archive_type'].'_'.$DB_ROW['archive_ref']];
   $archive_PDF = new $classname();
   // Fabrication de l'archive PDF
   $tab_archive = json_decode($DB_ROW['archive_contenu'], TRUE);

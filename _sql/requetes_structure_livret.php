@@ -165,10 +165,6 @@ public static function DB_lister_pages( $with_info_classe )
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Informations diverses
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
 /**
  * recuperer_page_info
  *
@@ -205,14 +201,14 @@ public static function DB_recuperer_periode_info( $periode_livret , $classe_id )
 }
 
 /**
- * recuperer_page_groupe_info
+ * recuperer_page_info
  *
  * @param string   $page_ref
  * @return array
  */
 public static function DB_recuperer_page_groupe_info( $groupe_id , $page_ref , $page_periodicite , $jointure_periode )
 {
-  $DB_SQL = 'SELECT jointure_etat, jointure_date_verrou, sacoche_livret_page.*, groupe_nom ';
+  $DB_SQL = 'SELECT jointure_etat, sacoche_livret_page.*, groupe_nom ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING (livret_page_ref) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
@@ -244,40 +240,6 @@ public static function DB_recuperer_bilan_officiel_infos( $classe_id , $periode_
   $DB_VAR = array(
     ':classe_id'  => $classe_id,
     ':periode_id' => $periode_id,
-  );
-  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * recuperer_bilan_officiel_infos
- *
- * @param int    $etablissement_chef_id
- * @return array
- */
-public static function DB_recuperer_chef_etabl_infos( $etablissement_chef_id )
-{
-  if(!$etablissement_chef_id)
-  {
-    // On essaye de trouver le chef d'établissement / directeur d'école tout seul, s'il n'y en a qu'un.
-    $DB_SQL = 'SELECT user_id FROM sacoche_user WHERE user_profil_sigle="DIR" AND user_sortie_date>NOW() ';
-    $DB_COL = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-    if( !empty($DB_COL) && (count($DB_COL)==1) )
-    {
-      $etablissement_chef_id = current($DB_COL);
-      $tab_parametres['etablissement_chef_id'] = $etablissement_chef_id;
-      DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
-      $_SESSION['ETABLISSEMENT']['CHEF_ID'] = $etablissement_chef_id;
-    }
-    else
-    {
-      return array();
-    }
-  }
-  $DB_SQL = 'SELECT user_id, user_sconet_id, user_genre, user_nom, user_prenom ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'WHERE user_id=:user_id AND user_profil_sigle="DIR" AND user_sortie_date>NOW() ';
-  $DB_VAR = array(
-    ':user_id' => $etablissement_chef_id,
   );
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

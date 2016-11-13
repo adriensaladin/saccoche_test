@@ -55,7 +55,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
   $tab_matieres = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
-  $sel_obj=FALSE; $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+  $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
 }
@@ -63,7 +63,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
-  $sel_obj=FALSE; $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+  $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 1;
   $bouton_modifier_matieres = '<button id="modifier_matiere" type="button" class="form_ajouter">&plusmn;</button>';
@@ -72,7 +72,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
 {
   $tab_groupes  = $_SESSION['OPT_PARENT_CLASSES'];
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
-  $sel_obj='multimatiere'; $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
+  $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_form_periode = 'hide'; $class_form_option = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $is_select_multiple = 0; // volontaire
 }
@@ -80,7 +80,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
   $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
-  $sel_obj='multimatiere'; $of_g = FALSE; $sel_g = TRUE; $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
+  $of_g = FALSE; $sel_g = TRUE; $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
   $is_select_multiple = 0;
 }
@@ -88,7 +88,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
   $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
-  $sel_obj='multimatiere'; $of_g = FALSE; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
+  $of_g = FALSE; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_form_periode = 'show'; $class_form_option = 'show';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
   $is_select_multiple = 0;
 }
@@ -100,7 +100,7 @@ $tab_select_objet_releve = array(
     array('valeur' => 'multimatiere' , 'texte' => Lang::_("Synthèse pluridisciplinaire")) ,
 );
 
-$select_objet_releve = HtmlForm::afficher_select($tab_select_objet_releve       , 'f_objet'        /*select_nom*/ ,                      '' /*option_first*/ , $sel_obj                         /*selection*/ ,              '' /*optgroup*/ );
+$select_objet_releve = HtmlForm::afficher_select($tab_select_objet_releve       , 'f_objet'        /*select_nom*/ ,                      '' /*option_first*/ , FALSE                            /*selection*/ ,              '' /*optgroup*/ );
 $select_groupe       = HtmlForm::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ ,                   $of_g /*option_first*/ , $sel_g                           /*selection*/ , 'regroupements' /*optgroup*/ );
 $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/ );
 $select_matiere      = HtmlForm::afficher_select($tab_matieres                  , 'f_matiere'      /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id']   /*selection*/ ,              '' /*optgroup*/ );

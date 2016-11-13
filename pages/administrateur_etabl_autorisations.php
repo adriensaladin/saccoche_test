@@ -178,11 +178,11 @@ $tab_droits  = array
   "Consultation des documents officiels finalisés" => array
   (
     'tous',
-    array( 'droit_officiel_releve_voir_archive'   , "accéder aux archives des relevés d'évaluations"      , 'dir_pers' ),
-    array( 'droit_officiel_bulletin_voir_archive' , "accéder aux archives des bulletins scolaires"        , 'dir_pers' ),
-    array( 'droit_officiel_livret_voir_archive'   , "accéder aux archives du Livret Scolaire Unique"      , 'dir_pers' ),
-    array( 'droit_officiel_socle_voir_archive'    , "accéder aux archives des états de maîtrise du socle" , 'dir_pers' ), // TODO : DROIT A SUPPRIMER
-    array( 'droit_fiche_brevet_voir_archive'      , "accéder aux archives des fiches brevet pour le jury" , 'dir_pers' ), // TODO : DROIT A SUPPRIMER
+    array( 'droit_officiel_releve_voir_archive'   , "accéder aux copies des relevés d'évaluations"      , 'dir_pers' ),
+    array( 'droit_officiel_bulletin_voir_archive' , "accéder aux copies des bulletins scolaires"        , 'dir_pers' ),
+    array( 'droit_officiel_livret_voir_archive'   , "accéder aux copies du Livret Scolaire Unique"      , 'dir_pers' ),
+    array( 'droit_officiel_socle_voir_archive'    , "accéder aux copies des états de maîtrise du socle" , 'dir_pers' ), // TODO : DROIT A SUPPRIMER
+    array( 'droit_fiche_brevet_voir_archive'      , "accéder aux copies des fiches brevet pour le jury" , 'dir_pers' ), // TODO : DROIT A SUPPRIMER
   ),
 );
 

@@ -43,26 +43,8 @@ if(empty($tab_type_ref))
   echo'<p class="danger">Aucune archive de bilan officiel trouvée !</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
+
 $tab_annees = DB_STRUCTURE_COMMUN::DB_OPT_officiel_archive_annee();
-
-// Limiter les types de bilan aux selon les droits
-
-if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
-{
-  foreach($tab_type_ref as $key => $tab)
-  {
-    $objet = ($tab['optgroup']=='livret') ? 'LIVRET' : strtoupper(substr($tab['valeur'],8)) ; // sacoche_
-    if(!Outil::test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_'.$objet.'_VOIR_ARCHIVE']))
-    {
-      unset($tab_type_ref[$key]);
-    }
-  }
-}
-if(empty($tab_type_ref))
-{
-  echo'<p class="danger">Vous n\'avez pas les droits pour consulter les types d\'archives disponibles !</p>'.NL;
-  return; // Ne pas exécuter la suite de ce fichier inclus.
-}
 
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {

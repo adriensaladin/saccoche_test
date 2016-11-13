@@ -908,7 +908,7 @@ $(document).ready
                 $('#id_'+tab_listing_id[key]).children('td:last').html('Oui, le '+TODAY_FR);
               }
               $('#ajax_msg_imprimer').removeAttr('class').html("");
-              $.fancybox( '<h3>Bilans PDF imprimés</h3>'+'<p class="danger">Archivez ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseJSON['value']+'</div>' , {'centerOnScroll':true} );
+              $.fancybox( '<h3>Bilans PDF imprimés</h3>'+'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseJSON['value']+'</div>' , {'centerOnScroll':true} );
             }
           }
         }

@@ -307,27 +307,6 @@ public static function DB_recuperer_professeurs_eleves_matieres( $classe_id , $l
 }
 
 /**
- * recuperer_officiel_archive_precise
- *
- * @param int   $officiel_archive_id
- * @return array
- */
-public static function DB_recuperer_officiel_archive_precise( $officiel_archive_id )
-{
-  $DB_SQL = 'SELECT sacoche_officiel_archive.*, user_nom, user_prenom, ';
-  $DB_SQL.= 'image1.archive_image_contenu AS image1_contenu, image2.archive_image_contenu AS image2_contenu, image3.archive_image_contenu AS image3_contenu, image4.archive_image_contenu AS image4_contenu ';
-  $DB_SQL.= 'FROM sacoche_officiel_archive ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image1 ON archive_md5_image1=image1.archive_image_md5 ';
-  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image2 ON archive_md5_image2=image2.archive_image_md5 ';
-  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image3 ON archive_md5_image3=image3.archive_image_md5 ';
-  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image4 ON archive_md5_image4=image4.archive_image_md5 ';
-  $DB_SQL.= 'WHERE officiel_archive_id=:officiel_archive_id ';
-  $DB_VAR = array( ':officiel_archive_id' => $officiel_archive_id );
-  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * recuperer_officiel_archive_avec_infos
  *
  * @param string $listing_eleve
@@ -349,9 +328,13 @@ public static function DB_recuperer_officiel_archive_avec_infos( $listing_eleve 
   // join
   $join_origine   = (!$uai_origine)    ? '' : 'LEFT JOIN sacoche_structure_origine ON sacoche_user.eleve_uai_origine=sacoche_structure_origine.structure_uai ';
   // on assemble
-  $DB_SQL = 'SELECT sacoche_officiel_archive.*, user_nom, user_prenom ';
+  $DB_SQL = 'SELECT sacoche_officiel_archive.*, user_nom, user_prenom, ';
+  $DB_SQL.= 'image1.archive_image_contenu AS image1_contenu, image2.archive_image_contenu AS image2_contenu, image3.archive_image_contenu AS image3_contenu ';
   $DB_SQL.= 'FROM sacoche_officiel_archive ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) '.$join_origine;
+  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image1 ON archive_md5_image1=image1.archive_image_md5 ';
+  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image2 ON archive_md5_image2=image2.archive_image_md5 ';
+  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive_image AS image3 ON archive_md5_image3=image3.archive_image_md5 ';
   $DB_SQL.= 'WHERE user_id IN ('.$listing_eleve.') AND archive_type IN('.$listing_type.') AND archive_ref IN('.$listing_ref.') ';
   $DB_SQL.= $where_etabl.$where_annee.$where_periode.$where_origine;
   $DB_SQL.= 'ORDER BY archive_type ASC, archive_ref ASC, annee_scolaire ASC, periode_id ASC, user_nom ASC , user_prenom ASC ';
@@ -371,7 +354,6 @@ public static function DB_recuperer_officiel_archive_avec_infos( $listing_eleve 
       $tab_md5[$DB_ROW['archive_md5_image1']] = $DB_ROW['archive_md5_image1'];
       $tab_md5[$DB_ROW['archive_md5_image2']] = $DB_ROW['archive_md5_image2'];
       $tab_md5[$DB_ROW['archive_md5_image3']] = $DB_ROW['archive_md5_image3'];
-      $tab_md5[$DB_ROW['archive_md5_image4']] = $DB_ROW['archive_md5_image4'];
     }
     unset($tab_md5[NULL]);
     if(!empty($tab_md5))
@@ -405,7 +387,7 @@ public static function DB_recuperer_officiel_archive_avec_infos( $listing_eleve 
 public static function DB_lister_officiel_archive( $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $tab_eleve_id , $with_infos , $only_profil_non_vu='' )
 {
   $champ_consultation = 'archive_date_consultation_'.$only_profil_non_vu;
-  $select         = ($with_infos) ? 'sacoche_officiel_archive.* ' : 'user_id, officiel_archive_id, archive_date_generation, archive_date_consultation_eleve, archive_date_consultation_parent ' ;
+  $select         = ($with_infos) ? 'sacoche_officiel_archive.* ' : 'user_id, archive_date_generation, archive_date_consultation_eleve, archive_date_consultation_parent ' ;
   // where
   $where_etabl    = ($structure_uai)      ? 'structure_uai=:structure_uai AND '   : '' ;
   $where_annee    = ($annee_scolaire)     ? 'annee_scolaire=:annee_scolaire AND ' : '' ;
@@ -495,7 +477,7 @@ public static function DB_lister_officiel_assiduite( $periode_id , $tab_eleve_id
  */
 public static function DB_lister_profs_principaux($classe_id)
 {
-  $DB_SQL = 'SELECT user_id, user_sconet_id, user_genre, user_nom, user_prenom ';
+  $DB_SQL = 'SELECT user_id, user_genre, user_nom, user_prenom ';
   $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
   $DB_SQL.= 'WHERE groupe_id=:groupe_id AND jointure_pp=:pp AND user_sortie_date>NOW() ';
@@ -564,17 +546,13 @@ public static function DB_ajouter_officiel_archive_image( $image_md5 , $image_co
  * @param string  $sacoche_version
  * @param string  $archive_contenu
  * @param array   $tab_image_md5
- * @return int
+ * @return void
  */
 public static function DB_ajouter_officiel_archive( $user_id , $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $periode_nom , $structure_denomination , $sacoche_version , $archive_contenu , $tab_image_md5 )
 {
-  $tab_image_md5 = $tab_image_md5 + array_fill(0,4,NULL);
-  // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
-  // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
-  $DB_SQL = 'INSERT INTO sacoche_officiel_archive( user_id, structure_uai, annee_scolaire, archive_type, archive_ref, periode_id, periode_nom, structure_denomination, sacoche_version, archive_date_generation, archive_contenu, archive_md5_image1, archive_md5_image2, archive_md5_image3, archive_md5_image4) ';
-  $DB_SQL.= 'VALUES                              (:user_id,:structure_uai,:annee_scolaire,:archive_type,:archive_ref,:periode_id,:periode_nom,:structure_denomination,:sacoche_version, NOW()                  ,:archive_contenu,:archive_md5_image1,:archive_md5_image2,:archive_md5_image3,:archive_md5_image4) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE periode_nom=:periode_nom , structure_denomination=:structure_denomination , sacoche_version=:sacoche_version , archive_contenu=:archive_contenu , ';
-  $DB_SQL.= ' archive_md5_image1=:archive_md5_image1 , archive_md5_image2=:archive_md5_image2 , archive_md5_image3=:archive_md5_image3 , archive_md5_image4=:archive_md5_image4 ';
+  $tab_image_md5 = $tab_image_md5 + array_fill(0,3,NULL);
+  $DB_SQL = 'INSERT INTO sacoche_officiel_archive( user_id, structure_uai, annee_scolaire, archive_type, archive_ref, periode_id, periode_nom, structure_denomination, sacoche_version, archive_date_generation, archive_contenu, archive_md5_image1, archive_md5_image2, archive_md5_image3) ';
+  $DB_SQL.= 'VALUES                              (:user_id,:structure_uai,:annee_scolaire,:archive_type,:archive_ref,:periode_id,:periode_nom,:structure_denomination,:sacoche_version, NOW()                  ,:archive_contenu,:archive_md5_image1,:archive_md5_image2,:archive_md5_image3) ';
   $DB_VAR = array(
     ':user_id'                => $user_id,
     ':structure_uai'          => $structure_uai,
@@ -589,16 +567,19 @@ public static function DB_ajouter_officiel_archive( $user_id , $structure_uai , 
     ':archive_md5_image1'     => $tab_image_md5[0],
     ':archive_md5_image2'     => $tab_image_md5[1],
     ':archive_md5_image3'     => $tab_image_md5[2],
-    ':archive_md5_image4'     => $tab_image_md5[3],
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
 }
 
 /**
  * modifier_officiel_archive
  *
- * @param int     $officiel_archive_id
+ * @param int     $user_id
+ * @param string  $structure_uai
+ * @param string  $annee_scolaire
+ * @param string  $archive_type
+ * @param string  $archive_ref
+ * @param int     $periode_id
  * @param string  $periode_nom
  * @param string  $structure_denomination
  * @param string  $sacoche_version
@@ -606,16 +587,19 @@ public static function DB_ajouter_officiel_archive( $user_id , $structure_uai , 
  * @param array   $tab_image_md5
  * @return void
  */
-public static function DB_modifier_officiel_archive( $officiel_archive_id , $periode_nom , $structure_denomination , $sacoche_version , $archive_contenu , $tab_image_md5 )
+public static function DB_modifier_officiel_archive( $user_id , $structure_uai , $annee_scolaire , $archive_type , $archive_ref , $periode_id , $periode_nom , $structure_denomination , $sacoche_version , $archive_contenu , $tab_image_md5 )
 {
-  $tab_image_md5 = $tab_image_md5 + array_fill(0,4,NULL);
+  $tab_image_md5 = $tab_image_md5 + array_fill(0,3,NULL);
   $DB_SQL = 'UPDATE sacoche_officiel_archive ';
-  $DB_SQL.= 'SET periode_nom=:periode_nom , structure_denomination=:structure_denomination , sacoche_version=:sacoche_version , archive_contenu=:archive_contenu , ';
-  $DB_SQL.= ' archive_date_generation=NOW() , archive_date_consultation_eleve=NULL , archive_date_consultation_parent=NULL , ';
-  $DB_SQL.= ' archive_md5_image1=:archive_md5_image1 , archive_md5_image2=:archive_md5_image2 , archive_md5_image3=:archive_md5_image3 , archive_md5_image4=:archive_md5_image4 ';
-  $DB_SQL.= 'WHERE officiel_archive_id=:officiel_archive_id ';
+  $DB_SQL.= 'SET periode_nom=:periode_nom , structure_denomination=:structure_denomination , sacoche_version=:sacoche_version , archive_contenu=:archive_contenu , archive_md5_image1=:archive_md5_image1 , archive_md5_image2=:archive_md5_image2 , archive_md5_image3=:archive_md5_image3 ';
+  $DB_SQL.= 'WHERE user_id=:user_id AND structure_uai=:structure_uai AND annee_scolaire=:annee_scolaire AND archive_type=:archive_type AND archive_ref=:archive_ref AND periode_id=:periode_id ';
   $DB_VAR = array(
-    ':officiel_archive_id'    => $officiel_archive_id,
+    ':user_id'                => $user_id,
+    ':structure_uai'          => $structure_uai,
+    ':annee_scolaire'         => $annee_scolaire,
+    ':archive_type'           => $archive_type,
+    ':archive_ref'            => $archive_ref,
+    ':periode_id'             => $periode_id,
     ':periode_nom'            => $periode_nom,
     ':structure_denomination' => $structure_denomination,
     ':sacoche_version'        => $sacoche_version,
@@ -623,44 +607,6 @@ public static function DB_modifier_officiel_archive( $officiel_archive_id , $per
     ':archive_md5_image1'     => $tab_image_md5[0],
     ':archive_md5_image2'     => $tab_image_md5[1],
     ':archive_md5_image3'     => $tab_image_md5[2],
-    ':archive_md5_image4'     => $tab_image_md5[3],
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_officiel_archive_contenu_seul
- *
- * @param int     $officiel_archive_id
- * @param string  $archive_contenu
- * @return void
- */
-public static function DB_modifier_officiel_archive_consultation( $officiel_archive_id , $archive_contenu )
-{
-  $DB_SQL = 'UPDATE sacoche_officiel_archive ';
-  $DB_SQL.= 'SET archive_contenu=:archive_contenu ';
-  $DB_SQL.= 'WHERE officiel_archive_id=:officiel_archive_id ';
-  $DB_VAR = array(
-    ':officiel_archive_id' => $officiel_archive_id,
-    ':archive_contenu'     => $archive_contenu,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * modifier_officiel_archive_date_consultation
- *
- * @param int     $officiel_archive_id
- * @param string  $profil   "eleve" | "parent"
- * @return void
- */
-public static function DB_modifier_officiel_archive_date_consultation( $officiel_archive_id , $profil )
-{
-  $DB_SQL = 'UPDATE sacoche_officiel_archive ';
-  $DB_SQL.= 'SET archive_date_consultation_'.$profil.'=NOW() ';
-  $DB_SQL.= 'WHERE officiel_archive_id=:officiel_archive_id ';
-  $DB_VAR = array(
-    ':officiel_archive_id' => $officiel_archive_id,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

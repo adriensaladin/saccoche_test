@@ -302,8 +302,8 @@ $(document).ready
           }
           else if(memo_section=='livret_imprimer')
           {
-            // $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition envisagée fin novembre 2016.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
-            // return false;
+            $.fancybox( '<p class="travaux">'+'Développement en cours&hellip; Mise à disposition envisagée fin novembre 2016.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+            return false;
             // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
             configurer_form_choix_classe();
@@ -787,6 +787,10 @@ $(document).ready
       '#simuler_impression',
       function()
       {
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+        return false;
+        /*
+        $('#f_parite').val(0);
         $('#f_listing_eleves').val(memo_eleve);
         $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
         $.ajax
@@ -811,11 +815,12 @@ $(document).ready
               }
               else
               {
-                $.fancybox( '<h3>Test impression PDF finale</h3><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a target="_blank" href="'+responseJSON['value']+'"><span class="file file_pdf">Récupérer le test d\'impression du bilan demandé.</span></a></li></ul></div>' , {'centerOnScroll':true} );
+                $.fancybox( '<h3>Test impression PDF finale</h3><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a target="_blank" href="'+responseJSON['value']+'"><span class="file file_pdf">Récupérer le test d\'impression du bilan officiel demandé.</span></a></li></ul></div>' , {'centerOnScroll':true} );
               }
             }
           }
         );
+        */
       }
     );
 
@@ -1349,7 +1354,7 @@ $(document).ready
                 $('#id_'+tab_listing_id[key]).children('td:last').html('Oui, le '+TODAY_FR);
               }
               $('#ajax_msg_imprimer').removeAttr('class').html("");
-              $.fancybox( '<h3>Bilans PDF imprimés</h3>'+'<p class="danger">Archivez ces documents : seul l\'exemplaire générique sans le bloc adresse est conservé par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseJSON['value']+'</div>' , {'centerOnScroll':true} );
+              $.fancybox( '<h3>Bilans PDF imprimés</h3>'+'<p class="danger b">Archivez soigneusement ces documents : les originaux ne sont pas conservés par <em>SACoche</em> !</p>'+'<div id="imprimer_liens">'+responseJSON['value']+'</div>' , {'centerOnScroll':true} );
             }
           }
         }
@@ -1367,6 +1372,8 @@ $(document).ready
           return false;
         }
         $('#f_listing_eleves').val(listing_id);
+        var parite = $('#check_parite').is(':checked') ? 1 : 0 ;
+        $('#f_parite').val(parite);
         $('#form_choix_classe button , #form_choix_classe select , #valider_imprimer').prop('disabled',true);
         imprimer(1);
       }

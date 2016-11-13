@@ -249,12 +249,12 @@ public static function DB_lister_parents_actuels_avec_infos_for_eleve($eleve_id)
  * @param bool           $tri_statut    TRUE pour trier par statut décroissant (les actifs en premier), FALSE par défaut
  * @return array
  */
-public static function DB_lister_users( $profil_type , $statut , $liste_champs , $with_classe , $tri_statut=FALSE )
+public static function DB_lister_users($profil_type,$statut,$liste_champs,$with_classe,$tri_statut=FALSE)
 {
   $DB_VAR = array();
   $left_join = 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $where     = '';
-  $liste_champs .= ( $tri_statut || ($statut==2) ) ? ', (user_sortie_date>NOW()) AS statut ' : ' ' ;
+  $liste_champs .= ($tri_statut) ? ', (user_sortie_date>NOW()) AS statut ' : ' ' ;
   $order_by      = ($tri_statut) ? 'statut DESC, ' : '' ;
   if(is_string($profil_type))
   {
@@ -1098,8 +1098,7 @@ public static function DB_supprimer_officiel_archive_image()
   $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive AS t1 ON sacoche_officiel_archive_image.archive_image_md5=t1.archive_md5_image1 ';
   $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive AS t2 ON sacoche_officiel_archive_image.archive_image_md5=t2.archive_md5_image2 ';
   $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive AS t3 ON sacoche_officiel_archive_image.archive_image_md5=t3.archive_md5_image3 ';
-  $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive AS t4 ON sacoche_officiel_archive_image.archive_image_md5=t4.archive_md5_image4 ';
-  $DB_SQL.= 'WHERE t1.archive_md5_image1 IS NULL AND t2.archive_md5_image2 IS NULL AND t3.archive_md5_image3 IS NULL AND t4.archive_md5_image4 IS NULL ';
+  $DB_SQL.= 'WHERE t1.archive_md5_image1 IS NULL AND t2.archive_md5_image2 IS NULL AND t3.archive_md5_image3 IS NULL ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

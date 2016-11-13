@@ -185,17 +185,17 @@ if( ($action=='import_pronote') && $periode_id )
   $tab_users_fichier = array();
   if($xml->Absences_des_eleves)
   {
-    $objet = 'absence';
+    $objet = 'absences';
     // cas d'un fichier d'absences
     foreach ($xml->Absences_des_eleves as $eleve)
     {
       // la liste des champs dépend de ce qu'à coché l'admin
-      $sconet_id     = ($eleve->N_GEP)      ? Clean::entier($eleve->N_GEP)      : NULL ;
-      $nom           = ($eleve->NOM)        ? Clean::nom($eleve->NOM)           : NULL ;
-      $prenom        = ($eleve->PRENOM)     ? Clean::prenom($eleve->PRENOM)     : NULL ;
-      $nb_absence    = ($eleve->DEMI_JOUR)  ? Clean::decimal($eleve->DEMI_JOUR) : NULL ;
-      $nb_absence_nj = ($eleve->REGLE) && ($eleve->REGLE=='N') ? $nb_absence    : 0 ;
-      $id            = ($eleve->ID_ELEVE)   ? Clean::entier($eleve->ID_ELEVE)   : $nom.'.'.$prenom ;
+      $sconet_id     = ($eleve->N_GEP)      ? Clean::entier($eleve->N_GEP)     : NULL ;
+      $nom           = ($eleve->NOM)        ? Clean::nom($eleve->NOM)          : NULL ;
+      $prenom        = ($eleve->PRENOM)     ? Clean::prenom($eleve->PRENOM)    : NULL ;
+      $nb_absence    = ($eleve->DEMI_JOUR)  ? Clean::entier($eleve->DEMI_JOUR) : NULL ;
+      $nb_absence_nj = ($eleve->REGLE) && ($eleve->REGLE=='N') ? $nb_absence   : 0 ;
+      $id            = ($eleve->ID_ELEVE)   ? Clean::entier($eleve->ID_ELEVE)  : $nom.'.'.$prenom ;
       $date_debut    = ($eleve->DATE_DEBUT) ? To::date_french_to_mysql($eleve->DATE_DEBUT) : NULL ;
       $date_fin      = ($eleve->DATE_FIN)   ? To::date_french_to_mysql($eleve->DATE_FIN)   : NULL ;
       if( $nom && $prenom && $nb_absence && $date_debut && $date_fin )
@@ -225,7 +225,7 @@ if( ($action=='import_pronote') && $periode_id )
   }
   if($xml->Retards)
   {
-    $objet = 'retard';
+    $objet = 'retards';
     // cas d'un fichier de retards
     foreach ($xml->Retards as $eleve)
     {
@@ -305,12 +305,9 @@ if( in_array($action,array('traitement_import_sconet','traitement_import_siecle'
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_users_base['sconet_id'     ][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];
-    $tab_users_base['sconet_id'     ][$DB_ROW['user_id']] = $DB_ROW['user_sconet_id'];
     $tab_users_base['sconet_elenoet'][$DB_ROW['user_id']] = $DB_ROW['user_sconet_elenoet'];
     $tab_users_base['nom'           ][$DB_ROW['user_id']] = $DB_ROW['user_nom'];
     $tab_users_base['prenom'        ][$DB_ROW['user_id']] = $DB_ROW['user_prenom'];
-    $tab_users_base['statut'        ][$DB_ROW['user_id']] = $DB_ROW['statut'];
-    $tab_users_base['to_update'     ][$DB_ROW['user_id']] = ($DB_ROW['statut']) ? TRUE : FALSE ;
   }
   // Analyse et maj du contenu de la base
   $lignes_ok = '';
@@ -319,9 +316,6 @@ if( in_array($action,array('traitement_import_sconet','traitement_import_siecle'
   {
     list($eleve_sconet_id,$eleve_sconet_elenoet,$eleve_nom,$eleve_prenom,$nb_absence,$nb_absence_nj,$nb_retard,$nb_retard_nj) = $tab_donnees_eleve;
     $user_id = FALSE;
-    // On arrondit car Pronote fournit des valeurs décimales
-    $nb_absence    = is_null($nb_absence)    ? $nb_absence    : round($nb_absence);
-    $nb_absence_nj = is_null($nb_absence_nj) ? $nb_absence_nj : round($nb_absence_nj);
     // Recherche sur sconet_id
     if( !$user_id && $eleve_sconet_id )
     {
@@ -346,9 +340,8 @@ if( in_array($action,array('traitement_import_sconet','traitement_import_siecle'
     }
     if($user_id)
     {
-      DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( $mode , $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj );
+      DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( $mode, $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj );
       $lignes_ok .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td>'.$nb_absence.'</td><td>'.$nb_absence_nj.'</td><td>'.$nb_retard.'</td><td>'.$nb_retard_nj.'</td></tr>';
-      $tab_users_base['to_update'][$user_id] = FALSE;
     }
     else
     {
@@ -367,34 +360,6 @@ if( in_array($action,array('traitement_import_sconet','traitement_import_siecle'
       else
       {
         $lignes_ko .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td colspan="4" class="r">Homonymes trouvés dans la base.</td></tr>';
-      }
-    }
-  }
-  // Pronote ne transmet que les élèves ayant des infos saisies : il faut imposer 0 à tous les autres
-  if( ($mode=='pronote') && $lignes_ok )
-  {
-    if(is_null($nb_absence))
-    {
-      $nb_absence    = NULL;
-      $nb_absence_nj = NULL;
-      $nb_retard     = 0;
-      $nb_retard_nj  = 0;
-    }
-    else
-    {
-      $nb_absence    = 0;
-      $nb_absence_nj = 0;
-      $nb_retard     = NULL;
-      $nb_retard_nj  = NULL;
-    }
-    foreach ($tab_users_base['to_update'] as $user_id => $to_update)
-    {
-      if($to_update)
-      {
-        $eleve_nom    = $tab_users_base['nom'   ][$user_id];
-        $eleve_prenom = $tab_users_base['prenom'][$user_id];
-        DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_assiduite( $mode , $periode_id , $user_id , $nb_absence , $nb_absence_nj , $nb_retard , $nb_retard_nj );
-        $lignes_ok .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td><td>'.$nb_absence.'</td><td>'.$nb_absence_nj.'</td><td>'.$nb_retard.'</td><td>'.$nb_retard_nj.'</td></tr>';
       }
     }
   }

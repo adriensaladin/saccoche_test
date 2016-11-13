@@ -105,14 +105,15 @@ $tab_sous_menu = array
   ),
   'officiel' => array
   (
-    'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")   , 'class' => 'officiel_assiduite' , 'href' => 'page=officiel&amp;section=assiduite'        ),
-    'officiel_accueil_releve'   => array( 'texte' => Lang::_("Relevé d'évaluations") , 'class' => 'officiel_releve'    , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
-    'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")    , 'class' => 'officiel_bulletin'  , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
- // 'officiel_accueil_palier1'  => array( 'texte' => Lang::_("Maîtrise du palier 1") , 'class' => 'officiel_palier1'   , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
- // 'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2") , 'class' => 'officiel_palier2'   , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
- // 'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3") , 'class' => 'officiel_palier3'   , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
-    'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")      , 'class' => 'marianne'           , 'href' => 'page=livret&amp;section=edition'            ),
-    'brevet_fiches'             => array( 'texte' => Lang::_("Fiches brevet")        , 'class' => 'officiel_brevet'    , 'href' => 'page=brevet&amp;section=fiches'             ),
+    'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")    , 'class' => 'officiel_assiduite'    , 'href' => 'page=officiel&amp;section=assiduite'        ),
+    'officiel_accueil_releve'   => array( 'texte' => Lang::_("Relevé d'évaluations")  , 'class' => 'officiel_releve'       , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
+    'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")     , 'class' => 'officiel_bulletin'     , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
+ // 'officiel_accueil_palier1'  => array( 'texte' => Lang::_("Maîtrise du palier 1")  , 'class' => 'officiel_palier1'      , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
+ // 'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2")  , 'class' => 'officiel_palier2'      , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
+ // 'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3")  , 'class' => 'officiel_palier3'      , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
+    'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")       , 'class' => 'marianne'              , 'href' => 'page=livret&amp;section=edition'            ),
+    'brevet_fiches'             => array( 'texte' => Lang::_("Fiches brevet")         , 'class' => 'officiel_brevet'       , 'href' => 'page=brevet&amp;section=fiches'             ),
+    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables") , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'     ), // TODO à fusionner avec officiel_voir_archive à terme
   ),
 );
 
@@ -209,6 +210,18 @@ if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
 if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_sous_menu['officiel']['officiel_assiduite']['class'] .= ' disabled';
+}
+
+// Archives consultables des bilans officiels.
+$tab_droits = array( 'FICHE_BREVET' , 'OFFICIEL_LIVRET' , 'OFFICIEL_RELEVE' , 'OFFICIEL_BULLETIN' , 'OFFICIEL_SOCLE' ); // TODO : FICHE_BREVET + OFFICIEL_SOCLE à virer
+$droit_voir_archives_pdf = FALSE;
+foreach($tab_droits as $droit)
+{
+  $droit_voir_archives_pdf = $droit_voir_archives_pdf || Outil::test_user_droit_specifique($_SESSION['DROIT_'.$droit.'_VOIR_ARCHIVE']) ;
+}
+if(!$droit_voir_archives_pdf)
+{
+    $tab_sous_menu['officiel']['officiel_voir_archive']['class'] .= ' disabled';
 }
 
 // Bilans officiels relatifs aux paliers du socle restreint aux paliers en vigueur dans l'établissement

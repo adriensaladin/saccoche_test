@@ -466,7 +466,6 @@ class PDF extends FPDF
   private $releve_modele   = '';
   private $releve_format   = '';
   private $synthese_modele = '';
-  private $livret_modele   = '';
   private $afficher_score  = NULL;
   private $afficher_degre  = NULL;
   // idem

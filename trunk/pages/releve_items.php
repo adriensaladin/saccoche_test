@@ -96,6 +96,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
   $tab_matieres = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
   $tab_profs    = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
   $of_groupe = '';
+  $sel_objet  = $auto_select_objet; 
   $sel_groupe = FALSE;
   $class_form_type    = 'show';
   $class_form_eleve   = 'show';
@@ -114,6 +115,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
   $tab_profs    = array(0=>array('valeur'=>$_SESSION['USER_ID'],'texte'=>To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE'])));
   $of_groupe = '';
+  $sel_objet  = $auto_select_objet; 
   $sel_groupe = FALSE;
   $class_form_type    = 'show';
   $class_form_eleve   = 'show';
@@ -134,6 +136,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
   $tab_profs    = 'Choisir d\'abord un groupe ci-dessous...'; // maj en ajax suivant le choix du groupe
   $of_groupe = '';
+  $sel_objet  = ($auto_select_objet) ? $auto_select_objet : 'multimatiere'; 
   $sel_groupe = $auto_select_classe_id;
   $class_form_type    = 'hide';
   $class_form_eleve   = 'show';
@@ -152,6 +155,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['OPT_PARENT_ENFANTS'][0]['valeur']);
   $tab_profs    = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe('classe',$_SESSION['ELEVE_CLASSE_ID']);
   $of_groupe = FALSE;
+  $sel_objet  = ($auto_select_objet) ? $auto_select_objet : 'multimatiere'; 
   $sel_groupe = TRUE;
   $class_form_type    = 'hide';
   $class_form_eleve   = 'hide';
@@ -170,6 +174,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_eleve($_SESSION['USER_ID']);
   $tab_profs    = DB_STRUCTURE_COMMUN::DB_OPT_profs_groupe('classe',$_SESSION['ELEVE_CLASSE_ID']);
   $of_groupe = FALSE;
+  $sel_objet  = ($auto_select_objet) ? $auto_select_objet : 'multimatiere'; 
   $sel_groupe = TRUE;
   $class_form_type    = 'hide';
   $class_form_eleve   = 'hide';
@@ -191,7 +196,7 @@ $tab_select_objet_releve = array(
     array('valeur' => 'professeur'   , 'texte' => Lang::_("Relevé d'items d'un enseignant")) ,
 );
 
-$select_objet_releve      = HtmlForm::afficher_select($tab_select_objet_releve            , 'f_objet'             /*select_nom*/ ,                      '' /*option_first*/ , $auto_select_objet                           /*selection*/ ,              '' /*optgroup*/ );
+$select_objet_releve      = HtmlForm::afficher_select($tab_select_objet_releve            , 'f_objet'             /*select_nom*/ ,                      '' /*option_first*/ , $sel_objet                                   /*selection*/ ,              '' /*optgroup*/ );
 $select_individuel_format = HtmlForm::afficher_select(Form::$tab_select_individuel_format , 'f_individuel_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['releve_individuel_format'] /*selection*/ ,              '' /*optgroup*/ );
 $select_synthese_format   = HtmlForm::afficher_select(Form::$tab_select_synthese_format   , 'f_synthese_format'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_synthese_format']  /*selection*/ ,              '' /*optgroup*/ );
 $select_tri_etat_mode     = HtmlForm::afficher_select(Form::$tab_select_tri_etat_mode     , 'f_tri_etat_mode'     /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_etat_mode']    /*selection*/ ,              '' /*optgroup*/ );

@@ -630,6 +630,10 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
   <hr />
   <div id="zone_resultat_classe"></div>
   <div id="zone_imprimer" class="hide">
+    <p>
+      <span class="danger">L'impression finale devrait être effectuée une unique fois lorsque le bilan est complet.</span><br />
+      <span class="astuce">Pour tester l'impression d'un bilan non finalisé, utiliser la fonctionnalité de <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_simuler_impression">simulation de l'impression finale</a></span>.</span>
+    </p>
     <form action="#" method="post" id="form_choix_eleves">
       <table id="table_action" class="form t9">
         <thead>
@@ -653,8 +657,8 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
   </div>
   <div id="zone_voir_archive" class="hide">
     <p>
-      <span class="astuce">Ces bilans ne sont que des copies, laissées à disposition pour information jusqu'à la fin de l'année scolaire.</span><br />
-      <span class="danger">Les originaux doivent être archivés par la personne ayant effectué l'impression PDF.</span>
+      <span class="astuce">Ces bilans sont les exemplaires archivés sans les coordonnées des responsables légaux.</span><br />
+      <span class="danger">Les autres exemplaires doivent être conservés par la personne ayant effectué l'impression PDF.</span>
     </p>
     <table class="t9">
       <thead>

@@ -38,7 +38,6 @@ $periode_id  = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_period
 $classe_id   = (isset($_POST['f_classe']))      ? Clean::entier($_POST['f_classe'])     : 0;
 $groupe_id   = (isset($_POST['f_groupe']))      ? Clean::entier($_POST['f_groupe'])     : 0;
 $etape       = (isset($_POST['f_etape']))       ? Clean::entier($_POST['f_etape'])      : 0;
-$page_parite = (isset($_POST['f_parite']))      ? Clean::entier($_POST['f_parite'])     : 0;
 // Autres chaines spécifiques...
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
 $tab_pilier_id  = array_filter( Clean::map('entier', explode(',',$listing_piliers) ) , 'positif' );
@@ -201,13 +200,13 @@ if( ($ACTION=='imprimer') && ($etape==2) )
       $archive_contenu = json_encode($tab_contenu);
       if(!isset($DB_TAB[$eleve_id]))
       {
-        DB_STRUCTURE_OFFICIEL::DB_ajouter_officiel_archive( $eleve_id , $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/, $BILAN_TYPE /*archive_ref*/ , $periode_id , $periode_nom , $_SESSION['WEBMESTRE_DENOMINATION'] , VERSION_PROG , $archive_contenu , $tab_image_md5 );
+        $livret_archive_id = DB_STRUCTURE_OFFICIEL::DB_ajouter_officiel_archive( $eleve_id , $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/, $BILAN_TYPE /*archive_ref*/ , $periode_id , $periode_nom , $_SESSION['WEBMESTRE_DENOMINATION'] , VERSION_PROG , $archive_contenu , $tab_image_md5 );
         $tab_notif[$eleve_id] = $eleve_id;
       }
       else
       {
         // On ne met pas à jour la date de génération pour conserver la date supposée du conseil de classe et éviter des malentendus ; la date de dernière impression reste archivée en petit sous le bloc titre.
-        DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_archive( $eleve_id , $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/, $BILAN_TYPE /*archive_ref*/ , $periode_id , $periode_nom , $_SESSION['WEBMESTRE_DENOMINATION'] , VERSION_PROG , $archive_contenu , $tab_image_md5 );
+        DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_archive( $DB_TAB[$eleve_id][0]['officiel_archive_id'] , $periode_nom , $_SESSION['WEBMESTRE_DENOMINATION'] , VERSION_PROG , $archive_contenu , $tab_image_md5 );
       }
     }
   }

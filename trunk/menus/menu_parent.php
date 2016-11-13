@@ -121,8 +121,8 @@ if(!Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']))
   $tab_sous_menu['releve']['releve_socle2016']['class'] .= ' disabled';
 }
 
-// Archives consultables des bilans officiels (profils [parent] et [eleve] uniquement).
-$tab_droits = array( 'FICHE_BREVET' , 'OFFICIEL_RELEVE' , 'OFFICIEL_BULLETIN' , 'OFFICIEL_SOCLE' );
+// Archives consultables des bilans officiels.
+$tab_droits = array( 'FICHE_BREVET' , 'OFFICIEL_LIVRET' , 'OFFICIEL_RELEVE' , 'OFFICIEL_BULLETIN' , 'OFFICIEL_SOCLE' ); // TODO : FICHE_BREVET + OFFICIEL_SOCLE à virer
 $droit_voir_archives_pdf = FALSE;
 foreach($tab_droits as $droit)
 {

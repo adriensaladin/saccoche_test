@@ -1051,9 +1051,10 @@ function texte_ligne_assiduite($tab_assiduite)
  * 
  * @param string $rubrique_type
  * @param int    $eleve_id
+ * @param string $bilan_type_etabl
  * @return string
  */
-function rubrique_texte_intro( $rubrique_type , $eleve_id=0 )
+function rubrique_texte_intro( $rubrique_type , $eleve_id=0 , $bilan_type_etabl='' )
 {
   switch($rubrique_type)
   {
@@ -1066,7 +1067,14 @@ function rubrique_texte_intro( $rubrique_type , $eleve_id=0 )
     case 'parcours' :
       return ($eleve_id) ? 'Implication de l’élève : ' : 'Projet mis en oeuvre : ' ;
     case 'bilan' :
-      return ($eleve_id) ? 'Synthèse de l’évolution des acquis scolaires et conseils pour progresser : ' : 'Synthèse de l’évolution des acquis de la classe : ' ;
+      if($bilan_type_etabl=='college')
+      {
+        return ($eleve_id) ? 'Synthèse de l’évolution des acquis scolaires et conseils pour progresser : ' : 'Synthèse de l’évolution des acquis de la classe : ' ;
+      }
+      else
+      {
+        return ($eleve_id) ? 'Appréciation générale sur la progression de l’élève : ' : 'Appréciation générale sur la progression de la classe : ' ;
+      }
     case 'viesco' :
       return 'Vie scolaire (assiduité, ponctualité ; respect du règlement intérieur ; participation à la vie de l’établissement) : ';
   }

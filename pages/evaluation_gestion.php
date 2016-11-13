@@ -323,7 +323,7 @@ if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
       <th>Description</th>
       <th>Items</th>
       <th>Fichiers</th>
-      <th>Saisies</th>
+      <th>Rempli</th>
       <th class="nu"><q class="ajouter" title="Ajouter une évaluation."></q></th>
     </tr>
   </thead>

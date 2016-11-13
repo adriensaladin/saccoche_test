@@ -188,7 +188,7 @@ Layout::add( 'js_inline_before' , 'var user_profil = "'.$_SESSION['USER_PROFIL_T
         <th>Professeur</th>
         <th>Description</th>
         <th>Docs</th>
-        <th>Saisies</th>
+        <th>Rempli</th>
         <th class="nu"></th>
       </tr>
     </thead>

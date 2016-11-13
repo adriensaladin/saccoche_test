@@ -57,7 +57,8 @@ $PAGE_AP             = $DB_ROW['livret_page_ap'];
 $PAGE_PARCOURS       = $DB_ROW['livret_page_parcours'];
 $PAGE_VIE_SCOLAIRE   = $DB_ROW['livret_page_vie_scolaire'];
 $classe_nom          = $DB_ROW['groupe_nom'];
-$BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere')) ? 'college' : 'ecole' ;
+$DATE_VERROU         = is_null($DB_ROW['jointure_date_verrou']) ? TODAY_FR : To::date_mysql_to_french($DB_ROW['jointure_date_verrou']) ;
+$BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere','c3_socle','c4_socle')) ? 'college' : 'ecole' ;
 
 if( in_array($BILAN_ETAT,array('1vide','5complet')) )
 {
@@ -157,6 +158,51 @@ foreach($DB_TAB as $DB_ROW)
   $tab_saisie[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array( 'saisie_id'=>$DB_ROW['livret_saisie_id'] , 'prof_id'=>$DB_ROW['user_id'] , 'saisie_valeur'=>$DB_ROW['saisie_valeur'] , 'saisie_origine'=>$DB_ROW['saisie_origine'] , 'listing_profs'=>$DB_ROW['listing_profs'] );
 }
 
+// Récupérer les professeurs/personnels rattachés aux saisies
+// En collège on peut aussi avoir besoin d'autres profs rattachés aux AP ou EPI
+
+$tab_profs = array();
+$tab_profs_autres = array();
+
+foreach($tab_saisie as $tab_tmp_eleve)
+{
+  foreach($tab_tmp_eleve as $tab_tmp_rubrique)
+  {
+    foreach($tab_tmp_rubrique as $tab_tmp_saisie)
+    {
+      foreach($tab_tmp_saisie as $tab_tmp_infos)
+      {
+        if($tab_tmp_infos['prof_id'])
+        {
+          $tab_profs[$tab_tmp_infos['prof_id']] = $tab_tmp_infos['prof_id'];
+        }
+        if($tab_tmp_infos['listing_profs'])
+        {
+          $tab = explode(',',$tab_tmp_infos['listing_profs']);
+          foreach($tab as $prof_id)
+          {
+            $tab_profs[$prof_id] = $prof_id;
+          }
+        }
+      }
+    }
+  }
+}
+$tab_profils_types = array('professeur','directeur');
+$listing_champs = 'user_id, user_sconet_id, user_genre, user_nom, user_prenom';
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils_types , 2 /*actuels_et_anciens*/ , $listing_champs , FALSE /*with_classe*/ );
+foreach($DB_TAB as $DB_ROW)
+{
+  if(isset($tab_profs[$DB_ROW['user_id']]))
+  {
+    $tab_profs[$DB_ROW['user_id']] = To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre']);
+  }
+  else if($BILAN_TYPE_ETABL=='college')
+  {
+    $tab_profs_autres[$DB_ROW['user_id']] = To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre']);
+  }
+}
+
 // Récupérer les absences / retards
 
 $affichage_assiduite = ($PAGE_VIE_SCOLAIRE) ? TRUE : FALSE ;
@@ -169,7 +215,8 @@ if( $affichage_assiduite && $eleve_id )
 
 // Récupérer les professeurs principaux
 
-$affichage_prof_principal = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c3_socle','c4_matiere','c4_socle')) ? TRUE : FALSE ;
+$affichage_prof_principal = ($BILAN_TYPE_ETABL=='college') ? TRUE : FALSE ;
+$texte_prof_principal = '';
 
 if( $affichage_prof_principal )
 {
@@ -193,17 +240,6 @@ if( $affichage_prof_principal )
     }
     $texte_prof_principal = 'Professeurs principaux : '.implode(' ; ',$tab_pp);
   }
-}
-
-// Lister les personnels
-$tab_profdir = array();
-$tab_profils_types = array('professeur','directeur');
-$listing_champs = 'user_id, user_genre, user_nom, user_prenom';
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils_types , 2 /*actuels_et_anciens*/ , $listing_champs , FALSE /*with_classe*/ );
-foreach($DB_TAB as $DB_ROW)
-{
-  $prof_info = To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] );
-  $tab_profdir[$DB_ROW['user_id']] = $prof_info;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

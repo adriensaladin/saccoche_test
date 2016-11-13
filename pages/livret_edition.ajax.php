@@ -166,7 +166,6 @@ $elements      = (isset($_POST['f_elements']))      ? Clean::appreciation($_POST
 $position      = (isset($_POST['f_position']))      ? Clean::decimal($_POST['f_position'])          : -1;
 $import_info   = (isset($_POST['f_import_info']))   ? Clean::texte($_POST['f_import_info'])         : '';
 $etape         = (isset($_POST['f_etape']))         ? Clean::entier($_POST['f_etape'])              : 0;
-$page_parite   = (isset($_POST['f_parite']))        ? Clean::entier($_POST['f_parite'])             : 0;
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 
@@ -237,7 +236,7 @@ if( in_array( $section , array('livret_saisir','livret_examiner','livret_consult
   {
     // Il s'agit d'un test d'impression d'un bilan non encore clos (on vérifiera quand même par la suite que les conditions sont respectées (état du bilan, droit de l'utilisateur)
     $section = 'livret_imprimer';
-    $_POST['f_objet'] = 'imprimer';
+    $OBJET = 'imprimer';
     $is_test_impression = TRUE;
   }
   require(CHEMIN_DOSSIER_INCLUDE.'fonction_livret.php');

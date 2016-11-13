@@ -300,6 +300,14 @@ class SessionUser
       $_SESSION['OPT_PARENT_ENFANTS']   = DB_STRUCTURE_COMMUN::DB_OPT_enfants_parent($_SESSION['USER_ID']);
       $_SESSION['OPT_PARENT_CLASSES']   = DB_STRUCTURE_COMMUN::DB_OPT_classes_parent($_SESSION['USER_ID']);
       $_SESSION['NB_ENFANTS'] = (is_array($_SESSION['OPT_PARENT_ENFANTS'])) ? count($_SESSION['OPT_PARENT_ENFANTS']) : 0 ;
+      if($_SESSION['NB_ENFANTS'])
+      {
+        $_SESSION['ENFANT_NUM_RESP'] = array();
+        foreach($_SESSION['OPT_PARENT_ENFANTS'] as $key => $tab)
+        {
+          $_SESSION['ENFANT_NUM_RESP'][$tab['valeur']] = $key+1;
+        }
+      }
       if( ($_SESSION['NB_ENFANTS']==1) && (is_array($_SESSION['OPT_PARENT_CLASSES'])) )
       {
         $_SESSION['ELEVE_CLASSE_ID']    = (int) $_SESSION['OPT_PARENT_CLASSES'][0]['valeur'];

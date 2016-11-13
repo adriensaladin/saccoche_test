@@ -35,12 +35,14 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 
 $tab_menu = array
 (
-  'information'         => Lang::_("Informations"),
-  'param_etablissement' => Lang::_("Paramétrages établissement"),
-  'param_utilisateurs'  => Lang::_("Paramétrages utilisateurs"),
-  'param_personnels'    => Lang::_("Paramétrages personnels"),
-  'admin_generale'      => Lang::_("Administration générale"),
-  'gestion_courante'    => Lang::_("Gestion courante"),
+  'information'              => Lang::_("Informations"),
+  'param_etablissement'      => Lang::_("Paramétrages établissement"),
+  'param_utilisateurs'       => Lang::_("Paramétrages utilisateurs"),
+  'param_personnels'         => Lang::_("Paramétrages personnels"),
+  'admin_generale'           => Lang::_("Administration générale"),
+  'gestion_groupes_periodes' => Lang::_("Gestion regroupements / périodes"),
+  'gestion_utilisateurs'     => Lang::_("Gestion des utilisateurs"),
+  'gestion_bilans'           => Lang::_("Gestion des bilans officiels"),
 );
 
 $tab_sous_menu = array
@@ -91,19 +93,29 @@ $tab_sous_menu = array
     'administrateur_blocage'             => array( 'texte' => Lang::_("Blocage des connexions")               , 'class' => 'blocage'            , 'href' => 'page=administrateur_blocage'             ),
     'administrateur_resilier'            => array( 'texte' => Lang::_("Résilier l'inscription")               , 'class' => 'resilier'           , 'href' => 'page=administrateur_resilier'            ),
   ),
-  'gestion_courante' => array
+  'gestion_groupes_periodes' => array
   (
-    'administrateur_periode'        => array( 'texte' => Lang::_("Périodes")                  , 'class' => 'periode'           , 'href' => 'page=administrateur_periode'        ),
-    'officiel_reglages'             => array( 'texte' => Lang::_("Synthèses / Bilans")        , 'class' => 'officiel_reglages' , 'href' => 'page=officiel&amp;section=reglages' ),
-    'livret_accueil'                => array( 'texte' => Lang::_("Livret Scolaire")           , 'class' => 'marianne'          , 'href' => 'page=livret&amp;section=accueil'    ),
-    'brevet_accueil'                => array( 'texte' => Lang::_("Notanet & Fiches brevet")   , 'class' => 'officiel_brevet'   , 'href' => 'page=brevet&amp;section=accueil'    ),
-    'administrateur_classe'         => array( 'texte' => Lang::_("Classes")                   , 'class' => 'groupe'            , 'href' => 'page=administrateur_classe'         ),
-    'administrateur_groupe'         => array( 'texte' => Lang::_("Groupes")                   , 'class' => 'groupe'            , 'href' => 'page=administrateur_groupe'         ),
-    'administrateur_eleve'          => array( 'texte' => Lang::_("Élèves")                    , 'class' => 'eleve'             , 'href' => 'page=administrateur_eleve'          ),
-    'administrateur_parent'         => array( 'texte' => Lang::_("Parents")                   , 'class' => 'parent'            , 'href' => 'page=administrateur_parent'         ),
-    'administrateur_professeur'     => array( 'texte' => Lang::_("Professeurs / Personnels")  , 'class' => 'professeur'        , 'href' => 'page=administrateur_professeur'     ),
-    'administrateur_administrateur' => array( 'texte' => Lang::_("Administrateurs")           , 'class' => 'administrateur'    , 'href' => 'page=administrateur_administrateur' ),
-    'administrateur_user_recherche' => array( 'texte' => Lang::_("Rechercher un utilisateur") , 'class' => 'user_recherche'    , 'href' => 'page=administrateur_user_recherche' ),
+    'administrateur_classe'  => array( 'texte' => Lang::_("Classes")  , 'class' => 'groupe'  , 'href' => 'page=administrateur_classe'  ),
+    'administrateur_groupe'  => array( 'texte' => Lang::_("Groupes")  , 'class' => 'groupe'  , 'href' => 'page=administrateur_groupe'  ),
+    'administrateur_periode' => array( 'texte' => Lang::_("Périodes") , 'class' => 'periode' , 'href' => 'page=administrateur_periode' ),
+  ),
+  'gestion_utilisateurs' => array
+  (
+    'administrateur_eleve'          => array( 'texte' => Lang::_("Élèves")                    , 'class' => 'eleve'          , 'href' => 'page=administrateur_eleve'          ),
+    'administrateur_parent'         => array( 'texte' => Lang::_("Parents")                   , 'class' => 'parent'         , 'href' => 'page=administrateur_parent'         ),
+    'administrateur_professeur'     => array( 'texte' => Lang::_("Professeurs / Personnels")  , 'class' => 'professeur'     , 'href' => 'page=administrateur_professeur'     ),
+    'administrateur_administrateur' => array( 'texte' => Lang::_("Administrateurs")           , 'class' => 'administrateur' , 'href' => 'page=administrateur_administrateur' ),
+    'administrateur_user_recherche' => array( 'texte' => Lang::_("Rechercher un utilisateur") , 'class' => 'user_recherche' , 'href' => 'page=administrateur_user_recherche' ),
+  ),
+  'gestion_bilans' => array
+  (
+    'officiel_reglages'         => array( 'texte' => Lang::_("Réglages communs")        , 'class' => 'officiel_reglages'     , 'href' => 'page=officiel&amp;section=reglages'         ),
+    'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")      , 'class' => 'officiel_assiduite'    , 'href' => 'page=officiel&amp;section=assiduite'        ),
+    'officiel_accueil_releve'   => array( 'texte' => Lang::_("Relevé d'évaluations")    , 'class' => 'officiel_releve'       , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
+    'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")       , 'class' => 'officiel_bulletin'     , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
+    'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")         , 'class' => 'marianne'              , 'href' => 'page=livret&amp;section=accueil'            ),
+    'brevet_accueil'            => array( 'texte' => Lang::_("Notanet & Fiches brevet") , 'class' => 'officiel_brevet'       , 'href' => 'page=brevet&amp;section=accueil'            ),
+    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables")   , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'     ), // TODO à fusionner avec officiel_voir_archive à terme
   ),
 );
 

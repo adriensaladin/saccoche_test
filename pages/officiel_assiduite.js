@@ -167,7 +167,8 @@ $(document).ready
           }
           else if(f_action=='import_pronote')
           {
-            $('#pronote_objet'     ).html(responseJSON['objet']);
+            $('#pronote_objet_1'   ).html(responseJSON['objet']+'s');
+            $('#pronote_objet_2'   ).html('0 '+responseJSON['objet']);
             $('#pronote_eleves_nb' ).html(responseJSON['eleves_nb']);
             $('#pronote_date_debut').html(responseJSON['date_debut']);
             $('#pronote_date_fin'  ).html(responseJSON['date_fin']);
@@ -176,7 +177,7 @@ $(document).ready
           $('#ajax_msg_'+f_action).removeAttr('class').html('');
           $('#ajax_msg_confirm').removeAttr('class').html('');
           $('#comfirm_'+f_action).show(0);
-          $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':600 , 'centerOnScroll':true } );
+          $.fancybox( { 'href':'#zone_confirmer' , onStart:function(){$('#zone_confirmer').css("display","block");} , onClosed:function(){$('#zone_confirmer').css("display","none");} , 'modal':true , 'minWidth':700 , 'centerOnScroll':true } );
         }
       }
 

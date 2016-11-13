@@ -110,9 +110,18 @@ $(document).ready
       var groupe_val = $("#f_groupe option:selected").val();
       if(groupe_val)
       {
-        // type = $("#f_groupe option:selected").parent().attr('label');
-        groupe_type = groupe_val.substring(0,1);
-        groupe_id   = groupe_val.substring(1);
+        // Pour un directeur ou un administrateur, groupe_val est de la forme d3 / n2 / c51 / g44
+        if(isNaN(parseInt(groupe_val,10)))
+        {
+          groupe_type = groupe_val.substring(0,1);
+          groupe_id   = groupe_val.substring(1);
+        }
+        // Pour un professeur, groupe_val est un entier, et il faut récupérer la 1ère lettre du label parent
+        else
+        {
+          groupe_type = $("#f_groupe option:selected").parent().attr('label').substring(0,1).toLowerCase();
+          groupe_id   = groupe_val;
+        }
         $('#ajax_msg_groupe').attr('class','loader').html("En cours&hellip;");
         maj_eleve(groupe_id,groupe_type);
       }

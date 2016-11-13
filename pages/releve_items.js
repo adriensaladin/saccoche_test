@@ -919,5 +919,10 @@ $(document).ready
       }
     }
 
+    else if(PROFIL_TYPE=='eleve')
+    {
+      $('#bouton_valider').click();
+    }
+
   }
 );

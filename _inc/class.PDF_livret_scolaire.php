@@ -112,12 +112,12 @@ class PDF_livret_scolaire extends PDF
   // Une première ligne de blocs de 3cm de haut : Logo EN + Infos établ + Logo niveau livret + Logo établ
   private function entete_blocs_premiere_ligne( $hauteur_blocs_ligne1 , $tab_menesr_logo , $tab_etabl_coords , $tab_etabl_logo )
   {
-    // largeur (mm) : 5 marge + 20 logo + 2.5 espace + 72.5 infos établ + 2.5 espace + 40 logo livret + 2.5 espace + 60 logo établ + 5 marge = 210
-    $largeur_logo_en     = 20; // non modifiable
-    $largeur_info_etabl  = 72.5;
-    $largeur_logo_livret = 40; // non modifiable
-    $largeur_logo_etabl  = 60;
-    $largeur_espace      = 2.5;
+    // largeur (cm) : 0.5 marge + 2 logo + 0.5 espace + 7.5 infos établ + 0.5 espace + 4 logo livret + 0.5 espace + 5 logo établ + 0.5 marge = 21
+    $largeur_logo_en     = 20;
+    $largeur_info_etabl  = 75;
+    $largeur_logo_livret = 40;
+    $largeur_logo_etabl  = 50;
+    $largeur_espace      = 5;
     // Logo EN : 542 x 791 donc 2,05 cm x 3cm
     $memoX = $this->GetX();
     $memoY = $this->GetY();
@@ -164,29 +164,9 @@ class PDF_livret_scolaire extends PDF
     $this->choisir_couleur_trait('noir');
     $this->SetXY( $memoX+$largeur_logo_livret+$largeur_espace , $memoY );
     // Logo établ
-    $memoX = $this->GetX();
     if($tab_etabl_logo)
     {
-      // on tâche de ne pas recouvrir "Page 1/2"
-      $reduc_largeur = 12.5;
-      $reduc_hauteur = 3.5;
-      $ratio_image = $tab_etabl_logo['largeur'] / $tab_etabl_logo['hauteur'];
-      $ratio_place_large = $largeur_logo_etabl / ($hauteur_blocs_ligne1-$reduc_hauteur);
-      $ratio_place_haut  = ($largeur_logo_etabl-$reduc_largeur) / $hauteur_blocs_ligne1;
-      if( abs($ratio_image-$ratio_place_large) < abs($ratio_image-$ratio_place_haut) )
-      {
-        // image plus large que haute par rapport à la place disponibles : on prend toute la largeur et un peu moins de hauteur
-        $this->SetXY( $memoX , $memoY+$reduc_hauteur );
-        $largeur_dispo = $largeur_logo_etabl;
-        $hauteur_dispo = $hauteur_blocs_ligne1-$reduc_hauteur;
-      }
-      else
-      {
-        // image plus haute que large par rapport à la place disponibles : on prend toute la hauteur et un peu moins de largeur
-        $largeur_dispo = $largeur_logo_etabl - $reduc_largeur;
-        $hauteur_dispo = $hauteur_blocs_ligne1;
-      }
-      $largeur_logo = $this->afficher_image( $largeur_dispo , $hauteur_dispo , $tab_etabl_logo , 'logo_seul' );
+      $largeur_logo = $this->afficher_image( $largeur_logo_etabl , $hauteur_blocs_ligne1 , $tab_etabl_logo , 'logo_seul' );
     }
     // Repositionnement
     $this->SetXY( $this->marge_gauche , $this->marge_haut+$hauteur_blocs_ligne1 );

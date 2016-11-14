@@ -20,7 +20,7 @@ CREATE TABLE sacoche_officiel_archive (
   archive_date_generation          DATE                                                      DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL.",
   archive_date_consultation_eleve  DATE                                                      DEFAULT NULL ,
   archive_date_consultation_parent DATE                                                      DEFAULT NULL ,
-  archive_contenu                  MEDIUMTEXT               COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Pour les relevés d'évaluations le contenu peut dépasser la capacité d'un type TEXT.",
+  archive_contenu                  TEXT                     COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   archive_md5_image1               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,
   archive_md5_image2               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,
   archive_md5_image3               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,

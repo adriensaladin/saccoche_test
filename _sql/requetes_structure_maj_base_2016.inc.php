@@ -1236,24 +1236,4 @@ if($version_base_structure_actuelle=='2016-11-06')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-11-13 => 2016-11-14
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2016-11-13')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2016-11-14';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // modif colonne de [sacoche_officiel_archive]
-    if(empty($reload_sacoche_officiel_archive))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_archive CHANGE archive_contenu archive_contenu MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL ' );
-      // et suppression des entrées tronquées corrompues
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_officiel_archive WHERE LENGTH(archive_contenu) = 65535 ' );
-    }
-  }
-}
-
 ?>

@@ -128,7 +128,7 @@ foreach($DB_TAB_Archives as $DB_ROW)
   $key = ($DB_ROW['archive_type']=='sacoche') ? $DB_ROW['archive_ref'] : 'livret' ;
   $classname = $tab_classname[$key];
   $archive_PDF = new $classname();
-  // Fabrication de l'archive PDF à partir du JSON enregistré
+  // Fabrication de l'archive PDF
   $tab_archive = json_decode($DB_ROW['archive_contenu'], TRUE);
   foreach($tab_archive as $archive)
   {

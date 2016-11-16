@@ -39,6 +39,8 @@ class PDF_livret_scolaire extends PDF
   private $tab_saisie_initialisation  = array();
   private $app_rubrique_nb_caract_max =  600;
   private $app_bilan_nb_caract_max    = 1000;
+  private $nb_caract_max_par_ligne   = 150;
+  private $nb_caract_max_par_colonne = 50;
 
   private $tab_livret_damier_cases = array(
     0 => array(
@@ -593,8 +595,8 @@ class PDF_livret_scolaire extends PDF
       $saisie_eleve  = isset($tab_saisie_eleve[ $livret_epi_id]['appreciation']) ? $tab_saisie_eleve[ $livret_epi_id]['appreciation'] : $this->tab_saisie_initialisation ;
       if( $saisie_eleve['saisie_valeur'] || $saisie_classe['saisie_valeur'] )
       {
-        $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/250) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / 250 ) ) : 0 ;
-        $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/250) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / 250 ) ) : 0 ;
+        $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
+        $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
         $nb_lignes_epi = 3 + $nb_lignes_classe + $nb_lignes_eleve; // titre + thème + profs + saisies
         $hauteur_epi = $nb_lignes_epi*$this->lignes_hauteur;
         $memoY = $this->GetY();
@@ -638,8 +640,8 @@ class PDF_livret_scolaire extends PDF
       $saisie_eleve  = isset($tab_saisie_eleve[ $livret_ap_id]['appreciation']) ? $tab_saisie_eleve[ $livret_ap_id]['appreciation'] : $this->tab_saisie_initialisation ;
       if( $saisie_eleve['saisie_valeur'] || $saisie_classe['saisie_valeur'] )
       {
-        $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/250) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / 250 ) ) : 0 ;
-        $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/250) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / 250 ) ) : 0 ;
+        $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
+        $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
         $nb_lignes_ap = 2 + $nb_lignes_classe + $nb_lignes_eleve; // titre + profs + saisies
         $hauteur_ap = $nb_lignes_ap*$this->lignes_hauteur;
         $memoY = $this->GetY();
@@ -683,8 +685,8 @@ class PDF_livret_scolaire extends PDF
       $saisie_eleve  = ( ($this->BILAN_TYPE_ETABL=='college') && isset($tab_saisie_eleve[ $livret_parcours_id]['appreciation']) ) ? $tab_saisie_eleve[ $livret_parcours_id]['appreciation'] : $this->tab_saisie_initialisation ;
       if( $saisie_classe['saisie_valeur'] ) // conditionné au renseignement du projet
       {
-        $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/250) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / 250 ) ) : 0 ;
-        $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/250) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / 250 ) ) : 0 ;
+        $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
+        $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
         $nb_lignes_parcours = 1 + $nb_lignes_classe + $nb_lignes_eleve; // type_nom / prof + saisies
         $hauteur_parcours = $nb_lignes_parcours*$this->lignes_hauteur;
         $memoY = $this->GetY();
@@ -713,7 +715,7 @@ class PDF_livret_scolaire extends PDF
     $s = (count($tab_rubriques_modaccomp)>1) ? 's' : '' ;
     $this->bloc_titre( 'modaccomp' , 'Modalité'.$s.' spécifique'.$s.' d’accompagnement' );
     // calculs
-    $nb_lignes_ppre = ($information_ppre) ? max( ceil(strlen($information_ppre)/250) , min( substr_count($information_ppre,"\n") + 1 , $this->app_rubrique_nb_caract_max / 250 ) ) : 0 ;
+    $nb_lignes_ppre = ($information_ppre) ? max( ceil(strlen($information_ppre)/$this->nb_caract_max_par_ligne) , min( substr_count($information_ppre,"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
     $nb_lignes_modaccomp = 1 + $nb_lignes_ppre; // modalités + saisie complément PPRE
     $hauteur_modaccomp = $nb_lignes_modaccomp*$this->lignes_hauteur;
     $memoY = $this->GetY();
@@ -737,7 +739,7 @@ class PDF_livret_scolaire extends PDF
     // Titre
     $this->bloc_titre( 'bilan' , 'Bilan de l’acquisition des connaissances et compétences' );
     // calculs
-    $nb_lignes_saisie = ($bilan_saisie) ? max( 6 , ceil(strlen($bilan_saisie)/250), min( substr_count($bilan_saisie,"\n") + 1 , $this->app_bilan_nb_caract_max / 250 ) ) : 6 ; // On prévoit un emplacement par défaut
+    $nb_lignes_saisie = ($bilan_saisie) ? max( 6 , ceil(strlen($bilan_saisie)/$this->nb_caract_max_par_ligne), min( substr_count($bilan_saisie,"\n") + 1 , $this->app_bilan_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 6 ; // On prévoit un emplacement par défaut
     $nb_lignes_bilan  = 1 + $nb_lignes_saisie ; // texte introductif + saisie
     $nb_lignes_bilan += ($this->BILAN_TYPE_ETABL=='college') ? 1 : 0 ; // prof principal
     $hauteur_bilan = $nb_lignes_bilan*$this->lignes_hauteur;
@@ -772,7 +774,7 @@ class PDF_livret_scolaire extends PDF
     // Titre
     $this->bloc_titre( 'viesco' , 'Communication avec la famille' );
     // calculs
-    $nb_lignes_saisie = ($viesco_saisie) ? max( 6 , ceil(strlen($viesco_saisie)/250), min( substr_count($viesco_saisie,"\n") + 1 , $this->app_rubrique_nb_caract_max / 250 ) ) : 6 ; // On prévoit un emplacement par défaut
+    $nb_lignes_saisie = ($viesco_saisie) ? max( 6 , ceil(strlen($viesco_saisie)/$this->nb_caract_max_par_ligne), min( substr_count($viesco_saisie,"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 6 ; // On prévoit un emplacement par défaut
     $nb_lignes_viesco  = 1 + $nb_lignes_saisie + 1 ; // texte introductif + saisie + assiduité
     $hauteur_viesco = $nb_lignes_viesco*$this->lignes_hauteur;
     $hauteur_signature = $nb_lignes_saisie*$this->lignes_hauteur; // 2 lignes de moins pour chef établ + date
@@ -838,10 +840,11 @@ class PDF_livret_scolaire extends PDF
 
   public function bloc_viesco_1d( $DATE_VERROU , $tab_instit , $tab_signature , $tab_parent_lecture )
   {
+    $nb_instit = count($tab_instit);
     // Titre
     $this->bloc_titre( 'viesco' , 'Communication avec la famille' );
     // calculs
-    $hauteur_viesco = 5*$this->lignes_hauteur; // forfaitaire
+    $hauteur_viesco = ( max( $nb_instit , 3 ) + 2 )*$this->lignes_hauteur; // hauteur minimale + ligne intro + ligne date
     $hauteur_signature = $hauteur_viesco; // 2 lignes de moins pour chef établ + date
     $largeur_sousbloc_signature = $this->page_largeur_moins_marges / 4;
     $largeur_sousbloc_saisie    = $this->page_largeur_moins_marges / 4;
@@ -868,12 +871,11 @@ class PDF_livret_scolaire extends PDF
     }
     // Cadre pour les enseignant(s)
     // texte introductif
-    $texte = (count($tab_instit)==1) ? 'Visa de l’enseignant(e) :' : 'Visa des enseignant(e)s :' ;
+    $texte = ($nb_instit==1) ? 'Visa de l’enseignant(e) :' : 'Visa des enseignant(e)s :' ;
     $this->SetFont('Arial' , 'U' , $this->taille_police);
     $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     $this->SetFont('Arial' , '' , $this->taille_police);
     // contenu
-    $tab_instit = array_slice( $tab_instit , 0 , 3 ); // sort du cadre si plus de 3 instits mais ce cas de devrait pas se produire...
     foreach($tab_instit as $instit_info)
     {
       $this->CellFit( $largeur_sousbloc_saisie , $this->lignes_hauteur , To::pdf($instit_info) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );

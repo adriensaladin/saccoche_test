@@ -172,49 +172,51 @@ if($action=='upload_symbole')
   {
     Json::end( FALSE , $result );
   }
+  $fichier_image = FileSystem::$file_saved_name;
   // vérifier la conformité du fichier image, récupérer les infos le concernant
-  $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+  $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.$fichier_image);
   if($tab_infos==FALSE)
   {
-    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_image);
     Json::end( FALSE , 'Le fichier image ne semble pas valide !' );
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
   // vérifier les dimensions
   if( $image_largeur != 20 )
   {
-    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_image);
     Json::end( FALSE , 'Le fichier transmis a '.$image_largeur.' pixels de largeur au lieu de 20 !');
   }
   if( $image_hauteur != 10 )
   {
-    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_image);
     Json::end( FALSE , 'Le fichier transmis a '.$image_hauteur.' pixels de largeur au lieu de 10 !');
   }
   // vérifier le type 
   $tab_extension_types = array( IMAGETYPE_GIF=>'gif' , IMAGETYPE_PNG=>'png' , IMAGETYPE_JPEG=>'jpeg' , IMAGETYPE_BMP=>'bmp' ); // http://www.php.net/manual/fr/function.exif-imagetype.php#refsect1-function.exif-imagetype-constants
   if(!isset($tab_extension_types[$image_type]))
   {
-    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_image);
    Json::end( FALSE , 'Le fichier n\'est pas un fichier image (type '.$image_type.') !' );
   }
   $image_format = $tab_extension_types[$image_type];
-  // récupérer l'image selon son format
+  // récupérer l'image selon son format et la convertir en gif
   switch($image_format)
   {
     case 'gif' :
-      $image_h = imagecreatefromgif(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+      $image_h = imagecreatefromgif(CHEMIN_DOSSIER_IMPORT.$fichier_image);
       break;
     case 'png' :
-      $image_h = imagecreatefrompng(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+      $image_h = imagecreatefrompng(CHEMIN_DOSSIER_IMPORT.$fichier_image);
       break;
     case 'jpeg' :
-      $image_h = imagecreatefromjpeg(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+      $image_h = imagecreatefromjpeg(CHEMIN_DOSSIER_IMPORT.$fichier_image);
       break;
     case 'bmp' :
-      $image_h = Image::imagecreatefrombmp(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+      $image_h = Image::imagecreatefrombmp(CHEMIN_DOSSIER_IMPORT.$fichier_image);
       break;
   }
+  imageinterlace($image_h, FALSE); // supprimer l'entrelacement éventuel afin d'éviter l'erreur ultérieure "Fatal error: Uncaught Exception: FPDF error: Interlacing not supported:..."
   imagegif( $image_h , CHEMIN_DOSSIER_IMPORT.$fichier_nom_tmp.'_h.gif' );
   // On génère aussi la version tournée à 90° (ne gère pas la transparence...)
   $image_v = Image::imagerotateEmulation($image_h);

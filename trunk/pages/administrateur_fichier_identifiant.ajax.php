@@ -589,16 +589,7 @@ if($action=='import_ent')
   }
   // Récupérer les infos sur le CSV associé à l'ENT
   require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
-  if( $_SESSION['CONNEXION_NOM'] != 'laclasse' )
-  {
-    $tab_infos_csv = $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_DEPARTEMENT'].'|'.$_SESSION['CONNEXION_NOM']];
-  }
-  else
-  {
-    // Pour laclasse sur le 69 il aurait dû y avoir un webservices (il est d'ailleurs développé) et un hébergement sur un autre serveur mais le projet a été interrompu...
-    // TODO : à reprendre qd ce sera possible...
-    $tab_infos_csv = $tab_csv_format['perso'];
-  }
+  $tab_infos_csv = $tab_connexion_info[$_SESSION['CONNEXION_MODE']][$_SESSION['CONNEXION_DEPARTEMENT'].'|'.$_SESSION['CONNEXION_NOM']];
   // Pour récupérer les données des utilisateurs
   $tab_users_fichier              = array();
   $tab_users_fichier['id_ent']    = array();

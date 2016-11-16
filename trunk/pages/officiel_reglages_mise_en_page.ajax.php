@@ -144,11 +144,12 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
   {
     Json::end( FALSE , $result );
   }
+  $fichier_image = FileSystem::$file_saved_name;
   // vérifier la conformité du fichier image, récupérer les infos le concernant
-  $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+  $tab_infos = @getimagesize(CHEMIN_DOSSIER_IMPORT.$fichier_image);
   if($tab_infos==FALSE)
   {
-    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_image);
     Json::end( FALSE , 'Le fichier image ne semble pas valide !' );
   }
   list($image_largeur, $image_hauteur, $image_type, $html_attributs) = $tab_infos;
@@ -156,16 +157,21 @@ if( ($action=='upload_signature') && ($user_id>=0) && ($user_texte!='') )
   // vérifier le type 
   if(!isset($tab_extension_types[$image_type]))
   {
-    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+    FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_image);
    Json::end( FALSE , 'Le fichier n\'est pas un fichier image (type '.$image_type.') !' );
   }
   $image_format = $tab_extension_types[$image_type];
+  // supprimer l'entrelacement éventuel afin d'éviter l'erreur ultérieure "Fatal error: Uncaught Exception: FPDF error: Interlacing not supported:..."
+  $image = call_user_func( 'imagecreatefrom'.$image_format , CHEMIN_DOSSIER_IMPORT.$fichier_image );
+  imageinterlace($image, FALSE);
+  call_user_func( 'image'.$image_format , $image , CHEMIN_DOSSIER_IMPORT.$fichier_image );
+  imagedestroy($image);
   // stocker l'image dans la base
-  DB_STRUCTURE_IMAGE::DB_modifier_image( $user_id , 'signature' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name)) , $image_format , $image_largeur , $image_hauteur );
+  DB_STRUCTURE_IMAGE::DB_modifier_image( $user_id , 'signature' , base64_encode(file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_image)) , $image_format , $image_largeur , $image_hauteur );
   // Générer la balise html et afficher le retour
   list($width,$height) = Image::dimensions_affichage( $image_largeur , $image_hauteur , 200 /*largeur_maxi*/ , 200 /*hauteur_maxi*/ );
   $user_texte = ($user_id) ? 'Signature '.$user_texte : $user_texte ;
-  Json::end( TRUE , '<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_IMPORT.FileSystem::$file_saved_name.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>' );
+  Json::end( TRUE , '<li id="sgn_'.$user_id.'">'.html($user_texte).' : <img src="'.URL_DIR_IMPORT.$fichier_image.'" alt="'.html($user_texte).'" width="'.$width.'" height="'.$height.'" /><q class="supprimer" title="Supprimer cette image (aucune confirmation ne sera demandée)."></q></li>' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

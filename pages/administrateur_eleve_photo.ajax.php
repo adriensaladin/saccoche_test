@@ -85,7 +85,6 @@ function photo_file_to_base($user_id,$fichier_chemin)
   $couleur_fond = imagecolorallocate($image_new,255,255,255); // Le premier appel à imagecolorallocate() remplit la couleur de fond si imagecreate().
   $couleur_fill = imagefill($image_new, 0, 0, $couleur_fond); // Si imagecreatetruecolor(), l'image est noire et il faut la remplir explicitement.
   $image_depart = call_user_func( 'imagecreatefrom'.$image_format, $fichier_chemin );
-  imageinterlace($image_depart, FALSE); // supprimer l'entrelacement éventuel afin d'éviter l'erreur ultérieure "Fatal error: Uncaught Exception: FPDF error: Interlacing not supported:..."
   imagecopyresampled($image_new , $image_depart , 0 /* dest_x */ , 0 /* dest_y */ , 0 /* dep_x */ , 0 /* dep_y */ , $largeur_new , $hauteur_new , $image_largeur , $image_hauteur );
   imagedestroy($image_depart);
   imagejpeg($image_new , $fichier_chemin_vignette , JPEG_QUALITY );

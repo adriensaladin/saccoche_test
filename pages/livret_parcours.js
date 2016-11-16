@@ -149,8 +149,7 @@ $(document).ready
               {
                 $('#ajax_msg_gestion').removeAttr('class').html("");
                 $('#f_groupe').html(responseJSON['value']);
-                groupe_id = $('#f_groupe option:selected').val(); // ce peut être le groupe_id transmis ou la valeur de l'option unique du select
-                if(groupe_id)
+                if( $('#f_groupe option:selected').val() )
                 {
                   maj_f_prof( groupe_id , prof_id , force_select_prof );
                 }

@@ -264,8 +264,6 @@ if($make_pdf)
   $nb_lignes_eval_tete = 2;
   $nb_lignes_pos_legende = in_array($PAGE_COLONNE,array('moyenne','pourcentage')) ? 0 : 1 ;
   $app_rubrique_longueur = min($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'],600); // max 600 spécification LSU
-  $nb_caract_max_par_ligne   = 150;
-  $nb_caract_max_par_colonne = 50;
 
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
@@ -306,7 +304,7 @@ if($make_pdf)
           $tab_valeurs = array_slice( json_decode($elements_info['saisie_valeur'], TRUE) , 0 , 3 );
           foreach($tab_valeurs as $texte => $nb_used)
           {
-            $nb_lignes_elements += min( 2 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
+            $nb_lignes_elements += min( 2 , ceil(strlen($texte)/100) );
           }
         }
         // Acquisitions, progrès et difficultés éventuelles
@@ -317,7 +315,7 @@ if($make_pdf)
           if($appreciation_info['saisie_valeur'])
           {
             $appreciation = $appreciation_info['saisie_valeur'];
-            $nb_lignes_appreciation += max( 2 , ceil(strlen($appreciation)/$nb_caract_max_par_colonne), min( substr_count($appreciation,"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_colonne ) );
+            $nb_lignes_appreciation += max( 2 , ceil(strlen($appreciation)/100), min( substr_count($appreciation,"\n") + 1 , $app_rubrique_longueur / 100 ) );
           }
         }
         $tab_deja_affiche[$eleve_id][$id_premiere_sous_rubrique] = TRUE;
@@ -332,17 +330,9 @@ if($make_pdf)
         }
       }
     }
-    if(isset($tab_nb_lignes_eleve_eval[$eleve_id]))
+    foreach($tab_nb_lignes_eleve_eval[$eleve_id] as $id_premiere_sous_rubrique => $tab_nb)
     {
-      foreach($tab_nb_lignes_eleve_eval[$eleve_id] as $id_premiere_sous_rubrique => $tab_nb)
-      {
-        $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique] = max($tab_nb[0],$tab_nb[1],$tab_nb[2]);
-      }
-    }
-    else
-    {
-      // Il arrive que l'on passe par ici... pas trouvé dans quel cas particulier...
-      $tab_nb_lignes_eleve_eval[$eleve_id] = array(1);
+      $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique] = max($tab_nb[0],$tab_nb[1],$tab_nb[2]);
     }
     $tab_nb_lignes_eleve_eval_total[$eleve_id] = $nb_lignes_marge + $nb_lignes_intitule + $nb_lignes_eval_tete + array_sum($tab_nb_lignes_eleve_eval[$eleve_id]) + $nb_lignes_pos_legende ;
     // EPI
@@ -355,8 +345,8 @@ if($make_pdf)
         $saisie_eleve  = isset($tab_saisie[$eleve_id]['epi'][$livret_epi_id]['appreciation']) ? $tab_saisie[$eleve_id]['epi'][$livret_epi_id]['appreciation'] : $tab_saisie_initialisation ;
         if( $saisie_eleve['saisie_valeur'] || $saisie_classe['saisie_valeur'] )
         {
-          $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/$nb_caract_max_par_ligne) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) ) : 0 ;
-          $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/$nb_caract_max_par_ligne) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) ) : 0 ;
+          $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/250) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / 250 ) ) : 0 ;
+          $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/250) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / 250 ) ) : 0 ;
           $tab_nb_lignes_eleve_autre[$eleve_id]['epi'] += 2 + $nb_lignes_classe + $nb_lignes_eleve; // [ titre - thème ] + profs + saisies
         }
       }
@@ -371,8 +361,8 @@ if($make_pdf)
         $saisie_eleve  = isset($tab_saisie[$eleve_id]['ap'][$livret_ap_id]['appreciation']) ? $tab_saisie[$eleve_id]['ap'][$livret_ap_id]['appreciation'] : $tab_saisie_initialisation ;
         if( $saisie_eleve['saisie_valeur'] || $saisie_classe['saisie_valeur'] )
         {
-          $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/$nb_caract_max_par_ligne) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) ) : 0 ;
-          $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/$nb_caract_max_par_ligne) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) ) : 0 ;
+          $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/250) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / 250 ) ) : 0 ;
+          $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/250) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / 250 ) ) : 0 ;
           $tab_nb_lignes_eleve_autre[$eleve_id]['ap'] += 2 + $nb_lignes_classe + $nb_lignes_eleve; // titre + profs + saisies
         }
       }
@@ -387,8 +377,8 @@ if($make_pdf)
         $saisie_eleve  = isset($tab_saisie[$eleve_id]['parcours'][$livret_parcours_id]['appreciation']) ? $tab_saisie[$eleve_id]['parcours'][$livret_parcours_id]['appreciation'] : $tab_saisie_initialisation ;
         if( $saisie_eleve['saisie_valeur'] || $saisie_classe['saisie_valeur'] )
         {
-          $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/$nb_caract_max_par_ligne) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) ) : 0 ;
-          $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/$nb_caract_max_par_ligne) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) ) : 0 ;
+          $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/250) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / 250 ) ) : 0 ;
+          $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/250) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / 250 ) ) : 0 ;
           $tab_nb_lignes_eleve_autre[$eleve_id]['parcours'] += 1 + $nb_lignes_classe + $nb_lignes_eleve; // type_nom / prof + saisies
         }
       }
@@ -400,7 +390,7 @@ if($make_pdf)
       $tab_nb_lignes_eleve_autre[$eleve_id]['modaccomp'] += 1; // modalité
       if(isset($tab_rubriques['modaccomp_ppre'][$eleve_id]))
       {
-        $tab_nb_lignes_eleve_autre['parcours'][$eleve_id] += max( ceil(strlen($tab_rubriques['modaccomp_ppre'][$eleve_id])/$nb_caract_max_par_ligne) , min( substr_count($tab_rubriques['modaccomp_ppre'][$eleve_id],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) );
+        $tab_nb_lignes_eleve_autre['parcours'][$eleve_id] += max( ceil(strlen($tab_rubriques['modaccomp_ppre'][$eleve_id])/250) , min( substr_count($tab_rubriques['modaccomp_ppre'][$eleve_id],"\n") + 1 , $app_rubrique_longueur / 250 ) );
       }
     }
     // Bilan de l’acquisition des connaissances et compétences
@@ -408,7 +398,7 @@ if($make_pdf)
     $tab_nb_lignes_eleve_autre[$eleve_id]['bilan'] += 1; // texte introductif
     $tab_nb_lignes_eleve_autre[$eleve_id]['bilan'] += ($BILAN_TYPE_ETABL=='college') ? 1 : 0 ; // prof principal
     $bilan_info = isset($tab_saisie[$eleve_id]['bilan'][0]['appreciation']) ? $tab_saisie[$eleve_id]['bilan'][0]['appreciation'] : $tab_saisie_initialisation ;
-    $nb_lignes = ($bilan_info['saisie_valeur']) ? max( 6 , ceil(strlen($bilan_info['saisie_valeur'])/$nb_caract_max_par_ligne), min( substr_count($bilan_info['saisie_valeur'],"\n") + 1 , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] / $nb_caract_max_par_ligne ) ) : 6 ; // On prévoit un emplacement par défaut
+    $nb_lignes = ($bilan_info['saisie_valeur']) ? max( 6 , ceil(strlen($bilan_info['saisie_valeur'])/250), min( substr_count($bilan_info['saisie_valeur'],"\n") + 1 , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] / 250 ) ) : 6 ; // On prévoit un emplacement par défaut
     $tab_nb_lignes_eleve_autre[$eleve_id]['bilan'] += $nb_lignes;
     // Communication avec la famille
     if( $PAGE_VIE_SCOLAIRE )
@@ -417,14 +407,14 @@ if($make_pdf)
       $tab_nb_lignes_eleve_autre[$eleve_id]['viesco'] = $nb_lignes_marge + $nb_lignes_intitule ;
       $tab_nb_lignes_eleve_autre[$eleve_id]['viesco'] += 1; // texte introductif
       $viesco_info = isset($tab_saisie[$eleve_id]['viesco'][0]['appreciation']) ? $tab_saisie[$eleve_id]['viesco'][0]['appreciation'] : $tab_saisie_initialisation ;
-      $nb_lignes = ($viesco_info['saisie_valeur']) ? max( 6 , ceil(strlen($viesco_info['saisie_valeur'])/$nb_caract_max_par_ligne), min( substr_count($viesco_info['saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) ) : 6 ; // On prévoit un emplacement par défaut
+      $nb_lignes = ($viesco_info['saisie_valeur']) ? max( 6 , ceil(strlen($viesco_info['saisie_valeur'])/250), min( substr_count($viesco_info['saisie_valeur'],"\n") + 1 , $app_rubrique_longueur / 250 ) ) : 6 ; // On prévoit un emplacement par défaut
       $tab_nb_lignes_eleve_autre[$eleve_id]['viesco'] += $nb_lignes + $affichage_assiduite;
       $tab_nb_lignes_eleve_autre[$eleve_id]['viesco'] += $nb_lignes_marge + 4; // cadre famille
     }
     else
     {
       // 1er degré
-      $tab_nb_lignes_eleve_autre[$eleve_id]['viesco'] = $nb_lignes_marge + $nb_lignes_intitule + max( count($tab_profs) , 3 ) + 2;
+      $tab_nb_lignes_eleve_autre[$eleve_id]['viesco'] = $nb_lignes_marge + $nb_lignes_intitule + 5; // hauteur forfaitaire
     }
     $tab_nb_lignes_eleve_autre_total[$eleve_id] = array_sum($tab_nb_lignes_eleve_autre[$eleve_id]);
   }
@@ -913,7 +903,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   $temp_HTML .= '<div class="b notnow">'.html($tab_parcours['projet']).'</div>';
                 }
                 $temp_HTML .= '<div class="notnow">'.html($tab_parcours['prof_txt']).'</div>';
-                if( ($BILAN_TYPE_ETABL=='college') || !$eleve_id )
+                if($BILAN_TYPE_ETABL=='college')
                 {
                   if($parcours_saisie['saisie_valeur'])
                   {

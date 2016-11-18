@@ -32,10 +32,8 @@ $action     = (isset($_POST['f_action']))           ? Clean::texte($_POST['f_act
 $page_ref   = (isset($_POST['f_page_ref']))         ? Clean::id($_POST['f_page_ref'])             : '';
 $colonne    = (isset($_POST['choix_'.$page_ref]))   ? Clean::id($_POST['choix_'.$page_ref])       : '';
 $moy_classe = (isset($_POST['moyenne_'.$page_ref])) ? Clean::entier($_POST['moyenne_'.$page_ref]) : '';
-$colonne_id = (isset($_POST['f_colonne_id']))       ? Clean::entier($_POST['f_colonne_id'])       : '';
-$legende    = (isset($_POST['f_colonne_legende']))  ? Clean::texte($_POST['f_colonne_legende'])   : '';
 
-$tab_colonne_choix = array('moyenne','pourcentage','position','objectif');
+$tab_colonne_choix = array('moyenne','pourcentage','position');
 $tab_colonne_id = array(
   'reussite' => array(11,12,13),
   'objectif' => array(21,22,23,24),
@@ -43,13 +41,7 @@ $tab_colonne_id = array(
   'position' => array(41,42,43,44),
 );
 
-if( ($action=='memoriser_legende') && in_array($colonne_id,$tab_colonne_id['position']) && $legende )
-{
-  DB_STRUCTURE_LIVRET::DB_modifier_legende( $colonne_id , $legende );
-  Json::end( TRUE );
-}
-
-if( ($action!='enregistrer_choix') || !$page_ref )
+if( ($action!='enregistrer') || !$page_ref )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
@@ -73,7 +65,7 @@ if( in_array( $DB_ROW['livret_page_colonne'] , $tab_colonne_choix ) )
   }
   else
   {
-    $tab_verif_id = ( ($colonne == 'position') || ($colonne == 'objectif') ) ? $tab_colonne_id[$colonne] : NULL ;
+    $tab_verif_id = ($colonne == 'position') ? $tab_colonne_id[$colonne] : NULL ;
   }
 }
 else

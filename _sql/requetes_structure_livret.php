@@ -780,36 +780,19 @@ public static function DB_lister_colonnes_infos($livret_colonne_type=NULL)
 /**
  * lister_seuils_valeurs
  *
+ * @param string $livret_page_ref (facultatif)
  * @return array
  */
-public static function DB_lister_seuils_valeurs()
+public static function DB_lister_seuils_valeurs($livret_page_ref=NULL)
 {
-  $DB_SQL = 'SELECT CONCAT(livret_page_ref,"_",livret_colonne_id) AS livret_colonne_id , livret_seuil_min , livret_seuil_max ';
+  $select = ($livret_page_ref) ? 'livret_colonne_id ' : 'CONCAT(livret_page_ref,"_",livret_colonne_id) AS livret_colonne_id ' ;
+  $where  = ($livret_page_ref) ? 'WHERE livret_page_ref=:livret_page_ref ' : '' ;
+  $DB_SQL = 'SELECT '.$select.', livret_seuil_min, livret_seuil_max ';
   $DB_SQL.= 'FROM sacoche_livret_seuil ';
+  $DB_SQL.= $where;
   $DB_SQL.= 'ORDER BY livret_colonne_id ASC ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL, TRUE );
-}
-
-/**
- * lister_page_seuils_infos
- *
- * @param string $livret_page_ref
- * @param string $livret_page_colonne facultatif et requis uniquement pour 6e 5e 4e 3e où il peut y avoir position ou objectif
- * @return array
- */
-public static function DB_lister_page_seuils_infos( $livret_page_ref , $livret_page_colonne=NULL )
-{
-  $where  = (!$livret_page_colonne) ? '' : 'AND livret_colonne_type=:livret_colonne_type ' ;
-  $DB_SQL = 'SELECT livret_colonne_id , livret_seuil_min , livret_seuil_max , livret_colonne_legende ';
-  $DB_SQL.= 'FROM sacoche_livret_seuil ';
-  $DB_SQL.= 'INNER JOIN sacoche_livret_colonne USING (livret_colonne_id) ';
-  $DB_SQL.= 'WHERE livret_page_ref=:livret_page_ref '.$where;
-  $DB_SQL.= 'ORDER BY livret_colonne_id ASC ';
-  $DB_VAR = array(
-    ':livret_page_ref'     => $livret_page_ref,
-    ':livret_colonne_type' => $livret_page_colonne,
-    );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR );
+  $DB_VAR = array( ':livret_page_ref' => $livret_page_ref );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE );
 }
 
 /**
@@ -854,26 +837,6 @@ public static function DB_modifier_seuils( $page_ref , $tab_seuils )
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
 }
-
-/**
- * DB_modifier_legende
- *
- * @param int    $colonne_id
- * @param string $colonne_legende
- * @return void
- */
-public static function DB_modifier_legende( $colonne_id , $colonne_legende )
-{
-  $DB_SQL = 'UPDATE sacoche_livret_colonne ';
-  $DB_SQL.= 'SET livret_colonne_legende=:colonne_legende ';
-  $DB_SQL.= 'WHERE livret_colonne_id=:colonne_id ';
-  $DB_VAR = array(
-    ':colonne_id'      => $colonne_id,
-    ':colonne_legende' => $colonne_legende,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Jointures livret / groupe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -886,7 +849,7 @@ public static function DB_modifier_legende( $colonne_id , $colonne_legende )
  */
 public static function DB_lister_jointures_classes_livret()
 {
-  $DB_SQL = 'SELECT groupe_id, livret_page_ref, sacoche_livret_jointure_groupe.livret_page_periodicite, jointure_periode, jointure_etat, jointure_date_verrou, jointure_date_export, ';
+  $DB_SQL = 'SELECT groupe_id, livret_page_ref, sacoche_livret_jointure_groupe.livret_page_periodicite, jointure_periode, jointure_etat, ';
   $DB_SQL.= 'livret_page_rubrique_type, periode_id, jointure_date_debut, jointure_date_fin ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING(livret_page_ref) ';
@@ -1976,8 +1939,7 @@ public static function DB_modifier_saisie_jointure_prof( $livret_saisie_id , $pr
  */
 public static function DB_modifier_saisie_memo_detail( $livret_saisie_id , $acquis_detail )
 {
-  $DB_SQL = 'INSERT INTO sacoche_livret_saisie_memo_detail ( livret_saisie_id,  acquis_detail) VALUES (:livret_saisie_id, :acquis_detail) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE acquis_detail=:acquis_detail ';
+  $DB_SQL = 'INSERT IGNORE INTO sacoche_livret_saisie_memo_detail ( livret_saisie_id,  acquis_detail) VALUES (:livret_saisie_id, :acquis_detail) ';
   $DB_VAR = array(
     ':livret_saisie_id' => $livret_saisie_id,
     ':acquis_detail'    => $acquis_detail,

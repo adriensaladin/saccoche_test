@@ -1256,46 +1256,4 @@ if($version_base_structure_actuelle=='2016-11-13')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-11-14 => 2016-11-18
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2016-11-14')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2016-11-18';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // ajout colonne à [sacoche_livret_jointure_groupe]
-    if(empty($reload_sacoche_livret_jointure_groupe))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_jointure_groupe ADD jointure_date_export DATE DEFAULT NULL AFTER jointure_date_verrou ' );
-    }
-    // modif colonne de [sacoche_livret_colonne]
-    if(empty($reload_sacoche_livret_colonne))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_colonne CHANGE livret_colonne_legende livret_colonne_legende VARCHAR(40) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Paramétrable pour l\'échelle." ' );
-    }
-    // ajout lignes à [sacoche_livret_seuil]
-    if(empty($reload_sacoche_livret_seuil))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_livret_seuil VALUES ("6e" , 21,  0,  34),("6e" , 22, 35,  64),("6e" , 23, 65,  89),("6e" , 24, 90, 100),("5e" , 21,  0,  34),("5e" , 22, 35,  64),("5e" , 23, 65,  89),("5e" , 24, 90, 100),("4e" , 21,  0,  34),("4e" , 22, 35,  64),("4e" , 23, 65,  89),("4e" , 24, 90, 100),("3e" , 21,  0,  34),("3e" , 22, 35,  64),("3e" , 23, 65,  89),("3e" , 24, 90, 100) ' );
-    }
-    // recharger [sacoche_livret_modaccomp]
-    if(empty($reload_sacoche_livret_modaccomp))
-    {
-      $reload_sacoche_livret_modaccomp = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_modaccomp.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    }
-  }
-}
-
-    // nouvelle table [sacoche_livret_export]
-    // $reload_sacoche_livret_export = TRUE;
-    // $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_export.sql');
-    // DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    // DB::close(SACOCHE_STRUCTURE_BD_NAME);
-
 ?>

@@ -10,7 +10,6 @@ CREATE TABLE sacoche_livret_jointure_groupe (
   jointure_periode        ENUM("","T1","T2","T3","S1","S2")                         COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Renseigné si livret_page_periodicite = periode ; @see sacoche_periode.periode_livret",
   jointure_etat           ENUM("1vide","2rubrique","3mixte","4synthese","5complet") COLLATE utf8_unicode_ci NOT NULL DEFAULT "1vide",
   jointure_date_verrou    DATE                                                                                       DEFAULT NULL ,
-  jointure_date_export    DATE                                                                                       DEFAULT NULL ,
   PRIMARY KEY ( groupe_id , livret_page_ref , livret_page_periodicite , jointure_periode ),
   KEY livret_page_ref (livret_page_ref),
   KEY livret_page_periodicite (livret_page_periodicite),

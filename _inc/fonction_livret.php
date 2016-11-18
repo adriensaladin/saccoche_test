@@ -54,14 +54,14 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
   // Récupérer les données déjà enregistrées, concernant les élèves et la classe
   //
   $tab_donnees_livret = array();
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '"'.$RUBRIQUE_TYPE.'","bilan","viesco"' , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ );
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '"'.$RUBRIQUE_TYPE.'","bilan"' , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $clef = $DB_ROW['rubrique_type'].$DB_ROW['rubrique_id'].'eleve'.$DB_ROW['eleve_id'].$DB_ROW['saisie_objet'];
     $saisie_valeur = ($DB_ROW['saisie_objet']=='position') ? ( ($DB_ROW['saisie_valeur']!==NULL) ? (float)$DB_ROW['saisie_valeur'] : NULL ) : (string)$DB_ROW['saisie_valeur'] ;
     $tab_donnees_livret[$clef] = array( 'id' => $DB_ROW['livret_saisie_id'] , 'valeur' => $saisie_valeur , 'origine' => $DB_ROW['saisie_origine'] , 'prof' => $DB_ROW['user_id'] , 'listing_profs'=>$DB_ROW['listing_profs'] );
   }
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_classe( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '"'.$RUBRIQUE_TYPE.'","bilan","viesco"' , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ );
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_classe( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '"'.$RUBRIQUE_TYPE.'","bilan"' , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $clef = $DB_ROW['rubrique_type'].$DB_ROW['rubrique_id'].'classe'.$classe_id.$DB_ROW['saisie_objet'];
@@ -79,7 +79,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_correspondances_matieres_uniques( $PAGE_RUBRIQUE_TYPE );
       if(!empty($DB_TAB))
       {
-        $tab_matiere_bulletin_to_livret = array( 0 => 0 , 54 => 0 ); // correspondance synthèse + vie scolaire
+        $tab_matiere_bulletin_to_livret = array( 0 => 0 ); // correspondance synthèse
         foreach($DB_TAB as $DB_ROW)
         {
           $tab_matiere_bulletin_to_livret[$DB_ROW['matiere_referentiel_id']] = $DB_ROW['matiere_livret_id'];
@@ -105,14 +105,14 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
               $cible_id      = ($cible_nature=='eleve') ? $DB_ROW['eleve_id'] : $classe_id ;
               $prof_id       = $DB_ROW['prof_id']; // toujours 0 pour une note dans les bulletins
               $rubrique_id   = $tab_matiere_bulletin_to_livret[$DB_ROW['rubrique_id']];
-              $rubrique_type = ($rubrique_id) ? 'eval' : ( $DB_ROW['rubrique_id'] ? 'viesco' : 'bilan' ) ;
+              $rubrique_type = ($rubrique_id) ? 'eval' : 'bilan' ;
               $saisie_objet  = ($prof_id) ? 'appreciation' : 'position' ;
               $saisie_valeur = ($prof_id) ? (string)$DB_ROW['saisie_appreciation'] : ( ($DB_ROW['saisie_note']!==NULL) ? (float)$DB_ROW['saisie_note']*5 : NULL ) ; // Le bulletin enregistre sur 20, le livret enregistre sur 100.
               $clef = $rubrique_type.$rubrique_id.$cible_nature.$cible_id.$saisie_objet;
               if($prof_id)
               {
                 // Pour gérer le pb des appéciations multiples à concaténer
-                $key = $rubrique_type.$rubrique_id.'x'.$cible_id;
+                $key = $rubrique_id.'x'.$cible_id;
                 if(isset($tab_tmp[$key]))
                 {
                   $saisie_valeur = $tab_tmp[$key]."\n".$saisie_valeur;
@@ -686,7 +686,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
     $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,'bulletin');
     if( !empty($DB_ROW) && !in_array( $DB_ROW['officiel_bulletin'] , array('0absence','1vide') ) )
     {
-      $bulletin_matiere_id = ($rubrique_type=='bilan') ? 0 : ( ($rubrique_type=='viesco') ? 54 : DB_STRUCTURE_LIVRET::DB_recuperer_correspondance_matiere_unique( $PAGE_RUBRIQUE_TYPE , $rubrique_id ) ) ;
+      $bulletin_matiere_id = ($rubrique_type=='bilan') ? 0 : DB_STRUCTURE_LIVRET::DB_recuperer_correspondance_matiere_unique( $PAGE_RUBRIQUE_TYPE , $rubrique_id );
       if(!is_null($bulletin_matiere_id))
       {
         $cible_id = ($eleve_id) ? $eleve_id : $classe_id ;

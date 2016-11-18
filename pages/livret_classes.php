@@ -62,7 +62,7 @@ Layout::add( 'js_inline_before' , 'var URL_DIR_PDF = "'.URL_DIR_PDF.'";' );
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_classes">DOC : Administration du Livret Scolaire &rarr; Affectation des classes</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_classes">DOC : Réglages du Livret Scolaire &rarr; Affectation des classes</a></span></li>
   <li><span class="astuce">Rappel : la <a href="./index.php?page=administrateur_periode&amp;section=gestion">définition des périodes du Livret Scolaire</a> et leur <a href="./index.php?page=administrateur_periode&amp;section=classe_groupe">jointure aux classes</a> s'effectuent depuis les interfaces dédiées.</span></li>
 </ul>
 

@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Notation / Se
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_seuils">DOC : Administration du Livret Scolaire &rarr; Notation / Seuils</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_seuils">DOC : Réglages du Livret Scolaire &rarr; Notation / Seuils</a></span></li>
 </ul>
 
 <?php
@@ -63,7 +63,6 @@ $tab_colonne_choix = array(
   'moyenne'     => "Moyenne sur 20",
   'pourcentage' => "Pourcentage",
   'position'    => "Échelle de 1 à 4",
-  'objectif'    => "Objectifs d'appentissage",
 );
 
 $tab_moyenne_choix = array(
@@ -82,20 +81,20 @@ foreach($DB_TAB_pages as $DB_ROW_page)
   if($DB_ROW_page['groupe_nb'])
   {
     $nb_pages++;
-    $is_page_choix_positionnement = in_array( $DB_ROW_page['livret_page_rubrique_type'] , array('c3_matiere','c4_matiere') ) ? TRUE : FALSE ;
-    $tab_indice_colonne = (!$is_page_choix_positionnement) ? array( $DB_ROW_page['livret_page_colonne'] ) : array( 'objectif','position' ) ;
-    $etat_nb = (!$is_page_choix_positionnement) ? count($DB_TAB_colonnes[$DB_ROW_page['livret_page_colonne']]) : 4 ;
+    $indice_colonne = in_array( $DB_ROW_page['livret_page_colonne'] , array('moyenne','pourcentage') ) ? 'position' : $DB_ROW_page['livret_page_colonne'] ;
+    $DB_TAB_colonne = $DB_TAB_colonnes[$indice_colonne];
     $vignette = '<a href="'.URL_DIR_PDF.'livret_'.$DB_ROW_page['livret_page_ref'].'_original.pdf" class="fancybox" rel="gallery" data-titre="'.html($DB_ROW_page['livret_page_moment'].' : '.$DB_ROW_page['livret_page_resume']).'"><span class="livret livret_float_seuils livret_'.$DB_ROW_page['livret_page_ref'].'"></span></a>';
     $objet = str_replace($tab_bad,$tab_bon,$DB_ROW_page['livret_page_resume']);
-    $etat_txt = (!$is_page_choix_positionnement)
+    $etat_nb = count($DB_TAB_colonne);
+    $etat_txt = ($indice_colonne!='position')
               ? '<b>'.$etat_nb.' '.$tab_etat_txt[$DB_ROW_page['livret_page_colonne']].'</b>'
-              : '<b>une moyenne sur 20</b> ou <b>un pourcentage</b> ou <b>une échelle à 4 niveaux</b> ou <b>4 objectifs d\'appentissages</b>';
+              : '<b>une moyenne sur 20</b> ou <b>un pourcentage</b> ou <b>une échelle à 4 niveaux</b>';
     $rubrique_type = substr($DB_ROW_page['livret_page_rubrique_type'],3);
     $element_txt = $tab_element_txt[$rubrique_type];
     $methode_txt = ($rubrique_type!='socle')
               ? 'de <b>la moyenne des scores des items évalués</b>'
               : 'du <b> pourcentage d\'items acquis</b>';
-    $choix_txt = (!$is_page_choix_positionnement)
+    $choix_txt = ($indice_colonne!='position')
               ? 'Les seuils sont modifiables</b>'
               : 'Le choix du mode de positionnement est modifiable</b>';
     echo'<h2 id="'.$DB_ROW_page['livret_page_ref'].'">'.html($DB_ROW_page['livret_page_moment']).'</h2>';
@@ -104,7 +103,7 @@ foreach($DB_TAB_pages as $DB_ROW_page)
     echo'<p>Pour chaque <b>'.$element_txt.'</b>, le niveau de l\'élève est prépositionné en fonction '.$methode_txt.' qui y sont reliés.</p>';
     echo'<p>'.$choix_txt.' ci-dessous.</p>';
     echo'<form action="#" method="post" id="form_'.$DB_ROW_page['livret_page_ref'].'">';
-    if($is_page_choix_positionnement)
+    if($indice_colonne=='position')
     {
       echo'<p><label class="tab">Positionnement :</label>';
       foreach($tab_colonne_choix as $choix_value => $choix_txt)
@@ -125,24 +124,19 @@ foreach($DB_TAB_pages as $DB_ROW_page)
       }
       echo'</p>';
     }
-    foreach( $tab_indice_colonne as $indice_colonne )
+    $td = '' ;
+    foreach( $DB_TAB_colonne as $DB_ROW_colonne )
     {
-      $td = '' ;
-      $q_modifier = ($indice_colonne=='position') ? '<q class="modifier" title="Modifier la légende."></q>' : '' ;
-      $DB_TAB_colonne = $DB_TAB_colonnes[$indice_colonne];
-      foreach( $DB_TAB_colonne as $DB_ROW_colonne )
-      {
-        $id_page_col = $DB_ROW_page['livret_page_ref'].'_'.$DB_ROW_colonne['livret_colonne_id'];
-        $readonly_min = ( $DB_TAB_seuils[$id_page_col][0]['livret_seuil_min'] ==   0 ) ? ' readonly' : '' ;
-        $readonly_max = ( $DB_TAB_seuils[$id_page_col][0]['livret_seuil_max'] == 100 ) ? ' readonly' : '' ;
-        $input_min = '<input type="number" min="0" max="99"  class="hc" id="seuil_'.$id_page_col.'_min" name="seuil_'.$id_page_col.'_min" value="'.$DB_TAB_seuils[$id_page_col][0]['livret_seuil_min'].'" data-defaut="'.$DB_ROW_colonne['livret_colonne_seuil_defaut_min'].'"'.$readonly_min.' />';
-        $input_max = '<input type="number" min="1" max="100" class="hc" id="seuil_'.$id_page_col.'_max" name="seuil_'.$id_page_col.'_max" value="'.$DB_TAB_seuils[$id_page_col][0]['livret_seuil_max'].'" data-defaut="'.$DB_ROW_colonne['livret_colonne_seuil_defaut_max'].'"'.$readonly_max.' />';
-        $td .= '<td style="background-color:'.$DB_ROW_colonne['livret_colonne_couleur_1'].';text-align:center;width:12em"><p><b id="'.$id_page_col.'_legende">'.html($DB_ROW_colonne['livret_colonne_legende']).'</b>'.$q_modifier.'</p><p>'.$input_min.'~'.$input_max.'</p></td>';
-      }
-      $td .= '<td class="nu"><button name="initialiser" type="button" class="retourner">Seuils par défaut</button></td>' ;
-      $class = ( !$is_page_choix_positionnement || ($DB_ROW_page['livret_page_colonne']==$indice_colonne) ) ? 'show' : 'hide' ;
-      echo'<table id="table_'.$DB_ROW_page['livret_page_ref'].'_'.$indice_colonne.'" class="'.$class.'"><thead><tr><th colspan="'.$etat_nb.'" class="hc">'.html($DB_ROW_colonne['livret_colonne_titre']).'</th><td class="nu"></td></tr></thead><tbody><tr>'.$td.'</tr></tbody></table>';
+      $id_page_col = $DB_ROW_page['livret_page_ref'].'_'.$DB_ROW_colonne['livret_colonne_id'];
+      $readonly_min = ( $DB_TAB_seuils[$id_page_col][0]['livret_seuil_min'] ==   0 ) ? ' readonly' : '' ;
+      $readonly_max = ( $DB_TAB_seuils[$id_page_col][0]['livret_seuil_max'] == 100 ) ? ' readonly' : '' ;
+      $input_min = '<input type="number" min="0" max="99"  class="hc" id="seuil_'.$id_page_col.'_min" name="seuil_'.$id_page_col.'_min" value="'.$DB_TAB_seuils[$id_page_col][0]['livret_seuil_min'].'" data-defaut="'.$DB_ROW_colonne['livret_colonne_seuil_defaut_min'].'"'.$readonly_min.' />';
+      $input_max = '<input type="number" min="1" max="100" class="hc" id="seuil_'.$id_page_col.'_max" name="seuil_'.$id_page_col.'_max" value="'.$DB_TAB_seuils[$id_page_col][0]['livret_seuil_max'].'" data-defaut="'.$DB_ROW_colonne['livret_colonne_seuil_defaut_max'].'"'.$readonly_max.' />';
+      $td .= '<td style="background-color:'.$DB_ROW_colonne['livret_colonne_couleur_1'].';text-align:center;width:12em"><p><b>'.html($DB_ROW_colonne['livret_colonne_legende']).'</b></p><p>'.$input_min.'~'.$input_max.'</p></td>';
     }
+    $td .= '<td class="nu"><button name="initialiser" type="button" class="retourner">Seuils par défaut</button></td>' ;
+    $class = ( ($indice_colonne!='position') || ($DB_ROW_page['livret_page_colonne']=='position') ) ? 'show' : 'hide' ;
+    echo'<table id="table_'.$DB_ROW_page['livret_page_ref'].'" class="'.$class.'"><thead><tr><th colspan="'.$etat_nb.'" class="hc">'.html($DB_ROW_colonne['livret_colonne_titre']).'</th><td class="nu"></td></tr></thead><tbody><tr>'.$td.'</tr></tbody></table>';
     echo'<p><span class="tab"></span><button type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_'.$DB_ROW_page['livret_page_ref'].'">&nbsp;</label></p>';
     echo'</form>';
     echo'<p /><hr />';

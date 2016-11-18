@@ -928,12 +928,9 @@ if( $make_graph && (count($tab_graph_data)) )
   }
   // Séries de valeurs ; la classe avant l'élève pour être positionnée en dessous
   $tab_graph_series = array();
-  if($eleve_id)
+  foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
   {
-    foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
-    {
-        $tab_graph_series['A'.$acquis_id]  = '{ name: "'.addcslashes($tab_acquis_info['LEGENDE'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_'.$acquis_id]).'] }';
-    }
+    $tab_graph_series['A'.$acquis_id]  = '{ name: "'.addcslashes($tab_acquis_info['LEGENDE'],'"').'", data: ['.implode(',',$tab_graph_data['series_data_'.$acquis_id]).'] }';
   }
   if(isset($tab_graph_data['series_data_MoyClasse']))
   {

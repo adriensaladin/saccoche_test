@@ -214,6 +214,15 @@ else
 }
 $periode_nom = $tab_periode_livret[$periode];
 
+// Récupérer et mettre en session les infos sur les seuils enregistrés
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_seuils_valeurs($PAGE_REF);
+foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
+{
+  $id = $livret_colonne_id % 10 ; // 1 2 3 (4)
+  $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW[0]['livret_seuil_min'];
+  $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW[0]['livret_seuil_max'];
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Saisir    : affichage des données d'un élève | enregistrement/suppression d'une appréciation ou d'une note | recalculer une note
 // Examiner  : recherche des saisies manquantes (notes et appréciations)

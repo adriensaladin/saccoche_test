@@ -87,19 +87,16 @@ class PDF_livret_scolaire extends PDF
     $this->SetXY( $this->marge_gauche , $this->marge_haut );
   }
 
-  private function rappel_eleve_page($anticipe)
+  private function rappel_eleve_page()
   {
     // Légende éventuelle du positionnement, si pas déjà fait
-    if( in_array($this->PAGE_COLONNE,array('objectif','position')) && (!$this->legende_deja_affichee) && ( ($this->GetY()+$this->lignes_hauteur<$this->page_hauteur-$this->marge_bas) || !$anticipe ) )
+    if( in_array($this->PAGE_COLONNE,array('objectif','position')) && (!$this->legende_deja_affichee) && ($this->GetY()+$this->lignes_hauteur<$this->page_hauteur-$this->marge_bas) )
     {
-      $positionnement_texte = ($this->PAGE_COLONNE=='objectif') ? 'Positionnement par objectifs d’apprentissage' : 'Positionnement' ;
-      $positionnement_degre = array();
-      foreach($this->SESSION['LIVRET'] as $id => $tab)
-      {
-        $positionnement_degre[] = $id.' = '.$tab['LEGENDE'];
-      }
-      $legende_positionnement = '[*] '.$positionnement_texte.' :  '.implode('    ',$positionnement_degre);
-      $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($legende_positionnement) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+     $tab_txt = array(
+        'objectif' => '[*] Positionnement par objectifs d’apprentissage :  1 = Non atteints    2 = Partiellement atteints    3 = Atteints    4 = Dépassés',
+        'position' => '[*] 1 est le moins bon ; 4 est le meilleur',
+      );
+      $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($tab_txt[$this->PAGE_COLONNE]) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
       $this->legende_deja_affichee = TRUE;
     }
     // Saut de page, si pas déjà fait
@@ -419,7 +416,7 @@ class PDF_livret_scolaire extends PDF
         $hauteur_dispo_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
         if($this->lignes_hauteur*$nb_lignes_rubrique > $hauteur_dispo_restante)
         {
-          $this->rappel_eleve_page( TRUE /*$anticipe*/ );
+          $this->rappel_eleve_page($this->PAGE_COLONNE);
         }
         // Domaine d’enseignement
         $memoX = $this->GetX();
@@ -493,21 +490,11 @@ class PDF_livret_scolaire extends PDF
         // contenu
         if($elements_info['saisie_valeur'])
         {
-          $nb_lignes_elements = 0;
           $tab_elements = array();
-          $tab_valeurs = json_decode($elements_info['saisie_valeur'], TRUE);
+          $tab_valeurs = array_slice( json_decode($elements_info['saisie_valeur'], TRUE) , 0 , 3 );
           foreach($tab_valeurs as $texte => $nb_used)
           {
-            if( ($nb_lignes_elements>=4) && ($nb_used==1) )
-            {
-              break;
-            }
             $tab_elements[] = '- '.$texte;
-            $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$this->nb_caract_max_par_colonne) );
-            if($nb_lignes_elements>=6)
-            {
-              break;
-            }
           }
           $elements = implode("\n",$tab_elements);
         }
@@ -584,7 +571,7 @@ class PDF_livret_scolaire extends PDF
       }
     }
     // Légende si pas déjà fait - Nouvelle page si pas déjà fait
-    $this->rappel_eleve_page( FALSE /*$anticipe*/ );
+    $this->rappel_eleve_page();
     // Pour le prochain tirage (autre responsable légal...)
     $this->legende_deja_affichee = FALSE;
     // On calcule la hauteur de la ligne et la taille de la police pour faire rentrer les blocs suivants sur le verso (ou ce qu'il en reste)

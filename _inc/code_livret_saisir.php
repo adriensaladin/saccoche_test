@@ -104,6 +104,22 @@ if( ($ACTION!='initialiser') && ($ACTION!='charger') )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer et mettre en session les infos sur les seuils enregistrés
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
+{
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos( $PAGE_REF , $PAGE_COLONNE );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $id = $DB_ROW['livret_colonne_id'] % 10 ; // 1 2 3 4
+    $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW['livret_seuil_min'];
+    $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW['livret_seuil_max'];
+    $_SESSION['LIVRET'][$id]['LEGENDE']   = $DB_ROW['livret_colonne_legende'];
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cas 1 : enregistrement d'une appréciation / d'un positionnement / d'éléments du programme
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -129,7 +145,7 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
     $tab_saisie   = array();
     foreach($tab_elements as $key => $element)
     {
-      $tab_saisie[$element] = $nb_elements-$key;
+      $tab_saisie[$element] = $nb_elements-$key+1;
     }
     $saisie_valeur = json_encode($tab_saisie);
   }
@@ -169,11 +185,22 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   $bouton_generer_position   = ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>';
   if( ($rubrique_type=='eval') && ($saisie_objet=='elements') )
   {
+    $nb_caract_max_par_colonne = 50;
+    $nb_lignes_elements = 0;
     $tab_elements = array();
-    $tab_valeurs = array_slice( $tab_saisie , 0 , 3 );
+    $tab_valeurs = $tab_saisie;
     foreach($tab_valeurs as $texte => $nb_used)
     {
+      if( ($nb_lignes_elements>=4) && ($nb_used==1) )
+      {
+        break;
+      }
       $tab_elements[] = '<div><span class="notnow">[#'.$nb_used.']</span> '.html($texte).'</div>';
+      $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
+      if($nb_lignes_elements>=6)
+      {
+        break;
+      }
     }
     $saisie_valeur = implode('',$tab_elements);
     Json::end( TRUE , '<div class="elements">'.$saisie_valeur.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_eval_txt).$bouton_modifier.$bouton_supprimer.$bouton_generer.'</div>' );
@@ -216,7 +243,7 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   }
   else if($rubrique_type=='viesco')
   {
-    Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('viesco').'</span><br /><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.'</div>' );
+    Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('viesco').'</span><br /><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.$bouton_generer.'</div>' );
     // Il y a aussi le contenu de #div_assiduite qui est mis de côté puis rajouté en js
   }
 }
@@ -282,7 +309,7 @@ if($ACTION=='supprimer_saisie')
   else if($rubrique_type=='viesco')
   {
     $saisie_valeur = ($BILAN_ETAT=='2rubrique') ? $saisie_valeur_astuce : $saisie_valeur_danger ;
-    Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('viesco').'</span><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter.'</div>' );
+    Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('viesco').'</span><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter.$bouton_generer.'</div>' );
     // Il y a aussi le contenu de #div_assiduite qui est mis de côté puis rajouté en js
   }
 }
@@ -312,11 +339,22 @@ if($ACTION=='recalculer_saisie')
   $bouton_supprimer_position = ' <button type="button" class="supprimer" title="Supprimer le positionnement">&nbsp;</button>';
   if( ($rubrique_type=='eval') && ($saisie_objet=='elements') )
   {
+    $nb_caract_max_par_colonne = 50;
+    $nb_lignes_elements = 0;
     $tab_elements = array();
-    $tab_valeurs = array_slice( json_decode($contenu, TRUE) , 0 , 3 );
+    $tab_valeurs = json_decode($contenu, TRUE);
     foreach($tab_valeurs as $texte => $nb_used)
     {
+      if( ($nb_lignes_elements>=4) && ($nb_used==1) )
+      {
+        break;
+      }
       $tab_elements[] = '<div><span class="notnow">[#'.$nb_used.']</span> '.html($texte).'</div>';
+      $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
+      if($nb_lignes_elements>=6)
+      {
+        break;
+      }
     }
     $saisie_valeur = implode('',$tab_elements);
     Json::end( TRUE , '<div class="elements">'.$saisie_valeur.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.'</div>' );
@@ -346,7 +384,13 @@ if($ACTION=='recalculer_saisie')
   }
   else if($rubrique_type=='bilan')
   {
+    $saisie_valeur = html($contenu);
     Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id).'</span><br /><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.'</div>' );
+  }
+  else if($rubrique_type=='viesco')
+  {
+    $saisie_valeur = html($contenu);
+    Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('viesco',$eleve_id).'</span><br /><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.'</div>' );
   }
 }
 

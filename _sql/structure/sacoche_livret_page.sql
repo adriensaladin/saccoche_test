@@ -9,7 +9,7 @@ CREATE TABLE sacoche_livret_page (
   livret_page_periodicite    ENUM("periode","cycle","college") COLLATE utf8_unicode_ci NOT NULL DEFAULT "periode",
   livret_page_rubrique_type  VARCHAR(10)                       COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   livret_page_rubrique_join  VARCHAR(7)                        COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Modifiable, pour indiquer le type de jointure à utiliser (matiere | domaine | theme | item | user).",
-  livret_page_colonne        VARCHAR(11)                       COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Modifiable pour 6e 5e 4e 3e (moyenne | pourcentage | position).",
+  livret_page_colonne        VARCHAR(11)                       COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Modifiable pour 6e 5e 4e 3e (moyenne | pourcentage | position | objectif).",
   livret_page_moyenne_classe TINYINT(1)                        UNSIGNED                NOT NULL DEFAULT 0  COMMENT "Modifiable pour 6e 5e 4e 3e.",
   livret_page_epi            TINYINT(1)                        UNSIGNED                NOT NULL DEFAULT 0,
   livret_page_ap             TINYINT(1)                        UNSIGNED                NOT NULL DEFAULT 0,

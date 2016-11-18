@@ -86,6 +86,26 @@ $(document).ready
           stacking: 'percent'
         }
       },
+/*
+// Demande http://sesaprof.sesamath.net/forum/viewtopic.php?id=2166
+// Pour afficher les valeurs sans survol : @see http://jsfiddle.net/gh/get/jquery/2.2.4/highslide-software/highcharts.com/tree/master/samples/highcharts/demo/column-stacked/
+// Problème des valeurs 0 affichées (on ne peut pas ne pas les envoyer sinon ça décale tout, et pas trouvé comment ne pas les afficher
+// + Il faut ce choix d'affichage paramétrable (@see http://www.highcharts.com/demo/chart-update), c'est du boulot.
+// Stoppé passé 30 minutes dessus.
+      plotOptions: {
+        column: {
+          stacking: 'percent',
+          dataLabels: {
+            enabled: true
+          }
+        },
+        series: {
+          dataLabels: {
+            enabled: true
+          }
+        }
+      },
+*/
       series: [] // MAJ ensuite
       ,
       credits: {

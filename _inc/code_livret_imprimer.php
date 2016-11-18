@@ -86,6 +86,22 @@ if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrate
 $annee_scolaire = To::annee_scolaire('code');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer et mettre en session les infos sur les seuils enregistrés
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
+{
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos( $PAGE_REF , $PAGE_COLONNE );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $id = $DB_ROW['livret_colonne_id'] % 10 ; // 1 2 3 4
+    $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW['livret_seuil_min'];
+    $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW['livret_seuil_max'];
+    $_SESSION['LIVRET'][$id]['LEGENDE']   = $DB_ROW['livret_colonne_legende'];
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage de la liste des élèves + recalcul des moyennes dans le cas d'impression (sans incidence tant qu'on n'imprime pas, sauf pour la visualisation graphique)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -689,7 +705,7 @@ $tab_archive = array(
 // 'OFFICIEL'  => $_SESSION['OFFICIEL'],  // Pas besoin car pas de bloc adresse sur la version archivée
 if( in_array($PAGE_COLONNE,array('objectif','position')) )
 {
-  $tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // Besoin pour OutilBilan::determiner_degre_maitrise(), uniquement en cas de positionnement sur 4 degrés
+  $tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // Besoin pour OutilBilan::determiner_degre_maitrise(), uniquement en cas de positionnement sans note ni pourcentage
 }
 
 $orientation     = ($PAGE_REF!='cycle1') ? 'portrait' : 'paysage' ;

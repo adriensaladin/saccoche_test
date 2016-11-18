@@ -66,6 +66,22 @@ if( in_array($BILAN_ETAT,array('1vide','5complet')) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer et mettre en session les infos sur les seuils enregistrés
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
+{
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos( $PAGE_REF , $PAGE_COLONNE );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $id = $DB_ROW['livret_colonne_id'] % 10 ; // 1 2 3 4
+    $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW['livret_seuil_min'];
+    $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW['livret_seuil_max'];
+    $_SESSION['LIVRET'][$id]['LEGENDE']   = $DB_ROW['livret_colonne_legende'];
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cas 3 : re-générer une appréciation / un positionnement / des éléments du programme (soit effacé - NULL - soit figé car reporté manuellement)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

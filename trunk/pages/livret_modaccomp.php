@@ -40,7 +40,7 @@ Layout::add( 'js_inline_before' , 'var tab_commentaire = new Array();' );
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_modaccomp">DOC : Réglages du Livret Scolaire &rarr; Modalités d'accompagnement</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_modaccomp">DOC : Administration du Livret Scolaire &rarr; Modalités d'accompagnement</a></span></li>
 </ul>
 
 <hr />

@@ -63,11 +63,6 @@ if(is_file($fichier_section))
   $PAGE = $PAGE.'_'.$SECTION ;
   require($fichier_section);
 }
-else if($SECTION=='export')
-{
-  echo'<p class="travaux">Fonctionnalité disponible ultérieurement (mise à disposition espérée fin novembre 2016).</p>'.NL;
-  return; // Ne pas exécuter la suite de ce fichier inclus.
-}
 else
 {
   echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>'.NL;

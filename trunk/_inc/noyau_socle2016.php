@@ -167,12 +167,13 @@ if($liste_item_id)
 // Récupérer et mettre en session les seuils pour les degrés de maîtrise du livret
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_seuils_valeurs('cycle'.$cycle_id);
-foreach($DB_TAB as $livret_colonne_id => $DB_ROW)
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos('cycle'.$cycle_id);
+foreach($DB_TAB as $DB_ROW)
 {
-  $id = $livret_colonne_id % 10 ; // 1 2 3 4
-  $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW[0]['livret_seuil_min'];
-  $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW[0]['livret_seuil_max'];
+  $id = $DB_ROW['livret_colonne_id'] % 10 ; // 1 2 3 4
+  $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW['livret_seuil_min'];
+  $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW['livret_seuil_max'];
+  $_SESSION['LIVRET'][$id]['LEGENDE']   = $DB_ROW['livret_colonne_legende'];
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

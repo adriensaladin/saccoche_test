@@ -81,7 +81,7 @@ foreach($DB_TAB as $DB_ROW)
 
 <ul class="puce">
   <li><span class="astuce">Effectuer dans l'ordre les étapes ci-dessus.</span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire">DOC : Réglages du Livret Scolaire</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire">DOC : Administration du Livret Scolaire</a></span></li>
 </ul>
 
 <hr />

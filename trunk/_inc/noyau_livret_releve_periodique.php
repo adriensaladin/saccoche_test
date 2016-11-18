@@ -235,6 +235,15 @@ foreach($DB_TAB as $DB_ROW)
   }
 }
 
+// Communication avec la famille
+if( $PAGE_VIE_SCOLAIRE )
+{
+  $is_cpe = ($_SESSION['USER_PROFIL_SIGLE']=='EDU') ? TRUE : FALSE ;
+  $is_dir = ($_SESSION['USER_PROFIL_SIGLE']=='DIR') ? TRUE : FALSE ;
+  $is_pp  = ( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && DB_STRUCTURE_PROFESSEUR::DB_tester_prof_principal($_SESSION['USER_ID'],$classe_id) ) ? $_SESSION['USER_ID'] : 0 ;
+  $is_acces_viesco = $is_cpe || $is_dir || $is_pp ;
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 /* 
  * Libérer de la place mémoire car les scripts de bilans sont assez gourmands.
@@ -250,9 +259,11 @@ unset($DB_TAB);
 // Compter le nombre de lignes à afficher par élève et par rubrique
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+$nb_caract_max_par_ligne   = 150;
+$nb_caract_max_par_colonne = 50;
+
 if($make_pdf)
 {
-
   $tab_nb_lignes = array();
   $tab_nb_lignes_eleve_eval = array();
   $tab_nb_lignes_eleve_eval_total = array();
@@ -264,8 +275,6 @@ if($make_pdf)
   $nb_lignes_eval_tete = 2;
   $nb_lignes_pos_legende = in_array($PAGE_COLONNE,array('moyenne','pourcentage')) ? 0 : 1 ;
   $app_rubrique_longueur = min($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'],600); // max 600 spécification LSU
-  $nb_caract_max_par_ligne   = 150;
-  $nb_caract_max_par_colonne = 50;
 
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
@@ -303,11 +312,20 @@ if($make_pdf)
         $nb_lignes_elements = 0;
         if($elements_info['saisie_valeur'])
         {
-          $tab_valeurs = array_slice( json_decode($elements_info['saisie_valeur'], TRUE) , 0 , 3 );
+          $tab_valeurs = json_decode($elements_info['saisie_valeur'], TRUE);
           foreach($tab_valeurs as $texte => $nb_used)
           {
-            $nb_lignes_elements += min( 2 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
+            if( ($nb_lignes_elements>=4) && ($nb_used==1) )
+            {
+              break;
+            }
+            $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
+            if($nb_lignes_elements>=6)
+            {
+              break;
+            }
           }
+          $nb_lignes_elements = max( 2 , $nb_lignes_elements );
         }
         // Acquisitions, progrès et difficultés éventuelles
         $nombre_rubriques_regroupees = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) : 0 ;
@@ -457,6 +475,17 @@ if( ($make_html) || ($make_graph) )
   $bouton_print_appr = (!$make_graph)                                       ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
   $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
   $releve_HTML = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
+  // légende
+  if( ($PAGE_COLONNE=='objectif') || ($PAGE_COLONNE=='position') )
+  {
+    $positionnement_texte = ($PAGE_COLONNE=='objectif') ? 'Objectifs d’apprentissage' : 'Positionnement' ;
+    $positionnement_title = array();
+    foreach($_SESSION['LIVRET'] as $id => $tab)
+    {
+      $positionnement_title[] = html($id.' = '.$tab['LEGENDE']);
+    }
+    $legende_positionnement = $positionnement_texte.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.implode('<br />',$positionnement_title).'" />';
+  }
 }
 
 if($make_pdf)
@@ -611,11 +640,21 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 {
                   if($elements_info['saisie_valeur'])
                   {
+                    $nb_lignes_elements = 0;
                     $tab_elements = array();
-                    $tab_valeurs = array_slice( json_decode($elements_info['saisie_valeur'], TRUE) , 0 , 3 );
+                    $tab_valeurs = json_decode($elements_info['saisie_valeur'], TRUE);
                     foreach($tab_valeurs as $texte => $nb_used)
                     {
+                      if( ($nb_lignes_elements>=4) && ($nb_used==1) )
+                      {
+                        break;
+                      }
                       $tab_elements[] = '<div><span class="notnow">[#'.$nb_used.']</span> '.html($texte).'</div>';
+                      $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
+                      if($nb_lignes_elements>=6)
+                      {
+                        break;
+                      }
                     }
                     $elements = implode('',$tab_elements);
                     $origine = ($elements_info['saisie_origine']=='calcul') ? 'Généré automatiquement' : 'Validé par '.html($tab_profs[$elements_info['prof_id']]) ;
@@ -722,20 +761,9 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               $releve_HTML .= '<th'.$rowspan.'>Principaux éléments du programme travaillés</th>';
             }
             $releve_HTML .= '<th'.$rowspan.'>Acquisitions, progrès et difficultés éventuelles</th>';
-            if( ($PAGE_COLONNE=='objectif') && ( $eleve_id || $PAGE_MOYENNE_CLASSE ) )
+            if( ( ($PAGE_COLONNE=='objectif') || ($PAGE_COLONNE=='position') ) && ( $eleve_id || $PAGE_MOYENNE_CLASSE ) )
             {
-              $releve_HTML .= '<th colspan="4" class="eval">Objectifs d’apprentissage <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="1 = Non atteints<br />2 = Partiellement atteints<br />3 = Atteints<br />4 = Dépassés" /></th><th class="nu"></th>';
-              $tab_th = array();
-              foreach($_SESSION['LIVRET'] as $id => $tab)
-              {
-                $tab_th[] = '<th class="pos'.$id.'">'.$id.'<img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="de '.$tab['SEUIL_MIN'].' à '.$tab['SEUIL_MAX'].'" /></th>';
-              }
-              $tab_th[] = '<th class="nu"></th>';
-              $head_ligne2 = '<tr>'.implode('',$tab_th).'</tr>';
-            }
-            else if( ($PAGE_COLONNE=='position') && ( $eleve_id || $PAGE_MOYENNE_CLASSE ) )
-            {
-              $releve_HTML .= '<th colspan="4" class="eval">Positionnement <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="de 1 pour le moins bon à 4 pour le meilleur" /></th><th class="nu"></th>';
+              $releve_HTML .= '<th colspan="4" class="eval">'.$legende_positionnement.'</th><th class="nu"></th>';
               $tab_th = array();
               foreach($_SESSION['LIVRET'] as $id => $tab)
               {
@@ -991,7 +1019,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $appreciation = html($bilan_info['saisie_valeur']);
             $origine = ($bilan_info['saisie_origine']=='bulletin') ? ' Report automatique du bulletin' : ' Dernière saisie par '.html($tab_profs[$bilan_info['prof_id']]) ;
             $actions = ($make_action=='tamponner') ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-            $actions.= ( ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
+            $actions.= ( ($make_action=='tamponner') && ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
             if( ($make_action=='consulter') && in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')) && ($bilan_info['prof_id']!=$_SESSION['USER_ID']) )
             {
               $actions .= ' <button type="button" class="signaler">Signaler une faute</button>';
@@ -1019,7 +1047,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       if( $PAGE_VIE_SCOLAIRE && $eleve_id )
       {
         // Collège
-        $is_cpe = ($_SESSION['USER_PROFIL_SIGLE']=='EDU') ? TRUE : FALSE ;
         $viesco_info = isset($tab_saisie[$eleve_id]['viesco'][0]['appreciation']) ? $tab_saisie[$eleve_id]['viesco'][0]['appreciation'] : $tab_saisie_initialisation ;
         $texte_assiduite = texte_ligne_assiduite($tab_assiduite[$eleve_id]);
         if($make_pdf)
@@ -1046,7 +1073,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         }
         else
         {
-          if( $make_html && ( ($make_action=='consulter') || $is_cpe ) )
+          if( $make_html && ( ($make_action=='consulter') || $is_acces_viesco ) )
           {
             $releve_HTML .= '<h4 class="viesco">Communication avec la famille</h4>'.NL;
             $releve_HTML .= '<div class="viesco">'.NL;
@@ -1054,9 +1081,9 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             {
               $br = '<br />';
               $appreciation = html($viesco_info['saisie_valeur']);
-              $origine = ' Dernière saisie par '.html($tab_profs[$viesco_info['prof_id']]);
-              $actions = ( $is_cpe && in_array($make_action,array('modifier','tamponner')) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-              if( in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')) && !$is_cpe )
+              $origine = ($bilan_info['saisie_origine']=='bulletin') ? ' Report automatique du bulletin' : ' Dernière saisie par '.html($tab_profs[$viesco_info['prof_id']]) ;
+              $actions = ( $is_acces_viesco && in_array($make_action,array('modifier','tamponner')) ) ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
+              if( in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')) && !$is_acces_viesco )
               {
                 $actions .= ' <button type="button" class="signaler">Signaler une faute</button>';
                 if($droit_corriger_appreciation) { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }
@@ -1067,7 +1094,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               $br = '';
               $appreciation = ($BILAN_ETAT=='2rubrique') ? '<span class="astuce">Absence de saisie.</span>' : '<span class="danger">Absence de saisie !</span>' ;
               $origine = ($viesco_info['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$viesco_info['prof_id']]) : '' ;
-              $actions = ( $is_cpe && in_array($make_action,array('modifier','tamponner')) ) ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
+              $actions = ( $is_acces_viesco && in_array($make_action,array('modifier','tamponner')) ) ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
+              $actions.= ( $is_acces_viesco && in_array($make_action,array('modifier','tamponner')) && ($bilan_info['saisie_origine']=='saisie') && ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
             }
             $texte_assiduite = ($affichage_assiduite) ? '<div id="div_assiduite" class="notnow i">'.texte_ligne_assiduite($tab_assiduite[$eleve_id]).'</div>' : '' ;
             $releve_HTML .= '<div id="viesco_0_appreciation">';
@@ -1109,7 +1137,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         $releve_HTML .= '<p />'.NL;
       }
       // Absences et retard
-      if( $PAGE_VIE_SCOLAIRE && ($affichage_assiduite) && empty($is_appreciation_groupe) && !$is_cpe && ($make_action!='consulter') && ( ($make_html) || ($make_graph) ) )
+      if( $PAGE_VIE_SCOLAIRE && ($affichage_assiduite) && empty($is_appreciation_groupe) && !$is_acces_viesco && ($make_action!='consulter') && ( ($make_html) || ($make_graph) ) )
       {
         $releve_HTML .= '<div class="i">'.texte_ligne_assiduite($tab_assiduite[$eleve_id]).'</div>'.NL;
       }

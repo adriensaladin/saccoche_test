@@ -137,7 +137,7 @@ define('CHEMIN_DOSSIER_TMP'           , CHEMIN_DOSSIER_SACOCHE.'__tmp'.DS);
 define('CHEMIN_DOSSIER_IMG'           , CHEMIN_DOSSIER_SACOCHE.'_img'.DS);
 define('CHEMIN_DOSSIER_INCLUDE'       , CHEMIN_DOSSIER_SACOCHE.'_inc'.DS);
 define('CHEMIN_DOSSIER_FPDF_FONT'     , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'FPDF'.DS.'font'.DS);
-define('CHEMIN_DOSSIER_PDF'           , CHEMIN_DOSSIER_SACOCHE.'_pdf'.DS);
+define('CHEMIN_DOSSIER_PDF'           , CHEMIN_DOSSIER_SACOCHE.'_pdf'.DS); // TODO : supprimer ce dossier et con contenu qui alourdit inutilement l'application (les fiches brevet seront obsolètes et le LSU peut être mis sur le serveur communautaire)
 define('CHEMIN_DOSSIER_SQL'           , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS);
 define('CHEMIN_DOSSIER_SQL_STRUCTURE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'structure'.DS);
 define('CHEMIN_DOSSIER_SQL_WEBMESTRE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'webmestre'.DS);

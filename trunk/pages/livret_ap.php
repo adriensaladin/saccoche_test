@@ -31,7 +31,7 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Accompagnemen
 
 <ul class="puce">
   <li><span class="astuce">L'<b>Accompagnement Personnalisé</b> mis en place à compter de la rentrée 2016 concerne les <b>élèves du Collège</b>.</span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_ap">DOC : Réglages du Livret Scolaire &rarr; Accompagnement Personnalisé</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_ap">DOC : Administration du Livret Scolaire &rarr; Accompagnement Personnalisé</a></span></li>
 </ul>
 
 <hr />

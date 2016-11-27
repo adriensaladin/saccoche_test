@@ -212,7 +212,7 @@ public static function DB_recuperer_periode_info( $periode_livret , $classe_id )
  */
 public static function DB_recuperer_page_groupe_info( $groupe_id , $page_ref , $page_periodicite , $jointure_periode )
 {
-  $DB_SQL = 'SELECT jointure_etat, jointure_date_verrou, sacoche_livret_page.*, groupe_nom ';
+  $DB_SQL = 'SELECT jointure_etat, jointure_date_verrou, sacoche_livret_page.*, groupe_ref, groupe_nom ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING (livret_page_ref) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
@@ -361,7 +361,7 @@ public static function DB_lister_rubriques( $rubrique_type , $for_edition )
     {
       $rubrique_nom = 'matiere_nom AS rubrique, NULL AS sous_rubrique ' ;
       $rubrique_ids = ', matiere_id AS rubrique_id_elements, matiere_id AS rubrique_id_appreciation, matiere_id AS rubrique_id_position ' ;
-      $livret_ids   = ', matiere_code AS rubrique_id_livret ' ;
+      $livret_ids   = ', matiere_code AS rubrique_id_livret, matiere_siecle ' ;
       $order_by     = 'matiere_ordre ASC ';
     }
     else
@@ -501,7 +501,7 @@ public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , 
   }
   if( $rubrique_join == 'item' )
   {
-    $DB_SQL.= 'INNER JOIN sacoche_referentiel_item ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_theme.item_id ';
+    $DB_SQL.= 'INNER JOIN sacoche_referentiel_item ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_item.item_id ';
     $DB_SQL.= 'INNER JOIN sacoche_referentiel_theme USING (theme_id) ';
     $DB_SQL.= 'INNER JOIN sacoche_referentiel_domaine USING (domaine_id) ';
     $DB_SQL.= 'INNER JOIN sacoche_matiere USING (matiere_id) ';
@@ -879,9 +879,23 @@ public static function DB_modifier_legende( $colonne_id , $colonne_legende )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
+ * tester_jointure_classe_livret
+ *
+ * @param string $liste_page_ref
+ * @return int
+ */
+public static function DB_tester_jointure_classe_livret($liste_page_ref)
+{
+  $DB_SQL = 'SELECT COUNT(*) ';
+  $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
+  $DB_SQL.= 'WHERE livret_page_ref IN('.$liste_page_ref.') ';
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * lister_jointures_classes_livret
  *
- * @param int   $groupe_id   facultatif, pour restreindre à une classe donnée
+ * @param void
  * @return array
  */
 public static function DB_lister_jointures_classes_livret()
@@ -983,6 +997,29 @@ public static function DB_modifier_jointure_groupe( $groupe_id , $page_ref , $pa
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::rowCount(SACOCHE_STRUCTURE_BD_NAME);
+}
+
+/**
+ * modifier_jointure_date_export
+ *
+ * @param int      $groupe_id    id du groupe (en fait, obligatoirement une classe)
+ * @param string   $page_ref
+ * @param string   $page_periodicite
+ * @param string   $jointure_periode
+ * @return void
+ */
+public static function DB_modifier_jointure_date_export( $groupe_id , $page_ref , $page_periodicite , $jointure_periode )
+{
+  $DB_SQL = 'UPDATE sacoche_livret_jointure_groupe ';
+  $DB_SQL.= 'SET jointure_date_export=NOW() ';
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND livret_page_periodicite=:page_periodicite AND jointure_periode=:jointure_periode ';
+  $DB_VAR = array(
+    ':groupe_id'        => $groupe_id,
+    ':page_ref'         => $page_ref,
+    ':page_periodicite' => $page_periodicite,
+    ':jointure_periode' => $jointure_periode,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2039,6 +2076,62 @@ public static function DB_recuperer_elements_programme( $liste_eleve_id , $liste
     ':date_fin'   => $date_mysql_fin,
   );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Export LSU
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * DB_ajouter_livret_export_eleve
+ *
+ * @param int     $user_id
+ * @param string  $livret_page_ref
+ * @param string  $livret_page_periodicite
+ * @param string  $jointure_periode
+ * @param string  $sacoche_version
+ * @param string  $export_contenu
+ * @return int
+ */
+public static function DB_ajouter_livret_export_eleve( $user_id , $livret_page_ref , $livret_page_periodicite , $jointure_periode , $sacoche_version , $export_contenu )
+{
+  // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
+  // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
+  $DB_SQL = 'INSERT INTO sacoche_livret_export ( user_id,  livret_page_ref,  livret_page_periodicite,  jointure_periode,  sacoche_version,  export_contenu) ';
+  $DB_SQL.= 'VALUES                            (:user_id, :livret_page_ref, :livret_page_periodicite, :jointure_periode, :sacoche_version, :export_contenu) ';
+  $DB_SQL.= 'ON DUPLICATE KEY UPDATE sacoche_version=:sacoche_version, export_contenu=:export_contenu ';
+  $DB_VAR = array(
+    ':user_id'                 => $user_id,
+    ':livret_page_ref'         => $livret_page_ref,
+    ':livret_page_periodicite' => $livret_page_periodicite,
+    ':jointure_periode'        => $jointure_periode,
+    ':sacoche_version'         => $sacoche_version,
+    ':export_contenu'          => $export_contenu,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * DB_lister_livret_export_eleves
+ *
+ * @param string $liste_eleve
+ * @param string  $livret_page_periodicite   facultatif, chaine vide pour toutes périodes
+ * @param string  $jointure_periode   facultatif, chaine vide pour toutes périodes
+ * @return array
+ */
+public static function DB_lister_livret_export_eleves( $liste_eleve , $livret_page_periodicite , $jointure_periode )
+{
+  $where_page_periodicite = ($livret_page_periodicite) ? 'AND livret_page_periodicite=:livret_page_periodicite ' : '' ;
+  $where_jointure_periode = ($jointure_periode)        ? 'AND jointure_periode=:jointure_periode '               : '' ;
+  $DB_SQL = 'SELECT user_id, sacoche_version, export_contenu ';
+  $DB_SQL.= 'FROM sacoche_livret_export ';
+  $DB_SQL.= 'WHERE user_id IN('.$liste_eleve.') '.$where_page_periodicite.$where_jointure_periode;
+  $DB_SQL.= 'ORDER BY livret_page_ref ASC, jointure_periode ASC, user_id ASC ';
+  $DB_VAR = array(
+    ':livret_page_periodicite' => $livret_page_periodicite,
+    ':jointure_periode'        => $jointure_periode,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 }

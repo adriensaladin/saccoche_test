@@ -60,6 +60,10 @@ if($import_origine=='sconet')
     $annee_scolaire = To::annee_scolaire('siecle');
     $nom_fichier_extrait = 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml';
   }
+  else if($import_profil=='nomenclature')
+  {
+    $nom_fichier_extrait = 'Nomenclature.xml';
+  }
 }
 // Récupération du fichier
 $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_dest_nom /*fichier_nom*/ , $tab_extensions_autorisees , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , $nom_fichier_extrait /*filename_in_zip*/ );
@@ -70,7 +74,10 @@ if($result!==TRUE)
 // On affiche le bilan et les puces des étapes
 $msg_type_analyse = ($mode=='complet') ? '<p class="astuce">Affichage complet des analyses et des comptes-rendus.</p>' : '<p class="astuce">Analyse restreinte aux seules différences trouvées et comptes-rendus non détaillés.</p>'.NL;
 Json::add_str('<hr />'.NL);
-Json::add_str($msg_type_analyse);
+if($import_profil!='nomenclature')
+{
+  Json::add_str($msg_type_analyse);
+}
 Json::add_str( afficher_etapes($import_origine,$import_profil) );
 Json::add_str('<hr />'.NL);
 Json::add_str('<fieldset>'.NL);

@@ -276,7 +276,7 @@ if( count( array_intersect( $tab_page_ref , array('6e','5e','4e','3e','cycle1','
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_livret_scolaire">DOC : Bilan officiel &rarr; Livret Scolaire</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_edition">DOC : Bilan officiel &rarr; Livret Scolaire</a></span></li>
   <?php echo implode('',$tab_puce_info); ?>
   <li><span class="astuce"><?php echo($affichage_formulaire_statut) ? 'Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.' : '<a title="'.$profils_modifier_statut.'" href="#">Profils pouvant modifier le statut d\'un bilan.</a>' ; ?></span></li>
 </ul>
@@ -415,6 +415,7 @@ $tab_modif_rubrique = array
 
 // Javascript : tableau utilisé pour désactiver des options d'un select.
 Layout::add( 'js_inline_before' , 'var tab_disabled = new Array();' );
+Layout::add( 'js_inline_before' , 'var tab_bilan_page_ref = new Array();' );
 Layout::add( 'js_inline_before' , 'tab_disabled["examiner"] = new Array();' );
 Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"] = new Array();' );
 Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"] = new Array();' );
@@ -546,6 +547,7 @@ foreach($tab_classe as $classe_id => $tab)
         Layout::add( 'js_inline_before' , 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'_'.$periode.'"]='.$disabled_examiner.';' );
         Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'_'.$periode.'"]='.$disabled_imprimer.';' );
         Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'_'.$periode.'"]='.$disabled_voir_pdf.';' );
+        Layout::add( 'js_inline_before' , 'tab_bilan_page_ref["'.$classe_id.'_'.$groupe_id.'_'.$periode.'"]="'.$page_ref.'";' );
       }
       else
       {
@@ -659,7 +661,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
   <div id="zone_imprimer" class="hide">
     <p>
       <span class="danger">L'impression finale devrait être effectuée une unique fois lorsque le bilan est complet.</span><br />
-      <span class="astuce">Pour tester l'impression d'un bilan non finalisé, utiliser la fonctionnalité de <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_simuler_impression">simulation de l'impression finale</a></span>.</span>
+      <span class="astuce">Pour tester l'impression d'un bilan non finalisé, utiliser la fonctionnalité de <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__simuler_impression">simulation de l'impression finale</a></span>.</span>
     </p>
     <form action="#" method="post" id="form_choix_eleves">
       <table id="table_action" class="form t9">
@@ -778,7 +780,7 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
 
 <div id="zone_archiver_imprimer" class="hide">
   <h2>Archiver / Imprimer des données</h2>
-  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_imprimer_saisies">DOC : Imprimer tableaux notes / appréciations.</a></span></p>
+  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__imprimer_saisies">DOC : Imprimer tableaux notes / appréciations.</a></span></p>
   <p class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</p>
   <ul class="puce">
     <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève et le groupe classe.</li>

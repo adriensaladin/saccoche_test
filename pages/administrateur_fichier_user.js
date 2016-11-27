@@ -43,7 +43,7 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr('class').html('&nbsp;');
         // Masquer tout
-        $('#span_mode , #fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base_eleves_eleves , #fieldset_base_eleves_parents , #fieldset_factos_eleves , #fieldset_factos_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
+        $('#span_mode , #fieldset_sconet_nomenclature_non , #fieldset_sconet_nomenclature_oui , #fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base_eleves_eleves , #fieldset_base_eleves_parents , #fieldset_factos_eleves , #fieldset_factos_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
         // Puis afficher ce qu'il faut
         f_action = $(this).val();
         $('#f_action').val(f_action);
@@ -52,7 +52,7 @@ $(document).ready
                if(f_action.indexOf('eleves')     !=-1) { $('#f_mode_'+check_eleve     ).prop('checked',true); }
           else if(f_action.indexOf('parents')    !=-1) { $('#f_mode_'+check_parent    ).prop('checked',true); }
           else if(f_action.indexOf('professeurs')!=-1) { $('#f_mode_'+check_professeur).prop('checked',true); }
-          $('#span_mode').show(0);
+          if(f_action.indexOf('nomenclature')    ==-1) { $('#span_mode').show(0); }
           $('#fieldset_'+f_action).show(0);
         }
       }

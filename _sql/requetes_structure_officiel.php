@@ -475,14 +475,14 @@ public static function DB_lister_bilan_officiel_fichiers( $officiel_type , $peri
  * lister_officiel_assiduite
  *
  * @param int    $periode_id
- * @param array  $tab_eleve_id
+ * @param string  $liste_eleve_id
  * @return array
  */
-public static function DB_lister_officiel_assiduite( $periode_id , $tab_eleve_id )
+public static function DB_lister_officiel_assiduite( $periode_id , $liste_eleve_id )
 {
   $DB_SQL = 'SELECT user_id, assiduite_absence, assiduite_absence_nj, assiduite_retard, assiduite_retard_nj ';
   $DB_SQL.= 'FROM sacoche_officiel_assiduite ';
-  $DB_SQL.= 'WHERE periode_id=:periode_id AND user_id IN ('.implode(',',$tab_eleve_id).') ';
+  $DB_SQL.= 'WHERE periode_id=:periode_id AND user_id IN ('.$liste_eleve_id.') ';
   $DB_VAR = array(':periode_id'=>$periode_id);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

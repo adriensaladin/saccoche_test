@@ -66,7 +66,8 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
     <select id="f_choix_principal" name="f_choix_principal">
       <option value="">&nbsp;</option>
       <optgroup label="Fichiers extraits de Siècle / STS-Web (recommandé pour le second degré)">
-        <option value="sconet_professeurs_directeurs_<?php echo $test_UAI ?>">Importer professeurs &amp; directeurs (avec leurs affectations).</option>
+        <option value="sconet_nomenclature_<?php echo $test_UAI ?>">Importer les nomenclatures (pour le LSU).</option>
+        <option value="sconet_professeurs_directeurs_<?php echo $test_UAI ?>">Importer les professeurs &amp; directeurs (avec leurs affectations).</option>
         <option value="sconet_eleves_<?php echo $test_UAI ?>">Importer les élèves (avec leurs affectations).</option>
         <option value="sconet_parents_<?php echo $test_UAI ?>">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
@@ -79,7 +80,7 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
         <option value="factos_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
       <optgroup label="Fichiers fabriqués avec un tableur (hors Éducation Nationale française)">
-        <option value="tableur_professeurs_directeurs">Importer professeurs &amp; directeurs (avec leurs affectations).</option>
+        <option value="tableur_professeurs_directeurs">Importer les professeurs &amp; directeurs (avec leurs affectations).</option>
         <option value="tableur_eleves">Importer les élèves (avec leurs affectations).</option>
         <option value="tableur_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
@@ -89,6 +90,20 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
       <label for="f_mode_complet"><input type="radio" id="f_mode_complet" name="f_mode" value="complet" /> bilan complet (import de début d'année)</label>&nbsp;&nbsp;&nbsp;
       <label for="f_mode_partiel"><input type="radio" id="f_mode_partiel" name="f_mode" value="partiel" /> seulement les différences trouvées (mise à jour en cours d'année)</label>
     </span>
+  </fieldset>
+
+  <fieldset id="fieldset_sconet_nomenclature_non" class="hide">
+    <hr />
+    <label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
+    <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voir la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
+  </fieldset>
+
+  <fieldset id="fieldset_sconet_nomenclature_oui" class="hide">
+    <hr />
+    <ul class="puce">
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
+      <li>Indiquez le fichier <em>Nomenclature.xml</em> (ou Nomenclature.zip</em>) : <button id="sconet_nomenclature" type="button" class="fichier_import">Parcourir...</button></li>
+    </ul>
   </fieldset>
 
   <fieldset id="fieldset_sconet_professeurs_directeurs_non" class="hide">

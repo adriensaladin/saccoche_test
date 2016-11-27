@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Notation / Se
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_seuils">DOC : Administration du Livret Scolaire &rarr; Notation / Seuils</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_seuils">DOC : Administration du Livret Scolaire &rarr; Notation / Seuils</a></span></li>
 </ul>
 
 <?php
@@ -85,7 +85,7 @@ foreach($DB_TAB_pages as $DB_ROW_page)
     $is_page_choix_positionnement = in_array( $DB_ROW_page['livret_page_rubrique_type'] , array('c3_matiere','c4_matiere') ) ? TRUE : FALSE ;
     $tab_indice_colonne = (!$is_page_choix_positionnement) ? array( $DB_ROW_page['livret_page_colonne'] ) : array( 'objectif','position' ) ;
     $etat_nb = (!$is_page_choix_positionnement) ? count($DB_TAB_colonnes[$DB_ROW_page['livret_page_colonne']]) : 4 ;
-    $vignette = '<a href="'.URL_DIR_PDF.'livret_'.$DB_ROW_page['livret_page_ref'].'_original.pdf" class="fancybox" rel="gallery" data-titre="'.html($DB_ROW_page['livret_page_moment'].' : '.$DB_ROW_page['livret_page_resume']).'"><span class="livret livret_float_seuils livret_'.$DB_ROW_page['livret_page_ref'].'"></span></a>';
+    $vignette = '<a href="'.SERVEUR_LSU_PDF.'livret_'.$DB_ROW_page['livret_page_ref'].'.pdf" class="fancybox" rel="gallery" data-titre="'.html($DB_ROW_page['livret_page_moment'].' : '.$DB_ROW_page['livret_page_resume']).'"><span class="livret livret_float_seuils livret_'.$DB_ROW_page['livret_page_ref'].'"></span></a>';
     $objet = str_replace($tab_bad,$tab_bon,$DB_ROW_page['livret_page_resume']);
     $etat_txt = (!$is_page_choix_positionnement)
               ? '<b>'.$etat_nb.' '.$tab_etat_txt[$DB_ROW_page['livret_page_colonne']].'</b>'

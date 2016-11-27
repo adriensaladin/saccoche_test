@@ -186,7 +186,7 @@ public static function DB_recuperer_et_verifier_listing_comptes_associes($user_i
     if($user_liste != substr($user_switch_liste,1,-1))
     {
       // On a trouvé une différence...
-      if($user_liste===$user_id) // si test == le transtypage convertit en entier qui ne garde que la première valeur, donc renvoie toujours TRUE
+      if($user_liste==$user_id)
       {
         // Si seul le compte utilisé est envore actif, alors il n'y a plus de liaison
         DB_STRUCTURE_SWITCH::DB_supprimer_comptes_associes($user_switch_id);

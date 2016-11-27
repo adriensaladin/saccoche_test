@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Étape n°2 - Indiquer les référentiels à utiliser et 
 ?>
 
 <p>
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__notanet_fiches_brevet#toggle_etape2_epreuves">DOC : Notanet &amp; Fiches brevet &rarr; Définition des épreuves</a></span><br />
+  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__notanet_fiches_brevet#toggle_etape2_epreuves">DOC : Notanet &amp; Fiches brevet &rarr; Définition des épreuves</a></span><br />
   <span class="astuce">Il importe de soigner cette configuration, qui détermine les notes extraites à l'étape suivante.</span>
 </p>
 <hr />

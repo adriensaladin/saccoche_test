@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Rubriques / L
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_liaisons">DOC : Administration du Livret Scolaire &rarr; Rubriques / Liaisons</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_liaisons">DOC : Administration du Livret Scolaire &rarr; Rubriques / Liaisons</a></span></li>
 </ul>
 
 <?php
@@ -61,7 +61,7 @@ foreach($DB_TAB as $DB_ROW)
     $tab_sousmenu[$DB_ROW['livret_page_rubrique_type']][$class]['page_ref'][]    = $DB_ROW['livret_page_ref'];
     $tab_sousmenu[$DB_ROW['livret_page_rubrique_type']][$class]['page_moment'][] = $DB_ROW['livret_page_moment'];
     $tab_sousmenu[$DB_ROW['livret_page_rubrique_type']][$class]['rubrique_join'] = $DB_ROW['livret_page_rubrique_join'];
-    $tab_sousmenu[$DB_ROW['livret_page_rubrique_type']][$class]['vignette'][]    = '<a href="'.SERVEUR_LSU_PDF.'livret_'.$DB_ROW['livret_page_ref'].'.pdf" class="fancybox" rel="gallery" data-titre="'.html($DB_ROW['livret_page_moment'].' : '.$DB_ROW['livret_page_resume']).'"><span class="livret livret_float_liaisons livret_'.$DB_ROW['livret_page_ref'].'"></span></a>';
+    $tab_sousmenu[$DB_ROW['livret_page_rubrique_type']][$class]['vignette'][]    = '<a href="'.URL_DIR_PDF.'livret_'.$DB_ROW['livret_page_ref'].'_original.pdf" class="fancybox" rel="gallery" data-titre="'.html($DB_ROW['livret_page_moment'].' : '.$DB_ROW['livret_page_resume']).'"><span class="livret livret_float_liaisons livret_'.$DB_ROW['livret_page_ref'].'"></span></a>';
   }
 }
 $SOUS_MENU .= '<br />';
@@ -224,6 +224,7 @@ foreach($tab_rubrique as $rubrique_id => $tab_info)
 
 if($liaison_rubrique_type=='matiere')
 {
+  
   if(DB_STRUCTURE_MATIERE::DB_tester_matiere_siecle())
   {
     $DB_ROW = DB_STRUCTURE_SIECLE::DB_recuperer_import_date_annee('sts_emp_UAI');
@@ -244,7 +245,7 @@ if($liaison_rubrique_type=='matiere')
   }
   else
   {
-    $texte_info_rubriques = "Aucun import <em>siecle</em> trouvé : les rubriques actuellement enregistrées sont celles de vos référentiels <em>SACoche</em>.";
+    $texte_info_rubriques = "Aucun import <em>siecle</em> trouvé : les rubriques actuellement enregistrées sont celles du modèle de <em>Livret Scolaire</em> officiel.";
   }
 }
 

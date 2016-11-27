@@ -420,9 +420,8 @@ if( ($action=='afficher_formulaire_manuel') && $periode_id && $groupe_id )
     $tab_eleves[$DB_ROW['user_id']] = $DB_ROW['user_nom'].' '.$DB_ROW['user_prenom'];
   }
   // liste des saisies
-  $liste_eleve_id = implode(',',array_keys($tab_eleves));
   $tab_assiduite = array();
-  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_assiduite( $periode_id , $liste_eleve_id );
+  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_assiduite( $periode_id , array_keys($tab_eleves) );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_assiduite[$DB_ROW['user_id']] = array(

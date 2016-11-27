@@ -126,17 +126,17 @@ $(document).ready
                 var vignettes = '';
                 if(f_periode)
                 {
-                  vignettes += '<a href="'+SERVEUR_LSU_PDF+'livret_'+f_periode+'.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_periode_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_periode+'"></span></a>';
+                  vignettes += '<a href="'+URL_DIR_PDF+'livret_'+f_periode+'_original.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_periode_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_periode+'"></span></a>';
                   td_class = 'bv';
                 }
                 if(f_cycle)
                 {
-                  vignettes += '<a href="'+SERVEUR_LSU_PDF+'livret_'+f_cycle+'.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_cycle_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_cycle+'"></span></a>';
+                  vignettes += '<a href="'+URL_DIR_PDF+'livret_'+f_cycle+'_original.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_cycle_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_cycle+'"></span></a>';
                   td_class = 'bv';
                 }
                 if(f_college)
                 {
-                  vignettes += '<a href="'+SERVEUR_LSU_PDF+'livret_'+f_college+'.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_college_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_college+'"></span></a>';
+                  vignettes += '<a href="'+URL_DIR_PDF+'livret_'+f_college+'_original.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_college_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_college+'"></span></a>';
                   td_class = 'bv';
                 }
                 obj_td.prev('td').attr('class',td_class);

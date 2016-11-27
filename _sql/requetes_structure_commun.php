@@ -1842,7 +1842,6 @@ public static function DB_OPT_officiel_archive_annee()
 
 /**
  * Retourner un tableau [valeur texte] des années scolaires des bilans officiels archivés
- * MAX() pour éviter la remontée de "Trimestre 1/3" et de "Premier trimestre" qui ont le même identifiant.
  * TODO : A TERME IL FAUDRA REPENSER UNE SELECTION SUR L'ETABLISSEMENT EN AMONT (SI PLUSIEURS ETABLISSEMENTS ALORS PAS DE CHOIX DE PERIODE)
  *
  * @param string $annee_scolaire
@@ -1850,30 +1849,12 @@ public static function DB_OPT_officiel_archive_annee()
  */
 public static function DB_OPT_officiel_periode($annee_scolaire)
 {
-  $DB_SQL = 'SELECT DISTINCT periode_id AS valeur, MAX(periode_nom) AS texte ';
+  $DB_SQL = 'SELECT DISTINCT periode_id AS valeur, periode_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_officiel_archive ';
   $DB_SQL.= 'WHERE annee_scolaire=:annee_scolaire ';
-  $DB_SQL.= 'GROUP BY periode_id ';
   $DB_SQL.= 'ORDER BY periode_id ASC ';
   $DB_VAR = array( ':annee_scolaire' => $annee_scolaire );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Retourner un tableau [valeur texte] des périodes des données exportables du livret scolaire
- * MAX() pour éviter l'erreur "SELECT list is not in GROUP BY clause and contains nonaggregated column 'sacoche_mono.sacoche_periode.periode_nom' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"
- *
- * @param void
- * @return array
- */
-public static function DB_OPT_livret_periode_export()
-{
-  $DB_SQL = 'SELECT CONCAT(livret_page_periodicite,jointure_periode) AS valeur, MAX(periode_nom) AS texte ';
-  $DB_SQL.= 'FROM sacoche_livret_export ';
-  $DB_SQL.= 'LEFT JOIN sacoche_periode ON sacoche_livret_export.jointure_periode = sacoche_periode.periode_livret ';
-  $DB_SQL.= 'GROUP BY livret_page_periodicite, jointure_periode ';
-  $DB_SQL.= 'ORDER BY livret_page_periodicite, jointure_periode ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

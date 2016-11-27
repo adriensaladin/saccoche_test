@@ -34,7 +34,7 @@ class DB_STRUCTURE_SIECLE extends DB
 
 /**
  * ajouter_import
- * Enregistre en JSON le XML transmis.
+ * Enregistre le XML transmis en JSON.
  *
  * @param string   $import_objet
  * @param string   $import_annee
@@ -57,7 +57,7 @@ public static function DB_ajouter_import( $import_objet , $import_annee , $impor
 
 /**
  * recuperer_import_contenu
- * Retourne en ARRAY le JSON enregistré
+ * Retourne le JSON enregistré en ARRAY
  *
  * @param string   $import_objet
  * @return array
@@ -69,11 +69,12 @@ public static function DB_recuperer_import_contenu( $import_objet )
   $DB_SQL.= 'WHERE siecle_import_objet=:import_objet ';
   $DB_VAR = array( ':import_objet' => $import_objet );
   $import_json = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return ($import_json) ? json_decode( $import_json , TRUE ) : array() ;
+  return json_decode( $import_json , TRUE );
 }
 
 /**
  * recuperer_import_date_annee
+ * Retourne le JSON enregistré en ARRAY
  *
  * @param string   $import_objet
  * @return array

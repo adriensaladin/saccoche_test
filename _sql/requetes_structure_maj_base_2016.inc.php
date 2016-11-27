@@ -1292,43 +1292,10 @@ if($version_base_structure_actuelle=='2016-11-14')
   }
 }
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2016-11-18 => 2016-11-27
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2016-11-18')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2016-11-27';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
     // nouvelle table [sacoche_livret_export]
-    $reload_sacoche_livret_export = TRUE;
-    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_export.sql');
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-    DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    // modif colonne de [sacoche_livret_page]
-    if(empty($reload_sacoche_livret_page))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_page CHANGE livret_page_parcours livret_page_parcours VARCHAR(31) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Chaîne de livret_parcours_type_code (PAR_AVN,PAR_CIT,PAR_ART,PAR_SAN)." ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_page SET livret_page_parcours = REPLACE(livret_page_parcours,"P_","PAR_") ' );
-    }
-    // modif colonne de [sacoche_livret_parcours]
-    if(empty($reload_sacoche_livret_parcours))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_parcours CHANGE livret_parcours_type_code livret_parcours_type_code VARCHAR(7) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_parcours SET livret_parcours_type_code = REPLACE(livret_parcours_type_code,"P_","PAR_") ' );
-    }
-    // recharger [sacoche_livret_parcours_type]
-    if(empty($reload_sacoche_livret_parcours_type))
-    {
-      $reload_sacoche_livret_parcours_type = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_parcours_type.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    }
-  }
-}
-
+    // $reload_sacoche_livret_export = TRUE;
+    // $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_export.sql');
+    // DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    // DB::close(SACOCHE_STRUCTURE_BD_NAME);
 
 ?>

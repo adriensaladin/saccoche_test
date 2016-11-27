@@ -34,19 +34,16 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 
 // Il est arrivé que ces fichiers n'existent plus (bizarre...) d'où le test d'existence.
 FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom                      , TRUE /*verif_exist*/ );
-if($import_profil!='nomenclature')
-{
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'users.txt'         , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'classes.txt'       , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'groupes.txt'       , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'memo_analyse.txt'  , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt' , TRUE /*verif_exist*/ );
-  FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_sortie.txt'   , TRUE /*verif_exist*/ );
-  // Retenir qu'un import a été effectué
-  $nom_variable = 'date_last_import_'.$import_profil.'s';
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array( $nom_variable => TODAY_MYSQL ) );
-  $_SESSION[Clean::upper($nom_variable)] = TODAY_MYSQL;
-}
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'users.txt'         , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'classes.txt'       , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'groupes.txt'       , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'memo_analyse.txt'  , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt' , TRUE /*verif_exist*/ );
+FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_sortie.txt'   , TRUE /*verif_exist*/ );
+// Retenir qu'un import a été effectué
+$nom_variable = 'date_last_import_'.$import_profil.'s';
+DB_STRUCTURE_COMMUN::DB_modifier_parametres( array( $nom_variable => TODAY_MYSQL ) );
+$_SESSION[Clean::upper($nom_variable)] = TODAY_MYSQL;
 // Game over
 Json::add_str('<p><label class="valide">Fichiers temporaires effacés, procédure d\'import terminée !</label></p>'.NL);
 Json::add_str('<ul class="puce p"><li><a href="#" id="retourner_depart">Retour au départ.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);

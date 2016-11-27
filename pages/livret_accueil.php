@@ -81,7 +81,7 @@ foreach($DB_TAB as $DB_ROW)
 
 <ul class="puce">
   <li><span class="astuce">Effectuer dans l'ordre les étapes ci-dessus.</span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration">DOC : Administration du Livret Scolaire</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire">DOC : Administration du Livret Scolaire</a></span></li>
 </ul>
 
 <hr />
@@ -91,7 +91,7 @@ foreach($DB_TAB as $DB_ROW)
 <table class="p">
   <thead>
     <tr>
-      <th class="nu"><a href="<?php echo SERVEUR_LSU_PDF ?>livret_couverture.pdf" class="fancybox" rel="gallery" data-titre="Livret Scolaire - Couverture"><span class="livret livret_couverture"></span></a></th>
+      <th class="nu"><a href="<?php echo URL_DIR_PDF ?>livret_couverture_original.pdf" class="fancybox" rel="gallery" data-titre="Livret Scolaire - Couverture"><span class="livret livret_couverture"></span></a></th>
       <th>Moment</th>
       <th>Objet</th>
       <th>Rubriques / Liaisons</th>
@@ -123,7 +123,7 @@ foreach($DB_TAB as $DB_ROW)
     $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_pages( TRUE /*with_info_classe*/ );
     foreach($DB_TAB as $DB_ROW)
     {
-      $vignette = '<a href="'.SERVEUR_LSU_PDF.'livret_'.$DB_ROW['livret_page_ref'].'.pdf" class="fancybox" rel="gallery" data-titre="'.html($DB_ROW['livret_page_moment'].' : '.$DB_ROW['livret_page_resume']).'"><span class="livret livret_'.$DB_ROW['livret_page_ref'].'"></span></a>';
+      $vignette = '<a href="'.URL_DIR_PDF.'livret_'.$DB_ROW['livret_page_ref'].'_original.pdf" class="fancybox" rel="gallery" data-titre="'.html($DB_ROW['livret_page_moment'].' : '.$DB_ROW['livret_page_resume']).'"><span class="livret livret_'.$DB_ROW['livret_page_ref'].'"></span></a>';
       $moment = $DB_ROW['livret_page_moment'];
       $objet  = str_replace($tab_bad,$tab_bon,$DB_ROW['livret_page_resume']);
       if(!$DB_ROW['groupe_nb'])

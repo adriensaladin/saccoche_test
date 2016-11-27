@@ -1480,7 +1480,6 @@ $(document).ready
       var tab_indices = classe_groupe_id.toString().split('_'); // Sans toString() on obtient "error: split is not a function"
       memo_classe = tab_indices[0];
       memo_groupe = tab_indices[1];
-      memo_page_ref = tab_bilan_page_ref[classe_groupe_id+'_'+memo_periode];
       if(memo_section=='livret_imprimer')
       {
         charger_formulaire_imprimer();

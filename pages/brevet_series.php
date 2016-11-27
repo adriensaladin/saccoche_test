@@ -36,7 +36,7 @@ $select_serie = HtmlForm::afficher_select($tab_series  , 'f_serie'       /*selec
 ?>
 
 <p>
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__notanet_fiches_brevet#toggle_etape1_series">DOC : Notanet &amp; Fiches brevet &rarr; Choix des séries</a></span><br />
+  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__notanet_fiches_brevet#toggle_etape1_series">DOC : Notanet &amp; Fiches brevet &rarr; Choix des séries</a></span><br />
   <span class="danger">Modifier la série d'un élève supprime les notes ou appréciations éventuellement enregistrées aux étapes suivantes.</span>
 </p>
 <hr />

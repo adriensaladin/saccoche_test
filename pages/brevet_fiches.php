@@ -206,7 +206,7 @@ foreach($DB_TAB as $DB_ROW)
 ?>
 
 <p>
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__notanet_fiches_brevet#toggle_etape5_fiches_brevet_etapes_processus">DOC : Notanet &amp; Fiches brevet &rarr; Fiches brevet</a></span><br />
+  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__notanet_fiches_brevet#toggle_etape5_fiches_brevet_etapes_processus">DOC : Notanet &amp; Fiches brevet &rarr; Fiches brevet</a></span><br />
   <span class="astuce"><?php echo($affichage_formulaire_statut) ? 'Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.' : '<a title="'.$profils_modifier_statut.'" href="#">Profils pouvant modifier le statut des fiches brevet.</a>' ; ?></span></li>
 </p>
 <div id="cadre_photo"><button id="voir_photo" type="button" class="voir_photo">Photo</button></div>

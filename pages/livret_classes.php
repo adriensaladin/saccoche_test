@@ -62,7 +62,7 @@ Layout::add( 'js_inline_before' , 'var URL_DIR_PDF = "'.URL_DIR_PDF.'";' );
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_classes">DOC : Administration du Livret Scolaire &rarr; Affectation des classes</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_classes">DOC : Administration du Livret Scolaire &rarr; Affectation des classes</a></span></li>
   <li><span class="astuce">Rappel : la <a href="./index.php?page=administrateur_periode&amp;section=gestion">définition des périodes du Livret Scolaire</a> et leur <a href="./index.php?page=administrateur_periode&amp;section=classe_groupe">jointure aux classes</a> s'effectuent depuis les interfaces dédiées.</span></li>
 </ul>
 
@@ -94,7 +94,7 @@ Layout::add( 'js_inline_before' , 'var URL_DIR_PDF = "'.URL_DIR_PDF.'";' );
         {
           $td_class = 'bv';
           $tab_option_classe[$DB_ROW['periodicite']] = str_replace( 'value="'.$DB_ROW['livret_page_ref'].'"' , 'value="'.$DB_ROW['livret_page_ref'].'" selected' , $tab_option_classe[$DB_ROW['periodicite']] );
-          $tab_image_classe[$DB_ROW['periodicite']] = '<a href="'.SERVEUR_LSU_PDF.'livret_'.$DB_ROW['livret_page_ref'].'.pdf" class="fancybox" rel="gallery_'.$classe_id.'" data-titre="'.html($DB_ROW['livret_page_titre_classe'].' || '.$DB_ROW['livret_page_moment'].' || '.str_replace($tab_bad,$tab_bon,$DB_ROW['livret_page_resume'])).'"><span class="livret livret_'.$DB_ROW['livret_page_ref'].'"></span></a>';
+          $tab_image_classe[$DB_ROW['periodicite']] = '<a href="'.URL_DIR_PDF.'livret_'.$DB_ROW['livret_page_ref'].'_original.pdf" class="fancybox" rel="gallery_'.$classe_id.'" data-titre="'.html($DB_ROW['livret_page_titre_classe'].' || '.$DB_ROW['livret_page_moment'].' || '.str_replace($tab_bad,$tab_bon,$DB_ROW['livret_page_resume'])).'"><span class="livret livret_'.$DB_ROW['livret_page_ref'].'"></span></a>';
           if($DB_ROW['listing_periodes'])
           {
             $periode_type = $DB_ROW['listing_periodes']{0};

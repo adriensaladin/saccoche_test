@@ -35,7 +35,7 @@ $msg_INE = (!$nb_eleves_sans_INE) ? '<label class="valide">Identifiants élèves
 ?>
 
 <p>
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__notanet_fiches_brevet#toggle_etape4_notanet">DOC : Notanet &amp; Fiches brevet &rarr; Export vers Notanet</a></span><br />
+  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__notanet_fiches_brevet#toggle_etape4_notanet">DOC : Notanet &amp; Fiches brevet &rarr; Export vers Notanet</a></span><br />
   <?php echo $msg_INE ?>
 </p>
 <hr />

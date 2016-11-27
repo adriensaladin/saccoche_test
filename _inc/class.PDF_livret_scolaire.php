@@ -318,13 +318,13 @@ class PDF_livret_scolaire extends PDF
     $this->officiel_ligne_tag( $eleve_genre , $date_naissance , $eleve_INE , $tag_date_heure_initiales , $largeur_bloc_titre );
     // On calcule la hauteur de la ligne et la taille de la police pour faire rentrer le bloc des acquis si possible sur un recto (le verso comportant le reste)
     $hauteur_disponible = $this->page_hauteur_moins_marges - $hauteur_blocs_ligne1 - $hauteur_blocs_ligne2 ;
-    $hauteur_ligne_minimale = 4;
+    $hauteur_ligne_minimale = 4.5;
     $hauteur_ligne_maximale = 6;
     $this->lignes_hauteur = round( $hauteur_disponible / $nb_lignes_eleve_eval_total , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
     $this->lignes_hauteur = max ( $this->lignes_hauteur , $hauteur_ligne_minimale ) ;
     $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
-    $this->taille_police  = $this->lignes_hauteur * 2 ; // 5mm de hauteur par ligne donne une taille de 10
-    $this->taille_police  = min ( $this->taille_police , 11 ) ; // Au dessus ça fait quand même gros
+    $this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
+    $this->taille_police  = min ( $this->taille_police , 10 ) ;
     // Enfin, on se positionne pour la suite
     $this->SetXY( $this->marge_gauche , $this->marge_haut + $hauteur_blocs_ligne1 + $hauteur_blocs_ligne2 );
     $this->choisir_couleur_trait('noir');
@@ -443,9 +443,12 @@ class PDF_livret_scolaire extends PDF
           $this->CellFit( $largeur_domaine , $this->lignes_hauteur , To::pdf($tab_rubrique['partie']) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
           // noms profs
           $this->SetFont('Arial' , '' , $this->taille_police);
-          foreach($tab_profs_affiche as $key => $prof_id)
+          if( $nb_lignes_texte <= $nb_lignes_rubrique )
           {
-            $this->CellFit( $largeur_domaine , $this->lignes_hauteur , To::pdf($tab_profs[$prof_id]) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+            foreach($tab_profs_affiche as $key => $prof_id)
+            {
+              $this->CellFit( $largeur_domaine , $this->lignes_hauteur , To::pdf($tab_profs[$prof_id]) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+            }
           }
           $this->SetXY( $memoX + $largeur_domaine , $memoY );
         }
@@ -544,7 +547,7 @@ class PDF_livret_scolaire extends PDF
           $hauteur_position = ($nombre_rubriques_regroupees>1) ? $hauteur_sous_rubrique : $hauteur_rubrique ;
           if( in_array($this->PAGE_COLONNE,array('objectif','position')) )
           {
-            $indice = OutilBilan::determiner_degre_maitrise($pourcentage,$this->SESSION['LIVRET']);
+            $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
             $this->SetFont('Arial' , 'B' , $this->taille_police);
             foreach($this->SESSION['LIVRET'] as $id => $tab)
             {
@@ -586,12 +589,12 @@ class PDF_livret_scolaire extends PDF
     $this->legende_deja_affichee = FALSE;
     // On calcule la hauteur de la ligne et la taille de la police pour faire rentrer les blocs suivants sur le verso (ou ce qu'il en reste)
     $hauteur_disponible = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
-    // $hauteur_ligne_minimale = 4; // pas de hauteur minimale, on impose seulement 2 pages !
+    // $hauteur_ligne_minimale = 4.5; // pas de hauteur minimale, on impose seulement 2 pages !
     $hauteur_ligne_maximale = ($this->lignes_hauteur>5) ? $this->lignes_hauteur : 6 ; // on continue autant que possible avec la taille précédente, sauf si elle est petite
     $this->lignes_hauteur = round( $hauteur_disponible / $nb_lignes_eleve_autre_total , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
     $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
-    $this->taille_police  = $this->lignes_hauteur * 2 ; // 5mm de hauteur par ligne donne une taille de 10
-    $this->taille_police  = min ( $this->taille_police , 11 ) ; // Au dessus ça fait quand même gros
+    $this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
+    $this->taille_police  = min ( $this->taille_police , 10 ) ;
   }
 
   public function bloc_epi( $tab_rubriques_epi , $tab_saisie_eleve , $tab_saisie_classe )

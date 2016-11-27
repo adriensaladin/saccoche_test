@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS sacoche_selection_item;
 
 -- Attention : pas d`apostrophes dans les lignes commentées sinon on peut obtenir un bug d`analyse dans la classe pdo de SebR : "SQLSTATE[HY093]: Invalid parameter number: no parameters were bound ..."
+-- Attention : pas de valeur par défaut possible pour les champs TEXT et BLOB
 
 CREATE TABLE sacoche_selection_item (
   selection_item_id    MEDIUMINT(8) UNSIGNED                NOT NULL AUTO_INCREMENT,

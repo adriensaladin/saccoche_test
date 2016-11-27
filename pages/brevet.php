@@ -57,7 +57,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 if($SECTION=='accueil')
 {
   echo'<p>'.NL;
-  echo  '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=officiel__notanet_fiches_brevet">DOC : Notanet &amp; Fiches brevet</a></span><br />'.NL;
+  echo  '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__notanet_fiches_brevet">DOC : Notanet &amp; Fiches brevet</a></span><br />'.NL;
   echo  '<span class="astuce">Effectuer dans l\'ordre les étapes ci-dessus&hellip;</span>'.NL;
   echo'</p>'.NL;
   echo'<hr />'.NL;

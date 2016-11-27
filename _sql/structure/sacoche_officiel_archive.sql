@@ -1,7 +1,6 @@
 DROP TABLE IF EXISTS sacoche_officiel_archive;
 
 -- Attention : pas d`apostrophes dans les lignes commentées sinon on peut obtenir un bug d`analyse dans la classe pdo de SebR : "SQLSTATE[HY093]: Invalid parameter number: no parameters were bound ..."
--- Attention : pas de valeur par défaut possible pour les champs TEXT et BLOB... sauf NULL !
 -- Attention : pour un champ DATE ou DATETIME, DEFAULT NOW() ne fonctionne qu`à partir de MySQL 5.6.5
 -- Attention : pour un champ DATE ou DATETIME, la configuration NO_ZERO_DATE (incluse dans le mode strict de MySQL 5.7.4 à 5.7.7), interdit les valeurs en dehors de 1000-01-01 00:00:00 à 9999-12-31 23:59:59
 
@@ -21,7 +20,7 @@ CREATE TABLE sacoche_officiel_archive (
   archive_date_generation          DATE                                                      DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL.",
   archive_date_consultation_eleve  DATE                                                      DEFAULT NULL ,
   archive_date_consultation_parent DATE                                                      DEFAULT NULL ,
-  archive_contenu                  MEDIUMTEXT               COLLATE utf8_unicode_ci          DEFAULT NULL COMMENT "Pour les relevés d'évaluations le contenu peut dépasser la capacité d'un type TEXT.",
+  archive_contenu                  MEDIUMTEXT               COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Pour les relevés d'évaluations le contenu peut dépasser la capacité d'un type TEXT.",
   archive_md5_image1               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,
   archive_md5_image2               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,
   archive_md5_image3               CHAR(32)                 COLLATE utf8_unicode_ci          DEFAULT NULL,

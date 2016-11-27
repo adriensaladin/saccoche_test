@@ -257,7 +257,6 @@ $(document).ready
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
-      beforeSerialize : action_form_avant_serialize,
       beforeSubmit : test_form_avant_envoi,
       error : retour_form_erreur,
       success : retour_form_valide
@@ -272,15 +271,6 @@ $(document).ready
         return false;
       }
     );
-
-    // Fonction précédent le traitement du formulaire (avec jquery.form.js)
-    function action_form_avant_serialize(jqForm, options)
-    {
-      // Grouper les élèves dans un champ unique afin d'éviter tout problème avec une limitation du module "suhosin" (voir par exemple http://xuxu.fr/2008/12/04/nombre-de-variables-post-limite-ou-tronque) ou "max input vars" généralement fixé à 1000.
-      listing_id = [];
-      $("#f_eleve label input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());$(this).prop('disabled',true)});
-      $('#listing_ids').val(listing_id);
-    }
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
@@ -298,7 +288,6 @@ $(document).ready
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
     function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
-      $("#f_eleve label input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());$(this).prop('disabled',false)});
       $('#bouton_valider').prop('disabled',false);
       var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
       $('#ajax_msg').attr('class','alerte').html(message);
@@ -308,7 +297,6 @@ $(document).ready
     function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
-      $("#f_eleve label input[type=checkbox]:checked").each(function(){listing_id.push($(this).val());$(this).prop('disabled',false)});
       $('#bouton_valider').prop('disabled',false);
       if(responseJSON['statut']==false)
       {

@@ -83,7 +83,7 @@ $select_type_ref  = HtmlForm::afficher_select($tab_type_ref   , 'f_type_ref'  /*
 
 <form action="#" method="post" id="form_select"><fieldset>
   <p>
-    <label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?><label id="ajax_msg_groupe">&nbsp;</label><br />
+    <label class="tab" for="f_groupe">Regroupement :</label><?php echo $select_groupe ?><label id="ajax_msg_groupe">&nbsp;</label><input id="listing_ids" name="listing_ids" type="hidden" value="" /><br />
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span><br />
     <label id="ajax_msg_uai_origine">&nbsp;</label>
     <span id="bloc_uai_origine" class="hide"><label class="tab" for="f_uai_origine">Scolarité antérieure :</label><select id="f_uai_origine" name="f_uai_origine"><option></option></select></span>

@@ -33,16 +33,17 @@ $mode   = (isset($_POST['f_mode']))   ? $_POST['f_mode']                : '';
 $STEP   = (isset($_POST['f_step']))   ? Clean::entier($_POST['f_step']) : 0;
 
 $tab_action = array(
-  'sconet_professeurs_directeurs_oui' => array('sconet'     ,'professeur'),
-  'sconet_eleves_oui'                 => array('sconet'     ,'eleve'     ),
-  'sconet_parents_oui'                => array('sconet'     ,'parent'    ),
-  'base_eleves_eleves'                => array('base_eleves','eleve'     ),
-  'base_eleves_parents'               => array('base_eleves','parent'    ),
-  'factos_eleves'                     => array('factos'     ,'eleve'     ),
-  'factos_parents'                    => array('factos'     ,'parent'    ),
-  'tableur_professeurs_directeurs'    => array('tableur'    ,'professeur'),
-  'tableur_eleves'                    => array('tableur'    ,'eleve'     ),
-  'tableur_parents'                   => array('tableur'    ,'parent'    ),
+  'sconet_nomenclature_oui'           => array('sconet'     ,'nomenclature'),
+  'sconet_professeurs_directeurs_oui' => array('sconet'     ,'professeur'  ),
+  'sconet_eleves_oui'                 => array('sconet'     ,'eleve'       ),
+  'sconet_parents_oui'                => array('sconet'     ,'parent'      ),
+  'base_eleves_eleves'                => array('base_eleves','eleve'       ),
+  'base_eleves_parents'               => array('base_eleves','parent'      ),
+  'factos_eleves'                     => array('factos'     ,'eleve'       ),
+  'factos_parents'                    => array('factos'     ,'parent'      ),
+  'tableur_professeurs_directeurs'    => array('tableur'    ,'professeur'  ),
+  'tableur_eleves'                    => array('tableur'    ,'eleve'       ),
+  'tableur_parents'                   => array('tableur'    ,'parent'      ),
 );
 
 $tab_step = array(
@@ -100,6 +101,11 @@ function afficher_etapes($import_origine,$import_profil)
   $puces = '<ul id="step">'.NL;
   switch($import_origine.'+'.$import_profil)
   {
+    case  'sconet+nomenclature' :
+      $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
+      $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
+      $puces .= '<li id="step9">Étape 3 - Nettoyage des fichiers temporaires</li>'.NL;
+      break;
     case  'sconet+professeur' :
     case 'tableur+professeur' :
     case  'sconet+eleve'      :

@@ -141,6 +141,7 @@ define('CHEMIN_DOSSIER_PDF'           , CHEMIN_DOSSIER_SACOCHE.'_pdf'.DS); // TO
 define('CHEMIN_DOSSIER_SQL'           , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS);
 define('CHEMIN_DOSSIER_SQL_STRUCTURE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'structure'.DS);
 define('CHEMIN_DOSSIER_SQL_WEBMESTRE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'webmestre'.DS);
+define('CHEMIN_DOSSIER_XSD'           , CHEMIN_DOSSIER_SACOCHE.'_xsd'.DS);
 define('CHEMIN_DOSSIER_MENUS'         , CHEMIN_DOSSIER_SACOCHE.'menus'.DS);
 define('CHEMIN_DOSSIER_PAGES'         , CHEMIN_DOSSIER_SACOCHE.'pages'.DS);
 define('CHEMIN_DOSSIER_WEBSERVICES'   , CHEMIN_DOSSIER_SACOCHE.'webservices'.DS);
@@ -513,6 +514,7 @@ define('SERVEUR_GUIDE_RENTREE'  ,SERVEUR_PROJET.'/?page=guide_rentree'); // URL 
 define('SERVEUR_NEWS'           ,SERVEUR_PROJET.'/?page=news');          // URL de la page "Historique des nouveautés"
 define('SERVEUR_RSS'            ,SERVEUR_PROJET.'/_rss/rss.xml');        // URL du fichier comportant le flux RSS
 define('SERVEUR_RESS_HTML'      ,SERVEUR_PROJET.'/__ress_html/');        // URL du dossier avec les pages de ressources associées aux items
+define('SERVEUR_LSU_PDF'        ,SERVEUR_PROJET.'/_doc/LSU/');           // URL du dossier avec les pages d'exemple du Livret Scolaire Unique
 
 define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');    // URL de la page expliquant les conventions ENT
 

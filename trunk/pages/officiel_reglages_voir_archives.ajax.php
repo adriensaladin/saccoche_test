@@ -37,9 +37,8 @@ $uai_origine    = (isset($_POST['f_uai_origine'])) ? Clean::uai($_POST['f_uai_or
 $annee_scolaire = (isset($_POST['f_annee']))       ? Clean::code($_POST['f_annee'])      : '';
 $periode_id     = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])  : 0;
 
-// Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_eleve    = (isset($_POST['f_eleve']))    ? ( (is_array($_POST['f_eleve']))    ? $_POST['f_eleve']    : explode(',',$_POST['f_eleve'])    ) : array() ;
-$tab_type_ref = (isset($_POST['f_type_ref'])) ? ( (is_array($_POST['f_type_ref'])) ? $_POST['f_type_ref'] : explode(',',$_POST['f_type_ref']) ) : array() ;
+$tab_eleve    = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
+$tab_type_ref = (isset($_POST['f_type_ref']))  ? ( (is_array($_POST['f_type_ref'])) ? $_POST['f_type_ref'] : explode(',',$_POST['f_type_ref']) ) : array() ;
 $tab_eleve    = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
 $tab_type_ref = Clean::map('code',$tab_type_ref);
 

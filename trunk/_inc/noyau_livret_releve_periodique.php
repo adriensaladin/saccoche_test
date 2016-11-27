@@ -44,14 +44,6 @@ $tab_saisie_initialisation = array( 'saisie_id'=>0 , 'prof_id'=>NULL , 'saisie_v
 $tab_parent_lecture        = array( 'resp1'=>NULL , 'resp2'=>NULL , 'resp3'=>NULL , 'resp4'=>NULL );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, toutes matières confondues
-// Récupération de la liste des synthèses concernées (nom de thèmes ou de domaines suivant les référentiels)
-// Récupération de la liste des matières concernées
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Supprimé ; @see noyau_items_synthese.php
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -290,11 +282,16 @@ if($make_pdf)
         $id_rubrique_appreciation = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
         $appreciation_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation'] : $tab_saisie_initialisation ;
         $tab_profs_appreciation = is_null($appreciation_info['listing_profs']) ? array() : explode(',',$appreciation_info['listing_profs']) ;
+        // récup positionnement
+        $id_rubrique_position = $tab_rubriques['eval'][$livret_rubrique_id]['position'];
+        $position_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_position]['position']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_position]['position'] : $tab_saisie_initialisation ;
+        $tab_profs_position = is_null($position_info['listing_profs']) ? array() : explode(',',$position_info['listing_profs']) ;
         // Domaine d’enseignement
         $id_premiere_sous_rubrique = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
+        $tab_prof_domaine = !empty($tab_profs_appreciation) ? $tab_profs_appreciation : $tab_profs_position ;
         if($BILAN_TYPE_ETABL=='college')
         {
-          $nb_lignes_domaine = 3; // forfait pour matière + nom prof(s)
+          $nb_lignes_domaine = max( 3 , 1+count($tab_prof_domaine) ); // 3 = forfait pour matière + nom prof(s)
         }
         else
         {
@@ -418,7 +415,7 @@ if($make_pdf)
       $tab_nb_lignes_eleve_autre[$eleve_id]['modaccomp'] += 1; // modalité
       if(isset($tab_rubriques['modaccomp_ppre'][$eleve_id]))
       {
-        $tab_nb_lignes_eleve_autre['parcours'][$eleve_id] += max( ceil(strlen($tab_rubriques['modaccomp_ppre'][$eleve_id])/$nb_caract_max_par_ligne) , min( substr_count($tab_rubriques['modaccomp_ppre'][$eleve_id],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) );
+        $tab_nb_lignes_eleve_autre[$eleve_id]['modaccomp'] += max( ceil(strlen($tab_rubriques['modaccomp_ppre'][$eleve_id])/$nb_caract_max_par_ligne) , min( substr_count($tab_rubriques['modaccomp_ppre'][$eleve_id],"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_ligne ) );
       }
     }
     // Bilan de l’acquisition des connaissances et compétences

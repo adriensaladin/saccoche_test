@@ -84,6 +84,36 @@ function filter_init_negatif($var)
 // On passe aux différentes procédures selon le mode d'import...
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Extraction sconet_nomenclature
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($import_origine=='sconet') && ($import_profil=='nomenclature') )
+{
+  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
+  if($xml===FALSE)
+  {
+    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
+  }
+  $uai = @(string)$xml->PARAMETRES->UAJ;
+  if(!$uai)
+  {
+    Json::end( FALSE , 'Le contenu du fichier transmis ne correspond pas à ce qui est attendu !' );
+  }
+  if($uai!=$_SESSION['WEBMESTRE_UAI'])
+  {
+    Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
+  }
+  $annee = @(string)$xml->PARAMETRES->ANNEE_SCOLAIRE;
+  $annee_scolaire = To::annee_scolaire('siecle');
+  if( $annee_scolaire !== $annee )
+  {
+    Json::end( FALSE , 'Le fichier transmis ne correspond pas à l\'année scolaire '.$annee_scolaire.' !' );
+  }
+  // Archivage car l'export vers le Livret Scolaire s'annonce complexe...
+  DB_STRUCTURE_SIECLE::DB_ajouter_import( 'Nomenclature' , $annee , $xml );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Extraction sconet_professeurs_directeurs
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1453,6 +1483,14 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
 // Fin des différents cas possibles
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// Pour Nomenclature.xml on ne va pas plus loin
+if( ($import_origine=='sconet') && ($import_profil=='nomenclature') )
+{
+  Json::add_str('<p><label class="valide">Nomenclatures pour le Livret Scolaire enregistrées.</label></p>'.NL);
+  Json::add_str('<ul class="puce p"><li><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
 // Tableaux pour les étapes 61/62/71/72
 $tab_i_classe_TO_id_base  = array();
 $tab_i_groupe_TO_id_base  = array();
@@ -1592,7 +1630,7 @@ FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichie
 // On affiche le bilan des matières de SIECLE mises à jour
 if( ($import_origine=='sconet') && ($import_profil=='professeur') )
 {
-    Json::add_str('<p><label class="valide">Matières du Livret Scolaire actualisées.</label></p>'.NL);
+  Json::add_str('<p><label class="valide">Matières du Livret Scolaire actualisées.</label></p>'.NL);
 }
 // On affiche le bilan des utilisateurs trouvés
 if(count($tab_users_fichier['profil_sigle']))

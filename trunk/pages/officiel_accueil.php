@@ -632,7 +632,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
   <div id="zone_imprimer" class="hide">
     <p>
       <span class="danger">L'impression finale devrait être effectuée une unique fois lorsque le bilan est complet.</span><br />
-      <span class="astuce">Pour tester l'impression d'un bilan non finalisé, utiliser la fonctionnalité de <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_simuler_impression">simulation de l'impression finale</a></span>.</span>
+      <span class="astuce">Pour tester l'impression d'un bilan non finalisé, utiliser la fonctionnalité de <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__simuler_impression">simulation de l'impression finale</a></span>.</span>
     </p>
     <form action="#" method="post" id="form_choix_eleves">
       <table id="table_action" class="form t9">
@@ -753,7 +753,7 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
 
 <div id="zone_archiver_imprimer" class="hide">
   <h2>Archiver / Imprimer des données</h2>
-  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__officiel_imprimer_saisies">DOC : Imprimer tableaux notes / appréciations.</a></span></p>
+  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__imprimer_saisies">DOC : Imprimer tableaux notes / appréciations.</a></span></p>
   <p class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</p>
   <ul class="puce">
     <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève et le groupe classe.</li>

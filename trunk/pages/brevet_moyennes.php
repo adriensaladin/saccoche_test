@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Étape n°3 - Calculer et contrôler les notes pour chaqu
 ?>
 
 <p>
-  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__notanet_fiches_brevet#toggle_etape3_notes">DOC : Notanet &amp; Fiches brevet &rarr; Enregistrement des notes</a></span><br />
+  <span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__notanet_fiches_brevet#toggle_etape3_notes">DOC : Notanet &amp; Fiches brevet &rarr; Enregistrement des notes</a></span><br />
   <span class="danger">Cette étape doit être effectuée lorsque tous les bulletins sont clos en saisis (moyennes définitives), ou le plus tard possible si utilisation de moyennes annuelles.</span>
 </p>
 <hr />

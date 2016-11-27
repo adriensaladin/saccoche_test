@@ -32,27 +32,27 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Parcours"));
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_parcours_type();
 
 // On récupère l'éventuel parcours transmis et on vérifie sa validité
-$parcours      = isset($_GET['code'])           ? Clean::ref($_GET['code']) : '' ;
-$parcours_code = isset($DB_TAB['P_'.$parcours]) ? 'P_'.$parcours            : '' ;
+$parcours      = isset($_GET['code'])             ? Clean::ref($_GET['code']) : '' ;
+$parcours_code = isset($DB_TAB['PAR_'.$parcours]) ? 'PAR_'.$parcours          : '' ;
 
 // On complète le Sous-Menu d'en-tête
 $SOUS_MENU .= '<br />';
 foreach($DB_TAB as $key => $TAB)
 {
   $class = ($key==$parcours_code) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page=livret&amp;section=parcours&amp;code='.Clean::lower(substr($key,2)).'">'.html($TAB[0]['livret_parcours_type_nom']).'</a>'.NL;
+  $SOUS_MENU .= '<a'.$class.' href="./index.php?page=livret&amp;section=parcours&amp;code='.Clean::lower(substr($key,4)).'">'.html($TAB[0]['livret_parcours_type_nom']).'</a>'.NL;
 }
 
 if(!$parcours_code)
 {
   echo'<ul class="puce">';
-  echo'  <li><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_livret_scolaire#toggle_parcours">DOC : Administration du Livret Scolaire &rarr; Parcours</a></span></li>';
+  echo'  <li><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=officiel__livret_scolaire_administration#toggle_parcours">DOC : Administration du Livret Scolaire &rarr; Parcours</a></span></li>';
   echo'</ul>';
   echo'<p>Choisir un type de parcours :</p>'.NL;
   echo'<ul class="puce">'.NL;
   foreach($DB_TAB as $key => $TAB)
   {
-    echo'<li class="p"><a href="./index.php?page=livret&amp;section=parcours&amp;code='.Clean::lower(substr($key,2)).'">'.html($TAB[0]['livret_parcours_type_nom']).'</a></li>'.NL;
+    echo'<li class="p"><a href="./index.php?page=livret&amp;section=parcours&amp;code='.Clean::lower(substr($key,42)).'">'.html($TAB[0]['livret_parcours_type_nom']).'</a></li>'.NL;
   }
   echo'</ul>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
@@ -64,13 +64,13 @@ extract($DB_TAB[$parcours_code][0]); // $livret_parcours_type_nom
 // On complète le titre de la page
 $TITRE .= ' &rarr; '.html($livret_parcours_type_nom);
 
-$txt_ecole = ($parcours_code!='P_AVN') ? 'de l\'École Élémentaire et' : '' ;
+$txt_ecole = ($parcours_code!='PAR_AVN') ? 'de l\'École Élémentaire et' : '' ;
 
 ?>
 
 <ul class="puce">
   <li><span class="astuce">Le <b><?php echo html($livret_parcours_type_nom) ?></b> concerne les <b>élèves <?php echo $txt_ecole ?> du Collège</b>.</span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_livret_scolaire#toggle_parcours">DOC : Administration du Livret Scolaire &rarr; Parcours</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_parcours">DOC : Administration du Livret Scolaire &rarr; Parcours</a></span></li>
 </ul>
 
 <hr />

@@ -24,45 +24,178 @@
  * 
  */
 
+// Variable globale Highcharts
+var graphique;
+var ChartOptions;
+
 // jQuery !
 $(document).ready
 (
   function()
   {
 
+    var file_objet = '';
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger le select f_uai_origine en ajax
+    // Traitement du formulaire #form_import
+    // Upload d'un fichier (avec jquery.form.js)
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_uai_origine(f_eleve)
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_import = $('#form_import');
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_import =
     {
-      $.ajax
-      (
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      error : retour_form_erreur_import,
+      success : retour_form_valide_import
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_import').change
+    (
+      function()
+      {
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
         {
-          type : 'POST',
-          url : 'ajax.php?page=_maj_select_structure_origine',
-          data : 'f_eleve='+f_eleve,
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
+          $('#ajax_msg_'+file_objet).removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.xml.zip.'.indexOf('.'+fichier_ext+'.') == -1 )
           {
-            $('#ajax_msg_uai_origine').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-          },
-          success : function(responseJSON)
+            $('#ajax_msg_'+file_objet).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+            return false;
+          }
+          else
           {
-            initialiser_compteur();
-            if(responseJSON['statut']==true)
-            {
-              $('#ajax_msg_uai_origine').removeAttr('class').html("");
-              $('#f_uai_origine').html(responseJSON['value']).parent().show();
-            }
-            else
-            {
-              $('#ajax_msg_uai_origine').attr('class','alerte').html(responseJSON['value']);
-            }
+            $('#form_import button').prop('disabled',true);
+            $('#ajax_msg_'+file_objet).attr('class','loader').html("En cours&hellip;");
+            formulaire_import.submit();
           }
         }
-      );
+      }
+    );
+
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_import.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions_import);
+        return false;
+      }
+    );
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#form_import button').prop('disabled',false);
+      $('#ajax_msg_'+file_objet).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_import(responseJSON)
+    {
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#form_import button').prop('disabled',false);
+      if(responseJSON['statut']==false)
+      {
+        $('#ajax_msg_'+file_objet).attr('class','alerte').html(responseJSON['value']);
+      }
+      else
+      {
+        initialiser_compteur();
+        $('#form_import button').prop('disabled',false);
+        $('#ajax_msg_'+file_objet).attr('class','valide').html("Demande réalisée !");
+        $('#etat_'+file_objet).html('<span class="astuce">Dernier import en date du <b>'+TODAY_FR+'</b>.</span>');
+      }
+    }
+
+    $('button.fichier_import').click
+    (
+      function()
+      {
+        file_objet = $(this).attr('name'); // sts_emp_UAI | Nomenclature
+        $('#f_action').val(file_objet);
+        $('#f_import').click();
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Récolter les données pour les élèves d'une classes et d'une période
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('button.generer').click
+    (
+      function()
+      {
+        var obj_button = $(this);
+        var tab_ids  = obj_button.attr('id').split('_');
+        var classe   = tab_ids[1];
+        var page_ref = tab_ids[2];
+        var periode  = tab_ids[3];
+        if(periode=='cycle')
+        {
+          $.fancybox( '<p class="travaux">'+'Bilans de fin de cycle non prioritaires&hellip; Développement prévu début 2017.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+          return false;
+        }
+        if( (page_ref=='cp') || (page_ref=='ce1') || (page_ref=='ce2') || (page_ref=='cm1') || (page_ref=='cm2') )
+        {
+          $.fancybox( '<p class="travaux">'+'Spécifications pour le 1er degré partiellement inutilisables&hellip; En attente d\'évolution de BE1D.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+          return false;
+        }
+        $('button').prop('disabled',true);
+        $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
+        $.ajax
+        (
+          {
+            type : 'POST',
+            url : 'ajax.php?page='+PAGE,
+            data : 'csrf='+CSRF+'&f_action='+'recolter'+'&f_classe='+classe+'&f_page_ref='+page_ref+'&f_periode='+periode,
+            dataType : 'json',
+            error : function(jqXHR, textStatus, errorThrown)
+            {
+              $('button').prop('disabled',false);
+              var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
+              $.fancybox( '<label class="alerte">'+message+'</label>' , {'centerOnScroll':true} );
+              return false;
+            },
+            success : function(responseJSON)
+            {
+              initialiser_compteur();
+              $('button').prop('disabled',false);
+              if(responseJSON['statut']==false)
+              {
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+              }
+              else
+              {
+                obj_button.prev().replaceWith('<div class="astuce">Récolté le '+TODAY_FR+'.</div>');
+                if(responseJSON['value'])
+                {
+                  $.fancybox( '<p>Données récoltées avec les erreurs ou avertissements suivants :</p>'+responseJSON['value'] , {'centerOnScroll':true , 'minHeight':500 , 'minWidth':800} );
+                }
+                else
+                {
+                  $.fancybox( '<p><label class="valide">Données récoltées sans erreur ni avertissement.</label></p>' , {'centerOnScroll':true} );
+                }
+              }
+            }
+          }
+        );
+      }
+    );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Charger le select f_eleve en ajax
@@ -91,7 +224,6 @@ $(document).ready
               if( (groupe_type=='d') || (groupe_type=='n') )
               {
                 var tab_eleve = new Array(); $("#f_eleve input").each(function(){tab_eleve.push($(this).val());});
-                maj_uai_origine(tab_eleve);
               }
             }
             else
@@ -106,7 +238,6 @@ $(document).ready
     {
       listing_eleve_id = '';
       $("#f_eleve").html('').parent().hide();
-      $("#f_uai_origine").html('<option></option>').parent().hide();
       var groupe_val = $("#f_groupe option:selected").val();
       if(groupe_val)
       {
@@ -139,61 +270,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Charger le select f_periode en ajax
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function maj_periode(annee_val)
-    {
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page=_maj_select_officiel_periode',
-          data : 'f_annee='+annee_val,
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#ajax_msg_annee').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-          },
-          success : function(responseJSON)
-          {
-            initialiser_compteur();
-            if(responseJSON['statut']==true)
-            {
-              $('#ajax_msg_annee').removeAttr('class').html("");
-              $('#f_periode').html(responseJSON['value']).parent().show();
-            }
-            else
-            {
-              $('#ajax_msg_annee').attr('class','alerte').html(responseJSON['value']);
-            }
-          }
-        }
-      );
-    }
-    function changer_annee()
-    {
-      $("#f_periode").html('<option></option>').parent().hide();
-      var annee_val = $("#f_annee option:selected").val();
-      if( parseInt(annee_val,10) )
-      {
-        $('#ajax_msg_annee').attr('class','loader').html("En cours&hellip;");
-        maj_periode(annee_val);
-      }
-      else
-      {
-        $('#ajax_msg_annee').removeAttr('class').html("");
-      }
-    }
-    $("#f_annee").change
-    (
-      function()
-      {
-        changer_annee();
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Enlever le message ajax et le résultat au changement d'un élément de formulaire
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -221,21 +297,15 @@ $(document).ready
       {
         rules :
         {
-          f_groupe       : { required:true },
-          'f_eleve[]'    : { required:true },
-          f_uai_origine  : { required:true },
-          f_annee        : { required:true },
-          f_periode      : { required:function(){return $('#f_annee').val()!="0";} },
-          'f_type_ref[]' : { required:true }
+          f_groupe    : { required:true },
+          'f_eleve[]' : { required:true },
+          f_periode   : { required:function(){return $('#f_annee').val()!="0";} }
         },
         messages :
         {
-          f_groupe       : { required:"regroupement manquant" },
-          'f_eleve[]'    : { required:"élève(s) manquant(s)" },
-          f_uai_origine  : { required:"structure manquante" },
-          f_annee        : { required:"année scolaire manquante" },
-          f_periode      : { required:"période manquante" },
-          'f_type_ref[]' : { required:"type d'archive manquant" }
+          f_groupe    : { required:"regroupement manquant" },
+          'f_eleve[]' : { required:"élève(s) manquant(s)" },
+          f_periode   : { required:"période manquante" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -312,13 +382,13 @@ $(document).ready
       $('#bouton_valider').prop('disabled',false);
       if(responseJSON['statut']==false)
       {
-        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').attr('class','alerte').html("Erreur(s) ci-dessous.");
       }
       else
       {
         $('#ajax_msg').attr('class','valide').html("Résultat ci-dessous.");
-        $('#bilan').html('<hr /><ul class="puce"><li><a target="_blank" href="'+responseJSON['href']+'">'+responseJSON['texte']+'</a></li></ul>');
       }
+      $('#bilan').html('<hr />'+responseJSON['value']);
     }
 
   }

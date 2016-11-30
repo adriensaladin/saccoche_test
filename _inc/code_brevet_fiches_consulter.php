@@ -56,7 +56,7 @@ if(empty($DB_ROW))
 {
   Json::end( FALSE , 'Classe sans élèves concernés !' );
 }
-$BILAN_ETAT = $DB_ROW['fiche_brevet'];
+$BILAN_ETAT = ($DB_ROW['fiche_brevet']) ? $DB_ROW['fiche_brevet'] : '0absence' ; // "0absence" est enregistré comme une chaine vide en BDD
 $classe_nom = $DB_ROW['groupe_nom'];
 $tab_id_eleves_avec_notes = explode(',',$DB_ROW['listing_user_id']);
 

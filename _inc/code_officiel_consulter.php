@@ -70,7 +70,7 @@ if(empty($DB_ROW))
 }
 $date_debut  = $DB_ROW['jointure_date_debut'];
 $date_fin    = $DB_ROW['jointure_date_fin'];
-$BILAN_ETAT  = $DB_ROW['officiel_'.$BILAN_TYPE];
+$BILAN_ETAT  = ($DB_ROW['officiel_'.$BILAN_TYPE]) ? $DB_ROW['officiel_'.$BILAN_TYPE] : '0absence' ; // "0absence" est enregistré comme une chaine vide en BDD
 $periode_nom = $DB_ROW['periode_nom'];
 $classe_nom  = $DB_ROW['groupe_nom'];
 if(!$BILAN_ETAT)

@@ -71,11 +71,13 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
   //
   // Récupérer les données du bulletin correspondant (s'il existe, et correspondance de matière à matière), concernant les élèves et la classe
   //
+  $is_recup_bulletin = FALSE;
   if( (substr($PAGE_RUBRIQUE_TYPE,3)=='matiere') && ($PAGE_RUBRIQUE_JOIN=='matiere') )
   {
     $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,'bulletin');
-    if( !empty($DB_ROW) && !in_array( $DB_ROW['officiel_bulletin'] , array('0absence','1vide') ) )
+    if( !empty($DB_ROW) && !in_array( $DB_ROW['officiel_bulletin'] , array('','1vide') ) ) // "0absence" est enregistré comme une chaine vide en BDD
     {
+      $is_recup_bulletin = TRUE;
       $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_correspondances_matieres_uniques( $PAGE_RUBRIQUE_TYPE );
       if(!empty($DB_TAB))
       {
@@ -449,7 +451,9 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $RUBRIQUE_TYPE , $rubrique_id , 'eleve' , $eleve_id , 'position' , $position_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
         $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $position_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
       }
-      else if( ($tab_donnees_livret[$clef]['valeur']!==$position_calculee) && ($tab_donnees_livret[$clef]['origine']=='calcul') )
+      // un test ci-dessous a pour but d'éviter une non mise en jour en cas de données issues d'un bulletin qui depuis a été abandonné
+      // un test ci-dessous a pour but d'éviter une non mise en jour en cas de données issues d'un bulletin qui depuis a été déclaré sans moyenne (qui ne sont donc plus recalculées)
+      else if( ($tab_donnees_livret[$clef]['valeur']!==$position_calculee) && ( ($tab_donnees_livret[$clef]['origine']=='calcul') || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$is_recup_bulletin ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ) ) )
       {
         $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
         DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'position' /*$saisie_objet*/ , $position_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
@@ -684,7 +688,9 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
   if( (substr($PAGE_RUBRIQUE_TYPE,3)=='matiere') && ($PAGE_RUBRIQUE_JOIN=='matiere') && ($saisie_objet!='elements') )
   {
     $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,'bulletin');
-    if( !empty($DB_ROW) && !in_array( $DB_ROW['officiel_bulletin'] , array('0absence','1vide') ) )
+    // un test ci-dessous a pour but d'éviter une récupération obsolète en cas de données issues d'un bulletin qui depuis a été abandonné
+    // un test ci-dessous a pour but d'éviter une récupération obsolète en cas de données issues d'un bulletin qui depuis a été déclaré sans moyenne (qui ne sont donc plus recalculées)
+    if( !empty($DB_ROW) && !in_array( $DB_ROW['officiel_bulletin'] , array('','1vide') ) && ( ($saisie_objet!='position') || $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ) ) // "0absence" est enregistré comme une chaine vide en BDD
     {
       $bulletin_matiere_id = ($rubrique_type=='bilan') ? 0 : ( ($rubrique_type=='viesco') ? 54 : DB_STRUCTURE_LIVRET::DB_recuperer_correspondance_matiere_unique( $PAGE_RUBRIQUE_TYPE , $rubrique_id ) ) ;
       if(!is_null($bulletin_matiere_id))

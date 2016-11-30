@@ -1181,9 +1181,9 @@ class PDF extends FPDF
       }
       $this->SetFont( 'Arial' , '' , 4 );
       $this->choisir_couleur_texte('noir');
-      $this->SetXY( 0 , -$this->distance_pied - 1.5 );
-      $this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf('Suivi d\'Acquisition de Compétences') , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ , SERVEUR_PROJET);
       $this->SetXY( 0 , -$this->distance_pied );
+      $this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf('Suivi d\'Acquisition de Compétences') , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ , SERVEUR_PROJET);
+      $this->SetXY( 0 , -$this->distance_pied + 1.5 );
       $this->Cell( $this->page_largeur - $this->marge_droite , 3 , To::pdf(SERVEUR_PROJET) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ , SERVEUR_PROJET);
     }
   }

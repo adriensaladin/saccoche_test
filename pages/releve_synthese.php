@@ -122,9 +122,26 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__synthese_items">DOC : Synthèse d'items.</a></span></div>
 <div class="astuce">Un administrateur ou un directeur doit préalablement choisir l'ordre d'affichage des matières (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_releves_bilans#toggle_ordre_matieres">DOC</a></span>) et le type de synthèse adapté à chaque référentiel (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_releves_bilans#toggle_type_synthese">DOC</a></span>).</div>
 <?php
-$nb_inconnu = DB_STRUCTURE_BILAN::DB_compter_modes_synthese_inconnu();
-$s = ($nb_inconnu>1) ? 's' : '' ;
-echo ($nb_inconnu) ? '<label class="alerte">Il y a '.$nb_inconnu.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese_inconnu()))).'" /> dont le format de synthèse est inconnu (donc non pris en compte).</label>'.NL : '<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>'.NL ;
+// Avertissement mode de synthèse non configuré ou configuré sans synthèse
+$tab_mode = array(
+  'inconnu' => 'dont le format de synthèse est inconnu',
+  'sans'    => 'volontairement définis sans format de synthèse',
+);
+$is_alerte = FALSE;
+foreach($tab_mode as $mode => $explication)
+{
+  $nb = DB_STRUCTURE_BILAN::DB_compter_modes_synthese($mode);
+  if($nb)
+  {
+    $is_alerte = TRUE;
+    $s = ($nb>1) ? 's' : '' ;
+    echo'<label class="alerte">Il y a '.$nb.' référentiel'.$s.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.str_replace('§BR§','<br />',html(html(DB_STRUCTURE_BILAN::DB_recuperer_modes_synthese($mode)))).'" /> '.$explication.' (donc non pris en compte).</label>'.NL; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
+  }
+}
+if(!$is_alerte)
+{
+  echo'<label class="valide">Tous les référentiels ont un format de synthèse prédéfini.</label>'.NL;
+}
 ?>
 
 <hr />

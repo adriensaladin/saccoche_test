@@ -52,7 +52,7 @@ if(!$parcours_code)
   echo'<ul class="puce">'.NL;
   foreach($DB_TAB as $key => $TAB)
   {
-    echo'<li class="p"><a href="./index.php?page=livret&amp;section=parcours&amp;code='.Clean::lower(substr($key,42)).'">'.html($TAB[0]['livret_parcours_type_nom']).'</a></li>'.NL;
+    echo'<li class="p"><a href="./index.php?page=livret&amp;section=parcours&amp;code='.Clean::lower(substr($key,4)).'">'.html($TAB[0]['livret_parcours_type_nom']).'</a></li>'.NL;
   }
   echo'</ul>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.

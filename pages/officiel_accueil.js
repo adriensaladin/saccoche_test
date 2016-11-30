@@ -69,6 +69,7 @@ $(document).ready
       yAxis: [
         {
           labels: { enabled: false },
+          reversedStacks: false,
           min: 0,
           max: 100,
           gridLineWidth: 0,

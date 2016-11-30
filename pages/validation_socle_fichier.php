@@ -54,7 +54,10 @@ $bouton_export_lpc = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bout
 $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , TRUE /*tout*/ , TRUE /*ancien*/ ) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
 ?>
 
-<p class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2015.</p>
+<p class="probleme">
+  Cette section ne concerne le socle commun que sur la période 2006-2015.<br />
+  L'application nationale LPC ayant été arrêtée depuis la rentrée 2016, son export a été retiré afin d'éviter toute confusion.
+</p>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_export_import">DOC : Import / Export de validations du socle</a></span></p>
 
@@ -67,11 +70,11 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
     <select id="f_choix_principal" name="f_choix_principal">
       <option value="">&nbsp;</option>
       <optgroup label="Exporter un fichier">
-        <option value="export_lpc">à destination de Sconet-LPC</option>
+        <option value="export_lpc" disabled>à destination de Sconet-LPC</option>
         <option value="export_sacoche">à destination de SACoche</option>
       </optgroup>
       <optgroup label="Importer un fichier">
-        <option value="import_lpc">en provenance de Sconet-LPC</option>
+        <option value="import_lpc" disabled>en provenance de Sconet-LPC</option>
         <option value="import_sacoche">en provenance de SACoche</option>
         <option value="import_compatible">en provenance de Gibii, Pronote, etc.</option>
       </optgroup>

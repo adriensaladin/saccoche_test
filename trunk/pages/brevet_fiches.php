@@ -200,7 +200,7 @@ $tab_classe_etat = array();
 $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_classes_editables_etat($listing_classes_concernees);
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_classe_etat[$DB_ROW['groupe_id']] = $DB_ROW['fiche_brevet'];
+  $tab_classe_etat[$DB_ROW['groupe_id']] = ($DB_ROW['fiche_brevet']) ? $DB_ROW['fiche_brevet'] : '0absence' ; // "0absence" est enregistré comme une chaine vide en BDD
 }
 
 ?>

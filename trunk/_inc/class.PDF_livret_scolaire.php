@@ -607,7 +607,7 @@ class PDF_livret_scolaire extends PDF
       {
         $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
         $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
-        $nb_lignes_epi = 3 + $nb_lignes_classe + $nb_lignes_eleve; // titre + thème + profs + saisies
+        $nb_lignes_epi = 2 + $nb_lignes_classe + $nb_lignes_eleve; // [ titre - thème ] + profs + saisies
         $hauteur_epi = $nb_lignes_epi*$this->lignes_hauteur;
         $memoY = $this->GetY();
         // fond & contour
@@ -757,8 +757,8 @@ class PDF_livret_scolaire extends PDF
     // fond & contour
     $this->Rect( $this->GetX() , $this->GetY() , $this->page_largeur_moins_marges , $hauteur_bilan , 'DF' /*DrawFill*/ );
     // texte introductif
-    $texte = ($this->BILAN_TYPE_ETABL=='college') ? 'Synthèse de l’évolution des acquis scolaires et conseils pour progresser :' : 'Appréciation générale sur la progression de l’élève :' ;
-    $this->SetFont('Arial' , 'U' , $this->taille_police);
+    $texte = ($this->BILAN_TYPE_ETABL=='college') ? 'Synthèse de l’évolution des acquis scolaires et conseils pour progresser' : 'Appréciation générale sur la progression de l’élève' ;
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
     $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     $this->SetFont('Arial' , '' , $this->taille_police);
     // saisie
@@ -810,8 +810,8 @@ class PDF_livret_scolaire extends PDF
       $this->Rect( $this->GetX() , $this->GetY() , $this->page_largeur_moins_marges , $hauteur_viesco , 'DF' /*DrawFill*/ );
     }
     // texte introductif
-    $this->SetFont('Arial' , 'U' , $this->taille_police);
-    $this->CellFit( $largeur_sousbloc_saisie , $this->lignes_hauteur , To::pdf('Vie scolaire (assiduité, ponctualité ; respect du règlement ; participation à la vie de l’établissement) :') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->CellFit( $largeur_sousbloc_saisie , $this->lignes_hauteur , To::pdf('Vie scolaire (assiduité, ponctualité ; respect du règlement ; participation à la vie de l’établissement)') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     $this->SetFont('Arial' , '' , $this->taille_police);
     // saisie
     if($viesco_saisie)

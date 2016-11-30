@@ -257,14 +257,25 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
   $tab_siecle_division = array();
   foreach($DB_TAB['DONNEES']['STRUCTURE']['DIVISIONS']['DIVISION'] as $tab)
   {
-    $code_mef = isset($tab['MEFS_APPARTENANCE']['MEF_APPARTENANCE']['@attributes']['CODE']) ? $tab['MEFS_APPARTENANCE']['MEF_APPARTENANCE']['@attributes']['CODE'] : $tab['LIBELLE_LONG'] ;
-    $tab_siecle_division[ $tab['@attributes']['CODE'] ] = $code_mef;
+    $division_ref = $tab['@attributes']['CODE'];
+    if(isset($tab['MEFS_APPARTENANCE']['MEF_APPARTENANCE']['@attributes']['CODE']))
+    {
+      $code_mef = $tab['MEFS_APPARTENANCE']['MEF_APPARTENANCE']['@attributes']['CODE'] ;
+      $tab_siecle_division[$division_ref][$code_mef] = TRUE;
+    }
+    elseif(is_array($tab['MEFS_APPARTENANCE']['MEF_APPARTENANCE']))
+    {
+      foreach($tab['MEFS_APPARTENANCE']['MEF_APPARTENANCE'] as $tab_mef)
+      {
+        $code_mef = $tab_mef['@attributes']['CODE'] ;
+        $tab_siecle_division[$division_ref][$code_mef] = TRUE;
+      }
+    }
   }
   if(!isset($tab_siecle_division[$classe_ref]))
   {
     Json::end( FALSE , 'La référence de la classe "'.$classe_ref.'" ne figure pas dans celles du fichier SIECLE !<br />SIECLE comporte '.implode(' ',array_keys($tab_siecle_division)) );
   }
-  $code_mef = $tab_siecle_division[$classe_ref];
   // Type epp | local
   if(empty($DB_TAB['DONNEES']['INDIVIDUS']['INDIVIDU']))
   {
@@ -289,8 +300,10 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
   $tab_siecle_modalite_election = array();
   foreach($DB_TAB['DONNEES']['PROGRAMMES']['PROGRAMME'] as $tab)
   {
-    if( $tab['CODE_MEF'] == $code_mef )
-    $tab_siecle_modalite_election[ $tab['CODE_MATIERE'] ] = $tab['CODE_MODALITE_ELECT'];
+    if( isset($tab_siecle_division[$classe_ref][$tab['CODE_MEF']]) && (float)$tab['HORAIRE'] )
+    {
+      $tab_siecle_modalite_election[ $tab['CODE_MATIERE'] ] = $tab['CODE_MODALITE_ELECT'];
+    }
   }
 }
 
@@ -610,7 +623,7 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
         if( ($rubrique_type=='eval') && isset($tab_rubrique['MAT'.$rubrique_id]) )
         {
           $key_rubrique = 'MAT'.$rubrique_id;
-          $modelec = $tab_rubrique['MAT'.$matiere_id]['modalite-election'];
+          $modelec = $tab_rubrique['MAT'.$rubrique_id]['modalite-election'];
           $tab_eleve[$eleve_id]['acquis'][$key_rubrique.$modelec] = array(
             'profs'             => array(),
             'elements'          => array(),
@@ -722,7 +735,7 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
 unset($tab_saisie);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Vérifier qu'il y a au moins une info d'acquisition par élève + au moins un prof rattaché à chaque matière + une appréciation de synthèse
+// Vérifier qu'il y a au moins une info d'acquisition par élève + un positionnement défini si pas de note ni de pourcentage + au moins un prof rattaché à chaque matière + une appréciation de synthèse
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 foreach($tab_eleve as $eleve_id => $tab)
@@ -734,11 +747,16 @@ foreach($tab_eleve as $eleve_id => $tab)
   }
   else
   {
-    foreach($tab['acquis'] as $discipline_ref => $tab_rubrique)
+    foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
     {
-      if(empty($tab_rubrique['profs']))
+      if(empty($tab_rubrique_info['profs']))
       {
-        $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[$discipline_ref]['libelle'].'" : rubrique non exportée.';
+        $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
+        unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+      }
+      else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
+      {
+        $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
         unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
       }
     }

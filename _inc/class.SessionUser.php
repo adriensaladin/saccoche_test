@@ -121,11 +121,11 @@ class SessionUser
       switch($mode_connection)
       {
         case 'normal'         : $message = 'Nom d\'utilisateur incorrect !'; break;
-        case 'cas'            : $message = 'Identification réussie mais identifiant CAS "'       .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;des&nbsp;utilisateurs], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "'.$login.'".'; break;
-        case 'shibboleth'     : $message = 'Identification réussie mais identifiant Shibboleth "'.$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;des&nbsp;utilisateurs], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "'.$login.'".'; break;
-        case 'siecle'         : $message = 'Identification réussie mais identifiant Sconet "'    .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant Sconet associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;des&nbsp;utilisateurs], et indiquer pour votre compte dans le champ [Id.&nbsp;Sconet] la valeur "'.$login.'".'; break;
+        case 'cas'            : $message = 'Identification réussie mais identifiant CAS "'       .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "'.$login.'".'; break;
+        case 'shibboleth'     : $message = 'Identification réussie mais identifiant Shibboleth "'.$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant ENT associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;ENT] la valeur "'.$login.'".'; break;
+        case 'siecle'         : $message = 'Identification réussie mais identifiant Sconet "'    .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant Sconet associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Sconet] la valeur "'.$login.'".'; break;
         case 'vecteur_parent' : $message = 'Identification réussie mais compte parent'.                   ' inconnu dans SACoche (base n°'.$BASE.') !<br />Le compte SACoche d\'un responsable légal dont le nom est "'.$parent_nom.'", le prénom est "'.$parent_prenom.'", et ayant la charge d\'un enfant dont l\'identifiant Sconet est "'.$login.'", n\'a pas été trouvé.'; break;
-        case 'gepi'           : $message = 'Identification réussie mais login GEPI "'            .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;des&nbsp;utilisateurs], et indiquer pour votre compte dans le champ [Id.&nbsp;Gepi] la valeur "'.$login.'".'; break;
+        case 'gepi'           : $message = 'Identification réussie mais login GEPI "'            .$login.'" inconnu dans SACoche (base n°'.$BASE.') !<br />Un administrateur doit renseigner que l\'identifiant GEPI associé à votre compte SACoche est "'.$login.'"&hellip;<br />Il doit pour cela se connecter à SACoche, menu [Gestion&nbsp;courante], et indiquer pour votre compte dans le champ [Id.&nbsp;Gepi] la valeur "'.$login.'".'; break;
       }
       return array( FALSE , $message );
     }
@@ -140,7 +140,7 @@ class SessionUser
     // Si compte desactivé...
     if($DB_ROW['user_sortie_date']<=TODAY_MYSQL)
     {
-      return array( FALSE , 'Identification réussie mais ce compte ('.$DB_ROW['user_login'].') est desactivé (sur la base n°'.$BASE.') !' );
+      return array( FALSE , 'Identification réussie mais ce compte est desactivé !' );
     }
     // Mémoriser la date de la (dernière) connexion (pour les autres cas, sera enregistré lors de la confirmation de la prise en compte des infos CNIL).
     if( ($DB_ROW['user_connexion_date']!==NULL) || in_array($DB_ROW['user_profil_type'],array('webmestre','administrateur')) )

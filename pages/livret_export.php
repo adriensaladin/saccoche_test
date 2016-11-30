@@ -53,6 +53,12 @@ unset($tab_step[0]);
 // Javascript
 Layout::add( 'js_inline_before' , 'var TODAY_FR = "'.TODAY_FR.'";' );
 
+if($step)
+{
+  echo'<p class="travaux">Fonctionnalité en cours de tests / finalisation : mise à disposition prévue le 30 novembre 2016.</p>'.NL;
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
 // Vérif UAI
 if(!$_SESSION['WEBMESTRE_UAI'])
 {

@@ -534,12 +534,12 @@ public static function recuperer_arborescence_items( $liste_item_id )
 }
 
 /**
- * recuperer_modes_synthese
+ * recuperer_modes_synthese_inconnu
  *
- * @param string $mode 'inconnu' | 'sans'
+ * @param void
  * @return string
  */
-public static function DB_recuperer_modes_synthese($mode)
+public static function DB_recuperer_modes_synthese_inconnu()
 {
   // Lever si besoin une limitation de GROUP_CONCAT (group_concat_max_len est par défaut limité à une chaîne de 1024 caractères) ; éviter plus de 8096 (http://www.glpi-project.org/forum/viewtopic.php?id=23767).
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'SET group_concat_max_len = 8096');
@@ -547,9 +547,9 @@ public static function DB_recuperer_modes_synthese($mode)
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE referentiel_mode_synthese=:mode AND matiere_active=1 ';
+  $DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND matiere_active=1 ';
   $DB_SQL.= 'ORDER BY matiere_ordre ASC, niveau_ordre ASC ';
-  $DB_VAR = array(':mode'=>$mode);
+  $DB_VAR = array(':mode_inconnu'=>'inconnu');
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -739,19 +739,19 @@ public static function DB_lister_periodes_bulletins_saisies_ouvertes($listing_us
 }
 
 /**
- * compter_modes_synthese
+ * compter_modes_synthese_inconnu
  *
- * @param string $mode 'inconnu' | 'sans'
+ * @param void
  * @return int
  */
-public static function DB_compter_modes_synthese($mode)
+public static function DB_compter_modes_synthese_inconnu()
 {
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE referentiel_mode_synthese=:mode AND matiere_active=1 AND niveau_actif=1 ';
-  $DB_VAR = array(':mode'=>$mode);
+  $DB_SQL.= 'WHERE referentiel_mode_synthese=:mode_inconnu AND matiere_active=1 AND niveau_actif=1 ';
+  $DB_VAR = array(':mode_inconnu'=>'inconnu');
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

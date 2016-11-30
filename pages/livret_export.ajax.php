@@ -402,9 +402,9 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
     foreach($tab_donnee_bilan['epi'] as $id => $tab)
     {
       $tab_xml[] = '     <epi-eleve epi-groupe-ref="'.$id.'GR">';
-      if(!empty($tab['appreciation']))
+      if(!empty($tab['commentaire']))
       {
-        $tab_xml[] = '      <commentaire>'.html($tab['appreciation']).'</commentaire>';
+        $tab_xml[] = '      <commentaire>'.html($tab['commentaire']).'</commentaire>';
       }
       $tab_xml[] = '     </epi-eleve>';
     }
@@ -417,9 +417,9 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
     foreach($tab_donnee_bilan['ap'] as $id => $tab)
     {
       $tab_xml[] = '     <acc-perso-eleve acc-perso-groupe-ref="'.$id.'GR">';
-      if(!empty($tab['appreciation']))
+      if(!empty($tab['commentaire']))
       {
-        $tab_xml[] = '      <commentaire>'.html($tab['appreciation']).'</commentaire>';
+        $tab_xml[] = '      <commentaire>'.html($tab['commentaire']).'</commentaire>';
       }
       $tab_xml[] = '     </acc-perso-eleve>';
     }

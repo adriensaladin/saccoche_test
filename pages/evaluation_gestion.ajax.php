@@ -1596,7 +1596,6 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   $longueur_ref_max = 0;
   $texte_ref   = '';
   $texte_socle = '';
-  $texte_s2016 = '';
   $texte_coef  = '';
   foreach($DB_TAB_COMP as $DB_ROW)
   {
@@ -1669,7 +1668,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
             $msg_data = cURL::get_contents($msg_url);
           }
           $tab_user_commentaire[$DB_ROW['eleve_id']] = $msg_data;
-          $tab_user_nb_ligne_comm[$DB_ROW['eleve_id']] = max( 2 , ceil(mb_strlen($msg_data)/125) , substr_count($msg_data,"\n") + 1 );
+          $tab_user_nb_ligne_comm[$DB_ROW['eleve_id']] = max( 2 , ceil(mb_strlen($msg_data)/125) );
         }
       }
     }
@@ -1705,7 +1704,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
       {
         $colonnes_nb    = $tab_user_nb_items[$user_id];
         $lignes_comm_nb = ($cart_hauteur=='variable') ? $tab_user_nb_ligne_comm[$user_id] : $lignes_comm_max ;
-        $lignes_nb      = 1 + 2 + $cart_cases_nb + $lignes_comm_nb; // titre + marge + contenu
+        $lignes_nb      = 1 + 2 + $cart_cases_nb + $lignes_comm_nb; // marge incluse
         $texte_entete   = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
         $case_vide      = ($cart_cases_nb==1) ? '' : '<th class="nu"></th>' ;
         $cartouche_HTM .= '<table class="bilan"><thead><tr>'.$case_vide.'<th colspan="'.$colonnes_nb.'">'.html($texte_entete).'</th></tr></thead><tbody>';
@@ -1803,7 +1802,7 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
         $colonnes_nb    = ($cart_cases_nb==1) ? 2+$aff_reference : 1+$aff_reference ;
         $lignes_comm_nb = ($cart_hauteur=='variable') ? $tab_user_nb_ligne_comm[$user_id] : $lignes_comm_max ;
         $lignes_item_nb = ($cart_hauteur=='variable') ? $tab_user_nb_items[$user_id]      : $item_nb ;
-        $lignes_nb      = 1 + 1 + $lignes_item_nb + $lignes_comm_nb ; // titre + marge + contenu
+        $lignes_nb      = 1 + 1 + $lignes_item_nb + $lignes_comm_nb ; // marge incluse
         $texte_entete   = ($val_user) ? $date_fr.' - '.$description.' - '.$val_user : $date_fr.' - '.$description ;
         $tex_col_ref    = ($aff_reference) ? 'c|' : '' ;
         if($cart_cases_nb==1)

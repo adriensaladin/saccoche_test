@@ -30,8 +30,8 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 
 $action     = (isset($_POST['f_action']))           ? Clean::texte($_POST['f_action'])            : '';
 $page_ref   = (isset($_POST['f_page_ref']))         ? Clean::id($_POST['f_page_ref'])             : '';
-$colonne    = (isset($_POST['choix_'.$page_ref]))   ? Clean::id($_POST['choix_'.$page_ref])       : 'objectif'; // pour le 1er degré
-$moy_classe = (isset($_POST['moyenne_'.$page_ref])) ? Clean::entier($_POST['moyenne_'.$page_ref]) : 0; // pour le 1er degré
+$colonne    = (isset($_POST['choix_'.$page_ref]))   ? Clean::id($_POST['choix_'.$page_ref])       : '';
+$moy_classe = (isset($_POST['moyenne_'.$page_ref])) ? Clean::entier($_POST['moyenne_'.$page_ref]) : '';
 $colonne_id = (isset($_POST['f_colonne_id']))       ? Clean::entier($_POST['f_colonne_id'])       : '';
 $legende    = (isset($_POST['f_colonne_legende']))  ? Clean::texte($_POST['f_colonne_legende'])   : '';
 

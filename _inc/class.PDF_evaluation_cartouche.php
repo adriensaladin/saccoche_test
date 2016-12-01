@@ -215,7 +215,7 @@ class PDF_evaluation_cartouche extends PDF
       $this->Cell( $this->page_largeur_moins_marges , $commentaire_nb_lignes*$this->cases_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , $this->fond );
       $this->SetXY($memo_x , $memo_y);
       $this->SetFont('Arial' , '' , 9);
-      $this->afficher_appreciation( $this->page_largeur_moins_marges , $commentaire_nb_lignes*$this->cases_hauteur , 8 /*taille_police*/ , 4 /*taille_interligne*/ , $commentaire );
+      $this->afficher_appreciation( $this->page_largeur_moins_marges , $commentaire_nb_lignes*$this->cases_hauteur , 9 /*taille_police*/ , 4 /*taille_interligne*/ , $commentaire );
     }
     // positionnement, dont marge
     $this->SetXY($this->marge_gauche , $this->GetY() + (2+$lignes_vide_nb)*$this->cases_hauteur);

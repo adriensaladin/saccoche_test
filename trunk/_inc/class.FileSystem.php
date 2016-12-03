@@ -111,6 +111,8 @@ class FileSystem
     21 => "21 | INCONS | archive incohérente",
     22 => "22 | REMOVE | fichier impossible à supprimer",
     23 => "23 | DELETED | entrée supprimée",
+    24 => "24 | NOTALLOWED | extension de fichier non autorisée", /*ajout perso*/
+    25 => "25 | FORBIDDEN | extension de fichier interdite",      /*ajout perso*/
   );
 
   // Tableau utile à analyser_dossier()
@@ -435,7 +437,7 @@ class FileSystem
   }
 
   /**
-   * Ecrire un fichier "index.htm" vide dans un dossier pour éviter le lsitage du répertoire.
+   * Ecrire des fichiers "index.*" vide dans un dossier pour éviter le listage du répertoire.
    * 
    * @param string   $dossier_chemin   Chemin jusqu'au dossier
    * @param bool     $obligatoire      Facultatif, TRUE par défaut.
@@ -444,10 +446,22 @@ class FileSystem
   public static function ecrire_fichier_index( $dossier_chemin , $obligatoire=TRUE )
   {
     $ds = (substr($dossier_chemin,-1)==DS) ? '' : DS ;
-    $fichier_chemin  = $dossier_chemin.$ds.'index.htm';
-    $fichier_contenu = 'Circulez, il n\'y a rien à voir par ici !';
-    if($obligatoire) return FileSystem::ecrire_fichier( $fichier_chemin , $fichier_contenu );
-    else return FileSystem::ecrire_fichier_si_possible( $fichier_chemin , $fichier_contenu );
+    $fichier_chemin  = $dossier_chemin.$ds;
+    $fichier_contenu = 'Perdu ?! ;-)';
+    $tab_fichier_nom = array( 'index.htm' , 'index.html' , 'index.php' );
+    $result = TRUE ;
+    foreach( $tab_fichier_nom as $fichier_nom )
+    {
+      if($obligatoire)
+      {
+        $result = $result && FileSystem::ecrire_fichier( $fichier_chemin.$fichier_nom , $fichier_contenu );
+      }
+      else
+      {
+        $result = $result && FileSystem::ecrire_fichier_si_possible( $fichier_chemin.$fichier_nom , $fichier_contenu );
+      }
+    }
+    return $result;
   }
 
   /**
@@ -964,11 +978,15 @@ class FileSystem
    * @param string   $chemin_fichier_zip
    * @param string   $dossier_dezip
    * @param bool     $use_ZipArchive   FALSE permet de nettoyer les noms des fichiers extraits : à préférer donc
+   * @param array    $tab_extensions_autorisees   (facultatif) tableau des extensions autorisées
+   * @param array    $tab_extensions_interdites   (facultatif) tableau des extensions interdites
    * @return int     code d'erreur (0 si RAS)
    */
-  public static function unzip( $chemin_fichier_zip , $dossier_dezip , $use_ZipArchive )
+  public static function unzip( $chemin_fichier_zip , $dossier_dezip , $use_ZipArchive , $tab_extensions_autorisees=NULL , $tab_extensions_interdites=NULL )
   {
     // Utiliser la classe ZipArchive http://fr.php.net/manual/fr/class.ziparchive.php (PHP 5 >= 5.2.0, PECL zip >= 1.1.0)
+    // Attention : dans ce cas, pas de contrôle avec $tab_extensions_autorisees ni $tab_extensions_interdites
+    // N'est appelé que depuis l'interface webmestre...
     if($use_ZipArchive)
     {
       $zip = new ZipArchive();
@@ -1000,7 +1018,18 @@ class FileSystem
         else
         {
           // C'est un fichier
-          file_put_contents( $dossier_dezip.$ds.Clean::zip_filename(zip_entry_name($zip_element)) , zip_entry_read($zip_element,zip_entry_filesize($zip_element)) );
+          $fichier_nom = Clean::zip_filename(zip_entry_name($zip_element));
+          $fichier_extension = Clean::lower(pathinfo($fichier_nom,PATHINFO_EXTENSION));
+          // Vérification de l'extension
+          if( ($tab_extensions_autorisees!==NULL) && (!in_array($fichier_extension,$tab_extensions_autorisees)) )
+          {
+            return 24;
+          }
+          if( ($tab_extensions_interdites!==NULL) && (in_array($fichier_extension,$tab_extensions_interdites)) )
+          {
+            return 25;
+          }
+          file_put_contents( $dossier_dezip.$ds.$fichier_nom , zip_entry_read($zip_element,zip_entry_filesize($zip_element)) );
         }
         zip_entry_close($zip_element);
       }

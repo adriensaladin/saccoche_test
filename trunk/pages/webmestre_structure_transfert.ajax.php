@@ -278,7 +278,7 @@ if($action=='importer_zip')
   $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom , CHEMIN_DOSSIER_DUMP , TRUE /*use_ZipArchive*/ );
   if($code_erreur)
   {
-    Json::end( FALSE , 'Cette archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
+    Json::end( FALSE , 'Erreur d\'extraction du contenu ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_zip_nom);
   // Vérifier le contenu : noms des fichiers

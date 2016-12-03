@@ -178,63 +178,7 @@ $tab_viesco = (!$affichage_assiduite) ? array() : array(
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupérer la liste des élèves
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$tab_eleve = array();
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 2 /*actuels_et_anciens*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_nom,user_prenom,user_sconet_id' /*champs*/ , $periode_id );
-if(empty($DB_TAB))
-{
-  Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$classe_nom.' !' );
-}
-foreach($DB_TAB as $DB_ROW)
-{
-  if($DB_ROW['user_sconet_id'])
-  {
-    $tab_eleve[$DB_ROW['user_id']] = array(
-      'eleve'         => array(
-        'id'            => 'ELV'.$DB_ROW['user_id'],
-        'id-be'         => $DB_ROW['user_sconet_id'],
-        'code-division' => $classe_ref, // max 8 caractères : idem dans SACoche
-        'nom'           => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
-        'prenom'        => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
-      ),
-      'commun'        => array(
-        'responsable-etab' => $tab_responsable_etabl,
-        'periode'          => $tab_periode,
-        'discipline'       => array(),
-        'enseignant'       => array(),
-        'element'          => array(),
-        'epi'              => array(),
-        'ap'               => array(),
-        'parcours'         => array(),
-        'viesco'           => array(),
-      ),
-      'bilan'         => $tab_bilan + array( 'eleve-ref' => 'ELV'.$DB_ROW['user_id'] ) ,
-      'acquis'        => array(),
-      'epi'           => array(),
-      'ap'            => array(),
-      'parcours'      => array(),
-      'modaccomp'     => array(),
-      'synthese'      => array(),
-      'viesco'        => $tab_viesco,
-      'socle'         => array(), // non utilisé, en prévision si besoin
-      'responsables'  => array(),
-    );
-  }
-  else
-  {
-    $tab_compte_rendu['erreur'][] = 'Absence d\'identifiant SIECLE pour l\'élève "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : données non exportables.';
-  }
-}
-if(empty($tab_eleve))
-{
-  Json::end( FALSE , 'Aucun élève trouvé avec un identifiant SCONET renreigné !' );
-}
-$liste_eleve_id = implode(',',array_keys($tab_eleve));
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupérer des infos dans les fichiers SIECLE archivés : ref classe ; epp/local ; modalite-election
+// Récupérer des infos dans les fichiers SIECLE archivés : ref classe ; epp/local ; modalite-election ; date-scolarite
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_lsu_prof_type    = array_fill_keys( array('epp','local'), TRUE );
@@ -305,7 +249,87 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
       $tab_siecle_modalite_election[ $tab['CODE_MATIERE'] ] = $tab['CODE_MODALITE_ELECT'];
     }
   }
+  // Fichier Eleves
+  $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Eleves');
+  if(empty($DB_TAB))
+  {
+    Json::end( FALSE , 'Fichier ElevesSansAdresses manquant ! À importer page précédente...' );
+  }
+  if(empty($DB_TAB['DONNEES']['ELEVES']['ELEVE']))
+  {
+    Json::end( FALSE , 'Élèves absents du fichier ElevesSansAdresses !' );
+  }
+  $tab_siecle_eleve_date = array();
+  foreach($DB_TAB['DONNEES']['ELEVES']['ELEVE'] as $tab)
+  {
+    $eleve_id = $tab['@attributes']['ELEVE_ID'];
+    if( isset($tab['DATE_ENTREE']) )
+    {
+      $date_mysql_entree = To::date_french_to_mysql($tab['DATE_ENTREE']);
+      $tab_siecle_eleve_date[$eleve_id]['date_entree'] = ($date_mysql_entree<$date_mysql_debut) ? $date_mysql_debut : $date_mysql_entree ;
+    }
+  }
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer la liste des élèves
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$tab_eleve = array();
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 2 /*actuels_et_anciens*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_nom,user_prenom,user_sconet_id' /*champs*/ , $periode_id );
+if(empty($DB_TAB))
+{
+  Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$classe_nom.' !' );
+}
+foreach($DB_TAB as $DB_ROW)
+{
+  if($DB_ROW['user_sconet_id'])
+  {
+    $tab_eleve[$DB_ROW['user_id']] = array(
+      'eleve'         => array(
+        'id'             => 'ELV'.$DB_ROW['user_id'],
+        'id-be'          => $DB_ROW['user_sconet_id'],
+        'code-division'  => $classe_ref, // max 8 caractères : idem dans SACoche
+        'nom'            => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
+        'prenom'         => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
+      ),
+      'commun'        => array(
+        'responsable-etab' => $tab_responsable_etabl,
+        'periode'          => $tab_periode,
+        'discipline'       => array(),
+        'enseignant'       => array(),
+        'element'          => array(),
+        'epi'              => array(),
+        'ap'               => array(),
+        'parcours'         => array(),
+        'viesco'           => array(),
+      ),
+      'bilan'         => $tab_bilan + array( 'eleve-ref' => 'ELV'.$DB_ROW['user_id'] ) ,
+      'acquis'        => array(),
+      'epi'           => array(),
+      'ap'            => array(),
+      'parcours'      => array(),
+      'modaccomp'     => array(),
+      'synthese'      => array(),
+      'viesco'        => $tab_viesco,
+      'socle'         => array(), // non utilisé, en prévision si besoin
+      'responsables'  => array(),
+    );
+    if(isset($tab_siecle_eleve_date[$DB_ROW['user_sconet_id']]['date_entree']))
+    {
+      $tab_eleve[$DB_ROW['user_id']]['bilan']['date-scolarite'] = $tab_siecle_eleve_date[$DB_ROW['user_sconet_id']]['date_entree'];
+    }
+  }
+  else
+  {
+    $tab_compte_rendu['erreur'][] = 'Absence d\'identifiant SIECLE pour l\'élève "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : données non exportables.';
+  }
+}
+if(empty($tab_eleve))
+{
+  Json::end( FALSE , 'Aucun élève trouvé avec un identifiant SCONET renreigné !' );
+}
+$liste_eleve_id = implode(',',array_keys($tab_eleve));
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Liste de tous les professeurs / personnels

@@ -166,12 +166,12 @@ if( ($action=='envoyer_zip') ) //  $masque non encore testé car non récupéré
   // Créer ou vider le dossier temporaire
   FileSystem::creer_ou_vider_dossier($dossier_temp);
   // Dezipper dans le dossier temporaire
-  $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $dossier_temp , FALSE /*use_ZipArchive*/ );
+  $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_nom , $dossier_temp , FALSE /*use_ZipArchive*/ , NULL /*tab_extensions_autorisees*/ , FileSystem::$tab_extensions_interdites );
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
   if($code_erreur)
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , 'L\'archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
+    Json::end( FALSE , 'Erreur d\'extraction du contenu ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
   // Récupérer la liste des élèves et fabriquer le nom de fichier attendu correspondant à chacun
   $tab_bad = array( '[sconet_id]' , '[sconet_num]' , '[reference]' , '[nom]' , '[prenom]' , '[login]' , '[ent_id]' );

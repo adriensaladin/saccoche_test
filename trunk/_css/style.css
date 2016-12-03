@@ -71,6 +71,7 @@ div.bordertop{border-top:1px dashed #999;margin-top:2px}
 span.pourcentage{display:inline-block;width:3em;padding-right:3px;text-align:right}
 td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
 *.probleme, noscript {background:#FF3;color:#C00;font-weight:bold;margin:1ex auto}
+*.important {background:#FF9;color:#000;font-weight:bold;border:solid 1px #FA3;padding:1px;margin:1px auto}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Cadres principaux (dont le menu déroulant)                                                          */

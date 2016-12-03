@@ -72,7 +72,7 @@ if( $step==1 )
 
 if( $step==2 )
 {
-  // Création des fichiers index.*
+  // Création des fichiers index.htm
   $poursuivre1 = TRUE;
   foreach(FileSystem::$tab_dossier_tmp as $dossier)
   {
@@ -80,11 +80,11 @@ if( $step==2 )
   }
   if($poursuivre1)
   {
-    Json::add_str('<label class="valide">Fichiers &laquo;&nbsp;<b>index.*</b>&nbsp;&raquo; créés dans chaque sous-dossier de &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_DOSSIER_TMP).'</b>&nbsp;&raquo;.</label><br />'.NL);
+    Json::add_str('<label class="valide">Fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; créés dans chaque sous-dossier de &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_DOSSIER_TMP).'</b>&nbsp;&raquo;.</label><br />'.NL);
   }
   else
   {
-    Json::add_str('<label class="erreur">Échec lors de la création d\'un ou plusieurs fichiers &laquo;&nbsp;<b>index.*</b>&nbsp;&raquo; dans chaque dossier précédent.</label><br />'.NL);
+    Json::add_str('<label class="erreur">Échec lors de la création d\'un ou plusieurs fichiers &laquo;&nbsp;<b>index.htm</b>&nbsp;&raquo; dans chaque dossier précédent.</label><br />'.NL);
   }
   // Création du fichier .htaccess
   $poursuivre2 = FileSystem::ecrire_fichier_si_possible( CHEMIN_DOSSIER_PRIVATE.'.htaccess' , 'deny from all'.NL );

@@ -101,11 +101,11 @@ if($action=='uploader')
   // Créer ou vider le dossier temporaire
   FileSystem::creer_ou_vider_dossier($dossier_temp);
   // Dezipper dans le dossier temporaire
-  $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom , $dossier_temp , FALSE /*use_ZipArchive*/ , array('sql') /*tab_extensions_autorisees*/ );
+  $code_erreur = FileSystem::unzip( CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom , $dossier_temp , FALSE /*use_ZipArchive*/ );
   if($code_erreur)
   {
     FileSystem::supprimer_dossier($dossier_temp); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , 'Erreur d\'extraction du contenu ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
+    Json::end( FALSE , 'Cette archive ZIP n\'a pas pu être ouverte ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
   FileSystem::supprimer_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_upload_nom);
   // Vérifier le contenu : noms des fichiers

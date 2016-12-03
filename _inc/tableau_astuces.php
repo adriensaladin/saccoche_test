@@ -27,7 +27,6 @@
 
 // Tableau avec la liste des astuces "Le saviez-vous ?" affichées après authentification.
 
-$astuce_livret_scolaire_export_2d       = '<p><span class="important"><em>SACoche</em> est <a href="http://eduscol.education.fr/cid108536/interface-editeurs-avec-les-applications-nationales.html" target="_blank">validée par le ministère pour l\'export LSU 2nd degré</a>.</span></p>';
 $astuce_bascule_compte                  = '<p>Si vous avez plusieurs comptes, vous pouvez <a href="index.php?page=compte_switch"><b>basculer de l\'un à l\'autre</b></a> sans vous ré-identifier. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__comptes_multiples">Documentation</a></span></p>';
 $astuce_partage_regroupements           = '<p>Vous pouvez <b>partager</b> avec des collègues vos <a href="index.php?page=compte_selection_items"><b>regroupements d\'items</b></a>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__gestion_regroupements_items#toggle_partage">Documentation</a></span></p>';
 $astuce_officiel_saisie_mixte           = '<p>Les bilans officiels et les fiches brevet disposent d\'un nouveau statut <b>"saisie mixte"</b> (permettant l\'accès simultané en saisie aux appréciations intermédiaires et de synthèse). <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=officiel__bulletin_scolaire#toggle_etapes_processus">Documentation</a></span></p>';
@@ -63,7 +62,6 @@ $astuce_authentification_ent            = '<p>On peut se connecter à <em>SACoch
 // Ranger de la plus récente à la plus ancienne (la fréquence d'apparition étant liée à l'actualité de l'astuce)
 $tab_astuces = array(
   'administrateur' => array(
-    $astuce_livret_scolaire_export_2d,
     $astuce_bascule_compte,
     $astuce_officiel_saisie_mixte,
     $astuce_email_notifications,
@@ -82,7 +80,6 @@ $tab_astuces = array(
     $astuce_authentification_ent,
   ),
   'directeur' => array(
-    $astuce_livret_scolaire_export_2d,
     $astuce_bascule_compte,
     $astuce_officiel_saisie_mixte,
     $astuce_email_notifications,
@@ -101,7 +98,6 @@ $tab_astuces = array(
     $astuce_faq_b2i,
   ),
   'professeur' => array(
-    $astuce_livret_scolaire_export_2d,
     $astuce_bascule_compte,
     $astuce_partage_regroupements,
     $astuce_email_notifications,

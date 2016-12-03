@@ -431,7 +431,7 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
   $uai = $xml->PARAMETRES->UAJ;
   if($uai===FALSE)
   {
-    Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
+    Json::end( FALSE , 'Le fichier transmis n\'est pas correct (erreur de numéro UAI) !' );
   }
   $annee = @(string)$xml->PARAMETRES->ANNEE_SCOLAIRE;
   $annee_scolaire = To::annee_scolaire('siecle');

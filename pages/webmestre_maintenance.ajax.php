@@ -178,7 +178,7 @@ if($action=='maj_etape2')
   $code_erreur = FileSystem::unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
   if($code_erreur)
   {
-    Json::end( FALSE , 'Erreur d\'extraction du contenu ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
+    Json::end( FALSE , 'Fichiers impossibles à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
   Json::end( TRUE , 'Analyse des fichiers et recensement des dossiers&hellip;' );
 }
@@ -335,7 +335,7 @@ if($action=='verif_file_appli_etape2')
   $code_erreur = FileSystem::unzip( $fichier_import , CHEMIN_DOSSIER_IMPORT , TRUE /*use_ZipArchive*/ );
   if($code_erreur)
   {
-    Json::end( FALSE , 'Erreur d\'extraction du contenu ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
+    Json::end( FALSE , 'Fichiers impossibles à extraire ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
   Json::end( TRUE , 'Analyse des fichiers et recensement des dossiers&hellip;' );
 }

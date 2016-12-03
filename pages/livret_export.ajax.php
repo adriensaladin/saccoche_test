@@ -44,17 +44,11 @@ if(empty($_POST))
 // Import d'un fichier SIECLE
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$annee_scolaire = To::annee_scolaire('siecle');
-$tab_fichier = array(
-  'Eleves'       => 'ElevesSansAdresses.xml' ,
-  'sts_emp_UAI'  => 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml' ,
-  'Nomenclature' => 'Nomenclature.xml' ,
-);
-
-if( isset($tab_fichier[$action]) )
+if( ($action=='sts_emp_UAI') || ($action=='Nomenclature') )
 {
+  $annee_scolaire = To::annee_scolaire('siecle');
   // Nom du fichier à extraire si c'est un fichier zippé
-  $nom_fichier_extrait = $tab_fichier[$action];
+  $nom_fichier_extrait = ($action=='sts_emp_UAI') ? 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml' : 'Nomenclature.xml' ;
   // Récupération du fichier
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $nom_fichier_extrait /*fichier_nom*/ , array('zip','xml') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , $nom_fichier_extrait /*filename_in_zip*/ );
   if($result!==TRUE)
@@ -66,7 +60,7 @@ if( isset($tab_fichier[$action]) )
   {
     Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
   }
-  // Vérifications
+  // Fichier STS
   if($action=='sts_emp_UAI')
   {
     $editeur_prive_edt = @(string)$xml->PARAMETRES->APPLICATION_SOURCE;

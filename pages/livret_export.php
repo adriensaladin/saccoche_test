@@ -328,6 +328,10 @@ if( DB_STRUCTURE_LIVRET::DB_tester_jointure_classe_livret('"6e","5e","4e","3e"')
   echo'<h2>Avertissement</h2>'.NL;
   echo'<p>Pour les bilans périodiques des classes de collège, la connaissance d\'informations issues de <em>Siècle</em> pour l\'année scolaire en cours est nécessaire.</p>'.NL;
   $tab_fichier = array(
+    'Eleves' => array(
+      'nom'=>'ExportXML_ElevesSansAdresses.zip' ,
+      'doc'=>'support_administrateur__import_users_sconet#toggle_exporter_eleves' ,
+    ),
     'sts_emp_UAI' => array(
       'nom'=>'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml' ,
       'doc'=>'support_administrateur__import_users_sconet#toggle_exporter_profs' ,

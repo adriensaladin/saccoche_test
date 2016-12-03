@@ -126,7 +126,7 @@ $(document).ready
     (
       function()
       {
-        file_objet = $(this).attr('name'); // sts_emp_UAI | Nomenclature
+        file_objet = $(this).attr('name'); // Eleves | sts_emp_UAI | Nomenclature
         $('#f_action').val(file_objet);
         $('#f_import').click();
       }

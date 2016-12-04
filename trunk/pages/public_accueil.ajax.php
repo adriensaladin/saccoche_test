@@ -286,6 +286,8 @@ if($action=='identifier')
     if($auth_SUCCESS===TRUE)
     {
       SessionUser::initialiser_webmestre();
+      // On allège le fichier de logs si nécessaire
+      SACocheLog::alleger(0);
     }
   }
   // 3/4 Pour un développeur

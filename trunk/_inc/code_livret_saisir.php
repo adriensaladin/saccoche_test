@@ -42,7 +42,7 @@ $tab_objet  = array('modifier','tamponner','voir'); // "voir" car on peut corrig
 $tab_action = array('initialiser','charger','ajouter_saisie','modifier_saisie','supprimer_saisie','recalculer_saisie','corriger_faute');
 $tab_mode  = array('texte','graphique');
 $tab_rubrique_type = array('eval','socle','epi','ap','parcours','bilan','viesco');
-$tab_saisie_objet = array('position','appreciation','elements');
+$tab_saisie_objet = array('position','appreciation','elements','saisiejointure');
 
 // On vérifie les paramètres principaux
 
@@ -249,11 +249,17 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 2 : suppression d'une appréciation / d'un positionnement / d'éléments du programme
+// Cas 2 : suppression d'une appréciation / d'un positionnement / d'éléments du programme / d'un rattachement à une appréciation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($ACTION=='supprimer_saisie')
 {
+  // Cas particulier de la suppression d'un rattachement à une appréciation saisie par erreur
+  if($saisie_objet=='saisiejointure')
+  {
+    DB_STRUCTURE_LIVRET::DB_modifier_saisie_jointure_prof( $saisie_id , $_SESSION['USER_ID'] , TRUE /*delete*/ );
+    Json::end( TRUE , 'jointure_'.$saisie_id.'_'.$_SESSION['USER_ID'] );
+  }
   // Enregistrer la suppression
   DB_STRUCTURE_LIVRET::DB_modifier_saisie( $saisie_id , $saisie_objet , NULL /*saisie_valeur*/ , 'saisie' , $_SESSION['USER_ID'] );
   // Retourner le HTML adapté
@@ -429,7 +435,7 @@ if($ACTION=='initialiser')
                                : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_id , 2 /*actuels_et_anciens*/ , $periode_id ) ;
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$groupe_nom.' !' );
+    Json::end( FALSE , 'Aucun élève évalué trouvé dans le regroupement '.$groupe_nom.' !' );
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';

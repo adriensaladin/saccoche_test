@@ -488,9 +488,9 @@ class FileSystem
   }
 
   /**
-   * Générer une fin de nom de fichier pseudo-aléatoire.
+   * Générer une fin de fichier pseudo-aléatoire pour terminer un nom de fichier.
    * 
-   * Le suffixe est suffisamment tordu pour le rendre privé et non retrouvable par un utilisateur, mais sans être totalement aléatoire car il doit être fixe (retrouvé).
+   * Le suffixe est suffisamment tordu pour le rendre un privé et non retrouvable par un utilisateur, mais sans être totalement aléatoire car il doit fixe (retrouvé).
    * Utilisé pour les flux RSS et les bilans officiels PDF.
    * 
    * @param string   $fichier_nom_debut
@@ -499,20 +499,6 @@ class FileSystem
   public static function generer_fin_nom_fichier__pseudo_alea($fichier_nom_debut)
   {
     return md5($fichier_nom_debut.$_SERVER['DOCUMENT_ROOT']);
-  }
-
-  /**
-   * Générer un nom de dossier (ou une partie de nomde fichier) lié à la session pour éviter un accès http direct (sans être totalement aléatoire car il doit être fixe retrouvé mais suffisamment tordu pour le rendre privé).
-   * 
-   * Le suffixe est suffisamment tordu pour le rendre privé et non retrouvable par un utilisateur, mais sans être totalement aléatoire car il doit être fixe (retrouvé).
-   * Utilisé pour les restaurations de base.
-   * 
-   * @param string   $fichier_nom_debut
-   * @return string
-   */
-  public static function generer_nom_structure_session()
-  {
-    return $_SESSION['BASE'].'_'.md5(session_id().$_SERVER['DOCUMENT_ROOT']);
   }
 
   /**

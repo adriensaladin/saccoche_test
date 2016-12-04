@@ -33,7 +33,7 @@ $etape  = (isset($_POST['etape']))    ? Clean::entier($_POST['etape'])   : 0;
 
 $top_depart = microtime(TRUE);
 
-$dossier_temp = CHEMIN_DOSSIER_DUMP.FileSystem::generer_nom_structure_session().DS;
+$dossier_temp = CHEMIN_DOSSIER_DUMP.$_SESSION['BASE'].DS;
 
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
 

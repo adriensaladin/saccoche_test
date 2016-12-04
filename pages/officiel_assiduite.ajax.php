@@ -36,8 +36,8 @@ $datas      = (isset($_POST['f_data']))    ? Clean::texte($_POST['f_data'])     
 $test_gepi = (mb_strpos($action,'gepi')!==FALSE) ? TRUE : FALSE ;
 $tab_extensions_autorisees = $test_gepi ? array('txt','csv') : array('zip','xml') ;
 $extension_fichier_dest    = $test_gepi ? 'txt'              : 'xml' ;
-$fichier_dest = 'absences_import_'.FileSystem::generer_nom_structure_session().'.'.$extension_fichier_dest ;
-$fichier_memo = 'absences_import_'.FileSystem::generer_nom_structure_session().'_extraction.'.$extension_fichier_dest ;
+$fichier_dest = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'.'.$extension_fichier_dest ;
+$fichier_memo = 'absences_import_'.$_SESSION['BASE'].'_'.session_id().'_extraction.'.$extension_fichier_dest ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Réception et analyse d'un fichier d'import issu de Sconet Absences ou de Siècle Vie Scolaire

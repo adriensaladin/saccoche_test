@@ -117,7 +117,7 @@ if($ACTION!='enregistrer_saisie_csv')
                                : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_id , 2 /*actuels_et_anciens*/ , $periode_id ) ;
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Aucun élève évalué trouvé dans le regroupement '.$groupe_nom.' !' );
+    Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$groupe_nom.' !' );
   }
   $csv_lignes_eleves = ($BILAN_TYPE=='bulletin') ? array( 0 => 'groupe_'.$groupe_id.$separateur.'"Classe / Groupe"'.$separateur ) : array() ;
   $tab_eleve_id      = ($BILAN_TYPE=='bulletin') ? array( 0 => 'Classe / Groupe' )                                                : array() ;
@@ -361,7 +361,7 @@ if($ACTION=='uploader_saisie_csv')
     Json::end( FALSE , 'Aucune différence trouvée avec ce qui est déjà enregistré !' );
   }
   // On enregistre
-  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_nom.'_'.FileSystem::generer_nom_structure_session().'.txt',serialize($tab_donnees_csv));
+  FileSystem::ecrire_fichier(CHEMIN_DOSSIER_IMPORT.$fichier_nom.'_'.session_id().'.txt',serialize($tab_donnees_csv));
   // On affiche le retour
   Json::add_row( 'filename' , $fichier_nom );
   Json::end( TRUE );
@@ -407,7 +407,7 @@ if($ACTION=='enregistrer_saisie_csv')
   {
     Json::end( FALSE , 'Fichier transmis d\'un autre regroupement d\'élèves !' );
   }
-  $fichier_chemin = CHEMIN_DOSSIER_IMPORT.$import_info.'_'.FileSystem::generer_nom_structure_session().'.txt';
+  $fichier_chemin = CHEMIN_DOSSIER_IMPORT.$import_info.'_'.session_id().'.txt';
   if(!is_file($fichier_chemin))
   {
     Json::end( FALSE , 'Le fichier transmis est introuvable !' );

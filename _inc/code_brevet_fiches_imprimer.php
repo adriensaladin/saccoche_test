@@ -49,7 +49,7 @@ $tab_action = array('initialiser','imprimer');
 $bilan_type = 'brevet';
 $annee_session_brevet = To::annee_session_brevet();
 
-$file_memo = CHEMIN_DOSSIER_EXPORT.'imprimer_brevet_'.FileSystem::generer_nom_structure_session().'.txt';
+$file_memo = CHEMIN_DOSSIER_EXPORT.'imprimer_brevet_'.$_SESSION['BASE'].'_'.session_id().'.txt';
 
 // On vérifie les paramètres principaux
 

@@ -215,7 +215,7 @@ else
 $periode_nom = $tab_periode_livret[$periode];
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Saisir    : affichage des données d'un élève | enregistrement/suppression d'une appréciation ou d'une note ou d'éléments ou d'un rattachement | recalculer une note
+// Saisir    : affichage des données d'un élève | enregistrement/suppression d'une appréciation ou d'une note | recalculer une note
 // Examiner  : recherche des saisies manquantes (notes et appréciations)
 // Consulter : affichage des données d'un élève (HTML) | détail d'une rubrique pour un élève
 // Imprimer  : affichage de la liste des élèves | étape d'impression PDF

@@ -87,7 +87,7 @@ list( $import_origine , $import_profil ) = $tab_action[$action];
 
 $tab_extensions_autorisees = ($import_origine=='sconet') ? array('zip','xml') : array('txt','csv') ;
 $extension_fichier_dest    = ($import_origine=='sconet') ? 'xml'              : 'txt' ;
-$fichier_nom_debut   = 'import_'.$import_origine.'_'.$import_profil.'_'.FileSystem::generer_nom_structure_session().'_';
+$fichier_nom_debut   = 'import_'.$import_origine.'_'.$import_profil.'_'.$_SESSION['BASE'].'_'.session_id().'_';
 $fichier_dest_nom    = $fichier_nom_debut.'import.'.$extension_fichier_dest ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

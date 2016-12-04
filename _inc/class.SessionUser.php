@@ -668,8 +668,6 @@ class SessionUser
       // On efface les fichiers temporaires obsolètes
       FileSystem::nettoyer_fichiers_temporaires_commun();
       FileSystem::nettoyer_fichiers_temporaires_etablissement($_SESSION['BASE']);
-      // On allège le fichier de logs si nécessaire
-      SACocheLog::alleger($_SESSION['BASE']);
       // On rend visibles les notifications en attente et on supprime les notifications obsolètes
       Sesamail::envoyer_notifications();
       DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_anciens();

@@ -610,19 +610,14 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   $listing_prof_domaine = '';
                   if(!empty($tab_prof_domaine))
                   {
-                    $is_saisie_multiple = ( !empty($tab_profs_appreciation) && (count($tab_profs_appreciation)>1) ) ? TRUE : FALSE ;
                     foreach($tab_prof_domaine as $key => $prof_id)
                     {
-                      $tab_prof_domaine[$key] = '<span id="jointure_'.$appreciation_info['saisie_id'].'_'.$prof_id.'">'.html($tab_profs[$prof_id]).'</span>';
-                      if( $is_saisie_multiple && ($prof_id==$_SESSION['USER_ID']) )
-                      {
-                        $tab_prof_domaine[$key] .= ' <button type="button" class="supprimer" title="Supprimer mon association à cette rubrique (appréciation saisie par erreur).">&nbsp;</button>';
-                      }
+                      $tab_prof_domaine[$key] = html($tab_profs[$prof_id]);
                     }
                   }
                   $listing_prof_domaine = implode('<br />',$tab_prof_domaine);
                   $nombre_sous_rubriques = 1;
-                  $tab_temp_HTML['domaine'] .= '<td id="eval_'.$id_rubrique_appreciation.'_saisiejointure"><b>'.html($tab_rubrique['partie']).'</b><div class="notnow" data-id="'.$appreciation_info['saisie_id'].'">'.$listing_prof_domaine.'</div>'.$details.'</td>';
+                  $tab_temp_HTML['domaine'] .= '<td><b>'.html($tab_rubrique['partie']).'</b><div class="notnow">'.$listing_prof_domaine.'</div>'.$details.'</td>';
                 }
                 else
                 {
@@ -682,7 +677,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                     $origine = ($appreciation_info['saisie_origine']=='bulletin') ? 'Reporté du bulletin' : 'Validé par '.html($tab_profs[$appreciation_info['prof_id']]) ;
                     $actions = ($make_action=='modifier') ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
                     $actions.= ( ($make_action=='modifier') && ($appreciation_info['saisie_origine']=='saisie') && ( ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
-                    if( ($make_action!='modifier') && in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')) && ($appreciation_info['prof_id']!=$_SESSION['USER_ID']) )
+                    if( $appreciation_info['saisie_valeur'] && in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')) && ($appreciation_info['prof_id']!=$_SESSION['USER_ID']) )
                     {
                       $actions .= ' <button type="button" class="signaler">Signaler une faute</button>';
                       if($droit_corriger_appreciation) { $actions .= ' <button type="button" class="corriger">Corriger une faute</button>'; }

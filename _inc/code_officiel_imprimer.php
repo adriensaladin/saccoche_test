@@ -51,7 +51,7 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 $tab_objet  = array('imprimer','voir_archive');
 $tab_action = array('initialiser','imprimer');
 
-$file_memo = CHEMIN_DOSSIER_EXPORT.'imprimer_officiel_'.FileSystem::generer_nom_structure_session().'.txt';
+$file_memo = CHEMIN_DOSSIER_EXPORT.'imprimer_officiel_'.$_SESSION['BASE'].'_'.session_id().'.txt';
 
 // On vérifie les paramètres principaux
 

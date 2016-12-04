@@ -1115,7 +1115,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [livret_saisir] Clic sur le bouton pour supprimer un positionnement ou une appréciation ou des éléments du programme
+    // [livret_saisir] Clic sur le bouton pour supprimer un positionnement ou une appréciation ou des éléments du programme ou un rattachement à une rubrique
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#zone_action_eleve').on
@@ -1124,15 +1124,16 @@ $(document).ready
       'button.supprimer',
       function()
       {
-        memo_action = $(this).attr('class'); // supprimer
-        memo_conteneur = $(this).parent().parent();
+        memo_bouton = $(this);
+        memo_action = memo_bouton.attr('class'); // supprimer
+        memo_conteneur = memo_bouton.parent().parent();
         // Récupération des principaux identifiants
-        memo_saisie_id  = $(this).parent().attr('data-id');
+        memo_saisie_id  = memo_bouton.parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
         memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
-        memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
+        memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements | saisiejointure
         memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
         // Contenu de la saisie existante
         if(memo_rubrique_type=='viesco')
@@ -1164,7 +1165,12 @@ $(document).ready
               }
               else
               {
-                if( (memo_saisie_objet!='position') || (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
+                if(memo_saisie_objet=='saisiejointure')
+                {
+                  memo_bouton.remove();
+                  $('#'+responseJSON['value']).remove();
+                }
+                else if( (memo_saisie_objet!='position') || (memo_page_colonne=='moyenne') || (memo_page_colonne=='pourcentage') )
                 {
                   if(memo_rubrique_type=='viesco')
                   {

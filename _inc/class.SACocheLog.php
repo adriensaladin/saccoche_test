@@ -56,10 +56,14 @@ class SACocheLog
    */
   public static function ajouter($contenu)
   {
+    $identite = $_SESSION['USER_PROFIL_NOM_COURT'].' ['.$_SESSION['USER_ID'].'] '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM'];
+    // Nettoyage ; on boucle pour contrer par exemple //** qui deviendrait /* avec un seul passage.
+    do { $identite = str_replace( array('/*','*/') , '' , $identite , $count ); } while ($count) ;
+    do { $contenu  = str_replace( array('/*','*/') , '' , $contenu  , $count ); } while ($count) ;
     $tab_ligne = array();
     $tab_ligne[] = '<?php /*';
     $tab_ligne[] = date('d-m-Y H:i:s');
-    $tab_ligne[] = html($_SESSION['USER_PROFIL_NOM_COURT'].' ['.$_SESSION['USER_ID'].'] '.$_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']);
+    $tab_ligne[] = html($identite);
     $tab_ligne[] = html($contenu);
     $tab_ligne[] = '*/ ?>'."\r\n";
     FileSystem::ecrire_fichier( SACocheLog::chemin_fichier_log($_SESSION['BASE']) , implode("\t",$tab_ligne) , FILE_APPEND );
@@ -74,6 +78,27 @@ class SACocheLog
   public static function lire($base_id)
   {
     return is_file( SACocheLog::chemin_fichier_log($base_id) ) ? file_get_contents(SACocheLog::chemin_fichier_log($base_id)) : NULL ;
+  }
+
+  /**
+   * Allège le contenu d'un fichier de log (si besoin).
+   * 
+   * @param int $base_id
+   * @return void
+   */
+  public static function alleger($base_id)
+  {
+    $fichier_log_contenu = SACocheLog::lire($base_id);
+    if(!is_null($fichier_log_contenu))
+    {
+      $tab_lignes = OutilCSV::extraire_lignes($fichier_log_contenu);
+      unset($fichier_log_contenu);
+      if( count($tab_lignes) > 10000 )
+      {
+        $tab_lignes = array_slice( $tab_lignes , -8000 );
+        FileSystem::ecrire_fichier( SACocheLog::chemin_fichier_log($base_id) , implode("\r\n",$tab_lignes) );
+      }
+    }
   }
 
 }

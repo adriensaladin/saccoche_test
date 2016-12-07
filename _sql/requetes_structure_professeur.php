@@ -431,6 +431,7 @@ public static function DB_lister_ids_eleves_professeur( $prof_id , $user_join_gr
 /**
  * Lister les élèves ayant déjà fait une évaluation de nom donné avec un prof donné à partir d'une date donnée.
  * Seules les évaluations sur des sélections d'élèves sont prises en compte.
+ * MAX() pour éviter l'erreur "SELECT list is not in GROUP BY clause and contains nonaggregated column 'sacoche_devoir.devoir_date' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"
  *
  * @param int    $prof_id
  * @param string $devoir_info
@@ -449,7 +450,7 @@ public static function DB_lister_eleves_devoirs($prof_id,$devoir_info,$date_debu
     $devoir_info = mb_substr( $devoir_info , 0 , $position_description ) . '%';
     $where_description = 'AND devoir_info LIKE :devoir_info ';
   }
-  $DB_SQL = 'SELECT user_id, devoir_date ';
+  $DB_SQL = 'SELECT user_id, MAX(devoir_date) AS devoir_date ';
   $DB_SQL.= 'FROM sacoche_devoir ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (groupe_id) ';

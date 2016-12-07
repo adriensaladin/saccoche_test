@@ -89,6 +89,21 @@ $(document).ready
       }
     );
 
+    $('#f_cycle , #f_socle_detail').change
+    (
+      function()
+      {
+        if( ($("#f_cycle option:selected").val()==4) && ($("#f_socle_detail option:selected").val()=='livret') )
+        {
+          $("#span_points_DNB").show();
+        }
+        else
+        {
+          $("#span_points_DNB").hide();
+        }
+      }
+    );
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Charger le select f_eleve en ajax
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,6 +207,7 @@ $(document).ready
           'f_eleve[]'               : { required:true },
           f_eleves_ordre            : { required:true },
           f_socle_position          : { required:false },
+          f_socle_points_dnb        : { required:false },
           f_only_presence           : { required:false },
           f_lien                    : { required:false },
           f_start                   : { required:false },
@@ -213,6 +229,7 @@ $(document).ready
           'f_eleve[]'               : { required:"élève(s) manquant(s)" },
           f_eleves_ordre            : { required:"ordre manquant" },
           f_socle_position          : { },
+          f_socle_points_dnb        : { },
           f_only_presence           : { },
           f_lien                    : { },
           f_start                   : { },

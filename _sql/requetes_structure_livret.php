@@ -45,8 +45,8 @@ public static function DB_initialiser_jointures_livret_classes()
   $DB_SQL = 'SELECT COUNT(*) ';
   $DB_SQL.= 'FROM sacoche_groupe ';
   $DB_SQL.= 'WHERE groupe_type="classe" ';
-  $nb_classes = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  if( !$nb_classes )
+  $nb_classes_structure = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  if( !$nb_classes_structure )
   {
     return FALSE;
   }
@@ -54,7 +54,13 @@ public static function DB_initialiser_jointures_livret_classes()
   $DB_SQL = 'SELECT COUNT(DISTINCT groupe_id) ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $nb_classes_livret = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  if( ( $nb_classes_livret == $nb_classes ) || ( $nb_classes_livret == $nb_classes - 1 ) ) // Pas de modif dans le cas d'une classe spéciale éventuelle (inactifs...)
+  // Mais sans tenir compte des classes d'un niveau inférieur ou supérieur à la converture du Livret Scolaire
+  $DB_SQL = 'SELECT COUNT(DISTINCT groupe_id) ';
+  $DB_SQL.= 'FROM sacoche_groupe ';
+  $DB_SQL.= 'WHERE groupe_type="classe" AND NOT (niveau_id BETWEEN 1033 AND 200000) ';
+  $nb_classes_hors_lsu = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  $nb_classes_concernees = $nb_classes_structure - $nb_classes_hors_lsu;
+  if( $nb_classes_livret == $nb_classes_concernees )
   {
     return TRUE;
   }

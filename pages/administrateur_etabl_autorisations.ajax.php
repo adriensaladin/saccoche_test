@@ -69,6 +69,7 @@ $tab_objet_profils['droit_socle_acces']                      = $tab_profils_poss
 $tab_objet_profils['droit_socle_pourcentage_acquis']         = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_socle_etat_validation']            = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_socle_proposition_positionnement'] = $tab_profils_possibles['parent_eleve'];
+$tab_objet_profils['droit_socle_prevision_points_brevet']    = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_officiel_saisir_assiduite']               = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_releve_modifier_statut']         = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_releve_corriger_appreciation']   = $tab_profils_possibles['dir_pers_pp'];

@@ -38,7 +38,6 @@ $periode_id  = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_period
 $classe_id   = (isset($_POST['f_classe']))      ? Clean::entier($_POST['f_classe'])     : 0;
 $groupe_id   = (isset($_POST['f_groupe']))      ? Clean::entier($_POST['f_groupe'])     : 0;
 $etape       = (isset($_POST['f_etape']))       ? Clean::entier($_POST['f_etape'])      : 0;
-$page_parite = (isset($_POST['f_parite']))      ? Clean::entier($_POST['f_parite'])     : 0;
 // Autres chaines spécifiques...
 $listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
 $tab_pilier_id  = array_filter( Clean::map('entier', explode(',',$listing_piliers) ) , 'positif' );

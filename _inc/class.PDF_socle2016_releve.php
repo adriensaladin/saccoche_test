@@ -32,13 +32,13 @@
 class PDF_socle2016_releve extends PDF
 {
 
-  public function initialiser( $socle_individuel_format , $eleve_nb , $composante_nb , $eleve_nb_moyen , $composante_nb_moyen , $pages_nb_methode ,$aff_socle_position , $aff_socle_points_DNB )
+  public function initialiser( $socle_individuel_format , $eleve_nb , $composante_nb , $eleve_nb_moyen , $composante_nb_moyen , $pages_nb_methode )
   {
     $hauteur_entete = 10;
-    $largeur = $this->page_largeur_moins_marges / ( 14 + (2*$aff_socle_position) + (2*$aff_socle_points_DNB) );
-    $this->intitule_largeur  = $largeur * 8;
+    $largeur = $this->page_largeur_moins_marges / 16;
+    $this->intitule_largeur  = $largeur * 7;
+    $this->cases_largeur     = $largeur * 3;
     $this->synthese_largeur  = $largeur * 6;
-    $this->cases_largeur     = $largeur * 2;
     $this->SetAutoPageBreak(FALSE);
     $lignes_nb  = ($socle_individuel_format=='eleve') ? $composante_nb_moyen : $eleve_nb_moyen ;
     $parties_nb = ($socle_individuel_format=='eleve') ? $eleve_nb            : $composante_nb ;
@@ -119,13 +119,6 @@ class PDF_socle2016_releve extends PDF
       $this->SetXY( $this->marge_gauche , $this->GetY() - $this->cases_hauteur );
       $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , ''     , 1 , 0 , 'L' , FALSE       , '' );
     }
-  }
-
-  public function cellule_nombre_points( $texte )
-  {
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
-    $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($texte) , 0 /*border*/ , 0 /*br*/ , 'L' , FALSE , '' );
-    $this->SetFont('Arial' , '' , $this->taille_police);
   }
 
   public function ligne_retour()

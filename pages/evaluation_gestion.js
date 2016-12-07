@@ -1243,15 +1243,12 @@ $(document).ready
                 var tab_dates   = new Array();
                 var tab_groupes = new Array();
                 var memo_groupe_id = 0;
-                if( responseJSON['value'] != null )
+                for(i in responseJSON)
                 {
-                  for(i in responseJSON)
+                  if( i != 'statut' )
                   {
-                    if( i != 'statut' )
-                    {
-                      var tab = responseJSON[i].split('_');
-                      tab_dates[tab[0]] = tab[1];
-                    }
+                    var tab = responseJSON[i].split('_');
+                    tab_dates[tab[0]] = tab[1];
                   }
                 }
                 // Passer en revue les lignes élève

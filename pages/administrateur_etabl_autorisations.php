@@ -129,7 +129,6 @@ $tab_droits  = array
     array( 'droit_socle_pourcentage_acquis'         , "afficher les pourcentages d'items acquis (socle 2006-2015)"    , 'parent_eleve' ),
     array( 'droit_socle_etat_validation'            , "afficher les états de validation saisis (socle 2006-2015)"     , 'personne' ),
     array( 'droit_socle_proposition_positionnement' , "afficher les propositions de positionnement (socle 2016)"      , 'parent_eleve' ),
-    array( 'droit_socle_prevision_points_brevet'    , "afficher les prévisions de points pour le brevet (socle 2016)" , 'parent_eleve' ),
   ),
   "Bilans officiels &rarr; Absences" => array
   (

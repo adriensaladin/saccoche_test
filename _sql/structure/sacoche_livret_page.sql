@@ -24,7 +24,7 @@ CREATE TABLE sacoche_livret_page (
 
 ALTER TABLE sacoche_livret_page DISABLE KEYS;
 
-INSERT INTO sacoche_livret_page (livret_page_ref, livret_page_ordre, livret_page_moment, livret_page_titre_classe, livret_page_resume, livret_page_periodicite, livret_page_rubrique_type, livret_page_rubrique_join, livret_page_colonne, livret_page_moyenne_classe, livret_page_epi, livret_page_ap, livret_page_parcours, livret_page_vie_scolaire) VALUES
+INSERT INTO sacoche_livret_page (livret_page_ref, livret_page_ordre, livret_page_moment, livret_page_titre_classe, livret_page_resume, livret_page_periodicite, livret_page_rubrique_type, livret_page_rubrique_join, livret_page_colonne, livret_page_epi, livret_page_ap, livret_page_parcours, livret_page_vie_scolaire) VALUES
 ("cycle1", 19, "Fin de maternelle", "Classe de GS" , "Synthèse des acquis scolaires"                                                       , "cycle"  , "c1_theme"  , "theme"  , "reussite", 0, 0, 0,                                "", 0),
 ("cp",     21, "Niveau CP"        , "Classe de CP" , "Suivi des acquis scolaires - Bilan de l'acquisition des connaissances et compétences", "periode", "c2_domaine", "domaine", "objectif", 0, 0, 0,         "PAR_CIT,PAR_ART,PAR_SAN", 0),
 ("ce1",    22, "Niveau CE1"       , "Classe de CE1", "Suivi des acquis scolaires - Bilan de l'acquisition des connaissances et compétences", "periode", "c2_domaine", "domaine", "objectif", 0, 0, 0,         "PAR_CIT,PAR_ART,PAR_SAN", 0),

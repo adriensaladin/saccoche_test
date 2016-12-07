@@ -32,13 +32,13 @@
 class PDF_socle2016_synthese extends PDF
 {
 
-  public function initialiser( $socle_synthese_format , $eleve_nb , $composante_nb )
+  public function initialiser( $socle_synthese_format , $eleve_nb , $composante_nb , $aff_socle_points_DNB )
   {
     $hauteur_entete = 10;
     $intitule_facteur  = ($socle_synthese_format=='eleve')      ? 6 : 8 ;
     $etiquette_facteur = ($socle_synthese_format=='composante') ? 6 : 5 ;
-    $colonnes_nb = ($socle_synthese_format=='eleve')      ? $composante_nb : $eleve_nb ;
-    $lignes_nb   = ($socle_synthese_format=='composante') ? $composante_nb : $eleve_nb ;
+    $colonnes_nb = ($socle_synthese_format=='eleve')      ? $composante_nb+$aff_socle_points_DNB : $eleve_nb ;
+    $lignes_nb   = ($socle_synthese_format=='composante') ? $composante_nb+$aff_socle_points_DNB : $eleve_nb ;
     $this->cases_largeur     = ($this->page_largeur_moins_marges - 2) / ( $colonnes_nb + $intitule_facteur ); // -2 pour une petite marge ; identité/composante
     $this->intitule_largeur  = $intitule_facteur * $this->cases_largeur;
     $this->taille_police     = $this->cases_largeur*1;
@@ -73,9 +73,26 @@ class PDF_socle2016_synthese extends PDF
     $this->choisir_couleur_fond('gris_clair');
   }
 
-  public function ligne_tete_cellule_corps( $contenu )
+  public function ligne_tete_cellule_corps( $contenu , $is_bold = NULL )
   {
-      $this->VertCellFit( $this->cases_largeur, $this->etiquette_hauteur, To::pdf($contenu), 1 /*border*/ , 0 /*br*/ , $this->fond );
+    if($is_bold)
+    {
+      $this->choisir_couleur_fond('gris_moyen');
+      $this->SetFont('Arial' , 'B' , $this->taille_police);
+    }
+    $this->VertCellFit( $this->cases_largeur, $this->etiquette_hauteur, To::pdf($contenu), 1 /*border*/ , 0 /*br*/ , $this->fond );
+    if($is_bold)
+    {
+      $this->SetFont('Arial' , '' , $this->taille_police);
+    }
+  }
+
+  public function cellule_total_points( $texte )
+  {
+    $this->choisir_couleur_fond('gris_moyen');
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($texte) , 1 /*border*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ , '' );
+    $this->SetFont('Arial' , '' , $this->taille_police);
   }
 
   public function ligne_retour( $id )
@@ -85,12 +102,21 @@ class PDF_socle2016_synthese extends PDF
     $this->SetXY( $this->marge_gauche , $this->GetY() + $hauteur );
   }
 
-  public function ligne_corps_cellule_debut( $contenu1 , $contenu2 = NULL )
+  public function ligne_corps_cellule_debut( $contenu1 , $contenu2 = NULL , $is_bold = NULL )
   {
-    $this->choisir_couleur_fond('gris_clair');
+    $couleur = (!$is_bold) ? 'gris_clair' : 'gris_moyen' ;
+    $this->choisir_couleur_fond($couleur);
     if(!$contenu2)
     {
+      if($is_bold)
+      {
+        $this->SetFont('Arial' , 'B' , $this->taille_police);
+      }
       $this->CellFit( $this->intitule_largeur , $this->cases_hauteur , To::pdf($contenu1) , 1 , 0 , 'L' , $this->fond , '' );
+      if($is_bold)
+      {
+        $this->SetFont('Arial' , '' , $this->taille_police);
+      }
     }
     else
     {

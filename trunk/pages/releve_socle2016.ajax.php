@@ -39,6 +39,7 @@ $groupe_nom                = (isset($_POST['f_groupe_nom']))              ? Clea
 $groupe_type               = (isset($_POST['f_groupe_type']))             ? Clean::lettres($_POST['f_groupe_type'])           : '';
 $eleves_ordre              = (isset($_POST['f_eleves_ordre']))            ? Clean::texte($_POST['f_eleves_ordre'])            : '';
 $aff_socle_position        = (isset($_POST['f_socle_position']))          ? 1                                                 : 0;
+$aff_socle_points_DNB      = (isset($_POST['f_socle_points_dnb']))        ? 1                                                 : 0;
 $only_presence             = (isset($_POST['f_only_presence']))           ? 1                                                 : 0;
 $aff_lien                  = (isset($_POST['f_lien']))                    ? 1                                                 : 0;
 $aff_start                 = (isset($_POST['f_start']))                   ? 1                                                 : 0;
@@ -56,7 +57,8 @@ $tab_type  = Clean::map('texte',$tab_type);
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
-  $aff_socle_position = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $aff_socle_position : 0 ;
+  $aff_socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $aff_socle_position   : 0 ;
+  $aff_socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $aff_socle_points_DNB : 0 ;
   $tab_type          = array('individuel');
   $only_presence     = 0;
   // Pour un élève on surcharge avec les données de session
@@ -110,6 +112,8 @@ if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type ||
 Form::save_choix('releve_socle2016');
 
 $marge_gauche = $marge_droite = $marge_haut = $marge_bas = $marge_min ;
+
+$aff_socle_points_DNB = ( ($cycle_id==4) && ($socle_detail=='livret') ) ? $aff_socle_points_DNB : 0 ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES

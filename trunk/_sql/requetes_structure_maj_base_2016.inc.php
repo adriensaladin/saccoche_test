@@ -855,8 +855,6 @@ if($version_base_structure_actuelle=='2016-10-03')
     // ajout d'un paramètre
     $droit = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom = "droit_voir_score_bilan" ');
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_voir_score_maitrise" , "'.$droit.'")' );
-    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
     // correction d'une valeur dans sacoche_livret_colonne
     if(empty($reload_sacoche_livret_colonne))
     {
@@ -1324,6 +1322,33 @@ if($version_base_structure_actuelle=='2016-11-18')
     {
       $reload_sacoche_livret_parcours_type = TRUE;
       $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_parcours_type.sql');
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+      DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2016-11-27 => 2016-12-05
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2016-11-27')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2016-12-05';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // ajout d'un paramètre
+    $droit = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom = "droit_socle_proposition_positionnement" ');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_socle_prevision_points_brevet" , "'.$droit.'")' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
+    // recharger [sacoche_livret_page] qui comportait un défaut d'initialisation
+    $nb_lignes = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT COUNT(*) FROM sacoche_livret_page ');
+    if(!$nb_lignes)
+    {
+      $reload_sacoche_livret_page = TRUE;
+      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_page.sql');
       DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
       DB::close(SACOCHE_STRUCTURE_BD_NAME);
     }

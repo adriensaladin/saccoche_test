@@ -50,21 +50,25 @@ if(is_string($tab_cycles))
 }
 
 Form::load_choix_memo();
-$check_type_individuel = (Form::$tab_choix['type_individuel']) ? ' checked' : '' ;
-$class_form_individuel = (Form::$tab_choix['type_individuel']) ? 'show'     : 'hide' ;
-$check_type_synthese   = (Form::$tab_choix['type_synthese'])   ? ' checked' : '' ;
-$class_form_synthese   = (Form::$tab_choix['type_synthese'])   ? 'show'     : 'hide' ;
+$check_type_individuel  = (Form::$tab_choix['type_individuel']) ? ' checked' : '' ;
+$check_type_synthese    = (Form::$tab_choix['type_synthese'])   ? ' checked' : '' ;
+$class_form_individuel  = (Form::$tab_choix['type_individuel']) ? 'show'     : 'hide' ;
+$class_form_synthese    = (Form::$tab_choix['type_synthese'])   ? 'show'     : 'hide' ;
+$class_socle_points_DNB = ( (Form::$tab_choix['cycle_id']==4) && (Form::$tab_choix['socle_detail']=='livret') ) ? 'show' : 'hide' ;
 
-$check_only_presence = (Form::$tab_choix['only_presence']) ? ' checked' : '' ;
-$check_aff_lien      = (Form::$tab_choix['aff_lien'])      ? ' checked' : '' ;
-$check_aff_start     = (Form::$tab_choix['aff_start'])     ? ' checked' : '' ;
-$check_socle_position = (Form::$tab_choix['aff_socle_position'])  ? ' checked' : '' ;
+$check_only_presence    = (Form::$tab_choix['only_presence'])        ? ' checked' : '' ;
+$check_aff_lien         = (Form::$tab_choix['aff_lien'])             ? ' checked' : '' ;
+$check_aff_start        = (Form::$tab_choix['aff_start'])            ? ' checked' : '' ;
+$check_socle_position   = (Form::$tab_choix['aff_socle_position'])   ? ' checked' : '' ;
+$check_socle_points_DNB = (Form::$tab_choix['aff_socle_points_DNB']) ? ' checked' : '' ;
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   // Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
-  $check_socle_position = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? ' checked' : '' ;
+  $check_socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? ' checked' : '' ;
+  $check_socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? ' checked' : '' ;
 }
-$socle_position = '<label for="f_socle_position"><input type="checkbox" id="f_socle_position" name="f_socle_position" value="1"'.$check_socle_position.' /> Proposition de positionnement</label>';
+$socle_position   = '<label for="f_socle_position"><input type="checkbox" id="f_socle_position" name="f_socle_position" value="1"'.$check_socle_position.' /> Proposition de positionnement</label>';
+$socle_points_DNB = '<label for="f_socle_points_dnb"><input type="checkbox" id="f_socle_points_dnb" name="f_socle_points_dnb" value="1"'.$check_socle_points_DNB.' /> Prévision du nombre de points pour le brevet</label>';
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
@@ -89,7 +93,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $class_form_type    = 'hide';
   $is_select_multiple = 0; // volontaire
-  $socle_position = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position : '<del>Proposition de positionnement</del>' ;
+  $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
+  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Proposition de positionnement</del>' ;
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
@@ -98,7 +103,8 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
   $class_form_type    = 'hide';
   $is_select_multiple = 0;
-  $socle_position = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position : '<del>Proposition de positionnement</del>' ;
+  $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
+  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Proposition de positionnement</del>' ;
 }
 
 elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
@@ -108,27 +114,25 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
   $class_form_type    = 'hide';
   $is_select_multiple = 0;
-  $socle_position = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position : '<del>Proposition de positionnement</del>' ;
+  $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
+  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Proposition de positionnement</del>' ;
 }
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 
-$select_cycle        = HtmlForm::afficher_select($tab_cycles                    , 'f_cycle'        /*select_nom*/ ,    '' /*option_first*/ , Form::$tab_choix['cycle_id']     /*selection*/ ,              '' /*optgroup*/ );
-$select_socle_individuel_format = HtmlForm::afficher_select(Form::$tab_select_socle_individuel_format , 'f_socle_individuel_format' /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['socle_individuel_format'] /*selection*/ ,              '' /*optgroup*/ );
-$select_socle_synthese_format   = HtmlForm::afficher_select(Form::$tab_select_socle_synthese_format   , 'f_socle_synthese_format'   /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['socle_synthese_format']  /*selection*/ ,              '' /*optgroup*/ );
-
-$select_socle_detail  = HtmlForm::afficher_select(Form::$tab_select_socle_detail                   , 'f_socle_detail'       /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['socle_detail']    /*selection*/ ,              '' /*optgroup*/ );
-
-$select_tri_maitrise_mode          = HtmlForm::afficher_select(Form::$tab_select_tri_maitrise_mode          , 'f_tri_maitrise_mode'          /*select_nom*/ ,                   FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_maitrise_mode']         /*selection*/ ,              '' /*optgroup*/ );
-
-$select_groupe       = HtmlForm::afficher_select($tab_groupes                   , 'f_groupe'       /*select_nom*/ , $of_g /*option_first*/ , $sel_g                           /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/ );
-$select_marge_min    = HtmlForm::afficher_select(Form::$tab_select_marge_min    , 'f_marge_min'    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']    /*selection*/ ,              '' /*optgroup*/ );
-$select_pages_nb     = HtmlForm::afficher_select(Form::$tab_select_pages_nb     , 'f_pages_nb'     /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['pages_nb']     /*selection*/ ,              '' /*optgroup*/ );
-$select_couleur      = HtmlForm::afficher_select(Form::$tab_select_couleur      , 'f_couleur'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']      /*selection*/ ,              '' /*optgroup*/ );
-$select_fond         = HtmlForm::afficher_select(Form::$tab_select_fond         , 'f_fond'         /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']         /*selection*/ ,              '' /*optgroup*/ );
-$select_legende      = HtmlForm::afficher_select(Form::$tab_select_legende      , 'f_legende'      /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']      /*selection*/ ,              '' /*optgroup*/ );
+$select_cycle                   = HtmlForm::afficher_select($tab_cycles                               , 'f_cycle'                   /*select_nom*/ ,    '' /*option_first*/ , Form::$tab_choix['cycle_id']                  /*selection*/ ,              '' /*optgroup*/ );
+$select_socle_individuel_format = HtmlForm::afficher_select(Form::$tab_select_socle_individuel_format , 'f_socle_individuel_format' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['socle_individuel_format']   /*selection*/ ,              '' /*optgroup*/ );
+$select_socle_synthese_format   = HtmlForm::afficher_select(Form::$tab_select_socle_synthese_format   , 'f_socle_synthese_format'   /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['socle_synthese_format']     /*selection*/ ,              '' /*optgroup*/ );
+$select_socle_detail            = HtmlForm::afficher_select(Form::$tab_select_socle_detail            , 'f_socle_detail'            /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['socle_detail']              /*selection*/ ,              '' /*optgroup*/ );
+$select_tri_maitrise_mode       = HtmlForm::afficher_select(Form::$tab_select_tri_maitrise_mode       , 'f_tri_maitrise_mode'       /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_maitrise_mode'] /*selection*/ ,              '' /*optgroup*/ );
+$select_groupe                  = HtmlForm::afficher_select($tab_groupes                              , 'f_groupe'                  /*select_nom*/ , $of_g /*option_first*/ , $sel_g                                        /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_eleves_ordre            = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre            , 'f_eleves_ordre'            /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre']              /*selection*/ ,              '' /*optgroup*/ );
+$select_marge_min               = HtmlForm::afficher_select(Form::$tab_select_marge_min               , 'f_marge_min'               /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']                 /*selection*/ ,              '' /*optgroup*/ );
+$select_pages_nb                = HtmlForm::afficher_select(Form::$tab_select_pages_nb                , 'f_pages_nb'                /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['pages_nb']                  /*selection*/ ,              '' /*optgroup*/ );
+$select_couleur                 = HtmlForm::afficher_select(Form::$tab_select_couleur                 , 'f_couleur'                 /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']                   /*selection*/ ,              '' /*optgroup*/ );
+$select_fond                    = HtmlForm::afficher_select(Form::$tab_select_fond                    , 'f_fond'                    /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['fond']                      /*selection*/ ,              '' /*optgroup*/ );
+$select_legende                 = HtmlForm::afficher_select(Form::$tab_select_legende                 , 'f_legende'                 /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['legende']                   /*selection*/ ,              '' /*optgroup*/ );
 
 // Javascript
 Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' );
@@ -165,7 +169,7 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
   </p>
   <div id="option_groupe" class="<?php echo $class_option_groupe ?>">
-    <label class="tab">Indication :</label><?php echo $socle_position ?><br />
+    <label class="tab">Indication :</label><?php echo $socle_position ?>&nbsp;&nbsp;&nbsp;<span id="span_points_DNB" class="<?php echo $class_socle_points_DNB ?>"><?php echo $socle_points_DNB ?></span><br />
     <label class="tab">Restriction :</label><label for="f_only_presence"><input type="checkbox" id="f_only_presence" name="f_only_presence" value="1"<?php echo $check_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation</label><br />
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le relévé individuel, le détail des items peut être affiché (sortie HTML)." /> Infos items :</label><label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés au chargement</label>
   </div>

@@ -98,8 +98,8 @@ $classe_ref          = $DB_ROW['groupe_ref'];
 $DATE_VERROU         = $DB_ROW['jointure_date_verrou'];
 $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere','c3_socle','c4_socle')) ? 'college' : 'ecole' ;
 
-$champ_classe = ($BILAN_TYPE_ETABL=='college') ) ? 'code-division' : 'classe-ref' ;
-$classe_value = ($BILAN_TYPE_ETABL=='college') ) ? $classe_ref : 'CL'.$classe_id ;
+$champ_classe = ($BILAN_TYPE_ETABL=='college') ? 'code-division' : 'classe-ref' ;
+$classe_value = ($BILAN_TYPE_ETABL=='college') ? $classe_ref : 'CL'.$classe_id ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et mettre en session les infos sur les seuils enregistrés

@@ -43,7 +43,7 @@ class DB_STRUCTURE_WEBMESTRE extends DB
  * @param bool $info_connexion
  * @return array()
  */
-public static function DB_recuperer_statistiques($info_user_nb,$info_user_use,$info_action_nb,$info_action_use,$info_connexion)
+public static function DB_recuperer_statistiques( $info_user_nb , $info_user_use , $info_action_nb , $info_action_use , $info_connexion )
 {
   $tab_retour = array();
   // La révision du 30 mars 2012 a fusionné les champs "user_statut" et "user_statut_date" en "user_sortie_date".
@@ -85,36 +85,43 @@ public static function DB_recuperer_statistiques($info_user_nb,$info_user_use,$i
     $tab_retour[] = $nb_professeurs + $nb_directeurs + $nb_administrateurs ;
     $tab_retour[] = $nb_eleves;
   }
-  // nb notes saisies aux évaluations ; nb validations saisies
+  // nb notes saisies aux évaluations ; nb bilans officiels SACoche archivés ; nb bilans Livret Scolaire archivés
   if( $info_action_nb )
   {
     $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL.= 'FROM sacoche_saisie';
+    $DB_SQL.= 'FROM sacoche_saisie ';
     $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-    $DB_SQL1 = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL1.= 'FROM sacoche_jointure_user_entree';
-    $DB_SQL2 = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL2.= 'FROM sacoche_jointure_user_pilier';
-    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL1 , NULL) + DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL2 , NULL) ;
+    $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+    $DB_SQL.= 'FROM sacoche_officiel_archive ';
+    $DB_SQL.= 'WHERE archive_type="sacoche" ';
+    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+    $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+    $DB_SQL.= 'FROM sacoche_officiel_archive ';
+    $DB_SQL.= 'WHERE archive_type="livret" ';
+    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   }
-  // nb notes saisies aux évaluations récemment ; nb validations saisies récemment
+  // nb notes saisies aux évaluations récemment ; nb bilans officiels SACoche archivés récemment ; nb bilans Livret Scolaire archivés récemment
   if( $info_action_use )
   {
     $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL.= 'FROM sacoche_saisie WHERE saisie_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+    $DB_SQL.= 'FROM sacoche_saisie ';
+    $DB_SQL.= 'WHERE saisie_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
     $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-    $DB_SQL1 = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL1.= 'FROM sacoche_jointure_user_entree WHERE validation_entree_date>DATE_SUB(NOW(),INTERVAL 6 MONTH)';
-    $DB_SQL2 = 'SELECT COUNT(*) AS nombre ';
-    $DB_SQL2.= 'FROM sacoche_jointure_user_pilier WHERE validation_pilier_date>DATE_SUB(NOW(),INTERVAL 6 MONTH)';
-    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL1 , NULL) + DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL2 , NULL) ;
+    $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+    $DB_SQL.= 'FROM sacoche_officiel_archive ';
+    $DB_SQL.= 'WHERE archive_type="sacoche" AND archive_date_generation>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+    $DB_SQL = 'SELECT COUNT(*) AS nombre ';
+    $DB_SQL.= 'FROM sacoche_officiel_archive ';
+    $DB_SQL.= 'WHERE archive_type="livret" AND archive_date_generation>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+    $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   }
   // info de connexion
   if( $info_connexion )
   {
     $DB_SQL = 'SELECT parametre_valeur ';
     $DB_SQL.= 'FROM sacoche_parametre ';
-    $DB_SQL.= 'WHERE parametre_nom ="connexion_nom" ';
+    $DB_SQL.= 'WHERE parametre_nom="connexion_nom" ';
     $tab_retour[]= DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
     $DB_SQL = 'SELECT DATE( MAX(user_connexion_date) ) ';
     $DB_SQL.= 'FROM sacoche_user ';

@@ -1574,6 +1574,8 @@ $(document).ready
       'button.signaler , button.corriger',
       function()
       {
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+        return false;
         memo_action = $(this).attr('class'); // signaler | corriger
         memo_conteneur = $(this).parent().parent();
         // Récupération des principaux identifiants

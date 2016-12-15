@@ -109,7 +109,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
     if(isset($tab_saisie[$eleve_id]['eval'][$rubrique_id]))
     {
       $tab_used_eval_eleve_rubrique[0][$rubrique_id] = TRUE;
-      if( ( $eleve_id && isset($tab_saisie[$eleve_id]['eval'][$rubrique_id]['elements']) ) || isset($tab_saisie[$eleve_id]['eval'][$rubrique_id]['position']) )
+      if( ( isset($tab_saisie[$eleve_id]['eval'][$rubrique_id]['elements']) ) || isset($tab_saisie[$eleve_id]['eval'][$rubrique_id]['position']) )
       {
         $tab_id_rubrique[$eleve_id]['elements'    ][$tab_rubriques['eval'][$rubrique_id]['elements'    ]][$rubrique_id] = $rubrique_id;
         $tab_id_rubrique[$eleve_id]['appreciation'][$tab_rubriques['eval'][$rubrique_id]['appreciation']][$rubrique_id] = $rubrique_id;
@@ -296,13 +296,18 @@ if($make_pdf)
         else
         {
           $nombre_sous_rubriques = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) : 0 ;
+          // forfait pour une rubrique dégressif en fonction du nb de sous-rubriques
           if( $nombre_sous_rubriques == 1 )
           {
-            $nb_lignes_domaine = 3; // forfait pour une rubrique sans sous-rubriques
+            $nb_lignes_domaine = 3; 
+          }
+          else if( $nombre_sous_rubriques == 2 )
+          {
+            $nb_lignes_domaine = 2;
           }
           else
           {
-            $nb_lignes_domaine = 2; // forfait pour une rubrique avec sous-rubriques
+            $nb_lignes_domaine = 1.5;
           }
         }
         // Principaux éléments du programme travaillés durant la période
@@ -322,17 +327,17 @@ if($make_pdf)
               break;
             }
           }
-          $nb_lignes_elements = max( 2 , $nb_lignes_elements );
+          $nb_lignes_elements = max( 1 , $nb_lignes_elements );
         }
         // Acquisitions, progrès et difficultés éventuelles
-        $nombre_rubriques_regroupees = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) : 0 ;
+        $nombre_rubriques_regroupees = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) : 0 ;
         $nb_lignes_appreciation = 0;
         if( ( $nombre_rubriques_regroupees == 1 ) || !isset($tab_deja_affiche[$eleve_id][$id_rubrique_appreciation]) )
         {
           if($appreciation_info['saisie_valeur'])
           {
             $appreciation = $appreciation_info['saisie_valeur'];
-            $nb_lignes_appreciation += max( 2 , ceil(strlen($appreciation)/$nb_caract_max_par_colonne), min( substr_count($appreciation,"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_colonne ) );
+            $nb_lignes_appreciation += max( 1 , ceil(strlen($appreciation)/$nb_caract_max_par_colonne), min( substr_count($appreciation,"\n") + 1 , $app_rubrique_longueur / $nb_caract_max_par_colonne ) );
           }
         }
         $tab_deja_affiche[$eleve_id][$id_premiere_sous_rubrique] = TRUE;
@@ -458,6 +463,10 @@ if(!isset($tab_destinataires))
   }
 }
 
+// print_r($tab_saisie[0]['eval']);exit;
+// print_r($tab_rubriques['eval']);exit;
+// print_r($tab_used_eval_eleve_rubrique[0]);exit;
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elaboration du relevé périodique
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -489,7 +498,7 @@ if($make_pdf)
 {
   $releve_PDF = new PDF_livret_scolaire( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ );
   $releve_PDF->initialiser( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $app_rubrique_longueur , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation );
-  $tab_archive['user'][0][] = array( '__construct' , array( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ , $tab_archive['session'] ) );
+  $tab_archive['user'][0][] = array( '__construct' , array( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , 'oui' /*couleur*/ , $fond , $legende , !empty($is_test_impression) /*filigrane*/ , $tab_archive['session'] ) );
 }
 // Pour chaque élève...
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
@@ -714,7 +723,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                     else
                     {
                       $pourcentage = FALSE ;
-                      $origine = ($position_info['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$position_info['prof_id']]) : '' ;
+                      $origine = ($position_info['saisie_origine']=='bulletin') ? 'Reporté du bulletin' : ( ($position_info['saisie_origine']=='saisie') ? 'Supprimé par '.html($tab_profs[$position_info['prof_id']]) : '' ) ;
                       $actions = ( $eleve_id && ($make_action=='modifier') ) ? ' <button type="button" class="ajouter" title="Ajouter le positionnement">&nbsp;</button>' : '' ;
                       $actions.= ( ($make_action=='modifier') && ($position_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>' : '' ;
                     }

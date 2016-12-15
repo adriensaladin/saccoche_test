@@ -378,21 +378,7 @@ if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
 <form action="#" method="post" id="zone_matieres_items" class="arbre_dynamique arbre_check hide">
   <div>Tout déployer / contracter :<q class="deployer_m1"></q><q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-  <?php
-  // Sur une installation avec seulement 32 Mo de mémoire il arrive que la simple récupération de l'arborescence complète dépasse cette limite !
-  Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
-  // Affichage de la liste des items pour toutes les matières d'un professeur, sur tous les niveaux
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $_SESSION['USER_ID'] , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*s2016_count*/ , TRUE /*item_comm*/ );
-  if(empty($DB_TAB))
-  {
-    echo'<p class="danger">Vous n\'êtes rattaché à aucune matière, ou des matières sans référentiel, ou des référentiels sans items !</p>' ;
-  }
-  else
-  {
-    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , NULL /*DB_TAB_socle2016*/ , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , TRUE /*aff_comm*/ , TRUE /*aff_input*/ );
-    echo strpos($arborescence,'<input') ? $arborescence : '<p class="danger">Vous êtes rattaché à des matières dont les référentiels ne comportent aucun item !</p>' ;
-  }
-  ?>
+  <div id="arborescence"><label class="loader">Chargement&hellip;</label></div>
   <p id="alerte_items" class="fluo"><span class="danger b">Une évaluation dont la saisie a commencé ne devrait pas voir ses items modifiés.<br />En particulier, retirer des items d'une évaluation efface les scores correspondants déjà saisis !</span></p>
   <p id="info_items" class="fluo"><span class="astuce b">Cette évaluation comporte des items ne faisant pas partie des référentiels qui vous sont rattachés.<br />Ces items (ici invisibles) seront conservés lors de la validation des items ci-dessus.</span></p>
   <div><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></div>

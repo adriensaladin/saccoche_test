@@ -188,6 +188,7 @@ $tab_droits_par_page = array
   'officiel_reglages_voir_archives'         => $tab_droits_profil_prof_dir_admin,
   'export_fichier'                          => $tab_droits_profil_prof_dir_admin,
   // Profil professeur | directeur
+  '_load_arborescence'                      => $tab_droits_profil_prof_dir,
   '_maj_select_domaines'                    => $tab_droits_profil_prof_dir,
   '_maj_select_matieres_famille'            => $tab_droits_profil_prof_dir,
   '_maj_select_niveaux_famille'             => $tab_droits_profil_prof_dir,

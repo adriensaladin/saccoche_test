@@ -706,10 +706,11 @@ function html($text)
  * 
  * @param string $titre     titre de la page
  * @param string $contenu   contenu HTML affiché (ou AJAX retourné) ; il doit déjà avoir été filtré si besoin avec html()
- * @param string $lien      "accueil" pour un lien vers l'accueil (par défaut) OU "install" vers la procédure d'installation OU "" pour aucun
+ * @param string $lien      "accueil" pour un lien vers l'accueil (par défaut) OU "install" vers la procédure d'installation OU "contact" pour le formulaire de contact admin OU "" pour aucun
+ * @param int    $BASE      numéro de base, en cas de redirection vers un contact admin
  * @return void
  */
-function exit_error( $titre , $contenu , $lien='accueil' )
+function exit_error( $titre , $contenu , $lien='accueil' , $BASE=NULL )
 {
   // Suppression du cookie provisoire ayant servi à mémoriser des paramètres multiples transmis en GET dans le cas où le service d'authentification externe en perd.
   // C'est le cas lors de l'appel d'un IdP de type RSA FIM, application nationale du ministère...
@@ -756,6 +757,7 @@ function exit_error( $titre , $contenu , $lien='accueil' )
     echo      '<p>'.str_replace('<br />','</p><p>',$contenu).'</p>'.NL;
         if($lien=='accueil') { echo'<p><a href="'.$chemin.'index.php">Retour en page d\'accueil de SACoche.</a></p>'.NL; } 
     elseif($lien=='install') { echo'<p><a href="'.$chemin.'index.php?page=public_installation">Procédure d\'installation de SACoche.</a></p>'.NL; } 
+    elseif($lien=='contact') { echo'<p><a href="'.$chemin.'index.php?page=public_contact_admin&amp;base='.$BASE.'&amp;msg='.html(urlencode($titre.'<br />'.$contenu)).'">Contacter les administrateurs de cet établissement pour les en informer.</a></p>'.NL; } 
     echo    '</div>'.NL;
     echo  '</body>'.NL;
     echo'</html>'.NL;

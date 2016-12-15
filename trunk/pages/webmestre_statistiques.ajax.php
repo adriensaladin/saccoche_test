@@ -44,14 +44,16 @@ if( ($action=='calculer') && $nb_bases )
 {
   // Pour mémoriser les totaux
   $tab_memo['totaux'] = array(
-    'personnel_nb'   => 0 ,
-    'personnel_use'  => 0 ,
-    'eleve_nb'       => 0 ,
-    'eleve_use'      => 0 ,
-    'evaluation_nb'  => 0 ,
-    'evaluation_use' => 0 ,
-    'validation_nb'  => 0 ,
-    'validation_use' => 0 ,
+    'personnel_nb'         => 0 ,
+    'personnel_use'        => 0 ,
+    'eleve_nb'             => 0 ,
+    'eleve_use'            => 0 ,
+    'evaluation_nb'        => 0 ,
+    'evaluation_use'       => 0 ,
+    'officiel_sacoche_nb'  => 0 ,
+    'officiel_sacoche_use' => 0 ,
+    'officiel_livret_nb'   => 0 ,
+    'officiel_livret_use'  => 0 ,
     );
   // Mémoriser les données des structures concernées par les stats
   $tab_memo['infos'] = array();
@@ -59,10 +61,12 @@ if( ($action=='calculer') && $nb_bases )
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_memo['infos'][] = array(
-      'base_id'                => $DB_ROW['sacoche_base'] ,
-      'structure_denomination' => $DB_ROW['structure_denomination'] ,
-      'contact'                => $DB_ROW['structure_contact_nom'].' '.$DB_ROW['structure_contact_prenom'] ,
-      'inscription_date'       => $DB_ROW['structure_inscription_date'] ,
+      'base_id'          => $DB_ROW['sacoche_base'] ,
+      'geo'              => $DB_ROW['geo_nom'],
+      'uai'              => $DB_ROW['structure_uai'],
+      'structure'        => $DB_ROW['structure_denomination'],
+      'contact'          => $DB_ROW['structure_contact_nom'].' '.$DB_ROW['structure_contact_prenom'] ,
+      'inscription_date' => $DB_ROW['structure_inscription_date'] ,
     );
   }
   // Enregistrer ces informations
@@ -80,26 +84,31 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
 {
   // Récupérer les informations
   $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
-  extract($tab_memo['infos'][$num-1]); // $base_id $structure_denomination $contact $inscription_date
+  extract($tab_memo['infos'][$num-1]); // $base_id $geo $uai $structure $contact $inscription_date
   // Récupérer une série de stats
   DBextra::charger_parametres_mysql_supplementaires($base_id);
-  list($personnel_nb,$eleve_nb,$personnel_use,$eleve_use,$evaluation_nb,$validation_nb,$evaluation_use,$validation_use,$connexion_nom,$date_last_connexion) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( TRUE /*info_user_nb*/ , TRUE /*info_user_use*/ , TRUE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
+  list( $personnel_nb , $eleve_nb , $personnel_use , $eleve_use , $evaluation_nb , $officiel_sacoche_nb , $officiel_livret_nb , $evaluation_use , $officiel_sacoche_use , $officiel_livret_use , $connexion_nom , $date_last_connexion )
+    = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( TRUE /*info_user_nb*/ , TRUE /*info_user_use*/ , TRUE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
   // maj les totaux
-  $tab_memo['totaux']['personnel_nb']   += $personnel_nb;
-  $tab_memo['totaux']['personnel_use']  += $personnel_use;
-  $tab_memo['totaux']['eleve_nb']       += $eleve_nb;
-  $tab_memo['totaux']['eleve_use']      += $eleve_use;
-  $tab_memo['totaux']['evaluation_nb']  += $evaluation_nb;
-  $tab_memo['totaux']['evaluation_use'] += $evaluation_use;
-  $tab_memo['totaux']['validation_nb']  += $validation_nb;
-  $tab_memo['totaux']['validation_use'] += $validation_use;
+  $tab_memo['totaux']['personnel_nb']         += $personnel_nb;
+  $tab_memo['totaux']['personnel_use']        += $personnel_use;
+  $tab_memo['totaux']['eleve_nb']             += $eleve_nb;
+  $tab_memo['totaux']['eleve_use']            += $eleve_use;
+  $tab_memo['totaux']['evaluation_nb']        += $evaluation_nb;
+  $tab_memo['totaux']['evaluation_use']       += $evaluation_use;
+  $tab_memo['totaux']['officiel_sacoche_nb']  += $officiel_sacoche_nb;
+  $tab_memo['totaux']['officiel_sacoche_use'] += $officiel_sacoche_use;
+  $tab_memo['totaux']['officiel_livret_nb']   += $officiel_livret_nb;
+  $tab_memo['totaux']['officiel_livret_use']  += $officiel_livret_use;
   // Enregistrer ces informations
   FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
   // Retour
   $ligne_etabl = '<tr>'.
     '<td class="nu"><input type="checkbox" name="f_ids" value="'.$base_id.'" /></td>'.
     '<td class="label">'.$base_id.'</td>'.
-    '<td class="label">'.html($structure_denomination).'</td>'.
+    '<td class="label">'.html($geo).'</td>'.
+    '<td class="label">'.$uai.'</td>'.
+    '<td class="label">'.html($structure).'</td>'.
     '<td class="label">'.html($contact).'</td>'.
     '<td class="label">'.$inscription_date.'</td>'.
     '<td class="label">'.$date_last_connexion.'</td>'.
@@ -107,10 +116,12 @@ if( ($action=='calculer') && $num && $max && ($num<$max) )
     '<td class="label">'.$personnel_use .'</td>'.
     '<td class="label">'.$eleve_nb .'</td>'.
     '<td class="label">'.$eleve_use.'</td>'.
-    '<td class="label"><i>'.sprintf("%07u",$evaluation_nb) .'</i>'.number_format($evaluation_nb ,0,'',' ').'</td>'.
-    '<td class="label"><i>'.sprintf("%07u",$evaluation_use).'</i>'.number_format($evaluation_use,0,'',' ').'</td>'.
-    '<td class="label"><i>'.sprintf("%07u",$validation_nb) .'</i>'.number_format($validation_nb ,0,'',' ').'</td>'.
-    '<td class="label"><i>'.sprintf("%07u",$validation_use).'</i>'.number_format($validation_use,0,'',' ').'</td>'.
+    '<td class="label">'.number_format($evaluation_nb       ,0,'',' ').'</td>'.
+    '<td class="label">'.number_format($evaluation_use      ,0,'',' ').'</td>'.
+    '<td class="label">'.number_format($officiel_sacoche_nb ,0,'',' ').'</td>'.
+    '<td class="label">'.number_format($officiel_sacoche_use,0,'',' ').'</td>'.
+    '<td class="label">'.number_format($officiel_livret_nb  ,0,'',' ').'</td>'.
+    '<td class="label">'.number_format($officiel_livret_use ,0,'',' ').'</td>'.
     '<td class="label">'.html($connexion_nom).'</td>'.
     '</tr>';
   Json::end( TRUE , $ligne_etabl );
@@ -122,15 +133,17 @@ if( ($action=='calculer') && $num && $max && ($num==$max) )
   // Retour
   $ligne_total = '<tr>'.
     '<td class="nu"></td>'.
-    '<th colspan="5" class="nu">Totaux</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_nb']  ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_use'] ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_nb']      ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_use']     ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_nb'] ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_use'],0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['validation_nb'] ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['validation_use'],0,'',' ').'</th>'.
+    '<th colspan="7" class="nu">Totaux</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_nb']        ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_use']       ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_nb']            ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_use']           ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_nb']       ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_use']      ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['officiel_sacoche_nb'] ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['officiel_sacoche_use'],0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['officiel_livret_nb']  ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['officiel_livret_use'] ,0,'',' ').'</th>'.
     '<th class="nu"></th>'.
     '</tr>';
   // Supprimer les informations provisoires

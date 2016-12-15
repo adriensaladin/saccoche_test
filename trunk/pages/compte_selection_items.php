@@ -148,25 +148,7 @@ Layout::add( 'js_inline_before' , 'var tab_profs = new Array();' );
 <form action="#" method="post" id="zone_matieres_items" class="arbre_dynamique arbre_check hide">
   <div>Tout déployer / contracter :<q class="deployer_m1"></q><q class="deployer_m2"></q><q class="deployer_n1"></q><q class="deployer_n2"></q><q class="deployer_n3"></q></div>
   <p>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-  <?php
-  // Sur une installation avec seulement 32 Mo de mémoire il arrive que la simple récupération de l'arborescence complète dépasse cette limite !
-  Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time*/ );
-  // Affichage de la liste des items pour toutes les matières d'un professeur ou toutes les matières de l'établissement si directeur, sur tous les niveaux
-  $user_id = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? $_SESSION['USER_ID'] : 0 ;
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( $user_id , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*s2016_count*/ , FALSE /*item_comm*/ );
-  if(empty($DB_TAB))
-  {
-    $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous n\'êtes rattaché à' : 'L\'établissement n\'a mis en place' ;
-    echo'<p class="danger">'.$phrase_debut.' aucune matière, ou des matières sans référentiel, ou des référentiels sans items !</p>' ;
-  }
-  else
-  {
-    $DB_TAB_socle2016 = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiel_matiere_niveau( 0 /*matiere_id*/ , 0 /*niveau_id*/ , 'texte' /*format*/ );
-    $arborescence = HtmlArborescence::afficher_matiere_from_SQL( $DB_TAB , NULL /*DB_TAB_socle2016*/ , TRUE /*dynamique*/ , TRUE /*reference*/ , FALSE /*aff_coef*/ , FALSE /*aff_cart*/ , 'texte' /*aff_socle*/ , FALSE /*aff_lien*/ , FALSE /*aff_comm*/ , TRUE /*aff_input*/ );
-    $phrase_debut =  ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'Vous êtes rattaché à' : 'L\'établissement a mis en place' ;
-    echo strpos($arborescence,'<input') ? $arborescence : '<p class="danger">'.$phrase_debut.' des matières dont les référentiels ne comportent aucun item !</p>' ;
-  }
-  ?>
+  <div id="arborescence"><label class="loader">Chargement&hellip;</label></div>
   <div><span class="tab"></span><button id="valider_compet" type="button" class="valider">Valider la sélection</button>&nbsp;&nbsp;&nbsp;<button id="annuler_compet" type="button" class="annuler">Annuler / Retour</button></div>
 </form>
 

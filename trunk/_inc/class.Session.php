@@ -465,6 +465,7 @@ class Session
   private static $tab_sans_verif_csrf = array
   (
     // appel depuis plusieurs pages + pas de vérif utile
+    '_load_arborescence',
     '_maj_select_directeurs',
     '_maj_select_domaines',
     '_maj_select_eleves',

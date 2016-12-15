@@ -326,6 +326,14 @@ $(document).ready
       }
     );
 
+    $("#form_livret input , #form_livret select").change
+    (
+      function()
+      {
+        $('#ajax_msg_livret').attr('class','alerte').html("Enregistrer pour confirmer.");
+      }
+    );
+
     $("#form_socle input , #form_socle select , #form_socle textarea").change
     (
       function()
@@ -391,10 +399,11 @@ $(document).ready
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Traitement du formulaire "Relevé d'évaluations"
     // Traitement du formulaire "Bulletin scolaire"
+    // Traitement du formulaire "Livret Scolaire"
     // Traitement du formulaire "État de maîtrise du socle"
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#bouton_valider_releve , #bouton_valider_bulletin , #bouton_valider_socle').click
+    $('#bouton_valider_releve , #bouton_valider_bulletin , #bouton_valider_livret , #bouton_valider_socle').click
     (
       function()
       {

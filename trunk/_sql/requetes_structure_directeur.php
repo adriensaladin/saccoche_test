@@ -72,24 +72,15 @@ public static function DB_recuperer_statistiques()
   $tab_retour[] = $nb_professeurs + $nb_directeurs + $nb_administrateurs ;
   $tab_retour[] = $nb_eleves;
   $tab_retour[] = $nb_parents;
-  // nb notes saisies aux évaluations ; nb validations saisies
+  // nb notes saisies aux évaluations ;
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL.= 'FROM sacoche_saisie';
+  $DB_SQL.= 'FROM sacoche_saisie ';
   $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $DB_SQL1 = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL1.= 'FROM sacoche_jointure_user_entree';
-  $DB_SQL2 = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL2.= 'FROM sacoche_jointure_user_pilier';
-  $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL1 , NULL) + DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL2 , NULL) ;
-  // nb notes saisies aux évaluations récemment ; nb validations saisies récemment
+  // nb notes saisies aux évaluations récemment
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL.= 'FROM sacoche_saisie WHERE saisie_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
+  $DB_SQL.= 'FROM sacoche_saisie ';
+  $DB_SQL.= 'WHERE saisie_date>DATE_SUB(NOW(),INTERVAL 6 MONTH) ';
   $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $DB_SQL1 = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL1.= 'FROM sacoche_jointure_user_entree WHERE validation_entree_date>DATE_SUB(NOW(),INTERVAL 6 MONTH)';
-  $DB_SQL2 = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL2.= 'FROM sacoche_jointure_user_pilier WHERE validation_pilier_date>DATE_SUB(NOW(),INTERVAL 6 MONTH)';
-  $tab_retour[] = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL1 , NULL) + DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL2 , NULL) ;
   // Retour
   return $tab_retour;
 }

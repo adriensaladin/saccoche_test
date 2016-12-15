@@ -99,7 +99,7 @@ class PDF_livret_scolaire extends PDF
         $positionnement_degre[] = $id.' = '.$tab['LEGENDE'];
       }
       $legende_positionnement = '[*] '.$positionnement_texte.' :  '.implode('    ',$positionnement_degre);
-      $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($legende_positionnement) , 0 /*bordure*/ , 0 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($legende_positionnement) , 0 /*bordure*/ , 1 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
       $this->legende_deja_affichee = TRUE;
     }
     // Saut de page, si pas déjà fait
@@ -200,29 +200,38 @@ class PDF_livret_scolaire extends PDF
   private function entete_bloc_adresse( $hauteur_blocs_ligne1 , $hauteur_blocs_ligne2 , $tab_adresse )
   {
     $hauteur_blocs_ligne1_plus_marge = $hauteur_blocs_ligne1+$this->marge_haut;
+    // L'écriture $this->SESSION['ENVELOPPE']['...'] = ... engendre la Notice "Indirect modification of overloaded property has no effect"
+    // dont je n'ai pas réussi à m'extraire (@see http://stackoverflow.com/questions/13421661/getting-indirect-modification-of-overloaded-property-has-no-effect-notice)
+    // d'où le contournement suivant consistant à passer par une autre variable $TAB_ENVELOPPE.
     if($this->SESSION['OFFICIEL']['INFOS_RESPONSABLES']=='oui_libre')
     {
       // On définit des positions optimales permettant d'effectuer les calculs comme dans le cas d'un positionnement imposé
-      $this->SESSION['ENVELOPPE']['VERTICAL_HAUT']   = $hauteur_blocs_ligne1_plus_marge; // place déjà prise par la 1ère ligne de bloc (marge page comprise)
-      $this->SESSION['ENVELOPPE']['VERTICAL_MILIEU'] = $hauteur_blocs_ligne2; // minimum esthétique et nécessaire pour le bloc titre à côté
-      $this->SESSION['ENVELOPPE']['VERTICAL_BAS']    = 40; // complément pour une hauteur d'enveloppe cohérente (105 donc > 297/3)
-      $this->SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] = 125; // laisser pas mal de place pour les titres
-      $this->SESSION['ENVELOPPE']['HORIZONTAL_DROITE'] =  10; // minimum esthétique
-      $this->SESSION['ENVELOPPE']['HORIZONTAL_MILIEU'] =  80; // complément pour une largeur légèrement > à 210
+      $TAB_ENVELOPPE = array(
+        'VERTICAL_HAUT'     => $hauteur_blocs_ligne1_plus_marge, // place déjà prise par la 1ère ligne de bloc (marge page comprise)
+        'VERTICAL_MILIEU'   => $hauteur_blocs_ligne2, // minimum esthétique et nécessaire pour le bloc titre à côté
+        'VERTICAL_BAS'      =>  40, // complément pour une hauteur d'enveloppe cohérente (105 donc > 297/3)
+        'HORIZONTAL_GAUCHE' => 125, // laisser pas mal de place pour les titres
+        'HORIZONTAL_DROITE' =>  10, // minimum esthétique
+        'HORIZONTAL_MILIEU' =>  80, // complément pour une largeur légèrement > à 210
+      );
     }
-    $enveloppe_hauteur = $this->SESSION['ENVELOPPE']['VERTICAL_HAUT'] + $this->SESSION['ENVELOPPE']['VERTICAL_MILIEU'] + $this->SESSION['ENVELOPPE']['VERTICAL_BAS'] ;
-    $enveloppe_largeur = $this->SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] + $this->SESSION['ENVELOPPE']['HORIZONTAL_MILIEU'] + $this->SESSION['ENVELOPPE']['HORIZONTAL_DROITE'] ;
+    else
+    {
+      $TAB_ENVELOPPE = $this->SESSION['ENVELOPPE'];
+    }
+    $enveloppe_hauteur = $TAB_ENVELOPPE['VERTICAL_HAUT'] + $TAB_ENVELOPPE['VERTICAL_MILIEU'] + $TAB_ENVELOPPE['VERTICAL_BAS'] ;
+    $enveloppe_largeur = $TAB_ENVELOPPE['HORIZONTAL_GAUCHE'] + $TAB_ENVELOPPE['HORIZONTAL_MILIEU'] + $TAB_ENVELOPPE['HORIZONTAL_DROITE'] ;
     $jeu_minimum    = 2 ;
     $jeu_vertical   = 1 ;
     $jeu_horizontal = $enveloppe_largeur - $this->page_largeur - $jeu_minimum ;
     // Déterminer et dessiner l'emplacement du bloc adresse
-    $interieur_coin_hg_x = $this->SESSION['ENVELOPPE']['HORIZONTAL_GAUCHE'] ;
+    $interieur_coin_hg_x = $TAB_ENVELOPPE['HORIZONTAL_GAUCHE'] ;
     $exterieur_coin_hg_x = $interieur_coin_hg_x - $jeu_horizontal ;
-    $interieur_coin_bd_x = $this->page_largeur - $this->SESSION['ENVELOPPE']['HORIZONTAL_DROITE'] ;
+    $interieur_coin_bd_x = $this->page_largeur - $TAB_ENVELOPPE['HORIZONTAL_DROITE'] ;
     $exterieur_coin_bd_x = $interieur_coin_bd_x + $jeu_horizontal ;
     $exterieur_coin_hg_y = $hauteur_blocs_ligne1_plus_marge;
     $interieur_coin_hg_y = $exterieur_coin_hg_y + $jeu_vertical ;
-    $interieur_coin_bd_y = $interieur_coin_hg_y + $this->SESSION['ENVELOPPE']['VERTICAL_MILIEU'] ;
+    $interieur_coin_bd_y = $interieur_coin_hg_y + $TAB_ENVELOPPE['VERTICAL_MILIEU'] ;
     $exterieur_coin_bd_y = $interieur_coin_bd_y + $jeu_vertical ;
     $exterieur_largeur = $exterieur_coin_bd_x - $exterieur_coin_hg_x ;
     $exterieur_hauteur = $exterieur_coin_bd_y - $exterieur_coin_hg_y ;
@@ -242,7 +251,7 @@ class PDF_livret_scolaire extends PDF
       $jeu_vertical += 1 ; // Le pliage est manuel donc imparfait et il y a l'épaisseur du papier ;)
       $longueur_tiret = 1; // <= 5
       $this->SetLineWidth(0.1);
-      $ligne1_y = $interieur_coin_bd_y + $this->SESSION['ENVELOPPE']['VERTICAL_BAS'] - $jeu_vertical ;
+      $ligne1_y = $interieur_coin_bd_y + $TAB_ENVELOPPE['VERTICAL_BAS'] - $jeu_vertical ;
       $ligne2_y = $ligne1_y + $enveloppe_hauteur - $jeu_vertical ;
       $this->Line( $this->marge_gauche-$longueur_tiret , $ligne1_y , $this->marge_gauche , $ligne1_y );
       $this->Line( $this->page_largeur-$this->marge_droite , $ligne1_y , $this->page_largeur-$this->marge_droite+$longueur_tiret , $ligne1_y );
@@ -277,7 +286,8 @@ class PDF_livret_scolaire extends PDF
     $bloc_hauteur = $hauteur_blocs_ligne2 - 2*$marge_haut_bloc_titre - 5 ;
     $ligne_hauteur = $bloc_hauteur/4.5 ; // 4 lignes + 2 quart-interlignes de marge
     $tab_bloc_titres[3] = $this->eleve_nom.' '.$this->eleve_prenom.' ('.$tab_bloc_titres[3].')';
-    $this->choisir_couleur_fond('livret_bleu_clair');
+    $couleur_fond = ($this->couleur=='oui') ? 'livret_bleu_clair' : ( ($this->fond) ? 'gris_clair' : 'blanc' ) ;
+    $this->choisir_couleur_fond($couleur_fond);
     $this->SetXY( $this->marge_gauche , $this->marge_haut + $hauteur_blocs_ligne1 + $marge_haut_bloc_titre + 1 );
     $this->Rect( $this->GetX() , $this->GetY() , $largeur_bloc_titre , $bloc_hauteur , 'DF' /*DrawFill*/ );
     $this->SetXY( $this->GetX() , $this->GetY() + 0.25*$ligne_hauteur );
@@ -335,13 +345,26 @@ class PDF_livret_scolaire extends PDF
   {
     $this->SetXY( 0 , $this->GetY() + 0.5*$this->lignes_hauteur );
     $this->SetFont('Arial' , 'B' , 1.5*$this->taille_police);
-    $this->choisir_couleur_texte('blanc');
-    $this->choisir_couleur_fond('livret_titre_'.$rubrique_type);
-    $this->CellFit( $this->page_largeur , 1.5*$this->lignes_hauteur , To::pdf($rubrique_titre) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $couleur_texte = ($this->couleur=='oui') ? 'blanc' : 'noir' ;
+    $couleur_fond  = ($this->couleur=='oui') ? 'livret_titre_'.$rubrique_type : ( ($this->fond) ? 'gris_moyen' : 'blanc' ) ;
+    $bordure       = ( ($this->couleur=='oui') || (!$this->fond) ) ? 0 : 1 ;
+    $this->choisir_couleur_texte($couleur_texte);
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->CellFit( $this->page_largeur , 1.5*$this->lignes_hauteur , To::pdf($rubrique_titre) , $bordure , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     $this->SetXY( $this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur );
     $this->SetFont('Arial' , '' , $this->taille_police);
+    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_'.$rubrique_type : 'blanc' ;
     $this->choisir_couleur_texte('noir');
-    $this->choisir_couleur_fond('livret_fond_'.$rubrique_type);
+    $this->choisir_couleur_fond($couleur_fond);
+  }
+
+  private function afficher_sous_domaine( $largeur_sous_domaine , $hauteur_rubrique , $texte )
+  {
+    $memoX = $this->GetX();
+    $memoY = $this->GetY();
+    $this->Rect( $memoX , $memoY , $largeur_sous_domaine , $hauteur_rubrique , 'DF' /*DrawFill*/ );
+    $this->afficher_appreciation( $largeur_sous_domaine , $hauteur_rubrique , $this->taille_police , 0.8*$this->lignes_hauteur /*taille_interligne*/ , $texte );
+    $this->SetXY( $memoX + $largeur_sous_domaine , $memoY );
   }
 
   public function bloc_eval( $tab_rubriques , $tab_used_eval_eleve_rubrique , $tab_id_rubrique , $tab_saisie , $tab_moyenne , $tab_nb_lignes_eval , $nb_lignes_eleve_autre_total , $tab_profs )
@@ -358,7 +381,8 @@ class PDF_livret_scolaire extends PDF
     $this->bloc_titre( 'eval' , 'Suivi des acquis scolaires de l’élève' );
     // Première ligne du tableau
     $entete_hauteur =2*$this->lignes_hauteur;
-    $this->choisir_couleur_fond('livret_fond_eval');
+    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : ( ($this->fond) ? 'gris_clair' : 'blanc' ) ;
+    $this->choisir_couleur_fond($couleur_fond);
     if($this->BILAN_TYPE_ETABL=='college')
     {
       $this->SetX( $this->GetX() + $largeur_domaine );
@@ -373,13 +397,17 @@ class PDF_livret_scolaire extends PDF
     {
       $this->CellFit( $largeur_position , $this->lignes_hauteur , To::pdf('Positionnement [*]') , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       $largeur_sous_position = $largeur_position / 4;
+      $this->SetFont('Arial' , 'B' , $this->taille_police);
       foreach($this->SESSION['LIVRET'] as $id => $tab)
       {
         $br = ($id<4) ? 0 : 1 ;
-        $this->choisir_couleur_fond('M'.$id.'oui');
+        $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
+        $this->choisir_couleur_fond($couleur_fond);
         $this->CellFit( $largeur_sous_position , $this->lignes_hauteur , To::pdf($id) , 1 /*bordure*/ , $br , 'C' /*alignement*/ , TRUE /*fond*/ );
       }
-      $this->choisir_couleur_fond('livret_fond_eval');
+      $this->SetFont('Arial' , '' , $this->taille_police);
+      $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
+      $this->choisir_couleur_fond($couleur_fond);
     }
     else if(in_array($this->PAGE_COLONNE,array('moyenne','pourcentage')))
     {
@@ -416,16 +444,20 @@ class PDF_livret_scolaire extends PDF
         $nb_lignes_rubrique = $tab_nb_lignes_eval[$id_premiere_sous_rubrique];
         $hauteur_rubrique = $nb_lignes_rubrique*$this->lignes_hauteur;
         // La hauteur de ligne a déjà été calculée ; mais il reste à déterminer si on saute une page ou non en fonction de la place restante (et sinon => interligne)
-        $hauteur_dispo_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
-        if($this->lignes_hauteur*$nb_lignes_rubrique > $hauteur_dispo_restante)
+        if( $livret_rubrique_id == $id_premiere_sous_rubrique )
         {
-          $this->rappel_eleve_page( TRUE /*$anticipe*/ );
+          $hauteur_dispo_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
+          if($this->lignes_hauteur*$nb_lignes_rubrique > $hauteur_dispo_restante)
+          {
+            $this->rappel_eleve_page( TRUE /*$anticipe*/ );
+          }
         }
         // Domaine d’enseignement
         $memoX = $this->GetX();
         $memoY = $this->GetY();
         if($this->BILAN_TYPE_ETABL=='college')
         {
+          $hauteur_sous_rubrique = $hauteur_rubrique;
           // Pour les profs indiqués, on prend ceux qui ont renseigné l'appréciation, ou à défaut ceux qui ont participé à l'évaluation
           $tab_profs_affiche = !empty($tab_profs_appreciation) ? $tab_profs_appreciation : $tab_profs_position ;
           $listing_profs = '';
@@ -452,14 +484,18 @@ class PDF_livret_scolaire extends PDF
         else
         {
           // domaine et / ou sous-domaine
-          // $this->SetFont('Arial' , 'B' , $this->taille_police);
+          $this->SetFont('Arial' , '' , $this->taille_police);
           $nombre_sous_rubriques = isset($tab_id_rubrique['appreciation'][$id_premiere_sous_rubrique]) ? count($tab_id_rubrique['appreciation'][$id_premiere_sous_rubrique]) : 0 ;
+          $nb_lignes_sous_rubrique = $nb_lignes_rubrique / $nombre_sous_rubriques ;
+          $hauteur_sous_rubrique = $nb_lignes_sous_rubrique*$this->lignes_hauteur;
           if( $nombre_sous_rubriques == 1 )
           {
             if($tab_rubrique['sous_partie'])
             {
-              $this->CellFit( $largeur_sous_domaine , $hauteur_rubrique , To::pdf($tab_rubrique['partie'])      , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
-              $this->CellFit( $largeur_sous_domaine , $hauteur_rubrique , To::pdf($tab_rubrique['sous_partie']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+              $this->afficher_sous_domaine( $largeur_sous_domaine , $hauteur_rubrique , $tab_rubrique['partie'] );
+              $this->afficher_sous_domaine( $largeur_sous_domaine , $hauteur_rubrique , $tab_rubrique['sous_partie'] );
+              // $this->CellFit( $largeur_sous_domaine , $hauteur_rubrique , To::pdf($tab_rubrique['partie'])      , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+              // $this->CellFit( $largeur_sous_domaine , $hauteur_rubrique , To::pdf($tab_rubrique['sous_partie']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
             }
             else
             {
@@ -468,17 +504,18 @@ class PDF_livret_scolaire extends PDF
           }
           else
           {
-            $nb_lignes_sous_rubrique = $nb_lignes_rubrique / $nombre_sous_rubriques ;
-            $hauteur_sous_rubrique = $nb_lignes_sous_rubrique*$this->lignes_hauteur;
             if(isset($tab_deja_affiche[$id_premiere_sous_rubrique]))
             {
               $this->SetXY( $memoX + $largeur_sous_domaine , $memoY_sous_rubrique_suivante );
-              $this->CellFit( $largeur_sous_domaine , $hauteur_sous_rubrique , To::pdf($tab_rubrique['sous_partie']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+              $this->afficher_sous_domaine( $largeur_sous_domaine , $hauteur_sous_rubrique , $tab_rubrique['sous_partie'] );
+              // $this->CellFit( $largeur_sous_domaine , $hauteur_sous_rubrique , To::pdf($tab_rubrique['sous_partie']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
             }
             else
             {
-              $this->CellFit( $largeur_sous_domaine , $hauteur_rubrique      , To::pdf($tab_rubrique['partie'])      , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
-              $this->CellFit( $largeur_sous_domaine , $hauteur_sous_rubrique , To::pdf($tab_rubrique['sous_partie']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+              $this->afficher_sous_domaine( $largeur_sous_domaine , $hauteur_rubrique      , $tab_rubrique['partie'] );
+              $this->afficher_sous_domaine( $largeur_sous_domaine , $hauteur_sous_rubrique , $tab_rubrique['sous_partie'] );
+              // $this->CellFit( $largeur_sous_domaine , $hauteur_rubrique      , To::pdf($tab_rubrique['partie'])      , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+              // $this->CellFit( $largeur_sous_domaine , $hauteur_sous_rubrique , To::pdf($tab_rubrique['sous_partie']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
             }
             $memoY_sous_rubrique_suivante = $this->GetY() + $hauteur_sous_rubrique ;
           }
@@ -526,7 +563,7 @@ class PDF_livret_scolaire extends PDF
         // Acquisitions, progrès et difficultés éventuelles
         $memoX = $this->GetX();
         $memoY = $this->GetY();
-        $nombre_rubriques_regroupees = isset($tab_id_rubrique['appreciation'][$id_rubrique_appreciation]) ? count($tab_id_rubrique['appreciation'][$id_rubrique_appreciation]) : 0 ;
+        $nombre_rubriques_regroupees = isset($tab_id_rubrique['appreciation'][$id_premiere_sous_rubrique]) ? count($tab_id_rubrique['appreciation'][$id_premiere_sous_rubrique]) : 0 ;
         if( ( $nombre_rubriques_regroupees == 1 ) || !isset($tab_deja_affiche[$id_rubrique_appreciation]) )
         {
           $appreciation = ($appreciation_info['saisie_valeur']) ? $appreciation_info['saisie_valeur'] : '' ;
@@ -538,21 +575,25 @@ class PDF_livret_scolaire extends PDF
         // Positionnement
         $memoX = $this->GetX();
         $memoY = $this->GetY();
+        $nombre_rubriques_regroupees = isset($tab_id_rubrique['position'][$id_premiere_sous_rubrique]) ? count($tab_id_rubrique['position'][$id_premiere_sous_rubrique]) : 0 ;
         if( ( $nombre_rubriques_regroupees == 1 ) || !isset($tab_deja_affiche[$id_rubrique_position]) )
         {
           $pourcentage = !is_null($position_info['saisie_valeur']) ? $position_info['saisie_valeur'] : FALSE ;
-          $hauteur_position = ($nombre_rubriques_regroupees>1) ? $hauteur_sous_rubrique : $hauteur_rubrique ;
+          $hauteur_position = ($nombre_rubriques_regroupees>1) ? $hauteur_rubrique : $hauteur_sous_rubrique ;
           if( in_array($this->PAGE_COLONNE,array('objectif','position')) )
           {
             $indice = OutilBilan::determiner_degre_maitrise($pourcentage,$this->SESSION['LIVRET']);
-            $this->SetFont('Arial' , 'B' , $this->taille_police);
+            $taille_croix = min( 12 , 1.5*$this->taille_police );
+            $this->SetFont('Arial' , 'B' , $taille_croix);
             foreach($this->SESSION['LIVRET'] as $id => $tab)
             {
               $texte = ($id==$indice) ? 'X' : '' ;
-              $this->choisir_couleur_fond('M'.$id.'oui');
+              $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
+              $this->choisir_couleur_fond($couleur_fond);
               $this->Cell( $largeur_sous_position , $hauteur_position , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
             }
-            $this->choisir_couleur_fond('livret_fond_eval');
+            $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
+            $this->choisir_couleur_fond($couleur_fond);
             $this->SetFont('Arial' , '' , $this->taille_police);
           }
           else if( in_array($this->PAGE_COLONNE,array('moyenne','pourcentage')) )

@@ -42,11 +42,12 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  * @param string $date_mysql_fin
  * @param int    $classe_id
  * @param string $liste_eleve_id
- * @param string $only_socle
+ * @param string $import_bulletin   tous|reel|rien
+ * @param string $only_socle   0|1
  * @param string $retroactif   oui|non|annuel|auto
  * @return void
  */
-function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $only_socle , $retroactif )
+function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $import_bulletin , $only_socle , $retroactif )
 {
   if(!$liste_eleve_id) return FALSE;
   $RUBRIQUE_TYPE = ($PAGE_COLONNE=='maitrise') ? 'socle' : 'eval' ;
@@ -72,7 +73,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
   // Récupérer les données du bulletin correspondant (s'il existe, et correspondance de matière à matière), concernant les élèves et la classe
   //
   $is_recup_bulletin = FALSE;
-  if( (substr($PAGE_RUBRIQUE_TYPE,3)=='matiere') && ($PAGE_RUBRIQUE_JOIN=='matiere') )
+  if( (substr($PAGE_RUBRIQUE_TYPE,3)=='matiere') && ($PAGE_RUBRIQUE_JOIN=='matiere') && ($import_bulletin!='rien') )
   {
     $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,'bulletin');
     if( !empty($DB_ROW) && !in_array( $DB_ROW['officiel_bulletin'] , array('','1vide') ) ) // "0absence" est enregistré comme une chaine vide en BDD
@@ -110,32 +111,35 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
               $rubrique_type = ($rubrique_id) ? 'eval' : ( $DB_ROW['rubrique_id'] ? 'viesco' : 'bilan' ) ;
               $saisie_objet  = ($prof_id) ? 'appreciation' : 'position' ;
               $saisie_valeur = ($prof_id) ? (string)$DB_ROW['saisie_appreciation'] : ( ($DB_ROW['saisie_note']!==NULL) ? (float)$DB_ROW['saisie_note']*5 : NULL ) ; // Le bulletin enregistre sur 20, le livret enregistre sur 100.
-              $clef = $rubrique_type.$rubrique_id.$cible_nature.$cible_id.$saisie_objet;
-              if($prof_id)
+              if( ($import_bulletin=='tous') || ($saisie_objet=='appreciation') || ($saisie_valeur!==NULL) )
               {
-                // Pour gérer le pb des appéciations multiples à concaténer
-                $key = $rubrique_type.$rubrique_id.'x'.$cible_id;
-                if(isset($tab_tmp[$key]))
+                $clef = $rubrique_type.$rubrique_id.$cible_nature.$cible_id.$saisie_objet;
+                if($prof_id)
                 {
-                  $saisie_valeur = $tab_tmp[$key]."\n".$saisie_valeur;
+                  // Pour gérer le pb des appéciations multiples à concaténer
+                  $key = $rubrique_type.$rubrique_id.'x'.$cible_id;
+                  if(isset($tab_tmp[$key]))
+                  {
+                    $saisie_valeur = $tab_tmp[$key]."\n".$saisie_valeur;
+                  }
+                  $tab_tmp[$key] = $saisie_valeur;
                 }
-                $tab_tmp[$key] = $saisie_valeur;
-              }
-              if(!isset($tab_donnees_livret[$clef]))
-              {
-                $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $rubrique_type , $rubrique_id , $cible_nature , $cible_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
-                $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
-              }
-              else if( ($tab_donnees_livret[$clef]['valeur']!==$saisie_valeur) && ($tab_donnees_livret[$clef]['origine']!='saisie') )
-              {
-                $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
-                DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
-                $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
-              }
-              else
-              {
-                $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
-                $tab_donnees_livret[$clef]['find'] = TRUE;
+                if(!isset($tab_donnees_livret[$clef]))
+                {
+                  $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $rubrique_type , $rubrique_id , $cible_nature , $cible_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
+                  $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
+                }
+                else if( ($tab_donnees_livret[$clef]['valeur']!==$saisie_valeur) && ($tab_donnees_livret[$clef]['origine']!='saisie') )
+                {
+                  $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
+                  DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
+                  $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
+                }
+                else
+                {
+                  $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
+                  $tab_donnees_livret[$clef]['find'] = TRUE;
+                }
               }
             }
           }
@@ -232,14 +236,16 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     if( $PAGE_RUBRIQUE_JOIN != 'user' )
     {
       // Récupération de la liste des items et des liaisons items / composantes
-      $tab_join_item_rubrique = array();
-      $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_items_jointures_rubriques( $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN );
+      $tab_join_item_rubrique_position = array();
+      $tab_join_item_rubrique_elements = array();
+      $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_items_jointures_rubriques( $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $only_socle );
       if(!$DB_TAB) return FALSE;
       foreach($DB_TAB as $DB_ROW)
       {
-        $tab_join_item_rubrique[$DB_ROW['item_id']][$DB_ROW['rubrique_id']] = $DB_ROW['rubrique_id'];
+        $tab_join_item_rubrique_position[$DB_ROW['item_id']][$DB_ROW['rubrique_id_position']] = $DB_ROW['rubrique_id_position'];
+        $tab_join_item_rubrique_elements[$DB_ROW['item_id']][$DB_ROW['rubrique_id_elements']] = $DB_ROW['rubrique_id_elements'];
       }
-      $liste_item_id = implode(',',array_keys($tab_join_item_rubrique));
+      $liste_item_id = implode(',',array_keys($tab_join_item_rubrique_position));
       // Il faut au moins connaître le coefficient et le mode de calcul associé à chaque item
       $tab_item_infos = array();
       $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
@@ -277,7 +283,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
           if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
           {
             // on enregistre les infos
-            foreach($tab_join_item_rubrique[$DB_ROW['item_id']] as $rubrique_id)
+            foreach($tab_join_item_rubrique_position[$DB_ROW['item_id']] as $rubrique_id)
             {
               $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
               if($DB_ROW['date']>=$date_mysql_debut)
@@ -402,7 +408,11 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
           extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite
           $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
           $tab_score_eleve_rubrique[$eleve_id][$rubrique_id][$item_id] = $score;
-          $tab_eleve_item_rubrique[$eleve_id][$item_id][$rubrique_id] = $rubrique_id;
+
+          foreach($tab_join_item_rubrique_elements[$item_id] as $rubrique_id_elements)
+          {
+            $tab_eleve_item_rubrique[$eleve_id][$item_id][$rubrique_id_elements] = $rubrique_id_elements;
+          }
           if($score!==FALSE)
           {
             $indice = OutilBilan::determiner_etat_acquisition( $score );
@@ -453,7 +463,8 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       }
       // un test ci-dessous a pour but d'éviter une non mise en jour en cas de données issues d'un bulletin qui depuis a été abandonné
       // un test ci-dessous a pour but d'éviter une non mise en jour en cas de données issues d'un bulletin qui depuis a été déclaré sans moyenne (qui ne sont donc plus recalculées)
-      else if( ($tab_donnees_livret[$clef]['valeur']!==$position_calculee) && ( ($tab_donnees_livret[$clef]['origine']=='calcul') || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$is_recup_bulletin ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ) ) )
+      // un test ci-dessous a pour but d'éviter une non mise en jour en cas de données supprimées issues d'un bulletin et que depuis la configuration est de recaluler un positionnement dans ce cas
+      else if( ($tab_donnees_livret[$clef]['valeur']!==$position_calculee) && ( ($tab_donnees_livret[$clef]['origine']=='calcul') || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$is_recup_bulletin ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && is_null($tab_donnees_livret[$clef]['valeur']) && ($import_bulletin=='reel') ) ) )
       {
         $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
         DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'position' /*$saisie_objet*/ , $position_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
@@ -598,12 +609,14 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         }
       }
     }
+    $tab_memo_rubriques_used = array();
     foreach($tab_eleve_rubrique_element as $eleve_id => $tab_rubrique)
     {
       foreach($tab_rubrique as $rubrique_id => $tab_synthese)
       {
         arsort($tab_synthese,SORT_NUMERIC);
         $tab_eleve_rubrique_element[$eleve_id][$rubrique_id] = json_encode($tab_synthese);
+        $tab_memo_rubriques_used[$rubrique_id] = $rubrique_id;
       }
     }
     // Comparer les éléments déterminés avec les éléments enregistrés
@@ -641,6 +654,15 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         }
       }
     }
+    // Initialiser éventuellement les éléments à appliquer sur une classe (requis pour l'affichage des sous-rubriques au 1er degré)
+    foreach($tab_memo_rubriques_used as $rubrique_id)
+    {
+      $clef = 'eval'.$rubrique_id.'classe'.$classe_id.'elements';
+      if(!isset($tab_donnees_livret[$clef]))
+      {
+        $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $RUBRIQUE_TYPE , $rubrique_id , 'classe' , $classe_id , 'elements' , NULL , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
+      }
+    }
   }
   // Il peut aussi falloir supprimer des données calculées ou imposées précédemment mais qui n'ont plus lieu d'être car les notes ont été supprimées, ou les items déplacés, ou supprimés depuis...
   // Pour les appréciations, on les laisse au cas où...
@@ -675,17 +697,18 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
  * @param int    $classe_id
  * @param int    $eleve_id
  * @param string $saisie_objet
- * @param string $only_socle
+ * @param string $import_bulletin   tous|reel|rien
+ * @param string $only_socle   0|1
  * @param string $retroactif   oui|non|annuel|auto
  * @return array   [ (bool) $reussite , (string) $origine , (mixed) $contenu ]
  */
-function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id , $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $rubrique_type , $rubrique_id , $cible_nature , $classe_id , $eleve_id , $saisie_objet , $only_socle , $retroactif )
+function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id , $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $rubrique_type , $rubrique_id , $cible_nature , $classe_id , $eleve_id , $saisie_objet , $import_bulletin , $only_socle , $retroactif )
 {
   //
   // On commence par une recherche dans le bulletin correspondant (s'il existe, et correspondance de matière à matière)
   // Sauf pour des éléments de programme qui n'y figurent pas
   //
-  if( (substr($PAGE_RUBRIQUE_TYPE,3)=='matiere') && ($PAGE_RUBRIQUE_JOIN=='matiere') && ($saisie_objet!='elements') )
+  if( (substr($PAGE_RUBRIQUE_TYPE,3)=='matiere') && ($PAGE_RUBRIQUE_JOIN=='matiere') && ($saisie_objet!='elements') && ($import_bulletin!='rien') )
   {
     $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,'bulletin');
     // un test ci-dessous a pour but d'éviter une récupération obsolète en cas de données issues d'un bulletin qui depuis a été abandonné
@@ -698,20 +721,27 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
         $cible_id = ($eleve_id) ? $eleve_id : $classe_id ;
         $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bulletin_saisie_precise( $periode_id , $cible_id , $bulletin_matiere_id , $cible_nature , $saisie_objet );
         $tmp_valeur = '';
-        foreach($DB_TAB as $DB_ROW)
+        foreach($DB_TAB as $key => $DB_ROW)
         {
           $prof_id       = $DB_ROW['prof_id']; // toujours 0 pour une note dans les bulletins
           $saisie_valeur = ($saisie_objet=='appreciation') ? (string)$DB_ROW['saisie_valeur'] : ( ($DB_ROW['saisie_valeur']!==NULL) ? (float)$DB_ROW['saisie_valeur']*5 : NULL ) ; // Le bulletin enregistre sur 20, le livret enregistre sur 100.
-          if($prof_id)
+          if( ($import_bulletin=='tous') || ($saisie_objet=='appreciation') || ($saisie_valeur!==NULL) )
           {
-            // Pour gérer le pb des appéciations multiples à concaténer
-            if($tmp_valeur)
+            if($prof_id)
             {
-              $saisie_valeur = $tmp_valeur."\n".$saisie_valeur;
+              // Pour gérer le pb des appéciations multiples à concaténer
+              if($tmp_valeur)
+              {
+                $saisie_valeur = $tmp_valeur."\n".$saisie_valeur;
+              }
+              $tmp_valeur = $saisie_valeur;
             }
-            $tmp_valeur = $saisie_valeur;
+            DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
           }
-          DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
+          else
+          {
+            unset($DB_TAB[$key]);
+          }
         }
         if(count($DB_TAB))
         {
@@ -793,7 +823,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
     {
       // Récupération de la liste des items et des liaisons items / composantes
       $tab_join_item_rubrique = array();
-      $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_items_jointures_rubriques( $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $rubrique_id );
+      $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_items_jointures_rubriques( $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $only_socle , $rubrique_id );
       if(!$DB_TAB) return array( FALSE , NULL , $texte_objet );
       foreach($DB_TAB as $DB_ROW)
       {

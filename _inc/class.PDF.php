@@ -329,6 +329,7 @@ class PDF extends FPDF
         if ($wordwidth > $maxwidth)
         {
           // Word is too long, we cut it
+          /*
           for($i=0; $i<strlen($word); $i++)
           {
             $wordwidth = $this->GetStringWidth(substr($word, $i, 1));
@@ -343,6 +344,9 @@ class PDF extends FPDF
               $text = rtrim($text)."\n".substr($word, $i, 1);
             }
           }
+          */
+          $width = $wordwidth;
+          $text = ($text) ? rtrim($text)."\n".$word.' ' : $word."\n" ;
         }
         elseif($width + $wordwidth <= $maxwidth)
         {
@@ -913,7 +917,8 @@ class PDF extends FPDF
     $this->SetFont('Arial' , '' , $taille_police);
     $memo_abscisse = $this->GetX();
     $memo_ordonnee = $this->GetY();
-    $ordonnee = $this->GetY() + ($hauteur_autorisee - $hauteur_requise ) / 3 ; // Verticalement, on laisse 1/3 marge dessus et 2/3 marge dessous
+    $division_verticale = ($nb_lignes>1) ? 3 : 2 ;
+    $ordonnee = $this->GetY() + ($hauteur_autorisee - $hauteur_requise ) / $division_verticale ; // Verticalement, on laisse 1/3 marge dessus et 2/3 marge dessous, sauf s'il n'y a qu'une ligne auquel cas on centre
     $this->SetXY( $memo_abscisse , $ordonnee );
     $tab_lignes = explode("\n",$split_texte);
     for( $num_ligne=0 ; $num_ligne<$nb_lignes ; $num_ligne++ )

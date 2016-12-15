@@ -1393,16 +1393,20 @@ $(document).ready
     /**
      * Réagir aux clics pour cocher / décocher un ensemble de cases d'un arbre (items)
      */
-    $('.arbre_check q.cocher_tout').click
+    $('.arbre_check').on
     (
+      'click',
+      'q.cocher_tout',
       function()
       {
         $(this).parent().find('ul').show();
         $(this).parent().find('input[type=checkbox]').prop('checked',true);
       }
     );
-    $('.arbre_check q.cocher_rien').click
+    $('.arbre_check').on
     (
+      'click',
+      'q.cocher_rien',
       function()
       {
         $(this).parent().find('ul').hide();

@@ -80,6 +80,12 @@ $bulletin_couleur                        = (isset($_POST['f_bulletin_couleur']))
 $bulletin_fond                           = (isset($_POST['f_bulletin_fond']))                           ? Clean::texte($_POST['f_bulletin_fond'])                            : '';
 $bulletin_legende                        = (isset($_POST['f_bulletin_legende']))                        ? Clean::texte($_POST['f_bulletin_legende'])                         : '';
 
+$livret_import_bulletin_notes = (isset($_POST['f_livret_import_bulletin_notes'])) ? Clean::texte($_POST['f_livret_import_bulletin_notes'])  : '';
+$livret_retroactif            = (isset($_POST['f_livret_retroactif']))            ? Clean::calcul_retroactif($_POST['f_livret_retroactif']) : '';
+$livret_only_socle            = (isset($_POST['f_livret_only_socle']))            ? 1                                                       : 0;
+$livret_couleur               = (isset($_POST['f_livret_couleur']))               ? Clean::texte($_POST['f_livret_couleur'])                : '';
+$livret_fond                  = (isset($_POST['f_livret_fond']))                  ? Clean::texte($_POST['f_livret_fond'])                   : '';
+
 $socle_appreciation_rubrique_longueur = (isset($_POST['f_socle_appreciation_rubrique_longueur'])) ? Clean::entier($_POST['f_socle_appreciation_rubrique_longueur']) : 0;
 $socle_appreciation_rubrique_report   = (isset($_POST['f_socle_appreciation_rubrique_report']))   ? 1                                                               : 0;
 $socle_appreciation_rubrique_modele   = (isset($_POST['f_socle_appreciation_rubrique_modele']))   ? Clean::texte($_POST['f_socle_appreciation_rubrique_modele'])    : '';
@@ -103,7 +109,7 @@ $tab_matieres = array_filter($tab_matieres,'positif');
 $bulletin_moyenne_exception_matieres = implode(',',$tab_matieres);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement des formulaires "Relevé d'évaluations" + "Bulletin scolaire" + "État de maîtrise du socle"
+// Traitement des formulaires "Relevé d'évaluations" + "Bulletin scolaire" + "Livret Scolaire" + "État de maîtrise du socle"
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_variables = array(
@@ -159,6 +165,13 @@ $tab_variables = array(
     'couleur',
     'fond',
     'legende',
+  ),
+  'livret' => array(
+    'import_bulletin_notes',
+    'retroactif',
+    'only_socle',
+    'couleur',
+    'fond',
   ),
   'socle' => array(
     'appreciation_rubrique_longueur',

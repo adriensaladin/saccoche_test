@@ -813,6 +813,8 @@ div.modaccomp              {background:#96B3D5;padding:1ex;margin:1ex 0;}
 div.bilan                  {background:#ECF5D7;padding:1ex}
 div.viesco                 {background:#FED0A3;padding:1ex}
 
+a.voir_detail{white-space:nowrap}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Format des tableaux du socle : #tableau_validation                                                  */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

@@ -150,11 +150,13 @@ $(document).ready
           $.fancybox( '<p class="travaux">'+'Bilans de fin de cycle non prioritaires&hellip; Développement prévu début 2017.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
           return false;
         }
+        /*
         if( (page_ref=='cp') || (page_ref=='ce1') || (page_ref=='ce2') || (page_ref=='cm1') || (page_ref=='cm2') )
         {
           $.fancybox( '<p class="travaux">'+'Spécifications pour le 1er degré partiellement inutilisables&hellip; En attente d\'évolution de BE1D.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
           return false;
         }
+        */
         $('button').prop('disabled',true);
         $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
         $.ajax

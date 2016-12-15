@@ -98,6 +98,9 @@ $classe_ref          = $DB_ROW['groupe_ref'];
 $DATE_VERROU         = $DB_ROW['jointure_date_verrou'];
 $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere','c3_socle','c4_socle')) ? 'college' : 'ecole' ;
 
+$champ_classe = ($BILAN_TYPE_ETABL=='college') ) ? 'code-division' : 'classe-ref' ;
+$classe_value = ($BILAN_TYPE_ETABL=='college') ) ? $classe_ref : 'CL'.$classe_id ;
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et mettre en session les infos sur les seuils enregistrés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +116,18 @@ if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
     $_SESSION['LIVRET'][$id]['LEGENDE']   = $DB_ROW['livret_colonne_legende'];
   }
 }
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Récupérer la classe (1D)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$tab_classe = array();
+$key_classe = 'CL'.$classe_id;
+
+$tab_classe[$key_classe] = array(
+  'id-be'   => $classe_id, // En attendant l'identifiant de classe de BE1D...
+  'libelle' => $classe_nom,
+);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer la période
@@ -155,7 +170,7 @@ if($affichage_chef_etabl)
 $champ_position = in_array($PAGE_COLONNE,array('moyenne','pourcentage')) ? 'moyenne-eleve' : 'positionnement' ;
 
 $tab_bilan = array(
-  'prof-princ-refs'      => '', // Complété ultérieurement
+  'prof-princ-refs'      => '', // Complété ultérieurement pour le 2nd degré
   'periode-ref'          => $key_periode,
   'date-conseil-classe'  => $DATE_VERROU,
   'date-scolarite'       => $date_mysql_debut,
@@ -276,25 +291,32 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_eleve = array();
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 2 /*actuels_et_anciens*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_nom,user_prenom,user_sconet_id' /*champs*/ , $periode_id );
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 2 /*actuels_et_anciens*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_nom,user_prenom,user_sconet_id,user_reference' /*champs*/ , $periode_id );
 if(empty($DB_TAB))
 {
   Json::end( FALSE , 'Aucun élève évalué trouvé dans le regroupement '.$classe_nom.' !' );
 }
 foreach($DB_TAB as $DB_ROW)
 {
-  if($DB_ROW['user_sconet_id'])
+  // hack en attendant un identifiant extrait de BE1D
+  if( ($BILAN_TYPE_ETABL=='ecole') && !$DB_ROW['user_reference'] )
+  {
+    $DB_ROW['user_reference'] = $DB_ROW['user_id'];
+  }
+  if( ( ($BILAN_TYPE_ETABL=='college') && $DB_ROW['user_sconet_id'] ) || ( ($BILAN_TYPE_ETABL=='ecole') && $DB_ROW['user_reference'] ) )
   {
     $tab_eleve[$DB_ROW['user_id']] = array(
       'eleve'         => array(
-        'id'             => 'ELV'.$DB_ROW['user_id'],
-        'id-be'          => $DB_ROW['user_sconet_id'],
-        'code-division'  => $classe_ref, // max 8 caractères : idem dans SACoche
-        'nom'            => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
-        'prenom'         => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
+        'id'          => 'ELV'.$DB_ROW['user_id'],
+        'id-be'       => $DB_ROW['user_sconet_id'], // 2D
+        'ine'         => $DB_ROW['user_reference'], // 1D
+        $champ_classe => $classe_value, // 2D max 8 caractères : idem dans SACoche
+        'nom'         => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
+        'prenom'      => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
       ),
       'commun'        => array(
         'responsable-etab' => $tab_responsable_etabl,
+        'classe'           => $tab_classe, // 1D
         'periode'          => $tab_periode,
         'discipline'       => array(),
         'enseignant'       => array(),
@@ -320,9 +342,13 @@ foreach($DB_TAB as $DB_ROW)
       $tab_eleve[$DB_ROW['user_id']]['bilan']['date-scolarite'] = $tab_siecle_eleve_date[$DB_ROW['user_sconet_id']]['date_entree'];
     }
   }
-  else
+  else if($BILAN_TYPE_ETABL=='college')
   {
     $tab_compte_rendu['erreur'][] = 'Absence d\'identifiant SIECLE pour l\'élève "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : données non exportables.';
+  }
+  else if($BILAN_TYPE_ETABL=='ecole')
+  {
+    $tab_compte_rendu['erreur'][] = 'Absence d\'identifiant national (INE) pour l\'élève "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : données non exportables.';
   }
 }
 if(empty($tab_eleve))
@@ -353,7 +379,7 @@ foreach($DB_TAB as $DB_ROW)
     $id_sts = sprintf("%'96u",$DB_ROW['user_id']);
     $type = 'epp' ;
   }
-  if(!$DB_ROW['user_sconet_id'])
+  if( ($BILAN_TYPE_ETABL=='college') && !$DB_ROW['user_sconet_id'] )
   {
     $tab_compte_rendu['alerte'][$key_prof] = 'Absence d\'identifiant SIECLE (STS) pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : génèrera un message d\'alerte non bloquant.';
   }
@@ -603,10 +629,10 @@ if($PAGE_PARCOURS)
       $key_rubrique = 'PAR'.$DB_ROW['livret_parcours_id'].$key_periode;
       $projet = isset($tab_saisie[0]['parcours'][$DB_ROW['livret_parcours_id']]['appreciation']) ? $tab_saisie[0]['parcours'][$DB_ROW['livret_parcours_id']]['appreciation']['saisie_valeur'] : NULL ;
       $tab_parcours[$key_rubrique] = array(
-        'periode-ref'   => $key_periode ,
-        'code-division' => $classe_ref ,
-        'code'          => $parcours_code ,
-        'projet'        => $projet ,
+        'periode-ref' => $key_periode ,
+        $champ_classe => $classe_value ,
+        'code'        => $parcours_code ,
+        'projet'      => $projet ,
       );
       if($projet)
       {
@@ -771,17 +797,20 @@ foreach($tab_eleve as $eleve_id => $tab)
   }
   else
   {
-    foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
+    if($BILAN_TYPE_ETABL=='college')
     {
-      if(empty($tab_rubrique_info['profs']))
+      foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
       {
-        $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
-        unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-      }
-      else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
-      {
-        $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
-        unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+        if(empty($tab_rubrique_info['profs']))
+        {
+          $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
+          unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+        }
+        else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
+        {
+          $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
+          unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+        }
       }
     }
     if(empty($tab_eleve[$eleve_id]['acquis']))

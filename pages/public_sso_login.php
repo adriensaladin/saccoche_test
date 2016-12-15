@@ -117,7 +117,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if($connexion_mode=='normal')
 {
-  exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non paramétré par l\'administrateur pour utiliser un service d\'authentification externe.<br />Un administrateur doit renseigner cette configuration dans le menu [Paramétrages][Mode&nbsp;d\'identification].' /*contenu*/ , 'contact' , $BASE );
+  exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non paramétré par l\'administrateur pour utiliser un service d\'authentification externe.<br />Un administrateur doit renseigner cette configuration dans le menu [Paramétrages][Mode&nbsp;d\'identification].' /*contenu*/ );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,6 @@ if($connexion_mode=='cas')
    */
   function exit_CAS_Exception( $contenu_erreur_phpcas , $msg_supplementaire )
   {
-    global $BASE;
     if ($contenu_erreur_phpcas)
     {
       // on ne veut pas afficher ça mais notre jolie page
@@ -161,13 +160,13 @@ if($connexion_mode=='cas')
       preg_match($pattern, $contenu_erreur_phpcas, $matches);
       if (!empty($matches[1]))
       {
-        exit_error( $matches[1] /*titre*/ , $matches[2].$msg_supplementaire /*contenu*/ , 'contact' , $BASE );
+        exit_error( $matches[1] /*titre*/ , $matches[2].$msg_supplementaire /*contenu*/ );
       }
     }
     // peut-on vraiment passer par là ?
     else
     {
-      exit_error( 'Problème authentification CAS' /*titre*/ , $msg_supplementaire /*contenu*/ , 'contact' , $BASE );
+      exit_error( 'Problème authentification CAS' /*titre*/ , $msg_supplementaire /*contenu*/ );
     }
     exit();
   }
@@ -373,7 +372,7 @@ if($connexion_mode=='cas')
   list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_utilisateur( $BASE , $id_ENT /*login*/ , FALSE /*password*/ , 'cas' /*mode_connection*/ );
   if($auth_SUCCESS!==TRUE)
   {
-    exit_error( 'Incident authentification CAS' /*titre*/ , $auth_DATA /*contenu*/ , 'contact' , $BASE );
+    exit_error( 'Incident authentification CAS' /*titre*/ , $auth_DATA /*contenu*/ );
   }
   // Vérifier la présence d'une convention valide si besoin,
   // sauf pour les administrateurs qui doivent pouvoir accéder à leur espace pour régulariser la situation (même s'il leur est toujours possible d'utiliser une authentification locale),
@@ -385,7 +384,7 @@ if($connexion_mode=='cas')
     require(CHEMIN_DOSSIER_INCLUDE.'tableau_sso.php');
     if(!isset($tab_connexion_info[$connexion_mode][$connexion_ref]))
     {
-      exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS sont anormaux (connexion_mode vaut "'.$connexion_mode.'" ; connexion_departement vaut "'.$connexion_departement.'" ; connexion_nom vaut "'.$connexion_nom.'") !<br />Un administrateur doit sélectionner l\'ENT concerné depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ , 'contact' , $BASE );
+      exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS sont anormaux (connexion_mode vaut "'.$connexion_mode.'" ; connexion_departement vaut "'.$connexion_departement.'" ; connexion_nom vaut "'.$connexion_nom.'") !<br />Un administrateur doit sélectionner l\'ENT concerné depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
     }
     $tab_info = $tab_connexion_info[$connexion_mode][$connexion_ref];
     if($connexion_nom!='perso')
@@ -398,18 +397,18 @@ if($connexion_mode=='cas')
         || ($tab_info['serveur_url_validate']!=$cas_serveur_url_validate)
       )
       {
-        exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS enregistrés ne correspondent pas à ceux attendus pour la référence "'.$connexion_ref.'" !<br />Un administrateur doit revalider la sélection depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ , 'contact' , $BASE );
+        exit_error( 'Paramètres CAS anormaux' /*titre*/ , 'Les paramètres CAS enregistrés ne correspondent pas à ceux attendus pour la référence "'.$connexion_ref.'" !<br />Un administrateur doit revalider la sélection depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].' /*contenu*/ );
       }
     }
     if(!is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT))
     {
-      exit_error( 'Fichier manquant' /*titre*/ , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' /*contenu*/ , 'contact' , $BASE );
+      exit_error( 'Fichier manquant' /*titre*/ , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' /*contenu*/ );
     }
     // Normalement les hébergements académiques ne sont pas concernés
     require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
     if( isset($tab_connecteurs_hebergement[$connexion_ref]) )
     {
-      exit_error( 'Mode d\'authentification anormal' /*titre*/ , 'Le mode d\'authentification sélectionné ('.$connexion_nom.') doit être utilisé sur l\'hébergement académique dédié (département '.$connexion_departement.') !' /*contenu*/ , 'contact' , $BASE );
+      exit_error( 'Mode d\'authentification anormal' /*titre*/ , 'Le mode d\'authentification sélectionné ('.$connexion_nom.') doit être utilisé sur l\'hébergement académique dédié (département '.$connexion_departement.') !' /*contenu*/ );
     }
     // Pas besoin de vérification si convention signée à un plus haut niveau
     if( isset($tab_connecteurs_convention[$connexion_ref]) && $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] )
@@ -432,7 +431,7 @@ if($connexion_mode=='cas')
       {
         $message_introduction = ( isset($tab_connecteurs_convention[$connexion_ref]) && !$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] ) ? $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'<br />L\'usage de ce service sur ce serveur est donc désormais soumis à la signature et au règlement d\'une convention avec l\'établissement.' : 'L\'usage de ce service sur ce serveur est soumis à la signature et au règlement d\'une convention.' ;
         $message_explication  = '<br />Un administrateur doit effectuer les démarches depuis son menu [Paramétrage&nbsp;établissement] [Mode&nbsp;d\'identification].<br />Veuillez consulter <a href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats" target="_blank">cette documentation pour davantage d\'explications</a> et <a href="'.SERVEUR_GUIDE_ENT.'#toggle_gestion_convention" target="_blank">cette documentation pour la marche à suivre</a>.' ;
-        exit_error( 'Absence de convention valide' /*titre*/ , $message_introduction.$message_explication /*contenu*/ , 'contact' , $BASE );
+        exit_error( 'Absence de convention valide' /*titre*/ , $message_introduction.$message_explication /*contenu*/ );
       }
     }
   }
@@ -519,7 +518,7 @@ if($connexion_mode=='shibboleth')
              . '- la variable $_SERVER["HTTP_UID"] '.$http_uid.'<br />'
              . '- la variable $_SERVER["HTTP_SHIB_SESSION_ID"] '.$http_shib_session_id.'<br />'
              . '- la variable $_SERVER["HTTP_FREDUVECTEUR"] '.$http_freduvecteur ;
-    exit_error( 'Incident authentification Shibboleth' /*titre*/ , $contenu , 'contact' , $BASE );
+    exit_error( 'Incident authentification Shibboleth' /*titre*/ , $contenu );
   }
   // Comparer avec les données de la base.
   $auth_SUCCESS = FALSE;
@@ -567,7 +566,7 @@ if($connexion_mode=='shibboleth')
   }
   if($auth_SUCCESS===FALSE)
   {
-    exit_error( 'Incident authentification Shibboleth' /*titre*/ , $auth_DATA , 'contact' , $BASE );
+    exit_error( 'Incident authentification Shibboleth' /*titre*/ , $auth_DATA );
   }
   // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur( $BASE , $auth_DATA );
@@ -613,7 +612,7 @@ if($connexion_mode=='gepi')
   list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_utilisateur( $BASE , $login_GEPI /*login*/ , FALSE /*password*/ , 'gepi' /*mode_connection*/ );
   if($auth_SUCCESS===FALSE)
   {
-    exit_error( 'Incident authentification Gepi' /*titre*/ , $auth_DATA /*contenu*/ , 'contact' , $BASE );
+    exit_error( 'Incident authentification Gepi' /*titre*/ , $auth_DATA /*contenu*/ );
   }
   // Connecter l'utilisateur
   SessionUser::initialiser_utilisateur( $BASE  ,$auth_DATA );

@@ -232,12 +232,6 @@ class Form
     array('valeur' => 999 , 'texte' => 'Oui → 999 caractères maximum (trop long…)') ,
   );
 
-  public static $tab_select_import_notes = array(
-    array('valeur' => 'tous' , 'texte' => 'importer tous les positionnements du bulletin à l\'identique') ,
-    array('valeur' => 'reel' , 'texte' => 'n\'importer du bulletin que les positionnements non supprimés et calculer ceux qui manquent') ,
-    array('valeur' => 'rien' , 'texte' => 'déterminer automatiquement les positionnements sans rien importer du bulletin') ,
-  );
-
   public static $tab_select_optgroup = array(
     'regroupements' => array(
       'divers' => 'Divers',

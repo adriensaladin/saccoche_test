@@ -37,22 +37,20 @@ $TITRE = "Statistiques d'utilisation"; // Pas de traduction car pas de choix de 
 <?php if(HEBERGEUR_INSTALLATION=='mono-structure'): /* * * * * * MONO-STRUCTURE DEBUT * * * * * */ ?>
 
 <?php
-list($personnel_nb , $eleve_nb , $personnel_use , $eleve_use , $evaluation_nb , $officiel_sacoche_nb , $officiel_livret_nb , $evaluation_use , $officiel_sacoche_use , $officiel_livret_use)
-  = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( TRUE /*info_user_nb*/ , TRUE /*info_user_use*/ , TRUE /*info_action_nb*/ , TRUE /*info_action_use*/ , FALSE /*info_connexion*/ );
+list($personnel_nb,$eleve_nb,$personnel_use,$eleve_use,$evaluation_nb,$validation_nb,$evaluation_use,$validation_use) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( TRUE /*info_user_nb*/ , TRUE /*info_user_use*/ , TRUE /*info_action_nb*/ , TRUE /*info_action_use*/ , FALSE /*info_connexion*/ );
 ?>
 
 <ul class="puce">
-  <li>Il y a <b><?php echo number_format($personnel_nb       ,0,'',' ') ?> personnel(s)</b>             enregistré(s), dont <b><?php echo number_format($personnel_use ,0,'',' ') ?></b> personnel(s) connecté(s).</li>
-  <li>Il y a <b><?php echo number_format($eleve_nb           ,0,'',' ') ?> élève(s)</b>                 enregistré(s), dont <b><?php echo number_format($eleve_use     ,0,'',' ') ?></b> élève(s) connecté(s).</li>
-  <li>Il y a <b><?php echo number_format($evaluation_nb      ,0,'',' ') ?> saisie(s)</b> de notes      enregistrée(s), dont <b><?php echo number_format($evaluation_use,0,'',' ') ?></b> récemment.</li>
-  <li>Il y a <b><?php echo number_format($officiel_sacoche_nb,0,'',' ') ?> bilan(s) officiels SACoche</b>  archivé(s), dont <b><?php echo number_format($officiel_sacoche_use,0,'',' ') ?></b> récemment.</li>
-  <li>Il y a <b><?php echo number_format($officiel_livret_nb ,0,'',' ') ?> bilan(s) de Livret Scolaire</b> archivé(s), dont <b><?php echo number_format($officiel_livret_use,0,'',' ') ?></b> récemment.</li>
+  <li>Il y a <b><?php echo number_format($personnel_nb ,0,'',' ') ?> personnel(s)</b>           enregistré(s),  dont <b><?php echo number_format($personnel_use ,0,'',' ') ?></b> personnel(s) connecté(s).</li>
+  <li>Il y a <b><?php echo number_format($eleve_nb     ,0,'',' ') ?> élève(s)</b>               enregistré(s),  dont <b><?php echo number_format($eleve_use     ,0,'',' ') ?></b> élève(s) connecté(s).</li>
+  <li>Il y a <b><?php echo number_format($evaluation_nb,0,'',' ') ?> saisie(s)</b> de notes     enregistrée(s), dont <b><?php echo number_format($evaluation_use,0,'',' ') ?></b> récemment.</li>
+  <li>Il y a <b><?php echo number_format($validation_nb,0,'',' ') ?> validation(s)</b> de socle enregistrée(s), dont <b><?php echo number_format($validation_use,0,'',' ') ?></b> récemment.</li>
 </ul>
 <hr />
 <p id="expli">
   <span class="astuce">Les anciens utilisateurs encore dans la base ne sont pas comptés parmi les <b>utilisateurs enregistrés</b>.</span><br />
   <span class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</span><br />
-  <span class="astuce">Les évaluations ou bilans <b>récents</b> sont ceux du dernier semestre.</span>
+  <span class="astuce">Les évaluations ou validations <b>récentes</b> sont celles effectuées au cours du dernier semestre.</span>
 </p>
 
 <?php endif /* * * * * * MONO-STRUCTURE FIN * * * * * */ ?>
@@ -87,8 +85,6 @@ $select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_struc
       <tr>
         <th class="nu"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></th>
         <th>Id</th>
-        <th>géographie</th>
-        <th>UAI</th>
         <th>structure</th>
         <th>contact</th>
         <th>ancienneté<br />inscription</th>
@@ -99,21 +95,19 @@ $select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_struc
         <th>élèves<br />connectés</th>
         <th>evaluations<br />enregistrées</th>
         <th>evaluations<br />récentes</th>
-        <th>bilans SACoche<br />enregistrés</th>
-        <th>bilans SACoche<br />récents</th>
-        <th>bilans LSU<br />enregistrés</th>
-        <th>bilans LSU<br />récents</th>
+        <th>validations<br />enregistrées</th>
+        <th>validations<br />récentes</th>
         <th>mode de<br />connexion</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <td class="nu" colspan="19"></td>
+        <td class="nu" colspan="15"></td>
       </tr>
     </tfoot>
     <tbody>
       <tr>
-        <td class="nu" colspan="19"></td>
+        <td class="nu" colspan="15"></td>
       </tr>
     </tbody>
   </table>

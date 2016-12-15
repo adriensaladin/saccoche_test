@@ -50,18 +50,17 @@ $TITRE = "Statistiques d'utilisation (partenariat ENT)"; // Pas de traduction ca
         <th>personnels<br />connectés</th>
         <th>élèves<br />connectés</th>
         <th>evaluations<br />récentes</th>
-        <th>bilans SACoche<br />récents</th>
-        <th>bilans LSU<br />récents</th>
+        <th>validations<br />récentes</th>
       </tr>
     </thead>
     <tfoot>
       <tr>
-        <td class="nu" colspan="8"></td>
+        <td class="nu" colspan="7"></td>
       </tr>
     </tfoot>
     <tbody>
       <tr>
-        <td class="nu" colspan="8"></td>
+        <td class="nu" colspan="7"></td>
       </tr>
     </tbody>
   </table>

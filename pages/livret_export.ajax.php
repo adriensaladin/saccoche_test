@@ -122,22 +122,6 @@ $tab_periode_livret = array(
   'college'   => 'Fin du collège',
 );
 
-$tab_export_type = array(
-  'cp'     => 'ecole',
-  'ce1'    => 'ecole',
-  'ce2'    => 'ecole',
-  'cm1'    => 'ecole',
-  'cm2'    => 'ecole',
-  '6e'     => 'college',
-  '5e'     => 'college',
-  '4e'     => 'college',
-  '3e'     => 'college',
-  'cycle1' => 'cycle_maternelle',
-  'cycle2' => 'cycle_ecole',
-  'cycle3' => 'cycle_college',
-  'cycle4' => 'cycle_college',
-);
-
 // Vérification période
 
 if( !isset($tab_periode_livret[$periode]) && ( ($action=='recolter') || ($periode!='0') ) )
@@ -190,8 +174,7 @@ if( empty($DB_TAB) )
   Json::end( FALSE , 'Aucun bilan trouvé selon les critères transmis !' );
 }
 
-// On extrait les données élèves et on mutualise les données communes
-$tab_export_objet   = array();
+// On extrait les données élève et on mutualise les données communes
 $tab_export_eleve   = array();
 $tab_export_donnees = array();
 $tab_export_commun  = array(
@@ -208,50 +191,25 @@ $tab_export_commun  = array(
 
 foreach($DB_TAB as $key => $DB_ROW)
 {
-  $export_objet = $tab_export_type[$DB_ROW['livret_page_ref']];
-  $tab_export_objet[ $export_objet ] = TRUE;
   $tab_export_donnees[$key] = json_decode($DB_ROW['export_contenu'], TRUE);
   $tab_export_eleve[$DB_ROW['user_id']] = $tab_export_donnees[$key]['eleve'];
-  if($export_objet=='college')
-  {
-    $tab_export_commun['responsable-etab'] = array_merge( $tab_export_commun['responsable-etab'] , $tab_export_donnees[$key]['commun']['responsable-etab'] );
-    $tab_export_commun['discipline']       = array_merge( $tab_export_commun['discipline']       , $tab_export_donnees[$key]['commun']['discipline']       );
-    $tab_export_commun['epi']              = array_merge( $tab_export_commun['epi']              , $tab_export_donnees[$key]['commun']['epi']              );
-    $tab_export_commun['ap']               = array_merge( $tab_export_commun['ap']               , $tab_export_donnees[$key]['commun']['ap']               );
-    $tab_export_commun['viesco']           = array_merge( $tab_export_commun['viesco']           , $tab_export_donnees[$key]['commun']['viesco']           );
-  }
-  if($export_objet=='ecole')
-  {
-    $tab_export_commun['classe']           = array_merge( $tab_export_commun['classe']           , $tab_export_donnees[$key]['commun']['classe']           );
-  }
+  $tab_export_commun['responsable-etab'] = array_merge( $tab_export_commun['responsable-etab'] , $tab_export_donnees[$key]['commun']['responsable-etab'] );
   $tab_export_commun['periode']          = array_merge( $tab_export_commun['periode']          , $tab_export_donnees[$key]['commun']['periode']          );
+  $tab_export_commun['discipline']       = array_merge( $tab_export_commun['discipline']       , $tab_export_donnees[$key]['commun']['discipline']       );
   $tab_export_commun['enseignant']       = array_merge( $tab_export_commun['enseignant']       , $tab_export_donnees[$key]['commun']['enseignant']       );
   $tab_export_commun['element']          = array_merge( $tab_export_commun['element']          , $tab_export_donnees[$key]['commun']['element']          );
+  $tab_export_commun['epi']              = array_merge( $tab_export_commun['epi']              , $tab_export_donnees[$key]['commun']['epi']              );
+  $tab_export_commun['ap']               = array_merge( $tab_export_commun['ap']               , $tab_export_donnees[$key]['commun']['ap']               );
   $tab_export_commun['parcours']         = array_merge( $tab_export_commun['parcours']         , $tab_export_donnees[$key]['commun']['parcours']         );
+  $tab_export_commun['viesco']           = array_merge( $tab_export_commun['viesco']           , $tab_export_donnees[$key]['commun']['viesco']           );
   unset( $tab_export_donnees[$key]['eleve'] , $tab_export_donnees[$key]['commun'] );
 }
 
-if( isset($tab_export_objet['cycle_maternelle']) )
-{
-  Json::end( FALSE , 'L\'application nationale ne gère pas le bilan de maternelle (qui ne fait pas partie du Livret Scolaire) !' );
-}
-
-if( count($tab_export_objet) > 1 )
-{
-  Json::end( FALSE , 'Il est impossible d\'exporter dans un fichier unique des bilans de différents formats('.implode(' / ',array_keys($tab_export_objet)).') !' );
-}
-
-$export_objet = key($tab_export_objet);
-
-// On attaque le XML : prologue + élément racine
-
+// On attaque le XML
 $tab_xml = array();
 $tab_xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
-switch($export_objet)
-{
-  case 'college' : $tab_xml[] = '<lsun-bilans xmlns="urn:fr:edu:scolarite:lsun:bilans:import" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:fr:edu:scolarite:lsun:bilans:import import-bilan-complet.xsd" schemaVersion="2.0">'; break;
-  case 'ecole'   : $tab_xml[] = '<lsun-bilans xmlns="urn:fr:edu:scolarite:lsun:bilans:import" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:fr:edu:scolarite:lsun:bilans:import import-bilan-1d.xsd" schemaVersion="1.0">'; break;
-}
+$tab_xml[] = '<lsun-bilans xmlns="urn:fr:edu:scolarite:lsun:bilans:import" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:fr:edu:scolarite:lsun:bilans:import import-bilan-complet.xsd" schemaVersion="2.0">';
+
 // entête
 $tab_xml[] = ' <entete>';
 $tab_xml[] = '  <editeur>Sésamath</editeur>';
@@ -262,28 +220,20 @@ $tab_xml[] = ' <donnees>';
 
 // Attention, pour la conformité du XML, l'odre est important (j'aurais bien mis <eleves> en premier mais ce n'est pas permis).
 
-if($export_objet=='college')
+// responsable-etab
+$tab_xml[] = '  <responsables-etab>';
+foreach($tab_export_commun['responsable-etab'] as $id => $tab)
 {
-  // responsable-etab
-  $tab_xml[] = '  <responsables-etab>';
-  foreach($tab_export_commun['responsable-etab'] as $id => $tab)
-  {
-    $tab_xml[] = '   <responsable-etab id="'.$id.'" libelle="'.html($tab['libelle']).'" />';
-  }
-  $tab_xml[] = '  </responsables-etab>';
+  $tab_xml[] = '   <responsable-etab id="'.$id.'" libelle="'.html($tab['libelle']).'" />';
 }
+$tab_xml[] = '  </responsables-etab>';
 
 // eleves
 $nb_eleves = count($tab_export_eleve);
 $tab_xml[] = '  <eleves>';
 foreach($tab_export_eleve as $eleve_id => $tab)
 {
-  switch($export_objet)
-  {
-    case 'college' : $tab_xml[] = '   <eleve id="'.$tab['id'].'" id-be="'.$tab['id-be'].'" nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" code-division="'.html($tab['code-division']).'" />'; break;
-    case 'ecole'   : $tab_xml[] = '   <eleve id="'.$tab['id'].'" ine="'.$tab['ine'].'" classe-ref="'.html($tab['classe-ref']).'" nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />'; break;
-  }
-  
+  $tab_xml[] = '   <eleve id="'.$tab['id'].'" id-be="'.$tab['id-be'].'" nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" code-division="'.html($tab['code-division']).'" />';
 }
 $tab_xml[] = '  </eleves>';
 unset( $tab_export_eleve );

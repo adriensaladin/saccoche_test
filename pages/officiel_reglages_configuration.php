@@ -43,10 +43,6 @@ $select_bulletin_couleur                        = HtmlForm::afficher_select(Form
 $select_bulletin_fond                           = HtmlForm::afficher_select(Form::$tab_select_fond         , 'f_bulletin_fond'                           /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['BULLETIN_FOND']                           /*selection*/ , '' /*optgroup*/ );
 $select_bulletin_legende                        = HtmlForm::afficher_select(Form::$tab_select_legende      , 'f_bulletin_legende'                        /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['BULLETIN_LEGENDE']                        /*selection*/ , '' /*optgroup*/ );
 
-$select_livret_couleur               = HtmlForm::afficher_select(Form::$tab_select_couleur      , 'f_livret_couleur'               /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_COULEUR']               /*selection*/ , '' /*optgroup*/ );
-$select_livret_fond                  = HtmlForm::afficher_select(Form::$tab_select_fond         , 'f_livret_fond'                  /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_FOND']                  /*selection*/ , '' /*optgroup*/ );
-$select_livret_import_bulletin_notes = HtmlForm::afficher_select(Form::$tab_select_import_notes , 'f_livret_import_bulletin_notes' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] /*selection*/ , '' /*optgroup*/ );
-
 $select_socle_appreciation_rubrique_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_socle_appreciation_rubrique_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_LONGUEUR'] /*selection*/ , '' /*optgroup*/ );
 $select_socle_appreciation_generale_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_socle_appreciation_generale_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_LONGUEUR'] /*selection*/ , '' /*optgroup*/ );
 $select_socle_couleur                        = HtmlForm::afficher_select(Form::$tab_select_couleur      , 'f_socle_couleur'                        /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_COULEUR']                        /*selection*/ , '' /*optgroup*/ );
@@ -92,12 +88,6 @@ $check_bulletin_conversion_sur_20            =  $_SESSION['OFFICIEL']['BULLETIN_
 $check_bulletin_pourcentage                  = !$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']            ? ' checked' : '' ;
 $check_bulletin_moyenne_classe               =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE']               ? ' checked' : '' ;
 $check_bulletin_moyenne_generale             =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE']             ? ' checked' : '' ;
-
-$check_livret_retroactif_auto              = ($_SESSION['OFFICIEL']['LIVRET_RETROACTIF']=='auto')          ? ' checked' : '' ;
-$check_livret_retroactif_non               = ($_SESSION['OFFICIEL']['LIVRET_RETROACTIF']=='non')           ? ' checked' : '' ;
-$check_livret_retroactif_oui               = ($_SESSION['OFFICIEL']['LIVRET_RETROACTIF']=='oui')           ? ' checked' : '' ;
-$check_livret_retroactif_annuel            = ($_SESSION['OFFICIEL']['LIVRET_RETROACTIF']=='annuel')        ? ' checked' : '' ;
-$check_livret_only_socle                   =  $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE']                   ? ' checked' : '' ;
 
 $check_socle_appreciation_rubrique_report =  $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_REPORT'] ? ' checked' : '' ;
 $check_socle_appreciation_generale_report =  $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_REPORT'] ? ' checked' : '' ;
@@ -232,28 +222,6 @@ $matiere_liste = str_replace( ',' , '_' , $_SESSION['OFFICIEL']['BULLETIN_MOYENN
   </p>
   <p>
     <span class="tab"></span><button id="bouton_valider_bulletin" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_bulletin">&nbsp;</label>
-  </p>
-</form>
-
-<hr />
-
-<h2>Livret Scolaire</h2>
-
-<form action="#" method="post" id="form_livret">
-  <p>
-    <label class="tab">Impression :</label><?php echo $select_livret_couleur ?> <?php echo $select_livret_fond ?>
-    <h3>Si récupération possible depuis un bulletin scolaire</h3>
-    <label class="tab">Positionnement :</label><?php echo $select_livret_import_bulletin_notes ?>
-    <h3>Si récupération impossible depuis un bulletin scolaire</h3>
-    <span class="radio">Prise en compte des évaluations antérieures :</span>
-      <label for="f_livret_retroactif_auto"><input type="radio" id="f_livret_retroactif_auto" name="f_livret_retroactif" value="auto"<?php echo $check_livret_retroactif_auto ?> /> automatique (selon référentiels)</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_livret_retroactif_non"><input type="radio" id="f_livret_retroactif_non" name="f_livret_retroactif" value="non"<?php echo $check_livret_retroactif_non ?> /> non</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_livret_retroactif_oui"><input type="radio" id="f_livret_retroactif_oui" name="f_livret_retroactif" value="oui"<?php echo $check_livret_retroactif_oui ?> /> oui</label>&nbsp;&nbsp;&nbsp;
-      <label for="f_livret_retroactif_annuel"><input type="radio" id="f_livret_retroactif_annuel" name="f_livret_retroactif" value="annuel"<?php echo $check_livret_retroactif_annuel ?> /> de l'année scolaire</label><br />
-    <label class="tab">Restriction :</label><label for="f_livret_only_socle"><input type="checkbox" id="f_livret_only_socle" name="f_livret_only_socle" value="1"<?php echo $check_livret_only_socle ?> /> Uniquement les items liés au socle</label>
-  </p>
-  <p>
-    <span class="tab"></span><button id="bouton_valider_livret" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_livret">&nbsp;</label>
   </p>
 </form>
 

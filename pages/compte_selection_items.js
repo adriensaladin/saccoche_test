@@ -472,32 +472,5 @@ $(document).ready
       }
     }
 
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Initialisation
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Récupéré après le chargement de la page car potentiellement lourd pour les directeurs et les PP (bloque l'affichage plusieurs secondes)
-    if( (PROFIL_TYPE=='professeur') || (PROFIL_TYPE=='directeur') )
-    {
-      $.ajax
-      (
-        {
-          type : 'POST',
-          url : 'ajax.php?page=_load_arborescence',
-          data : 'f_item_comm=0'+'&f_all_if_pp=0',
-          dataType : 'json',
-          error : function(jqXHR, textStatus, errorThrown)
-          {
-            $('#arborescence label').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-            return false;
-          },
-          success : function(responseJSON)
-          {
-            $('#arborescence').replaceWith(responseJSON['value']);
-          }
-        }
-      );
-    }
-
   }
 );

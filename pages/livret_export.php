@@ -243,7 +243,6 @@ if($step==1)
           $page_ref = $tab_join['page_ref'];
           $id = '_'.$classe_id.'_'.$page_ref.'_'.$periode;
           $bouton_recolte = in_array( $page_ref , array('6e','5e','4e','3e') ) ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '' ;
-          // $bouton_recolte = !in_array( $page_ref , array('cycle1','cycle2','cycle3','cycle4') ) ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '' ;
           $tab_affich[$classe_id][$periode] = '<td class="hc">'.$info_export.$bouton_recolte.'</td>';
         }
       }

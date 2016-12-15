@@ -43,13 +43,7 @@ $file_memo = CHEMIN_DOSSIER_EXPORT.'partenaire_statistiques_'.$_SESSION['USER_ID
 if((!$num)||(!$max))
 {
   // Pour mémoriser les totaux
-  $tab_memo['totaux'] = array(
-    'personnel_use'        => 0 ,
-    'eleve_use'            => 0 ,
-    'evaluation_use'       => 0 ,
-    'officiel_sacoche_use' => 0 ,
-    'officiel_livret_use'  => 0 ,
-  );
+  $tab_memo['totaux'] = array( 'personnel_use'=>0 , 'eleve_use'=>0 , 'evaluation_use'=>0 , 'validation_use'=>0 );
   // Mémoriser les données des structures concernées par les stats
   $tab_memo['infos'] = array();
   $DB_TAB = DB_WEBMESTRE_WEBMESTRE::DB_lister_structures();
@@ -79,15 +73,14 @@ if( $num && $max && ($num<$max) )
   extract($tab_memo['infos'][$num-1]); // $base_id $structure $geo
   // Récupérer une série de stats
   DBextra::charger_parametres_mysql_supplementaires($base_id);
-  list( $personnel_use , $eleve_use , $evaluation_use , $officiel_sacoche_use , $officiel_livret_use , $connexion_nom ) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( FALSE /*info_user_nb*/ , TRUE /*info_user_use*/ , FALSE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
+  list($personnel_use,$eleve_use,$evaluation_use,$validation_use,$connexion_nom) = DB_STRUCTURE_WEBMESTRE::DB_recuperer_statistiques( FALSE /*info_user_nb*/ , TRUE /*info_user_use*/ , FALSE /*info_action_nb*/ , TRUE /*info_action_use*/ , TRUE /*info_connexion*/ );
   if( mb_strpos( $_SESSION['USER_CONNECTEURS'] , '|'.$connexion_nom.',' ) !== FALSE )
   {
     // maj les totaux
-    $tab_memo['totaux']['personnel_use']        += $personnel_use;
-    $tab_memo['totaux']['eleve_use']            += $eleve_use;
-    $tab_memo['totaux']['evaluation_use']       += $evaluation_use;
-    $tab_memo['totaux']['officiel_sacoche_use'] += $officiel_sacoche_use;
-    $tab_memo['totaux']['officiel_livret_use']  += $officiel_livret_use;
+    $tab_memo['totaux']['personnel_use']  += $personnel_use;
+    $tab_memo['totaux']['eleve_use']      += $eleve_use;
+    $tab_memo['totaux']['evaluation_use'] += $evaluation_use;
+    $tab_memo['totaux']['validation_use'] += $validation_use;
     // Enregistrer ces informations
     FileSystem::enregistrer_fichier_infos_serializees( $file_memo , $tab_memo );
     // Retour
@@ -97,9 +90,8 @@ if( $num && $max && ($num<$max) )
       '<td>'.html($connexion_nom).'</td>'.
       '<td>'.$personnel_use.'</td>'.
       '<td>'.$eleve_use.'</td>'.
-      '<td>'.number_format($evaluation_use      ,0,'',' ').'</td>'.
-      '<td>'.number_format($officiel_sacoche_use,0,'',' ').'</td>'.
-      '<td>'.number_format($officiel_livret_use ,0,'',' ').'</td>'.
+      '<td>'.sprintf("%07u",$evaluation_use).'</i>'.number_format($evaluation_use,0,'',' ').'</td>'.
+      '<td>'.sprintf("%07u",$validation_use).'</i>'.number_format($validation_use,0,'',' ').'</td>'.
       '</tr>';
     Json::end( TRUE , $ligne_etabl );
   }
@@ -122,11 +114,10 @@ if( $num && $max && ($num==$max) )
       // Retour
   $ligne_total = '<tr>'.
     '<th colspan="3" class="nu">Totaux</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_use']       ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_use']           ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_use']      ,0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['officiel_sacoche_use'],0,'',' ').'</th>'.
-    '<th class="hc">'.number_format($tab_memo['totaux']['officiel_livret_use'] ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['personnel_use'] ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['eleve_use']     ,0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['evaluation_use'],0,'',' ').'</th>'.
+    '<th class="hc">'.number_format($tab_memo['totaux']['validation_use'],0,'',' ').'</th>'.
     '</tr>';
   Json::end( TRUE , $ligne_total );
 }

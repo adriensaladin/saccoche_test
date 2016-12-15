@@ -469,20 +469,16 @@ public static function DB_recuperer_items_profs( $liste_eleve_id , $liste_prof_i
  *
  * @param string   $rubrique_type
  * @param string   $rubrique_join
- * @param int      $only_socle    1 pour ne retourner que les items reliés au socle, 0 sinon (TODO : ne tester à terme que le socle 2016)
  * @param int      $rubrique_id   facultatif, pour restreindre à une rubrique
  * @return array
  */
-public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , $rubrique_join , $only_socle , $rubrique_id=NULL )
+public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , $rubrique_join , $rubrique_id=NULL )
 {
-  $champ_position = (substr($rubrique_type,3)=='domaine') ? 'livret_rubrique_id_position' : 'livret_rubrique_ou_matiere_id' ;
-  $champ_elements = (substr($rubrique_type,3)=='domaine') ? 'livret_rubrique_id_elements' : 'livret_rubrique_ou_matiere_id' ;
+  $rubrique_champ = (substr($rubrique_type,3)=='domaine') ? 'livret_rubrique_id_position' : 'livret_rubrique_ou_matiere_id' ;
   $join_rubrique  = (substr($rubrique_type,3)=='domaine') ? 'INNER JOIN sacoche_livret_rubrique ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_livret_rubrique.livret_rubrique_id ' : '' ;
-  $join_s2016     = ($only_socle)  ? 'INNER JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
-  $where_socle    = ($only_socle)  ? 'AND ( entree_id !=0 OR socle_composante_id IS NOT NULL ) ' : '' ;
-  $where_rubrique = ($rubrique_id) ? 'AND '.$champ_position.'=:rubrique_id ' : '' ;
-  $group_by       = ($rubrique_id) ? 'item_id ' : $champ_position.', '.$champ_elements.', item_id ' ;
-  $DB_SQL = 'SELECT '.$champ_position.' AS rubrique_id_position , '.$champ_elements.' AS rubrique_id_elements , item_id ';
+  $where_rubrique = ($rubrique_id) ? 'AND '.$rubrique_champ.'=:rubrique_id ' : '' ;
+  $group_by       = ($rubrique_id) ? 'item_id ' : $rubrique_champ.', item_id ' ;
+  $DB_SQL = 'SELECT '.$rubrique_champ.' AS rubrique_id , item_id ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
   $DB_SQL.= $join_rubrique;
   if( $rubrique_join == 'matiere' )
@@ -517,8 +513,7 @@ public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , 
     $DB_SQL.= 'INNER JOIN sacoche_matiere USING (matiere_id) ';
     $DB_SQL.= 'INNER JOIN sacoche_niveau USING (niveau_id) ';
   }
-  $DB_SQL.= $join_s2016;
-  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND sacoche_livret_jointure_referentiel.livret_rubrique_type=:rubrique_type '.$where_socle.$where_rubrique;
+  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND sacoche_livret_jointure_referentiel.livret_rubrique_type=:rubrique_type '.$where_rubrique;
   $DB_SQL.= 'GROUP BY '.$group_by;
   $DB_VAR = array(
     ':rubrique_type' => $rubrique_type,
@@ -2134,7 +2129,7 @@ public static function DB_lister_livret_export_eleves( $liste_eleve , $livret_pa
 {
   $where_page_periodicite = ($livret_page_periodicite) ? 'AND livret_page_periodicite=:livret_page_periodicite ' : '' ;
   $where_jointure_periode = ($jointure_periode)        ? 'AND jointure_periode=:jointure_periode '               : '' ;
-  $DB_SQL = 'SELECT user_id, livret_page_ref, sacoche_version, export_contenu ';
+  $DB_SQL = 'SELECT user_id, sacoche_version, export_contenu ';
   $DB_SQL.= 'FROM sacoche_livret_export ';
   $DB_SQL.= 'WHERE user_id IN('.$liste_eleve.') '.$where_page_periodicite.$where_jointure_periode;
   $DB_SQL.= 'ORDER BY livret_page_ref ASC, jointure_periode ASC, user_id ASC ';

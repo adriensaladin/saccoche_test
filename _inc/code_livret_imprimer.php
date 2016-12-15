@@ -157,7 +157,7 @@ if($ACTION=='initialiser')
       }
       $liste_eleve_id = implode(',',$tab_eleve_id_tmp);
     }
-    calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] , $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['LIVRET_RETROACTIF'] );
+    calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] );
   }
   // lister les bilans officiels archivés de l'année courante, affichage du retour
   $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_archive( $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'livret' /*archive_type*/ , $PAGE_REF /*archive_ref*/ , $periode_id , $tab_eleve_id , FALSE /*with_infos*/ );
@@ -684,16 +684,16 @@ $tag_date_heure_initiales = date('d/m/Y H:i').' '.To::texte_identite($_SESSION['
 // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$make_action  = 'imprimer';
-$make_html    = FALSE;
-$make_pdf     = TRUE;
-$make_csv     = FALSE;
-$make_graph   = FALSE;
+$make_action   = 'imprimer';
+$make_html     = FALSE;
+$make_pdf      = TRUE;
+$make_csv      = FALSE;
+$make_graph    = FALSE;
 
-$groupe_type  = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
-$eleves_ordre = 'alpha';
-$tab_eleve    = $tab_eleve_id;
-$liste_eleve  = $liste_eleve_id;
+$groupe_type     = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
+$eleves_ordre    = 'alpha';
+$tab_eleve       = $tab_eleve_id;
+$liste_eleve     = $liste_eleve_id;
 
 $tab_pages_decoupe_pdf = array();
 $tab_archive = array(
@@ -708,14 +708,14 @@ if( in_array($PAGE_COLONNE,array('objectif','position')) )
   $tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // Besoin pour OutilBilan::determiner_degre_maitrise(), uniquement en cas de positionnement sans note ni pourcentage
 }
 
-$orientation  = ($PAGE_REF!='cycle1') ? 'portrait' : 'paysage' ;
-$couleur      = $_SESSION['OFFICIEL']['LIVRET_COULEUR'];
-$fond         = $_SESSION['OFFICIEL']['LIVRET_FOND'];
-$legende      = 'oui';
-$marge_gauche =  5; // 10 sur le LSU
-$marge_droite =  5; // 10 sur le LSU
-$marge_haut   =  5; // 10 sur le LSU page 2 uniquement
-$marge_bas    = 10; // 15 sur le LSU
+$orientation     = ($PAGE_REF!='cycle1') ? 'portrait' : 'paysage' ;
+$couleur         = 'oui';
+$fond            = 'gris';
+$legende         = 'oui';
+$marge_gauche    =  5; // 10 sur le LSU
+$marge_droite    =  5; // 10 sur le LSU
+$marge_haut      =  5; // 10 sur le LSU page 2 uniquement
+$marge_bas       = 10; // 15 sur le LSU
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Inclusion du code commun à plusieurs pages

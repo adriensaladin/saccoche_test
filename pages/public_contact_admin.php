@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = "Contacter les administrateurs d'un établissement scolaire"; // Pas de traduction car pas de choix de langue à ce niveau.
 
 // Récupération du numéro de base
-$BASE = isset($_GET['base']) ? Clean::entier($_GET['base']) : 0 ;
+$BASE = (isset($_GET['base'])) ? Clean::entier($_GET['base']) : 0 ;
 
 if( (HEBERGEUR_INSTALLATION=='multi-structures') && !$BASE )
 {
@@ -58,11 +58,10 @@ else
   }
 }
 
-$message = '';
-
 // Récupération d'une éventuelle adresse mail de qqun qui signalerait un envoi anormal
-$courriel = isset($_GET['courriel']) ? Clean::courriel($_GET['courriel']) : '' ;
+$courriel = (isset($_GET['courriel'])) ? Clean::courriel($_GET['courriel']) : '' ;
 
+$message = '';
 if($courriel)
 {
   $message .= 'Bonjour,'."\r\n";
@@ -70,21 +69,6 @@ if($courriel)
   $message .= 'Sans doute la conséquence une adresse erronée dans votre base d\'utilisateurs ?'."\r\n";
   $message .= 'Merci d\'y regarder et me tenir au courant.'."\r\n";
   $message .= 'Cordialement.'."\r\n";
-}
-
-// Récupération d'un texte éventuel de qqun qui signalerait un pb d'authentification
-$msg_html = isset($_GET['msg']) ? Clean::texte($_GET['msg']) : '' ;
-
-if($msg_html)
-{
-  $tab_bad = array( '<br />' , '&nbsp;' , '&hellip;' , '<b>' , '</b>' );
-  $tab_bon = array( "\r\n"   , ' '      , '...'      , ''    , ''     );
-  $message .= 'Bonjour,'."\r\n";
-  $message .= 'Je rencontre le problème d\'authentification suivant.'."\r\n";
-  $message .= 'Merci d\'y regarder et me tenir au courant.'."\r\n";
-  $message .= 'Cordialement.'."\r\n";
-  $message .= '- - - - - - - - - - - - - - - - - - - -'."\r\n";
-  $message .= str_replace($tab_bad,$tab_bon,$msg_html);
 }
 
 // Protection contre les robots (pour éviter des envois intempestifs de courriels)

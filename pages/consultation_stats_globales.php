@@ -28,15 +28,15 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Statistiques globales"));
 
-list( $personnel_nb , $eleve_nb , $parent_nb , $personnel_use , $eleve_use , $parent_use , $evaluation_nb , $evaluation_use ) = DB_STRUCTURE_DIRECTEUR::DB_recuperer_statistiques();
+list($personnel_nb,$eleve_nb,$parent_nb,$personnel_use,$eleve_use,$parent_use,$evaluation_nb,$validation_nb,$evaluation_use,$validation_use) = DB_STRUCTURE_DIRECTEUR::DB_recuperer_statistiques();
 ?>
 
 <h2>Utilisateurs</h2>
 
 <ul class="puce">
-  <li>Il y a <b><?php echo number_format($personnel_nb ,0,'',' ') ?> personnel(s)</b> enregistré(s),  dont <b><?php echo number_format($personnel_use ,0,'',' ') ?></b> personnel(s) connecté(s).</li>
-  <li>Il y a <b><?php echo number_format($eleve_nb     ,0,'',' ') ?> élève(s)</b>     enregistré(s),  dont <b><?php echo number_format($eleve_use     ,0,'',' ') ?></b> élève(s) connecté(s).</li>
-  <li>Il y a <b><?php echo number_format($parent_nb    ,0,'',' ') ?> parent(s)</b>    enregistré(s),  dont <b><?php echo number_format($parent_use    ,0,'',' ') ?></b> parent(s) connecté(s).</li>
+  <li>Il y a <b><?php echo number_format($personnel_nb ,0,'',' ') ?> personnel(s)</b>           enregistré(s),  dont <b><?php echo number_format($personnel_use ,0,'',' ') ?></b> personnel(s) connecté(s).</li>
+  <li>Il y a <b><?php echo number_format($eleve_nb     ,0,'',' ') ?> élève(s)</b>               enregistré(s),  dont <b><?php echo number_format($eleve_use     ,0,'',' ') ?></b> élève(s) connecté(s).</li>
+  <li>Il y a <b><?php echo number_format($parent_nb    ,0,'',' ') ?> parent(s)</b>              enregistré(s),  dont <b><?php echo number_format($parent_use    ,0,'',' ') ?></b> parent(s) connecté(s).</li>
 </ul>
 <p class="astuce">
   Les anciens utilisateurs encore dans la base ne sont pas comptés parmi les <b>utilisateurs enregistrés</b>.<br />
@@ -51,10 +51,11 @@ list( $personnel_nb , $eleve_nb , $parent_nb , $personnel_use , $eleve_use , $pa
 <h2>Utilisation</h2>
 
 <ul class="puce">
-  <li>Il y a <b><?php echo number_format($evaluation_nb,0,'',' ') ?> saisie(s)</b> de notes enregistrée(s), dont <b><?php echo number_format($evaluation_use,0,'',' ') ?></b> récemment.</li>
+  <li>Il y a <b><?php echo number_format($evaluation_nb,0,'',' ') ?> saisie(s)</b> de notes     enregistrée(s), dont <b><?php echo number_format($evaluation_use,0,'',' ') ?></b> récemment.</li>
+  <li>Il y a <b><?php echo number_format($validation_nb,0,'',' ') ?> validation(s)</b> de socle enregistrée(s), dont <b><?php echo number_format($validation_use,0,'',' ') ?></b> récemment.</li>
 </ul>
 <p class="astuce">
-  Les évaluations <b>récentes</b> sont celles effectuées au cours du dernier semestre.
+  Les évaluations ou validations <b>récentes</b> sont celles effectuées au cours du dernier semestre.
 </p>
 <ul class="puce">
   <li>Vous pouvez aussi consulter <a href="?page=consultation_nombre_saisies">le nombre de notes saisies par classe et enseignant</a> au cours de cette année scolaire.</li>

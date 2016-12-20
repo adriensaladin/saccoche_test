@@ -133,13 +133,12 @@ class PDF_socle2016_releve extends PDF
     $this->SetXY( $this->marge_gauche , $this->GetY() + $this->cases_hauteur );
   }
 
-  public function legende( $aff_socle_position , $aff_socle_points_DNB )
+  public function legende( $aff_socle_position )
   {
     $ordonnee = $this->GetY() + $this->lignes_hauteur*0.5 ;
     if($aff_socle_position)
     {
-      $info_points = ($aff_socle_points_DNB) ? '_points' : '' ;
-      $this->afficher_legende( 'degre_maitrise'.$info_points /*type_legende*/ , $ordonnee /*ordonnée*/ );
+      $this->afficher_legende( 'degre_maitrise'    /*type_legende*/ , $ordonnee /*ordonnée*/ );
       $ordonnee = $this->GetY();
     }
     $this->afficher_legende( 'etat_acquisition' /*type_legende*/ , $ordonnee /*ordonnée*/ );

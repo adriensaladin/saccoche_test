@@ -1149,13 +1149,13 @@ class FileSystem
    * Renvoyer une taille de fichier lisible pour un humain :)
    * @see http://fr2.php.net/manual/fr/function.filesize.php#106569
    *
-   * @param string|int $fichier_chemin_or_taille
-   * @param int        $decimals (facultatif)
+   * @param string $fichier_chemin
+   * @param int    $decimals (facultatif)
    * @return string
    */
-  public static function afficher_fichier_taille( $fichier_chemin_or_taille , $decimals = 1 )
+  public static function afficher_fichier_taille( $fichier_chemin , $decimals = 1 )
   {
-    $bytes = is_int($fichier_chemin_or_taille) ? $fichier_chemin_or_taille : filesize($fichier_chemin_or_taille) ;
+    $bytes = filesize($fichier_chemin);
     $size_unit = ' KMGTP';
     $factor = (int) floor((strlen($bytes) - 1) / 3);
     return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';

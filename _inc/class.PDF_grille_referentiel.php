@@ -79,6 +79,7 @@ class PDF_grille_referentiel extends PDF
     $this->colonne_vide_largeur  = $colonne_vide;
     $this->reference_largeur = ($longueur_ref_max) ? ceil($longueur_ref_max*1.7) : 0 ;
     $this->intitule_largeur  = $this->page_largeur_moins_marges - $this->reference_largeur - ($this->cases_nb * $this->cases_largeur) - $this->colonne_bilan_largeur - $this->colonne_vide_largeur ;
+    $this->legende_deja_affichee = FALSE; // On n'est pas certain qu'il y ait la place pour la légende en dernière page, alors on la met dès que possible
     $this->aff_codes_notation      = TRUE;
     $this->aff_anciennete_notation = $aff_anciennete_notation;
     $this->aff_etat_acquisition    = $aff_etat_acquisition;
@@ -92,7 +93,6 @@ class PDF_grille_referentiel extends PDF
     // On prend une nouvelle page PDF pour chaque élève
     $this->AddPage($this->orientation , 'A4');
     $this->SetXY( $this->marge_gauche , $this->marge_haut );
-    $this->legende_deja_affichee = FALSE; // On n'est pas certain qu'il y ait la place pour la légende en dernière page, alors on la met dès que possible
     $largeur_demi_page = ( $this->page_largeur_moins_marges ) / 2;
     // intitulé-structure
     $this->SetFont('Arial' , 'B' , $this->taille_police*1.4);

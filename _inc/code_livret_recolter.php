@@ -122,11 +122,11 @@ if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_classe = array();
-$key_classe = $classe_value;
+$key_classe = 'CL'.$classe_id;
 
 $tab_classe[$key_classe] = array(
-  'id-be'   => sprintf("%'96u",$classe_id), // En attendant l'identifiant de classe de BE1D...
-  'libelle' => $classe_nom, // max 50 caractères : 20 dans SACoche
+  'id-be'   => $classe_id, // En attendant l'identifiant de classe de BE1D...
+  'libelle' => $classe_nom,
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -305,12 +305,11 @@ foreach($DB_TAB as $DB_ROW)
   }
   if( ( ($BILAN_TYPE_ETABL=='college') && $DB_ROW['user_sconet_id'] ) || ( ($BILAN_TYPE_ETABL=='ecole') && $DB_ROW['user_reference'] ) )
   {
-    $ine = ($DB_ROW['user_reference']) ? $DB_ROW['user_reference'] : sprintf("%'911u",$DB_ROW['user_id']) ; // En attendant l'identifiant INE de BE1D...
     $tab_eleve[$DB_ROW['user_id']] = array(
       'eleve'         => array(
         'id'          => 'ELV'.$DB_ROW['user_id'],
         'id-be'       => $DB_ROW['user_sconet_id'], // 2D
-        'ine'         => $ine, // 1D
+        'ine'         => $DB_ROW['user_reference'], // 1D
         $champ_classe => $classe_value, // 2D max 8 caractères : idem dans SACoche
         'nom'         => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
         'prenom'      => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
@@ -383,11 +382,6 @@ foreach($DB_TAB as $DB_ROW)
   if( ($BILAN_TYPE_ETABL=='college') && !$DB_ROW['user_sconet_id'] )
   {
     $tab_compte_rendu['alerte'][$key_prof] = 'Absence d\'identifiant SIECLE (STS) pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : génèrera un message d\'alerte non bloquant.';
-  }
-  if( ($BILAN_TYPE_ETABL=='ecole') && ($DB_ROW['user_genre']=='I') )
-  {
-    $tab_compte_rendu['alerte'][$key_prof] = 'Absence de civilité pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : "MME" imposé au hasard pour éviter un rejet bloquant.';
-    $DB_ROW['user_genre'] = 'MME';
   }
   $tab_prof[$key_prof] = array(
     'type'     => $type,
@@ -754,16 +748,6 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
           $tab_eleve[$eleve_id]['epi'][$key_rubrique] = array(
             'appreciation' => $tab_tmp_saisie['appreciation']['saisie_valeur'], // max 600 caractères : idem dans SACoche
           );
-          // Au cas où il n'y aurait pas eu de descriptif de l'action et où cela serait associé à un prof ou une matière hors enseignement
-          foreach($tab_epi[$key_rubrique]['enseignant-refs'] as $key => $key_prof)
-          {
-            $key_discipline = $tab_epi[$key_rubrique]['discipline-refs'][$key];
-            $key_matiere = substr($key_discipline,0,-1);
-            $tab_eleve[$eleve_id]['commun']['enseignant'][$key_prof] = $tab_prof[$key_prof];
-            $tab_eleve[$eleve_id]['commun']['discipline'][$key_discipline] = $tab_rubrique[$key_matiere];
-            $tab_objet_used[$key_prof] = TRUE;
-            $tab_objet_used[$key_matiere] = TRUE;
-          }
         }
         // AP
         if( ($rubrique_type=='ap') && isset($tab_ap['AP'.$rubrique_id.$key_periode]) )
@@ -773,16 +757,6 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
           $tab_eleve[$eleve_id]['ap'][$key_rubrique] = array(
             'appreciation' => $tab_tmp_saisie['appreciation']['saisie_valeur'], // max 600 caractères : idem dans SACoche
           );
-          // Au cas où il n'y aurait pas eu de descriptif de l'action et où cela serait associé à un prof ou une matière hors enseignement
-          foreach($tab_ap[$key_rubrique]['enseignant-refs'] as $key => $key_prof)
-          {
-            $key_discipline = $tab_ap[$key_rubrique]['discipline-refs'][$key];
-            $key_matiere = substr($key_discipline,0,-1);
-            $tab_eleve[$eleve_id]['commun']['enseignant'][$key_prof] = $tab_prof[$key_prof];
-            $tab_eleve[$eleve_id]['commun']['discipline'][$key_discipline] = $tab_rubrique[$key_matiere];
-            $tab_objet_used[$key_prof] = TRUE;
-            $tab_objet_used[$key_matiere] = TRUE;
-          }
         }
         // Parcours
         if( ($rubrique_type=='parcours') && isset($tab_parcours['PAR'.$rubrique_id.$key_periode]) )
@@ -792,8 +766,6 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
             'code'         => $tab_parcours[$key_rubrique]['code'],
             'appreciation' => $tab_tmp_saisie['appreciation']['saisie_valeur'], // max 600 caractères : idem dans SACoche
           );
-          // Au cas où il n'y aurait pas eu de descriptif du projet
-          $tab_eleve[$eleve_id]['commun']['parcours'][$key_rubrique] = $tab_parcours[$key_rubrique];
         }
         // Bilan
         if($rubrique_type=='bilan')

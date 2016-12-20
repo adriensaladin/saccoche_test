@@ -130,12 +130,11 @@ class PDF_socle2016_synthese extends PDF
     }
   }
 
-  public function legende( $aff_socle_points_DNB )
+  public function legende()
   {
     $this->lignes_hauteur = $this->cases_hauteur;
     $ordonnee = $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*0.75;
-    $info_points = ($aff_socle_points_DNB) ? '_points' : '' ;
-    $this->afficher_legende( 'degre_maitrise'.$info_points /*type_legende*/ , $ordonnee /*ordonnée*/ );
+    $this->afficher_legende( 'degre_maitrise' /*type_legende*/ , $ordonnee /*ordonnée*/ );
   }
 
 }

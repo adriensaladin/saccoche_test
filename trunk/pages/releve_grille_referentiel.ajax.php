@@ -670,8 +670,13 @@ if( $type_generique || $type_individuel )
     $releve_HTML_individuel .= '</table>'.NL;
     if($legende=='oui')
     {
+      $tab_legende = array(
+        'codes_notation'      => TRUE ,
+        'anciennete_notation' => ($retroactif!='non') ,
+        'score_bilan'         => ($colonne_bilan=='oui') ,
+      );
       $releve_PDF->legende();
-      $releve_HTML_individuel .= Html::legende( TRUE /*codes_notation*/ , ($retroactif!='non') /*anciennete_notation*/ , ($colonne_bilan=='oui') /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*degre_maitrise*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ );
+      $releve_HTML_individuel .= Html::legende($tab_legende);
     }
   }
   // On enregistre les sorties HTML et PDF
@@ -819,7 +824,7 @@ if($type_synthese)
   if($legende=='oui')
   {
     $releve_PDF->legende();
-    $releve_HTML_synthese .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , TRUE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , FALSE /*degre_maitrise*/ , FALSE /*make_officiel*/ , FALSE /*force_nb*/ );
+    $releve_HTML_synthese .= Html::legende( array('score_bilan'=>TRUE) );
   }
   $script = $affichage_direct ? '$("#table_s").tablesorter();' : 'function tri(){$("#table_s").tablesorter();}' ;
   $releve_HTML_synthese .= ($affichage_checkbox) ? HtmlForm::afficher_synthese_exploitation('eleves + eleves-items + items').'</form>'.NL : '';

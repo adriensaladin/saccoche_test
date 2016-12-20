@@ -264,13 +264,24 @@ $tab_xml[] = ' <donnees>';
 
 if($export_objet=='college')
 {
-  // responsable-etab
+  // responsables-etab
   $tab_xml[] = '  <responsables-etab>';
   foreach($tab_export_commun['responsable-etab'] as $id => $tab)
   {
     $tab_xml[] = '   <responsable-etab id="'.$id.'" libelle="'.html($tab['libelle']).'" />';
   }
   $tab_xml[] = '  </responsables-etab>';
+}
+
+if($export_objet=='ecole')
+{
+  // classes
+  $tab_xml[] = '  <classes>';
+  foreach($tab_export_commun['classe'] as $id => $tab)
+  {
+    $tab_xml[] = '   <classe id="'.$id.'" id-be="'.$tab['id-be'].'" libelle="'.html($tab['libelle']).'" />';
+  }
+  $tab_xml[] = '  </classes>';
 }
 
 // eleves
@@ -309,7 +320,11 @@ $tab_xml[] = '  <enseignants>';
 foreach($tab_export_commun['enseignant'] as $id => $tab)
 {
   $civilite = $tab['civilite'] ? ' civilite="'.$tab['civilite'].'"' : '' ;
-  $tab_xml[] = '   <enseignant id="'.$id.'" type="'.$tab['type'].'" id-sts="'.$tab['id-sts'].'"'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />';
+  switch($export_objet)
+  {
+    case 'college' : $tab_xml[] = '   <enseignant id="'.$id.'" type="'.$tab['type'].'" id-sts="'.$tab['id-sts'].'"'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />'; break;
+    case 'ecole'   : $tab_xml[] = '   <enseignant id="'.$id.'"'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />'; break;
+  }
 }
 $tab_xml[] = '  </enseignants>';
 

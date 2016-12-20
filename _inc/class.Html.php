@@ -225,23 +225,18 @@ class Html
   /**
    * Afficher la légende pour une sortie HTML.
    *
-   * Normalement au moins un des paramètres est passé à TRUE.
+   * "force_nb" pour "etat_acquisition" seulement
+   * "force_nb" si un item a été surligné
    *
-   * @param bool $codes_notation
-   * @param bool $anciennete_notation
-   * @param bool $etat_acquisition
-   * @param bool $pourcentage_acquis
-   * @param bool $etat_validation
-   * @param bool $force_nb   FALSE par défaut, TRUE pour $etat_acquisition seulement
-   * @param bool $highlight  FALSE par défaut, TRUE si un item a été surligné
+   * @param array $tab_legende   tableau de clefs parmi "codes_notation" ; "anciennete_notation" ; "score_bilan" ; "etat_acquisition" ; "pourcentage_acquis" ; "etat_validation" ; "degre_maitrise" ; "socle_points" ; "force_nb" ; "highlight"
    * @return string
    */
-  public static function legende( $codes_notation , $anciennete_notation , $score_bilan , $etat_acquisition , $pourcentage_acquis , $etat_validation , $degre_maitrise , $make_officiel , $force_nb = FALSE , $highlight = FALSE )
+  public static function legende( $tab_legende )
   {
     // initialisation variables
     $retour = '';
     // légende codes_notation
-    if($codes_notation)
+    if(!empty($tab_legende['codes_notation']))
     {
       $retour .= '<div><b>Codes d\'évaluation :</b>';
       foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
@@ -259,7 +254,7 @@ class Html
       $retour .= '</div>'.NL;
     }
     // légende ancienneté notation
-    if($anciennete_notation)
+    if(!empty($tab_legende['anciennete_notation']))
     {
       $retour .= '<div><b>Ancienneté :</b>';
       $retour .=   '<span class="cadre">Sur la période.</span>';
@@ -268,7 +263,7 @@ class Html
       $retour .= '</div>'.NL;
     }
     // légende scores bilan
-    if($score_bilan)
+    if(!empty($tab_legende['score_bilan']))
     {
       if( Html::$afficher_score === NULL )
       {
@@ -284,24 +279,28 @@ class Html
       $retour .= '</div>'.NL;
     }
     // légende degrés de maîtrise du socle
-    if($degre_maitrise)
+    if(!empty($tab_legende['degre_maitrise']))
     {
       if( Html::$afficher_degre === NULL )
       {
         // En cas de bilan officiel, doit être déterminé avant
         Html::$afficher_degre = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_MAITRISE']);
       }
-      $retour .= '<div><b>Degrés de maîtrise :</b>';
+      $retour .= '<div><b>Maîtrise :</b>'; // Degrés de maîtrise
       foreach( $_SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
       {
+        !
         $texte_seuil = (Html::$afficher_degre) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' ;
-        $retour .= '<span class="cadre maitrise M'.$maitrise_id.'">'.$texte_seuil.'</span>'.html($tab_maitrise_info['LEGENDE']);
+        $texte_legende = empty($tab_legende['socle_points']) ? $tab_maitrise_info['LEGENDE'] : $tab_maitrise_info['LEGENDE'].' ('.$tab_maitrise_info['POINTS'].' pts)' ;
+        $texte_legende = ucfirst( str_replace( array('Maîtrise ','maîtrise ') , '' , $texte_legende ) ); // Peut sinon ne pas rentrer sur une ligne
+        $retour .= '<span class="cadre maitrise M'.$maitrise_id.'">'.$texte_seuil.'</span>'.html($texte_legende);
       }
       $retour .= '</div>'.NL;
     }
     // légende etat_acquisition
-    if($etat_acquisition)
+    if(!empty($tab_legende['etat_acquisition']))
     {
+      $force_nb = !empty($tab_legende['force_nb']) ? TRUE : FALSE ;
       $retour .= '<div><b>États d\'acquisitions :</b>';
       foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
@@ -311,9 +310,9 @@ class Html
       $retour .= '</div>'.NL;
     }
     // légende pourcentage_acquis
-    if($pourcentage_acquis)
+    if(!empty($tab_legende['pourcentage_acquis']))
     {
-      $endroit = ($etat_validation) ? ' (à gauche)' : '' ;
+      $endroit = !empty($tab_legende['etat_validation']) ? ' (à gauche)' : '' ;
       $retour .= '<div><b>Pourcentages d\'items acquis'.$endroit.' :</b>';
       foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
       {
@@ -323,9 +322,9 @@ class Html
       $retour .= '</div>'.NL;
     }
     // légende etat_validation
-    if($etat_validation)
+    if(!empty($tab_legende['etat_validation']))
     {
-      $endroit = ($pourcentage_acquis) ? ' (à droite)' : '' ;
+      $endroit = !empty($tab_legende['pourcentage_acquis']) ? ' (à droite)' : '' ;
       $retour .= '<div><b>États de validation'.$endroit.' :</b>';
       foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
       {
@@ -334,7 +333,7 @@ class Html
       $retour .= '</div>'.NL;
     }
     // légende surlignage
-    if($highlight)
+    if(!empty($tab_legende['highlight']))
     {
       $retour .= '<div><b>Item :</b> <span class="fluo">&nbsp;Intitulé sur lequel vous aviez cliqué !&nbsp;</span></div>'.NL;
     }

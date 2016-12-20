@@ -75,7 +75,7 @@ Néanmoins, plusieurs autres pistes peuvent toujours être explorées :
  * Attention ! Augmenter ce paramètre peut poser de multiples problèmes !
  * D'une part, pour une restauration de secours via phpmyadmin, on risque de dépasser le temps d'exécution autorisé par PHP.
  * D'autre part, si la chaine dépasse 1Mo, soit environ 1 million de caractères, lors de l'INSERT multiple ça ne passe plus, même en utilisant mysql_query().
- * -> C'est dû au "max_allowed_packet = 1M" présent dans le my.ini
+ * -> C'est dû au "max_allowed_packet = 1M" présent par défaut dans le my.ini
  * D'où un plafond initialement fixé à 10000 lignes.
  * Enfin, les tests ont montrés qu'il fallait aussi adapter la valeur en fonction de la variable serveur memory_limit.
  * -> pour 16Mo ça coince à partir de 7000 lignes
@@ -146,6 +146,7 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
       // $nb_lignes_maxi est prévu pour "sacoche_saisie" qui comporte beaucoup de lignes, mais les tables avec des champs longs deviennent lourdes avec moins de lignes
       switch($DB_ROW['Name'])
       {
+        case 'sacoche_siecle_import'          : $nb_lignes_maxi_for_table =                   1; break;
         case 'sacoche_officiel_archive_image' : $nb_lignes_maxi_for_table = $nb_lignes_maxi/500; break;
         case 'sacoche_officiel_archive'       : $nb_lignes_maxi_for_table = $nb_lignes_maxi/200; break;
         case 'sacoche_image'                  : $nb_lignes_maxi_for_table = $nb_lignes_maxi/100; break;

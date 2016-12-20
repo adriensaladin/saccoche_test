@@ -332,13 +332,14 @@ if( ($action=='importer') && $num && $max && ($num<$max) )
   if( !verifier_taille_requetes($fichier_taille_maximale) )
   {
     FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient au moins un fichier dont la taille dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></td>'.'</tr>' );
+    Json::end( FALSE , '<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient au moins un fichier dont la taille ('.FileSystem::afficher_fichier_taille($fichier_taille_maximale).') dépasse la limitation <em>max_allowed_packet</em> de MySQL !</label></td>'.'</tr>' );
   }
   // Vérifier le contenu : version de la base compatible avec la version logicielle
-  if( version_base_fichier_svg($dossier_temp_sql) > VERSION_BASE_STRUCTURE )
+  $version_base_svg = version_base_fichier_svg($dossier_temp_sql);
+  if( $version_base_svg > VERSION_BASE_STRUCTURE )
   {
     FileSystem::supprimer_dossier($dossier_temp_sql); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , '<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient une sauvegarde plus récente que celle supportée par cette installation ! Il faut mettre à jour SACoche.</label></td>'.'</tr>' );
+    Json::end( FALSE , '<tr>'.$retour_cellules_non.'<td><label class="erreur">Erreur : '.html($fichier_nom).' contient une version de base plus récente ('.$version_base_svg.') que celle supportée par cette installation ! Il faut mettre à jour SACoche.</label></td>'.'</tr>' );
   }
   // Insérer l'enregistrement dans la base du webmestre
   // Créer le fichier de connexion de la base de données de la structure

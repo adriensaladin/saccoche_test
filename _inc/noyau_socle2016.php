@@ -365,6 +365,11 @@ if($type_individuel)
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>'.$titre.'</h1>'.NL;
     $separation = (count($tab_eleve_infos)>1) ? '<hr class="breakafter" />'.NL : '' ;
     $releve_HTML_individuel_javascript = '';
+    $tab_legende = array(
+      'etat_acquisition' => TRUE ,
+      'degre_maitrise'   => $aff_socle_position ,
+      'socle_points'     => $aff_socle_points_DNB ,
+    );
   }
   if($make_pdf)
   {
@@ -420,7 +425,7 @@ if($type_individuel)
                   if($aff_socle_position)
                   {
                     if($make_html) { $releve_HTML_individuel .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , $tableau_tri_maitrise_mode , '%' /*pourcent*/ ); }
-                    if($make_pdf)  { $releve_PDF_individuel->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] ); }
+                    if($make_pdf)  { $releve_PDF_individuel->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , '%' /*pourcent*/ ); }
                   }
                   if($make_html)
                   {
@@ -460,8 +465,8 @@ if($type_individuel)
             // Légende
             if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
             {
-              if($make_html) { $releve_HTML_individuel .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $aff_socle_position /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
-              if($make_pdf)  { $releve_PDF_individuel->legende($aff_socle_position); }
+              if($make_html) { $releve_HTML_individuel .= Html::legende($tab_legende); }
+              if($make_pdf)  { $releve_PDF_individuel->legende( $aff_socle_position , $aff_socle_points_DNB ); }
             }
           }
         }
@@ -519,7 +524,7 @@ if($type_individuel)
                   if($aff_socle_position)
                   {
                     if($make_html) { $releve_HTML_individuel .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , $tableau_tri_maitrise_mode , '%' /*pourcent*/ ); }
-                    if($make_pdf)  { $releve_PDF_individuel->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] ); }
+                    if($make_pdf)  { $releve_PDF_individuel->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , '%' /*pourcent*/ ); }
                   }
                   if($make_html)
                   {
@@ -560,8 +565,8 @@ if($type_individuel)
           // Légende
           if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
           {
-            if($make_html) { $releve_HTML_individuel .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , TRUE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , $aff_socle_position /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
-            if($make_pdf)  { $releve_PDF_individuel->legende($aff_socle_position); }
+            if($make_html) { $releve_HTML_individuel .= Html::legende($tab_legende); }
+            if($make_pdf)  { $releve_PDF_individuel->legende( $aff_socle_position , $aff_socle_points_DNB ); }
           }
         }
       }
@@ -663,8 +668,8 @@ if($type_synthese)
             if($tab_contenu_presence['composante'][$socle_composante_id])
             {
               $tab_bilan = $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id];
-              if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , $tableau_tri_maitrise_mode , '' /*pourcent*/ ); }
-              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] ); }
+              if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , $tableau_tri_maitrise_mode , '%' /*pourcent*/ ); }
+              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , '%' /*pourcent*/ ); }
             }
           }
         }
@@ -700,8 +705,8 @@ if($type_synthese)
             if($tab_contenu_presence['eleve'][$eleve_id])
             {
               $tab_bilan = $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id];
-              if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , $tableau_tri_maitrise_mode , '' /*pourcent*/ ); }
-              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] ); }
+              if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , $tableau_tri_maitrise_mode , '%' /*pourcent*/ ); }
+              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , '%' /*pourcent*/ ); }
             }
           }
           if($make_html) { $releve_HTML_table_body .= '</tr>'.NL; }
@@ -750,8 +755,12 @@ if($type_synthese)
   // Légende
   if( ( ($make_html) || ($make_pdf) ) && ($legende=='oui') )
   {
-    if($make_html) { $releve_HTML_synthese .= Html::legende( FALSE /*codes_notation*/ , FALSE /*anciennete_notation*/ , FALSE /*score_bilan*/ , FALSE /*etat_acquisition*/ , FALSE /*pourcentage_acquis*/ , FALSE /*etat_validation*/ , TRUE /*degre_maitrise*/ , $make_officiel , FALSE /*force_nb*/ ); }
-    if($make_pdf)  { $releve_PDF_synthese->legende(); }
+    $tab_legende = array(
+      'degre_maitrise' => TRUE ,
+      'socle_points'   => $aff_socle_points_DNB ,
+    );
+    if($make_html) { $releve_HTML_synthese .= Html::legende($tab_legende); }
+    if($make_pdf)  { $releve_PDF_synthese->legende( $aff_socle_points_DNB ); }
   }
   $script = $affichage_direct ? '$("#table_s").tablesorter();' : 'function tri(){$("#table_s").tablesorter();}' ;
   if($make_html)

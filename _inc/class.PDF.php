@@ -835,7 +835,7 @@ class PDF extends FPDF
   // Méthode pour afficher un degré de maîtrise (valeur sur 100 et couleur de fond suivant l'indice du degré atteint)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function afficher_degre_maitrise( $indice , $pourcentage )
+  public function afficher_degre_maitrise( $indice , $pourcentage , $pourcent='' )
   {
     if($pourcentage===FALSE)
     {
@@ -845,7 +845,7 @@ class PDF extends FPDF
     else
     {
       $this->choisir_couleur_fond('M'.$indice.$this->couleur);
-      $affichage = ($this->afficher_degre) ? $pourcentage : '' ;
+      $affichage = ($this->afficher_degre) ? $pourcentage.$pourcent : '' ;
       $this->SetFont('Arial' , '' , $this->taille_police-2);
       $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       $this->SetFont('Arial' , '' , $this->taille_police);
@@ -1089,18 +1089,20 @@ class PDF extends FPDF
     //
     // Afficher la légende des degrés de maîtrise du socle
     //
-    if($type_legende=='degre_maitrise')
+    if( ($type_legende=='degre_maitrise') || ($type_legende=='degre_maitrise_points') )
     {
       $this->SetFont('Arial' , 'B' , $size);
-      $this->Write($hauteur , To::pdf('Degrés de maîtrise :') , '');
+      $this->Write($hauteur , To::pdf('Maîtrise :') , ''); // Degrés de maîtrise
       $this->SetFont('Arial' , '' , $size);
       foreach( $this->SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
       {
         $texte_seuil = ($this->afficher_degre) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '' ;
+        $texte_legende = ($type_legende=='degre_maitrise') ? $tab_maitrise_info['LEGENDE'] : $tab_maitrise_info['LEGENDE'].' ('.$tab_maitrise_info['POINTS'].' pts)' ;
+        $texte_legende = ucfirst( str_replace( array('Maîtrise ','maîtrise ') , '' , $texte_legende ) ); // Peut sinon ne pas rentrer sur une ligne
         $this->Write($hauteur , $espace , '');
         $this->choisir_couleur_fond('M'.$maitrise_id.$this->couleur);
         $this->Cell(2*$case_largeur , $case_hauteur , To::pdf($texte_seuil) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-        $this->Write($hauteur , To::pdf($tab_maitrise_info['LEGENDE']) , '');
+        $this->Write($hauteur , To::pdf($texte_legende) , '');
       }
     }
     //

@@ -1227,6 +1227,8 @@ public static function DB_tester_epi_theme( $theme_code )
  * @param int    $epi_id   inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
+// Clef unique UNIQUE KEY livret_epi (livret_epi_theme_code, livret_page_ref, groupe_id) retirée : on tolère plusieurs EPI avec la même thématique pour un élève.
+/*
 public static function DB_tester_epi( $theme_code , $page_ref , $groupe_id , $epi_id=FALSE )
 {
   $DB_SQL = 'SELECT livret_epi_id ';
@@ -1242,6 +1244,7 @@ public static function DB_tester_epi( $theme_code , $page_ref , $groupe_id , $ep
   );
   return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
+*/
 
 /**
  * ajouter_epi

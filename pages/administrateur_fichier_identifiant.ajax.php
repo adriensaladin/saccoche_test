@@ -54,7 +54,9 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   {
     $tab_login = array();
     // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le login)
-    $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil_sigle AS parent_profil_sigle,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom' ;
+    $listing_champs = ($profil!='parents')
+      ? 'user_id, user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_nom, user_prenom, user_email'
+      : 'parent.user_id AS parent_id, parent.user_sconet_id AS parent_sconet_id, parent.user_sconet_elenoet AS parent_sconet_elenoet, parent.user_reference AS parent_reference, parent.user_profil_sigle AS parent_profil_sigle, parent.user_nom AS parent_nom, parent.user_prenom AS parent_prenom, parent.user_email AS parent_email' ;
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_user),$listing_champs,$avec_info);
     // Mettre à jour les noms d'utilisateurs des utilisateurs concernés
     foreach($DB_TAB as $DB_ROW)
@@ -78,7 +80,9 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   {
     $tab_password = array();
     // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le mdp)
-    $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_login' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil_sigle AS parent_profil_sigle,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
+    $listing_champs = ($profil!='parents')
+      ? 'user_id, user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_nom, user_prenom, user_email, user_login'
+      : 'parent.user_id AS parent_id, parent.user_sconet_id AS parent_sconet_id, parent.user_sconet_elenoet AS parent_sconet_elenoet, parent.user_reference AS parent_reference, parent.user_profil_sigle AS parent_profil_sigle, parent.user_nom AS parent_nom, parent.user_prenom AS parent_prenom, parent.user_email AS parent_email, parent.user_login AS parent_login' ;
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_user),$listing_champs,$avec_info);
     // Mettre à jour les mots de passe des utilisateurs concernés
     foreach($DB_TAB as $DB_ROW)
@@ -99,7 +103,7 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
     }
     $tab_password = array();
     // Récupérer les données des utilisateurs concernés (besoin de le faire maintenant, on a besoin des infos pour générer le mdp)
-    $listing_champs = ($profil!='parents') ? 'user_id,user_sconet_id,user_sconet_elenoet,user_reference,user_profil_sigle,user_nom,user_prenom,user_naissance_date,user_login,user_naissance_date' :  'parent.user_id AS parent_id,parent.user_sconet_id AS parent_sconet_id,parent.user_sconet_elenoet AS parent_sconet_elenoet,parent.user_reference AS parent_reference,parent.user_profil_sigle AS parent_profil_sigle,parent.user_nom AS parent_nom,parent.user_prenom AS parent_prenom,parent.user_login AS parent_login' ;
+    $listing_champs = 'user_id, user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_nom, user_prenom, user_naissance_date, user_email, user_login';
     $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles(implode(',',$tab_user),$listing_champs,$avec_info);
     // Mettre à jour les mots de passe des utilisateurs concernés
     foreach($DB_TAB as $key => $DB_ROW)
@@ -121,13 +125,13 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   $separateur = ';';
   $champ_nom = ($profil=='eleves') ? 'CLASSE' : 'PROFIL' ;
-  $fcontenu = 'SCONET_ID'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.'PROFIL'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'INFO'."\r\n\r\n";
+  $fcontenu = 'SCONET_ID'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.'PROFIL'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'COURRIEL'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'.$separateur.'INFO'."\r\n\r\n";
   foreach($DB_TAB as $DB_ROW)
   {
     $login = ($action=='generer_login') ? $tab_login[$DB_ROW[$prefixe.'id']] : $DB_ROW[$prefixe.'login'] ;
     $mdp   = ($action=='generer_login') ? 'inchangé' : $tab_password[$DB_ROW[$prefixe.'id']] ;
     $info  = (isset($DB_ROW['info']))   ? $DB_ROW['info'] : '' ;
-    $fcontenu .= '"'.$DB_ROW[$prefixe.'sconet_id'].'"'.$separateur.'"'.$DB_ROW[$prefixe.'sconet_elenoet'].'"'.$separateur.'"'.$DB_ROW[$prefixe.'reference'].'"'.$separateur.$DB_ROW[$prefixe.'profil_sigle'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$login.$separateur.'"'.$mdp.'"'.$separateur.$info."\r\n";
+    $fcontenu .= '"'.$DB_ROW[$prefixe.'sconet_id'].'"'.$separateur.'"'.$DB_ROW[$prefixe.'sconet_elenoet'].'"'.$separateur.'"'.$DB_ROW[$prefixe.'reference'].'"'.$separateur.$DB_ROW[$prefixe.'profil_sigle'].$separateur.$DB_ROW[$prefixe.'nom'].$separateur.$DB_ROW[$prefixe.'prenom'].$separateur.$DB_ROW[$prefixe.'email'].$separateur.$login.$separateur.'"'.$mdp.'"'.$separateur.$info."\r\n";
   }
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.csv' , To::csv($fcontenu) );
   // ////////////////////////////////////////////////////////////////////////////////////////////////////

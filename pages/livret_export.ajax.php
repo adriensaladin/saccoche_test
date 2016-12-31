@@ -557,12 +557,7 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
   unset($tab_export_donnees[$key]);
 }
 $tab_xml[] = '  </bilans-periodiques>';
-/*				<responsables>
-					<responsable civilite="M" nom="NOM RESPONSABLE 1" prenom="Prénom responsable 1" lien-parente="PERE" legal1="true" legal2="false">
-						
-					</responsable>
-				</responsables>
-*/
+
 // fermeture des balises
 $tab_xml[] = ' </donnees>';
 $tab_xml[] = '</lsun-bilans>';
@@ -624,7 +619,7 @@ $fichier_nom = 'import-lsun-'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.Fil
 FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $export_xml );
 $fichier_lien = './force_download.php?fichier='.$fichier_nom;
 
-// Enregistrement et retour
+// Retour
 $sb = ($nb_bilans>1) ? 's' : '' ;
 $se = ($nb_eleves>1) ? 's' : '' ;
 Json::add_str('<p><label class="valide">Fichier d\'export généré : '.$nb_bilans.' bilan'.$sb.' concernant '.$nb_eleves.' élève'.$se.'.</label></p>'.NL);

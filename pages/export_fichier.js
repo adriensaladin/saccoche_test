@@ -38,121 +38,21 @@ $(document).ready
       }
     );
 
-    var choix = '';
     var requis = '';
 
     $('#f_type').change
     (
       function()
       {
-        choix = $(this).val();
-        if( (choix=='listing_eleves') || (choix=='devoirs_commentaires') || (choix.substring(0,6)=='infos_') ) {requis='groupe';  $('#div_groupe' ).slideDown();} else {$('#div_groupe' ).slideUp();}
-        if( (choix=='listing_matiere') || (choix=='item_matiere_usage') || (choix=='arbre_matiere') )          {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
-        if( (choix=='arbre_socle') || (choix=='jointure_socle_matiere') )                                      {requis='palier';  $('#div_palier' ).slideDown();} else {$('#div_palier' ).slideUp();}
-        if(choix=='jointure_socle2016_matiere')                                                                {requis='cycle';   $('#div_cycle'  ).slideDown();} else {$('#div_cycle'  ).slideUp();}
-        if(choix=='devoirs_commentaires')                                                                      {                  $('#div_periode').slideDown();} else {$('#div_periode').slideUp();}
-        if(choix=='')                                                                                          {requis='';        $('#p_submit'   ).hide(0);    } else {$('#p_submit'   ).show(0);  }
+        var type = $(this).val();
+        if( (type=='listing_eleves') || (type.substring(0,6)=='infos_') )                          {requis='groupe';  $('#div_groupe' ).slideDown();} else {$('#div_groupe' ).slideUp();}
+        if( (type=='listing_matiere') || (type=='item_matiere_usage') || (type=='arbre_matiere') ) {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
+        if( (type=='arbre_socle') || (type=='jointure_socle_matiere') )                            {requis='palier';  $('#div_palier' ).slideDown();} else {$('#div_palier' ).slideUp();}
+        if(type=='jointure_socle2016_matiere')                                                     {requis='cycle';   $('#div_cycle'  ).slideDown();} else {$('#div_cycle'  ).slideUp();}
+        if(type=='')                                                                               {requis='';        $('#p_submit'   ).hide(0);    } else {$('#p_submit'   ).show(0);  }
         $('#bilan').html("");
       }
     );
-
-    var autoperiode = true; // Tant qu'on ne modifie pas manuellement le choix des périodes, modification automatique du formulaire
-
-    function view_dates_perso()
-    {
-      var periode_val = $("#f_periode").val();
-      if(periode_val!=0)
-      {
-        $("#dates_perso").attr("class","hide");
-      }
-      else
-      {
-        $("#dates_perso").attr("class","show");
-      }
-    }
-
-    $('#f_periode').change
-    (
-      function()
-      {
-        view_dates_perso();
-        autoperiode = false;
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Changement de groupe
-    // -> desactiver les périodes prédéfinies en cas de groupe de besoin (prof uniquement)
-    // -> choisir automatiquement la meilleure période si un changement manuel de période n'a jamais été effectué
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    function selectionner_periode_adaptee()
-    {
-      if(choix=='devoirs_commentaires')
-      {
-        var id_groupe = $('#f_groupe option:selected').val();
-        if(typeof(tab_groupe_periode[id_groupe])!='undefined')
-        {
-          for(var id_periode in tab_groupe_periode[id_groupe]) // Parcourir un tableau associatif...
-          {
-            var tab_split = tab_groupe_periode[id_groupe][id_periode].split('_');
-            if( (date_mysql>=tab_split[0]) && (date_mysql<=tab_split[1]) )
-            {
-              $("#f_periode option[value="+id_periode+"]").prop('selected',true);
-              view_dates_perso();
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    $('#f_groupe').change
-    (
-      function()
-      {
-        groupe_type = $("#f_groupe option:selected").parent().attr('label');
-        $("#f_periode option").each
-        (
-          function()
-          {
-            periode_id = $(this).val();
-            // La période personnalisée est tout le temps accessible
-            if(periode_id!=0)
-            {
-              // classe ou groupe classique -> toutes périodes accessibles
-              if(groupe_type!='Besoins')
-              {
-                $(this).prop('disabled',false);
-              }
-              // groupe de besoin -> desactiver les périodes prédéfinies
-              else
-              {
-                $(this).prop('disabled',true);
-              }
-            }
-          }
-        );
-        // Sélectionner si besoin la période personnalisée
-        if(groupe_type=='Besoins')
-        {
-          $("#f_periode option[value=0]").prop('selected',true);
-          $("#dates_perso").attr("class","show");
-        }
-        // Modification automatique du formulaire : périodes
-        if(autoperiode)
-        {
-          if( (typeof(groupe_type)!='undefined') && (groupe_type!='Besoins') )
-          {
-            // Rechercher automatiquement la meilleure période
-            selectionner_periode_adaptee();
-          }
-        }
-      }
-    );
-
-    // Rechercher automatiquement la meilleure période au chargement de la page (uniquement pour un élève, seul cas où la classe est préselectionnée)
-    selectionner_periode_adaptee();
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Soumettre le formulaire principal
@@ -167,32 +67,23 @@ $(document).ready
       {
         rules :
         {
-          f_type       : { required:true },
-          f_groupe     : { required:function(){return requis=='groupe';} },
-          f_matiere    : { required:function(){return requis=='matiere';} },
-          f_palier     : { required:function(){return requis=='palier';} },
-          f_cycle      : { required:function(){return requis=='cycle';} },
-          f_periode    : { required:function(){return choix=='devoirs_commentaires';} },
-          f_date_debut : { required:function(){return choix=='devoirs_commentaires' && $("#f_periode").val()==0;} , dateITA:true },
-          f_date_fin   : { required:function(){return choix=='devoirs_commentaires' && $("#f_periode").val()==0;} , dateITA:true }
+          f_type    : { required:true },
+          f_groupe  : { required:function(){return requis=='groupe';} },
+          f_matiere : { required:function(){return requis=='matiere';} },
+          f_palier  : { required:function(){return requis=='palier';} },
+          f_cycle  : { required:function(){return requis=='cycle';} }
         },
         messages :
         {
-          f_type       : { required:"type manquant" },
-          f_groupe     : { required:"regroupement manquant" },
-          f_matiere    : { required:"matière manquante" },
-          f_palier     : { required:"palier manquant" },
-          f_cycle      : { required:"cycle manquant" },
-          f_periode    : { required:"période manquante" },
-          f_date_debut : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
-          f_date_fin   : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" }
+          f_type :    { required:"type manquant" },
+          f_groupe :  { required:"regroupement manquant" },
+          f_matiere : { required:"matière manquante" },
+          f_palier :  { required:"palier manquant" },
+          f_cycle :  { required:"cycle manquant" }
         },
         errorElement : "label",
         errorClass : "erreur",
-        errorPlacement : function(error,element){
-          if(element.attr("type")=="text") {element.next().after(error);}
-          else {element.after(error);}
-        }
+        errorPlacement : function(error,element){element.after(error);}
         // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
       }
     );
@@ -241,29 +132,22 @@ $(document).ready
         var matiere_val = $("#f_matiere").val();
         if(matiere_val)
         {
-          var nom = $("#f_matiere option:selected").text();
+          nom  = $("#f_matiere option:selected").text();
           $('#f_matiere_nom').val( nom );
         }
         // récupération du nom du palier
         var palier_val = $("#f_palier").val();
         if(palier_val)
         {
-          var nom = $("#f_palier option:selected").text();
+          nom  = $("#f_palier option:selected").text();
           $('#f_palier_nom').val( nom );
         }
         // récupération du nom du cycle
         var cycle_val = $("#f_cycle").val();
         if(cycle_val)
         {
-          var nom = $("#f_cycle option:selected").text();
+          nom  = $("#f_cycle option:selected").text();
           $('#f_cycle_nom').val( nom );
-        }
-        // récupération du nom de la période
-        var periode_val = $("#f_periode").val();
-        if(periode_val)
-        {
-          var nom = $("#f_periode option:selected").text();
-          $('#f_periode_nom').val( nom );
         }
         $(this).ajaxSubmit(ajaxOptions);
         return false;

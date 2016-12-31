@@ -422,10 +422,9 @@ if(DEBUG>3)
 // URL de base du serveur
 // ============================================================================
 
-define('HTTP' , getServerProtocole() );
-define('HOST' , getServerUrl() );
-define('PORT' , getServerPort(HOST) );
-define('URL_BASE' , HTTP.HOST.PORT);
+$host = getServerUrl();
+define('HOST'    ,$host);
+define('URL_BASE',getServerProtocole().$host.getServerPort($host));
 
 // ============================================================================
 // Type de serveur (LOCAL|DEV|PROD)

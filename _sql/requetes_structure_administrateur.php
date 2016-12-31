@@ -132,8 +132,7 @@ public static function DB_lister_users_cibles( $listing_user_id , $listing_champ
     $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
     $DB_SQL.= 'WHERE parent.user_id IN('.$listing_user_id.') AND enfant.user_sortie_date>NOW() ';
     $DB_SQL.= 'GROUP BY parent.user_id ' ;
-    // retiré car "ORDER BY clause is not in GROUP BY clause and contains nonaggregated column which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by"
-    // $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC, enfant.user_nom ASC, enfant.user_prenom ASC ';
+    $DB_SQL.= 'ORDER BY niveau_ordre ASC, groupe_ref ASC, enfant.user_nom ASC, enfant.user_prenom ASC';
   }
   else
   {

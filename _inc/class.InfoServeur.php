@@ -620,13 +620,14 @@ class InfoServeur
   /**
    * server_protocole
    * Retourne si le protocole est http ou https.
+   * Utilise la fonction getServerProtocole() définie dans le loader.
    *
    * @param void
    * @return string
    */
   private static function server_protocole()
   {
-    $valeur = strtoupper( substr(HTTP,0,-3) ); // Retirer "://"
+    $valeur = (getServerProtocole()=='https://') ? 'HTTPS' : 'HTTP' ;
     return InfoServeur::cellule_coloree_centree($valeur,'jaune');
   }
 
@@ -643,6 +644,28 @@ class InfoServeur
     $valeur = Session::get_IP();
     return InfoServeur::cellule_coloree_centree($valeur,'jaune');
   }
+  
+/**
+ * getServerProtocole
+ *
+ * @param void
+ * @return string
+ */
+function getServerProtocole()
+{
+  // $_SERVER['HTTPS'] peut valoir 'on' ou 'off' ou ''
+  if ( isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS'])=='on') )
+  {
+    return 'https://';
+  }
+  // Pour les serveurs derrière un équilibreur de charge (@see http://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_request_headers)
+  if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ($_SERVER['HTTP_X_FORWARDED_PROTO']=='https') )
+  {
+    return 'https://';
+  }
+  return 'http://';
+}
+
 
   // //////////////////////////////////////////////////
   // Méthodes publiques génériques

@@ -87,7 +87,7 @@ $nb_add = 0;
 $tab_password = array();
 $separateur = ';';
 $classe_ou_profil = ($import_profil=='eleve') ? 'CLASSE' : 'PROFIL' ;
-$fcontenu_csv = 'SCONET_Id'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.$classe_ou_profil.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'COURRIEL'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'."\r\n\r\n";
+$fcontenu_csv = 'SCONET_Id'.$separateur.'SCONET_N°'.$separateur.'REFERENCE'.$separateur.$classe_ou_profil.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'LOGIN'.$separateur.'MOT DE PASSE'."\r\n\r\n";
 $fcontenu_pdf_tab = array();
 if(count($tab_add))
 {
@@ -159,7 +159,7 @@ if(count($tab_add))
       $nb_add++;
       $tab_password[$user_id] = $password;
       $classe_ou_profil = ($import_profil=='eleve') ? $tab_nom_classe[$tab_memo_analyse['ajouter'][$i_fichier]['classe']] : $tab_memo_analyse['ajouter'][$i_fichier]['profil_sigle'] ;
-      $fcontenu_csv .= '"'.$tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'].'"'.$separateur.'"'.$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'].'"'.$separateur.'"'.$tab_memo_analyse['ajouter'][$i_fichier]['reference'].'"'.$separateur.$classe_ou_profil.$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['nom'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['prenom'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['courriel'].$separateur.$login.$separateur.'"'.$password.'"'."\r\n";
+      $fcontenu_csv .= '"'.$tab_memo_analyse['ajouter'][$i_fichier]['sconet_id'].'"'.$separateur.'"'.$tab_memo_analyse['ajouter'][$i_fichier]['sconet_num'].'"'.$separateur.'"'.$tab_memo_analyse['ajouter'][$i_fichier]['reference'].'"'.$separateur.$classe_ou_profil.$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['nom'].$separateur.$tab_memo_analyse['ajouter'][$i_fichier]['prenom'].$separateur.$login.$separateur.'"'.$password.'"'."\r\n";
       $ligne1 = $classe_ou_profil;
       $ligne2 = $tab_memo_analyse['ajouter'][$i_fichier]['nom'].' '.$tab_memo_analyse['ajouter'][$i_fichier]['prenom'];
       $ligne3 = 'Utilisateur : '.$login;

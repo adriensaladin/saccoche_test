@@ -34,6 +34,30 @@ class DB_STRUCTURE_COMMENTAIRE extends DB
 {
 
 /**
+ * lister_commentaires_eleves_dates
+ *
+ * @param int    $prof_id
+ * @param string $liste_eleve_id   id des élèves séparés par des virgules
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+public static function DB_lister_commentaires_eleves_dates( $prof_id , $liste_eleve_id , $date_mysql_debut , $date_mysql_fin)
+{
+  $DB_SQL = 'SELECT eleve_id, devoir_info, devoir_date, jointure_texte ';
+  $DB_SQL.= 'FROM sacoche_devoir ';
+  $DB_SQL.= 'LEFT JOIN sacoche_jointure_devoir_eleve USING (devoir_id) ';
+  $DB_SQL.= 'WHERE proprio_id=:proprio_id AND devoir_date>=:date_debut AND devoir_date<=:date_fin AND eleve_id IN('.$liste_eleve_id.') ';
+  $DB_SQL.= 'ORDER BY devoir_date ASC ';
+  $DB_VAR = array(
+    ':proprio_id' => $prof_id,
+    ':date_debut' => $date_mysql_debut,
+    ':date_fin'   => $date_mysql_fin,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * lister_devoir_commentaires
  *
  * @param int   $devoir_id

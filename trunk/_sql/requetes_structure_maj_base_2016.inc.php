@@ -1379,5 +1379,24 @@ if($version_base_structure_actuelle=='2016-12-05')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2016-12-15 => 2016-12-31
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2016-12-15')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2016-12-31';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // retrait clef unique de [sacoche_livret_epi]
+    if(empty($reload_sacoche_livret_epi))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_epi DROP INDEX livret_epi ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_epi ADD INDEX livret_epi_theme_code (livret_epi_theme_code) ' );
+    }
+  }
+}
+
 
 ?>

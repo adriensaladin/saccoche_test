@@ -62,10 +62,13 @@ if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $test_matier
     Json::end( FALSE , 'Couples { matière / enseignant } identiques !' );
   }
   // Vérifier que l'enseignement pratique interdisciplinaire est disponible
+  // Clef unique UNIQUE KEY livret_epi (livret_epi_theme_code, livret_page_ref, groupe_id) retirée : on tolère plusieurs EPI avec la même thématique pour un élève.
+  /*
   if( DB_STRUCTURE_LIVRET::DB_tester_epi( $theme_code , $page_ref , $groupe_id ) )
   {
     Json::end( FALSE , 'E.P.I. classe / thème déjà existant !' );
   }
+  */
   // Insérer l'enregistrement
   $epi_id = DB_STRUCTURE_LIVRET::DB_ajouter_epi( $theme_code , $page_ref , $groupe_id , $titre );
   $tab_matiere_prof_id = array();
@@ -101,10 +104,13 @@ if( ($action=='modifier') && $epi_id && $groupe_id && $test_matiere_prof && ($no
     Json::end( FALSE , 'Couples { matière / enseignant } identiques !' );
   }
   // Vérifier que l'enseignement pratique interdisciplinaire est disponible
+  // Clef unique UNIQUE KEY livret_epi (livret_epi_theme_code, livret_page_ref, groupe_id) retirée : on tolère plusieurs EPI avec la même thématique pour un élève.
+  /*
   if( DB_STRUCTURE_LIVRET::DB_tester_epi( $theme_code , $page_ref , $groupe_id , $epi_id ) )
   {
     Json::end( FALSE , 'E.P.I. classe / thème déjà existant !' );
   }
+  */
   // Mettre à jour l'enregistrement
   // Remarque : il est possible qu'il n'y ait aucun changement, on ne s'en préoccupe pas.
   // Remarque : on ne fait pas dans la dentelle pour les jointures : on les supprime et on les crée de nouveau.

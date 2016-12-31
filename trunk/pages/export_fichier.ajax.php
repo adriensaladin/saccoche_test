@@ -37,8 +37,113 @@ $palier_id   = (isset($_POST['f_palier']))      ? Clean::entier($_POST['f_palier
 $palier_nom  = (isset($_POST['f_palier_nom']))  ? Clean::texte($_POST['f_palier_nom'])    : '';
 $cycle_id    = (isset($_POST['f_cycle']))       ? Clean::entier($_POST['f_cycle'])        : 0;
 $cycle_nom   = (isset($_POST['f_cycle_nom']))   ? Clean::texte($_POST['f_cycle_nom'])     : '';
+$periode_id  = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])      : 0;
+$periode_nom = (isset($_POST['f_periode_nom'])) ? Clean::texte($_POST['f_periode_nom'])   : '';
+$date_debut  = (isset($_POST['f_date_debut']))  ? Clean::date_fr($_POST['f_date_debut'])  : '';
+$date_fin    = (isset($_POST['f_date_fin']))    ? Clean::date_fr($_POST['f_date_fin'])    : '';
 
 $tab_types   = array('d'=>'all' , 'n'=>'niveau' , 'c'=>'classe' , 'g'=>'groupe' , 'b'=>'besoin');
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Export CSV des commentaires écrits aux évaluations
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($type_export=='devoirs_commentaires') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom && ( ( $periode_id && $periode_nom ) || ($date_debut && $date_fin) ) )
+{
+  // Période concernée
+  if($periode_id==0)
+  {
+    $date_mysql_debut = To::date_french_to_mysql($date_debut);
+    $date_mysql_fin   = To::date_french_to_mysql($date_fin);
+    $periode_nom = $date_mysql_debut.'_'.$date_mysql_fin;
+  }
+  else
+  {
+    $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
+    if(empty($DB_ROW))
+    {
+      Json::end( FALSE , 'Le regroupement et la période ne sont pas reliés !' );
+    }
+    $date_mysql_debut = $DB_ROW['jointure_date_debut'];
+    $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
+    $date_debut = To::date_mysql_to_french($date_mysql_debut);
+    $date_fin   = To::date_mysql_to_french($date_mysql_fin);
+  }
+  if($date_mysql_debut>$date_mysql_fin)
+  {
+    Json::end( FALSE , 'La date de début est postérieure à la date de fin !' );
+  }
+  // Récupérer les élèves de la classe ou du groupe, puis les données
+  $tab_eleve = array();
+  $champs = 'user_id, user_nom, user_prenom';
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_eleve[$DB_ROW['user_id']] = array(
+        'nom'     => $DB_ROW['user_nom'],
+        'prenom'  => $DB_ROW['user_prenom'],
+        'donnees' => array(),
+      );
+    }
+    $liste_eleve_id = implode(',',array_keys($tab_eleve));
+    // Récupérer les infos et le contenu des commentaires
+    $DB_TAB = DB_STRUCTURE_COMMENTAIRE::DB_lister_commentaires_eleves_dates( $_SESSION['USER_ID'] , $liste_eleve_id , $date_mysql_debut , $date_mysql_fin );
+    if(!empty($DB_TAB))
+    {
+      foreach($DB_TAB as $DB_ROW)
+      {
+        $devoir_nom = $DB_ROW['devoir_info'];
+        $msg_url = $DB_ROW['jointure_texte'];
+        if(strpos($msg_url,URL_DIR_SACOCHE)===0)
+        {
+          $fichier_chemin = url_to_chemin($msg_url);
+          $msg_data = is_file($fichier_chemin) ? file_get_contents($fichier_chemin) : 'Erreur : fichier avec le contenu du commentaire non trouvé.' ;
+        }
+        else
+        {
+          $msg_data = cURL::get_contents($msg_url);
+        }
+        $tab_eleve[$DB_ROW['eleve_id']]['donnees'][] = array(
+          'date'  => To::date_mysql_to_french($DB_ROW['devoir_date']),
+          'titre' => $DB_ROW['devoir_info'],
+          'comm'  => $msg_data,
+        );
+      }
+    }
+  }
+  // Préparation de l'export CSV
+  $separateur = ';';
+  $export_csv  = 'NOM'.$separateur.'PRENOM'.$separateur.'DATE'.$separateur.'DEVOIR'.$separateur.'COMMENTAIRE'."\r\n\r\n";
+  // Préparation de l'export HTML
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Nom</th><th>Prénom</th><th>Date</th><th>Devoir</th><th>Commentaire</th></tr>'.NL.'</thead><tbody>'.NL;
+  // On remplit
+  if(!empty($DB_TAB))
+  {
+    foreach($tab_eleve as $eleve_id => $tab_user)
+    {
+      if(!empty($tab_user['donnees']))
+      {
+        $export_csv_debut  = $tab_user['nom'].$separateur.$tab_user['prenom'].$separateur;
+        $export_html_debut = '<tr>'.'<td>'.html($tab_user['nom']).'</td>'.'<td>'.html($tab_user['prenom']).'</td>';
+        foreach($tab_user['donnees'] as $tab_donnees)
+        {
+          $export_csv  .= $export_csv_debut.$tab_donnees['date'].$separateur.$tab_donnees['titre'].$separateur.$tab_donnees['comm']."\r\n";
+          $export_html .= $export_html_debut.'<td>'.html($tab_donnees['date']).'</td>'.'<td>'.html($tab_donnees['titre']).'</td>'.'<td>'.html($tab_donnees['comm']).'</td>'.'</tr>'.NL;
+        }
+      }
+    }
+  }
+  // Finalisation de l'export CSV (archivage dans un fichier)
+  $fnom = 'export_devoirs-commentaires_'.Clean::fichier($groupe_nom).'_'.Clean::fichier($periode_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
+  // Finalisation de l'export HTML
+  $export_html .= '</tbody></table>'.NL;
+  // Affichage
+  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  Json::end( TRUE , $puce_download.$export_html );
+}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Export CSV des données des élèves d'un regroupement
@@ -76,13 +181,11 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
                      .'</tr>'.NL;
     }
   }
-
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_listing-eleves_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
@@ -101,8 +204,10 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   $export_csv  = 'ITEM_ID'
     .$separateur.'MATIERE'
     .$separateur.'NIVEAU'
+    .$separateur.'DOMAINE'
+    .$separateur.'THEME'
     .$separateur.'REFERENCE'
-    .$separateur.'NOM'
+    .$separateur.'ITEM'
     .$separateur.'COEF'
     .$separateur.'DEMANDE_EVAL'
     .$separateur.'LIEN'
@@ -115,8 +220,10 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
                    .'<th>Id</th>'
                    .'<th>Matière</th>'
                    .'<th>Niveau</th>'
+                   .'<th>Domaine</th>'
+                   .'<th>Thème</th>'
                    .'<th>Référence</th>'
-                   .'<th>Nom</th>'
+                   .'<th>Item</th>'
                    .'<th>Coef</th>'
                    .'<th>Demande</th>'
                    .'<th>Lien</th>'
@@ -136,7 +243,9 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
       $s2016_texte = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? ( (count($DB_TAB_socle2016[$DB_ROW['item_id']]['id'])==1) ? $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][0] : count($DB_TAB_socle2016[$DB_ROW['item_id']]['id']).' liaisons' ) : 'Hors-socle 2016.' ;
       $export_csv .= $DB_ROW['item_id']
         .$separateur.$matiere_nom
-        .$separateur.$DB_ROW['niveau_nom']
+        .$separateur.'"'.$DB_ROW['niveau_nom'].'"'
+        .$separateur.'"'.$DB_ROW['domaine_nom'].'"'
+        .$separateur.'"'.$DB_ROW['theme_nom'].'"'
         .$separateur.$DB_ROW['matiere_ref'].'.'.$item_ref
         .$separateur.'"'.$DB_ROW['item_nom'].'"'
         .$separateur.$DB_ROW['item_coef']
@@ -150,6 +259,8 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
                        .'<td>'.$DB_ROW['item_id'].'</td>'
                        .'<td>'.html($matiere_nom).'</td>'
                        .'<td>'.html($DB_ROW['niveau_nom']).'</td>'
+                       .'<td>'.html($DB_ROW['domaine_nom']).'</td>'
+                       .'<td>'.html($DB_ROW['theme_nom']).'</td>'
                        .'<td>'.html($item_ref).'</td>'
                        .'<td>'.html($DB_ROW['item_nom']).'</td>'
                        .'<td>'.html($DB_ROW['item_coef']).'</td>'
@@ -166,7 +277,6 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
@@ -181,10 +291,25 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
   Form::save_choix('export_fichier');
   // Préparation de l'export CSV
   $separateur = ';';
-  $export_csv_entete  = 'ITEM_ID'.$separateur.'MATIERE'.$separateur.'NIVEAU'.$separateur.'REFERENCE'.$separateur.'NOM'.$separateur.'TOTAL';
+  $export_csv_entete  = 'ITEM_ID'
+    .$separateur.'MATIERE'
+    .$separateur.'NIVEAU'
+    .$separateur.'DOMAINE'
+    .$separateur.'THEME'
+    .$separateur.'REFERENCE'
+    .$separateur.'ITEM'
+    .$separateur.'TOTAL';
   $tab_export_csv  = array();
   // Préparation de l'export HTML
-  $export_html_entete = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Matière</th><th>Niveau</th><th>Référence</th><th>Nom</th><th>Notes<br />Total</th>';
+  $export_html_entete = '<table class="p"><thead>'.NL.'<tr>'
+                          .'<th>Id</th>'
+                          .'<th>Matière</th>'
+                          .'<th>Niveau</th>'
+                          .'<th>Domaine</th>'
+                          .'<th>Thème</th>'
+                          .'<th>Référence</th>'
+                          .'<th>Item</th>'
+                          .'<th>Notes<br />Total</th>';
   $tab_export_html = array();
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , TRUE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*s2016_count*/ , FALSE /*item_comm*/ );
   if(!empty($DB_TAB))
@@ -192,11 +317,23 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
     foreach($DB_TAB as $DB_ROW)
     {
       $item_ref = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
-      $tab_export_csv[$DB_ROW['item_id']]  = $DB_ROW['item_id'].$separateur.$matiere_nom.$separateur.$DB_ROW['niveau_nom'].$separateur.$DB_ROW['matiere_ref'].'.'.$item_ref.$separateur.'"'.$DB_ROW['item_nom'].'"';
-      $tab_export_html[$DB_ROW['item_id']] = '<tr><td>'.$DB_ROW['item_id'].'</td><td>'.html($matiere_nom).'</td><td>'.html($DB_ROW['niveau_nom']).'</td><td>'.html($DB_ROW['matiere_ref'].'.'.$item_ref).'</td><td>'.html($DB_ROW['item_nom']).'</td>';
+      $tab_export_csv[$DB_ROW['item_id']]  = $DB_ROW['item_id']
+                                              .$separateur.$matiere_nom
+                                              .$separateur.'"'.$DB_ROW['niveau_nom'].'"'
+                                              .$separateur.'"'.$DB_ROW['domaine_nom'].'"'
+                                              .$separateur.'"'.$DB_ROW['theme_nom'].'"'
+                                              .$separateur.$DB_ROW['matiere_ref'].'.'.$item_ref
+                                              .$separateur.'"'.$DB_ROW['item_nom'].'"';
+      $tab_export_html[$DB_ROW['item_id']] = '<tr>'
+                                              .'<td>'.$DB_ROW['item_id'].'</td>'
+                                              .'<td>'.html($matiere_nom).'</td>'
+                                              .'<td>'.html($DB_ROW['niveau_nom']).'</td>'
+                                              .'<td>'.html($DB_ROW['domaine_nom']).'</td>'
+                                              .'<td>'.html($DB_ROW['theme_nom']).'</td>'
+                                              .'<td>'.html($DB_ROW['matiere_ref'].'.'.$item_ref).'</td>'
+                                              .'<td>'.html($DB_ROW['item_nom']).'</td>';
     }
   }
-
   // On compte maintenant le nombre de saisies par item et par année scolaire.
   $tab_count = array();
   if(!empty($DB_TAB))
@@ -346,13 +483,11 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
   $export_html .=     '</ul>'.NL;
   $export_html .=   '</li>'.NL;
   $export_html .= '</ul>'.NL;
-
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_arbre-matiere_'.Clean::fichier($matiere_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
@@ -370,7 +505,6 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
   $export_csv  = 'PALIER'.$separateur.'PILIER'.$separateur.'SECTION'.$separateur.'ITEM'."\r\n\r\n";
   // Préparation de l'export HTML
   $export_html = '<div id="zone_paliers" class="arbre_dynamique p">'.NL;
-
   $tab_pilier  = array();
   $tab_section = array();
   $tab_entree  = array();
@@ -430,13 +564,11 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
   $export_html .=     '</ul>'.NL;
   $export_html .=   '</li>'.NL;
   $export_html .= '</ul>'.NL;
-
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_arbre-socle_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
@@ -454,7 +586,6 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
   $export_csv  = 'PALIER SOCLE'.$separateur.'PILIER SOCLE'.$separateur.'SECTION SOCLE'.$separateur.'ITEM SOCLE'.$separateur.'ITEM MATIERE'."\r\n\r\n";
   // Préparation de l'export HTML
   $export_html = '<div id="zone_paliers" class="arbre_dynamique p">'.NL;
-
   // Récupération des données du socle
   $tab_pilier  = array();
   $tab_section = array();
@@ -481,7 +612,6 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
       $tab_socle[$pilier_id][$section_id][$socle_id] = $DB_ROW['pilier_ref'].'.'.$DB_ROW['section_ordre'].'.'.$DB_ROW['entree_ordre'].' - '.$DB_ROW['entree_nom'];
     }
   }
-
   // Récupération des données des référentiels liés au socle
   $tab_jointure = array();
   $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_entrees_socle();
@@ -490,7 +620,6 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
     $tab_jointure[$DB_ROW['entree_id']][] = $DB_ROW['matiere_ref'].'.'.$item_ref.' - '.$DB_ROW['item_nom'];
   }
-
   // Elaboration de la sortie
   $export_csv .= $palier_nom."\r\n";
   $export_html .= '<ul class="ul_m1">'.NL;
@@ -542,13 +671,11 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
   $export_html .=     '</ul>'.NL;
   $export_html .=   '</li>'.NL;
   $export_html .= '</ul>'.NL;
-
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_jointures_'.Clean::fichier(substr($palier_nom,0,strpos($palier_nom,' ('))).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
@@ -628,7 +755,6 @@ if( ($type_export=='jointure_socle2016_matiere') && $cycle_id && $cycle_nom )
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
@@ -720,13 +846,11 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
                      .'</tr>'.NL;
     }
   }
-
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_infos-eleves_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
@@ -828,13 +952,11 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
                      .'</tr>'.NL;
     }
   }
-
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_infos-parents_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
@@ -914,13 +1036,11 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
       }
     }
   }
-
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'export_infos-professeurs_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
-
   // Affichage
   $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );

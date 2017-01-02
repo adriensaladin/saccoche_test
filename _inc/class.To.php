@@ -292,7 +292,7 @@ class To
     $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'];
     if($format=='siecle')
     {
-      return ($mois_actuel >= $mois_bascule) ? $annee_actuelle : $annee_actuelle-1 ;
+      return ($mois_actuel >= $mois_bascule) ? $annee_actuelle : (string)($annee_actuelle-1) ;
     }
     $sep = ($format=='code') ? '-' : ' / ' ;
     $txt = ($format=='code') ? '' : 'Année scolaire ' ;

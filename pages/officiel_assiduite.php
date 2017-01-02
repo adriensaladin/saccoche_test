@@ -121,7 +121,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   </div>
   <div class="hide" id="comfirm_import_pronote">
     <p class="astuce">Ce fichier comporte les <b id="pronote_objet_1"></b> de <b id="pronote_eleves_nb"></b> élève(s) entre le <b id="pronote_date_debut"></b> et le <b id="pronote_date_fin"></b></p>
-    <p class="danger">Pronote d'exportant pas les élèves sans saisie, on forcera <b id="pronote_objet_2"></b> pour tous les élèves absents du fichier.</p>
+    <p class="danger">Pronote n'exportant pas les élèves sans saisie, on forcera <b id="pronote_objet_2"></b> pour tous les élèves absents du fichier.</p>
   </div>
   <div class="hide" id="comfirm_import_moliere">
     <p class="astuce">Ce fichier comporte les données de <b id="moliere_eleves_nb"></b> élève(s).</p>

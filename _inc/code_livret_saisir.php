@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des valeurs transmises
@@ -153,12 +152,10 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   else if($page_colonne=='pourcentage')
   {
     $saisie_valeur = round($position,1);
-    $affich_note = round($position,1).'&nbsp;%';
   }
   else if($page_colonne=='moyenne')
   {
     $saisie_valeur = round($position*5,1);
-    $affich_note = round($position,1);
   }
   else if(in_array($page_colonne,array('objectif','position')))
   {
@@ -214,7 +211,8 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   }
   else if( ($rubrique_type=='eval') && in_array($page_colonne,array('moyenne','pourcentage')) )
   {
-    Json::end( TRUE , '<div class="position">'.$affich_note.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_position).$bouton_modifier_position.$bouton_supprimer_position.$bouton_generer_position.'</div>' );
+    $saisie_valeur = ($page_colonne=='moyenne') ? $saisie_valeur : $saisie_valeur.'&nbsp;%' ;
+    Json::end( TRUE , '<div class="position">'.$saisie_valeur.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_position).$bouton_modifier_position.$bouton_supprimer_position.$bouton_generer_position.'</div>' );
   }
   else if( ($rubrique_type=='eval') && in_array($page_colonne,array('objectif','position')) )
   {

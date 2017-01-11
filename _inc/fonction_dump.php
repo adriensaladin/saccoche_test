@@ -148,7 +148,6 @@ function sauvegarder_tables_base_etablissement($dossier_temp,$etape)
       {
         case 'sacoche_siecle_import'             : $nb_lignes_maxi_for_table =                   1; break;
         case 'sacoche_officiel_archive_image'    : $nb_lignes_maxi_for_table = $nb_lignes_maxi/500; break;
-        case 'sacoche_livret_export'             : $nb_lignes_maxi_for_table = $nb_lignes_maxi/200; break;
         case 'sacoche_officiel_archive'          : $nb_lignes_maxi_for_table = $nb_lignes_maxi/200; break;
         case 'sacoche_image'                     : $nb_lignes_maxi_for_table = $nb_lignes_maxi/100; break;
         case 'sacoche_livret_saisie_memo_detail' : $nb_lignes_maxi_for_table = $nb_lignes_maxi/ 20; break;

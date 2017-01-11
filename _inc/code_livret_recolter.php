@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $tab_rubrique_type = array('eval','socle','epi','ap','parcours','bilan','viesco');
 $tab_saisie_objet = array('position','appreciation','elements');
@@ -385,28 +384,10 @@ foreach($DB_TAB as $DB_ROW)
   {
     $tab_compte_rendu['alerte'][$key_prof] = 'Absence d\'identifiant SIECLE (STS) pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : génèrera un message d\'alerte non bloquant.';
   }
-  if($BILAN_TYPE_ETABL=='ecole')
+  if( ($BILAN_TYPE_ETABL=='ecole') && ($DB_ROW['user_genre']=='I') )
   {
-    $tab_erreur = array();
-    if($DB_ROW['user_genre']=='I')
-    {
-      $tab_erreur['civilité'] = 'MME';
-      $DB_ROW['user_genre'] = 'MME';
-    }
-    if(!$DB_ROW['user_nom'])
-    {
-      $tab_erreur['nom'] = 'MACHIN';
-      $DB_ROW['user_nom'] = 'MACHIN';
-    }
-    if(!$DB_ROW['user_prenom'])
-    {
-      $tab_erreur['prénom'] = '-';
-      $DB_ROW['user_prenom'] = '-';
-    }
-    if(!empty($tab_erreur))
-    {
-      $tab_compte_rendu['alerte'][$key_prof] = 'Absence de '.implode(' / ',array_keys($tab_erreur)).' pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : "'.implode(' ',$tab_erreur).'" imposé pour éviter un rejet bloquant.';
-    }
+    $tab_compte_rendu['alerte'][$key_prof] = 'Absence de civilité pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : "MME" imposé au hasard pour éviter un rejet bloquant.';
+    $DB_ROW['user_genre'] = 'MME';
   }
   $tab_prof[$key_prof] = array(
     'type'     => $type,
@@ -949,7 +930,7 @@ if( !empty($tab_eleve) )
 // Retour
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// On retire les message alertant de prof sans infos suffisantes ou de matière hors Siècle s'ils ne sont finalement pas utilisés
+// On retire les message alertant de prof sans id Siècle ou de matière hors Siècle s'ils ne sont finalement pas utilisés
 foreach($tab_compte_rendu as $type_alerte => $tab_message)
 {
   foreach($tab_message as $key => $message)

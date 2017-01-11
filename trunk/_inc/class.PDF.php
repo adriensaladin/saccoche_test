@@ -947,7 +947,11 @@ class PDF extends FPDF
     $retrait_x = ($img_objet=='signature') ? max($hauteur_autorisee,$img_largeur)       : $img_largeur  ;
     $img_pos_x = ($img_objet=='signature') ? $this->GetX() + $largeur_bloc - $retrait_x : $this->GetX() ;
     $img_pos_y = $this->GetY() + ( $hauteur_autorisee - $img_hauteur ) / 2 ;
-    $this->MemImage( base64_decode($img_contenu) , $img_pos_x , $img_pos_y , $img_largeur , $img_hauteur , strtoupper($img_format) );
+    // Test pour éviter une erreur en cas d'archive avec image manquante
+    if(strlen($img_contenu)>32)
+    {
+      $this->MemImage( base64_decode($img_contenu) , $img_pos_x , $img_pos_y , $img_largeur , $img_hauteur , strtoupper($img_format) );
+    }
     return $retrait_x;
   }
 

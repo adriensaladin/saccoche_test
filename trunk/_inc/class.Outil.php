@@ -375,7 +375,7 @@ class Outil
    * Formater les liens selon un code perso
    *
    * En attendant un éventuel textarea enrichi pour la saisie des messages (mais est-ce que ça ne risquerait pas de faire une page d'accueil folklorique ?), une petite fonction pour fabriquer des liens...
-   * Format attendu : [desciptif|adresse|target]
+   * Format attendu : [desciptif|adresse] ou [desciptif|adresse|target]
    *
    * @param string $texte
    * @param int    $longueur_max
@@ -384,7 +384,7 @@ class Outil
    */
   public static function make_lien( $texte , $contexte )
   {
-    $masque_recherche = '#\[([^\|]+)\|([^\|]+)\|([^\|]*)\]#' ;
+    $masque_recherche = '#\['.'([^\|]+)'.'\|'.'([^\|]+)'.'\|?'.'([^\|]*)'.'\]#' ;
     $masque_remplacement = ($contexte=='html') ? '<a href="$2" target="$3">$1</a>' : '$1 [$2]' ;
     return str_replace( 'target=""' , '' , preg_replace( $masque_recherche , $masque_remplacement , $texte ) );
   }

@@ -1398,5 +1398,4 @@ if($version_base_structure_actuelle=='2016-12-15')
   }
 }
 
-
 ?>

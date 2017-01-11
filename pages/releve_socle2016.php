@@ -94,7 +94,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
   $class_form_type    = 'hide';
   $is_select_multiple = 0; // volontaire
   $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
-  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Proposition de positionnement</del>' ;
+  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Prévision du nombre de points pour le brevet</del>' ;
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
@@ -104,7 +104,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
   $class_form_type    = 'hide';
   $is_select_multiple = 0;
   $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
-  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Proposition de positionnement</del>' ;
+  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Prévision du nombre de points pour le brevet</del>' ;
 }
 
 elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
@@ -115,7 +115,7 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $class_form_type    = 'hide';
   $is_select_multiple = 0;
   $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
-  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Proposition de positionnement</del>' ;
+  $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Prévision du nombre de points pour le brevet</del>' ;
 }
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();

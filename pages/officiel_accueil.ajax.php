@@ -26,7 +26,8 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée pour la démo.' );}
+// Pas de test d'établissement de démo ici mais dans les sous-fichiers, sauf dans 2 cas précis
+if( ($_SESSION['SESAMATH_ID']==ID_DEMO) && in_array($_POST['f_action'],array('signaler_faute','corriger_faute')) ) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des valeurs transmises

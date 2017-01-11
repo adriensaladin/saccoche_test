@@ -83,6 +83,7 @@ $tab_droits_par_page = array
   'evaluation_gestion'                      => $tab_droits_profil_professeur,
   'evaluation_ponctuelle'                   => $tab_droits_profil_professeur,
   'professeur_groupe_besoin'                => $tab_droits_profil_professeur,
+  'professeur_module_externe'               => $tab_droits_profil_professeur,
   'professeur_referentiel'                  => $tab_droits_profil_professeur,
   'professeur_referentiel_gestion'          => $tab_droits_profil_professeur,
   'professeur_referentiel_edition'          => $tab_droits_profil_professeur,

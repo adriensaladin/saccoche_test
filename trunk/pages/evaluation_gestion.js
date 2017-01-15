@@ -641,6 +641,49 @@ $(document).ready
       $.fancybox( { 'href':'#zone_upload' , onStart:function(){$('#zone_upload').css("display","block");} , onClosed:function(){$('#zone_upload').css("display","none");} , 'minWidth':800 , 'modal':true , 'centerOnScroll':true } );
     };
 
+    /**
+     * Générer des énoncés d'évaluation
+     * @return void
+     */
+    var generer_enonces = function()
+    {
+      var objet_tds     = $(this).parent().parent().find('td');
+      // Récupérer les informations de la ligne concernée
+      var ref           = objet_tds.eq(9).attr('id').substring(7); // "devoir_" + ref
+      var date_fr       = objet_tds.eq(0).html();
+      var groupe        = objet_tds.eq(3).text().trim();
+      var eleves_ordre  = objet_tds.eq(3).attr('class');
+      var description   = objet_tds.eq(5).html();
+      $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action='+'generer_enonces'+'&f_ref='+ref+'&f_eleves_ordre='+eleves_ordre+'&f_description='+encodeURIComponent(description)+'&f_groupe_nom='+encodeURIComponent(groupe)+'&f_date_fr='+encodeURIComponent(date_fr),
+          dataType : 'json',
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $.fancybox( '<label class="alerte">'+afficher_json_message_erreur(jqXHR,textStatus)+'</label>' , {'centerOnScroll':true} );
+            return false;
+          },
+          success : function(responseJSON)
+          {
+            initialiser_compteur();
+
+            if(responseJSON['statut']==false)
+            {
+              $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+            }
+            else
+            {
+              $.fancybox( { 'href':responseJSON['value'] , 'type':'iframe' } );
+            }
+          }
+        }
+      );
+    };
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Appel des fonctions en fonction des événements
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -655,6 +698,7 @@ $(document).ready
     $('#table_action').on( 'click' , 'q.voir'           , saisir_ou_voir );
     $('#table_action').on( 'click' , 'q.voir_repart'    , voir_repart );
     $('#table_action').on( 'click' , 'q.uploader_doc'   , uploader_doc );
+    $('#table_action').on( 'click' , 'q.module_envoyer' , generer_enonces );
 
     $('#form_gestion').on( 'click' , 'q.choisir_compet' , choisir_compet );
     $('#form_gestion').on( 'click' , 'q.choisir_eleve'  , choisir_eleve );

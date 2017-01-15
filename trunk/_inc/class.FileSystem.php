@@ -800,7 +800,7 @@ class FileSystem
   public static function nettoyer_fichiers_temporaires_commun()
   {
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT    ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT    ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue ou d'archives de bilans officiels
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP      ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT    ,   1440,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 jour  + sous-dossiers temporaires d'un zip avec procédure interrompue
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP       , 219000     ); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
@@ -818,8 +818,8 @@ class FileSystem
     $nb_mois = (defined('FICHIER_DUREE_CONSERVATION')) ? FICHIER_DUREE_CONSERVATION : 12 ; // Une fois tous les devoirs ont été supprimés sans raison claire : nettoyage simultané avec une mise à jour ?
     $duree = 43800*$nb_mois;
     FileSystem::$nb_suppression = 0;
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE ,  10080); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_SYMBOLE.$BASE  , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à  1 an

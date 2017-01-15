@@ -2019,6 +2019,25 @@ public static function DB_modifier_saisie_jointure_prof( $livret_saisie_id , $pr
 }
 
 /**
+ * DB_ajouter_saisie_memo_detail
+ *
+ * @param int     $livret_saisie_id
+ * @param string  $acquis_detail
+ * @return void
+ */
+public static function DB_ajouter_saisie_memo_detail( $livret_saisie_id , $acquis_detail )
+{
+  $DB_SQL = 'INSERT INTO sacoche_livret_saisie_memo_detail ( livret_saisie_id,  acquis_detail) ';
+  $DB_SQL.= 'VALUES                                        (:livret_saisie_id, :acquis_detail) ';
+  $DB_SQL.= 'ON DUPLICATE KEY UPDATE acquis_detail=:acquis_detail ';
+  $DB_VAR = array(
+    ':livret_saisie_id' => $livret_saisie_id,
+    ':acquis_detail'    => $acquis_detail,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_modifier_saisie_memo_detail
  *
  * @param int     $livret_saisie_id
@@ -2027,8 +2046,9 @@ public static function DB_modifier_saisie_jointure_prof( $livret_saisie_id , $pr
  */
 public static function DB_modifier_saisie_memo_detail( $livret_saisie_id , $acquis_detail )
 {
-  $DB_SQL = 'INSERT INTO sacoche_livret_saisie_memo_detail ( livret_saisie_id,  acquis_detail) VALUES (:livret_saisie_id, :acquis_detail) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE acquis_detail=:acquis_detail ';
+  $DB_SQL = 'UPDATE sacoche_livret_saisie_memo_detail ';
+  $DB_SQL.= 'SET acquis_detail=:acquis_detail ';
+  $DB_SQL.= 'WHERE livret_saisie_id=:livret_saisie_id ';
   $DB_VAR = array(
     ':livret_saisie_id' => $livret_saisie_id,
     ':acquis_detail'    => $acquis_detail,

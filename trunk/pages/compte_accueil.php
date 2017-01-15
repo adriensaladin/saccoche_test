@@ -482,6 +482,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
   // Cette section reprend pas mal de code issu de la page [officiel_voir_archive.php]
   $tab_types = array
   (
+    'livret'   => array( 'droit'=>'OFFICIEL_LIVRET'   , 'titre'=>'Livret Scolaire'  ) ,
     'brevet'   => array( 'droit'=>'FICHE_BREVET'      , 'titre'=>'Fiche brevet'          ) ,
     'releve'   => array( 'droit'=>'OFFICIEL_RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
     'bulletin' => array( 'droit'=>'OFFICIEL_BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
@@ -512,18 +513,17 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
     }
     $tab_eleves = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>array('valeur'=>$_SESSION['USER_ID'])) : $_SESSION['OPT_PARENT_ENFANTS'] ;
     $nb_eleves = count($tab_eleve_id);
-    // lister les bilans officiels archivés de l'année courante
-    $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( '' /*BILAN_TYPE*/ , 0 /*periode_id*/ , $tab_eleve_id , TRUE /*with_periode_nom*/ , $_SESSION['USER_PROFIL_TYPE'] /*only_profil_non_vu*/ );
+    // lister les bilans officiels archivés
+    $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_archive_sans_infos( implode(',',$tab_eleve_id) );
     foreach($DB_TAB as $DB_ROW)
     {
-      if(Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']))
+      $key_type = ($DB_ROW['archive_type']=='sacoche') ? $DB_ROW['archive_ref'] : 'livret' ;
+      if( Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$key_type]['droit'].'_VOIR_ARCHIVE']) && is_null($DB_ROW['archive_date_consultation_'.$_SESSION['USER_PROFIL_TYPE']]) )
       {
-        if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
-        {
-          $text_eleve_nom  = ($nb_eleves>1) ? html($_SESSION['OPT_PARENT_ENFANTS'][array_search($DB_ROW['user_id'],$tab_eleve_id)]['texte']).' || ' : '' ;
-          $tab_accueil['officiel']['nombre'] += 1;
-          $tab_accueil['officiel']['contenu'].= '<li>'.$text_eleve_nom.'<a href="./index.php?page=officiel_voir_archive">'.$tab_types[$DB_ROW['officiel_type']]['titre'].' || '.html($DB_ROW['periode_nom']).'</a></li>';
-        }
+        $text_eleve_nom = ($nb_eleves>1) ? html($_SESSION['OPT_PARENT_ENFANTS'][array_search($DB_ROW['user_id'],$tab_eleve_id)]['texte']).' || ' : '' ;
+        $objet = ($DB_ROW['archive_type']=='sacoche') ? $tab_types[$DB_ROW['archive_ref']]['titre'] : $tab_types[$DB_ROW['archive_type']]['titre'].' '.$DB_ROW['archive_ref'] ;
+        $tab_accueil['officiel']['nombre'] += 1;
+        $tab_accueil['officiel']['contenu'].= '<li>'.$text_eleve_nom.'<a href="./index.php?page=officiel_voir_archive">'.$objet.' || '.html($DB_ROW['periode_nom']).'</a></li>';
       }
     }
     if($tab_accueil['officiel']['nombre'])

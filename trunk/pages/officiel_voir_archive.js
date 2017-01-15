@@ -1,4 +1,3 @@
-<?php
 /**
  * @version $Id$
  * @author Thomas Crespin <thomas.crespin@sesamath.net>
@@ -25,22 +24,22 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "select_professeurs"
+// jQuery !
+$(document).ready
+(
+  function()
+  {
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
+    // Modification de style pour un document consulté
+    $('#statistiques').on
+    (
+      'click',
+      'a',
+      function()
+      {
+        $(this).parent().removeAttr('class').parent().removeAttr('class');
+      }
+    );
 
-$tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
-$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
-
-if( empty($tab_eleve) )
-{
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
-}
-
-$listing_eleve_id = implode(',',$tab_eleve);
-
-// Affichage du retour.
-
-Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_structure_origine($listing_eleve_id) , FALSE /*select_nom*/ , 'toutes_origines' /*option_first*/ , FALSE  /*selection*/ , '' /*optgroup*/ ) );
-?>
+  }
+);

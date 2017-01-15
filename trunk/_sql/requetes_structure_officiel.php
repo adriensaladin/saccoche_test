@@ -307,6 +307,21 @@ public static function DB_recuperer_professeurs_eleves_matieres( $classe_id , $l
 }
 
 /**
+ * recuperer_officiel_structure_origine
+ *
+ * @param string $structure_uai
+ * @return array
+ */
+public static function DB_recuperer_officiel_structure_origine( $structure_uai )
+{
+  $DB_SQL = 'SELECT sacoche_structure_origine.* ';
+  $DB_SQL.= 'FROM sacoche_structure_origine ';
+  $DB_SQL.= 'WHERE structure_uai=:structure_uai ';
+  $DB_VAR = array( ':structure_uai' => $structure_uai );
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * recuperer_officiel_archive_precise
  *
  * @param int   $officiel_archive_id
@@ -354,7 +369,7 @@ public static function DB_recuperer_officiel_archive_avec_infos( $listing_eleve 
   $DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) '.$join_origine;
   $DB_SQL.= 'WHERE user_id IN ('.$listing_eleve.') AND archive_type IN('.$listing_type.') AND archive_ref IN('.$listing_ref.') ';
   $DB_SQL.= $where_etabl.$where_annee.$where_periode.$where_origine;
-  $DB_SQL.= 'ORDER BY archive_type ASC, archive_ref ASC, annee_scolaire ASC, periode_id ASC, user_nom ASC , user_prenom ASC ';
+  $DB_SQL.= 'ORDER BY annee_scolaire ASC, periode_id ASC, structure_uai ASC, archive_type ASC, archive_ref ASC, user_nom ASC , user_prenom ASC ';
   $DB_VAR = array(
     ':structure_uai'  => $structure_uai,
     ':annee_scolaire' => $annee_scolaire,
@@ -384,6 +399,23 @@ public static function DB_recuperer_officiel_archive_avec_infos( $listing_eleve 
     }
   }
   return array($DB_TAB_Archives,$DB_TAB_Images);
+}
+
+/**
+ * recuperer_officiel_archive_sans_infos
+ *
+ * @param string $listing_eleve
+ * @return array
+ */
+public static function DB_recuperer_officiel_archive_sans_infos( $listing_eleve )
+{
+  // on assemble
+  $DB_SQL = 'SELECT sacoche_officiel_archive.*, user_nom, user_prenom ';
+  $DB_SQL.= 'FROM sacoche_officiel_archive ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) ';
+  $DB_SQL.= 'WHERE user_id IN ('.$listing_eleve.') ';
+  $DB_SQL.= 'ORDER BY annee_scolaire DESC, periode_id DESC, structure_uai ASC, archive_type ASC, archive_ref ASC, user_nom ASC , user_prenom ASC ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

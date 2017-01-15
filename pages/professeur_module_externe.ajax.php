@@ -25,22 +25,28 @@
  * 
  */
 
-// Mettre à jour l'élément de formulaire "select_professeurs"
-
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$tab_eleve = (isset($_POST['f_eleve']))  ? explode(',',$_POST['f_eleve'])   : array() ;
-$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
+$module_objet = isset($_POST['f_module_objet']) ? Clean::texte($_POST['f_module_objet']) : '' ;
+$module_url   = isset($_POST['f_module_url'])   ? Clean::url($_POST['f_module_url'])     : '' ;
 
-if( empty($tab_eleve) )
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Générer des énoncés d'évaluation
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($module_objet=='generer_enonce')
 {
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
+  DB_STRUCTURE_PROFESSEUR::DB_modifier_liaison_user_module( $_SESSION['USER_ID'] , $module_objet , $module_url );
+  // On modifie aussi la session
+  $_SESSION['MODULE']['GENERER_ENONCE'] = $module_url;
+  Json::end( TRUE );
 }
 
-$listing_eleve_id = implode(',',$tab_eleve);
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Affichage du retour.
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
-Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_structure_origine($listing_eleve_id) , FALSE /*select_nom*/ , 'toutes_origines' /*option_first*/ , FALSE  /*selection*/ , '' /*optgroup*/ ) );
 ?>

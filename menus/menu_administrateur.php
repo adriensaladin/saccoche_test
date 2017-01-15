@@ -115,7 +115,7 @@ $tab_sous_menu = array
     'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")       , 'class' => 'officiel_bulletin'     , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
     'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")         , 'class' => 'marianne'              , 'href' => 'page=livret&amp;section=accueil'            ),
     'brevet_accueil'            => array( 'texte' => Lang::_("Notanet & Fiches brevet") , 'class' => 'officiel_brevet'       , 'href' => 'page=brevet&amp;section=accueil'            ),
-    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables")   , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'     ), // TODO à fusionner avec officiel_voir_archive à terme
+    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables")   , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'     ), // Pour élèves et parents c'est "officiel_voir_archive"
   ),
 );
 

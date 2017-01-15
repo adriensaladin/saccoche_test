@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Archives consultables des bilans officiels"));
+$TITRE = html(Lang::_("Archives des bilans officiels"));
 
 $tab_types = array
 (
@@ -39,19 +39,13 @@ $tab_types = array
   // 'palier3'  => array( 'droit'=>'OFFICIEL_SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
 );
 
-if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
+$droit_voir_archives_pdf = FALSE;
+foreach($tab_types as $BILAN_TYPE => $tab)
 {
-  $droit_voir_archives_pdf = TRUE;
+  $droit_voir_archives_pdf = $droit_voir_archives_pdf || Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
+  if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
 }
-else
-{
-  $droit_voir_archives_pdf = FALSE;
-  foreach($tab_types as $BILAN_TYPE => $tab)
-  {
-    $droit_voir_archives_pdf = $droit_voir_archives_pdf || Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
-    if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
-  }
-}
+
 if(!$droit_voir_archives_pdf)
 {
   echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
@@ -66,30 +60,11 @@ if(!$droit_voir_archives_pdf)
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-// Récupérer la liste des périodes, dans l'ordre choisi par l'admin.
-
-$DB_TAB = DB_STRUCTURE_PERIODE::DB_lister_periodes();
-if(empty($DB_TAB))
-{
-  echo'<p><label class="erreur">Aucune période n\'a été configurée par les administrateurs !</label></p>'.NL;
-  return; // Ne pas exécuter la suite de ce fichier inclus.
-}
-
-$annee_session_brevet = To::annee_session_brevet();
-
-$tab_thead = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? array(0=>'') : array(0=>'<th class="nu"></th>');
-$tab_tbody = array();
-foreach($DB_TAB as $DB_ROW)
-{
-  $tab_thead[$DB_ROW['periode_id']] = '<th class="hc">'.html($DB_ROW['periode_nom']).'</th>';
-}
-
 // identifiants élèves concernés
 $tab_eleve_id = array();
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
   $tab_eleve_id[] = $_SESSION['USER_ID'];
-  $tab_tbody[$_SESSION['USER_ID']][0] = '';
 }
 else
 {
@@ -101,76 +76,54 @@ else
   foreach($_SESSION['OPT_PARENT_ENFANTS'] as $tab)
   {
     $tab_eleve_id[] = $tab['valeur'];
-    $tab_tbody[$tab['valeur']][0] = '<th>'.html($tab['texte']).'</th>';
   }
 }
 
 // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
 $_SESSION['tmp_droit_voir_archive'] = array();
-// lister les bilans officiels archivés de l'année courante
-$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( '' /*BILAN_TYPE*/ , 0 /*periode_id*/ , $tab_eleve_id );
+
+// lister les bilans officiels archivés
+$tab_tr = array();
+$DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_archive_sans_infos( implode(',',$tab_eleve_id) );
 foreach($DB_TAB as $DB_ROW)
 {
-  if(Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$DB_ROW['officiel_type']]['droit'].'_VOIR_ARCHIVE']))
+  $key_type = ($DB_ROW['archive_type']=='sacoche') ? $DB_ROW['archive_ref'] : 'livret' ;
+  if(Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types[$key_type]['droit'].'_VOIR_ARCHIVE']))
   {
-    if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $DB_ROW['user_id'] , $DB_ROW['officiel_type'] , $DB_ROW['periode_id'] )))
-    {
-      $_SESSION['tmp_droit_voir_archive'][$DB_ROW['user_id'].$DB_ROW['officiel_type']] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-      $tab_tbody[$DB_ROW['user_id']][$DB_ROW['periode_id']][] = '<a href="releve_pdf.php?fichier='.$DB_ROW['user_id'].'_'.$DB_ROW['officiel_type'].'_'.$DB_ROW['periode_id'].'" target="_blank">'.$tab_types[$DB_ROW['officiel_type']]['titre'].'</a>' ;
-    }
-  }
-}
-
-// autre boucle pour les fiches brevet (ce n'est pas la même table)
-if(Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types['brevet']['droit'].'_VOIR_ARCHIVE']))
-{
-  $bilan_type = 'brevet';
-  $DB_TAB = DB_STRUCTURE_BREVET::DB_lister_brevet_fichiers( implode(',',$tab_eleve_id) );
-  foreach($DB_TAB as $user_id => $tab)
-  {
-    if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $user_id , $bilan_type , $annee_session_brevet )))
-    {
-      $_SESSION['tmp_droit_voir_archive'][$user_id.$bilan_type] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-      $tab_tbody[$user_id]['+'.$annee_session_brevet][] = '<a href="releve_pdf.php?fichier='.$user_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" target="_blank">'.$tab_types['brevet']['titre'].'</a>' ;
-      $tab_thead['+'.$annee_session_brevet] = '<th class="hc">Année</th>';
-    }
-  }
-}
-
-// autre boucle pour les bilans du Livret Scolaire (nouvelle table)
-// TODO : A généraliser aux autres bilans
-// TODO : A rendre rétroactif sur les années antérieures
-// TODO : A présenter différemment car avec les bilans de cycle sur l'année ça va planter
-// TODO : A signaler en page d'accueil du parent si non consulté
-if(Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab_types['livret']['droit'].'_VOIR_ARCHIVE']))
-{
-  $bilan_type = 'livret';
-  $annee_scolaire = To::annee_scolaire('code');
-  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_archive( $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , $bilan_type /*archive_type*/ , '' /*archive_ref*/ , 0 /*periode_id*/ , $tab_eleve_id , TRUE /*with_infos*/ );
-  foreach($DB_TAB as $DB_ROW)
-  {
+    $objet = ($DB_ROW['archive_type']=='sacoche') ? $tab_types[$DB_ROW['archive_ref']]['titre'] : $tab_types[$DB_ROW['archive_type']]['titre'].' '.$DB_ROW['archive_ref'] ;
+    $class_tr = is_null($DB_ROW['archive_date_consultation_'.$_SESSION['USER_PROFIL_TYPE']])  ? ' class="new"' : '' ;
+    $class_td = is_null($DB_ROW['archive_date_consultation_'.$_SESSION['USER_PROFIL_TYPE']])  ? ' class="b"'   : '' ;
     $clef = $DB_ROW['officiel_archive_id'];
     $_SESSION['tmp_droit_voir_archive'][$clef] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-    $tab_tbody[$DB_ROW['user_id']][$DB_ROW['periode_id']][] = '<a href="acces_archive.php?id='.$clef.'" target="_blank">'.$tab_types[$bilan_type]['titre'].' '.$DB_ROW['archive_ref'].'</a>' ;
+    $tab_tr[] = '<tr'.$class_tr.'><td>'.html($DB_ROW['annee_scolaire']).'</td><td>'.html($DB_ROW['periode_nom']).'</td><td>'.html($DB_ROW['structure_uai'].' - '.$DB_ROW['structure_denomination']).'</td><td>'.$objet.'</td><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td><td'.$class_td.'><a href="acces_archive.php?id='.$clef.'" target="_blank">accès au document</a></td></tr>';
   }
 }
-
-// Assemblage et affichage du tableau.
-
-echo'<p>Voici, au format numérique, les bilans officiels disponibles.</p>'.NL;
-echo'<p class="astuce">Cliquer sur un lien atteste que vous avez pris connaissance du document correspondant.</p>'.NL;
-echo'<hr />'.NL;
-echo'<table id="table_bilans"><thead>'.NL.'<tr>'.implode('',$tab_thead).'</tr>'.NL.'</thead><tbody>'.NL;
-unset($tab_thead[0]);
-foreach($tab_eleve_id as $eleve_id)
-{
-  echo'<tr>'.$tab_tbody[$eleve_id][0] ;
-  foreach($tab_thead as $periode_id => $th)
-  {
-    echo (isset($tab_tbody[$eleve_id][$periode_id])) ? '<td class="hc">'.implode('<br />',$tab_tbody[$eleve_id][$periode_id]).'</td>' : '<td class="hc">-</td>' ;
-  }
-    echo'</tr>'.NL;
-}
-echo'</tbody></table>'.NL;
-
 ?>
+
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__archives">DOC : Archives consultables.</a></span></li>
+</ul>
+
+<hr />
+
+<p>Voici, au format numérique <em>pdf</em>, les bilans officiels disponibles.</p>
+<p class="astuce">Cliquer sur un lien atteste que vous avez pris connaissance du document correspondant.</p>
+
+<hr />
+
+<table id="statistiques" class="form">
+  <thead>
+    <tr>
+      <th>Année scolaire</th>
+      <th>Période</th>
+      <th>Établissement</th>
+      <th>Objet</th>
+      <th>Élève</th>
+      <th>Lien</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php echo count($tab_tr) ? implode('',$tab_tr) : '<tr class="vide"><td colspan="6"><label class="alerte">Aucun document trouvé vous concernant.</label></td></tr>' ; ?>
+  </tbody>
+</table>
+

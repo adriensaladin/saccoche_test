@@ -31,11 +31,12 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// TODO : FILTRER SELON L'ETABLISSEMENT
-$structure_uai  = '';
-$uai_origine    = (isset($_POST['f_uai_origine'])) ? Clean::uai($_POST['f_uai_origine']) : '';
-$annee_scolaire = (isset($_POST['f_annee']))       ? Clean::code($_POST['f_annee'])      : '';
-$periode_id     = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])  : 0;
+$action         = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_action'])       : '';
+
+$uai_origine    = (isset($_POST['f_uai_origine'])) ? Clean::uai($_POST['f_uai_origine'])    : '';
+$structure_uai  = (isset($_POST['f_structure']))   ? Clean::uai($_POST['f_structure'])      : '';
+$annee_scolaire = (isset($_POST['f_annee']))       ? Clean::code($_POST['f_annee'])         : '';
+$periode_id     = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])     : 0;
 
 $tab_eleve    = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
 $tab_type_ref = (isset($_POST['f_type_ref']))  ? ( (is_array($_POST['f_type_ref'])) ? $_POST['f_type_ref'] : explode(',',$_POST['f_type_ref']) ) : array() ;
@@ -55,116 +56,149 @@ foreach($tab_type_ref as $type_ref)
   }
 }
 
-if( empty($tab_eleve) || empty($tab_type) || empty($tab_ref) )
-{
-  Json::end( FALSE , 'Erreur avec les données transmises !' );
-}
+Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , TRUE /*time*/ );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et générer les bilans demandés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , TRUE /*time*/ );
-
-$listing_eleve = implode(',',$tab_eleve);
-$listing_type  = '"'.implode('","',$tab_type).'"';
-$listing_ref   = '"'.implode('","',$tab_ref).'"';
-list( $DB_TAB_Archives , $DB_TAB_Images ) = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_archive_avec_infos( $listing_eleve , $structure_uai , $annee_scolaire , $listing_type , $listing_ref , $periode_id , $uai_origine );
-
-$nb_archives = count($DB_TAB_Archives);
-if( !$nb_archives )
+if( ($action=='generer_pdf') && !empty($tab_eleve) && !empty($tab_type) && !empty($tab_ref) )
 {
-  Json::end( FALSE , 'Aucune archive trouvée satisfaisant aux conditions demandées !' );
-}
-if( $nb_archives>250 )
-{
-  Json::end( FALSE , 'Plus de 250 archives trouvées : veuillez ajouter un critère de sélection.' );
-}
-
-// Remplacement des md5 par les images
-foreach($DB_TAB_Archives as $key => $DB_ROW)
-{
-  for( $image_num=1 ; $image_num<=4 ; $image_num++)
+  $listing_eleve = implode(',',$tab_eleve);
+  $listing_type  = '"'.implode('","',$tab_type).'"';
+  $listing_ref   = '"'.implode('","',$tab_ref).'"';
+  list( $DB_TAB_Archives , $DB_TAB_Images ) = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_archive_avec_infos( $listing_eleve , $structure_uai , $annee_scolaire , $listing_type , $listing_ref , $periode_id , $uai_origine );
+  // Vérif nb archives
+  $nb_archives = count($DB_TAB_Archives);
+  if( !$nb_archives )
   {
-    $image_md5 = $DB_ROW['archive_md5_image'.$image_num];
-    if( $image_md5 && isset($DB_TAB_Images[$image_md5][0]) )
+    Json::end( FALSE , 'Aucune archive trouvée satisfaisant aux conditions demandées !' );
+  }
+  if( $nb_archives>250 )
+  {
+    Json::end( FALSE , 'Plus de 250 archives trouvées : veuillez ajouter un critère de sélection.' );
+  }
+  // Remplacement des md5 par les images
+  foreach($DB_TAB_Archives as $key => $DB_ROW)
+  {
+    for( $image_num=1 ; $image_num<=4 ; $image_num++)
     {
-      $image_base64 = $DB_TAB_Images[$image_md5][0]['archive_image_contenu'];
-      $DB_TAB_Archives[$key]['archive_contenu'] = str_replace( $image_md5 , $image_base64 , $DB_TAB_Archives[$key]['archive_contenu'] );
-    }
-    else
-    {
-      // sinon, référence d'une image non présente dans sacoche_officiel_archive_image : ce n'est pas normal
-      $DB_TAB_Archives[$key]['archive_contenu'] = str_replace( $image_md5 , '' , $DB_TAB_Archives[$key]['archive_contenu'] );
+      $image_md5 = $DB_ROW['archive_md5_image'.$image_num];
+      if( $image_md5 && isset($DB_TAB_Images[$image_md5][0]) )
+      {
+        $image_base64 = $DB_TAB_Images[$image_md5][0]['archive_image_contenu'];
+        $DB_TAB_Archives[$key]['archive_contenu'] = str_replace( $image_md5 , $image_base64 , $DB_TAB_Archives[$key]['archive_contenu'] );
+      }
+      else
+      {
+        // sinon, référence d'une image non présente dans sacoche_officiel_archive_image : ce n'est pas normal
+        $DB_TAB_Archives[$key]['archive_contenu'] = str_replace( $image_md5 , '' , $DB_TAB_Archives[$key]['archive_contenu'] );
+      }
     }
   }
-}
-
-// Dossier accueillant les PDF
-$is_make_zip = ( ($nb_archives>1) || $uai_origine ) ? TRUE : FALSE;
-// TODO : UTILISER LE DOSSIER "OFFICIEL" AVEC UNE DUREE DE CONSERVATION D'1 SEMAINE
-if($is_make_zip)
-{
-  $chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT.'pdf_'.mt_rand().DS;
-  FileSystem::creer_ou_vider_dossier($chemin_temp_pdf);
-  $pdf_fin_date_alea = '';
-}
-else
-{
-  $chemin_temp_pdf = CHEMIN_DOSSIER_EXPORT;
-  $pdf_fin_date_alea = '_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
-}
-// Génération des documents
-foreach($DB_TAB_Archives as $DB_ROW)
-{
-  // Instanciation de la classe
+  // Dossier accueillant les PDF
+  $to_zip = ( ($nb_archives>1) || $uai_origine ) ? TRUE : FALSE ;
+  if($to_zip)
+  {
+    $sous_dossier_pdf = 'archive_'.$_SESSION['BASE'].'_'.mt_rand();
+    $CHEMIN_PDF = CHEMIN_DOSSIER_EXPORT.$sous_dossier_pdf.DS;
+    $URL_PDF    = URL_DIR_EXPORT.$sous_dossier_pdf.'/';
+    FileSystem::creer_ou_vider_dossier($CHEMIN_PDF);
+    $fichier_nom  = 'archive_';
+    $fichier_nom .= (!$uai_origine)       ? $_SESSION['BASE'].'_' : Clean::fichier($uai_origine).'_' ;
+    $fichier_nom .= (!$annee_scolaire)    ? '' : Clean::fichier($DB_ROW['annee_scolaire']).'_' ;
+    $fichier_nom .= (!$periode_id)        ? '' : Clean::fichier($DB_ROW['periode_nom']).'_' ;
+    $fichier_nom .= (!$structure_uai)     ? '' : Clean::fichier($DB_ROW['structure_uai']).'_' ;
+    $fichier_nom .= (count($tab_type)>1)  ? '' : $type.'_' ;
+    $fichier_nom .= (count($tab_ref)>1)   ? '' : $ref.'_' ;
+    $fichier_nom .= (count($tab_eleve)>1) ? '' : Clean::fichier($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'_' ;
+    $fichier_nom .= FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
+    $_SESSION['tmp']['zip_archive']['chemin_pdf']  = $CHEMIN_PDF ;
+    $_SESSION['tmp']['zip_archive']['nb_archives'] = $nb_archives ;
+    $_SESSION['tmp']['zip_archive']['uai_origine'] = $uai_origine ;
+    $_SESSION['tmp']['zip_archive']['fichier_nom'] = $fichier_nom ;
+  }
+  else
+  {
+    $CHEMIN_PDF = CHEMIN_DOSSIER_EXPORT;
+    $URL_PDF    = URL_DIR_EXPORT;
+  }
+  // Tableaux utiles
+  $tab_objet = array(
+    'livret'   => 'Livret scolaire',
+    'bulletin' => 'Bulletin scolaire',
+    'releve'   => 'Relevé d\'évaluations',
+    'palier'   => 'Relevé de maîtrise du socle', // non implémenté en attente de la mise en place de la refonte du socle -> à virer
+  );
   $tab_classname = array(
     'livret'   => 'PDF_livret_scolaire',
     'bulletin' => 'PDF_item_synthese',
     'releve'   => 'PDF_item_releve',
     'palier'   => 'PDF_socle_releve', // non implémenté en attente de la mise en place de la refonte du socle -> à virer
   );
-  $key = ($DB_ROW['archive_type']=='sacoche') ? $DB_ROW['archive_ref'] : 'livret' ;
-  $classname = $tab_classname[$key];
-  $archive_PDF = new $classname();
-  // Fabrication de l'archive PDF à partir du JSON enregistré
-  $tab_archive = json_decode($DB_ROW['archive_contenu'], TRUE);
-  foreach($tab_archive as $archive)
+  // Génération des documents
+  $tab_tr = array();
+  foreach($DB_TAB_Archives as $DB_ROW)
   {
-    list( $methode , $tab_param ) = $archive;
-    call_user_func_array( array( $archive_PDF , $methode ) , $tab_param );
+    // Instanciation de la classe
+    $key = ($DB_ROW['archive_type']=='sacoche') ? $DB_ROW['archive_ref'] : 'livret' ;
+    $classname = $tab_classname[$key];
+    $archive_PDF = new $classname();
+    // Fabrication de l'archive PDF à partir du JSON enregistré
+    $tab_archive = json_decode($DB_ROW['archive_contenu'], TRUE);
+    foreach($tab_archive as $archive)
+    {
+      list( $methode , $tab_param ) = $archive;
+      call_user_func_array( array( $archive_PDF , $methode ) , $tab_param );
+    }
+    // Écriture du PDF
+    $fichier_nom = 'archive_'.Clean::fichier($DB_ROW['structure_uai']).'_'.Clean::fichier($DB_ROW['annee_scolaire']).'_'.$DB_ROW['archive_type'].'_'.$DB_ROW['archive_ref'].'_'.Clean::fichier($DB_ROW['periode_nom']).'_'.Clean::fichier($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.pdf';
+    FileSystem::ecrire_sortie_PDF( $CHEMIN_PDF.$fichier_nom  , $archive_PDF  );
+    // Ligne du tableau à retourner
+    $objet = ($DB_ROW['archive_type']=='sacoche') ? $tab_objet[$DB_ROW['archive_ref']] : $tab_objet[$DB_ROW['archive_type']].' '.$DB_ROW['archive_ref'] ;
+    $tab_tr[] = '<tr><td>'.html($DB_ROW['annee_scolaire']).'</td><td>'.html($DB_ROW['periode_nom']).'</td><td>'.html($DB_ROW['structure_uai'].' - '.$DB_ROW['structure_denomination']).'</td><td>'.$objet.'</td><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td><td><a href="'.$URL_PDF.$fichier_nom.'" target="_blank">accès au document</a></td></tr>';
   }
-  // Écriture du PDF
-  $fichier_nom = 'archive_'.Clean::fichier($DB_ROW['structure_uai']).'_'.Clean::fichier($DB_ROW['annee_scolaire']).'_'.$DB_ROW['archive_type'].'_'.$DB_ROW['archive_ref'].'_'.Clean::fichier($DB_ROW['periode_nom']).'_'.Clean::fichier($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).$pdf_fin_date_alea.'.pdf';
-  FileSystem::ecrire_sortie_PDF( $chemin_temp_pdf.$fichier_nom  , $archive_PDF  );
+  // Retour
+  Json::add_row( 'to_zip' , $to_zip );
+  Json::add_row( 'html'   , implode('',$tab_tr) );
+  Json::end( TRUE );
 }
-// On zippe l'ensemble
-if($is_make_zip)
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Zipper les bilans déjà générés en PDF
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='generer_zip') && isset($_SESSION['tmp']['zip_archive']) )
 {
-  $fichier_nom  = 'archive_';
-  $fichier_nom .= (!$uai_origine)       ? '' : Clean::fichier($uai_origine).'_' ;
-  $fichier_nom .= (!$structure_uai)     ? '' : Clean::fichier($DB_ROW['structure_uai']).'_' ;
-  $fichier_nom .= (!$annee_scolaire)    ? '' : Clean::fichier($DB_ROW['annee_scolaire']).'_' ;
-  $fichier_nom .= (count($tab_type)>1)  ? '' : $type.'_' ;
-  $fichier_nom .= (count($tab_ref)>1)   ? '' : $ref.'_' ;
-  $fichier_nom .= (!$periode_id)        ? '' : Clean::fichier($DB_ROW['periode_nom']).'_' ;
-  $fichier_nom .= (count($tab_eleve)>1) ? '' : Clean::fichier($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'_' ;
-  $fichier_nom .= FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
-  $result = FileSystem::zip_fichiers( $chemin_temp_pdf , CHEMIN_DOSSIER_EXPORT , $fichier_nom );
+  $CHEMIN_ZIP = ($_SESSION['tmp']['zip_archive']['uai_origine']) ? CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS  : CHEMIN_DOSSIER_EXPORT ;
+  $URL_ZIP    = ($_SESSION['tmp']['zip_archive']['uai_origine']) ?        URL_DIR_OFFICIEL.$_SESSION['BASE'].'/' : URL_DIR_EXPORT ;
+  // On zippe l'ensemble
+  $result = FileSystem::zip_fichiers( $_SESSION['tmp']['zip_archive']['chemin_pdf'] , $CHEMIN_ZIP , $_SESSION['tmp']['zip_archive']['fichier_nom'] );
   if($result!==TRUE)
   {
     Json::end( FALSE , $result );
   }
-  FileSystem::supprimer_dossier($chemin_temp_pdf);
+  $s = ($_SESSION['tmp']['zip_archive']['nb_archives']>1) ? 's' : '' ;
+  $href = $URL_ZIP.$_SESSION['tmp']['zip_archive']['fichier_nom'];
+  $retour = '<ul class="puce">';
+  $retour .= '<li>'.$_SESSION['tmp']['zip_archive']['nb_archives'].' archive'.$s.' générée'.$s.' dans <a href="'.$href.'" target="_blank"><span class="file file_zip">ce fichier <em>zip</em></span></a>.</li>';
+  if($_SESSION['tmp']['zip_archive']['uai_origine'])
+  {
+    $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_structure_origine( $_SESSION['tmp']['zip_archive']['uai_origine'] );
+    if( !empty($DB_ROW['structure_courriel']) )
+    {
+      $retour .= '<li>'.HtmlMail::to($DB_ROW['structure_courriel'],'Bilans anciens élèves','Envoyer un courriel à '.html($DB_ROW['structure_denomination']).' ('.html($DB_ROW['structure_localisation']).').','Bonjour,<br />Veuillez trouver à cette adresse les bilans scolaire de vos anciens élèves (vous avez 7 jours pour les récupérer) :<br />'.$href.'<br />Cordialement,<br />'.html($_SESSION['ETABLISSEMENT']['DENOMINATION'])).'</li>';
+    }
+  }
+  $retour .= '</ul>';
+  unset($_SESSION['tmp']['zip_archive']);
+  Json::end( TRUE , $retour );
 }
-// Retour
-// TODO : SI $uai_origine TRANSMIS, PROPOSER ENVOI AUTOMATIQUE D'UN MAIL TYPE AVEC UN LIEN VERS LE FICHIER GENERE, (on a l'adresse de l'établ d'origine et celle de l'établ actuel)
-$s = ($nb_archives>1) ? 's' : '' ;
-$texte = ($is_make_zip)
-        ? $nb_archives.' archive'.$s.' générée'.$s.' dans <span class="file file_zip">ce fichier <em>zip</em></span>.'
-        : 'Archive générée dans <span class="file file_pdf">ce fichier <em>pdf</em></span>.' ;
-Json::add_row( 'texte' ,$texte );
-Json::add_row( 'href' , URL_DIR_EXPORT.$fichier_nom );
-Json::end( TRUE );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là...
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Json::end( FALSE , 'Erreur avec les données transmises !' );
 
 ?>

@@ -27,12 +27,13 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Archives des bilans officiels"));
-
-// TODO : A TERME IL FAUDRA Y INTEGRER L'ACCES PARENT / ELEVES (DOIT REMPLACER officiel_voir_archive.php)
-// + AJOUTER LE CHOIX DE L'ETABLISSEMENT AU FORMULAIRE AVANT LA PERIODE (QUAND IL Y AURA POSSIBILITE DE TRANSFERT)
 ?>
 
-<div class="travaux">Fonctionnalité expérimentale d'un nouveau système d'archivage des bilans officiels sur plusieurs années. Ne prend en compte que les bilans générés avec une version 2016-04-17 minimum.</div>
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__archives">DOC : Archives consultables.</a></span></li>
+</ul>
+
+<hr />
 
 <?php
 // Fabrication des éléments select du formulaire
@@ -43,7 +44,9 @@ if(empty($tab_type_ref))
   echo'<p class="danger">Aucune archive de bilan officiel trouvée !</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
-$tab_annees = DB_STRUCTURE_COMMUN::DB_OPT_officiel_archive_annee();
+
+$tab_structure = DB_STRUCTURE_COMMUN::DB_OPT_officiel_archive_structure();
+$tab_annees    = DB_STRUCTURE_COMMUN::DB_OPT_officiel_archive_annee();
 
 // Limiter les types de bilan aux selon les droits
 
@@ -64,7 +67,7 @@ if(empty($tab_type_ref))
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-if($_SESSION['USER_PROFIL_TYPE']=='professeur')
+if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && !in_array($_SESSION['USER_PROFIL_SIGLE'],array('EDU','ADF')) )
 {
   $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
 }
@@ -73,13 +76,12 @@ else // directeur ou administrateur
   $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , TRUE /*tout*/ , TRUE /*ancien*/ );
 }
 
-$select_groupe    = HtmlForm::afficher_select($tab_groupes    , 'f_groupe'    /*select_nom*/ , ''              /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_annee     = HtmlForm::afficher_select($tab_annees     , 'f_annee'     /*select_nom*/ , 'toutes_annees' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ );
-$select_type_ref  = HtmlForm::afficher_select($tab_type_ref   , 'f_type_ref'  /*select_nom*/ , FALSE           /*option_first*/ , FALSE /*selection*/ , 'officiel_type' /*optgroup*/ , TRUE /*multiple*/ );
+$select_groupe    = HtmlForm::afficher_select($tab_groupes   , 'f_groupe'    /*select_nom*/ , ''                  /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
+$select_structure = HtmlForm::afficher_select($tab_structure , 'f_structure' /*select_nom*/ , 'toutes_structures' /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ );
+$select_annee     = HtmlForm::afficher_select($tab_annees    , 'f_annee'     /*select_nom*/ , 'toutes_annees'     /*option_first*/ , FALSE /*selection*/ , '' /*optgroup*/ );
+$select_type_ref  = HtmlForm::afficher_select($tab_type_ref  , 'f_type_ref'  /*select_nom*/ , FALSE               /*option_first*/ , FALSE /*selection*/ , 'officiel_type' /*optgroup*/ , TRUE /*multiple*/ );
 
 ?>
-
-<hr />
 
 <form action="#" method="post" id="form_select"><fieldset>
   <p>
@@ -89,6 +91,7 @@ $select_type_ref  = HtmlForm::afficher_select($tab_type_ref   , 'f_type_ref'  /*
     <span id="bloc_uai_origine" class="hide"><label class="tab" for="f_uai_origine">Scolarité antérieure :</label><select id="f_uai_origine" name="f_uai_origine"><option></option></select></span>
   </p>
   <p>
+    <label class="tab" for="f_structure">Établissement :</label><?php echo $select_structure ?><br />
     <label class="tab" for="f_annee">Année(s) :</label><?php echo $select_annee ?><label id="ajax_msg_annee">&nbsp;</label><br />
     <span id="bloc_periode" class="hide"><label class="tab" for="f_periode">Période(s) :</label><select id="f_periode" name="f_periode"><option></option></select></span>
   </p>
@@ -96,9 +99,27 @@ $select_type_ref  = HtmlForm::afficher_select($tab_type_ref   , 'f_type_ref'  /*
     <label class="tab" for="f_type_ref">Type(s) :</label><span id="f_type_ref" class="select_multiple"><?php echo $select_type_ref ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>
   </p>
   <p>
-    <span class="tab"></span><button id="bouton_valider" type="submit" class="valider">Accéder à ces archives</button><label id="ajax_msg">&nbsp;</label>
+    <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="generer_pdf" /><button id="bouton_valider" type="submit" class="valider">Accéder à ces archives</button><label id="ajax_msg">&nbsp;</label>
   </p>
 </fieldset></form>
 
-<div id="bilan">
+<hr />
+
+<p id="lien_zip"></p>
+
+<table id="statistiques" class="form hide">
+  <thead>
+    <tr>
+      <th>Année scolaire</th>
+      <th>Période</th>
+      <th>Établissement</th>
+      <th>Objet</th>
+      <th>Élève</th>
+      <th>Lien</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr class="vide"><td class="nu" colspan="6"></td></tr>
+  </tbody>
+</table>
 </div>

@@ -53,6 +53,7 @@ hr {display:block;height:1px;margin:1ex 0;border-top:1px dotted #66F;}
 em {display:inline;font-style:normal;font-weight:bold;font-variant:small-caps} /* "SACoche" et divers noms propres ou sigles */
 del{text-decoration:line-through;color:#999}
 kbd{display:inline-block;font-size:90%;font-weight:bold;line-height:1.4;margin:1px;padding:1px 5px;color:#333;background-color:#EEE;border-radius:3px;border:1px solid #CCCCCC;box-shadow:0px 1px 0px rgba(0, 0, 0, 0.2),0px 0px 0px 2px white inset;text-shadow:0px 1px 0px white;white-space:nowrap}
+pre{display:inline-block;font-family:monospace;white-space:pre;padding:1ex 2ex;background-color:#DEF}
 audio.prof{vertical-align:middle;width:300px}
 audio.eleve{vertical-align:middle;width:600px}
 .hc{text-align:center} .hg{text-align:left} .hd{text-align:right} .ti{text-indent:3em} .ml{margin-left:3em}

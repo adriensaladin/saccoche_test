@@ -490,6 +490,7 @@ define('URL_DIR_EXPORT'      , chemin_to_url(CHEMIN_DOSSIER_EXPORT     ) );
 define('URL_DIR_IMPORT'      , chemin_to_url(CHEMIN_DOSSIER_IMPORT     ) );
 define('URL_DIR_LOGINPASS'   , chemin_to_url(CHEMIN_DOSSIER_LOGINPASS  ) );
 define('URL_DIR_LOGO'        , chemin_to_url(CHEMIN_DOSSIER_LOGO       ) );
+define('URL_DIR_OFFICIEL'    , chemin_to_url(CHEMIN_DOSSIER_OFFICIEL   ) );
 define('URL_DIR_PARTENARIAT' , chemin_to_url(CHEMIN_DOSSIER_PARTENARIAT) );
 define('URL_DIR_PDF'         , chemin_to_url(CHEMIN_DOSSIER_PDF        ) );
 define('URL_DIR_RSS'         , chemin_to_url(CHEMIN_DOSSIER_RSS        ) );

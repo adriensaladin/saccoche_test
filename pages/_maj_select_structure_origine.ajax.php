@@ -42,5 +42,5 @@ $listing_eleve_id = implode(',',$tab_eleve);
 
 // Affichage du retour.
 
-Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_structure_origine($listing_eleve_id) , FALSE /*select_nom*/ , 'toutes_origines' /*option_first*/ , FALSE  /*selection*/ , '' /*optgroup*/ ) );
+Json::end( TRUE , HtmlForm::afficher_select( DB_STRUCTURE_COMMUN::DB_OPT_structure_origine($listing_eleve_id) , FALSE /*select_nom*/ , 'toutes_structures' /*option_first*/ , FALSE  /*selection*/ , '' /*optgroup*/ ) );
 ?>

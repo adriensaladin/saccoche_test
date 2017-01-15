@@ -800,7 +800,7 @@ class FileSystem
   public static function nettoyer_fichiers_temporaires_commun()
   {
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_LOGINPASS ,     10     ); // Nettoyer ce dossier des fichiers antérieurs à 10 minutes
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT    ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue ou d'archives de bilans officiels
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_EXPORT    ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_DUMP      ,     60,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 heure + sous-dossiers temporaires d'un zip avec procédure interrompue
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_IMPORT    ,   1440,TRUE); // Nettoyer ce dossier des fichiers antérieurs à  1 jour  + sous-dossiers temporaires d'un zip avec procédure interrompue
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_TMP       , 219000     ); // Nettoyer ce dossier des fichiers antérieurs à  6 mois
@@ -818,8 +818,8 @@ class FileSystem
     $nb_mois = (defined('FICHIER_DUREE_CONSERVATION')) ? FICHIER_DUREE_CONSERVATION : 12 ; // Une fois tous les devoirs ont été supprimés sans raison claire : nettoyage simultané avec une mise à jour ?
     $duree = 43800*$nb_mois;
     FileSystem::$nb_suppression = 0;
-    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE ,  10080); // Nettoyer ce dossier des fichiers antérieurs à  1 semaine
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_RSS.$BASE      ,  43800); // Nettoyer ce dossier des fichiers antérieurs à  1 mois
+    FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_OFFICIEL.$BASE , 438000); // Nettoyer ce dossier des fichiers antérieurs à 10 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_BADGE.$BASE    , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_SYMBOLE.$BASE  , 481800); // Nettoyer ce dossier des fichiers antérieurs à 11 mois
     FileSystem::effacer_fichiers_temporaires(CHEMIN_DOSSIER_COOKIE.$BASE   , 525600); // Nettoyer ce dossier des fichiers antérieurs à  1 an
@@ -1149,13 +1149,13 @@ class FileSystem
    * Renvoyer une taille de fichier lisible pour un humain :)
    * @see http://fr2.php.net/manual/fr/function.filesize.php#106569
    *
-   * @param string|int $fichier_chemin_or_taille
-   * @param int        $decimals (facultatif)
+   * @param string $fichier_chemin
+   * @param int    $decimals (facultatif)
    * @return string
    */
-  public static function afficher_fichier_taille( $fichier_chemin_or_taille , $decimals = 1 )
+  public static function afficher_fichier_taille( $fichier_chemin , $decimals = 1 )
   {
-    $bytes = is_int($fichier_chemin_or_taille) ? $fichier_chemin_or_taille : filesize($fichier_chemin_or_taille) ;
+    $bytes = filesize($fichier_chemin);
     $size_unit = ' KMGTP';
     $factor = (int) floor((strlen($bytes) - 1) / 3);
     return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';

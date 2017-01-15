@@ -204,8 +204,7 @@ $(document).ready
       function()
       {
         $('#ajax_msg').removeAttr('class').html("");
-        $('#lien_zip').html("");
-        $('#statistiques tbody').html('<tr class="vide"><td class="nu" colspan="6"></td></tr>').parent().hide();
+        $('#bilan').html("");
       }
     );
 
@@ -225,7 +224,6 @@ $(document).ready
           f_groupe       : { required:true },
           'f_eleve[]'    : { required:true },
           f_uai_origine  : { required:true },
-          f_structure    : { required:true },
           f_annee        : { required:true },
           f_periode      : { required:function(){return $('#f_annee').val()!="0";} },
           'f_type_ref[]' : { required:true }
@@ -234,8 +232,7 @@ $(document).ready
         {
           f_groupe       : { required:"regroupement manquant" },
           'f_eleve[]'    : { required:"élève(s) manquant(s)" },
-          f_uai_origine  : { required:"origine manquante" },
-          f_structure    : { required:"structure manquante" },
+          f_uai_origine  : { required:"structure manquante" },
           f_annee        : { required:"année scolaire manquante" },
           f_periode      : { required:"période manquante" },
           'f_type_ref[]' : { required:"type d'archive manquant" }
@@ -294,8 +291,6 @@ $(document).ready
       {
         $('#bouton_valider').prop('disabled',true);
         $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
-        $('#lien_zip').html("");
-        $('#statistiques tbody').html('<tr class="vide"><td class="nu" colspan="6"></td></tr>').parent().hide();
       }
       return readytogo;
     }
@@ -321,43 +316,8 @@ $(document).ready
       }
       else
       {
-        $('#statistiques tbody').html(responseJSON['html']).parent().show();
-        if(!responseJSON['to_zip'])
-        {
-          $('#ajax_msg').attr('class','valide').html("Résultat ci-dessous.");
-        }
-        else
-        {
-          $('#ajax_msg').attr('class','loader').html("Collecte dans un fichier ZIP unique&hellip;");
-          $.ajax
-          (
-            {
-              type : 'POST',
-              url : 'ajax.php?page='+PAGE,
-              data : 'csrf='+CSRF+'&f_action='+'generer_zip',
-              dataType : 'json',
-              error : function(jqXHR, textStatus, errorThrown)
-              {
-                var message = (jqXHR.status!=500) ? afficher_json_message_erreur(jqXHR,textStatus) : 'Erreur 500&hellip; Mémoire insuffisante ? Sélectionner moins d\'élèves à la fois ou demander à votre hébergeur d\'augmenter la valeur "memory_limit".' ;
-                $('#ajax_msg').attr('class','alerte').html(message);
-                return false;
-              },
-              success : function(responseJSON)
-              {
-                initialiser_compteur();
-                if(responseJSON['statut']==false)
-                {
-                  $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
-                }
-                else
-                {
-                  $('#ajax_msg').attr('class','valide').html("Résultat ci-dessous.");
-                  $('#lien_zip').html(responseJSON['value']);
-                }
-              }
-            }
-          );
-        }
+        $('#ajax_msg').attr('class','valide').html("Résultat ci-dessous.");
+        $('#bilan').html('<hr /><ul class="puce"><li><a target="_blank" href="'+responseJSON['href']+'">'+responseJSON['texte']+'</a></li></ul>');
       }
     }
 

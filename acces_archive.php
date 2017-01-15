@@ -27,6 +27,7 @@
 
 // Fichier appelé pour générer et afficher une archive PDF d'un bilan officiel.
 // Passage en GET d'un paramètre pour savoir quelle archive est concernée.
+// TODO : doit remplacer à terme (mi-2017) releve_pdf.php
 
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');
@@ -130,7 +131,7 @@ foreach($tab_archive as $archive)
 
 // Écriture du PDF
 $fichier_nom     = 'archive_'.Clean::fichier($DB_ROW['structure_uai']).'_'.Clean::fichier($DB_ROW['annee_scolaire']).'_'.$DB_ROW['archive_type'].'_'.$DB_ROW['archive_ref'].'_'.Clean::fichier($DB_ROW['periode_nom']).'_'.Clean::fichier($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
-$fichier_fin_ext = '_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.pdf';
+$fichier_fin_ext = '_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom.$fichier_fin_ext , $archive_PDF  );
 
 // Redirection du navigateur

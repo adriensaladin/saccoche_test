@@ -702,30 +702,6 @@ public static function DB_lister_nb_saisies_par_evaluation($listing_devoir_id)
 }
 
 /**
- * lister_liaisons_user_module
- *
- * @param int $user_id
- * @return array
- */
-public static function DB_lister_liaisons_user_module($user_id)
-{
-  $tab_module = array();
-  $DB_SQL = 'SELECT module_objet , module_url ';
-  $DB_SQL.= 'FROM sacoche_jointure_user_module ';
-  $DB_SQL.= 'WHERE user_id=user_id ' ;
-  $DB_VAR = array( ':user_id' => $user_id );
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR) ;
-  if(!empty($DB_TAB))
-  {
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_module[strtoupper($DB_ROW['module_objet'])] = $DB_ROW['module_url'];
-    }
-  }
-  return $tab_module;
-}
-
-/**
  * tester_prof_principal
  *
  * @param int $user_id
@@ -1240,36 +1216,6 @@ public static function DB_modifier_liaison_devoir_groupe($devoir_id,$groupe_id)
     $DB_VAR = array(':devoir_id'=>$devoir_id);
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
-}
-
-/**
- * modifier_liaison_user_module
- * insert/update ou delete selon que $module_url soit renseigné ou pas
- *
- * @param int    $user_id
- * @param string $module_objet
- * @param string $module_url
- * @return void
- */
-public static function DB_modifier_liaison_user_module( $user_id , $module_objet , $module_url )
-{
-  if($module_url)
-  {
-    $DB_SQL = 'INSERT INTO sacoche_jointure_user_module( user_id, module_objet, module_url) ';
-    $DB_SQL.= 'VALUES                                  (:user_id,:module_objet,:module_url) ';
-    $DB_SQL.= 'ON DUPLICATE KEY UPDATE module_url=:module_url ';
-  }
-  else
-  {
-    $DB_SQL = 'DELETE FROM sacoche_jointure_user_module ';
-    $DB_SQL.= 'WHERE user_id=:user_id AND module_objet=:module_objet ';
-  }
-  $DB_VAR = array(
-    ':user_id'      => $user_id,
-    ':module_objet' => $module_objet,
-    ':module_url'   => $module_url,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**

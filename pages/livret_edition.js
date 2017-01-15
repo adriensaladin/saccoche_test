@@ -909,7 +909,7 @@ $(document).ready
           memo_html = memo_conteneur.html();
           var max      = (memo_page_colonne=='moyenne') ? MOYENNE_MAXI : POURCENTAGE_MAXI ;
           var pourcent = (memo_page_colonne=='moyenne') ? ''  : '%' ;
-          var step     = (memo_page_colonne=='moyenne') ? 0.1 : 0.5 ;
+          var step     = (memo_page_colonne=='moyenne') ? 0.5 : 1 ;
           var formulaire_saisie = '<div><b>Positionnement [ '+$('#go_selection_eleve option:selected').text()+' ] :</b> <input id="f_position" name="f_position" type="number" min="0" max="'+max+'" step="'+step+'" value="" />'+pourcent+'</div>'
                                 + '<div><button id="valider_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider" type="button" class="valider">Valider</button> <button id="valider_suivant" type="button" class="valider_next">Suivant</button></div>'
                                 + '<div><button id="annuler_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler" type="button" class="annuler">Annuler</button> <button id="annuler_suivant" type="button" class="annuler_next">Suivant</button></div>'

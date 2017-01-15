@@ -264,24 +264,13 @@ $tab_xml[] = ' <donnees>';
 
 if($export_objet=='college')
 {
-  // responsables-etab
+  // responsable-etab
   $tab_xml[] = '  <responsables-etab>';
   foreach($tab_export_commun['responsable-etab'] as $id => $tab)
   {
     $tab_xml[] = '   <responsable-etab id="'.$id.'" libelle="'.html($tab['libelle']).'" />';
   }
   $tab_xml[] = '  </responsables-etab>';
-}
-
-if($export_objet=='ecole')
-{
-  // classes
-  $tab_xml[] = '  <classes>';
-  foreach($tab_export_commun['classe'] as $id => $tab)
-  {
-    $tab_xml[] = '   <classe id="'.$id.'" id-be="'.$tab['id-be'].'" libelle="'.html($tab['libelle']).'" />';
-  }
-  $tab_xml[] = '  </classes>';
 }
 
 // eleves
@@ -320,11 +309,7 @@ $tab_xml[] = '  <enseignants>';
 foreach($tab_export_commun['enseignant'] as $id => $tab)
 {
   $civilite = $tab['civilite'] ? ' civilite="'.$tab['civilite'].'"' : '' ;
-  switch($export_objet)
-  {
-    case 'college' : $tab_xml[] = '   <enseignant id="'.$id.'" type="'.$tab['type'].'" id-sts="'.$tab['id-sts'].'"'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />'; break;
-    case 'ecole'   : $tab_xml[] = '   <enseignant id="'.$id.'"'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />'; break;
-  }
+  $tab_xml[] = '   <enseignant id="'.$id.'" type="'.$tab['type'].'" id-sts="'.$tab['id-sts'].'"'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />';
 }
 $tab_xml[] = '  </enseignants>';
 
@@ -557,7 +542,12 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
   unset($tab_export_donnees[$key]);
 }
 $tab_xml[] = '  </bilans-periodiques>';
-
+/*				<responsables>
+					<responsable civilite="M" nom="NOM RESPONSABLE 1" prenom="Prénom responsable 1" lien-parente="PERE" legal1="true" legal2="false">
+						
+					</responsable>
+				</responsables>
+*/
 // fermeture des balises
 $tab_xml[] = ' </donnees>';
 $tab_xml[] = '</lsun-bilans>';
@@ -619,7 +609,7 @@ $fichier_nom = 'import-lsun-'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.Fil
 FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $export_xml );
 $fichier_lien = './force_download.php?fichier='.$fichier_nom;
 
-// Retour
+// Enregistrement et retour
 $sb = ($nb_bilans>1) ? 's' : '' ;
 $se = ($nb_eleves>1) ? 's' : '' ;
 Json::add_str('<p><label class="valide">Fichier d\'export généré : '.$nb_bilans.' bilan'.$sb.' concernant '.$nb_eleves.' élève'.$se.'.</label></p>'.NL);

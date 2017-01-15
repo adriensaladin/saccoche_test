@@ -315,11 +315,6 @@ class SessionUser
         $_SESSION['ELEVE_CLASSE_NOM']   = $_SESSION['OPT_PARENT_CLASSES'][0]['texte'];
       }
     }
-    // Récupérer et Enregistrer en session la liste des modules externes associés à un professeur
-    if($_SESSION['USER_PROFIL_TYPE']=='professeur')
-    {
-      $_SESSION['MODULE'] = DB_STRUCTURE_PROFESSEUR::DB_lister_liaisons_user_module( $_SESSION['USER_ID'] );
-    }
     // Récupérer et Enregistrer en session la liste des élèves associés à un professeur non rattaché à tous les élèves.
     if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') )
     {
@@ -517,10 +512,10 @@ class SessionUser
     }
     // Degrés de maîtrise - Pour l'instant juste des couleurs (plus marquées que les originales en 4 colonnes) afin de permettre l'initialisation du style CSS
     $_SESSION['LIVRET'] = array(
-      1 => array( 'COULEUR' => '#E5F4FF' , 'GRIS' => SessionUser::$tab_dalton_css[4][3] , 'POINTS' => 10 ), // TSV =(204; 10;100)
-      2 => array( 'COULEUR' => '#91CBF2' , 'GRIS' => SessionUser::$tab_dalton_css[4][2] , 'POINTS' => 25 ), // TSV =(204; 40; 95)
-      3 => array( 'COULEUR' => '#44A7E5' , 'GRIS' => SessionUser::$tab_dalton_css[4][1] , 'POINTS' => 40 ), // TSV =(204; 70; 90)
-      4 => array( 'COULEUR' => '#0082D8' , 'GRIS' => SessionUser::$tab_dalton_css[4][0] , 'POINTS' => 50 ), // TSV =(204;100; 85)
+      1 => array( 'COULEUR' => '#E5F4FF' , 'GRIS' => SessionUser::$tab_dalton_css[4][3] ), // TSV =(204; 10;100)
+      2 => array( 'COULEUR' => '#91CBF2' , 'GRIS' => SessionUser::$tab_dalton_css[4][2] ), // TSV =(204; 40; 95)
+      3 => array( 'COULEUR' => '#44A7E5' , 'GRIS' => SessionUser::$tab_dalton_css[4][1] ), // TSV =(204; 70; 90)
+      4 => array( 'COULEUR' => '#0082D8' , 'GRIS' => SessionUser::$tab_dalton_css[4][0] ), // TSV =(204;100; 85)
     );
     // États de validation - Les couleurs pour les daltoniens servent aussi pour les impressions PDF en niveau de gris
     $_SESSION['VALID'] = array();

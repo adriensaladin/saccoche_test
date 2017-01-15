@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des valeurs transmises
@@ -402,22 +401,12 @@ $tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,a
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '' /*liste_rubrique_type*/ , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array(
-    'saisie_id'     => $DB_ROW['livret_saisie_id'] ,
-    'prof_id'       => $DB_ROW['user_id'] ,
-    'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
-    'listing_profs' => $DB_ROW['listing_profs'] ,
-  );
+  $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array( 'saisie_id'=>$DB_ROW['livret_saisie_id'] , 'prof_id'=>$DB_ROW['user_id'] , 'saisie_valeur'=>$DB_ROW['saisie_valeur'] , 'listing_profs'=>$DB_ROW['listing_profs'] );
 }
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_classe( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '' /*liste_rubrique_type*/ , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_saisie[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array(
-    'saisie_id'     => $DB_ROW['livret_saisie_id'] ,
-    'prof_id'       => $DB_ROW['user_id'] ,
-    'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
-    'listing_profs' => $DB_ROW['listing_profs'] ,
-  );
+  $tab_saisie[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array( 'saisie_id'=>$DB_ROW['livret_saisie_id'] , 'prof_id'=>$DB_ROW['user_id'] , 'saisie_valeur'=>$DB_ROW['saisie_valeur'] , 'listing_profs'=>$DB_ROW['listing_profs'] );
 }
 
 // Récupérer les professeurs/personnels rattachés aux saisies OU instituteurs-trices rattaché(e)s à la classe

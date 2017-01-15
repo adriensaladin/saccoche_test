@@ -71,7 +71,6 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
       <option value="import_sconet">Sconet Absences</option>
       <option value="import_gepi">GEPI Absences 2</option>
       <option value="import_pronote">Pronote</option>
-      <option value="import_moliere">Molière</option>
     </select>
     <input id="f_import" type="file" name="userfile" />
     <input type="hidden" id="f_upload_action" name="f_action" value="" />
@@ -90,9 +89,6 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   </ul>
   <ul class="puce hide" id="puce_import_pronote">
     <li>Indiquer le fichier <em>EXP_AbsencesEleves.xml</em> ou <em>EXP_Retards.xml</em> : <button type="button" id="import_pronote" class="fichier_import">Parcourir...</button><label id="ajax_msg_import_pronote">&nbsp;</label></li>
-  </ul>
-  <ul class="puce hide" id="puce_import_moliere">
-    <li>Indiquer le fichier <em>Export.txt</em> : <button type="button" id="import_moliere" class="fichier_import">Parcourir...</button><label id="ajax_msg_import_moliere">&nbsp;</label></li>
   </ul>
 </form>
 
@@ -121,10 +117,7 @@ HtmlForm::fabriquer_tab_js_jointure_groupe( $tab_groupes , TRUE /*tab_groupe_per
   </div>
   <div class="hide" id="comfirm_import_pronote">
     <p class="astuce">Ce fichier comporte les <b id="pronote_objet_1"></b> de <b id="pronote_eleves_nb"></b> élève(s) entre le <b id="pronote_date_debut"></b> et le <b id="pronote_date_fin"></b></p>
-    <p class="danger">Pronote n'exportant pas les élèves sans saisie, on forcera <b id="pronote_objet_2"></b> pour tous les élèves absents du fichier.</p>
-  </div>
-  <div class="hide" id="comfirm_import_moliere">
-    <p class="astuce">Ce fichier comporte les données de <b id="moliere_eleves_nb"></b> élève(s).</p>
+    <p class="danger">Pronote d'exportant pas les élèves sans saisie, on forcera <b id="pronote_objet_2"></b> pour tous les élèves absents du fichier.</p>
   </div>
   <p>Confirmez-vous vouloir importer ces données dans <em>SACoche</em> pour la période <b id="periode_import"></b> ?</p>
   <form action="#" method="post">

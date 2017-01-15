@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 $tab_rubrique_type = array('eval','socle','epi','ap','parcours','bilan','viesco');
 $tab_saisie_objet = array('position','appreciation','elements');
@@ -99,8 +98,8 @@ $classe_ref          = $DB_ROW['groupe_ref'];
 $DATE_VERROU         = $DB_ROW['jointure_date_verrou'];
 $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere','c3_socle','c4_socle')) ? 'college' : 'ecole' ;
 
-$champ_classe = ($BILAN_TYPE_ETABL=='college') ? 'code-division' : 'classe-ref' ;
-$classe_value = ($BILAN_TYPE_ETABL=='college') ? $classe_ref : 'CL'.$classe_id ;
+$champ_classe = ($BILAN_TYPE_ETABL=='college') ) ? 'code-division' : 'classe-ref' ;
+$classe_value = ($BILAN_TYPE_ETABL=='college') ) ? $classe_ref : 'CL'.$classe_id ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et mettre en session les infos sur les seuils enregistrés
@@ -123,11 +122,11 @@ if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_classe = array();
-$key_classe = $classe_value;
+$key_classe = 'CL'.$classe_id;
 
 $tab_classe[$key_classe] = array(
-  'id-be'   => sprintf("%'96u",$classe_id), // En attendant l'identifiant de classe de BE1D...
-  'libelle' => $classe_nom, // max 50 caractères : 20 dans SACoche
+  'id-be'   => $classe_id, // En attendant l'identifiant de classe de BE1D...
+  'libelle' => $classe_nom,
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -306,12 +305,11 @@ foreach($DB_TAB as $DB_ROW)
   }
   if( ( ($BILAN_TYPE_ETABL=='college') && $DB_ROW['user_sconet_id'] ) || ( ($BILAN_TYPE_ETABL=='ecole') && $DB_ROW['user_reference'] ) )
   {
-    $ine = ($DB_ROW['user_reference']) ? $DB_ROW['user_reference'] : sprintf("%'911u",$DB_ROW['user_id']) ; // En attendant l'identifiant INE de BE1D...
     $tab_eleve[$DB_ROW['user_id']] = array(
       'eleve'         => array(
         'id'          => 'ELV'.$DB_ROW['user_id'],
         'id-be'       => $DB_ROW['user_sconet_id'], // 2D
-        'ine'         => $ine, // 1D
+        'ine'         => $DB_ROW['user_reference'], // 1D
         $champ_classe => $classe_value, // 2D max 8 caractères : idem dans SACoche
         'nom'         => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
         'prenom'      => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
@@ -384,29 +382,6 @@ foreach($DB_TAB as $DB_ROW)
   if( ($BILAN_TYPE_ETABL=='college') && !$DB_ROW['user_sconet_id'] )
   {
     $tab_compte_rendu['alerte'][$key_prof] = 'Absence d\'identifiant SIECLE (STS) pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : génèrera un message d\'alerte non bloquant.';
-  }
-  if($BILAN_TYPE_ETABL=='ecole')
-  {
-    $tab_erreur = array();
-    if($DB_ROW['user_genre']=='I')
-    {
-      $tab_erreur['civilité'] = 'MME';
-      $DB_ROW['user_genre'] = 'MME';
-    }
-    if(!$DB_ROW['user_nom'])
-    {
-      $tab_erreur['nom'] = 'MACHIN';
-      $DB_ROW['user_nom'] = 'MACHIN';
-    }
-    if(!$DB_ROW['user_prenom'])
-    {
-      $tab_erreur['prénom'] = '-';
-      $DB_ROW['user_prenom'] = '-';
-    }
-    if(!empty($tab_erreur))
-    {
-      $tab_compte_rendu['alerte'][$key_prof] = 'Absence de '.implode(' / ',array_keys($tab_erreur)).' pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : "'.implode(' ',$tab_erreur).'" imposé pour éviter un rejet bloquant.';
-    }
   }
   $tab_prof[$key_prof] = array(
     'type'     => $type,
@@ -500,18 +475,12 @@ $tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,a
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '' /*liste_rubrique_type*/ , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array(
-    'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
-    'listing_profs' => $DB_ROW['listing_profs'] ,
-  );
+  $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array( 'saisie_valeur'=>$DB_ROW['saisie_valeur'] , 'listing_profs'=>$DB_ROW['listing_profs'] );
 }
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_classe( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '' /*liste_rubrique_type*/ , $classe_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_saisie[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array(
-    'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
-    'listing_profs' => $DB_ROW['listing_profs'] ,
-  );
+  $tab_saisie[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array( 'saisie_valeur'=>$DB_ROW['saisie_valeur'] , 'listing_profs'=>$DB_ROW['listing_profs'] );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -779,16 +748,6 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
           $tab_eleve[$eleve_id]['epi'][$key_rubrique] = array(
             'appreciation' => $tab_tmp_saisie['appreciation']['saisie_valeur'], // max 600 caractères : idem dans SACoche
           );
-          // Au cas où il n'y aurait pas eu de descriptif de l'action et où cela serait associé à un prof ou une matière hors enseignement
-          foreach($tab_epi[$key_rubrique]['enseignant-refs'] as $key => $key_prof)
-          {
-            $key_discipline = $tab_epi[$key_rubrique]['discipline-refs'][$key];
-            $key_matiere = substr($key_discipline,0,-1);
-            $tab_eleve[$eleve_id]['commun']['enseignant'][$key_prof] = $tab_prof[$key_prof];
-            $tab_eleve[$eleve_id]['commun']['discipline'][$key_discipline] = $tab_rubrique[$key_matiere];
-            $tab_objet_used[$key_prof] = TRUE;
-            $tab_objet_used[$key_matiere] = TRUE;
-          }
         }
         // AP
         if( ($rubrique_type=='ap') && isset($tab_ap['AP'.$rubrique_id.$key_periode]) )
@@ -798,16 +757,6 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
           $tab_eleve[$eleve_id]['ap'][$key_rubrique] = array(
             'appreciation' => $tab_tmp_saisie['appreciation']['saisie_valeur'], // max 600 caractères : idem dans SACoche
           );
-          // Au cas où il n'y aurait pas eu de descriptif de l'action et où cela serait associé à un prof ou une matière hors enseignement
-          foreach($tab_ap[$key_rubrique]['enseignant-refs'] as $key => $key_prof)
-          {
-            $key_discipline = $tab_ap[$key_rubrique]['discipline-refs'][$key];
-            $key_matiere = substr($key_discipline,0,-1);
-            $tab_eleve[$eleve_id]['commun']['enseignant'][$key_prof] = $tab_prof[$key_prof];
-            $tab_eleve[$eleve_id]['commun']['discipline'][$key_discipline] = $tab_rubrique[$key_matiere];
-            $tab_objet_used[$key_prof] = TRUE;
-            $tab_objet_used[$key_matiere] = TRUE;
-          }
         }
         // Parcours
         if( ($rubrique_type=='parcours') && isset($tab_parcours['PAR'.$rubrique_id.$key_periode]) )
@@ -817,8 +766,6 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
             'code'         => $tab_parcours[$key_rubrique]['code'],
             'appreciation' => $tab_tmp_saisie['appreciation']['saisie_valeur'], // max 600 caractères : idem dans SACoche
           );
-          // Au cas où il n'y aurait pas eu de descriptif du projet
-          $tab_eleve[$eleve_id]['commun']['parcours'][$key_rubrique] = $tab_parcours[$key_rubrique];
         }
         // Bilan
         if($rubrique_type=='bilan')
@@ -955,7 +902,7 @@ if( !empty($tab_eleve) )
 // Retour
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// On retire les message alertant de prof sans infos suffisantes ou de matière hors Siècle s'ils ne sont finalement pas utilisés
+// On retire les message alertant de prof sans id Siècle ou de matière hors Siècle s'ils ne sont finalement pas utilisés
 foreach($tab_compte_rendu as $type_alerte => $tab_message)
 {
   foreach($tab_message as $key => $message)

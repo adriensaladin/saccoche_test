@@ -77,7 +77,7 @@ $tab_sous_menu = array
   ),
   'officiel' => array
   (
-    'officiel_voir_archive' => array( 'texte' => Lang::_("Archives consultables") , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_voir_archive' ), // Pour profs / dirs / admins c'est "officiel_reglages_voir_archives"
+    'officiel_voir_archive' => array( 'texte' => Lang::_("Archives consultables") , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_voir_archive' ),
   ),
 );
 

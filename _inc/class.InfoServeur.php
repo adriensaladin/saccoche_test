@@ -119,7 +119,7 @@ class InfoServeur
       case 'post_max_size'                  : return "Par défaut 8Mo.<br />Doit être plus grand que upload_max_filesize (ci-dessous).";
       case 'upload_max_filesize'            : return "Par défaut 2Mo.<br />A augmenter si on doit envoyer un fichier d'une taille supérieure.";
       case 'sql_mode'                       : return "Un mode comportant TRADITIONAL ou STRICT_TRANS_TABLES ou STRICT_ALL_TABLES induit un mode SQL strict.";
-      case 'max_allowed_packet'             : return "Par défaut 1Mo (1 048 576 octets).<br />Mais 4Mo recommandés pour éviter tout problème (archivage des imports SIECLE).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.";
+      case 'max_allowed_packet'             : return "Par défaut 1Mo (1 048 576 octets).<br />Pour restaurer une sauvegarde, les fichiers contenus dans le zip ne doivent pas dépasser cette taille.";
       case 'max_user_connections'           : return "Une valeur inférieure à 5 est susceptible, suivant la charge, de poser problème.";
       case 'group_concat_max_len'           : return "Par défaut 1024 octets.<br />Une telle valeur devrait suffire.";
       case 'safe_mode'                      : return "Fonctionnalité obsolète depuis PHP 5.3.0, à ne plus utiliser.<br />Son activation peut poser problème (pour échanger avec le serveur communautaire).";
@@ -297,9 +297,7 @@ class InfoServeur
   private static function max_execution_time()
   {
     $val = ini_get('max_execution_time');
-    if( (!$val) || ($val>=30) ) { $couleur = 'vert';  }
-    elseif($val>=15)            { $couleur = 'jaune'; }
-    else                        { $couleur = 'rouge'; }
+    if( (!$val) || ($val>=30) ) { $couleur = 'vert'; } elseif($val>=15) { $couleur = 'jaune'; } else { $couleur = 'rouge'; }
     $val = ($val) ? $val.'s' : '<b>&infin;</b>' ;
     return InfoServeur::cellule_coloree_centree( $val , $couleur );
   }
@@ -317,9 +315,7 @@ class InfoServeur
   private static function memory_limit()
   {
     $val = ini_get('memory_limit');
-    if( ($val==-1) || ($val>=128) ) { $couleur = 'vert';  }
-    elseif($val>=64)                { $couleur = 'jaune'; }
-    else                            { $couleur = 'rouge'; }
+    if( ($val==-1) || ($val>=128) ) { $couleur = 'vert'; } elseif($val>=64) { $couleur = 'jaune'; } else { $couleur = 'rouge'; }
     $val = ($val!=-1) ? $val : '<b>&infin;</b>' ;
     return InfoServeur::cellule_coloree_centree( $val , $couleur );
   }
@@ -404,7 +400,7 @@ class InfoServeur
   /**
    * max_allowed_packet
    * La taille maximale d'un paquet envoyé à MySQL.
-   * Quand on fait un INSERT multiple, il ne faut pas balancer trop d'enregistrements car si la chaîne dépasse cette limitation alors la requête ne passe pas.
+   * Quand on fait un INSERT multiple, il ne faut pas balancer trop d'enregistrements car si la chaîne dépasse cette limitation (1Mo) alors la requête ne passe pas.
    * Voir http://dev.mysql.com/doc/refman/5.0/fr/server-system-variables.html
    *
    * @param void
@@ -414,10 +410,7 @@ class InfoServeur
   {
     $DB_ROW = defined('SACOCHE_STRUCTURE_BD_NAME') ? DB_STRUCTURE_COMMUN::DB_recuperer_variable_MySQL('max_allowed_packet') : DB_WEBMESTRE_PUBLIC::DB_recuperer_variable_MySQL('max_allowed_packet') ;
     $val = $DB_ROW['Value'];
-    if    ($val<=1048576) { $couleur = 'rouge'; } // 1Mo
-    elseif($val<=2097152) { $couleur = 'jaune'; } // 2Mo
-    else                  { $couleur = 'vert';  }
-    return InfoServeur::cellule_coloree_centree( number_format($val,0,'',' ') , $couleur );
+    return InfoServeur::cellule_centree( number_format($val,0,'',' ') );
   }
 
   /**
@@ -620,13 +613,14 @@ class InfoServeur
   /**
    * server_protocole
    * Retourne si le protocole est http ou https.
+   * Utilise la fonction getServerProtocole() définie dans le loader.
    *
    * @param void
    * @return string
    */
   private static function server_protocole()
   {
-    $valeur = strtoupper( substr(HTTP,0,-3) ); // Retirer "://"
+    $valeur = (getServerProtocole()=='https://') ? 'HTTPS' : 'HTTP' ;
     return InfoServeur::cellule_coloree_centree($valeur,'jaune');
   }
 
@@ -643,6 +637,28 @@ class InfoServeur
     $valeur = Session::get_IP();
     return InfoServeur::cellule_coloree_centree($valeur,'jaune');
   }
+  
+/**
+ * getServerProtocole
+ *
+ * @param void
+ * @return string
+ */
+function getServerProtocole()
+{
+  // $_SERVER['HTTPS'] peut valoir 'on' ou 'off' ou ''
+  if ( isset($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS'])=='on') )
+  {
+    return 'https://';
+  }
+  // Pour les serveurs derrière un équilibreur de charge (@see http://en.wikipedia.org/wiki/List_of_HTTP_header_fields#Common_non-standard_request_headers)
+  if( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ($_SERVER['HTTP_X_FORWARDED_PROTO']=='https') )
+  {
+    return 'https://';
+  }
+  return 'http://';
+}
+
 
   // //////////////////////////////////////////////////
   // Méthodes publiques génériques

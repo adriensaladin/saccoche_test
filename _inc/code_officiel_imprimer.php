@@ -26,7 +26,6 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des valeurs transmises
@@ -87,8 +86,6 @@ if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrate
   Json::end( FALSE , 'Droits insuffisants pour cette action !' );
 }
 
-$annee_scolaire = To::annee_scolaire('code');
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage de la liste des élèves + recalcul des moyennes dans le cas d'impression d'un bulletin (sans incidence tant qu'on n'imprime pas, sauf pour la visualisation graphique)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -129,14 +126,14 @@ if($ACTION=='initialiser')
     calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
   }
   // lister les bilans officiels archivés de l'année courante, affichage du retour
-  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_archive( $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/ , $BILAN_TYPE /*archive_ref*/ , $periode_id , $tab_eleve_id , FALSE /*with_infos*/ );
+  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( $BILAN_TYPE , $periode_id , $tab_eleve_id );
   $_SESSION['tmp_droit_voir_archive'] = array(); // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et à donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
   foreach($tab_eleve_id as $eleve_id)
   {
     if($OBJET=='imprimer')
     {
       $checked            = (isset($DB_TAB[$eleve_id])) ? '' : ' checked' ;
-      $td_date_generation = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']) : 'Non' ;
+      $td_date_generation = (isset($DB_TAB[$eleve_id])) ? 'Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_generation']) : 'Non' ;
       Json::add_str('<tr id="id_'.$eleve_id.'">');
       Json::add_str(  '<td class="nu"><input type="checkbox" name="f_ids" value="'.$eleve_id.'"'.$checked.' /></td>');
       Json::add_str(  '<td class="label">'.$tab_eleve_td[$eleve_id].'</td>');
@@ -152,11 +149,17 @@ if($ACTION=='initialiser')
       }
       else
       {
-        $clef = $DB_TAB[$eleve_id][0]['officiel_archive_id'];
-        $_SESSION['tmp_droit_voir_archive'][$clef] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-        $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
-        $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
-        $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
+        if(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id )))
+        {
+          $_SESSION['tmp_droit_voir_archive'][$eleve_id.$BILAN_TYPE] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
+          $td_date_generation = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$BILAN_TYPE.'_'.$periode_id.'" target="_blank">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_generation']).'</a>' ;
+        }
+        else
+        {
+          $td_date_generation = 'Oui, mais archive non présente sur ce serveur' ;
+        }
+        $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
+        $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
       }
       Json::add_str('<tr>');
       Json::add_str(  '<td>'.$tab_eleve_td[$eleve_id].'</td>');
@@ -187,6 +190,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
     }
     unset($tab_memo['tab_archive']['image']);
     // Récupérer les bilans déjà existants pour savoir s'il faut faire un INSERT ou un UPDATE (sinon, un REPLACE efface les dates de consultation)
+    $annee_scolaire = To::annee_scolaire('code');
     $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_archive( $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/ , $BILAN_TYPE /*archive_ref*/ , $periode_id , array_keys($tab_memo['tab_pages_decoupe_pdf']) /*tab_eleve_id*/ , FALSE /*with_infos*/ );
     $tab_notif = array();
     foreach($tab_memo['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)

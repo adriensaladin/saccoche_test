@@ -1227,8 +1227,6 @@ public static function DB_tester_epi_theme( $theme_code )
  * @param int    $epi_id   inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
-// Clef unique UNIQUE KEY livret_epi (livret_epi_theme_code, livret_page_ref, groupe_id) retirée : on tolère plusieurs EPI avec la même thématique pour un élève.
-/*
 public static function DB_tester_epi( $theme_code , $page_ref , $groupe_id , $epi_id=FALSE )
 {
   $DB_SQL = 'SELECT livret_epi_id ';
@@ -1244,7 +1242,6 @@ public static function DB_tester_epi( $theme_code , $page_ref , $groupe_id , $ep
   );
   return (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
-*/
 
 /**
  * ajouter_epi
@@ -2019,25 +2016,6 @@ public static function DB_modifier_saisie_jointure_prof( $livret_saisie_id , $pr
 }
 
 /**
- * DB_ajouter_saisie_memo_detail
- *
- * @param int     $livret_saisie_id
- * @param string  $acquis_detail
- * @return void
- */
-public static function DB_ajouter_saisie_memo_detail( $livret_saisie_id , $acquis_detail )
-{
-  $DB_SQL = 'INSERT INTO sacoche_livret_saisie_memo_detail ( livret_saisie_id,  acquis_detail) ';
-  $DB_SQL.= 'VALUES                                        (:livret_saisie_id, :acquis_detail) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE acquis_detail=:acquis_detail ';
-  $DB_VAR = array(
-    ':livret_saisie_id' => $livret_saisie_id,
-    ':acquis_detail'    => $acquis_detail,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * DB_modifier_saisie_memo_detail
  *
  * @param int     $livret_saisie_id
@@ -2046,9 +2024,8 @@ public static function DB_ajouter_saisie_memo_detail( $livret_saisie_id , $acqui
  */
 public static function DB_modifier_saisie_memo_detail( $livret_saisie_id , $acquis_detail )
 {
-  $DB_SQL = 'UPDATE sacoche_livret_saisie_memo_detail ';
-  $DB_SQL.= 'SET acquis_detail=:acquis_detail ';
-  $DB_SQL.= 'WHERE livret_saisie_id=:livret_saisie_id ';
+  $DB_SQL = 'INSERT INTO sacoche_livret_saisie_memo_detail ( livret_saisie_id,  acquis_detail) VALUES (:livret_saisie_id, :acquis_detail) ';
+  $DB_SQL.= 'ON DUPLICATE KEY UPDATE acquis_detail=:acquis_detail ';
   $DB_VAR = array(
     ':livret_saisie_id' => $livret_saisie_id,
     ':acquis_detail'    => $acquis_detail,

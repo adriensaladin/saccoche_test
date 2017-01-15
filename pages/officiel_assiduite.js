@@ -141,7 +141,7 @@ $(document).ready
       }
 
       // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystérieusement... juste parce que cette partie est dans une boucle if{} !
+      // À définir avant la déclaration de ajaxOptions_import sinon Firefox plante mystétieusement... juste parce que cette partie est dans une boucle if{} !
       function retour_form_valide_import(responseJSON)
       {
         $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
@@ -153,7 +153,7 @@ $(document).ready
         else
         {
           initialiser_compteur();
-          $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote , #comfirm_import_moliere').hide(0);
+          $('#comfirm_import_sconet , #comfirm_import_siecle , #comfirm_import_gepi , #comfirm_import_pronote').hide(0);
           if( (f_action=='import_sconet') || (f_action=='import_siecle') )
           {
             $('#sconet_date_export').html(responseJSON['date_export']);
@@ -172,10 +172,6 @@ $(document).ready
             $('#pronote_eleves_nb' ).html(responseJSON['eleves_nb']);
             $('#pronote_date_debut').html(responseJSON['date_debut']);
             $('#pronote_date_fin'  ).html(responseJSON['date_fin']);
-          }
-          else if(f_action=='import_moliere')
-          {
-            $('#moliere_eleves_nb').html(responseJSON['eleves_nb']);
           }
           $('#periode_import').html($('#f_periode_import option:selected').text());
           $('#ajax_msg_'+f_action).removeAttr('class').html('');
@@ -241,11 +237,6 @@ $(document).ready
               $('#ajax_msg_'+f_action).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
               return false;
             }
-            else if ( (f_action=='import_moliere') && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
-            {
-              $('#ajax_msg_'+f_action).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');
-              return false;
-            }
             else
             {
               $('#form_fichier button').prop('disabled',true);
@@ -271,7 +262,7 @@ $(document).ready
       (
         function()
         {
-          $('#f_upload_action').val(f_action); // import_sconet | import_siecle | import_gepi | import_pronote | import_moliere
+          $('#f_upload_action').val(f_action); // import_sconet | import_siecle | import_gepi | import_pronote
           $('#f_upload_periode').val(id_periode_import);
           $('#f_import').click();
         }
@@ -280,7 +271,7 @@ $(document).ready
     }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Confirmation du traitement du fichier
+    // Confirmation du traitement du fichier issu de SIÈCLE ou de GEPI
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('#confirmer_import').click

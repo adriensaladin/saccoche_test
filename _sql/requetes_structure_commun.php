@@ -1827,19 +1827,6 @@ public static function DB_OPT_enfants_parent($parent_id)
 }
 
 /**
- * Retourner un tableau [valeur texte] des structures des bilans officiels archivés
- *
- * @param void
- * @return array
- */
-public static function DB_OPT_officiel_archive_structure()
-{
-  $DB_SQL = 'SELECT DISTINCT structure_uai AS valeur, CONCAT(structure_uai," - ",structure_denomination) AS texte ';
-  $DB_SQL.= 'FROM sacoche_officiel_archive ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * Retourner un tableau [valeur texte] des années scolaires des bilans officiels archivés
  *
  * @param void

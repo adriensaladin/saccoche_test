@@ -253,13 +253,11 @@ class HtmlMail
     $mailto = 'mailto:'.$mail_adresse.'?subject='.$mail_sujet;
     $mailto.= ($mail_copy)    ? '&cc='.$mail_copy      : '' ;
     $mailto.= ($mail_contenu) ? '&body='.$mail_contenu : '' ;
-    $tab_bad = array( '<br />' , ' '   );
-    $tab_bon = array( '%0D%0A' , '%20' );
-    $tab_unicode_valeurs = HtmlMail::utf8ToUnicode( str_replace( $tab_bad , $tab_bon , $mailto ) );
+    $tab_unicode_valeurs = HtmlMail::utf8ToUnicode(str_replace(' ','%20',$mailto));
     $href = '&#'.implode(';'.'&#',$tab_unicode_valeurs).';';
     if(strpos($texte_lien,'@'))
     {
-      $tab_unicode_valeurs = HtmlMail::utf8ToUnicode( str_replace( $tab_bad , $tab_bon , $texte_lien ) );
+      $tab_unicode_valeurs = HtmlMail::utf8ToUnicode(str_replace(' ','%20',$texte_lien));
       $texte_lien = '&#'.implode(';'.'&#',$tab_unicode_valeurs).';';
     }
     return '<a href="'.$href.'" class="lien_mail">'.$texte_lien.'</a>';

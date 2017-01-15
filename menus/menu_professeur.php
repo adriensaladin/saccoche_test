@@ -114,7 +114,7 @@ $tab_sous_menu = array
  // 'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3")  , 'class' => 'officiel_palier3'      , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
     'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")       , 'class' => 'marianne'              , 'href' => 'page=livret&amp;section=edition'            ),
     'brevet_fiches'             => array( 'texte' => Lang::_("Fiches brevet")         , 'class' => 'officiel_brevet'       , 'href' => 'page=brevet&amp;section=fiches'             ),
-    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables") , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'     ), // Pour élèves et parents c'est "officiel_voir_archive"
+    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables") , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'     ), // TODO à fusionner avec officiel_voir_archive à terme
   ),
 );
 

@@ -270,26 +270,26 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       $q_ordonner           = ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
       $q_supprimer          = ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($DB_ROW['proprietaire']).')."></q>' ;
       $q_saisir             = ($niveau_droit>=2) ? '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>' : '<q class="saisir_non" title="Action nécessitant le droit de saisie (voir '.html($DB_ROW['proprietaire']).')."></q>' ;
-      $q_module_envoyer     = !empty($_SESSION['MODULE']['GENERER_ENONCE']) ? '<q class="module_envoyer" title="Générer un énoncé (module externe)."></q>' : '' ;
       // Afficher une ligne du tableau
       Json::add_row( 'html' , '<tr>' );
       Json::add_row( 'html' ,   '<td>'.$date_affich.'</td>' );
       Json::add_row( 'html' ,   '<td>'.$date_visible.'</td>' );
       Json::add_row( 'html' ,   '<td>'.$date_autoeval.'</td>' );
-      Json::add_row( 'html' ,   $td_groupe_eleves );
+      Json::add_row( 'html' , $td_groupe_eleves );
       Json::add_row( 'html' ,   '<td id="proprio_'.$DB_ROW['proprio_id'].'">'.$profs_nombre.$profs_bulle.'</td>' );
       Json::add_row( 'html' ,   '<td>'.html($DB_ROW['devoir_info']).'</td>' );
       Json::add_row( 'html' ,   '<td>'.$DB_ROW['items_nombre'].' item'.$cs.'</td>' );
-      Json::add_row( 'html' ,   '<td>'.$image_sujet.$image_corrige.$q_uploader_doc.'</td>' );
+      Json::add_row( 'html' ,   '<td>'.$image_sujet.$image_corrige );
+      Json::add_row( 'html' , $q_uploader_doc );
+      Json::add_row( 'html' ,   '</td>' );
       Json::add_row( 'html' ,   '<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>' );
       Json::add_row( 'html' ,   '<td class="nu" id="devoir_'.$ref.'">' );
-      Json::add_row( 'html' ,     $q_modifier );
-      Json::add_row( 'html' ,     $q_ordonner );
+      Json::add_row( 'html' , $q_modifier );
+      Json::add_row( 'html' , $q_ordonner );
       Json::add_row( 'html' ,     '<q class="dupliquer" title="Dupliquer cette évaluation."></q>' );
-      Json::add_row( 'html' ,     $q_supprimer );
+      Json::add_row( 'html' , $q_supprimer );
       Json::add_row( 'html' ,     '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>' );
-      Json::add_row( 'html' ,     $q_module_envoyer );
-      Json::add_row( 'html' ,     $q_saisir );
+      Json::add_row( 'html' , $q_saisir );
       Json::add_row( 'html' ,     '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>' );
       Json::add_row( 'html' ,     '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>' );
       Json::add_row( 'html' ,   '</td>' );
@@ -465,7 +465,6 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $remplissage_lien1    = '<a href="#fini" class="fini" title="Cliquer pour indiquer (ou pas) qu\'il n\'y a plus de saisies à effectuer.">';
   $remplissage_lien2    = '</a>';
   $td_groupe_eleves     = ($type=='groupe') ? '<td class="'.$eleves_ordre.'">{{GROUPE_NOM}}</td>' : '<td class="'.$eleves_ordre.'">'.$nb_eleves.' élève'.$us.$eleves_bulle.'</td>' ;
-  $q_module_envoyer     = !empty($_SESSION['MODULE']['GENERER_ENONCE']) ? '<q class="module_envoyer" title="Générer un énoncé (module externe)."></q>' : '' ;
   Json::add_row( 'html' , '<td>'.$date.'</td>' );
   Json::add_row( 'html' , '<td>'.$date_visible.'</td>' );
   Json::add_row( 'html' , '<td>'.$date_autoeval.'</td>' );
@@ -481,7 +480,6 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   Json::add_row( 'html' ,   '<q class="dupliquer" title="Dupliquer cette évaluation."></q>' );
   Json::add_row( 'html' ,   '<q class="supprimer" title="Supprimer cette évaluation."></q>' );
   Json::add_row( 'html' ,   '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>' );
-  Json::add_row( 'html' ,   $q_module_envoyer );
   Json::add_row( 'html' ,   '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>' );
   Json::add_row( 'html' ,   '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>' );
   Json::add_row( 'html' ,   '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>' );
@@ -691,7 +689,6 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $q_modifier           = ($niveau_droit>=3) ? '<q class="modifier" title="Modifier cette évaluation (date, description, ...)."></q>' : '<q class="modifier_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
   $q_ordonner           = ($niveau_droit>=3) ? '<q class="ordonner" title="Réordonner les items de cette évaluation."></q>' : '<q class="ordonner_non" title="Action nécessitant le droit de modification (voir '.html($proprietaire_identite).')."></q>' ;
   $q_supprimer          = ($niveau_droit==4) ? '<q class="supprimer" title="Supprimer cette évaluation."></q>' : '<q class="supprimer_non" title="Suppression restreinte au propriétaire de l\'évaluation ('.html($proprietaire_identite).')."></q>' ;
-  $q_module_envoyer     = !empty($_SESSION['MODULE']['GENERER_ENONCE']) ? '<q class="module_envoyer" title="Générer un énoncé (module externe)."></q>' : '' ;
   Json::add_row( 'html' , '<td>'.$date.'</td>' );
   Json::add_row( 'html' , '<td>'.$date_visible.'</td>' );
   Json::add_row( 'html' , '<td>'.$date_autoeval.'</td>' );
@@ -699,15 +696,16 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   Json::add_row( 'html' , '<td id="proprio_'.$proprio_id.'">'.$profs_nombre.$profs_bulle.'</td>' );
   Json::add_row( 'html' , '<td>'.html($description).'</td>' );
   Json::add_row( 'html' , '<td>'.$nb_items.' item'.$cs.'</td>' );
-  Json::add_row( 'html' , '<td>'.$image_sujet.$image_corrige.$q_uploader_doc.'</td>' );
+  Json::add_row( 'html' , '<td>'.$image_sujet.$image_corrige );
+  Json::add_row( 'html' , $q_uploader_doc );
+  Json::add_row( 'html' , '</td>' );
   Json::add_row( 'html' , '<td class="'.$remplissage_class.$remplissage_class2.'"'.$remplissage_td_title.'>'.$remplissage_lien1.$remplissage_contenu.$remplissage_lien2.'</td>' );
   Json::add_row( 'html' , '<td class="nu" id="devoir_'.$ref.'">' );
-  Json::add_row( 'html' ,   $q_modifier );
-  Json::add_row( 'html' ,   $q_ordonner );
+  Json::add_row( 'html' , $q_modifier );
+  Json::add_row( 'html' , $q_ordonner );
   Json::add_row( 'html' ,   '<q class="dupliquer" title="Dupliquer cette évaluation."></q>' );
-  Json::add_row( 'html' ,   $q_supprimer );
+  Json::add_row( 'html' , $q_supprimer );
   Json::add_row( 'html' ,   '<q class="imprimer" title="Imprimer un cartouche pour cette évaluation."></q>' );
-  Json::add_row( 'html' ,   $q_module_envoyer );
   Json::add_row( 'html' ,   '<q class="saisir" title="Saisir les acquisitions des élèves à cette évaluation."></q>' ); // niveau de droit à 3 ou 4 donc au moins à 2
   Json::add_row( 'html' ,   '<q class="voir" title="Voir les acquisitions des élèves à cette évaluation."></q>' );
   Json::add_row( 'html' ,   '<q class="voir_repart" title="Voir les répartitions des élèves à cette évaluation."></q>' );
@@ -791,92 +789,6 @@ if( ($action=='indiquer_eleves_deja') && $description && $date_debut )
     Json::add_row( NULL , $DB_ROW['user_id'].'_'.To::date_mysql_to_french($DB_ROW['devoir_date']) );
   }
   Json::end( TRUE );
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Concevoir un fichier d'informations à destination d'un module externe (conception de l'évaluation
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='generer_enonces') && $devoir_id && $groupe_id && $date_fr && in_array($eleves_ordre,array('alpha','classe')) && $description && $groupe_nom )
-{
-  if(empty($_SESSION['MODULE']['GENERER_ENONCE']))
-  {
-    Json::end( FALSE , 'Pas de module externe enregistré pour traiter cette demande !' );
-  }
-  $structure_uai = ($_SESSION['WEBMESTRE_UAI']) ? $_SESSION['WEBMESTRE_UAI'] : $_SESSION['SESAMATH_UAI'] ;
-  $structure_id  = ($_SESSION['SESAMATH_ID'])   ? $_SESSION['SESAMATH_ID']   : $_SESSION['BASE'] ;
-  $structure_nom = ($_SESSION['ETABLISSEMENT']['DENOMINATION']) ? $_SESSION['ETABLISSEMENT']['DENOMINATION'] : ( ($_SESSION['SESAMATH_TYPE_NOM']) ? $_SESSION['SESAMATH_TYPE_NOM'] : $_SESSION['WEBMESTRE_DENOMINATION'] ) ;
-  $tab_module = array(
-    'structure' => array(
-      'uai' => $structure_uai,
-      'id'  => $structure_id,
-      'nom' => $structure_nom,
-    ),
-    'devoir' => array(
-      'id'       => $devoir_id,
-      'groupe'   => $groupe_nom,
-      'intitule' => $description,
-      'date'     => $date_fr,
-    ),
-    'prof' => array(
-      'id'     => $_SESSION['USER_ID'],
-      'nom'    => $_SESSION['USER_NOM'],
-      'prenom' => $_SESSION['USER_PRENOM'],
-    ),
-    'item'   => array(),
-    'eleve'  => array(),
-    'panier' => array(),
-  );
-  // liste des items
-  $DB_TAB_COMP = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_items( $devoir_id , FALSE /*with_socle*/ , FALSE /*with_coef*/ , TRUE /*with_ref*/ , FALSE /*with_comm*/ , FALSE /*with_lien*/ );
-  // liste des élèves
-  $DB_TAB_USER = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $groupe_type , $groupe_id , $eleves_ordre );
-  // Let's go
-  $item_nb = count($DB_TAB_COMP);
-  if(!$item_nb)
-  {
-    Json::end( FALSE , 'Aucun item n\'est associé à cette évaluation !' );
-  }
-  $eleve_nb = count($DB_TAB_USER);
-  if(!$eleve_nb)
-  {
-    Json::end( FALSE , 'Aucun élève n\'est associé à cette évaluation !' );
-  }
-  // items
-  foreach($DB_TAB_COMP as $DB_ROW)
-  {
-    $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
-    $tab_module['item'][(int)$DB_ROW['item_id']] = array(
-      'id'  => (int)$DB_ROW['item_id'],
-      'ref' => $DB_ROW['matiere_ref'].'.'.$item_ref,
-      'nom' => $DB_ROW['item_nom'],
-    );
-  }
-  // élèves
-  foreach($DB_TAB_USER as $DB_ROW)
-  {
-    $tab_module['eleve'][(int)$DB_ROW['user_id']] = array(
-      'id'     => (int)$DB_ROW['user_id'],
-      'nom'    => $DB_ROW['user_nom'],
-      'prenom' => $DB_ROW['user_prenom'],
-    );
-  }
-  // ajouter les demandes d'évaluation
-  $DB_TAB = DB_STRUCTURE_PROFESSEUR::DB_lister_devoir_saisies( $devoir_id , TRUE /*with_marqueurs*/ );
-  foreach($DB_TAB as $DB_ROW)
-  {
-    // Test pour éviter les pbs des élèves changés de groupes ou des items modifiés en cours de route
-    if( isset($tab_module['item'][$DB_ROW['item_id']]) && isset($tab_module['eleve'][$DB_ROW['eleve_id']]) && ($DB_ROW['saisie_note']=='PA') )
-    {
-      $tab_module['panier'][(int)$DB_ROW['eleve_id']][(int)$DB_ROW['item_id']] = TRUE;
-    }
-  }
-  // enregistrer le fichier
-  $fichier_contenu = json_encode($tab_module);
-  $fichier_nom = 'export_module_'.$fnom_export.'.json';
-  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $fichier_contenu );
-  // Retour du lien
-  Json::end( TRUE , $_SESSION['MODULE']['GENERER_ENONCE'].'?json='.urlencode(URL_DIR_EXPORT.$fichier_nom) );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -27,6 +27,7 @@
 
 // Fichier appelé pour générer et afficher une archive PDF d'un bilan officiel.
 // Passage en GET d'un paramètre pour savoir quelle archive est concernée.
+// TODO : doit remplacer à terme (mi-2017) releve_pdf.php
 
 // Constantes / Configuration serveur / Autoload classes / Fonction de sortie
 require('./_inc/_loader.php');

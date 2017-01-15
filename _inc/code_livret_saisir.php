@@ -502,21 +502,11 @@ foreach($DB_TAB as $DB_ROW)
 {
   if($DB_ROW['jointure_periode']==$JOINTURE_PERIODE)
   {
-    $tab_saisie[$eleve_id][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array(
-      'saisie_id'     => $DB_ROW['livret_saisie_id'] ,
-      'prof_id'       => $DB_ROW['user_id'] ,
-      'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
-      'saisie_origine'=> $DB_ROW['saisie_origine'] ,
-      'listing_profs' => $DB_ROW['listing_profs'] ,
-      'acquis_detail' => $DB_ROW['acquis_detail'] ,
-    );
+    $tab_saisie[$eleve_id][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array( 'saisie_id'=>$DB_ROW['livret_saisie_id'] , 'prof_id'=>$DB_ROW['user_id'] , 'saisie_valeur'=>$DB_ROW['saisie_valeur'] , 'saisie_origine'=>$DB_ROW['saisie_origine'] , 'listing_profs'=>$DB_ROW['listing_profs'] , 'acquis_detail'=>$DB_ROW['acquis_detail'] );
   }
   else
   {
-    $tab_saisie_avant[$eleve_id][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['jointure_periode']][$DB_ROW['saisie_objet']] = array(
-      'prof_id'       => $DB_ROW['user_id'] ,
-      'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
-    );
+    $tab_saisie_avant[$eleve_id][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['jointure_periode']][$DB_ROW['saisie_objet']] = array( 'prof_id'=>$DB_ROW['user_id'] , 'saisie_valeur'=>$DB_ROW['saisie_valeur'] );
   }
 }
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_classe( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '' /*liste_rubrique_type*/ , $classe_id , 0 /*prof_id*/ , TRUE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
@@ -524,20 +514,11 @@ foreach($DB_TAB as $DB_ROW)
 {
   if($DB_ROW['jointure_periode']==$JOINTURE_PERIODE)
   {
-    $tab_saisie[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array(
-      'saisie_id'     => $DB_ROW['livret_saisie_id'] ,
-      'prof_id'       => $DB_ROW['user_id'] ,
-      'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
-      'saisie_origine'=> $DB_ROW['saisie_origine'] ,
-      'listing_profs' => $DB_ROW['listing_profs'] ,
-    );
+    $tab_saisie[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']] = array( 'saisie_id'=>$DB_ROW['livret_saisie_id'] , 'prof_id'=>$DB_ROW['user_id'] , 'saisie_valeur'=>$DB_ROW['saisie_valeur'] , 'saisie_origine'=>$DB_ROW['saisie_origine'] , 'listing_profs'=>$DB_ROW['listing_profs'] );
   }
   else
   {
-    $tab_saisie_avant[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['jointure_periode']][$DB_ROW['saisie_objet']] = array(
-      'prof_id'       => $DB_ROW['user_id'] ,
-      'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
-    );
+    $tab_saisie_avant[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['jointure_periode']][$DB_ROW['saisie_objet']] = array( 'prof_id'=>$DB_ROW['user_id'] , 'saisie_valeur'=>$DB_ROW['saisie_valeur'] );
   }
 }
 

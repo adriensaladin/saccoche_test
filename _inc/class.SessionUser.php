@@ -315,11 +315,6 @@ class SessionUser
         $_SESSION['ELEVE_CLASSE_NOM']   = $_SESSION['OPT_PARENT_CLASSES'][0]['texte'];
       }
     }
-    // Récupérer et Enregistrer en session la liste des modules externes associés à un professeur
-    if($_SESSION['USER_PROFIL_TYPE']=='professeur')
-    {
-      $_SESSION['MODULE'] = DB_STRUCTURE_PROFESSEUR::DB_lister_liaisons_user_module( $_SESSION['USER_ID'] );
-    }
     // Récupérer et Enregistrer en session la liste des élèves associés à un professeur non rattaché à tous les élèves.
     if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUPES']=='config') )
     {

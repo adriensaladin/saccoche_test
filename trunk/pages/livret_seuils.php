@@ -125,6 +125,10 @@ foreach($DB_TAB_pages as $DB_ROW_page)
       }
       echo'</p>';
     }
+    else
+    {
+      echo'<div class="hide"><input type="hidden" name="choix_'.$DB_ROW_page['livret_page_ref'].'" id="choix_'.$DB_ROW_page['livret_page_ref'].'" value="'.$DB_ROW_page['livret_page_colonne'].'" /></div>';
+    }
     foreach( $tab_indice_colonne as $indice_colonne )
     {
       $td = '' ;

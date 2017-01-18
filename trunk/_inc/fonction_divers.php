@@ -75,6 +75,15 @@ function non_vide($n)
 {
   return ($n!==FALSE) && ($n!==NULL) ;
 }
+
+/**
+ * Fonctions utilisées avec array_filter() ; teste si différent d'une chaîne de texte inconsistante.
+ * @return bool
+ */
+function non_chaîne_vide($n)
+{
+  return strlen(trim($n)) ;
+}
 /**
  * Fonctions utilisées avec array_filter() ; teste si différent de zéro.
  * @return bool

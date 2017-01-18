@@ -642,9 +642,8 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         if(!isset($tab_donnees_livret[$clef]))
         {
           $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $RUBRIQUE_TYPE , $rubrique_id , 'eleve' , $eleve_id , 'elements' , $element_determine , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-          $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $element_determine , 'origine' => 'calcul' , 'prof' => 0 , 'find' => TRUE );
-          // détail des acquisitions
           DB_STRUCTURE_LIVRET::DB_ajouter_saisie_memo_detail( $livret_saisie_id , $detail_determine );
+          $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $element_determine , 'origine' => 'calcul' , 'prof' => 0 , 'acquis_detail' => $detail_determine , 'find' => TRUE );
         }
         else
         {
@@ -652,7 +651,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
           if( ($tab_donnees_livret[$clef]['valeur']!==$element_determine) && ($tab_donnees_livret[$clef]['origine']=='calcul') )
           {
             DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'elements' /*$saisie_objet*/ , $element_determine , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-            $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $element_determine , 'origine' => 'calcul' , 'prof' => 0 , 'find' => TRUE );
+            $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $element_determine , 'origine' => 'calcul' , 'prof' => 0 , 'acquis_detail' => $detail_determine , 'find' => TRUE );
           }
           else
           {

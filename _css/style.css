@@ -234,27 +234,27 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.releve_synthese_socle {background-position: 6px -2507px} /* TODO à supprimer ultérieurement */
 #menu a.resilier              {background-position: 6px -2547px}
 #menu a.rss                   {background-position: 6px -2587px}
-#menu a.serveur_database      {background-position: 6px -2627px}
+#menu a.serveur_database      {background-position: 6px -2527px}
 #menu a.serveur_debug         {background-position: 6px -2667px}
-#menu a.serveur_erreur        {background-position: 6px -2707px}
+#menu a.serveur_erreur        {background-position: 6px -2607px}
 #menu a.serveur_fichiers      {background-position: 6px -2747px}
 #menu a.serveur_geographie    {background-position: 6px -2787px}
-#menu a.serveur_identite      {background-position: 6px -2827px}
+#menu a.serveur_identite      {background-position: 6px -2727px}
 #menu a.serveur_info          {background-position: 6px -2867px}
-#menu a.serveur_maintenance   {background-position: 6px -2907px}
+#menu a.serveur_maintenance   {background-position: 6px -2807px}
 #menu a.serveur_proxy         {background-position: 6px -2947px}
 #menu a.serveur_security      {background-position: 6px -2987px}
-#menu a.socle_annuler         {background-position: 6px -3027px}
+#menu a.socle_annuler         {background-position: 6px -2927px}
 #menu a.socle_fichier         {background-position: 6px -3067px}
-#menu a.socle_item            {background-position: 6px -3107px}
+#menu a.socle_item            {background-position: 6px -3007px}
 #menu a.socle_langue          {background-position: 6px -3147px}
 #menu a.socle_pilier          {background-position: 6px -3187px}
-#menu a.statistiques          {background-position: 6px -3227px}
+#menu a.statistiques          {background-position: 6px -3127px}
 #menu a.structure_ajout_csv   {background-position: 6px -3267px}
-#menu a.structure_bdd_repair  {background-position: 6px -3307px}
+#menu a.structure_bdd_repair  {background-position: 6px -3207px}
 #menu a.structure_gestion     {background-position: 6px -3347px}
 #menu a.structure_transfert   {background-position: 6px -3387px}
-#menu a.trombinoscope         {background-position: 6px -3427px}
+#menu a.trombinoscope         {background-position: 6px -3327px}
 #menu a.user_recherche        {background-position: 6px -3467px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */

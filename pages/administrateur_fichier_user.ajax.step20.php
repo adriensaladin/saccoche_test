@@ -440,12 +440,6 @@ if( ($import_origine=='sconet') && ($import_profil=='eleve') )
     Json::end( FALSE , 'Le fichier transmis ne correspond pas à l\'année scolaire '.$annee_scolaire.' !' );
   }
   // Archivage car l'export vers le Livret Scolaire s'annonce complexe...
-  $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_variable_MySQL('max_allowed_packet');
-  $xml_size = filesize(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
-  if( $xml_size > $DB_ROW['Value'] )
-  {
-    Json::end( FALSE , 'Taille ('.FileSystem::afficher_fichier_taille($xml_size).') dépassant la limitation <em>max_allowed_packet</em> de MySQL !' );
-  }
   DB_STRUCTURE_SIECLE::DB_ajouter_import( 'Eleves' , $annee , $xml );
   // tableau temporaire qui sera effacé, servant à retenir le niveau de l'élève en attendant de connaître sa classe.
   $tab_users_fichier['niveau'] = array();

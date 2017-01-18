@@ -142,14 +142,11 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   else if($saisie_objet=='elements')
   {
     $tab_elements = OutilCSV::extraire_lignes($elements);
-    $tab_elements = array_filter($tab_elements,'non_chaîne_vide'); // Pour éviter des sauts de ligne entre les éléments
-    $tab_elements = array_unique($tab_elements); // Pas indispensable car ce sont ensuite les éléments qui sont pris comme clefs
-    $tab_elements = array_values($tab_elements); // Pour ré-indexer les clefs proprement
     $nb_elements  = count($tab_elements);
     $tab_saisie   = array();
     foreach($tab_elements as $key => $element)
     {
-      $tab_saisie[$element] = $nb_elements-$key;
+      $tab_saisie[$element] = $nb_elements-$key+1;
     }
     $saisie_valeur = json_encode($tab_saisie);
   }

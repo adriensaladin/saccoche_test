@@ -62,7 +62,7 @@ if($action=='ajouter')
   // Afficher le retour
   Json::add_row( 'label' , 'Compte créé avec succès.' );
   Json::add_row( 'texte' , '<ul class="puce">' );
-  Json::add_row( 'texte' , '<li class="p">Login <b>'.$login.'</b> / Password <b>'.$password.'</b> / <a href="'.URL_DIR_SACOCHE.'?base='.$base_id.'&amp;mode=normal&amp;login='.$login.'" target="_blank">Connexion.</a></li>' );
+  Json::add_row( 'texte' , '<li class="p">Login <b>'.$login.'</b> / Password <b>'.$password.'</b> / <a href="'.URL_DIR_SACOCHE.'?base='.$base_id.'" target="_blank">Connexion.</a></li>' );
   Json::add_row( 'texte' , '<li class="p"><label class="alerte">N\'oubliez pas de supprimer ce compte une fois les investigations terminées !</label></li>');
   Json::end( TRUE );
 }

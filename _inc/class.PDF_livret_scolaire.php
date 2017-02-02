@@ -327,12 +327,20 @@ class PDF_livret_scolaire extends PDF
     // Date de naissance + Tag date heure initiales (sous le bloc titres dans toutes les situations)
     $this->officiel_ligne_tag( $eleve_genre , $date_naissance , $eleve_INE , $tag_date_heure_initiales , $largeur_bloc_titre );
     // On calcule la hauteur de la ligne et la taille de la police pour faire rentrer le bloc des acquis si possible sur un recto (le verso comportant le reste)
-    $hauteur_disponible = $this->page_hauteur_moins_marges - $hauteur_blocs_ligne1 - $hauteur_blocs_ligne2 ;
-    $hauteur_ligne_minimale = 4;
-    $hauteur_ligne_maximale = 6;
-    $this->lignes_hauteur = round( $hauteur_disponible / $nb_lignes_eleve_eval_total , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
-    $this->lignes_hauteur = max ( $this->lignes_hauteur , $hauteur_ligne_minimale ) ;
-    $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
+    if($nb_lignes_eleve_eval_total)
+    {
+      $hauteur_disponible = $this->page_hauteur_moins_marges - $hauteur_blocs_ligne1 - $hauteur_blocs_ligne2 ;
+      $hauteur_ligne_minimale = 4;
+      $hauteur_ligne_maximale = 6;
+      $this->lignes_hauteur = round( $hauteur_disponible / $nb_lignes_eleve_eval_total , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
+      $this->lignes_hauteur = max ( $this->lignes_hauteur , $hauteur_ligne_minimale ) ;
+      $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
+    }
+    else
+    {
+      // Taille fixe pour les bilans de fin de cycle qui tiennent sur une page
+      $this->lignes_hauteur = 5;
+    }
     $this->taille_police  = $this->lignes_hauteur * 2 ; // 5mm de hauteur par ligne donne une taille de 10
     $this->taille_police  = min ( $this->taille_police , 11 ) ; // Au dessus ça fait quand même gros
     // Enfin, on se positionne pour la suite
@@ -343,7 +351,8 @@ class PDF_livret_scolaire extends PDF
 
   private function bloc_titre( $rubrique_type , $rubrique_titre )
   {
-    $this->SetXY( 0 , $this->GetY() + 0.5*$this->lignes_hauteur );
+    $coef_espacement = (strpos($this->PAGE_REF,'cycle')===FALSE) ? 0.5 : 1 ;
+    $this->SetXY( 0 , $this->GetY() + $coef_espacement*$this->lignes_hauteur );
     $this->SetFont('Arial' , 'B' , 1.5*$this->taille_police);
     $couleur_texte = ($this->couleur=='oui') ? 'blanc' : 'noir' ;
     $couleur_fond  = ($this->couleur=='oui') ? 'livret_titre_'.$rubrique_type : ( ($this->fond) ? 'gris_moyen' : 'blanc' ) ;
@@ -351,7 +360,7 @@ class PDF_livret_scolaire extends PDF
     $this->choisir_couleur_texte($couleur_texte);
     $this->choisir_couleur_fond($couleur_fond);
     $this->CellFit( $this->page_largeur , 1.5*$this->lignes_hauteur , To::pdf($rubrique_titre) , $bordure , 2 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-    $this->SetXY( $this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur );
+    $this->SetXY( $this->marge_gauche , $this->GetY() + $coef_espacement*$this->lignes_hauteur );
     $this->SetFont('Arial' , '' , $this->taille_police);
     $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_'.$rubrique_type : 'blanc' ;
     $this->choisir_couleur_texte('noir');
@@ -635,6 +644,123 @@ class PDF_livret_scolaire extends PDF
     $this->taille_police  = min ( $this->taille_police , 11 ) ; // Au dessus ça fait quand même gros
   }
 
+  public function bloc_socle( $tab_rubriques , $tab_saisie_eleve_socle )
+  {
+    // Largeur des rubriques ; total = 200 = 210 - 5*2 (marges)
+    $largeur_position = 20 ;
+    $largeur_intitule = 200 - ( 4 * $largeur_position ) ;
+    $hauteur_case = 1.5 * $this->lignes_hauteur ;
+    // Titre
+    $cycle_id = substr($this->PAGE_REF,-1);
+    $this->bloc_titre( 'eval' , 'Maîtrise des composantes du socle en fin de cycle '.$cycle_id );
+    // Première ligne du tableau
+    $this->Cell( $largeur_intitule , $hauteur_case , '' , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : ( ($this->fond) ? 'gris_clair' : 'blanc' ) ;
+    $this->choisir_couleur_fond($couleur_fond);
+    foreach($this->SESSION['LIVRET'] as $id => $tab)
+    {
+      $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
+      $this->choisir_couleur_fond($couleur_fond);
+      // fond & contour
+      $this->Rect( $this->GetX() , $this->GetY() , $largeur_position , $hauteur_case , 'DF' /*DrawFill*/ );
+      // contenu
+      $tab_texte = explode(' ',str_replace('Très bonne','Très&nbsp;bonne',$tab['LEGENDE']));
+      foreach($tab_texte as $texte)
+      {
+        $texte = str_replace('Très&nbsp;bonne','Très bonne',$texte);
+        $this->CellFit( $largeur_position , $hauteur_case/2 , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      }
+      $this->SetXY( $this->GetX()+$largeur_position , $this->GetY() - $hauteur_case );
+    }
+    $this->SetXY( $this->marge_gauche , $this->GetY() + $hauteur_case );
+    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    // On passe en revue les rubriques...
+    foreach($tab_rubriques as $livret_rubrique_id => $tab_rubrique)
+    {
+      // récup positionnement
+      $id_rubrique_position = $livret_rubrique_id;
+      $position_info = isset($tab_saisie_eleve_socle[$id_rubrique_position]['position']) ? $tab_saisie_eleve_socle[$id_rubrique_position]['position'] : $tab_saisie_initialisation ;
+      $pourcentage = (!is_null($position_info['saisie_valeur'])) ? $position_info['saisie_valeur'] : FALSE ;
+      // Domaine d’enseignement
+      $this->CellFit( $largeur_intitule , $hauteur_case , To::pdf($tab_rubrique['nom_officiel']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+      // Positionnement
+      if( ($tab_rubrique['code']!='CPD_ETR') || ($pourcentage!='disp') )
+      {
+        $indice = OutilBilan::determiner_degre_maitrise($pourcentage,$this->SESSION['LIVRET']);
+        $taille_croix = min( 12 , 1.5*$this->taille_police );
+        $this->SetFont('Arial' , 'B' , $taille_croix);
+        foreach($this->SESSION['LIVRET'] as $id => $tab)
+        {
+          $br = ($id<4) ? 0 : 1 ;
+          $texte = ($id==$indice) ? 'X' : '' ;
+          $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
+          $this->choisir_couleur_fond($couleur_fond);
+          $this->Cell( $largeur_position , $hauteur_case , To::pdf($texte) , 1 /*bordure*/ , $br , 'C' /*alignement*/ , TRUE /*fond*/ );
+        }
+        $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
+        $this->choisir_couleur_fond($couleur_fond);
+        $this->SetFont('Arial' , '' , $this->taille_police);
+      }
+      else
+      {
+        // Codage dispensé
+        $this->Cell( 4*$largeur_position , $hauteur_case , To::pdf('Dispensé') , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      }
+    }
+  }
+
+  public function bloc_enscompl( $enscompl_nom , $position_info )
+  {
+    // espacement
+    $this->SetXY( $this->GetX() , $this->GetY() + $this->lignes_hauteur );
+    // Largeur des rubriques ; total = 200 = 210 - 5*2 (marges)
+    $largeur_position = 20 ;
+    $largeur_intitule = 200 - ( 2 * $largeur_position ) ;
+    $hauteur_case = 1.5 * $this->lignes_hauteur ;
+    // pour les boucles
+    $tab_enscompl_etat = array(
+      3 => 'Objectif atteint',
+      4 => 'Objectif dépassé',
+    );
+    // Première ligne du tableau
+    $this->Cell( $largeur_intitule , $hauteur_case , '' , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : ( ($this->fond) ? 'gris_clair' : 'blanc' ) ;
+    $this->choisir_couleur_fond($couleur_fond);
+    foreach($tab_enscompl_etat as $id => $legende)
+    {
+      $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
+      $this->choisir_couleur_fond($couleur_fond);
+      // fond & contour
+      $this->Rect( $this->GetX() , $this->GetY() , $largeur_position , $hauteur_case , 'DF' /*DrawFill*/ );
+      // contenu
+      $tab_texte = explode(' ',$legende);
+      foreach($tab_texte as $texte)
+      {
+        $this->CellFit( $largeur_position , $hauteur_case/2 , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      }
+      $this->SetXY( $this->GetX()+$largeur_position , $this->GetY() - $hauteur_case );
+    }
+    $this->SetXY( $this->marge_gauche , $this->GetY() + $hauteur_case );
+    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $pourcentage = (!is_null($position_info['saisie_valeur'])) ? $position_info['saisie_valeur'] : FALSE ;
+    // Enseignement de complément
+    $this->CellFit( $largeur_intitule , $hauteur_case , To::pdf('Enseignement de complément - '.$enscompl_nom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    // Positionnement
+    $indice = OutilBilan::determiner_degre_maitrise($pourcentage,$this->SESSION['LIVRET']);
+    $taille_croix = min( 12 , 1.5*$this->taille_police );
+    $this->SetFont('Arial' , 'B' , $taille_croix);
+    foreach($tab_enscompl_etat as $id => $legende)
+    {
+      $br = ($id<4) ? 0 : 1 ;
+      $texte = ($id==$indice) ? 'X' : '' ;
+      $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
+      $this->choisir_couleur_fond($couleur_fond);
+      $this->Cell( $largeur_position , $hauteur_case , To::pdf($texte) , 1 /*bordure*/ , $br , 'C' /*alignement*/ , TRUE /*fond*/ );
+    }
+  }
+
   public function bloc_epi( $tab_rubriques_epi , $tab_saisie_eleve , $tab_saisie_classe )
   {
     // Titre
@@ -787,21 +913,26 @@ class PDF_livret_scolaire extends PDF
 
   public function bloc_bilan( $bilan_saisie , $texte_prof_principal )
   {
+    $is_bilan_periode = (strpos($this->PAGE_REF,'cycle')===FALSE) ? TRUE : FALSE ;
     // Titre
-    $this->bloc_titre( 'bilan' , 'Bilan de l’acquisition des connaissances et compétences' );
+    $texte = ($is_bilan_periode) ? 'Bilan de l’acquisition des connaissances et compétences' : 'Synthèse des acquis scolaires de l’élève en fin de cycle '.substr($this->PAGE_REF,-1) ;
+    $this->bloc_titre( 'bilan' , $texte );
     // calculs
     $nb_lignes_saisie = ($bilan_saisie) ? max( 6 , ceil(strlen($bilan_saisie)/$this->nb_caract_max_par_ligne), min( substr_count($bilan_saisie,"\n") + 1 , $this->app_bilan_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 6 ; // On prévoit un emplacement par défaut
-    $nb_lignes_bilan  = 1 + $nb_lignes_saisie ; // texte introductif + saisie
-    $nb_lignes_bilan += ($this->BILAN_TYPE_ETABL=='college') ? 1 : 0 ; // prof principal
+    $nb_lignes_bilan  = (int)$is_bilan_periode + $nb_lignes_saisie ; // texte introductif + saisie
+    $nb_lignes_bilan += ( $is_bilan_periode && ($this->BILAN_TYPE_ETABL=='college') ) ? 1 : 0 ; // prof principal
     $hauteur_bilan = $nb_lignes_bilan*$this->lignes_hauteur;
     $memoY = $this->GetY();
     // fond & contour
     $this->Rect( $this->GetX() , $this->GetY() , $this->page_largeur_moins_marges , $hauteur_bilan , 'DF' /*DrawFill*/ );
     // texte introductif
-    $texte = ($this->BILAN_TYPE_ETABL=='college') ? 'Synthèse de l’évolution des acquis scolaires et conseils pour progresser' : 'Appréciation générale sur la progression de l’élève' ;
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
-    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    $this->SetFont('Arial' , '' , $this->taille_police);
+    if($is_bilan_periode)
+    {
+      $texte = ($this->BILAN_TYPE_ETABL=='college') ? 'Synthèse de l’évolution des acquis scolaires et conseils pour progresser' : 'Appréciation générale sur la progression de l’élève' ;
+      $this->SetFont('Arial' , 'B' , $this->taille_police);
+      $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      $this->SetFont('Arial' , '' , $this->taille_police);
+    }
     // saisie
     if($bilan_saisie)
     {
@@ -812,7 +943,7 @@ class PDF_livret_scolaire extends PDF
       $this->SetY( $memoY + $hauteur_bilan - $this->lignes_hauteur );
     }
     // prof principal
-    if($this->BILAN_TYPE_ETABL=='college')
+    if( $is_bilan_periode && ($this->BILAN_TYPE_ETABL=='college') )
     {
       $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($texte_prof_principal) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     }
@@ -832,7 +963,7 @@ class PDF_livret_scolaire extends PDF
     $largeur_sousbloc_signature = $hauteur_viesco;
     $largeur_sousbloc_saisie    = $this->page_largeur_moins_marges - $largeur_sousbloc_signature;
     $memoY = $this->GetY();
-    // image de la signature ; on commence par elle car sinon elle peut déborder légèrement sur le fond coloré ou la bordure, et de toutes façons on éviter un fond coloré en dessous
+    // image de la signature ; on commence par elle car sinon elle peut déborder légèrement sur le fond coloré ou la bordure, et de toutes façons on évite un fond coloré en dessous
     if($tab_signature)
     {
       $epaisseur_bord = 0.5; // on compte quand même un peut de marge sinon cela peut être collé et ce n'est pas très joli
@@ -901,7 +1032,7 @@ class PDF_livret_scolaire extends PDF
     $largeur_sousbloc_saisie    = $this->page_largeur_moins_marges / 4;
     $largeur_sousbloc_parent    = $this->page_largeur_moins_marges / 2;
     $memoY = $this->GetY();
-    // image de la signature ; on commence par elle car sinon elle peut déborder légèrement sur le fond coloré ou la bordure, et de toutes façons on éviter un fond coloré en dessous
+    // image de la signature ; on commence par elle car sinon elle peut déborder légèrement sur le fond coloré ou la bordure, et de toutes façons on évite un fond coloré en dessous
     if($tab_signature)
     {
       $epaisseur_bord = 0.5; // on compte quand même un peut de marge sinon cela peut être collé et ce n'est pas très joli
@@ -945,6 +1076,96 @@ class PDF_livret_scolaire extends PDF
       if($parent_info) // sort du cadre si plus de 3 responsables légaux signataires, mais ce cas de devrait pas se produire...
       {
         $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($parent_info) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      }
+    }
+  }
+
+  public function bloc_cycle_signatures( $DATE_VERROU , $texte_chef_etabl , $tab_profs , $tab_signature_chef , $tab_signature_prof , $tab_parent_lecture )
+  {
+    $this->SetXY( $this->marge_gauche , $this->GetY() + 1.5*$this->lignes_hauteur );
+    // couleur de fond (pas de titre)
+    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_viesco' : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    // calculs
+    $nb_lignes = 6;
+    $hauteur_bloc = $nb_lignes*$this->lignes_hauteur;
+    $hauteur_signature = ($nb_lignes-1)*$this->lignes_hauteur; // 1 ligne de moins pour txt introductif
+    $largeur_bloc = $this->page_largeur_moins_marges / 3;
+    $largeur_demi_bloc = $largeur_bloc / 2;
+    $epaisseur_bord = 0.5; // on compte quand même un peut de marge sinon cela peut être collé et ce n'est pas très joli
+    //
+    // 1/3 - enseignants ou profs principaux
+    //
+    $memoX = $this->GetX();
+    $memoY = $this->GetY();
+     // bordure et fond
+    $this->Rect( $memoX , $memoY , $largeur_bloc , $hauteur_bloc , 'DF' /*DrawFill*/ );
+     // 1ère ligne
+    if(count($tab_profs)==1)
+    {
+      $texte = ($this->BILAN_TYPE_ETABL=='college') ? 'Visa du professeur principal :' : 'Visa de l’enseignant(e) :' ;
+    }
+    else
+    {
+      $texte = ($this->BILAN_TYPE_ETABL=='college') ? 'Visa des professeurs principaux :' : 'Visa des enseignant(e)s :' ;
+    }
+    $this->CellFit( $largeur_bloc , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    if($tab_signature_prof)
+    {
+      // signature
+      $this->SetX( $memoX + $largeur_demi_bloc + $epaisseur_bord );
+      $largeur_signature = $this->afficher_image( $largeur_demi_bloc-2*$epaisseur_bord /*largeur_autorisee*/ , $hauteur_signature /*hauteur_autorisee*/ , $tab_signature_prof , 'logo_seul' /*img_objet*/ );
+      $this->SetXY( $memoX , $memoY + $this->lignes_hauteur );
+    }
+    // infos
+    $largeur = ($tab_signature_prof) ? $largeur_demi_bloc : $largeur_bloc ;
+    foreach($tab_profs as $prof_info)
+    {
+      $this->CellFit( $largeur , $this->lignes_hauteur , To::pdf($prof_info) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    }
+    $this->CellFit( $largeur , $this->lignes_hauteur , To::pdf('le '.$DATE_VERROU) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->SetXY( $memoX + $largeur_bloc , $memoY );
+    //
+    // 2/3 - directeur / principal
+    //
+    $memoX = $this->GetX();
+    $memoY = $this->GetY();
+     // bordure et fond
+    $this->Rect( $memoX , $memoY , $largeur_bloc , $hauteur_bloc , 'DF' /*DrawFill*/ );
+     // 1ère ligne
+    $texte = ($this->BILAN_TYPE_ETABL=='college') ? 'Visa du chef d’établissement :' : 'Visa de la directrice / du directeur d’école :' ;
+    $this->CellFit( $largeur_bloc , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    if($tab_signature_chef)
+    {
+      // signature
+      $this->SetX( $memoX + $largeur_demi_bloc + $epaisseur_bord );
+      $largeur_signature = $this->afficher_image( $largeur_demi_bloc-2*$epaisseur_bord /*largeur_autorisee*/ , $hauteur_signature /*hauteur_autorisee*/ , $tab_signature_chef , 'logo_seul' /*img_objet*/ );
+      $this->SetXY( $memoX , $memoY + $this->lignes_hauteur );
+    }
+    // infos
+    $largeur = ($tab_signature_prof) ? $largeur_demi_bloc : $largeur_bloc ;
+    if($texte_chef_etabl)
+    {
+      $this->CellFit( $largeur , $this->lignes_hauteur , To::pdf($texte_chef_etabl) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    }
+    $this->CellFit( $largeur , $this->lignes_hauteur , To::pdf('le '.$DATE_VERROU) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->SetXY( $memoX + $largeur_bloc , $memoY );
+    //
+    // 3/3 - cadre pour les responsables légaux
+    //
+    $memoX = $this->GetX();
+    $memoY = $this->GetY();
+     // bordure et fond
+    $this->Rect( $memoX , $memoY , $largeur_bloc , $hauteur_bloc , 'DF' /*DrawFill*/ );
+     // 1ère ligne
+    $texte = 'Visa des responsables légaux :' ;
+    $this->CellFit( $largeur_bloc , $this->lignes_hauteur , To::pdf($texte) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    // contenu
+    foreach($tab_parent_lecture as $parent_info)
+    {
+      if($parent_info) // sort du cadre si plus de 3 responsables légaux signataires, mais ce cas de devrait pas se produire...
+      {
+        $this->CellFit( $largeur_bloc , $this->lignes_hauteur , To::pdf($parent_info) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
       }
     }
   }

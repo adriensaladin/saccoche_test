@@ -239,11 +239,6 @@ $(document).ready
           $('#f_objet').val(memo_objet);
           if( (memo_section=='livret_saisir') || (memo_section=='livret_consulter') )
           {
-            if(memo_periode=='cycle')
-            {
-              $.fancybox( '<p class="travaux">'+'Bilans de fin de cycle non prioritaires&hellip; Développement prévu début 2017.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
-              return false;
-            }
             // Masquer le tableau ; Afficher la zone action et charger son contenu
             $('#cadre_statut , #table_accueil').hide(0);
             $('#zone_action_eleve').html('<label class="loader">Initialisation en cours&hellip;</label>').show(0);
@@ -302,11 +297,6 @@ $(document).ready
           }
           else if(memo_section=='livret_imprimer')
           {
-            if(memo_periode=='cycle')
-            {
-              $.fancybox( '<p class="travaux">'+'Bilans de fin de cycle non prioritaires&hellip; Développement prévu début 2017.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
-              return false;
-            }
             // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
             configurer_form_choix_classe();
@@ -839,10 +829,10 @@ $(document).ready
         memo_saisie_id  = $(this).parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
-        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco | enscompl
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
-        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise
         // Contenu de la saisie existante
         if(memo_action=='ajouter')
         {
@@ -853,6 +843,10 @@ $(document).ready
           var saisie_contenu = '';
           // http://www.w3schools.com/jsref/prop_node_nodetype.asp
           $(this).parent().prev().find('div').contents().filter( function(){return this.nodeType == 3;} ).each( function(){saisie_contenu+=$(this).text().trim()+"\n";} );
+        }
+        else if( (memo_saisie_objet=='position') && ( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') ) )
+        {
+          var saisie_contenu = $(this).parent().next().html();
         }
         else
         {
@@ -930,6 +924,31 @@ $(document).ready
                                 + '<div><label id="ajax_msg_'+memo_saisie_objet+'">&nbsp;</label></div>';
           memo_conteneur.html(formulaire_saisie);
         }
+        else if(memo_page_colonne=='maitrise')
+        {
+          if(memo_rubrique_type=='enscompl')
+          {
+            var i_debut = 3;
+          }
+          else if(memo_rubrique_id==12) // langue étrangère avec positionnement dispensé possible
+          {
+            var i_debut = 0;
+          }
+          else
+          {
+            var i_debut = 1;
+          }
+          memo_html = memo_conteneur.parent().html();
+          var id_debut = memo_rubrique_type+'_'+memo_rubrique_id+'_'+memo_saisie_objet+'_';
+          for( var i=i_debut ; i<5 ; i++ )
+          {
+            $('#'+id_debut+i).html('<input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" />');
+          }
+          var formulaire_saisie = '<div><button id="valider_precedent" type="button" class="valider_prev" title="Valider & Précédent">&nbsp;</button> <button id="valider" type="button" class="valider" title="Valider">&nbsp;</button> <button id="valider_suivant" type="button" class="valider_next" title="Valider & Suivant">&nbsp;</button></div>'
+                                + '<div><button id="annuler_precedent" type="button" class="annuler_prev" title="Annuler & Précédent">&nbsp;</button> <button id="annuler" type="button" class="annuler" title="Annuler">&nbsp;</button> <button id="annuler_suivant" type="button" class="annuler_next" title="Annuler & Suivant">&nbsp;</button></div>'
+                                + '<div><label id="ajax_msg_'+memo_saisie_objet+'">&nbsp;</label></div>';
+          memo_conteneur.html(formulaire_saisie);
+        }
         // modif affichage
         if(memo_eleve==memo_eleve_first)
         {
@@ -953,10 +972,10 @@ $(document).ready
           valeur = (isNaN(valeur)) ? '' : valeur ;
           $('#f_'+memo_saisie_objet).focus().val(valeur);
         }
-        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') )
+        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') )
         {
           // report d'un positionnement sur une échelle
-          if(saisie_contenu)
+          if(saisie_contenu!=='')
           {
             $('#f_position_'+saisie_contenu).prop('checked',true).focus();
           }
@@ -1052,7 +1071,7 @@ $(document).ready
           }
         }
         // positionnement sur une échelle
-        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') )
+        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') )
         {
           position = $("input[name=f_position]:checked").val();
           if(typeof(position)=='undefined')
@@ -1074,7 +1093,7 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
-              $('#ajax_msg'+memo_saisie_objet).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+              $('#ajax_msg_'+memo_saisie_objet).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               return false;
             },
@@ -1084,7 +1103,7 @@ $(document).ready
               $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#ajax_msg'+memo_saisie_objet).attr('class','alerte').html(responseJSON['value']);
+                $('#ajax_msg_'+memo_saisie_objet).attr('class','alerte').html(responseJSON['value']);
               }
               else
               {
@@ -1099,11 +1118,23 @@ $(document).ready
                 else
                 {
                   memo_conteneur.parent().html(memo_html);
-                  for( var i=1 ; i<5 ; i++ )
+                  if(memo_rubrique_type=='enscompl')
                   {
-                    $('#eval_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                    var i_debut = 3;
                   }
-                  $('#eval_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
+                  else if(memo_rubrique_id==12) // langue étrangère avec positionnement dispensé possible
+                  {
+                    var i_debut = 0;
+                  }
+                  else
+                  {
+                    var i_debut = 1;
+                  }
+                  for( var i=i_debut ; i<5 ; i++ )
+                  {
+                    $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                  }
+                  $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
                 }
                 if(memo_auto_next) { $('#go_suivant_eleve').click(); }
                 if(memo_auto_prev) { $('#go_precedent_eleve').click(); }
@@ -1134,7 +1165,7 @@ $(document).ready
         memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements | saisiejointure
-        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise
         // Contenu de la saisie existante
         if(memo_rubrique_type=='viesco')
         {
@@ -1181,11 +1212,23 @@ $(document).ready
                 else
                 {
                   // memo_conteneur.parent().html(memo_html); // Pas besoin ici car il n'y a pas eu de remplacement du contenu
-                  for( var i=1 ; i<5 ; i++ )
+                  if(memo_rubrique_type=='enscompl')
                   {
-                    $('#eval_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                    var i_debut = 3;
                   }
-                  $('#eval_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
+                  else if(memo_rubrique_id==12) // langue étrangère avec positionnement dispensé possible
+                  {
+                    var i_debut = 0;
+                  }
+                  else
+                  {
+                    var i_debut = 1;
+                  }
+                  for( var i=i_debut ; i<5 ; i++ )
+                  {
+                    $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                  }
+                  $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
                 }
               }
             }
@@ -1213,7 +1256,7 @@ $(document).ready
         memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
-        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise
         // Désactiver les autres boutons d'action
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
         $.ajax
@@ -1246,11 +1289,23 @@ $(document).ready
                 else
                 {
                   // memo_conteneur.parent().html(memo_html); // Pas besoin ici car il n'y a pas eu de remplacement du contenu
-                  for( var i=1 ; i<5 ; i++ )
+                  if(memo_rubrique_type=='enscompl')
                   {
-                    $('#eval_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                    var i_debut = 3;
                   }
-                  $('#eval_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
+                  else if(memo_rubrique_id==12) // langue étrangère avec positionnement dispensé possible
+                  {
+                    var i_debut = 0;
+                  }
+                  else
+                  {
+                    var i_debut = 1;
+                  }
+                  for( var i=i_debut ; i<5 ; i++ )
+                  {
+                    $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
+                  }
+                  $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
                 }
               }
             }

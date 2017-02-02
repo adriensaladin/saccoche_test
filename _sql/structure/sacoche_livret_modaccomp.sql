@@ -4,7 +4,7 @@ CREATE TABLE sacoche_livret_modaccomp (
   livret_modaccomp_code VARCHAR(5)  COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   livret_modaccomp_nom  VARCHAR(54) COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (livret_modaccomp_code)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Modalités d'accompagnement";
 
 ALTER TABLE sacoche_livret_modaccomp DISABLE KEYS;
 

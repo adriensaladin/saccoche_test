@@ -27,7 +27,16 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Parcours"));
+?>
 
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_parcours">DOC : Administration du Livret Scolaire &rarr; Parcours</a></span></li>
+  <li><span class="astuce">Ce menu ne sert que pour les <b>bilans périodiques</b> (sans objet pour les <b>bilans de fin de cycle</b>).</span></li>
+</ul>
+
+<hr />
+
+<?php
 // On liste les types de parcours
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_parcours_type();
 
@@ -36,7 +45,7 @@ $parcours      = isset($_GET['code'])             ? Clean::ref($_GET['code']) : 
 $parcours_code = isset($DB_TAB['PAR_'.$parcours]) ? 'PAR_'.$parcours          : '' ;
 
 // On complète le Sous-Menu d'en-tête
-$SOUS_MENU .= '<br />';
+$SOUS_MENU .= '<hr />';
 foreach($DB_TAB as $key => $TAB)
 {
   $class = ($key==$parcours_code) ? ' class="actif"' : '' ;
@@ -45,9 +54,6 @@ foreach($DB_TAB as $key => $TAB)
 
 if(!$parcours_code)
 {
-  echo'<ul class="puce">';
-  echo'  <li><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=officiel__livret_scolaire_administration#toggle_parcours">DOC : Administration du Livret Scolaire &rarr; Parcours</a></span></li>';
-  echo'</ul>';
   echo'<p>Choisir un type de parcours :</p>'.NL;
   echo'<ul class="puce">'.NL;
   foreach($DB_TAB as $key => $TAB)
@@ -66,16 +72,6 @@ $TITRE .= ' &rarr; '.html($livret_parcours_type_nom);
 
 $txt_ecole = ($parcours_code!='PAR_AVN') ? 'de l\'École Élémentaire et' : '' ;
 
-?>
-
-<ul class="puce">
-  <li><span class="astuce">Le <b><?php echo html($livret_parcours_type_nom) ?></b> concerne les <b>élèves <?php echo $txt_ecole ?> du Collège</b>.</span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_parcours">DOC : Administration du Livret Scolaire &rarr; Parcours</a></span></li>
-</ul>
-
-<hr />
-
-<?php
 $page_ordre_longueur = 3;
 $page_ordre_format   = '%0'.$page_ordre_longueur.'u';
 
@@ -99,6 +95,8 @@ foreach($DB_TAB as $DB_ROW)
   Layout::add( 'js_inline_before' , 'tab_page_ordre["'.html($DB_ROW['livret_page_moment']).'"]="'.sprintf($page_ordre_format,$DB_ROW['livret_page_ordre']).'";' );
 }
 ?>
+
+<p class="astuce">Le <b><?php echo html($livret_parcours_type_nom) ?></b> concerne les <b>élèves <?php echo $txt_ecole ?> du Collège</b>.</p>
 
 <table id="table_action" class="form hsort">
   <thead>

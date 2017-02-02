@@ -1051,6 +1051,18 @@ jQuery.validator.addMethod
 );
 
 /**
+ * Ajout d'une méthode pour tester la syntaxe d'une url en remplacement de la méthode "url" par défaut car elle n'accepte pas par exemple http://127.0.0.1 ou http://localhost
+ */
+jQuery.validator.addMethod
+(
+  "URL", function(value, element)
+  {
+    return this.optional(element) || testURL(value) ;
+  }
+  , "élément manquant"
+);
+
+/**
  * Ajout d'une alerte dans le DOM sans jQuery.
  * Utilisé par les deux tests qui suivent cette fonction.
  */

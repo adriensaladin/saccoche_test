@@ -81,6 +81,7 @@ $tab_objet_profils['droit_officiel_bulletin_appreciation_generale'] = $tab_profi
 $tab_objet_profils['droit_officiel_bulletin_impression_pdf']        = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_livret_modifier_statut']         = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_livret_corriger_appreciation']   = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_officiel_livret_positionner_socle']       = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_livret_appreciation_generale']   = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_livret_impression_pdf']          = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_socle_modifier_statut']          = $tab_profils_possibles['dir_pers_pp'];

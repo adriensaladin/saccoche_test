@@ -33,16 +33,17 @@ if($_SESSION['USER_PROFIL_TYPE']!='professeur')
 {
   $SOUS_MENU = '';
   $tab_sous_menu = array(
-    'accueil'   =>       Lang::_("Accueil"),
-    'classes'   => '1) '.Lang::_("Classes"),
-    'liaisons'  => '2) '.Lang::_("Rubriques / Liaisons"),
-    'seuils'    => '3) '.Lang::_("Notation / Seuils"),
-    'epi'       => '4) '.Lang::_("E.P.I."),
-    'ap'        => '5) '.Lang::_("A.P."),
-    'parcours'  => '6) '.Lang::_("Parcours"),
-    'modaccomp' => '7) '.Lang::_("Mod. accomp."),
-    'edition'   => '8) '.Lang::_("Édition du livret"),
-    'export'    => '9) '.Lang::_("Export LSU"),
+    'accueil'   =>        Lang::_("Accueil"),
+    'classes'   =>  '1) '.Lang::_("Classes / Périodicité"),
+    'liaisons'  =>  '2) '.Lang::_("Rubriques / Liaisons"),
+    'seuils'    =>  '3) '.Lang::_("Notation / Seuils"),
+    'epi'       =>  '4) '.Lang::_("E.P.I."),
+    'ap'        =>  '5) '.Lang::_("A.P."),
+    'parcours'  =>  '6) '.Lang::_("Parcours"),
+    'modaccomp' =>  '7) '.Lang::_("Modalités d'accompagnement"),
+    'enscompl'  =>  '8) '.Lang::_("Enseignements de complément"),
+    'edition'   =>  '9) '.Lang::_("Édition du livret"),
+    'export'    => '10) '.Lang::_("Export LSU"),
   );
   foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
   {

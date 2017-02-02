@@ -61,8 +61,43 @@ if($version_base_structure_actuelle=='2017-01-11')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_saisie SET saisie_valeur = REPLACE( saisie_valeur , ",\"\":4," , "," ) WHERE saisie_objet="elements" ' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_saisie SET saisie_valeur = REPLACE( saisie_valeur , ",\"\":3," , "," ) WHERE saisie_objet="elements" ' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_saisie SET saisie_valeur = REPLACE( saisie_valeur , ",\"\":2," , "," ) WHERE saisie_objet="elements" ' );
-    // correction d'un positionnement curieusement modifié sur certaines installations
+    // correction d'un positionnement modifié sur certaines installations suite à un bug
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_page SET livret_page_colonne = "maitrise" WHERE livret_page_periodicite="cycle" AND livret_page_ref != "cycle1" ' );
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-01-18 => 2017-01-22
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-01-18')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-01-22';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // nouvelle table [sacoche_livret_enscompl]
+    $reload_sacoche_livret_enscompl = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_enscompl.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // nouvelle table [sacoche_livret_jointure_enscompl_eleve]
+    $reload_sacoche_livret_jointure_enscompl_eleve = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_jointure_enscompl_eleve.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // erreur dans la définition d'une colonne de la table [sacoche_livret_jointure_referentiel]
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_jointure_referentiel CHANGE livret_rubrique_ou_matiere_id livret_rubrique_ou_matiere_id SMALLINT(5) UNSIGNED NOT NULL DEFAULT 0 ' );
+    // retrait d'enregistrement d'infos de saisies de fin de cycle dans le livret scolaire au cas où (alors que l'accès n'était pas encore opérationnel)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE sacoche_livret_saisie, sacoche_livret_saisie_jointure_prof, sacoche_livret_saisie_memo_detail FROM sacoche_livret_saisie LEFT JOIN sacoche_livret_saisie_jointure_prof USING (livret_saisie_id) LEFT JOIN sacoche_livret_saisie_memo_detail USING (livret_saisie_id) WHERE livret_page_periodicite="cycle" ' );
+    // retrait éventuel de scories d'utilisateurs supprimés dans les saisies du Livret Scolaire
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE sacoche_livret_saisie, sacoche_livret_saisie_memo_detail, sacoche_livret_saisie_jointure_prof FROM sacoche_livret_saisie LEFT JOIN sacoche_livret_saisie_memo_detail USING (livret_saisie_id) LEFT JOIN sacoche_livret_saisie_jointure_prof USING (livret_saisie_id) LEFT JOIN sacoche_user ON sacoche_livret_saisie.prof_id=sacoche_user.user_id WHERE sacoche_livret_saisie.prof_id!=0 AND sacoche_user.user_id IS NULL' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE sacoche_livret_saisie_jointure_prof FROM sacoche_livret_saisie_jointure_prof LEFT JOIN sacoche_user ON sacoche_livret_saisie_jointure_prof.prof_id=sacoche_user.user_id WHERE sacoche_user.user_id IS NULL' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE sacoche_livret_saisie, sacoche_livret_saisie_memo_detail, sacoche_livret_saisie_jointure_prof FROM sacoche_livret_saisie LEFT JOIN sacoche_livret_saisie_memo_detail USING (livret_saisie_id) LEFT JOIN sacoche_livret_saisie_jointure_prof USING (livret_saisie_id) LEFT JOIN sacoche_user ON sacoche_livret_saisie.cible_id=sacoche_user.user_id WHERE cible_nature="eleve" AND sacoche_user.user_id IS NULL' );
+    // ajout de paramètre
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("droit_officiel_livret_positionner_socle" , "DIR,ENS")' );
+    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 

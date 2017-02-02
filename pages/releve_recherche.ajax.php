@@ -184,7 +184,7 @@ if( $is_matiere_items_bilanMS || $is_matiere_items_bilanPA )
 if( $is_s2016_domaine_maitrise || $is_s2016_composante_maitrise )
 {
   // Récupération de la liste des items
-  $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes( $cycle_id , $domaine_id , $composante_id );
+  $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes( $cycle_id , FALSE /*with_detail*/ , $domaine_id , $composante_id );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_item[$DB_ROW['item_id']] = $DB_ROW['item_id'];

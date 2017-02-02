@@ -54,11 +54,11 @@ $(document).ready
       {
         rules :
         {
-          f_module_url : { required:false , maxlength:255 , url:true }
+          f_module_url : { required:false , maxlength:255 , URL:true }
         },
         messages :
         {
-          f_module_url : { maxlength:"255 caractères maximum" , url:"url invalide (http:// manquant ?)" }
+          f_module_url : { maxlength:"255 caractères maximum" , URL:"url invalide (http:// manquant ?)" }
         },
         errorElement : "label",
         errorClass : "erreur",

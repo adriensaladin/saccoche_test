@@ -47,6 +47,8 @@ $tab_parent_lecture        = array( 'resp1'=>NULL , 'resp2'=>NULL , 'resp3'=>NUL
 // Récupération de la liste des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+$tab_eleve_infos      = array();  // [eleve_id] => array(eleve_INE,eleve_nom,eleve_prenom,date_naissance)
+
 if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 {
   $tab_eleve_infos[$_SESSION['USER_ID']] = array(
@@ -463,10 +465,6 @@ if(!isset($tab_destinataires))
   }
 }
 
-// print_r($tab_saisie[0]['eval']);exit;
-// print_r($tab_rubriques['eval']);exit;
-// print_r($tab_used_eval_eleve_rubrique[0]);exit;
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Elaboration du relevé périodique
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -731,14 +729,13 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                     if( in_array($PAGE_COLONNE,array('objectif','position')) )
                     {
                       $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
-                      $title = ($position_info['saisie_origine']=='saisie') ? $origine : $origine.' : '.$pourcentage.' %' ;
-                      $image = '<img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$title.'" />' ;
+                      $origine .= ( $origine && ($position_info['saisie_origine']=='calcul') ) ? ' : '.$pourcentage.' %' : '' ;
                       foreach($_SESSION['LIVRET'] as $id => $tab)
                       {
-                        $texte = ($id==$indice) ? '<b>X</b>'.$image : '' ;
+                        $texte = ($id==$indice) ? '<b>X</b>' : '' ;
                         $tab_temp_HTML['position'] .= '<td'.$rowspan.' id="eval_'.$livret_rubrique_id.'_position_'.$id.'" class="pos'.$id.'">'.$texte.'</td>';
                       }
-                      $tab_temp_HTML['position'] .= '<td'.$rowspan.' id="eval_'.$livret_rubrique_id.'_position_'.$PAGE_COLONNE.'" class="nu"><div class="notnow" data-id="'.$position_info['saisie_id'].'">'.$actions.'</div><i>'.$indice.'</i></td>';
+                      $tab_temp_HTML['position'] .= '<td'.$rowspan.' id="eval_'.$livret_rubrique_id.'_position_'.$PAGE_COLONNE.'" class="nu"><div class="notnow" data-id="'.$position_info['saisie_id'].'">'.echo_origine($origine).$actions.'</div><i>'.$indice.'</i></td>';
                     }
                     else if( in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
                     {

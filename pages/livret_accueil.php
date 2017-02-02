@@ -39,7 +39,8 @@ if( $result === FALSE )
 if( is_int($result) )
 {
   $s = ($result>1) ? 's' : '' ;
-  echo'<p class="danger">Des associations de classe au livret scolaire n\'étaient pas enregistrées.<br /><em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />Vérifiez et ajustez si besoin (étape "Classes" ci-dessus).</p>'.NL;
+  $compte_rendu = ($result) ? '<em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />' : 'Mais <em>SACoche</em> n\'a pas su les initialiser automatiquement.<br />' ;
+  echo'<p class="danger">Des associations de classe au livret scolaire n\'était pas enregistrées.<br />'.$compte_rendu.'Vérifiez et ajustez si besoin (étape n°1 "Classes / Périodicité" ci-dessus).</p>'.NL;
 }
 
 // Supprimer les liaisons du livret aux divers éléments de référentiels supprimés, car ce n'est pas fait automatiquement au fur et à mesure

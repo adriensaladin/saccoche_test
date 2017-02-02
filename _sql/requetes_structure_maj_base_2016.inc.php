@@ -493,7 +493,7 @@ if($version_base_structure_actuelle=='2016-05-10')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET code_mef="3112330522.", niveau_nom="2BTS2 étude et réalisation d\'agencement" WHERE niveau_id=311071' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET code_mef="3112521421.", niveau_nom="1BTS2 moteurs à combustion interne" WHERE niveau_id=311104' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_niveau SET code_mef="3112521422.", niveau_nom="2BTS2 moteurs à combustion interne" WHERE niveau_id=311105' );
-      // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
+      // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_niveau)
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau ORDER BY niveau_id' );
     }
   }
@@ -1374,8 +1374,6 @@ if($version_base_structure_actuelle=='2016-12-05')
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("officiel_livret_only_socle" , "0")' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("officiel_livret_import_bulletin_notes" , "oui")' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_parametre VALUES ("officiel_livret_retroactif" , "non")' );
-    // réordonner la table sacoche_parametre (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_parametre)
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_parametre ORDER BY parametre_nom' );
   }
 }
 

@@ -30,9 +30,8 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Enseignements
 ?>
 
 <ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_epi">DOC : Administration du Livret Scolaire &rarr; Enseignements Pratiques Interdisciplinaires</a></span></li>
   <li><span class="astuce">Les <b>Enseignements Pratiques Interdisciplinaires</b> mis en place à compter de la rentrée 2016 concernent les <b>élèves du Cycle 4 (5e 4e 3e)</b>.</span></li>
-  <li><span class="astuce">Ce menu ne sert que pour les <b>bilans périodiques</b> (sans objet pour les <b>bilans de fin de cycle</b>).</span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_epi">DOC : Administration du Livret Scolaire &rarr; Enseignements Pratiques Interdisciplinaires</a></span></li>
 </ul>
 
 <hr />

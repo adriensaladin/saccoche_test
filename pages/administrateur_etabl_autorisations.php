@@ -58,7 +58,6 @@ $tab_profils_possibles['dir_pers_pp']  = array(                  'DIR','ENS','IE
 $tab_profils_possibles['dir_pers_lv']  = array(                  'DIR','ENS','IEX','ONLY_LV','DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['dir_prof_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP');
 $tab_profils_possibles['dir_prof_lv']  = array(                  'DIR','ENS','IEX','ONLY_LV');
-$tab_profils_possibles['dir_prof']     = array(                  'DIR','ENS');
 $tab_profils_possibles['dir_pers']     = array(                  'DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['dir_cpe']      = array(                  'DIR',                            'EDU');
 $tab_profils_possibles['dir']          = array(                  'DIR');
@@ -103,12 +102,12 @@ $tab_droits  = array
     array( 'droit_voir_score_maitrise'                   , "voir les scores des degrés de maîtrise (socle 2016)"             , 'tous' ),
     array( 'droit_voir_etat_acquisition_avec_evaluation' , "afficher l'état d'acquisition avec le résultat d'une évaluation" , 'personne' ),
   ),
-  "Socle &rarr; Choix de la langue (socle 2006-2015)" => array
+  "Socle &rarr; Choix de la langue" => array
   ( // TODO : DROIT A SUPPRIMER
     'dir_pers_lv',
     array( 'droit_affecter_langue' , "affecter la langue vivante (socle 2006-2015)" , 'dir_prof_lv' ),
   ),
-  "Socle &rarr; Validations (socle 2006-2015)" => array
+  "Socle &rarr; Validations" => array
   ( // TODO : DROITS A SUPPRIMER
     'dir_pers_pp',
     array( 'droit_validation_entree' , "valider des items du socle (socle 2006-2015)"             , 'dir_pers' ),
@@ -153,12 +152,11 @@ $tab_droits  = array
     array( 'droit_officiel_bulletin_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_bulletin_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
   ),
-  "Bilans officiels &rarr; Livret Scolaire Unique (2016)" => array
+  "Bilans officiels &rarr; Livret Scolaire Unique" => array
   (
     'dir_pers_pp',
     array( 'droit_officiel_livret_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
     array( 'droit_officiel_livret_corriger_appreciation' , "corriger l'appréciation d'un collègue"      , 'dir' ),
-    array( 'droit_officiel_livret_positionner_socle'     , "positionner la maîtrise du socle (2016)"    , 'dir_prof' ),
     array( 'droit_officiel_livret_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_livret_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
   ),

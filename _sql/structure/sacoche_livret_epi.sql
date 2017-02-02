@@ -10,4 +10,4 @@ CREATE TABLE sacoche_livret_epi (
   KEY livret_epi_theme_code (livret_epi_theme_code),
   KEY livret_page_ref (livret_page_ref),
   KEY groupe_id (groupe_id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Enseignements Pratiques Interdisciplinaires";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -115,6 +115,7 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
   }
 }
 // Afficher le retour
+Json::add_str('<hr />'.NL);
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
   if(mb_strlen($TB[$niveau_id])>9)

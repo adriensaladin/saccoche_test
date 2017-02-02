@@ -35,9 +35,6 @@ class DB_STRUCTURE_SIECLE extends DB
 /**
  * ajouter_import
  * Enregistre en JSON le XML transmis.
- * Convertir le XML en JSON permet un gain de place (par exemple 1,5 Mo -> 0,8 Mo ou encore 5,3 Mo -> 1,1 Mo).
- * Il y aurait aussi la possibilité d'utiliser COMPRESS() et UNCOMPRESS() avec un champ de type MEDIUMBLOB :
- * cela réduit bien davantage mais c'est moins lisible en BDD et la manipulation de champs BLOB est peu rassurante.
  *
  * @param string   $import_objet
  * @param string   $import_annee
@@ -46,17 +43,6 @@ class DB_STRUCTURE_SIECLE extends DB
  */
 public static function DB_ajouter_import( $import_objet , $import_annee , $import_xml )
 {
-  $import_json = json_encode( (array)$import_xml );
-  if($import_objet=='Eleves')
-  {
-    // Testé avant la requête et non après avec DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) car un "Warning: PDOStatement::execute(): MySQL server has gone away" ne permet pas de poursuivre.
-    $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_variable_MySQL('max_allowed_packet');
-    $json_size = strlen($import_json);
-    if( $json_size > $DB_ROW['Value'] )
-    {
-      Json::end( FALSE , 'Taille des données ('.FileSystem::afficher_fichier_taille($json_size).') dépassant la limitation <em>max_allowed_packet</em> de MySQL !' );
-    }
-  }
   $DB_SQL = 'UPDATE sacoche_siecle_import ';
   $DB_SQL.= 'SET siecle_import_date=:import_date, siecle_import_annee=:import_annee, siecle_import_contenu=:import_contenu ';
   $DB_SQL.= 'WHERE siecle_import_objet=:import_objet ';
@@ -64,7 +50,7 @@ public static function DB_ajouter_import( $import_objet , $import_annee , $impor
     ':import_objet'   => $import_objet,
     ':import_date'    => TODAY_MYSQL,
     ':import_annee'   => $import_annee,
-    ':import_contenu' => $import_json,
+    ':import_contenu' => json_encode( (array)$import_xml ),
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

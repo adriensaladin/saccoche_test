@@ -350,19 +350,19 @@ public static function DB_recuperer_officiel_archive_precise( $officiel_archive_
  * @param string $annee_scolaire rien pour toutes les années
  * @param string $listing_type
  * @param string $listing_ref
- * @param int    $periode_id     0 pour un cycle, NULL pour toutes les périodes
+ * @param int    $periode_id     0 pour toutes les périodes
  * @param string $uai_origine    rien pour tous les établissements d'origine
  * @return array( $DB_TAB_Archives , $DB_TAB_Images )
  */
 public static function DB_recuperer_officiel_archive_avec_infos( $listing_eleve , $structure_uai , $annee_scolaire , $listing_type , $listing_ref , $periode_id , $uai_origine )
 {
   // where
-  $where_etabl    = (!$structure_uai)    ? '' : 'AND sacoche_officiel_archive.structure_uai=:structure_uai ';
-  $where_annee    = (!$annee_scolaire)   ? '' : 'AND annee_scolaire=:annee_scolaire ';
-  $where_periode  = is_null($periode_id) ? '' : 'AND periode_id=:periode_id ';
-  $where_origine  = (!$uai_origine)      ? '' : 'AND sacoche_user.eleve_uai_origine=:uai_origine ';
+  $where_etabl    = (!$structure_uai)  ? '' : 'AND sacoche_officiel_archive.structure_uai=:structure_uai ';
+  $where_annee    = (!$annee_scolaire) ? '' : 'AND annee_scolaire=:annee_scolaire ';
+  $where_periode  = (!$periode_id)     ? '' : 'AND periode_id=:periode_id ';
+  $where_origine  = (!$uai_origine)    ? '' : 'AND sacoche_user.eleve_uai_origine=:uai_origine ';
   // join
-  $join_origine   = (!$uai_origine)      ? '' : 'LEFT JOIN sacoche_structure_origine ON sacoche_user.eleve_uai_origine=sacoche_structure_origine.structure_uai ';
+  $join_origine   = (!$uai_origine)    ? '' : 'LEFT JOIN sacoche_structure_origine ON sacoche_user.eleve_uai_origine=sacoche_structure_origine.structure_uai ';
   // on assemble
   $DB_SQL = 'SELECT sacoche_officiel_archive.*, user_nom, user_prenom ';
   $DB_SQL.= 'FROM sacoche_officiel_archive ';
@@ -427,7 +427,7 @@ public static function DB_recuperer_officiel_archive_sans_infos( $listing_eleve 
  * @param string $annee_scolaire rien pour toutes les années
  * @param string $archive_type   rien pour tous les types
  * @param string $archive_ref    rien pour toutes les références
- * @param int    $periode_id     0 pour un cycle, NULL pour toutes les périodes
+ * @param int    $periode_id     0 pour toutes les périodes
  * @param array  $tab_eleve_id
  * @param bool   $with_infos
  * @param string $only_profil_non_vu   '' par défaut ; 'parent' | 'eleve' sinon
@@ -443,15 +443,15 @@ public static function DB_lister_officiel_archive( $structure_uai , $annee_scola
   $where_annee    = ($annee_scolaire)     ? 'annee_scolaire=:annee_scolaire AND ' : '' ;
   $where_type     = ($archive_type)       ? 'archive_type=:archive_type AND '     : '' ;
   $where_ref      = ($archive_ref)        ? 'archive_ref=:archive_ref AND '       : '' ;
-  $where_periode  = !is_null($periode_id) ? 'periode_id=:periode_id AND '         : '' ;
+  $where_periode  = ($periode_id)         ? 'periode_id=:periode_id AND '         : '' ;
   $where_profil   = ($only_profil_non_vu) ? $champ_consultation.' IS NULL AND '   : '' ;
   // order
-  $order_type     = (!$archive_type)     ? 'archive_type ASC, '   : '' ;
-  $order_ref      = (!$archive_ref)      ? 'archive_ref ASC, '    : '' ;
-  $order_annee    = (!$annee_scolaire)   ? 'annee_scolaire ASC, ' : '' ;
-  $order_periode  = is_null($periode_id) ? 'periode_id ASC, '     : '' ;
+  $order_type     = (!$archive_type)   ? 'archive_type ASC, '   : '' ;
+  $order_ref      = (!$archive_ref)    ? 'archive_ref ASC, '    : '' ;
+  $order_annee    = (!$annee_scolaire) ? 'annee_scolaire ASC, ' : '' ;
+  $order_periode  = (!$periode_id)     ? 'periode_id ASC, '     : '' ;
   // key
-  $key_eleve_id   = ( $annee_scolaire && $archive_type && $archive_ref && !is_null($periode_id) ) ? TRUE : FALSE ; // Pas de test sur $structure_uai qui peut être une chaine vide
+  $key_eleve_id   = ($annee_scolaire && $archive_type && $archive_ref && $periode_id) ? TRUE : FALSE ; // Pas de test sur $structure_uai qui peut être une chaine vide
   // on assemble
   $DB_SQL = 'SELECT '.$select;
   $DB_SQL.= 'FROM sacoche_officiel_archive ';

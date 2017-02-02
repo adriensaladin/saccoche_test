@@ -102,12 +102,17 @@ if($ACTION=='voir_detail')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Affichage des données d'un élève indiqué (si initialisation, alors le groupe classe, sauf socle)
+// Affichage des données d'un élève indiqué (si initialisation, alors le groupe classe)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
 {
   $is_bouton_test_impression = ($eleve_id) ? TRUE : FALSE ;
+}
+
+if(!$eleve_id)
+{
+  $is_appreciation_groupe = TRUE;
 }
 
 // Si besoin, fabriquer le formulaire avec la liste des élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
@@ -123,7 +128,7 @@ if($ACTION=='initialiser')
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
-  $form_choix_eleve.= ($PAGE_PERIODICITE!=='cycle') ? '<option value="0">'.html($groupe_nom).'</option>' : '' ;
+  $form_choix_eleve.= '<option value="0">'.html($groupe_nom).'</option>';
   foreach($DB_TAB as $DB_ROW)
   {
     $form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
@@ -132,7 +137,7 @@ if($ACTION=='initialiser')
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
   $form_choix_eleve .= ($PAGE_PERIODICITE!='cycle') ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
   $form_choix_eleve .= '</div></form><hr />';
-  $eleve_id = ($PAGE_PERIODICITE!=='cycle') ? 0 : $DB_TAB[0]['user_id'] ;
+  $eleve_id = 0;
   // (re)calculer les données du livret
   if( ($PAGE_REF!='brevet') && ($PAGE_COLONNE!='rien') ) // TODO : enlever le test "rien" si ce n'est pas autorisé (pour l'instant ce n'est même pas implémenté...)
   {
@@ -153,11 +158,6 @@ if($ACTION=='initialiser')
     }
     calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] , $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['LIVRET_RETROACTIF'] );
   }
-}
-
-if(!$eleve_id)
-{
-  $is_appreciation_groupe = TRUE;
 }
 
 // Récupérer les saisies déjà effectuées ou enregistrées pour la période en cours

@@ -90,6 +90,15 @@ if( isset($tab_fichier[$action]) )
   {
     Json::end( FALSE , 'Le fichier transmis ne correspond pas à l\'année scolaire '.$annee_scolaire.' !' );
   }
+  if($action=='Eleves')
+  {
+    $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_variable_MySQL('max_allowed_packet');
+    $xml_size = filesize(CHEMIN_DOSSIER_IMPORT.$nom_fichier_extrait);
+    if( $xml_size > $DB_ROW['Value'] )
+    {
+      Json::end( FALSE , 'Taille des données ('.FileSystem::afficher_fichier_taille($xml_size).') dépassant la limitation <em>max_allowed_packet</em> de MySQL !' );
+    }
+  }
   // Archivage
   DB_STRUCTURE_SIECLE::DB_ajouter_import( $action , $annee , $xml );
   Json::end( TRUE );
@@ -140,7 +149,7 @@ $tab_export_type = array(
 
 // Vérification période
 
-if( !isset($tab_periode_livret[$periode]) && ( ($action=='recolter') || ($periode!='') ) )
+if( !isset($tab_periode_livret[$periode]) && ( ($action=='recolter') || ($periode!='0') ) )
 {
   Json::end( FALSE , 'Période "'.html($periode).'" inconnue !' );
 }
@@ -176,7 +185,7 @@ if(substr($periode,0,7)=='periode')
 }
 else
 {
-  $PAGE_PERIODICITE = ($periode!=='') ? $periode : '' ;
+  $PAGE_PERIODICITE = ($periode!='0') ? $periode : '' ;
   $JOINTURE_PERIODE = '';
 }
 

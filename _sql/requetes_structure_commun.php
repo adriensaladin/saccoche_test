@@ -328,23 +328,6 @@ public static function DB_recuperer_socle2016_cycles()
 }
 
 /**
- * recuperer_socle2016_elements_livret
- * Lister les codes et intitulés des domaines ou composantes
- *
- * @param void
- * @return array
- */
-public static function DB_recuperer_socle2016_elements_livret()
-{
-  $DB_SQL = 'SELECT socle_domaine_ordre_livret, socle_domaine_code_livret, socle_domaine_nom_simple, socle_domaine_nom_officiel, ';
-  $DB_SQL.= 'socle_composante_ordre_livret, socle_composante_code_livret, socle_composante_nom_simple, socle_composante_nom_officiel ';
-  $DB_SQL.= 'FROM sacoche_socle_domaine ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_composante USING (socle_domaine_id) ';
-  $DB_SQL.= 'ORDER BY socle_domaine_ordre ASC, socle_composante_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * recuperer_socle2016_arborescence
  *
  * @param void

@@ -42,7 +42,7 @@ $liste_matiere_id = implode(',',$tab_matiere_id);
 $tab_objet  = array('modifier','tamponner','voir'); // "voir" car on peut corriger une appréciation dans ce mode
 $tab_action = array('initialiser','charger','ajouter_saisie','modifier_saisie','supprimer_saisie','recalculer_saisie','corriger_faute');
 $tab_mode  = array('texte','graphique');
-$tab_rubrique_type = array('eval','socle','epi','ap','parcours','bilan','viesco','enscompl');
+$tab_rubrique_type = array('eval','socle','epi','ap','parcours','bilan','viesco');
 $tab_saisie_objet = array('position','appreciation','elements','saisiejointure');
 
 // On vérifie les paramètres principaux
@@ -129,9 +129,8 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
 {
   // Vérif saisie
   $test_pb_saisie   = ( (($saisie_objet=='appreciation')&&!$appreciation) || (($saisie_objet=='elements')&&!$elements) || (in_array($page_colonne,array('objectif','position'))&&!in_array($position,array(1,2,3,4))) ) ? TRUE : FALSE ;
-  $test_pb_position = ( ($saisie_objet=='position') && ( ($position<0) || !$rubrique_id || !in_array($rubrique_type,array('eval','socle','enscompl')) || ($ACTION=='tamponner') ) ) ? TRUE : FALSE ;
-  $test_pb_maitrise = ( ($page_colonne=='maitrise') && ( !in_array($position,array(0,1,2,3,4)) || ( !$position && ($rubrique_id!=12) /*dispensé*/ ) || ( ($position<3) && ($rubrique_type=='enscompl') ) ) ) ? TRUE : FALSE ;
-  if( ( ($ACTION=='modifier_saisie') && !$saisie_id ) || $test_pb_saisie || $test_pb_position || $test_pb_maitrise )
+  $test_pb_position = ( ($saisie_objet=='position') && ( ($position<0) || !$rubrique_id || !in_array($rubrique_type,array('eval','socle')) || ($ACTION=='tamponner') ) ) ? TRUE : FALSE ;
+  if( ( ($ACTION=='modifier_saisie') && !$saisie_id ) || $test_pb_saisie || $test_pb_position )
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
@@ -164,16 +163,9 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
     $saisie_valeur = round($position*5,1);
     $affich_note = round($position,1);
   }
-  else if(in_array($page_colonne,array('objectif','position','maitrise')))
+  else if(in_array($page_colonne,array('objectif','position')))
   {
-    if( $position )
-    {
-      $saisie_valeur = ($_SESSION['LIVRET'][$position]['SEUIL_MIN']+$_SESSION['LIVRET'][$position]['SEUIL_MAX'])/2;
-    }
-    else
-    {
-      $saisie_valeur = 'disp';
-    }
+    $saisie_valeur = ($_SESSION['LIVRET'][$position]['SEUIL_MIN']+$_SESSION['LIVRET'][$position]['SEUIL_MAX'])/2;
   }
   // Enregistrer la saisie
   if($ACTION=='modifier_saisie')
@@ -227,27 +219,15 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   {
     Json::end( TRUE , '<div class="position">'.$affich_note.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_position).$bouton_modifier_position.$bouton_supprimer_position.$bouton_generer_position.'</div>' );
   }
-  else if( in_array($rubrique_type,array('eval','socle','enscompl')) && in_array($page_colonne,array('objectif','position','maitrise')) ) // forcément 'maitrise' pour 'enscompl'
+  else if( ($rubrique_type=='eval') && in_array($page_colonne,array('objectif','position')) )
   {
-    if($rubrique_type=='enscompl')
+    $image = '<img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$origine_position.'" />' ;
+    foreach($_SESSION['LIVRET'] as $id => $tab)
     {
-      $id_debut = 3;
-      $bouton_generer_position = '';
-    }
-    else if( ($rubrique_type=='socle') && ($rubrique_id==12) ) // langue étrangère avec positionnement dispensé possible
-    {
-      $id_debut = 0;
-    }
-    else
-    {
-      $id_debut = 1;
-    }
-    for( $id=$id_debut ; $id<5 ; $id++ )
-    {
-      $texte = ($id==$position) ? '<b>X</b>' : '' ;
+      $texte = ($id==$position) ? '<b>X</b>'.$image : '' ;
       Json::add_row( 'td_'.$id , $texte );
     }
-    Json::add_row( 'td_'.$page_colonne , '<div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_position).$bouton_modifier_position.$bouton_supprimer_position.$bouton_generer_position.'</div><i>'.$position.'</i>' );
+    Json::add_row( 'td_'.$page_colonne , '<div class="notnow" data-id="'.$saisie_id.'">'.$bouton_modifier_position.$bouton_supprimer_position.$bouton_generer_position.'</div><i>'.$position.'</i>' );
     Json::end( TRUE );
   }
   else if($rubrique_type=='epi')
@@ -264,17 +244,12 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   }
   else if($rubrique_type=='bilan')
   {
-    $texte_intro = ($rubrique_type!='socle') ? '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id).'</span><br />' : '';
-    Json::end( TRUE , $texte_intro.'<span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.$bouton_generer.'</div>' );
+    Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id).'</span><br /><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.$bouton_generer.'</div>' );
   }
   else if($rubrique_type=='viesco')
   {
     Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('viesco').'</span><br /><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.$bouton_generer.'</div>' );
     // Il y a aussi le contenu de #div_assiduite qui est mis de côté puis rajouté en js
-  }
-  else
-  {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
 }
 
@@ -315,26 +290,14 @@ if($ACTION=='supprimer_saisie')
     $saisie = '-';
     Json::end( TRUE , '<div class="position">'.$saisie.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter_position.$bouton_generer_position.'</div>' );
   }
-  else if( in_array($rubrique_type,array('eval','socle','enscompl')) && in_array($page_colonne,array('objectif','position','maitrise')) ) // forcément 'maitrise' pour 'enscompl'
+  else if( ($rubrique_type=='eval') && in_array($page_colonne,array('objectif','position')) )
   {
-    if($rubrique_type=='enscompl')
-    {
-      $id_debut = 3;
-      $bouton_generer_position = '';
-    }
-    else if( ($rubrique_type=='socle') && ($rubrique_id==12) ) // langue étrangère avec positionnement dispensé possible
-    {
-      $id_debut = 0;
-    }
-    else
-    {
-      $id_debut = 1;
-    }
-    for( $id=$id_debut ; $id<5 ; $id++ )
+    $image = '<img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$origine.'" />' ;
+    foreach($_SESSION['LIVRET'] as $id => $tab)
     {
       Json::add_row( 'td_'.$id , '' );
     }
-    Json::add_row( 'td_'.$page_colonne , '<div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter_position.$bouton_generer_position.'</div><i></i>' );
+    Json::add_row( 'td_'.$page_colonne , '<div class="notnow" data-id="'.$saisie_id.'">'.$bouton_ajouter_position.$bouton_generer_position.'</div><i></i>' );
     Json::end( TRUE );
   }
   else if($rubrique_type=='epi')
@@ -352,18 +315,13 @@ if($ACTION=='supprimer_saisie')
   else if($rubrique_type=='bilan')
   {
     $saisie_valeur = ($BILAN_ETAT=='2rubrique') ? $saisie_valeur_astuce : $saisie_valeur_danger ;
-    $texte_intro = ($rubrique_type!='socle') ? '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id).'</span>' : '';
-    Json::end( TRUE , $texte_intro.'<span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter.$bouton_generer.'</div>' );
+    Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id).'</span><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter.$bouton_generer.'</div>' );
   }
   else if($rubrique_type=='viesco')
   {
     $saisie_valeur = ($BILAN_ETAT=='2rubrique') ? $saisie_valeur_astuce : $saisie_valeur_danger ;
     Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('viesco').'</span><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter.$bouton_generer.'</div>' );
     // Il y a aussi le contenu de #div_assiduite qui est mis de côté puis rajouté en js
-  }
-  else
-  {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
 }
 
@@ -422,40 +380,28 @@ if($ACTION=='recalculer_saisie')
     $note = ($PAGE_COLONNE=='moyenne') ? round(($contenu/5),1) : $contenu.'&nbsp;%' ;
     Json::end( TRUE , '<div class="position">'.$note.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier_position.$bouton_supprimer_position.'</div>' );
   }
-  else if( in_array($rubrique_type,array('eval','socle')) && in_array($page_colonne,array('objectif','position','maitrise')) ) // pas d'automatisation pour 'enscompl'
+  else if( ($rubrique_type=='eval') && in_array($PAGE_COLONNE,array('objectif','position')) )
   {
-    $indice = OutilBilan::determiner_degre_maitrise($contenu); // pas de valeur "dispensé" qui puisse être générée automatiquement
-    $origine .= ' : '.$contenu.' %';
-    if( ($rubrique_type=='socle') && ($rubrique_id==12) ) // langue étrangère avec positionnement dispensé possible
+    $indice = OutilBilan::determiner_degre_maitrise($contenu);
+    $title = $origine.' : '.$contenu.' %' ;
+    $image = '<img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.$title.'" />' ;
+    foreach($_SESSION['LIVRET'] as $id => $tab)
     {
-      $id_debut = 0;
-    }
-    else
-    {
-      $id_debut = 1;
-    }
-    for( $id=$id_debut ; $id<5 ; $id++ )
-    {
-      $texte = ($id==$indice) ? '<b>X</b>' : '' ;
+      $texte = ($id==$indice) ? '<b>X</b>'.$image : '' ;
       Json::add_row( 'td_'.$id , $texte );
     }
-    Json::add_row( 'td_'.$PAGE_COLONNE , '<div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier_position.$bouton_supprimer_position.'</div><i>'.$indice.'</i>' );
+    Json::add_row( 'td_'.$PAGE_COLONNE , '<div class="notnow" data-id="'.$saisie_id.'">'.$bouton_modifier_position.$bouton_supprimer_position.'</div><i>'.$indice.'</i>' );
     Json::end( TRUE );
   }
   else if($rubrique_type=='bilan')
   {
     $saisie_valeur = html($contenu);
-    $texte_intro = ($rubrique_type!='socle') ? '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id).'</span><br />' : '';
-    Json::end( TRUE , $texte_intro.'<span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.'</div>' );
+    Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id).'</span><br /><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.'</div>' );
   }
   else if($rubrique_type=='viesco')
   {
     $saisie_valeur = html($contenu);
     Json::end( TRUE , '<span class="notnow">'.rubrique_texte_intro('viesco',$eleve_id).'</span><br /><span class="appreciation">'.$saisie_valeur.'</span><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.'</div>' );
-  }
-  else
-  {
-    Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
 }
 
@@ -474,8 +420,13 @@ if($ACTION=='corriger_faute')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 5 & 6 : affichage des données d'un élève indiqué (si initialisation, alors le groupe classe, sauf socle)
+// Cas 5 & 6 : affichage des données d'un élève indiqué (si initialisation, alors le groupe classe)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if(!$eleve_id)
+{
+  $is_appreciation_groupe = TRUE;
+}
 
 // Si un personnel accède à la saisie de synthèse, il ne faut pas seulement récupérer les données qui concerne ses matières.
 $liste_matiere_id = ( ($OBJET=='modifier') || ($BILAN_ETAT=='2rubrique') ) ? $liste_matiere_id : '' ;
@@ -493,7 +444,7 @@ if($ACTION=='initialiser')
   }
   $tab_eleve_id = array();
   $form_choix_eleve = '<form action="#" method="post" id="form_choix_eleve"><div><b>'.html($periode_nom.' | '.$classe_nom).' :</b> <button id="go_premier_eleve" type="button" class="go_premier">Premier</button> <button id="go_precedent_eleve" type="button" class="go_precedent">Précédent</button> <select id="go_selection_eleve" name="go_selection" class="b">';
-  $form_choix_eleve.= ($PAGE_PERIODICITE!=='cycle') ? '<option value="0">'.html($groupe_nom).'</option>' : '' ;
+  $form_choix_eleve.= '<option value="0">'.html($groupe_nom).'</option>';
   foreach($DB_TAB as $DB_ROW)
   {
     $form_choix_eleve .= '<option value="'.$DB_ROW['user_id'].'">'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</option>';
@@ -502,7 +453,7 @@ if($ACTION=='initialiser')
   $form_choix_eleve .= '</select> <button id="go_suivant_eleve" type="button" class="go_suivant">Suivant</button> <button id="go_dernier_eleve" type="button" class="go_dernier">Dernier</button>&nbsp;&nbsp;&nbsp;<button id="fermer_zone_action_eleve" type="button" class="retourner">Retour</button>';
   $form_choix_eleve .= ( ($PAGE_PERIODICITE!='cycle') && ($OBJET=='tamponner') ) ? ( ($mode=='texte') ? ' <button id="change_mode" type="button" class="stats">Interface graphique</button>' : ' <button id="change_mode" type="button" class="texte">Interface détaillée</button>' ) : '' ;
   $form_choix_eleve .= '</div></form><hr />';
-  $eleve_id = ($PAGE_PERIODICITE!=='cycle') ? 0 : $DB_TAB[0]['user_id'] ;
+  $eleve_id = 0;
   // sous-titre
   if($ACTION=='tamponner')
   {
@@ -543,11 +494,6 @@ if($ACTION=='initialiser')
     }
     calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] , $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['LIVRET_RETROACTIF'] );
   }
-}
-
-if(!$eleve_id)
-{
-  $is_appreciation_groupe = TRUE;
 }
 
 // Récupérer les saisies déjà effectuées ou enregistrées pour la période en cours et les périodes antérieures

@@ -217,7 +217,6 @@ $tab_droits_par_page = array
   'livret_classes'                          => $tab_droits_profil_dir_admin,
   'livret_parcours'                         => $tab_droits_profil_dir_admin,
   'livret_modaccomp'                        => $tab_droits_profil_dir_admin,
-  'livret_enscompl'                         => $tab_droits_profil_dir_admin,
   'livret_export'                           => $tab_droits_profil_dir_admin,
   'officiel_reglages_ordre_matieres'        => $tab_droits_profil_dir_admin,
   'officiel_reglages_format_synthese'       => $tab_droits_profil_dir_admin,

@@ -27,16 +27,7 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Modalités d'accompagnement"));
-?>
 
-<ul class="puce">
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_modaccomp">DOC : Administration du Livret Scolaire &rarr; Modalités d'accompagnement</a></span></li>
-  <li><span class="astuce">Ce menu ne sert que pour les <b>bilans périodiques</b> (sans objet pour les <b>bilans de fin de cycle</b>).</span></li>
-</ul>
-
-<hr />
-
-<?php
 // Fabrication des éléments select du formulaire
 $tab_groupes   = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
 $tab_modaccomp = DB_STRUCTURE_LIVRET::DB_OPT_modaccomp();
@@ -47,6 +38,12 @@ $select_modaccomp = HtmlForm::afficher_select($tab_modaccomp , 'f_modaccomp'   /
 // Javascript
 Layout::add( 'js_inline_before' , 'var tab_commentaire = new Array();' );
 ?>
+
+<ul class="puce">
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_modaccomp">DOC : Administration du Livret Scolaire &rarr; Modalités d'accompagnement</a></span></li>
+</ul>
+
+<hr />
 
 <form action="#" method="post" id="form_select">
   <table><tr>

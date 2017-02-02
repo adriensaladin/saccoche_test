@@ -301,13 +301,13 @@ $(document).ready
         {
           f_groupe    : { required:true },
           'f_eleve[]' : { required:true },
-          f_periode   : { required:false }
+          f_periode   : { required:function(){return $('#f_annee').val()!="0";} }
         },
         messages :
         {
           f_groupe    : { required:"regroupement manquant" },
           'f_eleve[]' : { required:"élève(s) manquant(s)" },
-          f_periode   : { }
+          f_periode   : { required:"période manquante" }
         },
         errorElement : "label",
         errorClass : "erreur",

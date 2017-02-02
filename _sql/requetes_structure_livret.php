@@ -1718,75 +1718,6 @@ public static function DB_supprimer_eleve_modaccomp( $modaccomp_code , $eleve_id
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Enseignements de complément
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * tester_enscompl
- *
- * @param string $enscompl_code
- * @return bool
- */
-public static function DB_tester_enscompl( $enscompl_code )
-{
-  $DB_SQL = 'SELECT 1 ';
-  $DB_SQL.= 'FROM sacoche_livret_enscompl ';
-  $DB_SQL.= 'WHERE livret_enscompl_code=:enscompl_code ';
-  $DB_VAR = array( ':enscompl_code' => $enscompl_code );
-  return (bool) DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_eleve_enscompl
- *
- * @param string $liste_eleve    facultatif, pour restreindre à des élèves donnés
- * @return array
- */
-public static function DB_lister_eleve_enscompl( $liste_eleve = NULL )
-{
-  $where = ($liste_eleve) ? 'AND eleve_id IN('.$liste_eleve.') ' : '' ;
-  $DB_SQL = 'SELECT eleve_id, livret_enscompl_id, livret_enscompl_code , livret_enscompl_nom ';
-  $DB_SQL.= 'FROM sacoche_livret_jointure_enscompl_eleve ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_enscompl USING(livret_enscompl_code) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_enscompl_eleve.eleve_id = sacoche_user.user_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id = sacoche_groupe.groupe_id ';
-  $DB_SQL.= 'WHERE user_sortie_date>NOW() AND groupe_id IS NOT NULL '.$where;
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * modifier_eleve_enscompl
- *
- * @param string $enscompl_code
- * @param int    $eleve_id
- * @return void
- */
-public static function DB_modifier_eleve_enscompl( $enscompl_code , $eleve_id )
-{
-  $DB_SQL = 'INSERT INTO sacoche_livret_jointure_enscompl_eleve ( livret_enscompl_code , eleve_id ) ';
-  $DB_SQL.= 'VALUES                                             (       :enscompl_code ,:eleve_id )';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE livret_enscompl_code=:enscompl_code ';
-  $DB_VAR = array(
-    ':enscompl_code'  => $enscompl_code,
-    ':eleve_id'       => $eleve_id,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * supprimer_eleve_enscompl
- *
- * @param string $listing_eleve_id
- * @return void
- */
-public static function DB_supprimer_eleve_enscompl( $listing_eleve_id )
-{
-  $DB_SQL = 'DELETE FROM sacoche_livret_jointure_enscompl_eleve ';
-  $DB_SQL.= 'WHERE eleve_id IN('.$listing_eleve_id.') ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL);
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Options de formulaires
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1801,20 +1732,6 @@ public static function DB_OPT_modaccomp()
   $DB_SQL = 'SELECT livret_modaccomp_code AS valeur, CONCAT( livret_modaccomp_code ," : " , livret_modaccomp_nom ) AS texte ';
   $DB_SQL.= 'FROM sacoche_livret_modaccomp ';
   $DB_SQL.= 'ORDER BY livret_modaccomp_code ASC ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * Retourner un tableau [valeur texte] des enseignements de complément
- *
- * @param void
- * @return array
- */
-public static function DB_OPT_enscompl()
-{
-  $DB_SQL = 'SELECT livret_enscompl_code AS valeur, CONCAT( livret_enscompl_code ," : " , livret_enscompl_nom ) AS texte ';
-  $DB_SQL.= 'FROM sacoche_livret_enscompl ';
-  $DB_SQL.= 'ORDER BY livret_enscompl_code ASC ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

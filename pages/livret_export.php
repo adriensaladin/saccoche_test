@@ -36,7 +36,7 @@ $tab_step = array(
   1 => array( 'titre' => "Récolter les données dans SACoche"    , 'consigne' => "à effectuer classe par classe une fois le bilan complet / fermé" ) ,
   2 => array( 'titre' => "Générer un fichier d'export pour LSU" , 'consigne' => "à effectuer par exemple à chaque période pour tous les élèves, ou pour un élève qui quitte l'établissement" ) ,
 );
-$SOUS_MENU .= '<hr />';
+$SOUS_MENU .= '<br />';
 foreach($tab_step as $key => $tab)
 {
   $class = ($key==$step) ? ' class="actif"' : '' ;
@@ -242,7 +242,7 @@ if($step==1)
           $info_export = ($tab_join['date_export']) ? '<div class="astuce">Récolté le '.To::date_mysql_to_french($tab_join['date_export']).'.</div>' : '<div class="danger">Données non récoltées.</div>' ;
           $page_ref = $tab_join['page_ref'];
           $id = '_'.$classe_id.'_'.$page_ref.'_'.$periode;
-          $bouton_recolte = in_array( $page_ref , array('6e','5e','4e','3e') ) ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '<button type="button" class="generer" disabled>Fonctionnalité à venir...</button>' ;
+          $bouton_recolte = in_array( $page_ref , array('6e','5e','4e','3e') ) ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '' ;
           // $bouton_recolte = !in_array( $page_ref , array('cycle1','cycle2','cycle3','cycle4') ) ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '' ;
           $tab_affich[$classe_id][$periode] = '<td class="hc">'.$info_export.$bouton_recolte.'</td>';
         }

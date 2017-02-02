@@ -26,7 +26,6 @@
  */
 
 // Tableau avec la liste des langues pour traduire partiellement SACoche
-// @see https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1
 
 $tab_langues_traduction = array(
   array(

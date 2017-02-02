@@ -675,6 +675,8 @@ if($version_base_structure_actuelle=='2015-06-09')
         DB_STRUCTURE_MATIERE::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
         SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
       }
+      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajouts dans sacoche_matiere)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
     }
     if(empty($reload_sacoche_matiere_famille))
     {

@@ -36,7 +36,7 @@ $action         = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_acti
 $uai_origine    = (isset($_POST['f_uai_origine'])) ? Clean::uai($_POST['f_uai_origine'])    : '';
 $structure_uai  = (isset($_POST['f_structure']))   ? Clean::uai($_POST['f_structure'])      : '';
 $annee_scolaire = (isset($_POST['f_annee']))       ? Clean::code($_POST['f_annee'])         : '';
-$periode_id     = ($_POST['f_periode']!=='')       ? Clean::entier($_POST['f_periode'])     : NULL;
+$periode_id     = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])     : 0;
 
 $tab_eleve    = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
 $tab_type_ref = (isset($_POST['f_type_ref']))  ? ( (is_array($_POST['f_type_ref'])) ? $_POST['f_type_ref'] : explode(',',$_POST['f_type_ref']) ) : array() ;
@@ -107,7 +107,7 @@ if( ($action=='generer_pdf') && !empty($tab_eleve) && !empty($tab_type) && !empt
     $fichier_nom  = 'archive_';
     $fichier_nom .= (!$uai_origine)       ? $_SESSION['BASE'].'_' : Clean::fichier($uai_origine).'_' ;
     $fichier_nom .= (!$annee_scolaire)    ? '' : Clean::fichier($DB_ROW['annee_scolaire']).'_' ;
-    $fichier_nom .= is_null($periode_id)  ? '' : Clean::fichier($DB_ROW['periode_nom']).'_' ;
+    $fichier_nom .= (!$periode_id)        ? '' : Clean::fichier($DB_ROW['periode_nom']).'_' ;
     $fichier_nom .= (!$structure_uai)     ? '' : Clean::fichier($DB_ROW['structure_uai']).'_' ;
     $fichier_nom .= (count($tab_type)>1)  ? '' : $type.'_' ;
     $fichier_nom .= (count($tab_ref)>1)   ? '' : $ref.'_' ;
@@ -187,7 +187,7 @@ if( ($action=='generer_zip') && isset($_SESSION['tmp']['zip_archive']) )
     $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_structure_origine( $_SESSION['tmp']['zip_archive']['uai_origine'] );
     if( !empty($DB_ROW['structure_courriel']) )
     {
-      $retour .= '<li>'.HtmlMail::to($DB_ROW['structure_courriel'],'Bilans anciens élèves','Envoyer un courriel à '.html($DB_ROW['structure_denomination']).' ('.html($DB_ROW['structure_localisation']).').','Bonjour,<br />Veuillez trouver à cette adresse les bilans scolaires de vos anciens élèves (vous avez 7 jours pour les récupérer) :<br />'.$href.'<br />Cordialement,<br />'.html($_SESSION['ETABLISSEMENT']['DENOMINATION'])).'</li>';
+      $retour .= '<li>'.HtmlMail::to($DB_ROW['structure_courriel'],'Bilans anciens élèves','Envoyer un courriel à '.html($DB_ROW['structure_denomination']).' ('.html($DB_ROW['structure_localisation']).').','Bonjour,<br />Veuillez trouver à cette adresse les bilans scolaire de vos anciens élèves (vous avez 7 jours pour les récupérer) :<br />'.$href.'<br />Cordialement,<br />'.html($_SESSION['ETABLISSEMENT']['DENOMINATION'])).'</li>';
     }
   }
   $retour .= '</ul>';

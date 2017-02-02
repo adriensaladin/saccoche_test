@@ -31,10 +31,7 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Rubriques / L
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_liaisons">DOC : Administration du Livret Scolaire &rarr; Rubriques / Liaisons</a></span></li>
-  <li><span class="astuce">Les liaisons pour les <b>niveaux de classes</b> servent pour les <b>bilans périodiques</b> ; les liaisons <b>par cycle</b> servent pour les <b>bilans de fin de cycle</b>.</span></li>
 </ul>
-
-<hr />
 
 <?php
 // On récupère l'éventuel type de rubrique
@@ -67,7 +64,7 @@ foreach($DB_TAB as $DB_ROW)
     $tab_sousmenu[$DB_ROW['livret_page_rubrique_type']][$class]['vignette'][]    = '<a href="'.SERVEUR_LSU_PDF.'livret_'.$DB_ROW['livret_page_ref'].'.pdf" class="fancybox" rel="gallery" data-titre="'.html($DB_ROW['livret_page_moment'].' : '.$DB_ROW['livret_page_resume']).'"><span class="livret livret_float_liaisons livret_'.$DB_ROW['livret_page_ref'].'"></span></a>';
   }
 }
-$SOUS_MENU .= '<hr />';
+$SOUS_MENU .= '<br />';
 foreach($tab_sousmenu as $livret_page_rubrique_type => $tab_class)
 {
   foreach($tab_class as $class => $tab)
@@ -93,6 +90,8 @@ if(!isset($liaison_rubrique_type))
 // On complète le titre de la page
 $TITRE .= ' &rarr; '.html($livret_page_moment);
 ?>
+
+<hr />
 
 <?php if($liaison_rubrique_type=='socle'): /* * * * * * CYCLE2 | CYCLE3 | CYCLE4 * * * * * */ ?>
 

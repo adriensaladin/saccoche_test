@@ -92,15 +92,7 @@ $annee_scolaire = To::annee_scolaire('code');
 
 if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 {
-  if($PAGE_COLONNE=='maitrise')
-  {
-    $cycle_id = substr($PAGE_REF,-1);
-    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos('cycle'.$cycle_id);
-  }
-  else
-  {
-    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos( $PAGE_REF , $PAGE_COLONNE );
-  }
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos( $PAGE_REF , $PAGE_COLONNE );
   foreach($DB_TAB as $DB_ROW)
   {
     $id = $DB_ROW['livret_colonne_id'] % 10 ; // 1 2 3 4
@@ -195,8 +187,8 @@ if($ACTION=='initialiser')
         $clef = $DB_TAB[$eleve_id][0]['officiel_archive_id'];
         $_SESSION['tmp_droit_voir_archive'][$clef] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
         $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
-        $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
-        $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
+        $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
+        $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
       }
       Json::add_str('<tr>');
       Json::add_str(  '<td>'.$tab_eleve_td[$eleve_id].'</td>');
@@ -691,9 +683,8 @@ if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'url'))
 }
 
 // Bloc des titres du document
-$titre_moment  = ($PAGE_PERIODICITE=='cycle') ? $PAGE_MOMENT : 'Cycle '.substr($PAGE_RUBRIQUE_TYPE,1,1).' - '.$PAGE_TITRE_CLASSE ;
-$titre_periode = ($PAGE_PERIODICITE=='cycle') ? To::annee_scolaire('texte') : To::annee_scolaire('texte').' - '.$periode_nom ;
-$tab_bloc_titres = array( 0 => 'LIVRET SCOLAIRE' , 1 => $titre_moment , 2 => $titre_periode , 3 =>$classe_nom );
+$titre_ligne = ($PAGE_PERIODICITE=='cycle') ? $PAGE_MOMENT : 'Cycle '.substr($PAGE_RUBRIQUE_TYPE,1,1).' - '.$PAGE_TITRE_CLASSE ;
+$tab_bloc_titres = array( 0 => 'LIVRET SCOLAIRE' , 1 => $titre_ligne , 2 => To::annee_scolaire('texte').' - '.$periode_nom , 3 =>$classe_nom );
 
 // Tag date heure initiales
 
@@ -725,7 +716,7 @@ $tab_archive = array(
 // 'OFFICIEL'  => $_SESSION['OFFICIEL'],  // Pas besoin car pas de bloc adresse sur la version archivée
 if( in_array($PAGE_COLONNE,array('objectif','position')) )
 {
-  $tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // Besoin pour OutilBilan::determiner_degre_maitrise(), en cas de positionnement sans note ni pourcentage ou en cas de maitrise du socle
+  $tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // Besoin pour OutilBilan::determiner_degre_maitrise(), uniquement en cas de positionnement sans note ni pourcentage
 }
 
 $orientation  = ($PAGE_REF!='cycle1') ? 'portrait' : 'paysage' ;

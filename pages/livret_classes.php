@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Classes / Périodicité"));
+$TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Affectation des classes"));
 
 // Vérifier qu'il y a au moins une classe dans l'établissement
 // Vérifier qu'il y a au moins une classe associée au livret, et sinon essayer de faire le boulot automatiquement
@@ -39,8 +39,7 @@ if( $result === FALSE )
 if( is_int($result) )
 {
   $s = ($result>1) ? 's' : '' ;
-  $compte_rendu = ($result) ? '<em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />' : 'Mais <em>SACoche</em> n\'a pas su les initialiser automatiquement.<br />' ;
-  echo'<p class="danger">Des associations de classe au livret scolaire n\'était pas enregistrées.<br />'.$compte_rendu.'Vérifiez et ajustez si besoin (voir ci-dessous).</p>'.NL;
+  echo'<p class="danger">Des associations de classe au livret scolaire n\'était pas enregistrées.<br /><em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />Vérifiez et ajustez si besoin (étape "Classes" ci-dessus).</p>'.NL;
 }
 
 // Fabriquer les options de formulaires

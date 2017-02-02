@@ -51,6 +51,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
 {
   if(!$liste_eleve_id) return FALSE;
   $RUBRIQUE_TYPE = ($PAGE_COLONNE=='maitrise') ? 'socle' : 'eval' ;
+  $afficher_score = TRUE; // Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] ) peut potentiellement poser pb pour un admin et dans cette partie du livret réservée aux profs des références chiffrées sont de toutes façon affichées.
   //
   // Récupérer les données déjà enregistrées, concernant les élèves et la classe
   //
@@ -169,7 +170,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     $cycle_id = $PAGE_RUBRIQUE_TYPE{1};
     // Récupération de la liste des items et des liaisons items / composantes
     $tab_join_item_socle = array();
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes($cycle_id);
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes( $cycle_id );
     if(!$DB_TAB) return FALSE;
     foreach($DB_TAB as $DB_ROW)
     {
@@ -179,10 +180,13 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     $liste_item_id = implode(',',array_keys($tab_join_item_socle));
     // Il faut au moins connaître le mode de calcul associé à chaque item
     $tab_item_infos = array();
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , FALSE /*detail*/ );
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
     foreach($DB_TAB as $DB_ROW)
     {
+      $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
       $tab_item_infos[$DB_ROW['item_id']] = array(
+        'item_ref'       => $DB_ROW['matiere_ref'].'.'.$item_ref,
+        'item_nom'       => $DB_ROW['item_nom'],
         'calcul_methode' => $DB_ROW['calcul_methode'],
         'calcul_limite'  => $DB_ROW['calcul_limite'],
       );
@@ -196,7 +200,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
     }
     // Initialiser les tableaux pour retenir les données
-    $tab_init_score = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array('nb'=>0) ;
+    $tab_init_score = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array( 'nb' => 0 ) + array( 'detail' => array() );
     $tab_score_eleve_composante = array();  // [eleve_id][composante_id] => array([etats],nb,%)   // Retenir le nb d'items acquis ou pas / élève / composante
     $tab_eleve_id = explode(',',$liste_eleve_id);
     $tab_composante = array(11,12,13,14,20,30,40,50);
@@ -213,18 +217,22 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       // Pour chaque item évalué...
       foreach($tab_eval_eleve as $item_id => $tab_devoirs)
       {
-        extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite
+        extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite $item_ref $item_nom
         // calcul du bilan de l'item
         $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
         if($score!==FALSE)
         {
           // on détermine si il est acquis ou pas
           $indice = OutilBilan::determiner_etat_acquisition( $score );
+          // Pour le détail des items évalués et leur score (sera associé aux ids de rubriques des positionnements)
+          $pourcentage = ($afficher_score) ? $score.'%' : '&nbsp;' ;
+          $item_detail = '<div><span class="pourcentage A'.$indice.'">'.$pourcentage.'</span> '.html($item_ref.' - '.$item_nom).'</div>';
           // on enregistre les infos
           foreach($tab_join_item_socle[$item_id] as $socle_composante_id)
           {
             $tab_score_eleve_composante[$eleve_id][$socle_composante_id][$indice]++;
             $tab_score_eleve_composante[$eleve_id][$socle_composante_id]['nb']++;
+            $tab_score_eleve_composante[$eleve_id][$socle_composante_id]['detail'][] = $item_detail;
           }
         }
       }
@@ -235,7 +243,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     {
       foreach($tab_score_composante as $socle_composante_id=>$tab_score)
       {
-        $pourcentage = ($tab_score['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_score , $tab_score['nb'] ) :  FALSE ; // Pas NULL car un test isset() sur une valeur NULL renvoie FALSE !!! (voir plus loin)
+        $pourcentage = ($tab_score['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_score , $tab_score['nb'] ) :  NULL ;
         $tab_positions_calculees[$socle_composante_id][$eleve_id] = $pourcentage;
       }
     }
@@ -411,14 +419,13 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     $tab_score_eleve_rubrique  = array();
     $tab_eleve_item_rubrique   = array(); // Pour plus tard (éléments de programme)
     $tab_eleve_item_detail     = array(); // Pour le détail des items évalués et leur score (sera associé aux ids de rubriques des éléments de programme)
-    $afficher_score = TRUE; // Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] ) peut potentiellement poser pb pour un admin et dans cette partie du livret réservée aux profs des références chiffrées sont de toutes façon affichées.
     foreach($tab_eval as $eleve_id => $tab_eval_eleve)
     {
       foreach($tab_eval_eleve as $rubrique_id => $tab_eval_rubrique)
       {
         foreach($tab_eval_rubrique as $item_id => $tab_devoirs)
         {
-          extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite
+          extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite $item_nom
           $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
           $tab_score_eleve_rubrique[$eleve_id][$rubrique_id][$item_id] = $score;
 
@@ -464,37 +471,51 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     }
   }
   // Comparer les positions calculées avec les positions enregistrées
+  // Mémoriser le détail des acquisitions des items dans le cas d'un bilan de fin de cycle : les enregistrements sont associés aux id des positionnements
+  $detail_determine = NULL;
   foreach($tab_positions_calculees as $rubrique_id => $tab_positions)
   {
     foreach($tab_positions as $eleve_id => $position_calculee)
     {
       $clef = $RUBRIQUE_TYPE.$rubrique_id.'eleve'.$eleve_id.'position';
+      $detail_determine = ( ($PAGE_COLONNE=='maitrise') && !empty($tab_score_eleve_composante[$eleve_id][$rubrique_id]['detail']) ) ? implode('',$tab_score_eleve_composante[$eleve_id][$rubrique_id]['detail']) : NULL ;
       if(!isset($tab_donnees_livret[$clef]))
       {
         $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $RUBRIQUE_TYPE , $rubrique_id , 'eleve' , $eleve_id , 'position' , $position_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-        $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $position_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
+        if( ($PAGE_COLONNE=='maitrise') && !is_null($detail_determine) )
+        {
+          DB_STRUCTURE_LIVRET::DB_ajouter_saisie_memo_detail( $livret_saisie_id , $detail_determine );
+        }
+        $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $position_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'acquis_detail' => $detail_determine , 'listing_profs'=>'' , 'find' => TRUE );
       }
       // un test ci-dessous a pour but d'éviter une non mise en jour en cas de données issues d'un bulletin qui depuis a été abandonné
       // un test ci-dessous a pour but d'éviter une non mise en jour en cas de données issues d'un bulletin qui depuis a été déclaré sans moyenne (qui ne sont donc plus recalculées)
       // un test ci-dessous a pour but d'éviter une non mise en jour en cas de données supprimées issues d'un bulletin et que depuis la configuration est de recaluler un positionnement dans ce cas
-      else if( ($tab_donnees_livret[$clef]['valeur']!==$position_calculee) && ( ($tab_donnees_livret[$clef]['origine']=='calcul') || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$is_recup_bulletin ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && is_null($tab_donnees_livret[$clef]['valeur']) && ($import_bulletin=='reel') ) ) )
-      {
-        $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
-        DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'position' /*$saisie_objet*/ , $position_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-        $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $position_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
-        // On ne supprime pas une position NULL pour conserver les liaisons des profs aux élèves notés ABS etc.
-        /*
-        if(is_null($position_calculee))
-        {
-          DB_STRUCTURE_LIVRET::DB_supprimer_saisie( $livret_saisie_id );
-          unset($tab_donnees_livret[$clef]);
-        }
-        */
-      }
       else
       {
         $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
-        $tab_donnees_livret[$clef]['find'] = TRUE;
+        if( ($tab_donnees_livret[$clef]['valeur']!==$position_calculee) && ( ($tab_donnees_livret[$clef]['origine']=='calcul') || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$is_recup_bulletin ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && is_null($tab_donnees_livret[$clef]['valeur']) && ($import_bulletin=='reel') ) ) )
+        {
+          DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'position' /*$saisie_objet*/ , $position_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
+          $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $position_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
+          // On ne supprime pas une position NULL pour conserver les liaisons des profs aux élèves notés ABS etc.
+          /*
+          if(is_null($position_calculee))
+          {
+            DB_STRUCTURE_LIVRET::DB_supprimer_saisie( $livret_saisie_id );
+            unset($tab_donnees_livret[$clef]);
+          }
+          */
+        }
+        else
+        {
+          $tab_donnees_livret[$clef]['find'] = TRUE;
+        }
+        // détail des acquisitions
+        if( ($PAGE_COLONNE=='maitrise') && !is_null($detail_determine) && ( $tab_donnees_livret[$clef]['acquis_detail'] !== $detail_determine ) )
+        {
+          DB_STRUCTURE_LIVRET::DB_modifier_saisie_memo_detail( $livret_saisie_id , $detail_determine );
+        }
       }
       if($PAGE_COLONNE!='maitrise')
       {
@@ -583,7 +604,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
   }
   //
   // Déterminer les principaux éléments du programme travaillés durant la période
-  // Mémoriser le détail des acquisitions des items
+  // Mémoriser le détail des acquisitions des items dans le cas d'un bilan périodique : les enregistrements sont associés aux id des éléments travaillés
   //
   if( ($PAGE_COLONNE!='maitrise') && $liste_item_id )
   {
@@ -782,11 +803,11 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
   if($PAGE_COLONNE=='maitrise') // Ici on a forcément ($saisie_objet=='position')
   {
     $cycle_id = $PAGE_RUBRIQUE_TYPE{1};
-    $socle_composante_id = $rubrique_id;
     // Récupération de la liste des items et des liaisons items / composantes
     $tab_join_item_socle = array();
-    $liste_composante_id = ($rubrique_id<15) ? $rubrique_id : ($rubrique_id+1).','.($rubrique_id+2).','.($rubrique_id+3).','.($rubrique_id+4);
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes($cycle_id,$liste_composante_id);
+    $domaine_id    = ($rubrique_id<15) ? NULL : $rubrique_id/10 ;
+    $composante_id = ($rubrique_id<15) ? $rubrique_id : NULL ;
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes( $cycle_id , FALSE /*with_detail*/ , $domaine_id , $composante_id );
     if(!$DB_TAB) return array( FALSE , NULL , "Pas de données trouvées pour estimer ce positionnement." );
     foreach($DB_TAB as $DB_ROW)
     {
@@ -1105,30 +1126,32 @@ function texte_ligne_assiduite($tab_assiduite)
  * Retourner le texte introductif d'une zone du livret
  * 
  * @param string $rubrique_type
- * @param int    $eleve_id
+ * @param int    $eleve_id | $cycle_id
  * @param string $bilan_type_etabl
  * @return string
  */
-function rubrique_texte_intro( $rubrique_type , $eleve_id=0 , $bilan_type_etabl='' )
+function rubrique_texte_intro( $rubrique_type , $for_id=0 , $bilan_type_etabl='' )
 {
   switch($rubrique_type)
   {
+    case 'socle' :
+      return 'Maîtrise des composantes du socle en fin de cycle '.$for_id;
     case 'eval' :
-      return ($eleve_id) ? 'Suivi des acquis scolaires de l’élève' : 'Suivi des acquis de la classe' ;
+      return ($for_id) ? 'Suivi des acquis scolaires de l’élève' : 'Suivi des acquis de la classe' ;
     case 'epi' :
-      return ($eleve_id) ? 'Implication de l’élève : ' : 'Projet réalisé : ' ;
+      return ($for_id) ? 'Implication de l’élève : ' : 'Projet réalisé : ' ;
     case 'ap' :
-      return ($eleve_id) ? 'Implication de l’élève : ' : 'Action réalisée : ' ;
+      return ($for_id) ? 'Implication de l’élève : ' : 'Action réalisée : ' ;
     case 'parcours' :
-      return ($eleve_id) ? 'Implication de l’élève : ' : 'Projet mis en oeuvre : ' ;
+      return ($for_id) ? 'Implication de l’élève : ' : 'Projet mis en oeuvre : ' ;
     case 'bilan' :
       if($bilan_type_etabl=='college')
       {
-        return ($eleve_id) ? 'Synthèse de l’évolution des acquis scolaires et conseils pour progresser : ' : 'Synthèse de l’évolution des acquis de la classe : ' ;
+        return ($for_id) ? 'Synthèse de l’évolution des acquis scolaires et conseils pour progresser : ' : 'Synthèse de l’évolution des acquis de la classe : ' ;
       }
       else
       {
-        return ($eleve_id) ? 'Appréciation générale sur la progression de l’élève : ' : 'Appréciation générale sur la progression de la classe : ' ;
+        return ($for_id) ? 'Appréciation générale sur la progression de l’élève : ' : 'Appréciation générale sur la progression de la classe : ' ;
       }
     case 'viesco' :
       return 'Vie scolaire (assiduité, ponctualité ; respect du règlement intérieur ; participation à la vie de l’établissement) : ';

@@ -227,7 +227,7 @@ $(document).ready
           f_uai_origine  : { required:true },
           f_structure    : { required:true },
           f_annee        : { required:true },
-          f_periode      : { required:function(){return $('#f_annee').val()!="0";} },
+          f_periode      : { required:false },
           'f_type_ref[]' : { required:true }
         },
         messages :
@@ -237,7 +237,7 @@ $(document).ready
           f_uai_origine  : { required:"origine manquante" },
           f_structure    : { required:"structure manquante" },
           f_annee        : { required:"année scolaire manquante" },
-          f_periode      : { required:"période manquante" },
+          f_periode      : { },
           'f_type_ref[]' : { required:"type d'archive manquant" }
         },
         errorElement : "label",

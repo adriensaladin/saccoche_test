@@ -52,6 +52,8 @@ $tab_etats = array
 
 // Indication des profils pouvant modifier le statut d'un bilan
 $profils_modifier_statut = 'administrateurs (de l\'établissement)<br />'.Outil::afficher_profils_droit_specifique($_SESSION['DROIT_OFFICIEL_LIVRET_MODIFIER_STATUT'],'br');
+// Indication des profils ayant accès à l'édition de la maîtrise des composantes du socle
+$profils_positionner_socle = Outil::afficher_profils_droit_specifique($_SESSION['DROIT_OFFICIEL_LIVRET_POSITIONNER_SOCLE'],'br');
 // Indication des profils ayant accès à l'appréciation générale
 $profils_appreciation_generale = Outil::afficher_profils_droit_specifique($_SESSION['DROIT_OFFICIEL_LIVRET_APPRECIATION_GENERALE'],'br');
 // Indication des profils ayant accès à l'impression PDF
@@ -207,25 +209,29 @@ foreach($DB_TAB as $DB_ROW)
   // On n'affiche pas le bilan "Fin de collège" qui n'aura probablement pas lieu d'être (autre modif plus haut)
   if( $DB_ROW['livret_page_periodicite'] != 'college' )
   {
-    $periode = $DB_ROW['livret_page_periodicite'].$DB_ROW['jointure_periode'];
-    $tab_periode_livret[$periode]['used'] = TRUE;
-    if($DB_ROW['periode_id'])
+    // La requête ne peut restreindre aux jointures classe/période renseignées à cause des bilans de cycles, donc il faut aussi vérifier les dates.
+    if( ($DB_ROW['livret_page_periodicite']=='cycle') || ( !is_null($DB_ROW['jointure_date_debut']) && !is_null($DB_ROW['jointure_date_fin']) ) )
     {
-      $tab_periode_livret[$periode]['defined'] = TRUE;
+      $periode = $DB_ROW['livret_page_periodicite'].$DB_ROW['jointure_periode'];
+      $tab_periode_livret[$periode]['used'] = TRUE;
+      if($DB_ROW['periode_id'])
+      {
+        $tab_periode_livret[$periode]['defined'] = TRUE;
+      }
+      if( $DB_ROW['jointure_date_debut'] && $DB_ROW['jointure_date_fin'] )
+      {
+        $tab_periode_livret[$periode]['dates'] = TRUE;
+      }
+      $tab_join_classe_periode[$DB_ROW['groupe_id']][$periode] = array(
+        'page_ref'      => $DB_ROW['livret_page_ref'],
+        'etat'          => $DB_ROW['jointure_etat'],
+        'rubrique_type' => $DB_ROW['livret_page_rubrique_type'],
+        'periode_id'    => $DB_ROW['periode_id'],
+        'date_debut'    => $DB_ROW['jointure_date_debut'],
+        'date_fin'      => $DB_ROW['jointure_date_fin'],
+      );
+      $tab_page_ref[] = $DB_ROW['livret_page_ref'];
     }
-    if( $DB_ROW['jointure_date_debut'] && $DB_ROW['jointure_date_fin'] )
-    {
-      $tab_periode_livret[$periode]['dates'] = TRUE;
-    }
-    $tab_join_classe_periode[$DB_ROW['groupe_id']][$periode] = array(
-      'page_ref'      => $DB_ROW['livret_page_ref'],
-      'etat'          => $DB_ROW['jointure_etat'],
-      'rubrique_type' => $DB_ROW['livret_page_rubrique_type'],
-      'periode_id'    => $DB_ROW['periode_id'],
-      'date_debut'    => $DB_ROW['jointure_date_debut'],
-      'date_fin'      => $DB_ROW['jointure_date_fin'],
-    );
-    $tab_page_ref[] = $DB_ROW['livret_page_ref'];
   }
 }
 $tab_periode_pb = array( 'undefined' => array() , 'pbdates' => 0 );
@@ -333,11 +339,12 @@ if($_SESSION['USER_PROFIL_TYPE']!='professeur') // administrateur | directeur
 {
   $droit_modifier_statut       = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_LIVRET_MODIFIER_STATUT'])       );
   $droit_appreciation_generale = ( ($_SESSION['USER_PROFIL_TYPE']=='directeur')      && Outil::test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_LIVRET_APPRECIATION_GENERALE']) );
+  $droit_positionner_socle     = ( ($_SESSION['USER_PROFIL_TYPE']=='directeur')      && Outil::test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_LIVRET_POSITIONNER_SOCLE'])     );
   $droit_impression_pdf        = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_LIVRET_IMPRESSION_PDF'])        );
   $droit_voir_archives_pdf     = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique($_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE'])          );
   foreach($tab_classe_etabl as $classe_id => $classe_nom)
   {
-    $tab_classe[$classe_id][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' , 'droit_voir_archives_pdf' );
+    $tab_classe[$classe_id][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_positionner_socle' , 'droit_impression_pdf' , 'droit_voir_archives_pdf' );
     $tab_affich[$classe_id.'_0']['check'] = '<th class="nu"><q id="id_deb1_G'.$classe_id.'R" class="cocher_tout" title="Tout cocher."></q><q id="id_deb2_G'.$classe_id.'R" class="cocher_rien" title="Tout décocher."></q></th>' ;
     $tab_affich[$classe_id.'_0']['title'] = '<th id="groupe_'.$classe_id.'_0">'.html($classe_nom).'</th>' ;
     $tab_options_classes[$classe_id.'_0'] = '<option value="'.$classe_id.'_0">'.html($classe_nom).'</option>';
@@ -354,8 +361,9 @@ else // professeur
       // Pour les classes, RAS
       $droit_modifier_statut       = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_MODIFIER_STATUT']       , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
       $droit_appreciation_generale = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_APPRECIATION_GENERALE'] , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
+      $droit_positionner_socle     = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_POSITIONNER_SOCLE']     , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
       $droit_impression_pdf        = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_IMPRESSION_PDF']        , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ );
-      $tab_classe[$DB_ROW['groupe_id']][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
+      $tab_classe[$DB_ROW['groupe_id']][0] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_positionner_socle' , 'droit_impression_pdf' );
       $tab_affich[$DB_ROW['groupe_id'].'_0']['check'] = ($affichage_formulaire_statut) ? ( ($droit_modifier_statut) ? '<th class="nu"><q id="id_deb1_G'.$DB_ROW['groupe_id'].'R" class="cocher_tout" title="Tout cocher."></q><q id="id_deb2_G'.$DB_ROW['groupe_id'].'R" class="cocher_rien" title="Tout décocher."></q></th>' : '<th class="nu"></th>' ) : '' ;
       $tab_affich[$DB_ROW['groupe_id'].'_0']['title'] = '<th id="groupe_'.$DB_ROW['groupe_id'].'_0">'.html($DB_ROW['groupe_nom']).'</th>' ;
       $tab_options_classes[$DB_ROW['groupe_id'].'_0'] = '<option value="'.$DB_ROW['groupe_id'].'_0">'.html($DB_ROW['groupe_nom']).'</option>';
@@ -379,8 +387,9 @@ else // professeur
           $classe_id = $tab['eleve_classe_id'];
           $droit_modifier_statut       = FALSE ;
           $droit_appreciation_generale = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_APPRECIATION_GENERALE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
+          $droit_positionner_socle     = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_POSITIONNER_SOCLE']     , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
           $droit_impression_pdf        = Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_IMPRESSION_PDF']        , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ );
-          $tab_classe[$classe_id][$groupe_id] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_impression_pdf' );
+          $tab_classe[$classe_id][$groupe_id] = compact( 'droit_modifier_statut' , 'droit_appreciation_generale' , 'droit_positionner_socle' , 'droit_impression_pdf' );
           $tab_affich[$classe_id.'_'.$groupe_id]['check'] =  ($affichage_formulaire_statut) ? '<th class="nu"></th>' : '' ;
           $tab_affich[$classe_id.'_'.$groupe_id]['title'] = '<th id="groupe_'.$classe_id.'_'.$groupe_id.'">'.html($tab_classe_etabl[$classe_id]).'<br />'.html($groupe_nom).'</th>' ;
           $tab_options_classes[$classe_id.'_'.$groupe_id] = '<option value="'.$classe_id.'_'.$groupe_id.'">'.html($tab_classe_etabl[$classe_id].' - '.$groupe_nom).'</option>';
@@ -405,12 +414,12 @@ $tab_modif_rubrique = array
 (
   'c1_theme'   => 'le positionnement et les appréciations par rubrique',
   'c2_domaine' => 'les éléments de programme, les appréciations et le positionnement par rubrique',
-  'c2_socle'   => 'le degré de maîtrise des composantes du socle',
+  'c2_socle'   => 'les degrés de maîtrise des composantes du socle',
   'c3_domaine' => 'les éléments de programme, les appréciations et le positionnement par rubrique',
   'c3_matiere' => 'les éléments de programme, les appréciations et le positionnement par rubrique',
-  'c3_socle'   => 'le degré de maîtrise des composantes du socle',
+  'c3_socle'   => 'les degrés de maîtrise des composantes du socle',
   'c4_matiere' => 'les éléments de programme, les appréciations et le positionnement par rubrique',
-  'c4_socle'   => 'le degré de maîtrise des composantes du socle',
+  'c4_socle'   => 'les degrés de maîtrise des composantes du socle',
 );
 
 // Javascript : tableau utilisé pour désactiver des options d'un select.
@@ -503,7 +512,14 @@ foreach($tab_classe as $classe_id => $tab)
         {
           if(in_array($etat,array('2rubrique','3mixte')))
           {
-            $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? ( ($periode!='college') ? '<q class="modifier" title="Saisir '.$tab_modif_rubrique[$tab_join['rubrique_type']].'."></q>' : '<q class="modifier_non" title="Saisies manquantes sans objet pour ce document."></q>' ) : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
+            if($periode=='cycle')
+            {
+              $icone_saisie = ($tab_droits['droit_positionner_socle']) ? '<q class="modifier" title="Renseigner '.$tab_modif_rubrique[$tab_join['rubrique_type']].'."></q>' : '<q class="modifier_non" title="Accès restreint à la maîtrise des composantes du socle :<br />'.$profils_positionner_socle.'."></q>' ;
+            }
+            else
+            {
+              $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? ( ($periode!='college') ? '<q class="modifier" title="Renseigner '.$tab_modif_rubrique[$tab_join['rubrique_type']].'."></q>' : '<q class="modifier_non" title="Saisies intermédiaires sans objet pour ce document."></q>' ) : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
+            }
           }
           else
           {
@@ -519,7 +535,7 @@ foreach($tab_classe as $classe_id => $tab)
         {
           if(in_array($etat,array('3mixte','4synthese')))
           {
-            $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($periode!='college') ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Saisies manquantes sans objet pour ce document."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
+            $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($periode!='college') ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Saisies de synthèse sans objet pour ce document."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
           }
           else
           {
@@ -552,6 +568,9 @@ foreach($tab_classe as $classe_id => $tab)
       else
       {
         $tab_affich[$classe_id.'_'.$groupe_id][$periode] = '<td class="hc">-</td>';
+        Layout::add( 'js_inline_before' , 'tab_disabled["examiner"]["'.$classe_id.'_'.$groupe_id.'_'.$periode.'"]=true;' );
+        Layout::add( 'js_inline_before' , 'tab_disabled["imprimer"]["'.$classe_id.'_'.$groupe_id.'_'.$periode.'"]=true;' );
+        Layout::add( 'js_inline_before' , 'tab_disabled["voir_pdf"]["'.$classe_id.'_'.$groupe_id.'_'.$periode.'"]=true;' );
       }
     }
   }

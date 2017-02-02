@@ -140,7 +140,7 @@ $tab_export_type = array(
 
 // Vérification période
 
-if( !isset($tab_periode_livret[$periode]) && ( ($action=='recolter') || ($periode!='0') ) )
+if( !isset($tab_periode_livret[$periode]) && ( ($action=='recolter') || ($periode!='') ) )
 {
   Json::end( FALSE , 'Période "'.html($periode).'" inconnue !' );
 }
@@ -176,7 +176,7 @@ if(substr($periode,0,7)=='periode')
 }
 else
 {
-  $PAGE_PERIODICITE = ($periode!='0') ? $periode : '' ;
+  $PAGE_PERIODICITE = ($periode!=='') ? $periode : '' ;
   $JOINTURE_PERIODE = '';
 }
 

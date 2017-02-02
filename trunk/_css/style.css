@@ -800,6 +800,7 @@ table.livret img {vertical-align:text-bottom}
 table.livret td {white-space:normal}
 table.livret td , table.livret th {vertical-align:middle}
 table.livret td.eval , table.livret th.eval {background:#96B3D5}
+table.livret td.pos0 , table.livret th.pos0 {text-align:center}
 table.livret td.pos1 , table.livret th.pos1 {background:#E1EEF9;text-align:center}
 table.livret td.pos2 , table.livret th.pos2 {background:#C7E1F5;text-align:center}
 table.livret td.pos3 , table.livret th.pos3 {background:#ACD4F1;text-align:center}

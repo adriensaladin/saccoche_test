@@ -28,22 +28,11 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action = (isset($_POST['f_action'])) ? $_POST['f_action']                : '';
-$objet  = (isset($_POST['f_objet']))  ? $_POST['f_objet']                 : '';
-$langue = (isset($_POST['f_langue'])) ? Clean::entier($_POST['f_langue']) : 0 ;
+$action   = (isset($_POST['f_action']))   ? $_POST['f_action']   : '';
+$enscompl = (isset($_POST['f_enscompl'])) ? $_POST['f_enscompl'] : '';
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
-
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
-// TODO : A REMPLACER À TERME PAR
-require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
-
-$tab_objet = array(
-  'langue' => 'choix socle',
-  'lv1' => 'affectation LV1',
-  'lv2' => 'affectation LV2',
-);
 
 //
 // Modifier des associations
@@ -51,33 +40,46 @@ $tab_objet = array(
 
 if($action=='associer')
 {
-  if(!isset($tab_objet[$objet]))
+  // dispositif
+  if(!DB_STRUCTURE_LIVRET::DB_tester_enscompl($enscompl))
   {
-    Json::end( FALSE , 'Objet "'.$objet.'" inattendu !' );
+    Json::end( FALSE , 'Modalité "'.$objet.'" inconnue !' );
   }
   // liste des élèves
-  $listing_user_id = implode(',',$tab_eleve);
-  if(!$listing_user_id)
+  if(empty($tab_eleve))
   {
     Json::end( FALSE , 'Aucun compte élève récupéré !' );
   }
-  // langue
-  if( (!$langue) || (!isset($tab_langues[$langue])) )
-  {
-    Json::end( FALSE , 'Langue non transmise ou non reconnue !' );
-  }
   // go
-  DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user_langue( $objet , $listing_user_id , $langue );
+  if( $enscompl != 'AUC' )
+  {
+    foreach($tab_eleve as $eleve_id)
+    {
+      DB_STRUCTURE_LIVRET::DB_modifier_eleve_enscompl( $enscompl , $eleve_id );
+    }
+  }
+  else
+  {
+    DB_STRUCTURE_LIVRET::DB_supprimer_eleve_enscompl( implode(',',$tab_eleve) );
+  }
 }
 
 //
-// Affichage du bilan des affectations des langues aux élèves
+// Affichage du bilan des affectations des dispositifs aux élèves
 //
 
 $tab_niveau_groupe = array();
+$tab_enscompl      = array();
 $tab_user          = array();
 $tab_niveau_groupe[0][0] = 'sans classe';
 $tab_user[0]             = '';
+
+// Récupérer la liste des dispositifs
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_enscompl();
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_enscompl[$DB_ROW['eleve_id']] = '<span class="fluo" title="'.html($DB_ROW['livret_enscompl_nom']).'">'.$DB_ROW['livret_enscompl_code'].'</span> ';
+}
 
 // Récupérer la liste des classes
 $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_avec_niveaux($niveau_ordre='DESC');
@@ -87,19 +89,16 @@ foreach($DB_TAB as $DB_ROW)
   $tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_langue,eleve_lv1,eleve_lv2,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_langue,eleve_lv1,eleve_lv2,user_id,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/drapeau/'.$DB_ROW['eleve_langue'].'.gif" alt="" title="'.$tab_objet['langue'].'<br />'.$tab_langues[$DB_ROW['eleve_langue']]['texte'].'" /> '
-                                         . '<img src="./_img/drapeau/'.$DB_ROW['eleve_lv1'].'.gif" alt="" title="'.$tab_objet['lv1'].'<br />'.$tab_langues[$DB_ROW['eleve_lv1']]['texte'].'" /> '
-                                         . '<img src="./_img/drapeau/'.$DB_ROW['eleve_lv2'].'.gif" alt="" title="'.$tab_objet['lv2'].'<br />'.$tab_langues[$DB_ROW['eleve_lv2']]['texte'].'" /> '
-                                         . html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+  $span = isset($tab_enscompl[$DB_ROW['user_id']]) ? $tab_enscompl[$DB_ROW['user_id']] : '' ;
+  $tab_user[$DB_ROW['eleve_classe_id']] .= $span.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
 // Assemblage du tableau résultant
 $TH = array();
 $TB = array();
 $TF = array();
-$nb_tag_br_par_eleve = 3+1; // TODO : A MODIFIER LORS DE LA MAJ
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
   $TH[$niveau_id] = '';
@@ -107,7 +106,7 @@ foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
   $TF[$niveau_id] = '';
   foreach($tab_groupe as $groupe_id => $groupe_nom)
   {
-    $nb = mb_substr_count($tab_user[$groupe_id],'<br />','UTF-8') / $nb_tag_br_par_eleve ;
+    $nb = mb_substr_count($tab_user[$groupe_id],'<br />','UTF-8');
     $s = ($nb>1) ? 's' : '' ;
     $TH[$niveau_id] .= '<th>'.$groupe_nom.'</th>';
     $TB[$niveau_id] .= '<td>'.mb_substr($tab_user[$groupe_id],0,-6,'UTF-8').'</td>';

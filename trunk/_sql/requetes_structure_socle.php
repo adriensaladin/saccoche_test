@@ -36,15 +36,16 @@ class DB_STRUCTURE_SOCLE extends DB
 /**
  * Lister les items des référentiels reliés au socle
  *
- * @param int    $cycle_id   id du cycle
+ * @param int    $cycle_id    id du cycle
+ * @param bool   $with_detail
  * @param string $liste_domaine_id      facultatif, pour restreindre à 1 ou plusieurs domaines
  * @param string $liste_composante_id   facultatif, pour restreindre à 1 ou plusieurs composantes
  * @return array
  */
-public static function DB_recuperer_associations_items_composantes( $cycle_id , $liste_domaine_id=NULL , $liste_composante_id=NULL )
+public static function DB_recuperer_associations_items_composantes( $cycle_id , $with_detail=TRUE , $liste_domaine_id=NULL , $liste_composante_id=NULL )
 {
-  $select_id        = ($liste_domaine_id | $liste_composante_id) ? 'item_id ' : 'item_id , item_nom , matiere_ref , socle_composante_id , socle_domaine_id , ' ;
-  $select_ref       = ($liste_domaine_id | $liste_composante_id) ? '' : 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso ' ;
+  $select_id        = (!$with_detail) ? 'item_id ' : 'item_id , item_nom , matiere_ref , socle_composante_id , socle_domaine_id , ' ;
+  $select_ref       = (!$with_detail) ? '' : 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , CONCAT(domaine_ref,theme_ref,item_ref) AS ref_perso ' ;
   $where_domaine    = ($liste_domaine_id)    ? 'AND socle_domaine_id IN('.$liste_domaine_id.') '       : '' ;
   $where_composante = ($liste_composante_id) ? 'AND socle_composante_id IN('.$liste_composante_id.') ' : '' ;
   $group_by         = ($liste_domaine_id)    ? 'item_id, socle_domaine_id ' : 'item_id, socle_composante_id ' ;

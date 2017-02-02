@@ -102,5 +102,7 @@ $select_langue = HtmlForm::afficher_select(OPT_langues($tab_langues) , 'f_langue
   </tr></table>
 </form>
 
+<hr />
+
 <div id="bilan">
 </div>

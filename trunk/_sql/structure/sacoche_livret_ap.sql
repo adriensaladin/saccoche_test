@@ -8,4 +8,4 @@ CREATE TABLE sacoche_livret_ap (
   PRIMARY KEY (livret_ap_id),
   KEY livret_page_ref (livret_page_ref),
   KEY groupe_id (groupe_id)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT="Accompagnement Personnalisé";

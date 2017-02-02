@@ -31,7 +31,10 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Notation / Se
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_seuils">DOC : Administration du Livret Scolaire &rarr; Notation / Seuils</a></span></li>
+  <li><span class="astuce">Les seuils de <b>maîtrise des composantes du socle</b> pour les <b>bilans de fin de cycle du Livret Scolaire</b> sont aussi utilisés pour le <b>bilan <em>SACoche</em> "Maîtrise du socle (2016)"</b>.</span></li>
 </ul>
+
+<hr />
 
 <?php
 // On liste les pages et leurs paramètres principaux

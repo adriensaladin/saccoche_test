@@ -343,7 +343,7 @@ if($make_pdf)
           }
         }
         $tab_deja_affiche[$eleve_id][$id_premiere_sous_rubrique] = TRUE;
-        if($livret_rubrique_id==$id_premiere_sous_rubrique)
+        if( ($livret_rubrique_id==$id_premiere_sous_rubrique) || !isset($tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique]) )
         {
           $tab_nb_lignes_eleve_eval[$eleve_id][$id_premiere_sous_rubrique] = array( $nb_lignes_domaine , $nb_lignes_elements , $nb_lignes_appreciation );
         }

@@ -2186,6 +2186,11 @@ if( ($action=='recuperer_message') && $devoir_id && $eleve_id && in_array($msg_o
     else
     {
       $msg_data = cURL::get_contents($msg_url);
+      if(!perso_mb_detect_encoding_utf8($msg_data))
+      {
+        // Cas d'une redirection serveur vers une page d'erreur ou d'interdiction d'accès qui n'est pas en utf-8 (ce qui fait planter la conversion JSON pour le retour).
+        $msg_data = utf8_encode($msg_data);
+      }
     }
   }
   // Retour

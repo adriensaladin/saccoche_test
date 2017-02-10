@@ -57,7 +57,7 @@ $PAGE_AP             = $DB_ROW['livret_page_ap'];
 $PAGE_PARCOURS       = $DB_ROW['livret_page_parcours'];
 $PAGE_VIE_SCOLAIRE   = $DB_ROW['livret_page_vie_scolaire'];
 $classe_nom          = $DB_ROW['groupe_nom'];
-$DATE_VERROU         = is_null($DB_ROW['jointure_date_verrou']) ? TODAY_FR : To::datetime_mysql_to_french( $DB_ROW['jointure_date_verrou'] , FALSE /*return_time*/ ) ;
+$DATE_VERROU         = is_null($DB_ROW['jointure_date_verrou']) ? TODAY_FR : To::date_mysql_to_french($DB_ROW['jointure_date_verrou']) ;
 $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere','c3_socle','c4_socle')) ? 'college' : 'ecole' ;
 
 if( in_array($BILAN_ETAT,array('1vide','5complet')) )
@@ -265,7 +265,7 @@ if( $affichage_prof_principal )
   {
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_pp[$DB_ROW['user_id']] = To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre']);
+      $tab_pp[$DB_ROW['user_id']] = To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_genre'],TRUE,$DB_ROW['user_genre']);
     }
     $texte_prof_principal = 'Professeurs principaux : '.implode(' ; ',$tab_pp);
   }

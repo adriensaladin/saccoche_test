@@ -451,7 +451,7 @@ public static function DB_lister_identite_coordonnateurs_par_matiere()
  * @param int    $groupe_id     id du niveau ou de la classe ou du groupe
  * @param string $eleves_ordre  valeur parmi [alpha] [classe]
  * @param string $champs        par défaut user_id,user_nom,user_prenom
- * @param int    $periode_id    id de la période dans le cas où on récupère tous les élèves ayant une évaluation sur la période (0 pour le cycle)
+ * @param int    $periode_id    id de la période dans le cas où on récupère tous les élèves ayant une évaluation sur la période
  * @return array
  */
 public static function DB_lister_users_regroupement( $profil_type , $statut , $groupe_type , $groupe_id , $eleves_ordre , $champs='user_id,user_nom,user_prenom' , $periode_id=NULL )
@@ -560,11 +560,10 @@ public static function DB_lister_users_regroupement( $profil_type , $statut , $g
         }
         break;
     }
-    if( ($statut==2) && ($profil_type=='eleve') && in_array($groupe_type,array('classe','groupe')) && !is_null($periode_id) )
+    if( ($statut==2) && ($profil_type=='eleve') && in_array($groupe_type,array('classe','groupe')) && $periode_id )
     {
-      // On restreint aux élèves ayant été évalués ! Pour un bilan de fin de cycle on considère comme période l'année scolaire.
-      $DB_ROW = ($periode_id) ? DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id)
-                              : array( 'jointure_date_debut' => To::jour_debut_annee_scolaire('mysql') , 'jointure_date_fin' => To::jour_fin_annee_scolaire('mysql') ) ;
+      // On restreint aux élèves ayant été évalués !
+      $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
       if(!empty($DB_ROW))
       {
         $date_mysql_debut = $DB_ROW['jointure_date_debut'];
@@ -600,12 +599,12 @@ public static function DB_lister_users_regroupement( $profil_type , $statut , $g
  * @param int   $classe_id
  * @param int   $groupe_id
  * @param int   $statut        1 pour actuels, 0 pour anciens, 2 pour tout le monde
- * @param int   $periode_id    id de la période dans le cas où on récupère tous les élèves ayant une évaluation sur la période (0 pour le cycle)
+ * @param int   $periode_id    id de la période dans le cas où on récupère tous les élèves ayant une évaluation sur la période
  * @return array
  */
 public static function DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_id , $statut , $periode_id=NULL )
 {
-  $join_saisie = $where_sortie_date = $where_saisie_date = $groupby = '' ;
+  $join_saisie = $where_sortie_date =$where_saisie_date =  $groupby = '' ;
   if($statut==1)
   {
     $where_sortie_date = 'AND user_sortie_date>NOW() '; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
@@ -614,11 +613,10 @@ public static function DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_i
   {
     $where_sortie_date = 'AND user_sortie_date<NOW() '; // Pas besoin de tester l'égalité, NOW() renvoyant un datetime
   }
-  else if( ($statut==2) && !is_null($periode_id) )
+  else if( ($statut==2) && $periode_id )
   {
-    // On restreint aux élèves ayant été évalués ! Pour un bilan de fin de cycle on considère comme période l'année scolaire.
-    $DB_ROW = ($periode_id) ? DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id)
-                            : array( 'jointure_date_debut' => To::jour_debut_annee_scolaire('mysql') , 'jointure_date_fin' => To::jour_fin_annee_scolaire('mysql') ) ;
+    // On restreint aux élèves ayant été évalués !
+    $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
     if(!empty($DB_ROW))
     {
       $date_mysql_debut = $DB_ROW['jointure_date_debut'];
@@ -1902,18 +1900,10 @@ public static function DB_OPT_livret_periode_export()
 {
   $DB_SQL = 'SELECT CONCAT(livret_page_periodicite,jointure_periode) AS valeur, MAX(periode_nom) AS texte ';
   $DB_SQL.= 'FROM sacoche_livret_export ';
-  $DB_SQL.= 'LEFT JOIN sacoche_periode ON sacoche_livret_export.jointure_periode = sacoche_periode.periode_livret AND periode_livret!="" ';
+  $DB_SQL.= 'LEFT JOIN sacoche_periode ON sacoche_livret_export.jointure_periode = sacoche_periode.periode_livret ';
   $DB_SQL.= 'GROUP BY livret_page_periodicite, jointure_periode ';
   $DB_SQL.= 'ORDER BY livret_page_periodicite, jointure_periode ';
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  foreach($DB_TAB as $key => $DB_ROW)
-  {
-    if(is_null($DB_ROW['texte']))
-    {
-      $DB_TAB[$key]['texte'] = 'Cycle';
-    }
-  }
-  return $DB_TAB;
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**

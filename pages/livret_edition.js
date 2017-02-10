@@ -917,7 +917,7 @@ $(document).ready
           var id_debut = memo_rubrique_type+'_'+memo_rubrique_id+'_'+memo_saisie_objet+'_';
           for( var i=1 ; i<5 ; i++ )
           {
-            $('#'+id_debut+i).html('<label for="f_position_'+i+'" style="padding:2em 3em;"><input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" /></label>');
+            $('#'+id_debut+i).html('<input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" />');
           }
           var formulaire_saisie = '<div><button id="valider_precedent" type="button" class="valider_prev" title="Valider & Précédent">&nbsp;</button> <button id="valider" type="button" class="valider" title="Valider">&nbsp;</button> <button id="valider_suivant" type="button" class="valider_next" title="Valider & Suivant">&nbsp;</button></div>'
                                 + '<div><button id="annuler_precedent" type="button" class="annuler_prev" title="Annuler & Précédent">&nbsp;</button> <button id="annuler" type="button" class="annuler" title="Annuler">&nbsp;</button> <button id="annuler_suivant" type="button" class="annuler_next" title="Annuler & Suivant">&nbsp;</button></div>'
@@ -942,7 +942,7 @@ $(document).ready
           var id_debut = memo_rubrique_type+'_'+memo_rubrique_id+'_'+memo_saisie_objet+'_';
           for( var i=i_debut ; i<5 ; i++ )
           {
-            $('#'+id_debut+i).html('<label for="f_position_'+i+'" style="padding:2em 3em;"><input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" /></label>');
+            $('#'+id_debut+i).html('<input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" />');
           }
           var formulaire_saisie = '<div><button id="valider_precedent" type="button" class="valider_prev" title="Valider & Précédent">&nbsp;</button> <button id="valider" type="button" class="valider" title="Valider">&nbsp;</button> <button id="valider_suivant" type="button" class="valider_next" title="Valider & Suivant">&nbsp;</button></div>'
                                 + '<div><button id="annuler_precedent" type="button" class="annuler_prev" title="Annuler & Précédent">&nbsp;</button> <button id="annuler" type="button" class="annuler" title="Annuler">&nbsp;</button> <button id="annuler_suivant" type="button" class="annuler_next" title="Annuler & Suivant">&nbsp;</button></div>'

@@ -324,7 +324,7 @@ if( ($action=='import_moliere') && $periode_id )
       case "Nom élève"       : $tab_numero_colonne['csv_nom'   ] = $numero; $numero_max = max($numero_max,$numero); break;
       case "Prénom élève"    : $tab_numero_colonne['csv_prenom'] = $numero; $numero_max = max($numero_max,$numero); break;
       case "Nb 1/2 j abs"    : $tab_numero_colonne['csv_abs_nb'] = $numero; $numero_max = max($numero_max,$numero); break;
-      case "Nb retards"      : $tab_numero_colonne['csv_ret_nb'] = $numero; $numero_max = max($numero_max,$numero); break;
+      case "Nb ret."         : $tab_numero_colonne['csv_ret_nb'] = $numero; $numero_max = max($numero_max,$numero); break;
       case "Numéro national" : $tab_numero_colonne['csv_INE'   ] = $numero; $numero_max = max($numero_max,$numero); break;
     }
   }

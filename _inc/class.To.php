@@ -121,14 +121,15 @@ class To
    * Passer d'une date MySQL AAAA-MM-JJ HH:MM:SS à une date française JJ/MM/AAAA HH:MM.
    *
    * @param string $datetime_mysql AAAA-MM-JJ HH:MM:SS
+   * @param bool   $return_time
    * @return string                JJ/MM/AAAA HHhMMmin
    */
-  public static function datetime_mysql_to_french($datetime_mysql)
+  public static function datetime_mysql_to_french( $datetime_mysql, $return_time=TRUE )
   {
     list( $partie_jour , $partie_heure ) = explode( ' ' , $datetime_mysql);
     list( $annee , $mois , $jour       ) = explode( '-' , $partie_jour);
     list( $heure , $minute , $seconde  ) = explode( ':' , $partie_heure);
-    return $jour.'/'.$mois.'/'.$annee.' '.$heure.'h'.$minute.'min';
+    return ($return_time) ? $jour.'/'.$mois.'/'.$annee.' '.$heure.'h'.$minute.'min' : $jour.'/'.$mois.'/'.$annee ;
   }
 
   /**

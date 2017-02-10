@@ -147,7 +147,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupérer les enseignements complémentaires pour les élèves concernés (enregistrés sous quelle forme ? -> rubrique_type="enscompl" rubrique_id=livret_enscompl_id )
+// Récupérer les enseignements complémentaires pour les élèves concernés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_enscompl( $liste_eleve );
@@ -205,7 +205,7 @@ if($make_html)
 if($make_pdf)
 {
   $releve_PDF = new PDF_livret_scolaire( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ );
-  $releve_PDF->initialiser( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $app_rubrique_longueur , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation );
+  $releve_PDF->initialiser( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'] , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation );
   $tab_archive['user'][0][] = array( '__construct' , array( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , 'oui' /*couleur*/ , $fond , $legende , !empty($is_test_impression) /*filigrane*/ , $tab_archive['session'] ) );
 }
 // Pour chaque élève...
@@ -222,7 +222,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       if($is_archive)
       {
         $tab_archive['user'][$eleve_id]['image_md5'] = array();
-        $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $app_rubrique_longueur , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation ) );
+        $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'] , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation ) );
       }
       $tab_infos_entete = 
         array(
@@ -254,7 +254,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         $tab_archive['image'][$image_md5] = $image_contenu;
         $tab_archive['user'][$eleve_id]['image_md5'][] = $image_md5;
         $tab_infos_entete['tab_menesr_logo']['contenu'] = $image_md5;
-        $tab_archive['user'][$eleve_id][] = array( 'entete' , array( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $tab_nb_lignes_eleve_eval_total[$eleve_id] ) );
+        $tab_archive['user'][$eleve_id][] = array( 'entete' , array( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , 0 /*nb_lignes_eleve_eval_total*/ ) );
       }
     }
 

@@ -316,7 +316,7 @@ if( $affichage_prof_principal )
     $tab_pp = array();
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_pp[] = To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_genre'],TRUE,$DB_ROW['user_genre']);
+      $tab_pp[] = To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre']);
     }
     $texte_prof_principal = 'Professeurs principaux : '.implode(' ; ',$tab_pp);
   }

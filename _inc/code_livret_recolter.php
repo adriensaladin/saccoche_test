@@ -30,6 +30,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée po
 
 $tab_rubrique_type = array('eval','socle','epi','ap','parcours','bilan','viesco');
 $tab_saisie_objet = array('position','appreciation','elements');
+$tab_lsu_civilite = array( 'I'=>'' , 'M'=>'M' , 'F'=>'MME' );
 $tab_compte_rendu = array(
   'erreur' => array() ,
   'alerte' => array() ,
@@ -50,6 +51,7 @@ if(substr($periode,0,7)=='periode')
     Json::end( FALSE , 'Jointure période/classe transmise indéfinie !' );
   }
   $periode_id       = $DB_ROW['periode_id'];
+  $cycle_id         = 0;
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
   $date_debut = To::date_mysql_to_french($date_mysql_debut);
@@ -60,6 +62,7 @@ else
   $PAGE_PERIODICITE = $periode;
   $JOINTURE_PERIODE = '';
   $periode_id       = 0;
+  $cycle_id         = substr($PAGE_REF,-1);
   $date_mysql_debut = NULL;
   $date_mysql_fin   = NULL;
   $date_debut = '';
@@ -99,8 +102,9 @@ $classe_ref          = $DB_ROW['groupe_ref'];
 $DATE_VERROU         = $DB_ROW['jointure_date_verrou'];
 $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere','c3_socle','c4_socle')) ? 'college' : 'ecole' ;
 
-$champ_classe = ($BILAN_TYPE_ETABL=='college') ? 'code-division' : 'classe-ref' ;
-$classe_value = ($BILAN_TYPE_ETABL=='college') ? $classe_ref : 'CL'.$classe_id ;
+$champ_classe     = ($BILAN_TYPE_ETABL=='college') ? 'code-division'    : 'classe-ref' ;
+$champ_chef_etabl = ($BILAN_TYPE_ETABL=='college') ? 'responsable-etab' : 'directeur' ;
+$classe_value     = ($BILAN_TYPE_ETABL=='college') ? $classe_ref        : 'CL'.$classe_id ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et mettre en session les infos sur les seuils enregistrés
@@ -123,33 +127,43 @@ if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_classe = array();
-$key_classe = $classe_value;
 
-$tab_classe[$key_classe] = array(
-  'id-be'   => sprintf("%'96u",$classe_id), // En attendant l'identifiant de classe de BE1D...
-  'libelle' => $classe_nom, // max 50 caractères : 20 dans SACoche
-);
+if($BILAN_TYPE_ETABL=='ecole')
+{
+  $key_classe = $classe_value;
+  $tab_classe[$key_classe] = array(
+    'id-be'   => sprintf("%'96u",$classe_id), // En attendant l'identifiant de classe de BE1D...
+    'libelle' => $classe_nom, // max 50 caractères : 20 dans SACoche
+  );
+}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer la période
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_periode = array();
-$key_periode = 'PER'.$periode_id;
+// Au 1D, il faut transmettre les dates de début / fin avec la période, et celles-ci peuvent en théorie différer d'une classe à une autre.
+// La clef d'unicité n'étant pas seulement sur millésime x indice x période, la solution consiste à avoir un id de période différent par classe
 
-$tab_periode[$key_periode] = array(
-  'millesime'   => To::annee_scolaire('siecle'),
-  'indice'      => substr($periode_nom,-3,1),
-  'nb-periodes' => substr($periode_nom,-1),
+$tab_periode = array();
+$key_periode = ($BILAN_TYPE_ETABL=='college') ? 'PER'.$periode_id : 'PER'.$periode_id.'CL'.$classe_id ;
+$affichage_periode = ($PAGE_PERIODICITE=='periode') ? TRUE : FALSE ;
+
+$tab_periode = (!$affichage_periode) ? array() : array(
+  $key_periode => array(
+    'millesime'   => To::annee_scolaire('siecle'),
+    'indice'      => substr($periode_nom,-3,1),
+    'nb-periodes' => substr($periode_nom,-1),
+    'date-debut'  => $date_debut, // 1D
+    'date-fin'    => $date_fin, // 1D
+  )
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer le chef d'établissement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_responsable_etabl = array();
-$key_responsable = '';
-$affichage_chef_etabl = ( ($PAGE_PERIODICITE=='cycle') || ($BILAN_TYPE_ETABL=='college') ) ? TRUE : FALSE ;
+$tab_chef_etabl = array();
+$affichage_chef_etabl = TRUE ; // besoin 1D + 2D ; période + cycle
 
 if($affichage_chef_etabl)
 {
@@ -158,10 +172,40 @@ if($affichage_chef_etabl)
   {
     Json::end( FALSE , "Absence de désignation du chef d'établissement ou directeur d'école !" );
   }
-  $key_responsable = 'DIR'.$DB_ROW['user_id'];
-  $tab_responsable_etabl[$key_responsable] = array(
-    'libelle' => To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre']) // max 100 caractères, mais pour SACoche ce ne peut pas dépasser 4+25+25
-  );
+  $key_chef_etabl = 'DIR'.$DB_ROW['user_id'];
+  if($BILAN_TYPE_ETABL=='college')
+  {
+    $tab_chef_etabl[$key_chef_etabl] = array(
+      'libelle' => To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre']) // max 100 caractères, mais pour SACoche ce ne peut pas dépasser 4+25+25
+    );
+  }
+  else
+  {
+    if($DB_ROW['user_genre']=='I')
+    {
+      $tab_erreur['civilité'] = 'MME';
+      $DB_ROW['user_genre'] = 'F';
+    }
+    if(!$DB_ROW['user_nom'])
+    {
+      $tab_erreur['nom'] = 'MACHIN';
+      $DB_ROW['user_nom'] = 'MACHIN';
+    }
+    if(!$DB_ROW['user_prenom'])
+    {
+      $tab_erreur['prénom'] = '-';
+      $DB_ROW['user_prenom'] = '-';
+    }
+    if(!empty($tab_erreur))
+    {
+      $tab_compte_rendu['alerte'][$key_prof] = 'Absence de '.implode(' / ',array_keys($tab_erreur)).' pour "'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'" : "'.implode(' ',$tab_erreur).'" imposé pour éviter un rejet bloquant.';
+    }
+    $tab_chef_etabl[$key_chef_etabl] = array(
+      'civilite' => $tab_lsu_civilite[$DB_ROW['user_genre']],
+      'nom'      => $DB_ROW['user_nom'],    // max 100 caractères : 25 dans SACoche
+      'prenom'   => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
+    );
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,13 +215,17 @@ if($affichage_chef_etabl)
 $champ_position = in_array($PAGE_COLONNE,array('moyenne','pourcentage')) ? 'moyenne-eleve' : 'positionnement' ;
 
 $tab_bilan = array(
+  'type'                 => $PAGE_PERIODICITE,
   'prof-princ-refs'      => '', // Complété ultérieurement pour le 2nd degré
   'periode-ref'          => $key_periode,
-  'date-conseil-classe'  => $DATE_VERROU,
+  'date-creation'        => substr($DATE_VERROU,0,10),
+  'date-conseil-classe'  => substr($DATE_VERROU,0,10),
   'date-scolarite'       => $date_mysql_debut,
-  'date-verrou'          => $DATE_VERROU,
-  'responsable-etab-ref' => $key_responsable,
+  'date-verrou'          => str_replace(' ','T',$DATE_VERROU),
+  'responsable-etab-ref' => $key_chef_etabl,
   'position'             => $champ_position,
+  'cycle'                => $cycle_id,
+  'millesime'            => To::annee_scolaire('siecle'),
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,7 +343,7 @@ $tab_eleve = array();
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 2 /*actuels_et_anciens*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_nom,user_prenom,user_sconet_id,user_reference' /*champs*/ , $periode_id );
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun élève évalué trouvé dans le regroupement '.$classe_nom.' !' );
+  Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$classe_nom.' !' );
 }
 foreach($DB_TAB as $DB_ROW)
 {
@@ -312,12 +360,12 @@ foreach($DB_TAB as $DB_ROW)
         'id'          => 'ELV'.$DB_ROW['user_id'],
         'id-be'       => $DB_ROW['user_sconet_id'], // 2D
         'ine'         => $ine, // 1D
-        $champ_classe => $classe_value, // 2D max 8 caractères : idem dans SACoche
+        $champ_classe => $classe_value, // max 8 caractères : idem dans SACoche
         'nom'         => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
         'prenom'      => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
       ),
       'commun'        => array(
-        'responsable-etab' => $tab_responsable_etabl,
+        $champ_chef_etabl  => $tab_chef_etabl,
         'classe'           => $tab_classe, // 1D
         'periode'          => $tab_periode,
         'discipline'       => array(),
@@ -336,7 +384,8 @@ foreach($DB_TAB as $DB_ROW)
       'modaccomp'     => array(),
       'synthese'      => array(),
       'viesco'        => $tab_viesco,
-      'socle'         => array(), // non utilisé, en prévision si besoin
+      'socle'         => array(),
+      'enscompl'      => array(),
       'responsables'  => array(),
     );
     if(isset($tab_siecle_eleve_date[$DB_ROW['user_sconet_id']]['date_entree']))
@@ -364,7 +413,6 @@ $liste_eleve_id = implode(',',array_keys($tab_eleve));
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_prof = array();
-$tab_lsu_civilite = array( 'I'=>'' , 'M'=>'M' , 'F'=>'MME' );
 $tab_profils_types = array('professeur','directeur');
 $listing_champs = 'user_id, user_sconet_id, user_genre, user_nom, user_prenom';
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( $tab_profils_types , 2 /*actuels_et_anciens*/ , $listing_champs , FALSE /*with_classe*/ );
@@ -391,7 +439,7 @@ foreach($DB_TAB as $DB_ROW)
     if($DB_ROW['user_genre']=='I')
     {
       $tab_erreur['civilité'] = 'MME';
-      $DB_ROW['user_genre'] = 'MME';
+      $DB_ROW['user_genre'] = 'F';
     }
     if(!$DB_ROW['user_nom'])
     {
@@ -409,8 +457,8 @@ foreach($DB_TAB as $DB_ROW)
     }
   }
   $tab_prof[$key_prof] = array(
-    'type'     => $type,
-    'id-sts'   => $id_sts,
+    'type'     => $type, // 2D
+    'id-sts'   => $id_sts, // 2D
     'civilite' => $tab_lsu_civilite[$DB_ROW['user_genre']],
     'nom'      => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
     'prenom'   => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
@@ -452,42 +500,61 @@ if( $affichage_prof_principal )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Liste de toutes les rubriques (acquis scolaires)
+// Liste de toutes les rubriques (acquis scolaires) ou des domaines et composantes du socle (fin de cycle)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_rubrique = array();
-$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_rubriques( $PAGE_RUBRIQUE_TYPE , TRUE /*for_edition*/ );
-foreach($DB_TAB as $DB_ROW)
+if($PAGE_PERIODICITE=='periode')
 {
-  $key_rubrique = 'MAT'.$DB_ROW['livret_rubrique_id'];
-  if($BILAN_TYPE_ETABL=='college')
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_rubriques( $PAGE_RUBRIQUE_TYPE , TRUE /*for_edition*/ );
+  foreach($DB_TAB as $DB_ROW)
   {
-    if($DB_ROW['matiere_siecle'])
+    $key_rubrique = 'MAT'.$DB_ROW['livret_rubrique_id'];
+    if($BILAN_TYPE_ETABL=='college')
     {
-      $code = sprintf("%06u",$DB_ROW['rubrique_id_livret']);
-      $modalite_election = ( isset($tab_siecle_modalite_election[$code]) && isset($tab_lsu_mod_election[$tab_siecle_modalite_election[$code]]) ) ? $tab_siecle_modalite_election[$code] : 'S' ;
+      if($DB_ROW['matiere_siecle'])
+      {
+        $code = sprintf("%06u",$DB_ROW['rubrique_id_livret']);
+        $modalite_election = ( isset($tab_siecle_modalite_election[$code]) && isset($tab_lsu_mod_election[$tab_siecle_modalite_election[$code]]) ) ? $tab_siecle_modalite_election[$code] : 'S' ;
+      }
+      else
+      {
+        $code = sprintf("%'96u",$DB_ROW['livret_rubrique_id']);
+        $modalite_election = 'X' ;
+      }
+      if(!$DB_ROW['matiere_siecle'])
+      {
+        $tab_compte_rendu['alerte'][$key_rubrique] = 'Discipline utilisée "'.html($DB_ROW['rubrique']).'" hors SIECLE : génèrera un message d\'alerte non bloquant.';
+      }
     }
     else
     {
-      $code = sprintf("%'96u",$DB_ROW['livret_rubrique_id']);
-      $modalite_election = 'X' ;
+      $code = str_replace('___','RAC',$DB_ROW['rubrique_id_livret']);
+      $modalite_election = 'S' ;
     }
-    if(!$DB_ROW['matiere_siecle'])
-    {
-      $tab_compte_rendu['alerte'][$key_rubrique] = 'Discipline utilisée "'.html($DB_ROW['rubrique']).'" hors SIECLE : génèrera un message d\'alerte non bloquant.';
-    }
+    $tab_rubrique[$key_rubrique] = array(
+      'libelle'           => mb_substr($DB_ROW['rubrique'],0,40), // max 40 caractères : 63 dans SACoche
+      // 'sous_partie'       => $DB_ROW['sous_rubrique'],
+      'code'              => $code,
+      'modalite-election' => $modalite_election,
+    );
   }
-  else
+}
+else if($PAGE_PERIODICITE=='cycle')
+{
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_socle2016_elements_livret();
+  foreach($DB_TAB as $DB_ROW)
   {
-    $code = str_replace('___','RAC',$DB_ROW['rubrique_id_livret']);
-    $modalite_election = 'S' ;
+    if(!empty($DB_ROW['socle_domaine_code_livret']))
+    {
+      $tab_rubrique['socle'][$DB_ROW['socle_domaine_ordre_livret']] = $DB_ROW['socle_domaine_code_livret'];
+    }
+    elseif(!empty($DB_ROW['socle_composante_code_livret']))
+    {
+      $tab_rubrique['socle'][$DB_ROW['socle_composante_ordre_livret']] = $DB_ROW['socle_composante_code_livret'];
+    }
   }
-  $tab_rubrique[$key_rubrique] = array(
-    'libelle'           => mb_substr($DB_ROW['rubrique'],0,40), // max 40 caractères : 63 dans SACoche
-    // 'sous_partie'       => $DB_ROW['sous_rubrique'],
-    'code'              => $code,
-    'modalite-election' => $modalite_election,
-  );
+  $nb_positionnements_socle = count($tab_rubrique['socle']);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -680,11 +747,27 @@ if($PAGE_PARCOURS)
 // Modalités d'accompagnement
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_modaccomp( $liste_eleve_id );
-foreach($DB_TAB as $DB_ROW)
+if($PAGE_PERIODICITE=='periode')
 {
-  $value = ($DB_ROW['info_complement']) ? $DB_ROW['info_complement'] : NULL ; // max 600 caractères : 255 dans SACoche
-  $tab_eleve[$DB_ROW['user_id']]['modaccomp'][$DB_ROW['livret_modaccomp_code']] = $value;
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_modaccomp( $liste_eleve_id );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $value = ($DB_ROW['info_complement']) ? $DB_ROW['info_complement'] : NULL ; // max 600 caractères : 255 dans SACoche
+    $tab_eleve[$DB_ROW['user_id']]['modaccomp'][$DB_ROW['livret_modaccomp_code']] = $value;
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Enseignements de complément
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($PAGE_PERIODICITE=='cycle') && ($cycle_id==4) )
+{
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_enscompl( $liste_eleve_id );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_eleve[$DB_ROW['eleve_id']]['enscompl'][$DB_ROW['livret_enscompl_id']] = $DB_ROW['livret_enscompl_code'];
+  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -719,22 +802,13 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
           {
             if($saisie_objet=='elements')
             {
-              $nb_lignes_elements = 0;
+              // Pour SACoche on limite afin de ne pas dépasser un recto-verso, mais pour LSU on transmet tout.
               $tab_valeurs = json_decode($saisie_info['saisie_valeur'], TRUE);
               foreach($tab_valeurs as $texte => $nb_used)
               {
-                if( ($nb_lignes_elements>=4) && ($nb_used==1) )
-                {
-                  break;
-                }
                 $key_element = 'EL'.md5($texte);
                 $tab_eleve[$eleve_id]['acquis'][$key_rubrique.$modelec]['elements'][] = $key_element;
                 $tab_eleve[$eleve_id]['commun']['element'][$key_element] = $texte; // max 300 caractères : 255 dans SACoche
-                $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
-                if($nb_lignes_elements>=6)
-                {
-                  break;
-                }
               }
             }
             if($saisie_objet=='appreciation')
@@ -820,6 +894,27 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
           // Au cas où il n'y aurait pas eu de descriptif du projet
           $tab_eleve[$eleve_id]['commun']['parcours'][$key_rubrique] = $tab_parcours[$key_rubrique];
         }
+        // Socle sur bilans de fin de cycle
+        if( ($rubrique_type=='socle') && isset($tab_rubrique['socle'][$rubrique_id]) && !is_null($tab_tmp_saisie['position']['saisie_valeur']) )
+        {
+          $pourcentage = $tab_tmp_saisie['position']['saisie_valeur'];
+          $indice = ($pourcentage!=='disp') ? OutilBilan::determiner_degre_maitrise($pourcentage) : 0 ; // {0;1;2;3;4}
+          $tab_eleve[$eleve_id]['socle'][$rubrique_id] = array(
+            'code'           => $tab_rubrique['socle'][$rubrique_id],
+            'positionnement' => $indice,
+          );
+        }
+        // Enseignements de complément
+        if( ($rubrique_type=='enscompl') && isset($tab_eleve[$eleve_id]['enscompl'][$rubrique_id]) )
+        {
+          $enscompl_code = $tab_eleve[$eleve_id]['enscompl'][$rubrique_id];
+          $pourcentage = !is_null($tab_tmp_saisie['position']['saisie_valeur']) ? $tab_tmp_saisie['position']['saisie_valeur'] : FALSE;
+          $indice = OutilBilan::determiner_degre_maitrise($pourcentage); // 3 | 4 | FALSE
+          $tab_eleve[$eleve_id]['enscompl'] = array(
+            'code'           => $enscompl_code,
+            'positionnement' => $indice-2, // 1 | 2 | -2
+          );
+        }
         // Bilan
         if($rubrique_type=='bilan')
         {
@@ -838,43 +933,83 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
 unset($tab_saisie);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Vérifier qu'il y a au moins une info d'acquisition par élève + un positionnement défini si pas de note ni de pourcentage + au moins un prof rattaché à chaque matière + une appréciation de synthèse
+// Vérifier qu'il y a au moins :
+// pour les bilans périodiques -> une info d'acquisition par élève + un positionnement défini si pas de note ni de pourcentage + au moins un prof rattaché à chaque matière + une appréciation de synthèse
+// pour les bilans de fin de cycle -> tous les positionnements définis + une appréciation de synthèse
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 foreach($tab_eleve as $eleve_id => $tab)
 {
-  if(empty($tab['acquis']))
+  if($PAGE_PERIODICITE=='periode')
   {
-    $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucune saisie d\'acquis (ni positionnement ni appréciation ni élément travaillé) : données non exportables.';
-    unset($tab_eleve[$eleve_id]);
-  }
-  else
-  {
-    if($BILAN_TYPE_ETABL=='college')
+    if(empty($tab['acquis']))
     {
-      foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
-      {
-        if(empty($tab_rubrique_info['profs']))
-        {
-          $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
-          unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-        }
-        else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
-        {
-          $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
-          unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-        }
-      }
-    }
-    if(empty($tab_eleve[$eleve_id]['acquis']))
-    {
-      $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Plus de rubriques d\'acquis : données non exportables.';
+      $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucune saisie d\'acquis (ni positionnement ni appréciation ni élément travaillé) : données non exportables.';
       unset($tab_eleve[$eleve_id]);
     }
-    else if(empty($tab_eleve[$eleve_id]['synthese']))
+    else
     {
-      $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Absence d\'appréciation bilan : champ normalement requis passé à "-".';
-      $tab_eleve[$eleve_id]['synthese']['appreciation'] = '-';
+      if($BILAN_TYPE_ETABL=='college')
+      {
+        foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
+        {
+          if(empty($tab_rubrique_info['profs']))
+          {
+            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
+            unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+          }
+          else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
+          {
+            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
+            unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+          }
+        }
+      }
+      if(empty($tab_eleve[$eleve_id]['acquis']))
+      {
+        $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Plus de rubriques d\'acquis : données non exportables.';
+        unset($tab_eleve[$eleve_id]);
+      }
+      else if(empty($tab_eleve[$eleve_id]['synthese']))
+      {
+        $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Absence d\'appréciation bilan : champ normalement requis passé à "-".';
+        $tab_eleve[$eleve_id]['synthese']['appreciation'] = '-';
+      }
+    }
+  }
+  if($PAGE_PERIODICITE=='cycle')
+  {
+    $nb_positionnements_eleve = count($tab_eleve[$eleve_id]['socle']);
+    if( $nb_positionnements_eleve < $nb_positionnements_socle )
+    {
+      $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Positionnements du socle incomplets ('.$nb_positionnements_eleve.'/'.$nb_positionnements_socle.') : données non exportables.';
+      unset($tab_eleve[$eleve_id]);
+    }
+    else
+    {
+      if($cycle_id==4)
+      {
+        if( empty($tab_eleve[$eleve_id]['enscompl']) )
+        {
+          $tab_eleve[$eleve_id]['enscompl'] = array(
+            'code'           => 'AUC',
+            'positionnement' => NULL,
+          );
+        }
+        else if( is_int($tab_eleve[$eleve_id]['enscompl']) || ( is_array($tab_eleve[$eleve_id]['enscompl']) && ($tab_eleve[$eleve_id]['enscompl']['positionnement']<0) ) )
+        {
+          $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Absence de positionnement pour l\'enseignement de complément : donnée non exportée.';
+          $tab_eleve[$eleve_id]['enscompl'] = array(
+            'code'           => 'AUC',
+            'positionnement' => NULL,
+          );
+        }
+      }
+      if(empty($tab_eleve[$eleve_id]['synthese']))
+      {
+        $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Absence d\'appréciation bilan : champ normalement requis passé à "-".';
+        $tab_eleve[$eleve_id]['synthese']['appreciation'] = '-';
+      }
     }
   }
 }

@@ -101,4 +101,36 @@ if($version_base_structure_actuelle=='2017-01-18')
   }
 }
 
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-01-22 => 2017-02-10
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-01-22')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-02-10';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // modif légère format exports LSU archivés
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_export SET export_contenu = REPLACE( export_contenu , "\"bilan\":{" , "\"bilan\":{\"type\":\"periode\"," ) ' );
+    // nettoyage incomplet d'une révision précédente
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_export SET export_contenu = REPLACE( export_contenu , ",\"ELd41d8cd98f00b204e9800998ecf8427e\"," , "," ) ' );
+    // modif colonne de la table [sacoche_livret_jointure_groupe]
+    if(empty($reload_sacoche_livret_jointure_groupe))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_jointure_groupe CHANGE jointure_date_verrou jointure_date_verrou DATETIME NULL DEFAULT NULL ' );
+    }
+    // recharger [sacoche_livret_rubrique] (modifs de codes et d'indices de positionnement ou d'éléments travaillés)
+    if(empty($reload_sacoche_livret_rubrique))
+    {
+      $reload_sacoche_livret_rubrique = TRUE;
+      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_rubrique.sql');
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+      DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    }
+    // champ trouvé à "0000-00-00" au lieu de NULL sur une base
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_naissance_date = NULL WHERE user_naissance_date < "1000-01-01" ' ); // Le test ="0000-00-00" plante sur une config MySQL stricte.
+  }
+}
+
 ?>

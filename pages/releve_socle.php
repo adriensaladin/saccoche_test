@@ -36,7 +36,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && (!$_SESSION['NB_ENFANTS']) )
 
 if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('professeur','directeur')) && !Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']) )
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
+  echo'<p class="danger">'.html(Lang::_("Vous n'êtes pas habilité à accéder à cette fonctionnalité !")).'</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) en complément des professeurs et directeurs :</div>'.NL;
   echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_SOCLE_ACCES'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.

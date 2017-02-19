@@ -33,7 +33,7 @@ require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_traduction.php');
 // Formulaire SELECT du choix de la langue
 $defaut_texte = '' ;
 // Langues sélectionnables
-$options_langue_selection = '<optgroup label="Autres langues sélectionnables">';
+$options_langue_selection = '<optgroup label="'.html(Lang::_("Autres langues sélectionnables")).'">';
 foreach($tab_langues_traduction as $tab_langue)
 {
   if($tab_langue['statut']!=0)
@@ -51,7 +51,7 @@ foreach($tab_langues_traduction as $tab_langue)
 $options_langue_selection .= '</optgroup>';
 // Première option qui correspond au choix de l'établissement
 $selected = (empty($_SESSION['USER_LANGUE'])) ? ' selected' : '' ;
-$options_langue_defaut  = '<optgroup label="Langue par défaut dans l\'établissement">';
+$options_langue_defaut  = '<optgroup label="'.html(Lang::_("Langue par défaut dans l'établissement")).'">';
 $options_langue_defaut .=   '<option value="defaut"'.$selected.'>'.$defaut_texte.' ['.$_SESSION['ETABLISSEMENT']['LANGUE'].']</option>';
 $options_langue_defaut .= '</optgroup>';
 ?>

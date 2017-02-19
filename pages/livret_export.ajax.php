@@ -230,7 +230,6 @@ foreach($DB_TAB as $key => $DB_ROW)
   if($export_objet=='college')
   {
     $tab_export_commun['responsable-etab'] = array_merge( $tab_export_commun['responsable-etab'] , $tab_export_donnees[$key]['commun']['responsable-etab'] );
-    $tab_export_commun['discipline']       = array_merge( $tab_export_commun['discipline']       , $tab_export_donnees[$key]['commun']['discipline']       );
     $tab_export_commun['epi']              = array_merge( $tab_export_commun['epi']              , $tab_export_donnees[$key]['commun']['epi']              );
     $tab_export_commun['ap']               = array_merge( $tab_export_commun['ap']               , $tab_export_donnees[$key]['commun']['ap']               );
     $tab_export_commun['viesco']           = array_merge( $tab_export_commun['viesco']           , $tab_export_donnees[$key]['commun']['viesco']           );
@@ -240,6 +239,7 @@ foreach($DB_TAB as $key => $DB_ROW)
     $tab_export_commun['directeur']        = array_merge( $tab_export_commun['directeur']        , $tab_export_donnees[$key]['commun']['directeur']        );
     $tab_export_commun['classe']           = array_merge( $tab_export_commun['classe']           , $tab_export_donnees[$key]['commun']['classe']           );
   }
+  $tab_export_commun['discipline']       = array_merge( $tab_export_commun['discipline']       , $tab_export_donnees[$key]['commun']['discipline']       );
   $tab_export_commun['periode']          = array_merge( $tab_export_commun['periode']          , $tab_export_donnees[$key]['commun']['periode']          );
   $tab_export_commun['enseignant']       = array_merge( $tab_export_commun['enseignant']       , $tab_export_donnees[$key]['commun']['enseignant']       );
   $tab_export_commun['element']          = array_merge( $tab_export_commun['element']          , $tab_export_donnees[$key]['commun']['element']          );
@@ -274,9 +274,14 @@ $tab_xml[] = ' <donnees>';
 
 // Attention, pour la conformité du XML, l'odre est important (j'aurais bien mis <eleves> en premier mais ce n'est pas permis).
 
+$key_classe        = ($export_objet=='college') ? 'code-division'        : 'classe-ref' ;
+$key_profs_eleve   = ($export_objet=='college') ? 'prof-princ-refs'      : 'enseignant-refs' ;
+$key_chef_etabl    = ($export_objet=='college') ? 'responsable-etab-ref' : 'directeur-ref' ;
+$key_appr_synthese = ($export_objet=='college') ? 'acquis-conseils'      : 'appreciation-generale' ;
+
+// responsables-etab (2D)
 if($export_objet=='college')
 {
-  // responsables-etab
   $tab_xml[] = '  <responsables-etab>';
   foreach($tab_export_commun['responsable-etab'] as $id => $tab)
   {
@@ -285,16 +290,15 @@ if($export_objet=='college')
   $tab_xml[] = '  </responsables-etab>';
 }
 
+// directeurs & classes (1D)
 if($export_objet=='ecole')
 {
-  // directeurs
   $tab_xml[] = '  <directeurs>';
   foreach($tab_export_commun['directeur'] as $id => $tab)
   {
     $tab_xml[] = '   <directeur id="'.$id.'" civilite="'.$tab['civilite'].'" nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />';
   }
   $tab_xml[] = '  </directeurs>';
-  // classes
   $tab_xml[] = '  <classes>';
   foreach($tab_export_commun['classe'] as $id => $tab)
   {
@@ -310,10 +314,9 @@ foreach($tab_export_eleve as $eleve_id => $tab)
 {
   switch($export_objet)
   {
-    case 'college' : $tab_xml[] = '   <eleve id="'.$tab['id'].'" id-be="'.$tab['id-be'].'" nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" code-division="'.html($tab['code-division']).'" />'; break;
-    case 'ecole'   : $tab_xml[] = '   <eleve id="'.$tab['id'].'" ine="'.$tab['ine'].'" classe-ref="'.html($tab['classe-ref']).'" nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />'; break;
+    case 'college' : $tab_xml[] = '   <eleve id="'.$tab['id'].'" id-be="'.$tab['id-be'].'" nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" '.$key_classe.'="'.html($tab[$key_classe]).'" />'; break;
+    case 'ecole'   : $tab_xml[] = '   <eleve id="'.$tab['id'].'" ine="'.$tab['ine'].'" '.$key_classe.'="'.html($tab[$key_classe]).'" nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" />'; break;
   }
-  
 }
 $tab_xml[] = '  </eleves>';
 unset( $tab_export_eleve );
@@ -324,12 +327,14 @@ if(!empty($tab_export_commun['periode']))
   $tab_xml[] = '  <periodes>';
   foreach($tab_export_commun['periode'] as $id => $tab)
   {
-    $tab_xml[] = '   <periode id="'.$id.'" millesime="'.$tab['millesime'].'" indice="'.$tab['indice'].'" nb-periodes="'.$tab['nb-periodes'].'" />';
+    $date_debut = ($export_objet=='college') ? '' : ' date-debut="'.$tab['date-debut'].'"' ;
+    $date_fin   = ($export_objet=='college') ? '' : ' date-fin="'.$tab['date-fin'].'"' ;
+    $tab_xml[] = '   <periode id="'.$id.'" millesime="'.$tab['millesime'].'" indice="'.$tab['indice'].'" nb-periodes="'.$tab['nb-periodes'].'"'.$date_debut.$date_fin.' />';
   }
   $tab_xml[] = '  </periodes>';
 }
 
-// disciplines (uniquement si présence de bilans périodiques)
+// disciplines (2D & uniquement si présence de bilans périodiques)
 if(!empty($tab_export_commun['discipline']))
 {
   $tab_xml[] = '  <disciplines>';
@@ -370,13 +375,13 @@ if(!empty($tab_export_commun['parcours']))
   $tab_parcours = array();
   foreach($tab_export_commun['parcours'] as $key => $tab)
   {
-    $tab_parcours[$tab['periode-ref'].'¤'.$tab['code-division']][] = $tab;
+    $tab_parcours[$tab['periode-ref'].'¤'.$tab[$key_classe]][] = $tab;
   }
   $tab_xml[] = '  <parcours-communs>';
   foreach($tab_parcours as $key => $tab_ensemble)
   {
-    list( $periode_ref , $code_division ) = explode('¤',$key,2);
-    $tab_xml[] = '   <parcours-commun periode-ref="'.$periode_ref.'" code-division="'.html($code_division).'">';
+    list( $periode_ref , $champ_classe ) = explode('¤',$key,2);
+    $tab_xml[] = '   <parcours-commun periode-ref="'.$periode_ref.'" '.$key_classe.'="'.html($champ_classe).'">';
     foreach($tab_ensemble as $tab)
     {
       $tab_xml[] = '    <parcours code="'.$tab['code'].'">'.html($tab['projet']).'</parcours>';
@@ -463,6 +468,27 @@ if(!empty($tab_export_commun['ap']))
 
 unset( $tab_export_commun );
 
+// responsables (dans une fonction car commun aux bilans périodiques et de fin de cycle)
+function xml_responsables($tab_donnee_bilan_responsables)
+{
+  global $export_objet;
+  $tab_xml = array();
+  $tab_xml[] = '    <responsables>';
+  foreach($tab_donnee_bilan_responsables as $resp_num => $tab)
+  {
+    $legal_num = ($export_objet=='college') ? ' legal'.$resp_num.'="true"' : '' ;
+    $civilite  = $tab['civilite'] ? ' civilite="'.$tab['civilite'].'"'   : '' ;
+    $ligne2    = $tab['ligne2']   ? ' ligne2="'.html($tab['ligne2']).'"' : '' ;
+    $ligne3    = $tab['ligne3']   ? ' ligne3="'.html($tab['ligne3']).'"' : '' ;
+    $ligne4    = $tab['ligne4']   ? ' ligne4="'.html($tab['ligne4']).'"' : '' ;
+    $tab_xml[] = '     <responsable'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'"'.$legal_num.'>'; // lien-parente non géré (facultatif)
+    $tab_xml[] = '      <adresse ligne1="'.html($tab['ligne1']).'"'.$ligne2.$ligne3.$ligne4.' code-postal="'.html($tab['code-postal']).'" commune="'.html($tab['commune']).'" />';
+    $tab_xml[] = '     </responsable>';
+  }
+  $tab_xml[] = '    </responsables>';
+  return $tab_xml;
+}
+
 // bilans périodiques ou de fin de cycle
 $nb_bilans = count($tab_export_donnees);
 $tab_xml_bilans = array ( 'periodique' => array() , 'cycle' => array() );
@@ -473,29 +499,108 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
   // bilan périodique
   if($tab_bilan['type']=='periode')
   {
-    $date_verrou = ($version_xsd_college=='2.0') ? substr($tab_bilan['date-verrou'],0,10) : $tab_bilan['date-verrou'] ;
-    $prof_princ_refs = !empty($tab_bilan['prof-princ-refs']) ? ' prof-princ-refs="'.$tab_bilan['prof-princ-refs'].'"' : '' ;
-    $tab_xml_bilans['periodique'][] = '   <bilan-periodique'.$prof_princ_refs.' eleve-ref="'.$tab_bilan['eleve-ref'].'" periode-ref="'.$tab_bilan['periode-ref'].'" date-conseil-classe="'.$tab_bilan['date-conseil-classe'].'" date-scolarite="'.$tab_bilan['date-scolarite'].'" date-verrou="'.$date_verrou.'" responsable-etab-ref="'.$tab_bilan['responsable-etab-ref'].'">';
+    $date_verrou = ( ($export_objet=='college') && ($version_xsd_college=='2.0') ) ? substr($tab_bilan['date-verrou'],0,10) : $tab_bilan['date-verrou'] ;
+    $date_bilan  = ($export_objet=='college') ? 'date-conseil-classe="'.$tab_bilan['date-conseil-classe'].'"' : 'date-creation="'.$tab_bilan['date-creation'].'"' ;
+    $profs_eleve_refs = !empty($tab_bilan[$key_profs_eleve]) ? ' '.$key_profs_eleve.'="'.$tab_bilan[$key_profs_eleve].'"' : '' ;
+    $tab_xml_bilans['periodique'][] = '   <bilan-periodique'.$profs_eleve_refs.' eleve-ref="'.$tab_bilan['eleve-ref'].'" periode-ref="'.$tab_bilan['periode-ref'].'" '.$date_bilan.' date-scolarite="'.$tab_bilan['date-scolarite'].'" date-verrou="'.$date_verrou.'" '.$key_chef_etabl.'="'.$tab_bilan[$key_chef_etabl].'">';
     $champ_position = $tab_bilan['position'];
     // liste-acquis
     $tab_xml_bilans['periodique'][] = '    <liste-acquis>';
-    foreach($tab_donnee_bilan['acquis'] as $discipline_ref => $tab)
+    // 2D
+    if($export_objet=='college')
     {
-      $element_programme_refs = !empty($tab['elements']) ? implode(' ',$tab['elements']) : 'EL0' ;
-      $position_eleve  = is_null($tab[$champ_position]) ? ' eleve-non-note="true"' : ' '.$champ_position.'="'.$tab[$champ_position].'"' ;
-      $position_classe = ($champ_position=='positionnement') ? '' : ( is_null($tab['moyenne-structure']) ? ' structure-non-notee="true"' : ' moyenne-structure="'.$tab['moyenne-structure'].'"' ) ;
-      $tab_xml_bilans['periodique'][] = '     <acquis discipline-ref="'.$discipline_ref.'" enseignant-refs="'.implode(' ',$tab['profs']).'" element-programme-refs="'.$element_programme_refs.'"'.$position_eleve.$position_classe.' >';
-      // appréciation obligatoire sauf si élève non noté
-      if( $tab['appreciation'] || !is_null($tab[$champ_position]) )
+      foreach($tab_donnee_bilan['acquis'] as $discipline_ref => $tab)
       {
-        $tab['appreciation'] = !empty($tab['appreciation']) ? $tab['appreciation'] : '-' ;
-        $tab_xml_bilans['periodique'][] = '      <appreciation>'.html($tab['appreciation']).'</appreciation>';
+        // élément de prg travaillé obligatoire
+        $element_programme_refs = !empty($tab['elements']) ? implode(' ',$tab['elements']) : 'EL0' ;
+        $position_eleve  = is_null($tab[$champ_position]) ? ' eleve-non-note="true"' : ' '.$champ_position.'="'.$tab[$champ_position].'"' ;
+        $position_classe = ($champ_position=='positionnement') ? '' : ( is_null($tab['moyenne-structure']) ? ' structure-non-notee="true"' : ' moyenne-structure="'.$tab['moyenne-structure'].'"' ) ;
+        $tab_xml_bilans['periodique'][] = '     <acquis discipline-ref="'.$discipline_ref.'" enseignant-refs="'.implode(' ',$tab['profs']).'" element-programme-refs="'.$element_programme_refs.'"'.$position_eleve.$position_classe.' >';
+        // appréciation obligatoire sauf si élève non noté
+        if( $tab['appreciation'] || !is_null($tab[$champ_position]) )
+        {
+          $tab['appreciation'] = !empty($tab['appreciation']) ? $tab['appreciation'] : '-' ;
+          $tab_xml_bilans['periodique'][] = '      <appreciation>'.html($tab['appreciation']).'</appreciation>';
+        }
+        $rubrique_sans_element = $rubrique_sans_element || ($element_programme_refs=='EL0') ;
+        $tab_xml_bilans['periodique'][] = '     </acquis>';
       }
-      $rubrique_sans_element = $rubrique_sans_element || ($element_programme_refs=='EL0') ;
-      $tab_xml_bilans['periodique'][] = '     </acquis>';
+    }
+    // 1D
+    if($export_objet=='ecole')
+    {
+      // on fait 2 passages parce que c'est compliqué sinon
+      $tab_acquis_domaine = array();
+      foreach($tab_donnee_bilan['acquis'] as $code => $tab)
+      {
+        list( $domaine , $sous_domaine ) = explode('-',$code);
+        $element_programme_refs = !empty($tab['elements']) ? ' element-programme-refs="'.implode(' ',$tab['elements']).'"' : '' ;
+        $positionnement = ($tab['positionnement']) ? ' positionnement="'.$tab['positionnement'].'"' : '' ;
+        if( $sous_domaine == 'RAC' )
+        {
+          $tab_acquis_domaine[$domaine] = array(
+            'is_sous_domaine'        => FALSE,
+            'element_programme_refs' => $element_programme_refs,
+            'positionnement'         => $positionnement,
+            'appreciation'           => $tab['appreciation'],
+          );
+        }
+        else
+        {
+          if(!isset($tab_acquis_domaine[$domaine]))
+          {
+            $tab_acquis_domaine[$domaine]['appreciation'] = $tab['appreciation'];
+          }
+          else
+          {
+            $tab_acquis_domaine[$domaine]['appreciation'] .= $tab['appreciation'];
+          }
+          // test pour éviter le cas de l'appréciation rattachée au 1er élément bien qu'il n'apparaisse pas
+          if( $element_programme_refs || $positionnement )
+          {
+            $tab_acquis_domaine[$domaine]['is_sous_domaine'] = TRUE;
+            $tab_acquis_domaine[$domaine]['sous_domaine'][$sous_domaine] = array(
+              'element_programme_refs' => $element_programme_refs,
+              'positionnement'         => $positionnement,
+            );
+          }
+        }
+      }
+      foreach($tab_acquis_domaine as $code_domaine => $tab_info_domaine)
+      {
+        // 1er test pour éviter de passer ici en cas de domaine avec en théorie des sous-domaines mais en réalité seulement une appréciation transmise
+        if( isset($tab_info_domaine['is_sous_domaine']) && !$tab_info_domaine['is_sous_domaine'] )
+        {
+          $tab_xml_bilans['periodique'][] = '     <acquis code-domaine="'.$code_domaine.'-RAC"'.$tab_info_domaine['element_programme_refs'].$tab_info_domaine['positionnement'].'>';
+          if($tab_info_domaine['appreciation'])
+          {
+            $tab_xml_bilans['periodique'][] = '      <appreciation>'.html($tab_info_domaine['appreciation']).'</appreciation>';
+          }
+          $tab_xml_bilans['periodique'][] = '     </acquis>';
+        }
+        else
+        {
+          $tab_xml_bilans['periodique'][] = '     <acquis code-domaine="'.$code_domaine.'-RAC">';
+          if($tab_info_domaine['appreciation'])
+          {
+            $tab_xml_bilans['periodique'][] = '      <appreciation>'.html($tab_info_domaine['appreciation']).'</appreciation>';
+          }
+          // test pour éviter de passer ici en cas de domaine avec en théorie des sous-domaines mais en réalité seulement une appréciation transmise
+          if(isset($tab_info_domaine['sous_domaine']))
+          {
+            $tab_xml_bilans['periodique'][] = '      <sous-domaines>';
+            foreach($tab_info_domaine['sous_domaine'] as $code_sous_domaine => $tab_info_sous_domaine)
+            {
+              $tab_xml_bilans['periodique'][] = '       <sous-domaine code-domaine="'.$code_domaine.'-'.$code_sous_domaine.'"'.$tab_info_sous_domaine['element_programme_refs'].$tab_info_sous_domaine['positionnement'].' />';
+            }
+            $tab_xml_bilans['periodique'][] = '      </sous-domaines>';
+          }
+          $tab_xml_bilans['periodique'][] = '     </acquis>';
+        }
+      }
     }
     $tab_xml_bilans['periodique'][] = '    </liste-acquis>';
-    // epis-eleve
+    // epis-eleve (2D)
     if(!empty($tab_donnee_bilan['epi']))
     {
       $tab_xml_bilans['periodique'][] = '    <epis-eleve>';
@@ -510,7 +615,7 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
       }
       $tab_xml_bilans['periodique'][] = '    </epis-eleve>';
     }
-    // acc-persos-eleve
+    // acc-persos-eleve (2D)
     if(!empty($tab_donnee_bilan['ap']))
     {
       $tab_xml_bilans['periodique'][] = '    <acc-persos-eleve>';
@@ -553,42 +658,34 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
       }
       $tab_xml_bilans['periodique'][] = '    </modalites-accompagnement>';
     }
-    // acquis-conseils
+    // acquis-conseils (2D) | appreciation-generale (1D)
     $tab_synthese = $tab_donnee_bilan['synthese'];
-    $tab_xml_bilans['periodique'][] = '    <acquis-conseils>'.html($tab_synthese['appreciation']).'</acquis-conseils>';
-    // vie-scolaire
-    $tab_viesco = $tab_donnee_bilan['viesco'];
-    $tab_xml_bilans['periodique'][] = '    <vie-scolaire nb-retards="'.$tab_viesco['nb-retards'].'" nb-abs-justifiees="'.$tab_viesco['nb-abs-justifiees'].'" nb-abs-injustifiees="'.$tab_viesco['nb-abs-injustifiees'].'">'; // nb-heures-manquees non géré
-    if(!empty($tab_viesco['appreciation']))
+    $tab_xml_bilans['periodique'][] = '    <'.$key_appr_synthese.'>'.html($tab_synthese['appreciation']).'</'.$key_appr_synthese.'>';
+    // vie-scolaire (2D)
+    if(!empty($tab_donnee_bilan['viesco']))
     {
-      $tab_xml_bilans['periodique'][] = '     <commentaire>'.html($tab_viesco['appreciation']).'</commentaire>';
+      $tab_viesco = $tab_donnee_bilan['viesco'];
+      $tab_xml_bilans['periodique'][] = '    <vie-scolaire nb-retards="'.$tab_viesco['nb-retards'].'" nb-abs-justifiees="'.$tab_viesco['nb-abs-justifiees'].'" nb-abs-injustifiees="'.$tab_viesco['nb-abs-injustifiees'].'">'; // nb-heures-manquees non géré
+      if(!empty($tab_viesco['appreciation']))
+      {
+        $tab_xml_bilans['periodique'][] = '     <commentaire>'.html($tab_viesco['appreciation']).'</commentaire>';
+      }
+      $tab_xml_bilans['periodique'][] = '    </vie-scolaire>';
     }
-    $tab_xml_bilans['periodique'][] = '    </vie-scolaire>';
     // socle
     // --> pas géré pour l'instant
     // responsables
     if(!empty($tab_donnee_bilan['responsables']))
     {
-      $tab_xml_bilans['periodique'][] = '    <responsables>';
-      foreach($tab_donnee_bilan['responsables'] as $resp_num => $tab)
-      {
-        $civilite = $tab['civilite'] ? ' civilite="'.$tab['civilite'].'"'   : '' ;
-        $ligne2   = $tab['ligne2']   ? ' ligne2="'.html($tab['ligne2']).'"' : '' ;
-        $ligne3   = $tab['ligne3']   ? ' ligne3="'.html($tab['ligne3']).'"' : '' ;
-        $ligne4   = $tab['ligne4']   ? ' ligne4="'.html($tab['ligne4']).'"' : '' ;
-        $tab_xml_bilans['periodique'][] = '     <responsable'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" legal'.$resp_num.'="true">'; // lien-parente non géré (facultatif)
-        $tab_xml_bilans['periodique'][] = '      <adresse ligne1="'.html($tab['ligne1']).'"'.$ligne2.$ligne3.$ligne4.' code-postal="'.html($tab['code-postal']).'" commune="'.html($tab['commune']).'" />';
-        $tab_xml_bilans['periodique'][] = '     </responsable>';
-      }
-      $tab_xml_bilans['periodique'][] = '    </responsables>';
+      $tab_xml_bilans['periodique'] = array_merge( $tab_xml_bilans['periodique'] , xml_responsables($tab_donnee_bilan['responsables']) );
     }
     $tab_xml_bilans['periodique'][] = '   </bilan-periodique>';
   }
   // bilan de fin de cycle
   else if($tab_bilan['type']=='cycle')
   {
-    $prof_princ_refs = !empty($tab_bilan['prof-princ-refs']) ? ' prof-princ-refs="'.$tab_bilan['prof-princ-refs'].'"' : '' ;
-    $tab_xml_bilans['cycle'][] = '   <bilan-cycle'.$prof_princ_refs.' eleve-ref="'.$tab_bilan['eleve-ref'].'" cycle="'.$tab_bilan['cycle'].'" millesime="'.$tab_bilan['millesime'].'" date-creation="'.$tab_bilan['date-creation'].'" date-verrou="'.$tab_bilan['date-verrou'].'" responsable-etab-ref="'.$tab_bilan['responsable-etab-ref'].'">';
+    $profs_eleve_refs = !empty($tab_bilan[$key_profs_eleve]) ? ' '.$key_profs_eleve.'="'.$tab_bilan[$key_profs_eleve].'"' : '' ;
+    $tab_xml_bilans['cycle'][] = '   <bilan-cycle'.$profs_eleve_refs.' eleve-ref="'.$tab_bilan['eleve-ref'].'" cycle="'.$tab_bilan['cycle'].'" millesime="'.$tab_bilan['millesime'].'" date-creation="'.$tab_bilan['date-creation'].'" date-verrou="'.$tab_bilan['date-verrou'].'" '.$key_chef_etabl.'="'.$tab_bilan[$key_chef_etabl].'">';
     // domaines du socle
     $tab_xml_bilans['cycle'][] = '    <socle>';
     foreach($tab_donnee_bilan['socle'] as $id => $tab)
@@ -610,18 +707,7 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
     // responsables
     if(!empty($tab_donnee_bilan['responsables']))
     {
-      $tab_xml_bilans['cycle'][] = '    <responsables>';
-      foreach($tab_donnee_bilan['responsables'] as $resp_num => $tab)
-      {
-        $civilite = $tab['civilite'] ? ' civilite="'.$tab['civilite'].'"'   : '' ;
-        $ligne2   = $tab['ligne2']   ? ' ligne2="'.html($tab['ligne2']).'"' : '' ;
-        $ligne3   = $tab['ligne3']   ? ' ligne3="'.html($tab['ligne3']).'"' : '' ;
-        $ligne4   = $tab['ligne4']   ? ' ligne4="'.html($tab['ligne4']).'"' : '' ;
-        $tab_xml_bilans['cycle'][] = '     <responsable'.$civilite.' nom="'.html($tab['nom']).'" prenom="'.html($tab['prenom']).'" legal'.$resp_num.'="true">'; // lien-parente non géré (facultatif)
-        $tab_xml_bilans['cycle'][] = '      <adresse ligne1="'.html($tab['ligne1']).'"'.$ligne2.$ligne3.$ligne4.' code-postal="'.html($tab['code-postal']).'" commune="'.html($tab['commune']).'" />';
-        $tab_xml_bilans['cycle'][] = '     </responsable>';
-      }
-      $tab_xml_bilans['cycle'][] = '    </responsables>';
+      $tab_xml_bilans['cycle'] = array_merge( $tab_xml_bilans['cycle'] , xml_responsables($tab_donnee_bilan['responsables']) );
     }
     $tab_xml_bilans['cycle'][] = '   </bilan-cycle>';
   }
@@ -636,7 +722,7 @@ if(!empty($tab_xml_bilans['periodique']))
 }
 if(!empty($tab_xml_bilans['cycle']))
 {
-  if($version_xsd_college=='2.0')
+  if( ($export_objet=='college') && ($version_xsd_college=='2.0') )
   {
     Json::end( FALSE , 'Les bilans de fin de cycle ne peuvent être importés que dans LSU 17.1 déployé dans les académies à compter du 20 février 2017.<br />À la demande de LSU, cet export ne sera mis à disposition dans SACoche qu\'à compter du 1er mars 2017.<br />En attendant, veuillez ne choisir que des bilans périodiques.' );
   }

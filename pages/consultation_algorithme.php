@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Algorithme de calcul"));
 
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
+  echo'<p class="danger">'.html(Lang::_("Vous n'êtes pas habilité à accéder à cette fonctionnalité !")).'</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
   echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
@@ -119,11 +119,11 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
   <table>
   <thead>
     <tr><th>
-      Valeur d'un code (sur 100)
+      <?php echo html(Lang::_("Valeur d'un code (sur 100)")) ?>
     </th><th>
-      Méthode de calcul par défaut (modifiable pour chaque référentiel)
+      <?php echo html(Lang::_("Méthode de calcul par défaut (modifiable pour chaque référentiel)")) ?>
     </th><th>
-      Seuils d'acquisition (de 0 à 100)
+      <?php echo html(Lang::_("Seuils d'acquisition (de 0 à 100)")) ?>
     </th></tr>
   </thead>
   <tbody>

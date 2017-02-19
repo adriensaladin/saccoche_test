@@ -28,14 +28,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Notifications reçues"));
 
-$menu = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? '[Paramétrages]' : '[Paramétrages personnels]' ;
+$menu = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? '['.html(Lang::_("Paramétrages")).']' : '['.html(Lang::_("Paramétrages personnels")).']' ;
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__email_notifications">DOC : Adresse e-mail / Abonnements / Notifications</a></span></p>
 
 <p>
-  <span class="astuce">Pour gérer ses abonnements aux notifications, utiliser le menu <a href="./index.php?page=compte_email"><?php echo $menu ?> [Adresse e-mail &amp; Abonnements]</a>.</span><br />
-  <span class="astuce">Les notifications consultées sont automatiquement retirées passé un délai de 2 mois.</span>
+  <span class="astuce">Pour gérer ses abonnements aux notifications, utiliser le menu <a href="./index.php?page=compte_email"><?php echo $menu ?> [<?php echo html(Lang::_("Adresse e-mail & Abonnements")) ?>]</a>.</span><br />
+  <span class="astuce"><?php echo html(Lang::_("Les notifications consultées sont automatiquement retirées passé un délai de 2 mois.")) ?></span>
 </p>
 
 <hr />

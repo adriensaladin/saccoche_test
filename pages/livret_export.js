@@ -152,7 +152,7 @@ $(document).ready
         }
         if( (page_ref=='cp') || (page_ref=='ce1') || (page_ref=='ce2') || (page_ref=='cm1') || (page_ref=='cm2') || (page_ref=='cycle2') )
         {
-          $.fancybox( '<p class="travaux">'+'Spécifications pour le 1er degré partiellement inutilisables&hellip;<br />Nous sommes en attente d\'évolutions de BE1D prévues courant février 2017.<br />La finalisation de l\'export LSU 1er degré sera effectuée dans la foulée.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+          $.fancybox( '<p class="travaux">'+'Spécifications pour le 1er degré partiellement inutilisables&hellip;<br />Du côté de SACoche, la génération du fichier au bon format est déjà programmée.<br />Mais nous restons en attente d\'évolutions de BE1D prévues courant février 2017.<br />La finalisation de l\'export LSU 1er degré sera effectuée dans la foulée.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
           return false;
         }
         $('button').prop('disabled',true);

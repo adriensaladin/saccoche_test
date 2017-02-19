@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Annuler une compétence validée du socle"));
 
 if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
+  echo'<p class="danger">'.html(Lang::_("Vous n'êtes pas habilité à accéder à cette fonctionnalité !")).'</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
   echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_ANNULATION_PILIER'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.

@@ -36,38 +36,38 @@ if( $_SESSION['USER_EMAIL'] && $_SESSION['USER_EMAIL_ORIGINE'] )
 {
   if($_SESSION['USER_EMAIL_ORIGINE']=='user')
   {
-    $info_origine = '<span class="astuce">L\'adresse enregistrée a été saisie par vous-même.</span>';
+    $info_origine = '<span class="astuce">'.html(Lang::_("L'adresse enregistrée a été saisie par vous-même.")).'</span>';
   }
   else
   {
-    $info_origine = '<span class="astuce">L\'adresse enregistrée a été importée ou saisie par un administrateur.</span>';
+    $info_origine = '<span class="astuce">'.html(Lang::_("L'adresse enregistrée a été importée ou saisie par un administrateur.")).'</span>';
     if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique($_SESSION['DROIT_MODIFIER_EMAIL']) )
     {
-      $info_edition = '<span class="astuce">Vous êtes habilité à modifier cette adresse si vous le souhaitez.</span>';
+      $info_edition = '<span class="astuce">'.html(Lang::_("Vous êtes habilité à modifier cette adresse si vous le souhaitez.")).'</span>';
     }
     else
     {
-      $info_edition = '<span class="danger">Vous n\'êtes pas habilité à modifier l\'adresse vous-même ! Veuillez contacter un administrateur.</span>';
+      $info_edition = '<span class="danger">'.html(Lang::_("Vous n'êtes pas habilité à modifier l'adresse vous-même ! Veuillez contacter un administrateur.")).'</span>';
       $disabled = ' disabled';
     }
   }
 }
 else
 {
-  $info_origine = '<span class="astuce">Il n\'y a pas d\'adresse actuellement enregistrée.</span>';
+  $info_origine = '<span class="astuce">'.html(Lang::_("Il n'y a pas d'adresse actuellement enregistrée.")).'</span>';
 }
 
 if(COURRIEL_NOTIFICATION=='non')
 {
-  $info_envoi_notifications = '<label class="alerte">Le webmestre du serveur a désactivé l\'envoi des notifications par courriel.</label>' ;
+  $info_envoi_notifications = '<label class="alerte">'.html(Lang::_("Le webmestre du serveur a désactivé l'envoi des notifications par courriel.")).'</label>' ;
 }
 elseif(!$_SESSION['USER_EMAIL'])
 {
-  $info_envoi_notifications = '<label class="alerte">Les envois par courriel seront remplacés par des indications en page d\'accueil tant que votre adresse de courriel ne sera pas renseignée.</label>' ;
+  $info_envoi_notifications = '<label class="alerte">'.html(Lang::_("Les envois par courriel seront remplacés par des indications en page d'accueil tant que votre adresse de courriel ne sera pas renseignée.")).'</label>' ;
 }
 else
 {
-  $info_envoi_notifications = '<label class="valide">Votre adresse étant renseignée, vous pouvez opter pour des envois par courriel.</label>' ;
+  $info_envoi_notifications = '<label class="valide">'.html(Lang::_("Votre adresse étant renseignée, vous pouvez opter pour des envois par courriel.")).'</label>' ;
 }
 
 ?>
@@ -78,7 +78,7 @@ else
 
 <hr />
 
-<h2>Adresse associée à votre compte</h2>
+<h2><?php echo html(Lang::_("Adresse associée à votre compte")) ?></h2>
 
 <p id="info_adresse">
   <?php echo $info_origine ?><br />
@@ -91,7 +91,7 @@ else
 
 <hr />
 
-<h2>Abonnement aux notifications (profil <?php echo html($_SESSION['USER_PROFIL_TYPE']); ?>)</h2>
+<h2><?php echo html(Lang::_("Abonnement aux notifications")) ?> (profil <?php echo html($_SESSION['USER_PROFIL_TYPE']); ?>)</h2>
 
 <p id="info_abonnement_mail">
   <?php echo $info_envoi_notifications ?>
@@ -146,5 +146,5 @@ else
 <hr />
 
 <p class="astuce">
-  Les notifications archivées sont accessibles par le menu <a href="./index.php?page=consultation_notifications">[Informations] [Notifications reçues]</a>.
+  Les notifications archivées sont accessibles par le menu <a href="./index.php?page=consultation_notifications">[<?php echo html(Lang::_("Informations")) ?>] [<?php echo html(Lang::_("Notifications reçues")) ?>]</a>.
 </p>

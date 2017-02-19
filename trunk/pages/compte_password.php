@@ -34,7 +34,7 @@ Layout::add( 'js_inline_before' , 'var PASSWORD_LONGUEUR_MAX = '.PASSWORD_LONGUE
 
 if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','partenaire')) && !Outil::test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']) )
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
+  echo'<p class="danger">'.html(Lang::_("Vous n'êtes pas habilité à accéder à cette fonctionnalité !")).'</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
   echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_MODIFIER_MDP'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
@@ -42,12 +42,12 @@ if( !in_array($_SESSION['USER_PROFIL_TYPE'],array('administrateur','webmestre','
 
 if($_SESSION['CONNEXION_MODE']!='normal')
 {
-  echo'<p class="astuce">Le mode de connexion est configuré pour utiliser une authentification externe.<br />Ce formulaire ne modifiera pas le mode de passe correspondant, il ne concerne que le mot de passe propre à l\'application.</p><hr />'.NL;
+  echo'<p class="astuce">Le mode de connexion est configuré pour utiliser une authentification externe.<br />Ce formulaire ne modifiera pas le mode de passe correspondant, il ne concerne qu\'un mot de passe spécifique à l\'application.</p><hr />'.NL;
 }
 ?>
 
 
-<p>Entrer le mot de passe actuel, puis deux fois le nouveau mot de passe choisi.</p>
+<p><?php echo html(Lang::_("Entrer le mot de passe actuel, puis deux fois le nouveau mot de passe choisi.")) ?></p>
 <form action="#" method="post"><fieldset>
   <label class="tab" for="f_password0">Actuel :</label><input id="f_password0" name="f_password0" size="<?php echo (PASSWORD_LONGUEUR_MAX-5) ?>" maxlength="<?php echo PASSWORD_LONGUEUR_MAX ?>" type="password" value="" /><br />
   <label class="tab" for="f_password1"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="La robustesse du mot de passe indiqué dans ce champ est estimée ci-dessous." /> Nouveau 1/2 :</label><input id="f_password1" name="f_password1" size="<?php echo (PASSWORD_LONGUEUR_MAX-5) ?>" maxlength="<?php echo PASSWORD_LONGUEUR_MAX ?>" type="password" value="" /><br />
@@ -55,5 +55,5 @@ if($_SESSION['CONNEXION_MODE']!='normal')
   <span class="tab"></span><button id="bouton_valider" type="submit" class="mdp_perso">Valider le changement.</button><label id="ajax_msg">&nbsp;</label>
 </fieldset></form>
 <hr />
-<p><span class="astuce">Un mot de passe est considéré comme robuste s'il comporte de nombreux caractères, mélangeant des lettres minuscules et majuscules, des chiffres et d'autres symboles.</span></p>
-<div id="robustesse">indicateur de robustesse : <span>0</span> / 12</div>
+<p><span class="astuce"><?php echo html(Lang::_("Un mot de passe est considéré comme robuste s'il comporte de nombreux caractères, mélangeant des lettres minuscules et majuscules, des chiffres et d'autres symboles.")) ?></span></p>
+<div id="robustesse"><?php echo html(Lang::_("indicateur de robustesse")) ?> : <span>0</span> / 12</div>

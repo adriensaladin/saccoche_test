@@ -57,11 +57,11 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
 }
 ?>
 
-<h2>Codes de notation</h2>
+<h2><?php echo html(Lang::_("Codes de notation")) ?></h2>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=notes_acquis__codes_notation">DOC : Codes de notation</a></span></p>
 
-<p>L'établissement utilise <b><?php echo $_SESSION['NOMBRE_CODES_NOTATION'] ?> codes de notation</b> pour les évaluations&nbsp;:</p>
+<p><?php echo sprintf_lang(html(Lang::_("L'établissement utilise %1s|%2d codes de notation|%3s pour les évaluations")),array('<b>',$_SESSION['NOMBRE_CODES_NOTATION'],'</b>')) ?>&nbsp;:</p>
 
 <form action="#" method="post" id="form_notes">
 <ul>
@@ -71,11 +71,11 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
 
 <hr />
 
-<h2>États d'acquisition</h2>
+<h2><?php echo html(Lang::_("États d'acquisition")) ?></h2>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=notes_acquis__etats_acquisition">DOC : États d'acquisitions</a></span></p>
 
-<p>L'établissement utilise <b><?php echo $_SESSION['NOMBRE_ETATS_ACQUISITION'] ?> états d'acquisition</b> pour les bilans&nbsp;:</p>
+<p><?php echo sprintf_lang(html(Lang::_("L'établissement utilise %1s|%2d états d'acquisition|%3s pour les bilans")),array('<b>',$_SESSION['NOMBRE_ETATS_ACQUISITION'],'</b>')) ?>&nbsp;:</p>
 
 <form action="#" method="post" id="form_acquis">
 <ul>
@@ -88,7 +88,7 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
 <?php
 if(Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
 {
-  echo'<p class="astuce">Vous pouvez aussi consulter les algorithmes de calcul depuis votre menu <a href="?page=consultation_algorithme">[Informations] [Algorithme de calcul]</a>.</p>'.NL;
+  echo'<p class="astuce">Vous pouvez aussi consulter les algorithmes de calcul depuis votre menu <a href="?page=consultation_algorithme">['.html(Lang::_("Informations")).'] ['.html(Lang::_("Algorithme de calcul")).']</a>.</p>'.NL;
   echo'<hr />'.NL;
 }
 ?>

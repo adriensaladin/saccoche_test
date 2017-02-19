@@ -48,7 +48,7 @@ foreach($tab_types as $BILAN_TYPE => $tab)
 
 if(!$droit_voir_archives_pdf)
 {
-  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
+  echo'<p class="danger">'.html(Lang::_("Vous n'êtes pas habilité à accéder à cette fonctionnalité !")).'</p>'.NL;
   echo'<p class="astuce">Profils autorisés (par les administrateurs) :</p>'.NL;
   foreach($tab_types as $BILAN_TYPE => $tab)
   {

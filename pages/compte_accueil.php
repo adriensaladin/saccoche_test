@@ -222,12 +222,12 @@ else
 {
   if(HEBERGEUR_INSTALLATION=='multi-structures')
   {
-    $tab_accueil['user']['contenu'] .= '<div>'.html(Lang::_("Adresse à utiliser pour une sélection automatique de l'établissement")).'&nbsp;: <b>'.URL_DIR_SACOCHE.'?base='.$_SESSION['BASE'].'</b></div>';
+    $tab_accueil['user']['contenu'] .= '<div>Adresse à utiliser pour une sélection automatique de l\'établissement&nbsp;: <b>'.URL_DIR_SACOCHE.'?base='.$_SESSION['BASE'].'</b></div>';
   }
   if($_SESSION['CONNEXION_MODE']!='normal')
   {
     $get_base = ($_SESSION['BASE']) ? '='.$_SESSION['BASE'] : '' ;
-    $tab_accueil['user']['contenu'] .= '<div>'.html(Lang::_("Adresse à utiliser pour une connexion automatique avec l'authentification externe")).'&nbsp;: <b>'.URL_DIR_SACOCHE.'?sso'.$get_base.'</b></div>';
+    $tab_accueil['user']['contenu'] .= '<div>Adresse à utiliser pour une connexion automatique avec l\'authentification externe&nbsp;: <b>'.URL_DIR_SACOCHE.'?sso'.$get_base.'</b></div>';
   }
 }
 
@@ -267,7 +267,7 @@ if(!in_array($_SESSION['USER_PROFIL_TYPE'],array('webmestre','developpeur','part
   }
   if( (!count($tab_accueil['messages']['contenu'])) && ($_SESSION['USER_PROFIL_TYPE']!='administrateur') )
   {
-    $tab_accueil['ecolo']['contenu'] = '<p class="b"><TG> '.html(Lang::_("Afin de préserver l'environnement, n'imprimer que si nécessaire !")).'</p><div>'.html(Lang::_("Enregistrer la version numérique d'un document (grille, relevé, bilan) suffit pour le consulter, l'archiver, le partager, …")).'</div>';
+    $tab_accueil['ecolo']['contenu'] = '<p class="b"><TG> '.html(Lang::_("Afin de préserver l'environnement, n'imprimer que si nécessaire !")).'</p><div>Enregistrer la version numérique d\'un document (grille, relevé, bilan) suffit pour le consulter, l\'archiver, le partager, &hellip;</div>';
   }
 }
 
@@ -549,7 +549,7 @@ if($astuce_nombre)
   $i_alea = mt_rand(0,99) / 100; // nombre aléatoire entre 0,00 et 0,99
   $i_dist = pow($i_alea,$coef_distorsion) ; // distorsion pour accentuer le nombre de résultats proches de 0
   $indice = (int)floor($astuce_nombre*$i_dist);
-  $tab_accueil['help']['contenu'] .= '<p class="b"><TG> '.html(Lang::_("Le saviez-vous ?")).'</p><p>'.$tab_astuces[$_SESSION['USER_PROFIL_TYPE']][$indice].'</p>';
+  $tab_accueil['help']['contenu'] .= '<p class="b"><TG> '.html(Lang::_("Le saviez-vous ?")).'</p>'.$tab_astuces[$_SESSION['USER_PROFIL_TYPE']][$indice];
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

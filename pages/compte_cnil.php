@@ -30,16 +30,16 @@ $TITRE = html(Lang::_("Données personnelles"));
 
 if(isset($_SESSION['STOP_CNIL']))
 {
-  $form_activation = '<h2>'.html(Lang::_("Activation de votre compte")).'</h2>';
+  $form_activation = '<h2>Activation de votre compte</h2>';
   $form_activation.= '<p>';
-  $form_activation.= '  <span class="tab"></span><input type="checkbox" id="confirmation_cnil" name="confirmation_cnil" /><label for="confirmation_cnil"> '.html(Lang::_("J'ai pris connaissance des informations relatives à mes données personnelles.")).'</label><br />';
+  $form_activation.= '  <span class="tab"></span><input type="checkbox" id="confirmation_cnil" name="confirmation_cnil" /><label for="confirmation_cnil"> J\'ai pris connaissance des informations relatives à mes données personnelles.</label><br />';
   $form_activation.= '  <span class="tab"></span><button id="f_enregistrer" type="button" class="valider" disabled>Valider.</button><label id="ajax_msg_enregistrer">&nbsp;</label>';
   $form_activation.= '</p>';
 }
 else
 {
-  $form_activation = '<h2>'.html(Lang::_("Votre compte est activé")).'</h2>';
-  $form_activation.= '<p><label class="valide">'.html(Lang::_("J'ai pris connaissance des informations relatives à mes données personnelles.")).'</label></p>';
+  $form_activation = '<h2>Votre compte est activé</h2>';
+  $form_activation.= '<p><label class="valide">J\'ai pris connaissance des informations relatives à mes données personnelles.</label></p>';
 }
 ?>
 

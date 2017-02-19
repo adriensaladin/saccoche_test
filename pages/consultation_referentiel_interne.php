@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Référentiels en place (dans l'établissement)"));
 
 if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']) )
 {
-  echo'<p class="danger">'.html(Lang::_("Vous n'êtes pas habilité à accéder à cette fonctionnalité !")).'</p>'.NL;
+  echo'<p class="danger">Vous n\'êtes pas habilité à accéder à cette fonctionnalité !</p>'.NL;
   echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
   echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS'],'li');
   return; // Ne pas exécuter la suite de ce fichier inclus.
@@ -68,7 +68,7 @@ if(!$nb_niveaux)
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 
-echo'<p><span class="astuce">'.html(Lang::_("Cliquer sur l'œil pour voir le détail d'un référentiel.")).'</span></p>'.NL;
+echo'<p><span class="astuce">Cliquer sur l\'&oelig;il pour voir le détail d\'un référentiel.</span></p>'.NL;
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_niveau[$DB_ROW['niveau_id']] = html($DB_ROW['niveau_nom']);

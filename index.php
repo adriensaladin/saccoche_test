@@ -277,12 +277,12 @@ if( substr($PAGE,0,7) !== 'public_' )
   echo  '<div id="top_info">'.NL;
   echo    $_SESSION['MENU'];
   echo    '<div>'.NL;
-  echo      '<span class="top home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).' <a href="./index.php?page=compte_accueil">['.html(Lang::_("accueil")).']</a></span><br />'.NL;
+  echo      '<span class="top home">'.html($_SESSION['ETABLISSEMENT']['DENOMINATION']).' <a href="./index.php?page=compte_accueil">[accueil]</a></span><br />'.NL;
   echo      '<span class="top profil_'.$_SESSION['USER_PROFIL_TYPE'].'">'.html($_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM']).' ['.$lien_page_switch.']'.$lien_page_langue.'</span>'.NL;
   echo    '</div>'.NL;
   echo    '<div>'.NL;
   echo      '<span class="top clock_fixe"><span id="clock">'.$_SESSION['USER_DUREE_INACTIVITE'].' min</span></span><br />'.NL;
-  echo      '<a href="#"><span class="top deconnexion" id="deconnecter">'.html(Lang::_("Déconnexion")).'</span></a>'.NL;
+  echo      '<a href="#"><span class="top deconnexion" id="deconnecter">Déconnexion</span></a>'.NL;
   echo    '</div>'.NL;
   echo  '</div>'.NL;
   echo  '<audio id="audio_bip" preload="none" class="hide">'.NL;

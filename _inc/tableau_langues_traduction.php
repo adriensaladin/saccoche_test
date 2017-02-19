@@ -38,7 +38,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 74, // effectuée (% actuel)
+    'statut'     => 89, // effectuée (% actuel)
     'langue'     => array( 'code' => 'en'  , 'nom' => 'Anglais' ),
     'pays'       => array( 'code' => '150' , 'nom' => 'Europe' ),
     'traducteur' => array(
@@ -49,7 +49,7 @@ $tab_langues_traduction = array(
     'document'   => 'https://sacoche.sesamath.net/_docs/traduction_en_150_precisions.ods',
   ),
   array(
-    'statut'     => 80, // effectuée (% actuel)
+    'statut'     => 98, // effectuée (% actuel)
     'langue'     => array( 'code' => 'eu' , 'nom' => 'Basque' ),
     'pays'       => array( 'code' => 'FR' , 'nom' => 'France' ),
     'traducteur' => array(
@@ -57,7 +57,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 63, // effectuée (% actuel)
+    'statut'     => 76, // effectuée (% actuel)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'CO' , 'nom' => 'Colombie' ),
     'traducteur' => array(
@@ -65,7 +65,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 62, // effectuée (% actuel)
+    'statut'     => 75, // effectuée (% actuel)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'ES' , 'nom' => 'Espagne' ),
     'traducteur' => array(
@@ -73,7 +73,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 81, // effectuée (% actuel)
+    'statut'     => 100, // effectuée (% actuel)
     'langue'     => array( 'code' => 'es' , 'nom' => 'Espagnol' ),
     'pays'       => array( 'code' => 'MX' , 'nom' => 'Mexique' ),
     'traducteur' => array(
@@ -102,7 +102,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 82, // effectuée (% actuel)
+    'statut'     => 98, // effectuée (% actuel)
     'langue'     => array( 'code' => 'pt' , 'nom' => 'Portugais' ),
     'pays'       => array( 'code' => 'PT'  , 'nom' => 'Portugal' ),
     'traducteur' => array(
@@ -110,7 +110,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 80, // effectuée (% actuel)
+    'statut'     => 98, // effectuée (% actuel)
     'langue'     => array( 'code' => 'rcf' , 'nom' => 'Créole réunionnais' ),
     'pays'       => array( 'code' => 'RE'  , 'nom' => 'La Réunion' ),
     'traducteur' => array(
@@ -118,7 +118,7 @@ $tab_langues_traduction = array(
     ),
   ),
   array(
-    'statut'     => 80, // effectuée (% actuel)
+    'statut'     => 98, // effectuée (% actuel)
     'langue'     => array( 'code' => 'vi' , 'nom' => 'Vietnamien' ),
     'pays'       => array( 'code' => 'VN' , 'nom' => 'Vietnam' ),
     'traducteur' => array(

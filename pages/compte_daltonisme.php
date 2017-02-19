@@ -71,11 +71,11 @@ foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
       <tr>
         <th class="nu"></th>
         <th class="nu"></th>
-        <th colspan="<?php echo $_SESSION['NOMBRE_CODES_NOTATION'] ?>"><?php echo html(Lang::_("Notes aux évaluations")) ?></th>
+        <th colspan="<?php echo $_SESSION['NOMBRE_CODES_NOTATION'] ?>">Notes aux évaluations</th>
         <th class="nu"></th>
-        <th colspan="<?php echo $_SESSION['NOMBRE_ETATS_ACQUISITION'] ?>"><?php echo html(Lang::_("Degrés d'acquisitions")) ?></th>
+        <th colspan="<?php echo $_SESSION['NOMBRE_ETATS_ACQUISITION'] ?>">Degrés d'acquisitions</th>
         <th class="nu"></th>
-        <th colspan="3"><?php echo html(Lang::_("États de validations")) ?></th>
+        <th colspan="3">États de validations</th>
       </tr>
     </thead>
     <tbody>
@@ -83,14 +83,14 @@ foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
         <td colspan="<?php echo (7+$_SESSION['NOMBRE_CODES_NOTATION']+$_SESSION['NOMBRE_ETATS_ACQUISITION']); ?>" class="nu" style="font-size:50%"></td>
       </tr>
       <tr>
-        <th><label for="note_normal"><?php echo html(Lang::_("Conventions dans l'établissement")) ?></label><br /><input type="radio" id="note_normal" name="daltonisme" value="0"<?php echo $checked_normal ?> /></th>
+        <th><label for="note_normal">Conventions dans l'établissement</label><br /><input type="radio" id="note_normal" name="daltonisme" value="0"<?php echo $checked_normal ?> /></th>
         <?php echo $td_normal ?>
       </tr>
       <tr>
         <td colspan="<?php echo (7+$_SESSION['NOMBRE_CODES_NOTATION']+$_SESSION['NOMBRE_ETATS_ACQUISITION']); ?>" class="nu" style="font-size:50%"></td>
       </tr>
       <tr>
-        <th><label for="note_dalton"><?php echo html(Lang::_("Conventions en remplacement")) ?></label><br /><input type="radio" id="note_dalton" name="daltonisme" value="1"<?php echo $checked_dalton ?> /></th>
+        <th><label for="note_dalton">Conventions en remplacement</label><br /><input type="radio" id="note_dalton" name="daltonisme" value="1"<?php echo $checked_dalton ?> /></th>
         <?php echo $td_dalton ?>
       </tr>
     </tbody>

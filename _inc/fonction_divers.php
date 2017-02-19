@@ -27,28 +27,9 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
-/*
- * sprintf() aménagé pour les conventions de traduction
- * 
- * sprintf avec des indications de positions tels %1$s posent pb si le texte est entre "" (tentative d'interprétation de $s)
- * et des guillemets '' ne sont pas commodes on plus (obligent à des \' dans les chaînes à traduire
- * d'où la convention de ne mettre que %1s et de transformer ensuite
- * de plus, ce n'est pas terrible pour des balises collées au texte comme %1$ssos%2$s où la chaine "sos" est peu lisible
- * d'où la convention d'ajouter un | dans ce cas, tel %1$s|sos|%2$s.
- * 
- * @param string
- * @param array
- * @return string
- */
-function sprintf_lang( $string , $tab_replacement )
-{
-  // retirer les |
-  $string = preg_replace( '#'.'\|?'.'%'.'([0-9]?)'.'(s|d)'.'\|?'.'#' , '%$1$2' , $string);
-  // ajouter les $
-  $string = preg_replace( '#'.'%'.'([0-9])'.'(s|d)'.'#' , '%$1\$$2' , $string);
-  // lancer sprintf
-  return vsprintf($string , $tab_replacement);
-}
+// 
+// VT et FF sont déjà nettoyés par Clean::ctrl()
+
 
 /*
  * Réciproque de html()

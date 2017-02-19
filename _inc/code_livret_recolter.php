@@ -54,8 +54,8 @@ if(substr($periode,0,7)=='periode')
   $cycle_id         = 0;
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];
-  $date_debut = $date_mysql_debut;
-  $date_fin   = $date_mysql_fin;
+  $date_debut = To::date_mysql_to_french($date_mysql_debut);
+  $date_fin   = To::date_mysql_to_french($date_mysql_fin);
 }
 else
 {
@@ -212,19 +212,17 @@ if($affichage_chef_etabl)
 // Paramètres du bilan
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$champ_profs_eleve_ref = ($BILAN_TYPE_ETABL=='college') ? 'prof-princ-refs'      : 'enseignant-refs' ;
-$champ_chef_etabl_ref  = ($BILAN_TYPE_ETABL=='college') ? 'responsable-etab-ref' : 'directeur-ref' ;
-$champ_position  = in_array($PAGE_COLONNE,array('moyenne','pourcentage')) ? 'moyenne-eleve' : 'positionnement' ;
+$champ_position = in_array($PAGE_COLONNE,array('moyenne','pourcentage')) ? 'moyenne-eleve' : 'positionnement' ;
 
 $tab_bilan = array(
   'type'                 => $PAGE_PERIODICITE,
-  $champ_profs_eleve_ref => '', // Complété ultérieurement pour le 2nd degré
+  'prof-princ-refs'      => '', // Complété ultérieurement pour le 2nd degré
   'periode-ref'          => $key_periode,
-  'date-creation'        => substr($DATE_VERROU,0,10), // 1D + cycle
-  'date-conseil-classe'  => substr($DATE_VERROU,0,10), // 2D
+  'date-creation'        => substr($DATE_VERROU,0,10),
+  'date-conseil-classe'  => substr($DATE_VERROU,0,10),
   'date-scolarite'       => $date_mysql_debut,
   'date-verrou'          => str_replace(' ','T',$DATE_VERROU),
-  $champ_chef_etabl_ref  => $key_chef_etabl,
+  'responsable-etab-ref' => $key_chef_etabl,
   'position'             => $champ_position,
   'cycle'                => $cycle_id,
   'millesime'            => To::annee_scolaire('siecle'),
@@ -352,15 +350,16 @@ foreach($DB_TAB as $DB_ROW)
   // hack en attendant un identifiant extrait de BE1D
   if( ($BILAN_TYPE_ETABL=='ecole') && !$DB_ROW['user_reference'] )
   {
-    $DB_ROW['user_reference'] = sprintf("%'911u",$DB_ROW['user_id']); // En attendant l'identifiant INE de BE1D...
+    $DB_ROW['user_reference'] = $DB_ROW['user_id'];
   }
   if( ( ($BILAN_TYPE_ETABL=='college') && $DB_ROW['user_sconet_id'] ) || ( ($BILAN_TYPE_ETABL=='ecole') && $DB_ROW['user_reference'] ) )
   {
+    $ine = ($DB_ROW['user_reference']) ? $DB_ROW['user_reference'] : sprintf("%'911u",$DB_ROW['user_id']) ; // En attendant l'identifiant INE de BE1D...
     $tab_eleve[$DB_ROW['user_id']] = array(
       'eleve'         => array(
         'id'          => 'ELV'.$DB_ROW['user_id'],
         'id-be'       => $DB_ROW['user_sconet_id'], // 2D
-        'ine'         => $DB_ROW['user_reference'], // 1D
+        'ine'         => $ine, // 1D
         $champ_classe => $classe_value, // max 8 caractères : idem dans SACoche
         'nom'         => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
         'prenom'      => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
@@ -369,7 +368,7 @@ foreach($DB_TAB as $DB_ROW)
         $champ_chef_etabl  => $tab_chef_etabl,
         'classe'           => $tab_classe, // 1D
         'periode'          => $tab_periode,
-        'discipline'       => array(), // 2D
+        'discipline'       => array(),
         'enseignant'       => array(),
         'element'          => array(),
         'epi'              => array(),
@@ -467,40 +466,37 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupérer les professeurs principaux (2D) ou les professeurs associés à la classe (1D)
+// Récupérer les professeurs principaux
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_profs_eleve = array();
+$affichage_prof_principal = ($BILAN_TYPE_ETABL=='college') ? TRUE : FALSE ;
+$prof_principal_refs = '';
 
-if($BILAN_TYPE_ETABL=='college')
+if( $affichage_prof_principal )
 {
+  $tab_pp = array();
   $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_profs_principaux($classe_id);
   if(empty($DB_TAB))
   {
     Json::end( FALSE , 'Absence de désignation du professeur principal pour la classe '.$classe_nom.' !' );
   }
-}
-else if($BILAN_TYPE_ETABL=='ecole')
-{
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'professeur' , 1 /*statut*/ , 'classe' /*groupe_type*/ , $classe_id , 'alpha' /*eleves_ordre*/ , 'user_id, user_genre, user_nom, user_prenom' );
-  if(empty($DB_TAB))
+  else
   {
-    Json::end( FALSE , 'Absence d\'enseignant rattaché à la classe '.$classe_nom.' !' );
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $key_prof = 'ENS'.$DB_ROW['user_id'];
+      $tab_pp[$DB_ROW['user_id']] = $key_prof;
+      foreach($tab_eleve as $eleve_id => $tab)
+      {
+        $tab_eleve[$eleve_id]['commun']['enseignant'][$key_prof] = $tab_prof[$key_prof];
+      }
+    }
   }
-}
-foreach($DB_TAB as $DB_ROW)
-{
-  $key_prof = 'ENS'.$DB_ROW['user_id'];
-  $tab_profs_eleve[$DB_ROW['user_id']] = $key_prof;
+  $prof_principal_refs = implode(' ', $tab_pp);
   foreach($tab_eleve as $eleve_id => $tab)
   {
-    $tab_eleve[$eleve_id]['commun']['enseignant'][$key_prof] = $tab_prof[$key_prof];
+    $tab_eleve[$eleve_id]['bilan']['prof-princ-refs'] = $prof_principal_refs;
   }
-}
-$profs_eleve_refs = implode(' ', $tab_profs_eleve);
-foreach($tab_eleve as $eleve_id => $tab)
-{
-  $tab_eleve[$eleve_id]['bilan'][$champ_profs_eleve_ref] = $profs_eleve_refs;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -530,16 +526,18 @@ if($PAGE_PERIODICITE=='periode')
       {
         $tab_compte_rendu['alerte'][$key_rubrique] = 'Discipline utilisée "'.html($DB_ROW['rubrique']).'" hors SIECLE : génèrera un message d\'alerte non bloquant.';
       }
-      $tab_rubrique[$key_rubrique] = array(
-        'libelle'           => mb_substr($DB_ROW['rubrique'],0,40), // max 40 caractères : 63 dans SACoche
-        'code'              => $code,
-        'modalite-election' => $modalite_election,
-      );
     }
-    elseif($BILAN_TYPE_ETABL=='ecole')
+    else
     {
-      $tab_rubrique[$key_rubrique] = $DB_ROW['rubrique_id_livret'];
+      $code = str_replace('___','RAC',$DB_ROW['rubrique_id_livret']);
+      $modalite_election = 'S' ;
     }
+    $tab_rubrique[$key_rubrique] = array(
+      'libelle'           => mb_substr($DB_ROW['rubrique'],0,40), // max 40 caractères : 63 dans SACoche
+      // 'sous_partie'       => $DB_ROW['sous_rubrique'],
+      'code'              => $code,
+      'modalite-election' => $modalite_election,
+    );
   }
 }
 else if($PAGE_PERIODICITE=='cycle')
@@ -777,7 +775,6 @@ if( ($PAGE_PERIODICITE=='cycle') && ($cycle_id==4) )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $nb_caract_max_par_colonne = 50;
-$tab_element_to_rubrique = array();
 foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
 {
   if( $eleve_id )
@@ -789,17 +786,8 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
         // AQUIS SCOLAIRES
         if( ($rubrique_type=='eval') && isset($tab_rubrique['MAT'.$rubrique_id]) )
         {
-          if($BILAN_TYPE_ETABL=='college')
-          {
-            $key_rubrique = 'MAT'.$rubrique_id;
-            $modelec = $tab_rubrique['MAT'.$rubrique_id]['modalite-election'];
-            $tab_eleve[$eleve_id]['commun']['discipline'][$key_rubrique.$modelec] = $tab_rubrique[$key_rubrique];
-          }
-          elseif($BILAN_TYPE_ETABL=='ecole')
-          {
-            $key_rubrique = $tab_rubrique['MAT'.$rubrique_id];
-            $modelec = '';
-          }
+          $key_rubrique = 'MAT'.$rubrique_id;
+          $modelec = $tab_rubrique['MAT'.$rubrique_id]['modalite-election'];
           $tab_eleve[$eleve_id]['acquis'][$key_rubrique.$modelec] = array(
             'profs'             => array(),
             'elements'          => array(),
@@ -807,6 +795,7 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
             'moyenne-structure' => NULL, // Si indéfini, utiliser ultérieurement "structure-non-notee"
             'appreciation'      => NULL,
           );
+          $tab_eleve[$eleve_id]['commun']['discipline'][$key_rubrique.$modelec] = $tab_rubrique[$key_rubrique];
           $tab_objet_used[$key_rubrique] = TRUE;
           $tab_tmp_profs = array( 'appreciation' => array() , 'position' => array() );
           foreach($tab_tmp_saisie as $saisie_objet => $saisie_info)
@@ -814,16 +803,12 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
             if($saisie_objet=='elements')
             {
               // Pour SACoche on limite afin de ne pas dépasser un recto-verso, mais pour LSU on transmet tout.
-              if($saisie_info['saisie_valeur'])
+              $tab_valeurs = json_decode($saisie_info['saisie_valeur'], TRUE);
+              foreach($tab_valeurs as $texte => $nb_used)
               {
-                $tab_valeurs = json_decode($saisie_info['saisie_valeur'], TRUE);
-                foreach($tab_valeurs as $texte => $nb_used)
-                {
-                  $key_element = 'EL'.md5($texte);
-                  $tab_eleve[$eleve_id]['acquis'][$key_rubrique.$modelec]['elements'][] = $key_element;
-                  $tab_eleve[$eleve_id]['commun']['element'][$key_element] = $texte; // max 300 caractères : 255 dans SACoche
-                  $tab_element_to_rubrique[$key_element][$key_rubrique.$modelec] = TRUE;
-                }
+                $key_element = 'EL'.md5($texte);
+                $tab_eleve[$eleve_id]['acquis'][$key_rubrique.$modelec]['elements'][] = $key_element;
+                $tab_eleve[$eleve_id]['commun']['element'][$key_element] = $texte; // max 300 caractères : 255 dans SACoche
               }
             }
             if($saisie_objet=='appreciation')
@@ -849,7 +834,7 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
             }
           }
           $tab_tmp_profs = !empty($tab_tmp_profs['appreciation']) ? $tab_tmp_profs['appreciation'] : $tab_tmp_profs['position'] ;
-          if( !empty($tab_tmp_profs) && ($BILAN_TYPE_ETABL=='college') )
+          if(!empty($tab_tmp_profs))
           {
             foreach($tab_tmp_profs as $prof_id)
             {
@@ -953,24 +938,6 @@ unset($tab_saisie);
 // pour les bilans de fin de cycle -> tous les positionnements définis + une appréciation de synthèse
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/*
- * En cas de retrait d'une rubrique, on retire aussi les éléments de programmes associés, sauf s'ils sont utilisés par une autre rubrique.
- * Ceci n'a ceppendant rien d'obligatoire : un bilan avec des éléments de programmes inutilisés est importé sans aucun alerte.
- */
-function retrait_commun_elements( $tab_eleve_acquis_elements , $eleve_id , $discipline_ref )
-{
-  global $tab_eleve, $tab_element_to_rubrique;
-  foreach($tab_eleve_acquis_elements as $key_element)
-  {
-    unset($tab_element_to_rubrique[$key_element][$discipline_ref]);
-    // vérifier que cet élément n'est pas utilisé par une autre discipline
-    if(empty($tab_element_to_rubrique[$key_element]))
-    {
-      unset($tab_eleve[$eleve_id]['commun']['element'][$key_element]);
-    }
-  }
-}
-
 foreach($tab_eleve as $eleve_id => $tab)
 {
   if($PAGE_PERIODICITE=='periode')
@@ -986,78 +953,21 @@ foreach($tab_eleve as $eleve_id => $tab)
       {
         foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
         {
-          // au moins un enseignant doit être associé à la discipline
           if(empty($tab_rubrique_info['profs']))
           {
             $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
             unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-            retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
           }
-          // jusqu'en avril 2016, en cas de positionnement sur 4 niveaux, un élève ne peut pas être non noté
           else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
           {
             $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
             unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-            retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
-          }
-          // appréciation obligatoire sauf si élève non noté => "-" ajouté si besoin au moment de la conception du XML
-          // élément de prg travaillé obligatoire => "-" ajouté si besoin au moment de la conception du XML
-        }
-      }
-      else if($BILAN_TYPE_ETABL=='ecole')
-      {
-        $tab_domaines_renseignes = array();
-        foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
-        {
-          $domaine_principal = substr($discipline_ref,0,3);
-          // il ne peut pas y avoir des éléments de programme sans positionnement (mais, en cas d'appréciation, il peut y avoir ni l'un ni l'autre)
-          if( !empty($tab_rubrique_info['elements']) && is_null($tab_rubrique_info[$champ_position]) )
-          {
-            if($tab_rubrique_info['appreciation'])
-            {
-              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Éléments travaillés sans positionnement pour "'.$discipline_ref.'" : seule l\'appréciation sera transmise.';
-              $tab_eleve[$eleve_id]['acquis'][$discipline_ref]['elements'] = array();
-              retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
-              $tab_domaines_renseignes[$domaine_principal] = TRUE;
-            }
-            else
-            {
-              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Éléments travaillés sans positionnement (ni appréciation) pour "'.$discipline_ref.'" : rubrique non exportée.';
-              unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-              retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
-            }
-          }
-          // il ne peut pas y avoir de positionnement sans élément(s) de programme (mais, en cas d'appréciation, il peut y avoir ni l'un ni l'autre)
-          else if( empty($tab_rubrique_info['elements']) && !is_null($tab_rubrique_info[$champ_position]) )
-          {
-            if($tab_rubrique_info['appreciation'])
-            {
-              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Positionnement sans éléments travaillés pour "'.$discipline_ref.'" : : seule l\'appréciation sera transmise';
-              $tab_eleve[$eleve_id]['acquis'][$discipline_ref][$champ_position] = NULL;
-              $tab_domaines_renseignes[$domaine_principal] = TRUE;
-            }
-            else
-            {
-              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Positionnement sans éléments travaillés (ni appréciation) pour "'.$discipline_ref.'" : rubrique non exportée.';
-              unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-              retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
-            }
-          }
-          else
-          {
-            $tab_domaines_renseignes[$domaine_principal] = TRUE;
           }
         }
       }
       if(empty($tab_eleve[$eleve_id]['acquis']))
       {
         $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Plus de rubriques d\'acquis : données non exportables.';
-        unset($tab_eleve[$eleve_id]);
-      }
-      // 1D : Au moins 3 acquis doivent être renseignés, c’est à dire pour au moins 3 domaines (ou 3 sous-domaines de 3 domaines différents)
-      else if( ($BILAN_TYPE_ETABL=='ecole') && count($tab_domaines_renseignes)<3 )
-      {
-        $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Moins de 3 domaines suffisamment renseignés : données non exportables.';
         unset($tab_eleve[$eleve_id]);
       }
       else if(empty($tab_eleve[$eleve_id]['synthese']))
@@ -1069,9 +979,6 @@ foreach($tab_eleve as $eleve_id => $tab)
   }
   if($PAGE_PERIODICITE=='cycle')
   {
-    // Un bilan de fin de cycle est considéré comme complet si les données suivantes sont renseignées :
-    // - le positionnement (niveau de maîtrise) pour les 8 composantes / domaines du socle commun
-    // - l'appréciation de synthèse des acquis scolaires
     $nb_positionnements_eleve = count($tab_eleve[$eleve_id]['socle']);
     if( $nb_positionnements_eleve < $nb_positionnements_socle )
     {

@@ -317,7 +317,7 @@ span.retrecir_largeur     {background-position: 0 -100px}
 /* Liens vers un fichier à récupérer ou un document généré                                             */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-.file      {background:transparent url(../_img/sprite_fichier_3.png) 0 20px no-repeat;padding-left:19px;padding-top:1px}
+.file      {background:transparent url(../_img/sprite_fichier_3.png) 0 0 no-repeat;padding-left:19px;padding-top:1px}
 .file_aac  {background-position: 0  -20px}
 .file_mp3  {background-position: 0  -20px} /* attention : même décalage */
 .file_ogg  {background-position: 0  -20px} /* attention : même décalage */
@@ -361,6 +361,7 @@ span.retrecir_largeur     {background-position: 0 -100px}
 .file_tep  {background-position: 0 -580px}
 .file_tex  {background-position: 0 -600px}
 .file_txt  {background-position: 0 -620px}
+.file_json {background-position: 0 -620px} /* attention : même décalage */
 .file_avi  {background-position: 0 -640px}
 .file_mpe  {background-position: 0 -640px} /* attention : même décalage */
 .file_mpeg {background-position: 0 -640px} /* attention : même décalage */

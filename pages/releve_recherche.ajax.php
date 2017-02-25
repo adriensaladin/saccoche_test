@@ -405,6 +405,15 @@ if( $is_s2016_domaine_maitrise || $is_s2016_composante_maitrise )
       $tab_score_eleve[$eleve_id]['%'] = ($tab_score_eleve[$eleve_id]['nb']) ? OutilBilan::calculer_pourcentage_acquisition_items( $tab_score_eleve[$eleve_id] , $tab_score_eleve[$eleve_id]['nb'] ) : FALSE ;
     }
   }
+  // Récupérer et mettre en session les seuils pour les degrés de maîtrise du livret
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos('cycle'.$cycle_id);
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $id = $DB_ROW['livret_colonne_id'] % 10 ; // 1 2 3 4
+    $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW['livret_seuil_min'];
+    $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW['livret_seuil_max'];
+    $_SESSION['LIVRET'][$id]['LEGENDE']   = $DB_ROW['livret_colonne_legende'];
+  }
   // On ne garde que les lignes qui satisfont au critère demandé
   $tab_tr = array();
   foreach($tab_eleve as $tab)

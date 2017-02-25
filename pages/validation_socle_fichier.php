@@ -51,15 +51,12 @@ $bouton_export_lpc = ($test_uai && $test_cnil && $test_key_sesamath) ? 'id="bout
 
 <?php
 // Fabrication des éléments select du formulaire
-$select_cycle     = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles( TRUE /*only_used*/ )                                 , 'f_cycle'  /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,              '' /*optgroup*/ );
 $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , TRUE /*tout*/ , TRUE /*ancien*/ ) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
 ?>
 
 <p class="probleme">
-  Un export vers GEPI des estimations des degrés de maîtrise du nouveau socle (2016) a été ajouté.<br />
-  En dehors de ce cas précis, cette section ne concerne le socle commun que sur la période 2006-2015.<br />
-  L'application nationale LPC ayant été arrêtée depuis la rentrée 2016, son export a été retiré afin d'éviter toute confusion.<br />
-  Concernant le nouveau socle, utiliser le module "Livret Scolaire" de <em>SACoche</em> pour un export vers LSU.
+  Cette section ne concerne le socle commun que sur la période 2006-2015.<br />
+  L'application nationale LPC ayant été arrêtée depuis la rentrée 2016, son export a été retiré afin d'éviter toute confusion.
 </p>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_export_import">DOC : Import / Export de validations du socle</a></span></p>
@@ -73,14 +70,13 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
     <select id="f_choix_principal" name="f_choix_principal">
       <option value="">&nbsp;</option>
       <optgroup label="Exporter un fichier">
-        <option style="color:green" value="export_gepi">à destination de GEPI (socle 2016)</option>
-        <option disabled            value="export_lpc">à destination de Sconet-LPC (2006-2015)</option>
-        <option style="color:red"   value="export_sacoche">à destination de SACoche (2006-2015)</option>
+        <option value="export_lpc" disabled>à destination de Sconet-LPC</option>
+        <option value="export_sacoche">à destination de SACoche</option>
       </optgroup>
       <optgroup label="Importer un fichier">
-        <option disabled          value="import_lpc">en provenance de Sconet-LPC (2006-2015)</option>
-        <option style="color:red" value="import_sacoche">en provenance de SACoche (2006-2015)</option>
-        <option style="color:red" value="import_compatible">en provenance de Gibii, Pronote, etc. (2006-2015)</option>
+        <option value="import_lpc" disabled>en provenance de Sconet-LPC</option>
+        <option value="import_sacoche">en provenance de SACoche</option>
+        <option value="import_compatible">en provenance de Gibii, Pronote, etc.</option>
       </optgroup>
     </select><br />
   </fieldset>
@@ -91,20 +87,11 @@ $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regrou
 
   <fieldset id="fieldset_export" class="hide">
     <hr />
-    <p id="bloc_cycle" class="hide">
-      <label class="tab" for="f_cycle">Cycle :</label><?php echo $select_cycle ?>
-    </p>
     <p>
       <label class="tab">Regroupement :</label><?php echo $select_f_groupes ?><label id="ajax_msg_groupe">&nbsp;</label><br />
       <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></span>
     </p>
   </fieldset>
-
-  <fieldset id="fieldset_export_gepi" class="hide">
-    <label class="tab">Sconet :</label><?php echo $msg_id_sconet ?><br />
-    <span class="tab"></span><button type="button" id="export_gepi" class="fichier_export enabled">Générer le fichier.</button><?php /* la classe .enabled sert pour javascript */ ?>
-  </fieldset>
-
   <fieldset id="fieldset_export_lpc" class="hide">
     <label class="tab">UAI :</label><?php echo $msg_uai ?><br />
     <label class="tab">CNIL :</label><?php echo $msg_cnil ?><br />

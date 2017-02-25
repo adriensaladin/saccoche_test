@@ -860,8 +860,7 @@ class PDF_livret_scolaire extends PDF
     {
       $saisie_classe = isset($tab_saisie_classe[$livret_parcours_id]['appreciation']) ? $tab_saisie_classe[$livret_parcours_id]['appreciation'] : $this->tab_saisie_initialisation ;
       $saisie_eleve  = ( ($this->BILAN_TYPE_ETABL=='college') && isset($tab_saisie_eleve[ $livret_parcours_id]['appreciation']) ) ? $tab_saisie_eleve[ $livret_parcours_id]['appreciation'] : $this->tab_saisie_initialisation ;
-      // Normalement, est conditionné au renseignement du projet, mais on affiqhe qd même qq chose en cas d'appréciation sur l'élève seule
-      if( $saisie_eleve['saisie_valeur'] || $saisie_classe['saisie_valeur'] )
+      if( $saisie_classe['saisie_valeur'] ) // conditionné au renseignement du projet
       {
         $nb_lignes_classe = ($saisie_classe['saisie_valeur']) ? max( ceil(strlen($saisie_classe['saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_classe['saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
         $nb_lignes_eleve  = ($saisie_eleve[ 'saisie_valeur']) ? max( ceil(strlen($saisie_eleve[ 'saisie_valeur'])/$this->nb_caract_max_par_ligne) , min( substr_count($saisie_eleve[ 'saisie_valeur'],"\n") + 1 , $this->app_rubrique_nb_caract_max / $this->nb_caract_max_par_ligne ) ) : 0 ;
@@ -875,10 +874,7 @@ class PDF_livret_scolaire extends PDF
         $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($tab_parcours['type_nom'].' ('.$tab_parcours['prof_txt'].')') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
         $this->SetFont('Arial' , '' , $this->taille_police);
         // Projet mis en oeuvre
-        if($nb_lignes_classe)
-        {
-          $this->afficher_appreciation( $this->page_largeur_moins_marges , $nb_lignes_classe*$this->lignes_hauteur , $this->taille_police , 0.8*$this->lignes_hauteur /*taille_interligne*/ , 'Projet mis en oeuvre : '.$saisie_classe['saisie_valeur'] );
-        }
+        $this->afficher_appreciation( $this->page_largeur_moins_marges , $nb_lignes_classe*$this->lignes_hauteur , $this->taille_police , 0.8*$this->lignes_hauteur /*taille_interligne*/ , 'Projet mis en oeuvre : '.$saisie_classe['saisie_valeur'] );
         // Implication de l’élève
         if($nb_lignes_eleve)
         {

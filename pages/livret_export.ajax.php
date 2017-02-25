@@ -539,7 +539,7 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
         if( $sous_domaine == 'RAC' )
         {
           $tab_acquis_domaine[$domaine] = array(
-            'nb_sous_domaine'        => 0,
+            'is_sous_domaine'        => FALSE,
             'element_programme_refs' => $element_programme_refs,
             'positionnement'         => $positionnement,
             'appreciation'           => $tab['appreciation'],
@@ -549,48 +549,54 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
         {
           if(!isset($tab_acquis_domaine[$domaine]))
           {
-            $tab_acquis_domaine[$domaine]['nb_sous_domaine'] = 1;
-            $tab_acquis_domaine[$domaine]['nb_sous_domaine_avec_infos'] = 0;
             $tab_acquis_domaine[$domaine]['appreciation'] = $tab['appreciation'];
           }
           else
           {
-            $tab_acquis_domaine[$domaine]['nb_sous_domaine'] += 1;
             $tab_acquis_domaine[$domaine]['appreciation'] .= $tab['appreciation'];
           }
-          $tab_acquis_domaine[$domaine]['sous_domaine'][$sous_domaine] = array(
-            'element_programme_refs' => $element_programme_refs,
-            'positionnement'         => $positionnement,
-          );
+          // test pour éviter le cas de l'appréciation rattachée au 1er élément bien qu'il n'apparaisse pas
           if( $element_programme_refs || $positionnement )
           {
-            $tab_acquis_domaine[$domaine]['nb_sous_domaine_avec_infos'] += 1;
+            $tab_acquis_domaine[$domaine]['is_sous_domaine'] = TRUE;
+            $tab_acquis_domaine[$domaine]['sous_domaine'][$sous_domaine] = array(
+              'element_programme_refs' => $element_programme_refs,
+              'positionnement'         => $positionnement,
+            );
           }
         }
       }
-      // print_r($tab_acquis_domaine);exit;
       foreach($tab_acquis_domaine as $code_domaine => $tab_info_domaine)
       {
-        $tab_xml_bilans['periodique'][] = '     <acquis code-domaine="'.$code_domaine.'-RAC">';
-        if($tab_info_domaine['appreciation'])
+        // 1er test pour éviter de passer ici en cas de domaine avec en théorie des sous-domaines mais en réalité seulement une appréciation transmise
+        if( isset($tab_info_domaine['is_sous_domaine']) && !$tab_info_domaine['is_sous_domaine'] )
         {
-          $tab_xml_bilans['periodique'][] = '      <appreciation>'.html($tab_info_domaine['appreciation']).'</appreciation>';
-        }
-        if($tab_info_domaine['nb_sous_domaine'])
-        {
-          $tab_xml_bilans['periodique'][] = '      <sous-domaines>';
-          foreach($tab_info_domaine['sous_domaine'] as $code_sous_domaine => $tab_info_sous_domaine)
+          $tab_xml_bilans['periodique'][] = '     <acquis code-domaine="'.$code_domaine.'-RAC"'.$tab_info_domaine['element_programme_refs'].$tab_info_domaine['positionnement'].'>';
+          if($tab_info_domaine['appreciation'])
           {
-            // test pour éviter de passer ici en cas de domaine avec en théorie des sous-domaines mais en réalité seulement une appréciation transmise rattachée au 1er élément bien qu'il n'apparaisse pas
-            // attention, il peut aussi s'agir d'un sous-domaine unique sans positionnement ni éléments de prg travaillés donc avec seulement une appréciation !
-            if( $tab_info_sous_domaine['element_programme_refs'] || $tab_info_sous_domaine['positionnement'] || ($tab_info_domaine['nb_sous_domaine']==1) || ($tab_info_domaine['nb_sous_domaine_avec_infos']==0) )
+            $tab_xml_bilans['periodique'][] = '      <appreciation>'.html($tab_info_domaine['appreciation']).'</appreciation>';
+          }
+          $tab_xml_bilans['periodique'][] = '     </acquis>';
+        }
+        else
+        {
+          $tab_xml_bilans['periodique'][] = '     <acquis code-domaine="'.$code_domaine.'-RAC">';
+          if($tab_info_domaine['appreciation'])
+          {
+            $tab_xml_bilans['periodique'][] = '      <appreciation>'.html($tab_info_domaine['appreciation']).'</appreciation>';
+          }
+          // test pour éviter de passer ici en cas de domaine avec en théorie des sous-domaines mais en réalité seulement une appréciation transmise
+          if(isset($tab_info_domaine['sous_domaine']))
+          {
+            $tab_xml_bilans['periodique'][] = '      <sous-domaines>';
+            foreach($tab_info_domaine['sous_domaine'] as $code_sous_domaine => $tab_info_sous_domaine)
             {
               $tab_xml_bilans['periodique'][] = '       <sous-domaine code-domaine="'.$code_domaine.'-'.$code_sous_domaine.'"'.$tab_info_sous_domaine['element_programme_refs'].$tab_info_sous_domaine['positionnement'].' />';
             }
+            $tab_xml_bilans['periodique'][] = '      </sous-domaines>';
           }
-          $tab_xml_bilans['periodique'][] = '      </sous-domaines>';
+          $tab_xml_bilans['periodique'][] = '     </acquis>';
         }
-        $tab_xml_bilans['periodique'][] = '     </acquis>';
       }
     }
     $tab_xml_bilans['periodique'][] = '    </liste-acquis>';

@@ -741,12 +741,6 @@ if($PAGE_PARCOURS)
           $tab_eleve[$eleve_id]['commun']['parcours'][$key_rubrique] = $tab_parcours[$key_rubrique];
         }
       }
-      else
-      {
-        // Au cas où il n'y aurait qu'une appréciation sur le commentaire de l'élève, ce parcours est ajouté après coup, mais s'il n'y a pas de descriptif global LSU n'est alors pas content.
-        $tab_parcours[$key_rubrique]['projet'] = '-';
-        $tab_compte_rendu['alerte'][$key_rubrique] = 'Absence de descriptif pour le '.html($DB_ROW['livret_parcours_type_nom']).' : champ normalement requis passé à "-".';
-      }
     }
   }
 }
@@ -914,10 +908,6 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
           );
           // Au cas où il n'y aurait pas eu de descriptif du projet
           $tab_eleve[$eleve_id]['commun']['parcours'][$key_rubrique] = $tab_parcours[$key_rubrique];
-          if( $tab_parcours[$key_rubrique]['projet']=='-' )
-          {
-            $tab_objet_used[$key_rubrique] = TRUE;
-          }
         }
         // Socle sur bilans de fin de cycle
         if( ($rubrique_type=='socle') && isset($tab_rubrique['socle'][$rubrique_id]) && !is_null($tab_tmp_saisie['position']['saisie_valeur']) )
@@ -941,13 +931,12 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
           );
         }
         // Bilan
-        if( ($rubrique_type=='bilan') && !empty($tab_tmp_saisie['appreciation']['saisie_valeur']) )
+        if($rubrique_type=='bilan')
         {
-          // si report depuis bulletins configurés avec présence de moyenne générale, on peut n'avoir dans le bilan que cette info et pas d'appréciation, d'où le 2nd test ci-dessus
           $tab_eleve[$eleve_id]['synthese']['appreciation'] = $tab_tmp_saisie['appreciation']['saisie_valeur']; // max 1000 caractères : idem dans SACoche
         }
         // Communication avec la famille
-        if( ($rubrique_type=='viesco') && !empty($tab_tmp_saisie['appreciation']['saisie_valeur']) )
+        if($rubrique_type=='viesco')
         {
           $tab_eleve[$eleve_id]['viesco']['appreciation'] = $tab_tmp_saisie['appreciation']['saisie_valeur']; // max 600 caractères : idem dans SACoche
         }

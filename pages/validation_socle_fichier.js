@@ -98,7 +98,6 @@ $(document).ready
       {
         // Masquer tout
         $('fieldset[id^=fieldset]').hide(0);
-        $('#bloc_cycle').hide(0);
         $('#ajax_msg').removeAttr('class').html("");
         $('#ajax_info').html("");
         // Puis afficher ce qu'il faut
@@ -109,10 +108,6 @@ $(document).ready
           var mode = tab_infos[0];
           $('#fieldset_'+mode).show();
           $('#fieldset_'+objet).show();
-          if(objet=='export_gepi')
-          {
-            $('#bloc_cycle').show();
-          }
         }
       }
     );
@@ -121,21 +116,15 @@ $(document).ready
     // Exporter un fichier de validations
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#export_gepi , #export_lpc , #export_sacoche').click
+    $('#export_lpc , #export_sacoche').click
     (
       function()
       {
         var action = $(this).attr('id');
-        var f_cycle = $("#f_cycle option:selected").val();
         // grouper le select multiple
         if( $("#f_eleve input:checked").length==0 )
         {
           $('#ajax_msg').attr('class','erreur').html("Sélectionnez au moins un élève !");
-          return false;
-        }
-        else if( (action=='export_gepi') && !f_cycle )
-        {
-          $('#ajax_msg').attr('class','erreur').html("Sélectionnez un cycle !");
           return false;
         }
         else
@@ -152,7 +141,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+action+'&f_cycle='+f_cycle+'&f_eleve='+f_eleve,
+            data : 'csrf='+CSRF+'&f_action='+action+'&f_eleve='+f_eleve,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

@@ -30,7 +30,6 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 /**
  * Code inclus commun aux pages
  * [./pages/releve_socle2016.ajax.php]
- * [./pages/validation_socle_fichier.ajax.php]
  * [ livret scolaire en prévision... ]
  */
 
@@ -105,7 +104,6 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
     'eleve_genre'    => $_SESSION['USER_GENRE'],
     'date_naissance' => $_SESSION['USER_NAISSANCE_DATE'],
     'eleve_INE'      => NULL,
-    'eleve_ID_BE'    => NULL,
   );
 }
 else
@@ -229,6 +227,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 
 $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] );
 
+
 // Pour chaque élève évalué...
 foreach($tab_eval as $eleve_id => $tab_eval_eleve)
 {
@@ -321,7 +320,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 
 if(!$is_resultat)
 {
-  Json::end( FALSE , 'Aucun élève trouvé avec un item évalué relié au cycle '.$cycle_id.' du socle !' );
+  Json::end( FALSE , 'Absence élève avec un item évalué relié au socle !' );
 }
 
 $tab = array_filter( $tab_contenu_presence['eleve'] , 'non_zero' );
@@ -393,7 +392,7 @@ if($type_individuel)
     {
       if($tab_contenu_presence['eleve'][$eleve_id])
       {
-        extract($tab_eleve); // $eleve_INE $eleve_ID_BE $eleve_nom $eleve_prenom $eleve_genre $date_naissance
+        extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_id_gepi
         foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
         {
           // Si cet élève a été évalué...
@@ -510,7 +509,7 @@ if($type_individuel)
           {
             if($tab_contenu_presence['detail'][$eleve_id][$socle_composante_id])
             {
-              extract($tab_eleve); // $eleve_INE $eleve_ID_BE $eleve_nom $eleve_prenom $eleve_genre $date_naissance
+              extract($tab_eleve);  // $eleve_INE $eleve_nom $eleve_prenom $date_naissance $eleve_genre $eleve_id_gepi
               foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
               {
                 // Si cet élève a été évalué...
@@ -642,7 +641,7 @@ if($type_synthese)
     {
       if($tab_contenu_presence['eleve'][$eleve_id])
       {
-        extract($tab_eleve); // $eleve_INE $eleve_ID_BE $eleve_nom $eleve_prenom $eleve_genre $date_naissance
+        extract($tab_eleve);  // $eleve_nom $eleve_prenom $date_naissance $eleve_id_gepi
         if($make_html) { $releve_HTML_table_head .= '<th data-sorter="FromData" data-empty="bottom"><img alt="'.html($eleve_nom.' '.$eleve_prenom).'" src="./_img/php/etiquette.php?dossier='.$_SESSION['BASE'].'&amp;nom='.urlencode($eleve_nom).'&amp;prenom='.urlencode($eleve_prenom).'&amp;size=9" /></th>'; }
         if($make_pdf)  { $releve_PDF_synthese->ligne_tete_cellule_corps( $eleve_nom.' '.$eleve_prenom ); }
       }
@@ -658,7 +657,7 @@ if($type_synthese)
     {
       if($tab_contenu_presence['eleve'][$eleve_id])
       {
-        extract($tab_eleve); // $eleve_INE $eleve_ID_BE $eleve_nom $eleve_prenom $eleve_genre $date_naissance
+        extract($tab_eleve);  // $eleve_nom $eleve_prenom $eleve_id_gepi
         if($make_html) { $releve_HTML_table_body .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>'; }
         if($make_pdf)  { $releve_PDF_synthese->ligne_corps_cellule_debut( $eleve_nom.' '.$eleve_prenom ); }
         // Pour chaque domaine / composante...

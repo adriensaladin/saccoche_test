@@ -57,7 +57,8 @@ Layout::add( 'js_inline_before' , 'var TODAY_FR = "'.TODAY_FR.'";' );
 if(!$_SESSION['WEBMESTRE_UAI'])
 {
   $webmestre_menu_uai  = (HEBERGEUR_INSTALLATION=='multi-structures') ? '[Gestion des inscriptions] [Gestion des établissements]' : '[Paramétrages installation] [Identité de l\'installation]' ;
-  echo'<p><label class="erreur">Référence non renseignée par le webmestre.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_webmestre__identite_installation">DOC</a></span>&nbsp;&nbsp;&nbsp;'.HtmlMail::to(WEBMESTRE_COURRIEL,'SACoche - référence UAI','contact','Bonjour,<br />La référence UAI de notre établissement (base n°'.$_SESSION['BASE'].') n\'est pas renseignée.<br />Pouvez-vous faire le nécessaire depuis votre menu '.$webmestre_menu_uai.' ?<br />Merci.').'</p>'.NL;
+  $webmestre_menu_doc  = (HEBERGEUR_INSTALLATION=='multi-structures') ? 'support_webmestre__structure_gestion#toggle_modif_etabl' : 'support_webmestre__identite_installation' ;
+  echo'<p><label class="erreur">Numéro UAI non renseigné par le webmestre.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier='.$webmestre_menu_doc.'">DOC</a></span>&nbsp;&nbsp;&nbsp;'.HtmlMail::to(WEBMESTRE_COURRIEL,'SACoche - référence UAI','contact','Bonjour,<br />La référence UAI de notre établissement (base n°'.$_SESSION['BASE'].') n\'est pas renseignée.<br />Pouvez-vous faire le nécessaire depuis votre menu '.$webmestre_menu_uai.' ?<br />Merci.').'</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 

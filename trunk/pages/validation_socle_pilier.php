@@ -66,7 +66,10 @@ $select_groupe       = HtmlForm::afficher_select($tab_groupes                   
 $select_eleves_ordre = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre , 'f_eleves_ordre' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre'] /*selection*/ ,              '' /*optgroup*/ );
 ?>
 
-<p class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2015.</p>
+<p class="probleme">
+  Cette section ne concerne le socle commun que sur la période 2006-2015.<br />
+  Concernant le nouveau socle, utiliser le module "Livret Scolaire" de <em>SACoche</em>.
+</p>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_valider_pilier">DOC : Valider des compétences du socle.</a></span></li>

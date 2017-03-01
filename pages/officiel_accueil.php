@@ -177,7 +177,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
 $li = '';
 if($BILAN_TYPE=='bulletin')
 {
-  $li = '<li><span class="astuce">Un administrateur / directeur / professeur doit indiquer le type de synthèse adapté suivant chaque référentiel (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC</a></span>).</span></li>'.NL;
+  $li = '<li><span class="astuce">Un administrateur ou un directeur doit indiquer le type de synthèse adapté suivant chaque référentiel (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=releves_bilans__reglages_syntheses_bilans#toggle_type_synthese">DOC</a></span>).</span></li>'.NL;
   $tab_mode = array(
     'inconnu' => 'dont le format de synthèse est inconnu',
     'sans'    => 'volontairement définis sans format de synthèse',
@@ -207,13 +207,6 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
   $tab_css_couleurs[$acquis_id] = '"'.$tab_acquis_info[$key_couleur].'"';
 }
 
-// Pour variables js POURCENTAGE_MAXI & MOYENNE_MAXI
-$valeur_maxi = 0;
-foreach( $_SESSION['NOTE'] as $note_id => $tab_note_info )
-{
-  $valeur_maxi = ($tab_note_info['ACTIF']) ? max($valeur_maxi,$tab_note_info['VALEUR']) : $valeur_maxi ;
-}
-
 // Javascript
 Layout::add( 'js_inline_before' , 'var USER_ID               = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var TODAY_FR              = "'.TODAY_FR.'";' );
@@ -221,8 +214,8 @@ Layout::add( 'js_inline_before' , 'var BILAN_TYPE            = "'.$BILAN_TYPE.'"
 Layout::add( 'js_inline_before' , 'var CONVERSION_SUR_20     = '.$_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20'].';' );
 Layout::add( 'js_inline_before' , 'var BACKGROUND_COLORS     = ['.implode(',',$tab_css_couleurs).'];' );
 Layout::add( 'js_inline_before' , 'var URL_IMPORT            = "'.URL_DIR_IMPORT.'";' );
-Layout::add( 'js_inline_before' , 'var POURCENTAGE_MAXI      = '.$valeur_maxi.';' );
-Layout::add( 'js_inline_before' , 'var MOYENNE_MAXI          = '.($valeur_maxi/5).';' );
+Layout::add( 'js_inline_before' , 'var POURCENTAGE_MAXI      = '.$_SESSION['NOTE'][$_SESSION['NOMBRE_CODES_NOTATION']]['VALEUR'].';' );
+Layout::add( 'js_inline_before' , 'var MOYENNE_MAXI          = '.($_SESSION['NOTE'][$_SESSION['NOMBRE_CODES_NOTATION']]['VALEUR']/5).';' );
 Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR'].';' );
 Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR'].';' );
 Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_REPORT   = '.$_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_REPORT'].';' );

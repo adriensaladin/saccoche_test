@@ -406,6 +406,23 @@ public static function DB_lister_users_desactives_obsoletes()
 }
 
 /**
+ * lister_referentiels
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_lister_referentiels()
+{
+  $DB_SQL = 'SELECT matiere_id, niveau_id, matiere_nom, niveau_nom, referentiel_mode_synthese ';
+  $DB_SQL.= 'FROM sacoche_referentiel ';
+  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 ';
+  $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * lister_devoirs_id_disponibles
  *
  * @param void

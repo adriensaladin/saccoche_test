@@ -84,17 +84,15 @@ public static function DB_lister_groupes()
 /**
  * lister_classes_avec_niveaux
  *
- * @param string $niveau_ordre     facultatif, ASC par défaut, DESC possible
- * @param string $only_groupes_id  facultatif, pour restreindre à un ensemble de groupes
+ * @param string   $niveau_ordre   facultatif, ASC par défaut, DESC possible
  * @return array
  */
-public static function DB_lister_classes_avec_niveaux( $niveau_ordre = 'ASC' , $only_groupes_id = NULL )
+public static function DB_lister_classes_avec_niveaux($niveau_ordre='ASC')
 {
-  $where_groupe = ($only_groupes_id) ? 'AND groupe_id IN('.$only_groupes_id.') ' : '' ;
   $DB_SQL = 'SELECT * ';
   $DB_SQL.= 'FROM sacoche_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
-  $DB_SQL.= 'WHERE groupe_type=:type '.$where_groupe;
+  $DB_SQL.= 'WHERE groupe_type=:type ';
   $DB_SQL.= 'ORDER BY niveau_ordre '.$niveau_ordre.', groupe_ref ASC';
   $DB_VAR = array(':type'=>'classe');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);

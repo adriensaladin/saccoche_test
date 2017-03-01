@@ -144,7 +144,7 @@ foreach($DB_TAB as $DB_ROW)
 
 if($PAGE_EPI)
 {
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_epi( $classe_id , $PAGE_REF );
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_epi( $PAGE_REF , $classe_id );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_rubriques['epi'][$DB_ROW['livret_epi_id']] = array(
@@ -171,7 +171,7 @@ if($PAGE_EPI)
 
 if($PAGE_AP)
 {
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_ap( $classe_id , $PAGE_REF );
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_ap( $PAGE_REF , $classe_id );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_rubriques['ap'][$DB_ROW['livret_ap_id']] = array(
@@ -199,7 +199,7 @@ if($PAGE_PARCOURS)
   $tab_parcours_code = explode(',',$PAGE_PARCOURS);
   foreach($tab_parcours_code as $parcours_code)
   {
-    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_parcours( $parcours_code ,  $classe_id , $PAGE_REF );
+    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_parcours( $parcours_code , $PAGE_REF , $classe_id );
     // 1 parcours de chaque type au maximum par classe
     if(!empty($DB_TAB))
     {

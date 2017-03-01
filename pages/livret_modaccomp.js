@@ -183,7 +183,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=associer'+'&f_modaccomp='+f_modaccomp+'&f_commentaire='+encodeURIComponent(f_commentaire)+'&f_eleve='+tab_eleve+'&only_groupes_id='+only_groupes_id,
+            data : 'csrf='+CSRF+'&f_action=associer'+'&f_modaccomp='+f_modaccomp+'&f_commentaire='+encodeURIComponent(f_commentaire)+'&f_eleve='+tab_eleve,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -238,7 +238,7 @@ $(document).ready
       {
         type : 'POST',
         url : 'ajax.php?page='+PAGE,
-        data : 'csrf='+CSRF+'&f_action=initialiser'+'&only_groupes_id='+only_groupes_id,
+        data : 'csrf='+CSRF+'&f_action=initialiser',
         dataType : 'json',
         error : function(jqXHR, textStatus, errorThrown)
         {

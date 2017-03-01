@@ -34,10 +34,9 @@ $SECTION = ($SECTION) ? $SECTION : 'gestion' ;
 // Sous-Menu d'en-tête, selon les droits
 $SOUS_MENU = '';
 $tab_sous_menu = array(
-  'gestion'         => Lang::_("Créer / paramétrer les référentiels"),
-  'edition'         => Lang::_("Modifier le contenu des référentiels"),
-  'format_synthese' => Lang::_("Définir le format de synthèse par référentiel"),
-  'ressources'      => Lang::_("Associer des ressources aux items"),
+  'gestion'    => Lang::_("Créer / paramétrer les référentiels"),
+  'edition'    => Lang::_("Modifier le contenu des référentiels"),
+  'ressources' => Lang::_("Associer des ressources aux items"),
 );
 foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
 {

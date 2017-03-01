@@ -74,10 +74,9 @@ $tab_sous_menu = array
   ),
   'referentiel' => array
   (
-    'professeur_referentiel_gestion'         => array( 'texte' => Lang::_("Créer / paramétrer les référentiels")           , 'class' => 'referentiel_gestion'         , 'href' => 'page=professeur_referentiel&amp;section=gestion'         ),
-    'professeur_referentiel_edition'         => array( 'texte' => Lang::_("Modifier le contenu des référentiels")          , 'class' => 'referentiel_edition'         , 'href' => 'page=professeur_referentiel&amp;section=edition'         ),
-    'professeur_referentiel_format_synthese' => array( 'texte' => Lang::_("Définir le format de synthèse par référentiel") , 'class' => 'referentiel_format_synthese' , 'href' => 'page=professeur_referentiel&amp;section=format_synthese' ),
-    'professeur_referentiel_ressources'      => array( 'texte' => Lang::_("Associer des ressources aux items")             , 'class' => 'referentiel_ressources'      , 'href' => 'page=professeur_referentiel&amp;section=ressources'      ),
+    'professeur_referentiel_gestion'    => array( 'texte' => Lang::_("Créer / paramétrer les référentiels")  , 'class' => 'referentiel_gestion'    , 'href' => 'page=professeur_referentiel&amp;section=gestion'    ),
+    'professeur_referentiel_edition'    => array( 'texte' => Lang::_("Modifier le contenu des référentiels") , 'class' => 'referentiel_edition'    , 'href' => 'page=professeur_referentiel&amp;section=edition'    ),
+    'professeur_referentiel_ressources' => array( 'texte' => Lang::_("Associer des ressources aux items")    , 'class' => 'referentiel_ressources' , 'href' => 'page=professeur_referentiel&amp;section=ressources' ),
   ),
   'evaluation' => array
   (
@@ -163,12 +162,6 @@ if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NU
 if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_sous_menu['referentiel']['professeur_referentiel_edition']['class'] .= ' disabled';
-}
-
-// Définir le mode de synthèse pour les bilans (profil [professeur] uniquement).
-if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_MODE_SYNTHESE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  $tab_sous_menu['referentiel']['professeur_referentiel_format_synthese']['class'] .= ' disabled';
 }
 
 // Associer des ressources aux items (profil [professeur] uniquement).

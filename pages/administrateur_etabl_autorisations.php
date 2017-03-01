@@ -63,7 +63,6 @@ $tab_profils_possibles['dir_pers']     = array(                  'DIR','ENS','IE
 $tab_profils_possibles['dir_cpe']      = array(                  'DIR',                            'EDU');
 $tab_profils_possibles['dir']          = array(                  'DIR');
 $tab_profils_possibles['pers_coord']   = array(                        'ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF','ONLY_COORD');
-$tab_profils_possibles['pers_pp']      = array(                        'ENS','IEX','ONLY_PP','DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['pers']         = array(                        'ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['tous']         = array('ELV','TUT','AVS','DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['parent_eleve'] = array('ELV','TUT','AVS');
@@ -86,9 +85,8 @@ $tab_droits  = array
   "Gestion des référentiels de l'établissement" => array
   (
     'pers_coord',
-    array( 'droit_gerer_referentiel'   , "créer / modifier / paramétrer les référentiels" , 'pers_coord' ),
-    array( 'droit_gerer_mode_synthese' , "définir le format de synthèse par référentiel"  , 'pers_coord' ),
-    array( 'droit_gerer_ressource'     , "associer des ressources aux items"              , 'pers' ),
+    array( 'droit_gerer_referentiel' , "créer / modifier / paramétrer les référentiels" , 'pers_coord' ),
+    array( 'droit_gerer_ressource'   , "associer des ressources aux items"              , 'pers' ),
   ),
   "Consultation des référentiels de l'établissement" => array
   (
@@ -155,21 +153,7 @@ $tab_droits  = array
     array( 'droit_officiel_bulletin_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_bulletin_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
   ),
-  "Bilans officiels &rarr; Livret Scolaire Unique (2016) &rarr; Paramétrage référentiels" => array
-  (
-    'pers_coord',
-    array( 'droit_gerer_livret_elements'   , "configurer les Éléments de programme"       , 'pers_coord' ),
-  ),
-  "Bilans officiels &rarr; Livret Scolaire Unique (2016) &rarr; Paramétrage enseignements" => array
-  (
-    'pers_pp',
-    array( 'droit_gerer_livret_epi'        , "configurer les E.P.I."                      , 'pers_pp' ),
-    array( 'droit_gerer_livret_ap'         , "configurer les A.P."                        , 'pers_pp' ),
-    array( 'droit_gerer_livret_parcours'   , "configurer les Parcours"                    , 'pers_pp' ),
-    array( 'droit_gerer_livret_modaccomp'  , "configurer les Modalités d'accompagnement"  , 'pers_pp' ),
-    array( 'droit_gerer_livret_enscompl'   , "configurer les Enseignements de complément" , 'personne' ),
-  ),
-  "Bilans officiels &rarr; Livret Scolaire Unique (2016) &rarr; Édition" => array
+  "Bilans officiels &rarr; Livret Scolaire Unique (2016)" => array
   (
     'dir_pers_pp',
     array( 'droit_officiel_livret_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
@@ -186,7 +170,7 @@ $tab_droits  = array
     array( 'droit_officiel_socle_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_socle_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
   ),
-  "Fiches brevet (fiches scolaires pour le jury du DNB 2016 &amp; antérieur)" => array
+  "Fiches brevet (fiches scolaires pour le jury du DNB)" => array
   ( // TODO : DROITS A SUPPRIMER
     'dir_pers_pp',
     array( 'droit_fiche_brevet_modifier_statut'       , "modifier le statut (accès saisies&hellip;)"    , 'dir' ),

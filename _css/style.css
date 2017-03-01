@@ -73,8 +73,6 @@ span.pourcentage{display:inline-block;width:3em;padding-right:3px;text-align:rig
 td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:130%}
 *.probleme, noscript {background:#FF3;color:#C00;font-weight:bold;margin:1ex auto}
 *.important {background:#FF9;color:#000;font-weight:bold;border:solid 1px #FA3;padding:1px;margin:1px auto}
-/* pour obliger l'affichage de l'ascenseur vertical dans certains cas où son apparition / disparition peut déranger l'affichage */
-#force_scroll{z-index:1;position:absolute;top:0;left:0;width:1px;} /* height ajouté en js */
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Cadres principaux (dont le menu déroulant)                                                          */
@@ -86,8 +84,8 @@ td.moyenne {text-align:center;font-weight:bold;vertical-align:middle;font-size:1
 #titre_logo a{margin:auto 1em}
 
 /* zone identifiée */
-#cadre_haut   {z-index:   3;position:absolute;left:0;right:0;top:0;height:44px;border-bottom:1px solid #77F;white-space:nowrap;min-width:750px;background:#FFF repeat 0 0 url("data:image/gif;base64,R0lGODdhBAAEAIABANfX/////ywAAAAABAAEAAACBkwAl2h5BQA7");} /* sacoche_fond_cadre_haut */ /* min-width:980px */
-#cadre_bas    {z-index:   2;position:absolute;left:0;right:0;top:40px;bottom:0;padding:4px;background:#FFF}
+#cadre_haut   {z-index:   2;position:absolute;left:0;right:0;top:0;height:44px;border-bottom:1px solid #77F;white-space:nowrap;min-width:750px;background:#FFF repeat 0 0 url("data:image/gif;base64,R0lGODdhBAAEAIABANfX/////ywAAAAABAAEAAACBkwAl2h5BQA7");} /* sacoche_fond_cadre_haut */ /* min-width:980px */
+#cadre_bas    {z-index:   1;position:absolute;left:0;right:0;top:40px;bottom:0;padding:4px;background:#FFF}
 #cadre_navig  {z-index:1003;position:fixed;top:1px;right:1px} /* Pour passer au dessus du Plugin jQuery TH Float qui a un z-index de 1000 */
 #cadre_photo  {z-index:1004;position:fixed;top:46px;right:1px;width:100px;text-align:center;background:#FFF;padding:2px;border:1px dashed #77F;display:none}
 #cadre_statut {z-index:1004;position:fixed;top:300px;right:10px;width:150px;background:#FFF;padding:0 10px;border:1px dashed #77F} /* top de 300 requis pour l'admin ; 230 suffit pour les autres profils... */
@@ -168,97 +166,96 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu li a    {line-height:43px} /* pour le premier bouton (boussole) */
 #menu li li a {line-height:43px} /* dans le reste du menu déroulant ; si modification, @see memoriser_menu() in ./_inc/class.SessionUser.php */
 
-#menu a {background:transparent url(../_img/sprite_menu_27.png) 0 20px no-repeat;padding-left:25px}
-#menu a.boussole                    {background-position: 6px    13px} /* ( line_height 43 - img_hauteur 16 - 1 ) / 2 */
-#menu a.fleche                      {background-position: 6px   -27px}
-#menu a.administrateur              {background-position: 6px   -67px}
-#menu a.algorithme_edition          {background-position: 6px  -107px}
-#menu a.algorithme_voir             {background-position: 6px  -147px}
-#menu a.blocage                     {background-position: 6px  -187px}
-#menu a.compte_accueil              {background-position: 6px  -227px}
-#menu a.compte_cnil                 {background-position: 6px  -267px}
-#menu a.compte_daltonisme           {background-position: 6px  -307px}
-#menu a.compte_langue               {background-position: 6px  -347px}
-#menu a.compte_password             {background-position: 6px  -387px}
-#menu a.compte_switch               {background-position: 6px  -427px}
-#menu a.date_connexion              {background-position: 6px  -467px}
-#menu a.directeur                   {background-position: 6px  -507px}
-#menu a.dump                        {background-position: 6px  -547px}
-#menu a.eleve                       {background-position: 6px  -587px}
-#menu a.etabl_autorisations         {background-position: 6px  -627px}
-#menu a.etabl_choix                 {background-position: 6px  -667px}
-#menu a.etabl_connexion             {background-position: 6px  -707px}
-#menu a.etabl_couleurs              {background-position: 6px  -747px}
-#menu a.etabl_deconnexion           {background-position: 6px  -787px}
-#menu a.etabl_duree                 {background-position: 6px  -827px}
-#menu a.etabl_identite              {background-position: 6px  -867px}
-#menu a.etabl_login                 {background-position: 6px  -907px}
-#menu a.evaluation_demande          {background-position: 6px  -947px}
-#menu a.evaluation_fichier          {background-position: 6px  -987px}
-#menu a.evaluation_gestion          {background-position: 6px -1027px}
-#menu a.evaluation_voir             {background-position: 6px -1067px}
-#menu a.fichier_export              {background-position: 6px -1107px}
-#menu a.fichier_import              {background-position: 6px -1147px}
-#menu a.groupe                      {background-position: 6px -1187px}
-#menu a.item_selection              {background-position: 6px -1227px}
-#menu a.log_actions                 {background-position: 6px -1267px}
-#menu a.mail                        {background-position: 6px -1307px}
-#menu a.marianne                    {background-position: 6px -1347px}
-#menu a.mdp_admin                   {background-position: 6px -1387px}
-#menu a.message_accueil             {background-position: 6px -1427px}
-#menu a.module                      {background-position: 6px -1467px}
-#menu a.nettoyage                   {background-position: 6px -1507px}
-#menu a.newsletter                  {background-position: 6px -1547px}
-#menu a.officiel_assiduite          {background-position: 6px -1587px}
-#menu a.officiel_brevet             {background-position: 6px -1627px}
-#menu a.officiel_bulletin           {background-position: 6px -1667px}
-#menu a.officiel_palier1            {background-position: 6px -1707px}
-#menu a.officiel_palier2            {background-position: 6px -1747px}
-#menu a.officiel_palier3            {background-position: 6px -1787px}
-#menu a.officiel_reglages           {background-position: 6px -1827px}
-#menu a.officiel_releve             {background-position: 6px -1867px}
-#menu a.officiel_voir_archive       {background-position: 6px -1907px}
-#menu a.parent                      {background-position: 6px -1947px}
-#menu a.periode                     {background-position: 6px -1987px}
-#menu a.periode_groupe              {background-position: 6px -2027px}
-#menu a.professeur                  {background-position: 6px -2067px}
-#menu a.referentiel_edition         {background-position: 6px -2107px}
-#menu a.referentiel_gestion         {background-position: 6px -2147px}
-#menu a.referentiel_ressources      {background-position: 6px -2187px}
-#menu a.referentiel_format_synthese {background-position: 6px -2227px}
-#menu a.referentiel_voir            {background-position: 6px -2267px}
-#menu a.releve_chrono               {background-position: 6px -2307px}
-#menu a.releve_grille               {background-position: 6px -2347px}
-#menu a.releve_items                {background-position: 6px -2387px}
-#menu a.releve_recherche            {background-position: 6px -2427px}
-#menu a.releve_socle2016            {background-position: 6px -2467px}
-#menu a.releve_socle                {background-position: 6px -2467px} /* attention : même décalage ; TODO à supprimer ultérieurement */
-#menu a.releve_synthese             {background-position: 6px -2507px}
-#menu a.releve_synthese_socle       {background-position: 6px -2547px} /* TODO à supprimer ultérieurement */
-#menu a.resilier                    {background-position: 6px -2587px}
-#menu a.rss                         {background-position: 6px -2627px}
-#menu a.serveur_database            {background-position: 6px -2667px}
-#menu a.serveur_debug               {background-position: 6px -2707px}
-#menu a.serveur_erreur              {background-position: 6px -2747px}
-#menu a.serveur_fichiers            {background-position: 6px -2787px}
-#menu a.serveur_geographie          {background-position: 6px -2827px}
-#menu a.serveur_identite            {background-position: 6px -2867px}
-#menu a.serveur_info                {background-position: 6px -2907px}
-#menu a.serveur_maintenance         {background-position: 6px -2947px}
-#menu a.serveur_proxy               {background-position: 6px -2987px}
-#menu a.serveur_security            {background-position: 6px -3027px}
-#menu a.socle_annuler               {background-position: 6px -3067px}
-#menu a.socle_fichier               {background-position: 6px -3107px}
-#menu a.socle_item                  {background-position: 6px -3147px}
-#menu a.socle_langue                {background-position: 6px -3187px}
-#menu a.socle_pilier                {background-position: 6px -3227px}
-#menu a.statistiques                {background-position: 6px -3267px}
-#menu a.structure_ajout_csv         {background-position: 6px -3307px}
-#menu a.structure_bdd_repair        {background-position: 6px -3347px}
-#menu a.structure_gestion           {background-position: 6px -3387px}
-#menu a.structure_transfert         {background-position: 6px -3427px}
-#menu a.trombinoscope               {background-position: 6px -3467px}
-#menu a.user_recherche              {background-position: 6px -3507px}
+#menu a {background:transparent url(../_img/sprite_menu_26.png) 0 20px no-repeat;padding-left:25px}
+#menu a.boussole              {background-position: 6px    13px} /* ( line_height 43 - img_hauteur 16 - 1 ) / 2 */
+#menu a.fleche                {background-position: 6px   -27px}
+#menu a.administrateur        {background-position: 6px   -67px}
+#menu a.algorithme_edition    {background-position: 6px  -107px}
+#menu a.algorithme_voir       {background-position: 6px  -147px}
+#menu a.blocage               {background-position: 6px  -187px}
+#menu a.compte_accueil        {background-position: 6px  -227px}
+#menu a.compte_cnil           {background-position: 6px  -267px}
+#menu a.compte_daltonisme     {background-position: 6px  -307px}
+#menu a.compte_langue         {background-position: 6px  -347px}
+#menu a.compte_password       {background-position: 6px  -387px}
+#menu a.compte_switch         {background-position: 6px  -427px}
+#menu a.date_connexion        {background-position: 6px  -467px}
+#menu a.directeur             {background-position: 6px  -507px}
+#menu a.dump                  {background-position: 6px  -547px}
+#menu a.eleve                 {background-position: 6px  -587px}
+#menu a.etabl_autorisations   {background-position: 6px  -627px}
+#menu a.etabl_choix           {background-position: 6px  -667px}
+#menu a.etabl_connexion       {background-position: 6px  -707px}
+#menu a.etabl_couleurs        {background-position: 6px  -747px}
+#menu a.etabl_deconnexion     {background-position: 6px  -787px}
+#menu a.etabl_duree           {background-position: 6px  -827px}
+#menu a.etabl_identite        {background-position: 6px  -867px}
+#menu a.etabl_login           {background-position: 6px  -907px}
+#menu a.evaluation_demande    {background-position: 6px  -947px}
+#menu a.evaluation_fichier    {background-position: 6px  -987px}
+#menu a.evaluation_gestion    {background-position: 6px -1027px}
+#menu a.evaluation_voir       {background-position: 6px -1067px}
+#menu a.fichier_export        {background-position: 6px -1107px}
+#menu a.fichier_import        {background-position: 6px -1147px}
+#menu a.groupe                {background-position: 6px -1187px}
+#menu a.item_selection        {background-position: 6px -1227px}
+#menu a.log_actions           {background-position: 6px -1267px}
+#menu a.mail                  {background-position: 6px -1307px}
+#menu a.marianne              {background-position: 6px -1347px}
+#menu a.mdp_admin             {background-position: 6px -1387px}
+#menu a.message_accueil       {background-position: 6px -1427px}
+#menu a.module                {background-position: 6px -1467px}
+#menu a.nettoyage             {background-position: 6px -1507px}
+#menu a.newsletter            {background-position: 6px -1547px}
+#menu a.officiel_assiduite    {background-position: 6px -1587px}
+#menu a.officiel_brevet       {background-position: 6px -1627px}
+#menu a.officiel_bulletin     {background-position: 6px -1667px}
+#menu a.officiel_palier1      {background-position: 6px -1707px}
+#menu a.officiel_palier2      {background-position: 6px -1747px}
+#menu a.officiel_palier3      {background-position: 6px -1787px}
+#menu a.officiel_reglages     {background-position: 6px -1827px}
+#menu a.officiel_releve       {background-position: 6px -1867px}
+#menu a.officiel_voir_archive {background-position: 6px -1907px}
+#menu a.parent                {background-position: 6px -1947px}
+#menu a.periode               {background-position: 6px -1987px}
+#menu a.periode_groupe        {background-position: 6px -2027px}
+#menu a.professeur            {background-position: 6px -2067px}
+#menu a.referentiel_edition   {background-position: 6px -2107px}
+#menu a.referentiel_gestion   {background-position: 6px -2147px}
+#menu a.referentiel_ressources{background-position: 6px -2187px}
+#menu a.referentiel_voir      {background-position: 6px -2227px}
+#menu a.releve_chrono         {background-position: 6px -2267px}
+#menu a.releve_grille         {background-position: 6px -2307px}
+#menu a.releve_items          {background-position: 6px -2347px}
+#menu a.releve_recherche      {background-position: 6px -2387px}
+#menu a.releve_socle2016      {background-position: 6px -2427px}
+#menu a.releve_socle          {background-position: 6px -2427px} /* attention : même décalage ; TODO à supprimer ultérieurement */
+#menu a.releve_synthese       {background-position: 6px -2467px}
+#menu a.releve_synthese_socle {background-position: 6px -2507px} /* TODO à supprimer ultérieurement */
+#menu a.resilier              {background-position: 6px -2547px}
+#menu a.rss                   {background-position: 6px -2587px}
+#menu a.serveur_database      {background-position: 6px -2627px}
+#menu a.serveur_debug         {background-position: 6px -2667px}
+#menu a.serveur_erreur        {background-position: 6px -2707px}
+#menu a.serveur_fichiers      {background-position: 6px -2747px}
+#menu a.serveur_geographie    {background-position: 6px -2787px}
+#menu a.serveur_identite      {background-position: 6px -2827px}
+#menu a.serveur_info          {background-position: 6px -2867px}
+#menu a.serveur_maintenance   {background-position: 6px -2907px}
+#menu a.serveur_proxy         {background-position: 6px -2947px}
+#menu a.serveur_security      {background-position: 6px -2987px}
+#menu a.socle_annuler         {background-position: 6px -3027px}
+#menu a.socle_fichier         {background-position: 6px -3067px}
+#menu a.socle_item            {background-position: 6px -3107px}
+#menu a.socle_langue          {background-position: 6px -3147px}
+#menu a.socle_pilier          {background-position: 6px -3187px}
+#menu a.statistiques          {background-position: 6px -3227px}
+#menu a.structure_ajout_csv   {background-position: 6px -3267px}
+#menu a.structure_bdd_repair  {background-position: 6px -3307px}
+#menu a.structure_gestion     {background-position: 6px -3347px}
+#menu a.structure_transfert   {background-position: 6px -3387px}
+#menu a.trombinoscope         {background-position: 6px -3427px}
+#menu a.user_recherche        {background-position: 6px -3467px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Sous-menus (rappel en haut de page)                                                                 */

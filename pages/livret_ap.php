@@ -27,57 +27,17 @@
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Accompagnement Personnalisé"));
-
-if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && !Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_LIVRET_AP'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
-{
-  echo'<p class="danger">'.html(Lang::_("Vous n'êtes pas habilité à accéder à cette fonctionnalité !")).'</p>'.NL;
-  echo'<div class="astuce">Profils autorisés (par les administrateurs) en complément des personnels de direction :</div>'.NL;
-  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_LIVRET_AP'],'li');
-  return; // Ne pas exécuter la suite de ce fichier inclus.
-}
-
-// Indication des profils autorisés
-$puce_profils_autorises = ($_SESSION['USER_PROFIL_TYPE']!='professeur') ? '' : '<li><span class="astuce"><a title="administrateurs (de l\'établissement)<br />personnels de direction<br />'.Outil::afficher_profils_droit_specifique($_SESSION['DROIT_GERER_LIVRET_AP'],'br').'" href="#">Profils pouvant accéder à ce menu de configuration.</a></span></li>';
 ?>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__livret_scolaire_administration#toggle_ap">DOC : Administration du Livret Scolaire &rarr; Accompagnement Personnalisé</a></span></li>
   <li><span class="astuce">L'<b>Accompagnement Personnalisé</b> mis en place à compter de la rentrée 2016 concerne les <b>élèves du Collège</b>.</span></li>
   <li><span class="astuce">Ce menu ne sert que pour les <b>bilans périodiques</b> (sans objet pour les <b>bilans de fin de cycle</b>).</span></li>
-  <?php echo $puce_profils_autorises ?>
 </ul>
 
 <hr />
 
 <?php
-$tab_classe = array();
-if($_SESSION['USER_PROFIL_TYPE']=='professeur')
-{
-  // On récupère la liste des classes / groupes auxquelles le professeur est rattaché, et s'il en est coordonnateur
-  $DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_groupes_professeur($_SESSION['USER_ID'],$_SESSION['USER_JOIN_GROUPES']);
-  if(empty($DB_TAB))
-  {
-    echo'<ul class="puce">'.NL;
-    echo  '<li><span class="danger">Aucune classe trouvée parmi celles qui vous sont rattachées !</span></li>'.NL;
-    echo'</ul>'.NL;
-    return; // Ne pas exécuter la suite de ce fichier inclus.
-  }
-  foreach($DB_TAB as $DB_ROW)
-  {
-    if( ($DB_ROW['groupe_type']=='classe') && !isset($tab_classe[$DB_ROW['groupe_id']]) && Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_LIVRET_AP'] , $DB_ROW['jointure_pp'] /*matiere_coord_or_groupe_pp_connu*/ ) )
-    {
-      $tab_classe[$DB_ROW['groupe_id']] = $DB_ROW['groupe_id'];
-    }
-  }
-  if(empty($tab_classe))
-  {
-    echo'<ul class="puce">'.NL;
-    echo  '<li><span class="danger">Aucune classe trouvée parmi celles que vous avez le droit de gérer !</span></li>'.NL;
-    echo'</ul>'.NL;
-    return; // Ne pas exécuter la suite de ce fichier inclus.
-  }
-}
-
 $page_ordre_longueur = 3;
 $page_ordre_format   = '%0'.$page_ordre_longueur.'u';
 
@@ -86,8 +46,7 @@ $select_page = '<option value="">&nbsp;</option>';
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_pages_for_dispositif( 'ap' );
 if(empty($DB_TAB))
 {
-  $consigne = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'un administrateur ou directeur doit commencer' : 'commencez' ;
-  echo'<p class="danger">Aucune classe n\'est associée à une page du livret concernée par ce dispositif !<br />Si besoin, '.$consigne.' par <a href="./index.php?page=livret&amp;section=classes">associer les classes au livret scolaire</a>.</p>'.NL;
+  echo'<p class="danger">Aucune classe n\'est associée à une page du livret concernée par ce dispositif !<br />Si besoin, commencez par <a href="./index.php?page=livret&amp;section=classes">associer les classes au livret scolaire</a>.</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 Layout::add( 'js_inline_before' , 'var tab_page_ordre = new Array();' );
@@ -105,8 +64,7 @@ $select_c4_matiere = '';
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_matieres_alimentees();
 if(empty($DB_TAB))
 {
-  $consigne = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'un administrateur ou directeur doit commencer' : 'commencez' ;
-  echo'<p class="danger">Aucune matiere du livret n\'est associée aux référentiels !<br />Si besoin, '.$consigne.' par <a href="./index.php?page=livret&amp;section=liaisons">associer les référentiels au livret scolaire</a>.</p>'.NL;
+  echo'<p class="danger">Aucune matiere du livret n\'est associée aux référentiels !<br />Si besoin, commencez par <a href="./index.php?page=livret&amp;section=liaisons">associer les référentiels au livret scolaire</a>.</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
 foreach($DB_TAB as $DB_ROW)
@@ -178,10 +136,8 @@ for( $nb=1 ; $nb<=15 ; $nb++)
   </thead>
   <tbody>
     <?php
-    $listing_classe_id = implode(',',$tab_classe);
-    Layout::add( 'js_inline_before' , 'var only_groupes_id="'.$listing_classe_id.'";' );
     // Lister les accompagnements personnalisés
-    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_ap($listing_classe_id);
+    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_ap();
     if(!empty($DB_TAB))
     {
       foreach($DB_TAB as $DB_ROW)

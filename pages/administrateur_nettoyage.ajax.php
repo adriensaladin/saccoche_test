@@ -96,7 +96,7 @@ if($action=='purger')
   SACocheLog::ajouter('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
   // Supprimer les jointures classes/périodes, et donc les états des bilans officiels
   DB_STRUCTURE_PERIODE::DB_supprimer_liaisons_groupe_periode();
-  // Supprimer les données des bilans officiels (sauf archives)
+  // Supprimer les saisies & les archives des bilans officiels
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
   // Supprimer les saisies brevet & les archives (Notanet & fiches brevet)
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_brevet();

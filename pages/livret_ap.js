@@ -222,7 +222,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_livret',
-            data : 'f_select=groupes'+'&f_page_ref='+page_ref+'&f_groupe_id='+groupe_id+'&only_groupes_id='+only_groupes_id,
+            data : 'f_select=groupes'+'&f_page_ref='+page_ref+'&f_groupe_id='+groupe_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

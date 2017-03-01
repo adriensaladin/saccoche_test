@@ -590,7 +590,7 @@ foreach($DB_TAB as $DB_ROW)
 $tab_epi = array();
 if($PAGE_EPI)
 {
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_epi( $classe_id , $PAGE_REF );
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_epi( $PAGE_REF , $classe_id );
   foreach($DB_TAB as $DB_ROW)
   {
     $key_rubrique = 'EPI'.$DB_ROW['livret_epi_id'].$key_periode;
@@ -656,7 +656,7 @@ if($PAGE_EPI)
 $tab_ap = array();
 if($PAGE_AP)
 {
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_ap( $classe_id , $PAGE_REF );
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_ap( $PAGE_REF , $classe_id );
   foreach($DB_TAB as $DB_ROW)
   {
     $key_rubrique = 'AP'.$DB_ROW['livret_ap_id'].$key_periode;
@@ -722,7 +722,7 @@ if($PAGE_PARCOURS)
   $tab_parcours_code = explode(',',$PAGE_PARCOURS);
   foreach($tab_parcours_code as $parcours_code)
   {
-    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_parcours( $parcours_code ,  $classe_id , $PAGE_REF );
+    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_parcours( $parcours_code , $PAGE_REF , $classe_id );
     if(!empty($DB_TAB))
     {
       $DB_ROW = $DB_TAB[0]; // 1 parcours de chaque type au maximum par classe
@@ -1100,7 +1100,7 @@ foreach($tab_eleve as $eleve_id => $tab)
             'positionnement' => NULL,
           );
         }
-        else if( empty($tab_eleve[$eleve_id]['enscompl']['positionnement']) || ($tab_eleve[$eleve_id]['enscompl']['positionnement']<0) )
+        else if( is_int($tab_eleve[$eleve_id]['enscompl']) || ( is_array($tab_eleve[$eleve_id]['enscompl']) && ($tab_eleve[$eleve_id]['enscompl']['positionnement']<0) ) )
         {
           $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Absence de positionnement pour l\'enseignement de complément : donnée non exportée.';
           $tab_eleve[$eleve_id]['enscompl'] = array(

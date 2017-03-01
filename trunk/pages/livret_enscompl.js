@@ -131,7 +131,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action=associer'+'&f_enscompl='+f_enscompl+'&f_eleve='+tab_eleve,
+            data : 'csrf='+CSRF+'&f_action=associer'+'&f_enscompl='+f_enscompl+'&f_eleve='+tab_eleve+'&only_groupes_id='+only_groupes_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -168,7 +168,7 @@ $(document).ready
       {
         type : 'POST',
         url : 'ajax.php?page='+PAGE,
-        data : 'csrf='+CSRF+'&f_action=initialiser',
+        data : 'csrf='+CSRF+'&f_action=initialiser'+'&only_groupes_id='+only_groupes_id,
         dataType : 'json',
         error : function(jqXHR, textStatus, errorThrown)
         {

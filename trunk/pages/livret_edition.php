@@ -177,12 +177,19 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
   }
 }
 
+// Pour variables js POURCENTAGE_MAXI & MOYENNE_MAXI
+$valeur_maxi = 0;
+foreach( $_SESSION['NOTE'] as $note_id => $tab_note_info )
+{
+  $valeur_maxi = ($tab_note_info['ACTIF']) ? max($valeur_maxi,$tab_note_info['VALEUR']) : $valeur_maxi ;
+}
+
 // Javascript
 Layout::add( 'js_inline_before' , 'var USER_ID               = '.$_SESSION['USER_ID'].';' );
 Layout::add( 'js_inline_before' , 'var TODAY_FR              = "'.TODAY_FR.'";' );
 Layout::add( 'js_inline_before' , 'var URL_IMPORT            = "'.URL_DIR_IMPORT.'";' );
-Layout::add( 'js_inline_before' , 'var POURCENTAGE_MAXI      = '.$_SESSION['NOTE'][$_SESSION['NOMBRE_CODES_NOTATION']]['VALEUR'].';' );
-Layout::add( 'js_inline_before' , 'var MOYENNE_MAXI          = '.($_SESSION['NOTE'][$_SESSION['NOMBRE_CODES_NOTATION']]['VALEUR']/5).';' );
+Layout::add( 'js_inline_before' , 'var POURCENTAGE_MAXI      = '.$valeur_maxi.';' );
+Layout::add( 'js_inline_before' , 'var MOYENNE_MAXI          = '.($valeur_maxi/5).';' );
 Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = '.min($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'],600).';' ); // max 600 spécification LSU
 Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'].';' ); // max 999 vs 1000 dans les spécifications LSU
 

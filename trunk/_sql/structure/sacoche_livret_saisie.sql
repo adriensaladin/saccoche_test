@@ -20,6 +20,8 @@ CREATE TABLE sacoche_livret_saisie (
   prof_id                 MEDIUMINT(8)                               UNSIGNED                NOT NULL DEFAULT 0          COMMENT "pas dans la clef car plus simple (un seul positionnement et un seul élément de programme et une seule appréciation à remonter) ; pour l'historique des profs qui ont saisi qq chose pour pouvoir indiquer tous les profs ayant participé voir [sacoche_livret_saisie_jointure_prof]",
   PRIMARY KEY (livret_saisie_id),
   UNIQUE KEY ( livret_page_ref , livret_page_periodicite , jointure_periode , rubrique_type , rubrique_id , cible_nature , cible_id , saisie_objet ),
+  KEY rubrique (rubrique_type, rubrique_id),
+  KEY cible (cible_nature, cible_id),
   KEY livret_page_periodicite (livret_page_periodicite),
   KEY jointure_periode (jointure_periode),
   KEY rubrique_type (rubrique_type),

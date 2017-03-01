@@ -30,13 +30,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$select        = (isset($_POST['f_select']))        ? Clean::lettres($_POST['f_select'])       : '';
-$page_ref      = (isset($_POST['f_page_ref']))      ? Clean::id(     $_POST['f_page_ref'])     : '';
-$groupe_id     = (isset($_POST['f_groupe_id']))     ? Clean::entier( $_POST['f_groupe_id'])    : 0;
-$matiere_id    = (isset($_POST['f_matiere_id']))    ? Clean::entier( $_POST['f_matiere_id'])   : 0;
-$prof_id       = (isset($_POST['f_prof_id']))       ? Clean::entier( $_POST['f_prof_id'])      : 0;
-$rubrique_join = (isset($_POST['f_rubrique_join'])) ? Clean::texte( $_POST['f_rubrique_join']) : '';
-$is_all        = (isset($_POST['f_is_all']))        ? Clean::entier( $_POST['f_is_all'])       : 0;
+$select          = (isset($_POST['f_select']))        ? Clean::lettres($_POST['f_select'])       : '';
+$page_ref        = (isset($_POST['f_page_ref']))      ? Clean::id(     $_POST['f_page_ref'])     : '';
+$groupe_id       = (isset($_POST['f_groupe_id']))     ? Clean::entier( $_POST['f_groupe_id'])    : 0;
+$matiere_id      = (isset($_POST['f_matiere_id']))    ? Clean::entier( $_POST['f_matiere_id'])   : 0;
+$prof_id         = (isset($_POST['f_prof_id']))       ? Clean::entier( $_POST['f_prof_id'])      : 0;
+$rubrique_join   = (isset($_POST['f_rubrique_join'])) ? Clean::texte( $_POST['f_rubrique_join']) : '';
+$only_groupes_id = (isset($_POST['only_groupes_id'])) ? Clean::texte( $_POST['only_groupes_id']) : '';
+$is_all          = (isset($_POST['f_is_all']))        ? Clean::entier( $_POST['f_is_all'])       : 0;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cas particulier d'une recherche de profs potentiellement associées à une classe & une matière du livret
@@ -57,7 +58,14 @@ if( ($select=='profs_matiere') && $page_ref && $rubrique_join && $groupe_id && $
 
 else if( ($select=='groupes') && $page_ref )
 {
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_OPT_groupes_for_page( $page_ref );
+  if($only_groupes_id)
+  {
+    $tab_id = explode(',',$only_groupes_id);
+    $tab_id = Clean::map('entier',$tab_id);
+    $tab_id = array_filter($tab_id,'positif');
+    $only_groupes_id = implode(',',$tab_id);
+  }
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_OPT_groupes_for_page( $page_ref , $only_groupes_id );
   $selection = $groupe_id;
 }
 

@@ -28,9 +28,10 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action      = (isset($_POST['f_action'])) ? $_POST['f_action']            : '';
-$modaccomp   = (isset($_POST['f_modaccomp']))  ? $_POST['f_modaccomp']     : '';
-$commentaire = (isset($_POST['f_commentaire']))  ? $_POST['f_commentaire'] : '';
+$action          = (isset($_POST['f_action']))        ? $_POST['f_action']      : '';
+$modaccomp       = (isset($_POST['f_modaccomp']))     ? $_POST['f_modaccomp']   : '';
+$commentaire     = (isset($_POST['f_commentaire']))   ? $_POST['f_commentaire'] : '';
+$only_groupes_id = (isset($_POST['only_groupes_id'])) ? Clean::texte( $_POST['only_groupes_id']) : '';
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
@@ -109,7 +110,15 @@ if($action=='associer')
 // Affichage du bilan des affectations des dispositifs aux élèves
 //
 
-$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_modaccomp();
+if($only_groupes_id)
+{
+  $tab_id = explode(',',$only_groupes_id);
+  $tab_id = Clean::map('entier',$tab_id);
+  $tab_id = array_filter($tab_id,'positif');
+  $only_groupes_id = implode(',',$tab_id);
+}
+
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_modaccomp( NULL /*liste_eleve*/ , $only_groupes_id );
 if(empty($DB_TAB))
 {
   Json::end( TRUE  , '<tr class="vide"><td class="nu" colspan="4"></td><td class="nu"></td></tr>' );

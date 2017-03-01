@@ -26,43 +26,26 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Référentiels (gestion)"));
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-// Par défaut, faire arriver sur la page de gestion des référentiels
-$SECTION = ($SECTION) ? $SECTION : 'gestion' ;
+$methode    = (isset($_POST['f_methode'])) ? Clean::synthese_livret($_POST['f_methode']) : NULL;
+$matiere_id = (isset($_POST['f_matiere'])) ? Clean::entier($_POST['f_matiere'])          : 0;
+$niveau_id  = (isset($_POST['f_niveau']))  ? Clean::entier($_POST['f_niveau'])           : 0;
 
-// Sous-Menu d'en-tête, selon les droits
-$SOUS_MENU = '';
-$tab_sous_menu = array(
-  'gestion'         => Lang::_("Créer / paramétrer les référentiels"),
-  'edition'         => Lang::_("Modifier le contenu des référentiels"),
-  'format_synthese' => Lang::_("Définir le format de synthèse par référentiel"),
-  'ressources'      => Lang::_("Associer des ressources aux items"),
-);
-foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Modifier le mode de synthèse d'un référentiel
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( $methode && $matiere_id && $niveau_id )
 {
-  // Pour ne pas avoir à faire une requête sur la base à chaque fois pour chaque sous-menu, on se sert de la chaîne du menu mis en session
-  $sous_menu_class = 'referentiel_'.$sous_menu_section;
-  if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class.'"' ) )
-  {
-    $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
-  }
-  else
-  {
-    $class = ' class="disabled"';
-  }
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
+  DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel( $matiere_id , $niveau_id , array(':mode_livret'=>$methode) );
+  Json::end( TRUE );
 }
 
-// Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
-{
-  $PAGE = $PAGE.'_'.$SECTION ;
-  require($fichier_section);
-}
-else
-{
-  echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>'.NL;
-}
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// On ne devrait pas en arriver là
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Json::end( FALSE , 'Erreur avec les données transmises !' );
+
 ?>

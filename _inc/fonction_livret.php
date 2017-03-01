@@ -608,27 +608,14 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
   //
   if( ($PAGE_COLONNE!='maitrise') && $liste_item_id )
   {
-    if( ( $PAGE_RUBRIQUE_JOIN == 'item' ) || ( $PAGE_RUBRIQUE_JOIN == 'theme' ) )
-    {
-      $mode_synthese = 'item';
-    }
-    else if( $PAGE_RUBRIQUE_JOIN == 'domaine' )
-    {
-      $mode_synthese = 'theme';
-    }
-    else // matiere | user
-    {
-      $mode_synthese = 'predefini';
-    }
-    $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_elements_programme( $liste_eleve_id , $liste_item_id , $mode_synthese , $date_mysql_debut , $date_mysql_fin );
+    $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_elements_programme( $liste_eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin );
     $tab_eleve_rubrique_element = array();
     $tab_eleve_rubrique_detail = array();
     foreach($DB_TAB as $DB_ROW)
     {
       if(isset($tab_eleve_item_rubrique[$DB_ROW['eleve_id']][$DB_ROW['item_id']]))
       {
-        $prefixe_synthese = ($mode_synthese=='predefini') ? $DB_ROW['mode_synthese'] : $mode_synthese;
-        $synthese_nom = $DB_ROW[$prefixe_synthese.'_nom'];
+        $synthese_nom = $DB_ROW[$DB_ROW['mode_livret'].'_nom'];
         foreach($tab_eleve_item_rubrique[$DB_ROW['eleve_id']][$DB_ROW['item_id']] as $rubrique_id)
         {
           if(!isset($tab_eleve_rubrique_element[$DB_ROW['eleve_id']][$rubrique_id][$synthese_nom]))
@@ -989,24 +976,11 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
     //
     // Déterminer les principaux éléments du programme travaillés durant la période
     //
-    if( ( $PAGE_RUBRIQUE_JOIN == 'item' ) || ( $PAGE_RUBRIQUE_JOIN == 'theme' ) )
-    {
-      $mode_synthese = 'item';
-    }
-    else if( $PAGE_RUBRIQUE_JOIN == 'domaine' )
-    {
-      $mode_synthese = 'theme';
-    }
-    else // matiere | user
-    {
-      $mode_synthese = 'predefini';
-    }
-    $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_elements_programme( $eleve_id , $liste_item_id , $mode_synthese , $date_mysql_debut , $date_mysql_fin );
+    $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_elements_programme( $eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin );
     $tab_synthese = array();
     foreach($DB_TAB as $DB_ROW)
     {
-      $prefixe_synthese = ($mode_synthese=='predefini') ? $DB_ROW['mode_synthese'] : $mode_synthese;
-      $synthese_nom = $DB_ROW[$prefixe_synthese.'_nom'];
+      $synthese_nom = $DB_ROW[$DB_ROW['mode_livret'].'_nom'];
       if(!isset($tab_synthese[$synthese_nom]))
       {
         $tab_synthese[$synthese_nom] = $DB_ROW['eval_nb'];

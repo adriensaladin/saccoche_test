@@ -28,8 +28,9 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if(($_SESSION['SESAMATH_ID']==ID_DEMO)&&($_POST['f_action']!='initialiser')){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action   = (isset($_POST['f_action']))   ? $_POST['f_action']   : '';
-$enscompl = (isset($_POST['f_enscompl'])) ? $_POST['f_enscompl'] : '';
+$action          = (isset($_POST['f_action']))        ? $_POST['f_action']   : '';
+$enscompl        = (isset($_POST['f_enscompl']))      ? $_POST['f_enscompl'] : '';
+$only_groupes_id = (isset($_POST['only_groupes_id'])) ? Clean::texte( $_POST['only_groupes_id']) : '';
 // Avant c'était un tableau qui est transmis, mais à cause d'une limitation possible "suhosin" / "max input vars", on est passé à une concaténation en chaine...
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
@@ -74,6 +75,14 @@ $tab_user          = array();
 $tab_niveau_groupe[0][0] = 'sans classe';
 $tab_user[0]             = '';
 
+if($only_groupes_id)
+{
+  $tab_id = explode(',',$only_groupes_id);
+  $tab_id = Clean::map('entier',$tab_id);
+  $tab_id = array_filter($tab_id,'positif');
+  $only_groupes_id = implode(',',$tab_id);
+}
+
 // Récupérer la liste des dispositifs
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_enscompl();
 foreach($DB_TAB as $DB_ROW)
@@ -82,7 +91,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // Récupérer la liste des classes
-$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_avec_niveaux($niveau_ordre='DESC');
+$DB_TAB = DB_STRUCTURE_REGROUPEMENT::DB_lister_classes_avec_niveaux( $niveau_ordre='DESC' , $only_groupes_id );
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_niveau_groupe[$DB_ROW['niveau_id']][$DB_ROW['groupe_id']] = html($DB_ROW['groupe_nom']);
@@ -92,8 +101,11 @@ foreach($DB_TAB as $DB_ROW)
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_langue,eleve_lv1,eleve_lv2,user_id,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $span = isset($tab_enscompl[$DB_ROW['user_id']]) ? $tab_enscompl[$DB_ROW['user_id']] : '' ;
-  $tab_user[$DB_ROW['eleve_classe_id']] .= $span.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+  if( empty($only_groupes_id) || isset($tab_user[$DB_ROW['eleve_classe_id']]) )
+  {
+    $span = isset($tab_enscompl[$DB_ROW['user_id']]) ? $tab_enscompl[$DB_ROW['user_id']] : '' ;
+    $tab_user[$DB_ROW['eleve_classe_id']] .= $span.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
+  }
 }
 // Assemblage du tableau résultant
 $TH = array();

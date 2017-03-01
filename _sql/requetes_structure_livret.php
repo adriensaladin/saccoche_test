@@ -1160,14 +1160,27 @@ public static function DB_lister_epi_theme()
 /**
  * lister_epi
  *
- * @param string $page_ref    facultatif, pour restreindre à une page du livret
- * @param int    $groupe_id   facultatif, pour restreindre à une classe donnée
+ * @param int|string $classe_id_or_listing_classe_id facultatif, pour restreindre à une classe ou un ensemble de classes
+ * @param string     $page_ref                       facultatif, pour restreindre à une page du livret
  * @return array
  */
-public static function DB_lister_epi( $page_ref = NULL , $groupe_id = NULL )
+public static function DB_lister_epi( $classe_id_or_listing_classe_id = NULL , $page_ref = NULL )
 {
-  $where = ($page_ref && $groupe_id) ? 'WHERE livret_page_ref=:page_ref AND groupe_id=:groupe_id ' : '' ;
-  $DB_SQL = 'SELECT sacoche_livret_epi.*, livret_page_ordre, livret_page_moment, groupe_nom, livret_epi_theme_nom, ';
+  if($classe_id_or_listing_classe_id && $page_ref)
+  {
+    $where = 'WHERE livret_page_ref=:page_ref AND groupe_id=:groupe_id ';
+  }
+  elseif($classe_id_or_listing_classe_id)
+  {
+    $where = 'WHERE groupe_id IN('.$classe_id_or_listing_classe_id.') ';
+  }
+  else
+  {
+    $where = ''; // Profil administrateur ou directeur
+  }
+  $saisie_count = ($page_ref) ? '' : 'COUNT(livret_saisie_id) AS nombre, ' ;
+  $saisie_join  = ($page_ref) ? '' : 'LEFT JOIN sacoche_livret_saisie ON sacoche_livret_epi.livret_epi_id=sacoche_livret_saisie.rubrique_id AND rubrique_type="epi" ' ;
+  $DB_SQL = 'SELECT sacoche_livret_epi.*, livret_page_ordre, livret_page_moment, groupe_nom, livret_epi_theme_nom, '.$saisie_count;
   $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_id,"_",user_id) SEPARATOR " ") AS matiere_prof_id, ';
   $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_nom," - ",user_nom," ",user_prenom) SEPARATOR "§BR§") AS matiere_prof_texte ';
   $DB_SQL.= 'FROM sacoche_livret_epi ';
@@ -1178,12 +1191,13 @@ public static function DB_lister_epi( $page_ref = NULL , $groupe_id = NULL )
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING(matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_epi_prof.prof_id = sacoche_user.user_id ';
+  $DB_SQL.= $saisie_join;
   $DB_SQL.= $where;
   $DB_SQL.= 'GROUP BY livret_epi_id ';
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC, groupe_nom ASC, livret_epi_theme_nom ASC ';
   $DB_VAR = array(
     ':page_ref'  => $page_ref ,
-    ':groupe_id' => $groupe_id ,
+    ':groupe_id' => $classe_id_or_listing_classe_id ,
   );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1322,12 +1336,15 @@ public static function DB_modifier_epi( $epi_id , $theme_code , $page_ref , $gro
  */
 public static function DB_supprimer_epi( $epi_id )
 {
+  // le dispositif
   $DB_SQL = 'DELETE sacoche_livret_epi, sacoche_livret_jointure_epi_prof ';
   $DB_SQL.= 'FROM sacoche_livret_epi ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_epi_prof USING (livret_epi_id) ';
   $DB_SQL.= 'WHERE livret_epi_id=:epi_id ';
   $DB_VAR = array( ':epi_id' => $epi_id );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  // les saisies
+  DB_STRUCTURE_LIVRET::DB_supprimer_saisies_dispositif( 'epi' , $epi_id );
 }
 
 /**
@@ -1351,13 +1368,24 @@ public static function DB_supprimer_epi_jointure( $epi_id )
 /**
  * lister_ap
  *
- * @param string $page_ref    facultatif, pour restreindre à une page du livret
- * @param int    $groupe_id   facultatif, pour restreindre à une classe donnée
+ * @param int|string $classe_id_or_listing_classe_id facultatif, pour restreindre à une classe ou un ensemble de classes
+ * @param string     $page_ref                       facultatif, pour restreindre à une page du livret
  * @return array
  */
-public static function DB_lister_ap( $page_ref = NULL , $groupe_id = NULL )
+public static function DB_lister_ap( $classe_id_or_listing_classe_id = NULL , $page_ref = NULL )
 {
-  $where = ($page_ref && $groupe_id) ? 'WHERE livret_page_ref=:page_ref AND groupe_id=:groupe_id ' : '' ;
+  if($classe_id_or_listing_classe_id && $page_ref)
+  {
+    $where = 'WHERE livret_page_ref=:page_ref AND groupe_id=:groupe_id ';
+  }
+  elseif($classe_id_or_listing_classe_id)
+  {
+    $where = 'WHERE groupe_id IN('.$classe_id_or_listing_classe_id.') ';
+  }
+  else
+  {
+    $where = ''; // Profil administrateur ou directeur
+  }
   $DB_SQL = 'SELECT sacoche_livret_ap.*, livret_page_ordre, livret_page_moment, groupe_nom, ';
   $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_id,"_",user_id) SEPARATOR " ") AS matiere_prof_id, ';
   $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_nom," - ",user_nom," ",user_prenom) SEPARATOR "§BR§") AS matiere_prof_texte ';
@@ -1373,7 +1401,7 @@ public static function DB_lister_ap( $page_ref = NULL , $groupe_id = NULL )
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC, groupe_nom ASC ';
   $DB_VAR = array(
     ':page_ref'  => $page_ref ,
-    ':groupe_id' => $groupe_id ,
+    ':groupe_id' => $classe_id_or_listing_classe_id ,
   );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1465,12 +1493,15 @@ public static function DB_modifier_ap( $ap_id , $page_ref , $groupe_id , $ap_tit
  */
 public static function DB_supprimer_ap( $ap_id )
 {
+  // le dispositif
   $DB_SQL = 'DELETE sacoche_livret_ap, sacoche_livret_jointure_ap_prof ';
   $DB_SQL.= 'FROM sacoche_livret_ap ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_ap_prof USING (livret_ap_id) ';
   $DB_SQL.= 'WHERE livret_ap_id=:ap_id ';
   $DB_VAR = array( ':ap_id' => $ap_id );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  // les saisies
+  DB_STRUCTURE_LIVRET::DB_supprimer_saisies_dispositif( 'ap' , $ap_id );
 }
 
 /**
@@ -1508,14 +1539,25 @@ public static function DB_lister_parcours_type()
 /**
  * lister_parcours
  *
- * @param string $parcours_code
- * @param string $page_ref    facultatif, pour restreindre à une page du livret
- * @param int    $groupe_id   facultatif, pour restreindre à une classe donnée
+ * @param string     $parcours_code
+ * @param int|string $classe_id_or_listing_classe_id facultatif, pour restreindre à une classe ou un ensemble de classes
+ * @param string     $page_ref                       facultatif, pour restreindre à une page du livret
  * @return array
  */
-public static function DB_lister_parcours( $parcours_code , $page_ref = NULL , $groupe_id = NULL )
+public static function DB_lister_parcours( $parcours_code , $classe_id_or_listing_classe_id = NULL , $page_ref = NULL )
 {
-  $where = ($page_ref && $groupe_id) ? 'AND livret_page_ref=:page_ref AND groupe_id=:groupe_id ' : '' ;
+  if($classe_id_or_listing_classe_id && $page_ref)
+  {
+    $where = 'AND livret_page_ref=:page_ref AND groupe_id=:groupe_id ';
+  }
+  elseif($classe_id_or_listing_classe_id)
+  {
+    $where = 'AND groupe_id IN('.$classe_id_or_listing_classe_id.') ';
+  }
+  else
+  {
+    $where = ''; // Profil administrateur ou directeur
+  }
   $DB_SQL = 'SELECT sacoche_livret_parcours.*, livret_parcours_type_nom, livret_page_ordre, livret_page_moment, ';
   $DB_SQL.= 'groupe_nom, user_nom AS prof_nom, user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM sacoche_livret_parcours ';
@@ -1530,7 +1572,7 @@ public static function DB_lister_parcours( $parcours_code , $page_ref = NULL , $
   $DB_VAR = array(
     ':parcours_code' => $parcours_code ,
     ':page_ref'      => $page_ref ,
-    ':groupe_id'     => $groupe_id ,
+    ':groupe_id'     => $classe_id_or_listing_classe_id ,
   );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1634,10 +1676,13 @@ public static function DB_modifier_parcours( $parcours_id , $parcours_code , $pa
  */
 public static function DB_supprimer_parcours( $parcours_id )
 {
+  // le dispositif
   $DB_SQL = 'DELETE FROM sacoche_livret_parcours ';
   $DB_SQL.= 'WHERE livret_parcours_id=:parcours_id ';
   $DB_VAR = array( ':parcours_id' => $parcours_id );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  // les saisies
+  DB_STRUCTURE_LIVRET::DB_supprimer_saisies_dispositif( 'parcours' , $parcours_id );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1662,18 +1707,20 @@ public static function DB_tester_modaccomp( $modaccomp_code )
 /**
  * lister_eleve_modaccomp
  *
- * @param string $liste_eleve    facultatif, pour restreindre à des élèves donnés
+ * @param string $liste_eleves_id   facultatif, pour restreindre à des élèves donnés
+ * @param string $only_groupes_id   facultatif, pour restreindre à un ensemble de groupes
  * @return array
  */
-public static function DB_lister_eleve_modaccomp( $liste_eleve = NULL )
+public static function DB_lister_eleve_modaccomp( $liste_eleves_id = NULL , $only_groupes_id = NULL )
 {
-  $where = ($liste_eleve) ? 'AND eleve_id IN('.$liste_eleve.') ' : '' ;
+  $where_eleve  = ($liste_eleves_id) ? 'AND eleve_id IN('.$liste_eleves_id.') '  : '' ;
+  $where_groupe = ($only_groupes_id) ? 'AND groupe_id IN('.$only_groupes_id.') ' : '' ;
   $DB_SQL = 'SELECT user_id, user_nom, user_prenom, groupe_nom, livret_modaccomp_code, livret_modaccomp_nom, info_complement ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_modaccomp_eleve ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_modaccomp USING(livret_modaccomp_code) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_modaccomp_eleve.eleve_id = sacoche_user.user_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe ON sacoche_user.eleve_classe_id = sacoche_groupe.groupe_id ';
-  $DB_SQL.= 'WHERE user_sortie_date>NOW() AND groupe_id IS NOT NULL '.$where;
+  $DB_SQL.= 'WHERE user_sortie_date>NOW() AND groupe_id IS NOT NULL '.$where_eleve.$where_groupe;
   $DB_SQL.= 'ORDER BY groupe_nom ASC, user_nom ASC, user_prenom ASC, livret_modaccomp_code ASC ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
@@ -1784,6 +1831,7 @@ public static function DB_supprimer_eleve_enscompl( $listing_eleve_id )
   $DB_SQL = 'DELETE FROM sacoche_livret_jointure_enscompl_eleve ';
   $DB_SQL.= 'WHERE eleve_id IN('.$listing_eleve_id.') ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL);
+  // on n'efface pas la saisie éventuelle pour la retrouver en cas de fausse manip ; son reliquat ne gène ni la saisie ni la collecte
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1821,21 +1869,23 @@ public static function DB_OPT_enscompl()
 /**
  * Retourner un tableau [valeur texte] des classes associées à une page du livret
  *
- * @param string   $page_ref
+ * @param string $page_ref
+ * @param string $only_groupes_id   facultatif, pour restreindre à un ensemble de groupes
  * @return array
  */
-public static function DB_OPT_groupes_for_page( $page_ref )
+public static function DB_OPT_groupes_for_page( $page_ref , $only_groupes_id = NULL )
 {
+  $where_groupe = ($only_groupes_id) ? 'AND groupe_id IN('.$only_groupes_id.') ' : '' ;
   $DB_SQL = 'SELECT groupe_id AS valeur, groupe_nom AS texte ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING(niveau_id) ';
-  $DB_SQL.= 'WHERE livret_page_ref=:page_ref ';
+  $DB_SQL.= 'WHERE livret_page_ref=:page_ref '.$where_groupe;
   $DB_SQL.= 'GROUP BY groupe_id ';
   $DB_SQL.= 'ORDER BY niveau_id ASC, groupe_nom ASC ';
   $DB_VAR = array( ':page_ref' => $page_ref );
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucune classe trouvée.' ;
+  return !empty($DB_TAB) ? $DB_TAB : ( ($where_groupe) ? 'Aucune classe trouvée sur laquelle vous ayez les droits suffisants.' : 'Aucune classe trouvée.' ) ;
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1887,11 +1937,15 @@ public static function DB_vider_livret()
 {
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_ap'       , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_epi'      , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_export'   , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_parcours' , NULL);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_epi_prof'        , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_ap_prof'  , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_epi_prof' , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_enscompl_eleve'  , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_modaccomp_eleve' , NULL);
-  // TODO : A AJOUTER LE MOMENT VENU...
-  // DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie' , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie' , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie_jointure_prof' , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie_memo_detail'   , NULL);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2161,33 +2215,50 @@ public static function DB_supprimer_saisie( $livret_saisie_id )
 }
 
 /**
+ * DB_supprimer_saisies_dispositif
+ *
+ * @param string  $rubrique_type
+ * @param int     $rubrique_id
+ * @return void
+ */
+public static function DB_supprimer_saisies_dispositif( $rubrique_type , $rubrique_id )
+{
+  $DB_SQL = 'DELETE sacoche_livret_saisie, sacoche_livret_saisie_jointure_prof ';
+  $DB_SQL.= 'FROM sacoche_livret_saisie ';
+  $DB_SQL.= 'LEFT JOIN sacoche_livret_saisie_jointure_prof USING (livret_saisie_id) ';
+  $DB_SQL.= 'WHERE rubrique_type=:rubrique_type AND rubrique_id=:rubrique_id ';
+  $DB_VAR = array(
+    ':rubrique_type' => $rubrique_type,
+    ':rubrique_id'   => $rubrique_id,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * DB_recuperer_elements_programme
  *
  * @param string $liste_eleve_id   id des élèves séparés par des virgules ; il peut n'y avoir qu'un id
  * @param int    $liste_item_id    id de items séparés par des virgules
- * @param string $mode_synthese    'predefini' ou 'theme' ou 'item'
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
  * @return array
  */
-public static function DB_recuperer_elements_programme( $liste_eleve_id , $liste_item_id , $mode_synthese , $date_mysql_debut , $date_mysql_fin )
+public static function DB_recuperer_elements_programme( $liste_eleve_id , $liste_item_id , $date_mysql_debut , $date_mysql_fin )
 {
-  $select_synthese   = ($mode_synthese=='predefini') ? ', referentiel_mode_synthese AS mode_synthese '        : '' ;
-  $where_eleve       = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '                    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-  $where_item        = (strpos($liste_item_id ,',')) ? 'item_id IN('. $liste_item_id .') '                    : 'item_id='. $liste_item_id .' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-  $where_date_debut  = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '                        : '' ;
-  $where_date_fin    = ($date_mysql_fin)             ? 'AND saisie_date<=:date_fin '                          : '' ;
-  $where_synthese    = ($mode_synthese=='predefini') ? 'AND referentiel_mode_synthese IN("domaine","theme") ' : '' ;
+  $where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') ' : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
+  $where_item       = (strpos($liste_item_id ,',')) ? 'item_id IN('. $liste_item_id .') ' : 'item_id='. $liste_item_id .' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
+  $where_date_debut = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '     : '' ;
+  $where_date_fin   = ($date_mysql_fin)             ? 'AND saisie_date<=:date_fin '       : '' ;
   $DB_SQL = 'SELECT eleve_id , item_id , item_nom , theme_id , theme_nom , domaine_id , domaine_nom , ';
-  $DB_SQL.= 'COUNT(*) AS eval_nb '.$select_synthese;
+  $DB_SQL.= 'COUNT(*) AS eval_nb , referentiel_mode_livret AS mode_livret ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'WHERE '.$where_eleve.'AND '.$where_item.$where_date_debut.$where_date_fin.$where_synthese;
+  $DB_SQL.= 'WHERE '.$where_eleve.'AND '.$where_item.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY eleve_id, item_id ';
-  $DB_SQL.= 'ORDER BY item_id ASC'; // Pour conserver le même ordre lors des différents appel si $mode_synthese = item
+  $DB_SQL.= 'ORDER BY item_id ASC'; // Pour conserver le même ordre lors des différents appel
   $DB_VAR = array(
     ':date_debut' => $date_mysql_debut,
     ':date_fin'   => $date_mysql_fin,

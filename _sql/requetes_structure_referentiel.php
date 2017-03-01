@@ -167,6 +167,24 @@ public static function DB_recuperer_socle2016_for_referentiel_matiere_niveau( $m
 }
 
 /**
+ * lister_referentiels
+ *
+ * @param string   $listing_matiere_id   rien pour toutes les matières
+ * @return array
+ */
+public static function DB_recuperer_referentiels($listing_matiere_id)
+{
+  $where_matiere = ($listing_matiere_id) ? 'AND matiere_id IN('.$listing_matiere_id.') ' : '' ;
+  $DB_SQL = 'SELECT matiere_id, niveau_id, matiere_nom, niveau_nom, referentiel_mode_synthese, referentiel_mode_livret ';
+  $DB_SQL.= 'FROM sacoche_referentiel ';
+  $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_niveau USING (niveau_id) ';
+  $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 '.$where_matiere;
+  $DB_SQL.= 'ORDER BY matiere_nom ASC, niveau_ordre ASC ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * recuperer_referentiels_domaines
  *
  * @param void
@@ -221,6 +239,22 @@ public static function DB_recuperer_referentiels_themes_cibles($listing_domaine_
   $DB_SQL = 'SELECT domaine_id, theme_id, theme_nom ';
   $DB_SQL.= 'FROM sacoche_referentiel_theme ';
   $DB_SQL.= 'WHERE domaine_id IN('.$listing_domaine_id.') ';
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * recuperer_referentiels_items
+ *
+ * @param void
+ * @return array
+ */
+public static function DB_recuperer_referentiels_items()
+{
+  $DB_SQL = 'SELECT matiere_id, niveau_id, item_nom ';
+  $DB_SQL.= 'FROM sacoche_referentiel_item ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+  $DB_SQL.= 'ORDER BY domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

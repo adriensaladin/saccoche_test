@@ -453,6 +453,12 @@ class Clean
     return in_array($text,$tab) ? $text : NULL ;
   }
 
+  public static function synthese_livret($text)
+  {
+    $tab = array('domaine','theme','item');
+    return in_array($text,$tab) ? $text : NULL ;
+  }
+
   public static function referentiel_partage($text)
   {
     $tab = array('oui','non','bof','hs');

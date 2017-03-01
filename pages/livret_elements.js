@@ -66,21 +66,10 @@ $(document).ready
       {
         var ids = $(this).attr('name').substr(2);
         var option_valeur = $(this).val();
-        switch (option_valeur)
-        {
-          case 'domaine':
-            $('#domaine_'+ids).removeAttr('class');
-            $('#theme_'+ids).addClass("hide");
-            break;
-          case 'theme':
-            $('#domaine_'+ids).addClass("hide");
-            $('#theme_'+ids).removeAttr('class');
-            break;
-          case 'sans':
-            $('#domaine_'+ids).addClass("hide");
-            $('#theme_'+ids).addClass("hide");
-            break;
-        }
+        $('#domaine_'+ids).addClass("hide");
+        $('#theme_'  +ids).addClass("hide");
+        $('#item_'   +ids).addClass("hide");
+        $('#'+option_valeur+'_'+ids).removeAttr('class');
         $('#bouton_'+ids).prop('disabled',false);
         $('#label_'+ids).attr('class','alerte').html("Modification non enregistrée !");
       }

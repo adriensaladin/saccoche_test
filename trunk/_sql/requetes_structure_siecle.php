@@ -41,12 +41,12 @@ class DB_STRUCTURE_SIECLE extends DB
  *
  * @param string   $import_objet
  * @param string   $import_annee
- * @param array    $import_xml
+ * @param array    $import_data   xml pour SIECLE, array pour ONDE
  * @return void
  */
-public static function DB_ajouter_import( $import_objet , $import_annee , $import_xml )
+public static function DB_ajouter_import( $import_objet , $import_annee , $import_data )
 {
-  $import_json = json_encode( (array)$import_xml );
+  $import_json = json_encode( (array)$import_data );
   if($import_objet=='Eleves')
   {
     // Testé avant la requête et non après avec DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) car un "Warning: PDOStatement::execute(): MySQL server has gone away" ne permet pas de poursuivre.
@@ -99,6 +99,26 @@ public static function DB_recuperer_import_date_annee( $import_objet )
   $DB_SQL.= 'WHERE siecle_import_objet=:import_objet ';
   $DB_VAR = array( ':import_objet' => $import_objet );
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_groupe_ref_1d ; pour une transition de BE1D à ONDE
+ * pas de rapport avec la table [sacoche_siecle_import] mais mis ici car requête particulière et provisoire liée aux bases E.N.
+ *
+ * @param string $groupe_ref_old
+ * @param string $groupe_ref_new
+ * @return void
+ */
+public static function DB_modifier_groupe_ref_1d( $groupe_ref_old , $groupe_ref_new )
+{
+  $DB_SQL = 'UPDATE sacoche_groupe ';
+  $DB_SQL.= 'SET groupe_ref=:groupe_ref_new ';
+  $DB_SQL.= 'WHERE groupe_ref=:groupe_ref_old AND groupe_type="classe" ';
+  $DB_VAR = array(
+    ':groupe_ref_old' => $groupe_ref_old,
+    ':groupe_ref_new' => $groupe_ref_new,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 }

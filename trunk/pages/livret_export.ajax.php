@@ -32,70 +32,6 @@ $action  = (isset($_POST['f_action']))  ? Clean::texte($_POST['f_action'])  : ''
 $section = (isset($_POST['f_section'])) ? Clean::texte($_POST['f_section']) : '' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Il se peut que rien n'ait été récupéré à cause de l'upload d'un fichier trop lourd
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if(empty($_POST))
-{
-  Json::end( FALSE , 'Aucune donnée reçue ! Fichier trop lourd ? '.InfoServeur::minimum_limitations_upload() );
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Import d'un fichier SIECLE
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$annee_scolaire = To::annee_scolaire('siecle');
-$tab_fichier = array(
-  'Eleves'       => 'ElevesSansAdresses.xml' ,
-  'sts_emp_UAI'  => 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml' ,
-  'Nomenclature' => 'Nomenclature.xml' ,
-);
-
-if( isset($tab_fichier[$action]) )
-{
-  // Nom du fichier à extraire si c'est un fichier zippé
-  $nom_fichier_extrait = $tab_fichier[$action];
-  // Récupération du fichier
-  $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $nom_fichier_extrait /*fichier_nom*/ , array('zip','xml') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , $nom_fichier_extrait /*filename_in_zip*/ );
-  if($result!==TRUE)
-  {
-    Json::end( FALSE , $result );
-  }
-  $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$nom_fichier_extrait);
-  if($xml===FALSE)
-  {
-    Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
-  }
-  // Vérifications
-  if($action=='sts_emp_UAI')
-  {
-    $editeur_prive_edt = @(string)$xml->PARAMETRES->APPLICATION_SOURCE;
-    if($editeur_prive_edt)
-    {
-      Json::end( FALSE , 'Le fichier transmis est issu d\'un éditeur privé d\'emploi du temps, pas de STS !' );
-    }
-  }
-  $uai = ($action=='sts_emp_UAI') ? @(string)$xml->PARAMETRES->UAJ->attributes()->CODE : @(string)$xml->PARAMETRES->UAJ ;
-  if(!$uai)
-  {
-    Json::end( FALSE , 'Le contenu du fichier transmis ne correspond pas à ce qui est attendu !' );
-  }
-  if($uai!=$_SESSION['WEBMESTRE_UAI'])
-  {
-    Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
-  }
-  $annee = ($action=='sts_emp_UAI') ? @(string)$xml->PARAMETRES->ANNEE_SCOLAIRE->attributes()->ANNEE : @(string)$xml->PARAMETRES->ANNEE_SCOLAIRE ;
-  $annee_scolaire = To::annee_scolaire('siecle');
-  if( $annee_scolaire !== $annee )
-  {
-    Json::end( FALSE , 'Le fichier transmis ne correspond pas à l\'année scolaire '.$annee_scolaire.' !' );
-  }
-  // Archivage
-  DB_STRUCTURE_SIECLE::DB_ajouter_import( $action , $annee , $xml );
-  Json::end( TRUE );
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération des valeurs transmises
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -138,7 +74,7 @@ $tab_export_type = array(
   'cycle4' => 'college',
 );
 
-$version_xsd_college = (version_compare(TODAY_MYSQL,'2017-03-01','<')) ? '2.0' : '3.0' ;
+$version_xsd_college = '3.0'; // $version_xsd_college = (version_compare(TODAY_MYSQL,'2017-03-01','<')) ? '2.0' : '3.0' ;
 
 $tab_xml_param = array(
   'ecole' => array(
@@ -499,10 +435,9 @@ foreach($tab_export_donnees as $key => $tab_donnee_bilan)
   // bilan périodique
   if($tab_bilan['type']=='periode')
   {
-    $date_verrou = ( ($export_objet=='college') && ($version_xsd_college=='2.0') ) ? substr($tab_bilan['date-verrou'],0,10) : $tab_bilan['date-verrou'] ;
     $date_bilan  = ($export_objet=='college') ? 'date-conseil-classe="'.$tab_bilan['date-conseil-classe'].'"' : 'date-creation="'.$tab_bilan['date-creation'].'"' ;
     $profs_eleve_refs = !empty($tab_bilan[$key_profs_eleve]) ? ' '.$key_profs_eleve.'="'.$tab_bilan[$key_profs_eleve].'"' : '' ;
-    $tab_xml_bilans['periodique'][] = '   <bilan-periodique'.$profs_eleve_refs.' eleve-ref="'.$tab_bilan['eleve-ref'].'" periode-ref="'.$tab_bilan['periode-ref'].'" '.$date_bilan.' date-scolarite="'.$tab_bilan['date-scolarite'].'" date-verrou="'.$date_verrou.'" '.$key_chef_etabl.'="'.$tab_bilan[$key_chef_etabl].'">';
+    $tab_xml_bilans['periodique'][] = '   <bilan-periodique'.$profs_eleve_refs.' eleve-ref="'.$tab_bilan['eleve-ref'].'" periode-ref="'.$tab_bilan['periode-ref'].'" '.$date_bilan.' date-scolarite="'.$tab_bilan['date-scolarite'].'" date-verrou="'.$tab_bilan['date-verrou'].'" '.$key_chef_etabl.'="'.$tab_bilan[$key_chef_etabl].'">';
     $champ_position = $tab_bilan['position'];
     // liste-acquis
     $tab_xml_bilans['periodique'][] = '    <liste-acquis>';
@@ -716,10 +651,6 @@ if(!empty($tab_xml_bilans['periodique']))
 }
 if(!empty($tab_xml_bilans['cycle']))
 {
-  if( ($export_objet=='college') && ($version_xsd_college=='2.0') )
-  {
-    Json::end( FALSE , 'Les bilans de fin de cycle ne peuvent être importés que dans LSU 17.1 déployé dans les académies à compter du 20 février 2017.<br />À la demande de LSU, cet export ne sera mis à disposition dans SACoche qu\'à compter du 1er mars 2017.<br />En attendant, veuillez ne choisir que des bilans périodiques.' );
-  }
   $tab_xml[] = '  <bilans-cycle>';
   $tab_xml[] = implode(NL,$tab_xml_bilans['cycle']);
   $tab_xml[] = '  </bilans-cycle>';
@@ -771,7 +702,7 @@ $dom_xml->loadXML($export_xml);
 if(!$dom_xml->schemaValidate(CHEMIN_DOSSIER_XSD.$tab_xml_param[$export_objet]['file_xsd']))
 {
   $errors = libxml_get_errors();
-  Json::add_str( '<p><label class="erreur">Fichier XML obtenu détecté invalide ; veuillez prendre contact avec l\'assistance de SACoche.</label></p>' );
+  Json::add_str( '<p><label class="erreur">Fichier XML obtenu détecté invalide ; veuillez '.HtmlMail::to(SACOCHE_CONTACT_COURRIEL,'export LSU - fichier XML invalide','prendre contact avec l\'assistance de SACoche','Veuillez joindre une sauvegarde de votre base de données et préciser la classe ou l\'élève concerné.').'.</label></p>' );
   foreach ($errors as $error)
   {
     Json::add_str( libxml_display_error($error) );

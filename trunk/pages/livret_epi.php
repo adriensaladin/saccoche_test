@@ -198,8 +198,10 @@ for( $nb=1 ; $nb<=15 ; $nb++)
     {
       foreach($DB_TAB as $DB_ROW)
       {
+        $nb_mat_prof = substr_count( $DB_ROW['matiere_prof_texte'] , '§BR§' ) + 1 ;
+        $epi_used = $DB_ROW['epi_used'] / ( 3 * $nb_mat_prof );
         // Afficher une ligne du tableau
-        echo'<tr id="id_'.$DB_ROW['livret_epi_id'].'">';
+        echo'<tr id="id_'.$DB_ROW['livret_epi_id'].'" data-used="'.$epi_used.'">';
         echo  '<td data-id="'.$DB_ROW['livret_page_ref'].'"><i>'.sprintf($page_ordre_format,$DB_ROW['livret_page_ordre']).'</i>'.html($DB_ROW['livret_page_moment']).'</td>';
         echo  '<td data-id="'.$DB_ROW['groupe_id'].'">'.html($DB_ROW['groupe_nom']).'</td>';
         echo  '<td data-id="'.$DB_ROW['livret_epi_theme_code'].'">'.html($DB_ROW['livret_epi_theme_nom']).'</td>';
@@ -237,6 +239,7 @@ for( $nb=1 ; $nb<=15 ; $nb++)
   <div id="gestion_delete">
     <p>Confirmez-vous la suppression de l'E.P.I. &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
+  <p id="alerte_used" class="fluo"><input id="f_usage" name="f_usage" type="hidden" value="" /><span class="danger b">Ce dispositif comporte des saisies sur le Livret scolaire.<br />Un E.P.I. déjà utilisé ne devrait pas être modifié, et encore moins supprimé.</span></p>
   <p>
     <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>

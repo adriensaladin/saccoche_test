@@ -136,7 +136,7 @@ foreach($tab_indices_fichier as $i_fichier)
   // Cas [2] : présent dans le fichier, absent de la base, prof ou classe indiquée dans le fichier si élève : contenu à ajouter (nouvel élève ou nouveau professeur / directeur)
   elseif( (!$id_base) && ( ($import_profil!='eleve') || ($tab_users_fichier['classe'][$i_fichier]) ) )
   {
-    $indication = ($import_profil=='eleve') ? substr($tab_users_fichier['classe'][$i_fichier],1) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
+    $indication = ($import_profil=='eleve') ? Clean::ref(substr($tab_users_fichier['classe'][$i_fichier],1)) : $tab_users_fichier['profil_sigle'][$i_fichier] ;
     $lignes_ajouter .= '<tr><th>Ajouter <input id="add_'.$i_fichier.'" name="add_'.$i_fichier.'" type="checkbox" checked /></th><td>'.html($tab_users_fichier['sconet_id'][$i_fichier].' / '.$tab_users_fichier['sconet_num'][$i_fichier].' / '.$tab_users_fichier['reference'][$i_fichier].' || '.$tab_users_fichier['nom'][$i_fichier].' '.$tab_users_fichier['prenom'][$i_fichier].' ('.$indication.')').'</td></tr>'.NL;
     $id_classe = ( ($import_profil=='eleve') && isset($tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]]) ) ? $tab_i_classe_TO_id_base[$tab_users_fichier['classe'][$i_fichier]] : 0 ;
     $email_origine = ($tab_users_fichier['courriel'][$i_fichier]) ? 'admin' : '' ;

@@ -38,6 +38,8 @@ $test_UAI = ($_SESSION['WEBMESTRE_UAI']) ? 'oui' : 'non' ;
 $annee_siecle = To::annee_scolaire('siecle');
 $nom_fin_fichier = $_SESSION['WEBMESTRE_UAI'].'_'.$annee_siecle;
 
+$auto_select_categorie = isset($_GET['categorie']) ? Clean::fichier($_GET['categorie']) : '' ;
+
 // Javascript
 $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
 $check_eleve      = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_ELEVES']      ) ? 'complet' : 'partiel' ;
@@ -46,6 +48,7 @@ $check_professeur = ( $jour_debut_annee_scolaire > $_SESSION['DATE_LAST_IMPORT_P
 Layout::add( 'js_inline_before' , 'var check_eleve      = "'.$check_eleve.'";' );
 Layout::add( 'js_inline_before' , 'var check_parent     = "'.$check_parent.'";' );
 Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'";' );
+Layout::add( 'js_inline_before' , 'var auto_select_categorie = "'.$auto_select_categorie.'";' );
 
 ?>
 
@@ -66,16 +69,16 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
     <select id="f_choix_principal" name="f_choix_principal">
       <option value="">&nbsp;</option>
       <optgroup label="Fichiers extraits de Siècle / STS-Web (recommandé pour le second degré)">
-        <option value="sconet_nomenclature_<?php echo $test_UAI ?>">Importer les nomenclatures (pour le LSU).</option>
-        <option value="sconet_professeurs_directeurs_<?php echo $test_UAI ?>">Importer les professeurs &amp; directeurs (avec leurs affectations).</option>
-        <option value="sconet_eleves_<?php echo $test_UAI ?>">Importer les élèves (avec leurs affectations).</option>
-        <option value="sconet_parents_<?php echo $test_UAI ?>">Importer les parents (avec adresses et responsabilités).</option>
+        <option value="siecle_nomenclature_<?php echo $test_UAI ?>">Importer les nomenclatures (pour le LSU).</option>
+        <option value="siecle_professeurs_directeurs_<?php echo $test_UAI ?>">Importer les professeurs &amp; directeurs (avec leurs affectations).</option>
+        <option value="siecle_eleves_<?php echo $test_UAI ?>">Importer les élèves (avec leurs affectations).</option>
+        <option value="siecle_parents_<?php echo $test_UAI ?>">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
-      <optgroup label="Fichier extrait de Base Élèves (recommandé pour le premier degré)">
-        <option value="base_eleves_eleves">Importer les élèves (avec leurs affectations).</option>
-        <option value="base_eleves_parents">Importer les parents (avec adresses et responsabilités).</option>
+      <optgroup label="Fichiers extraits de ONDE ex-BE1D (recommandé pour le premier degré)">
+        <option value="onde_eleves">Importer les élèves (avec leurs affectations).</option>
+        <option value="onde_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
-      <optgroup label="Fichier extrait de Factos (recommandé pour les établissements français à l'étranger)">
+      <optgroup label="Fichiers extraits de Factos (recommandé pour les établissements français à l'étranger)">
         <option value="factos_eleves">Importer les élèves (avec leurs affectations).</option>
         <option value="factos_parents">Importer les parents (avec adresses et responsabilités).</option>
       </optgroup>
@@ -92,75 +95,75 @@ Layout::add( 'js_inline_before' , 'var check_professeur = "'.$check_professeur.'
     </span>
   </fieldset>
 
-  <fieldset id="fieldset_sconet_nomenclature_non" class="hide">
+  <fieldset id="fieldset_siecle_nomenclature_non" class="hide">
     <hr />
     <label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
     <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voir la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
   </fieldset>
 
-  <fieldset id="fieldset_sconet_nomenclature_oui" class="hide">
+  <fieldset id="fieldset_siecle_nomenclature_oui" class="hide">
     <hr />
     <ul class="puce">
-      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
-      <li>Indiquez le fichier <em>Nomenclature.xml</em> (ou Nomenclature.zip</em>) : <button id="sconet_nomenclature" type="button" class="fichier_import">Parcourir...</button></li>
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_siecle">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
+      <li>Indiquez le fichier <em>Nomenclature.xml</em> (ou Nomenclature.zip</em>) : <button id="siecle_nomenclature" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
-  <fieldset id="fieldset_sconet_professeurs_directeurs_non" class="hide">
+  <fieldset id="fieldset_siecle_professeurs_directeurs_non" class="hide">
     <hr />
     <label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
     <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voir la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
   </fieldset>
 
-  <fieldset id="fieldset_sconet_professeurs_directeurs_oui" class="hide">
+  <fieldset id="fieldset_siecle_professeurs_directeurs_oui" class="hide">
     <hr />
     <ul class="puce">
-      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
-      <li>Indiquez le fichier <em>sts_emp_<?php echo $nom_fin_fichier ?>.xml</em> (ou <em>sts_emp_<?php echo $nom_fin_fichier ?>.zip</em>) : <button id="sconet_professeurs_directeurs" type="button" class="fichier_import">Parcourir...</button></li>
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_siecle">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
+      <li>Indiquez le fichier <em>sts_emp_<?php echo $nom_fin_fichier ?>.xml</em> (ou <em>sts_emp_<?php echo $nom_fin_fichier ?>.zip</em>) : <button id="siecle_professeurs_directeurs" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
-  <fieldset id="fieldset_sconet_eleves_non" class="hide">
+  <fieldset id="fieldset_siecle_eleves_non" class="hide">
     <hr />
     <label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
     <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voir la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
   </fieldset>
 
-  <fieldset id="fieldset_sconet_eleves_oui" class="hide">
+  <fieldset id="fieldset_siecle_eleves_oui" class="hide">
     <hr />
     <ul class="puce">
-      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
-      <li>Indiquez le fichier <em>ExportXML_ElevesSansAdresses.zip</em> (ou <em>ElevesSansAdresses.xml</em>) : <button id="sconet_eleves" type="button" class="fichier_import">Parcourir...</button></li>
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_siecle">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
+      <li>Indiquez le fichier <em>ExportXML_ElevesSansAdresses.zip</em> (ou <em>ElevesSansAdresses.xml</em>) : <button id="siecle_eleves" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
-  <fieldset id="fieldset_sconet_parents_non" class="hide">
+  <fieldset id="fieldset_siecle_parents_non" class="hide">
     <hr />
     <label class="alerte">Le numéro UAI de l'établissement n'étant pas renseigné, cette procédure ne peut pas être utilisée.</label>
     <div class="astuce">Vous devez demander au webmestre d'indiquer votre numéro UAI : voir la page [<a href="./index.php?page=administrateur_etabl_identite">Identité de l'établissement</a>].</div>
   </fieldset>
 
-  <fieldset id="fieldset_sconet_parents_oui" class="hide">
+  <fieldset id="fieldset_siecle_parents_oui" class="hide">
     <hr />
     <ul class="puce">
-      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
-      <li>Indiquer le fichier <em>ResponsablesAvecAdresses.zip</em> (ou <em>ResponsablesAvecAdresses.xml</em>) : <button id="sconet_parents" type="button" class="fichier_import">Parcourir...</button></li>
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_siecle">DOC : Import d'utilisateurs depuis Siècle / STS-Web</a></span></li>
+      <li>Indiquer le fichier <em>ResponsablesAvecAdresses.zip</em> (ou <em>ResponsablesAvecAdresses.xml</em>) : <button id="siecle_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
-  <fieldset id="fieldset_base_eleves_eleves" class="hide">
+  <fieldset id="fieldset_onde_eleves" class="hide">
     <hr />
     <ul class="puce">
-      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
-      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base_eleves_eleves" type="button" class="fichier_import">Parcourir...</button></li>
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_onde">DOC : Import d'utilisateurs depuis ONDE (ex-BE1D)</a></span></li>
+      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="onde_eleves" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 
-  <fieldset id="fieldset_base_eleves_parents" class="hide">
+  <fieldset id="fieldset_onde_parents" class="hide">
     <hr />
     <ul class="puce">
-      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_base-eleves">DOC : Import d'utilisateurs depuis Base Élèves 1<sup>er</sup> degré</a></span></li>
-      <li>Indiquer le fichier <em>CSVExtraction.csv</em> : <button id="base_eleves_parents" type="button" class="fichier_import">Parcourir...</button></li>
+      <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_onde">DOC : Import d'utilisateurs depuis ONDE (ex-BE1D)</a></span></li>
+      <li>Indiquer le fichier <em>CSVExtraction Parents.csv</em> : <button id="onde_parents" type="button" class="fichier_import">Parcourir...</button></li>
     </ul>
   </fieldset>
 

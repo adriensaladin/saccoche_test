@@ -104,7 +104,10 @@ $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matie
 
 $champ_classe     = ($BILAN_TYPE_ETABL=='college') ? 'code-division'    : 'classe-ref' ;
 $champ_chef_etabl = ($BILAN_TYPE_ETABL=='college') ? 'responsable-etab' : 'directeur' ;
-$classe_value     = ($BILAN_TYPE_ETABL=='college') ? $classe_ref        : 'CL'.$classe_id ;
+// Au 1D : 6 chiffres dans ONDE, mais complété dans SACoche avec le niveau.
+// Au 2D : 8 caractères dans SIECLE BEE, mais peut avoir été modifié car 10 max dans SACoche à cause du 1D.
+$classe_value     = ($BILAN_TYPE_ETABL=='college') ? mb_substr($classe_ref,0,8) : mb_substr($classe_ref,0,6) ;
+$tab_classe = array();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et mettre en session les infos sur les seuils enregistrés
@@ -123,21 +126,6 @@ if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Récupérer la classe (1D)
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-$tab_classe = array();
-
-if($BILAN_TYPE_ETABL=='ecole')
-{
-  $key_classe = $classe_value;
-  $tab_classe[$key_classe] = array(
-    'id-be'   => sprintf("%'96u",$classe_id), // En attendant l'identifiant de classe de BE1D...
-    'libelle' => $classe_nom, // max 50 caractères : 20 dans SACoche
-  );
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer la période
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -145,7 +133,7 @@ if($BILAN_TYPE_ETABL=='ecole')
 // La clef d'unicité n'étant pas seulement sur millésime x indice x période, la solution consiste à avoir un id de période différent par classe
 
 $tab_periode = array();
-$key_periode = ($BILAN_TYPE_ETABL=='college') ? 'PER'.$periode_id : 'PER'.$periode_id.'CL'.$classe_id ;
+$key_periode = ($BILAN_TYPE_ETABL=='college') ? 'PER'.$periode_id : 'PER'.$periode_id.'CL'.$classe_value ;
 $affichage_periode = ($PAGE_PERIODICITE=='periode') ? TRUE : FALSE ;
 
 $tab_periode = (!$affichage_periode) ? array() : array(
@@ -154,7 +142,7 @@ $tab_periode = (!$affichage_periode) ? array() : array(
     'indice'      => substr($periode_nom,-3,1),
     'nb-periodes' => substr($periode_nom,-1),
     'date-debut'  => $date_debut, // 1D
-    'date-fin'    => $date_fin, // 1D
+    'date-fin'    => $date_fin,   // 1D
   )
 );
 
@@ -251,13 +239,13 @@ $tab_lsu_prof_type    = array_fill_keys( array('epp','local'), TRUE );
 $tab_lsu_mod_election = array_fill_keys( array('S','O','F','N','L','R','X'), TRUE );
 unset($tab_lsu_mod_election['N']); // Dans SIECLE mais pas dans les spécifications...
 
-if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
+if($BILAN_TYPE_ETABL=='college')
 {
   // Fichier sts_emp_UAI
   $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('sts_emp_UAI');
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Fichier sts_emp_UAI manquant ! À importer page précédente...' );
+    Json::end( FALSE , 'Fichier sts_emp_UAI manquant ! Voir page précédente pour les consignes.' );
   }
   // Ref classe
   if(empty($DB_TAB['DONNEES']['STRUCTURE']['DIVISIONS']['DIVISION']))
@@ -282,9 +270,9 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
       }
     }
   }
-  if(!isset($tab_siecle_division[$classe_ref]))
+  if(!isset($tab_siecle_division[$classe_value]))
   {
-    Json::end( FALSE , 'La référence de la classe "'.$classe_ref.'" ne figure pas dans celles du fichier SIECLE !<br />SIECLE comporte '.implode(' ',array_keys($tab_siecle_division)) );
+    Json::end( FALSE , 'La référence de la classe "'.$classe_value.'" ne figure pas dans celles du fichier SIECLE !<br />SIECLE comporte '.implode(' ',array_keys($tab_siecle_division)) );
   }
   // Type epp | local
   if(empty($DB_TAB['DONNEES']['INDIVIDUS']['INDIVIDU']))
@@ -300,7 +288,7 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
   $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Nomenclature');
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Fichier Nomenclature manquant ! À importer page précédente...' );
+    Json::end( FALSE , 'Fichier Nomenclature manquant ! Voir page précédente pour les consignes.' );
   }
   // Modalités d'élection
   if(empty($DB_TAB['DONNEES']['PROGRAMMES']['PROGRAMME']))
@@ -310,7 +298,7 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
   $tab_siecle_modalite_election = array();
   foreach($DB_TAB['DONNEES']['PROGRAMMES']['PROGRAMME'] as $tab)
   {
-    if( isset($tab_siecle_division[$classe_ref][$tab['CODE_MEF']]) && (float)$tab['HORAIRE'] )
+    if( isset($tab_siecle_division[$classe_value][$tab['CODE_MEF']]) && (float)$tab['HORAIRE'] )
     {
       $tab_siecle_modalite_election[ $tab['CODE_MATIERE'] ] = $tab['CODE_MODALITE_ELECT'];
     }
@@ -319,7 +307,7 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
   $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Eleves');
   if(empty($DB_TAB))
   {
-    Json::end( FALSE , 'Fichier ElevesSansAdresses manquant ! À importer page précédente...' );
+    Json::end( FALSE , 'Fichier ElevesSansAdresses manquant ! Voir page précédente pour les consignes.' );
   }
   if(empty($DB_TAB['DONNEES']['ELEVES']['ELEVE']))
   {
@@ -338,6 +326,58 @@ if( in_array( $PAGE_REF , array('6e','5e','4e','3e') ) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Vérifier des infos dans le fichier ONDE archivé : ref classe (récupérer au passage le nom complet de la classe)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($BILAN_TYPE_ETABL=='ecole')
+{
+  $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Onde');
+  if(empty($DB_TAB))
+  {
+    Json::end( FALSE , 'Fichier CSVExtraction manquant ! Voir page précédente pour les consignes.' );
+  }
+  $separateur = OutilCSV::extraire_separateur($DB_TAB[0]); // Déterminer la nature du séparateur
+  // Utiliser la 1e ligne pour repérer les colonnes intéressantes
+  $numero_colonne_classe_id  = -1;
+  $numero_colonne_classe_nom = -1;
+  $tab_elements = str_getcsv($DB_TAB[0],$separateur);
+  foreach ($tab_elements as $numero=>$element)
+  {
+    $numero_colonne_classe_id  = ($element=='Identifiant classe') ? $numero : $numero_colonne_classe_id ;
+    $numero_colonne_classe_nom = ($element=='Libellé classe')     ? $numero : $numero_colonne_classe_nom ;
+  }
+  if( ($numero_colonne_classe_id<0) || ($numero_colonne_classe_nom<0) )
+  {
+    Json::end( FALSE , 'Données de classe absentes du fichier CSVExtraction !' );
+  }
+  unset($DB_TAB[0]); // Supprimer la 1e ligne
+  $tab_onde_classe = array();
+  $numero_colonne_max = max($numero_colonne_classe_id,$numero_colonne_classe_nom);
+  foreach ($DB_TAB as $ligne_contenu)
+  {
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
+    if(count($tab_elements)>$numero_colonne_max)
+    {
+      $onde_classe_id  = $tab_elements[$numero_colonne_classe_id];
+      $onde_classe_nom = $tab_elements[$numero_colonne_classe_nom];
+      $tab_onde_classe[$onde_classe_id] = $onde_classe_nom;
+    }
+  }
+  if(!isset($tab_onde_classe[$classe_value]))
+  {
+    Json::end( FALSE , 'L\'identifiant de la classe "'.$classe_value.'" ne figure pas dans celles du fichier ONDE !<br />ONDE comporte '.implode(' ',array_keys($tab_onde_classe)) );
+  }
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Récupérer la classe (1D)
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  $key_classe = 'CL'.$classe_value;
+  $tab_classe[$key_classe] = array(
+    'id-be'   => $classe_value,
+    'libelle' => $tab_onde_classe[$classe_value], // max 50 caractères : sans doute pareil dans ONDE
+  );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer la liste des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -349,19 +389,15 @@ if(empty($DB_TAB))
 }
 foreach($DB_TAB as $DB_ROW)
 {
-  // hack en attendant un identifiant extrait de BE1D
-  if( ($BILAN_TYPE_ETABL=='ecole') && !$DB_ROW['user_reference'] )
-  {
-    $DB_ROW['user_reference'] = sprintf("%'911u",$DB_ROW['user_id']); // En attendant l'identifiant INE de BE1D...
-  }
   if( ( ($BILAN_TYPE_ETABL=='college') && $DB_ROW['user_sconet_id'] ) || ( ($BILAN_TYPE_ETABL=='ecole') && $DB_ROW['user_reference'] ) )
   {
+    $classe_eleve = ($BILAN_TYPE_ETABL=='college') ? $classe_value : $key_classe ;
     $tab_eleve[$DB_ROW['user_id']] = array(
       'eleve'         => array(
         'id'          => 'ELV'.$DB_ROW['user_id'],
         'id-be'       => $DB_ROW['user_sconet_id'], // 2D
         'ine'         => $DB_ROW['user_reference'], // 1D
-        $champ_classe => $classe_value, // max 8 caractères : idem dans SACoche
+        $champ_classe => $classe_eleve, // 2D c'est la référence SIECLE ; 1D c'est une chaine alphanumérique qui permet d'obtenir l'identifiant ONDE via un autre tableau
         'nom'         => $DB_ROW['user_nom'], // max 100 caractères : 25 dans SACoche
         'prenom'      => $DB_ROW['user_prenom'], // max 100 caractères : 25 dans SACoche
       ),
@@ -405,7 +441,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if(empty($tab_eleve))
 {
-  Json::end( FALSE , 'Aucun élève trouvé avec un identifiant SCONET renreigné !' );
+  Json::end( FALSE , 'Aucun élève trouvé avec un identifiant SIECLE (2D) / ONDE (1D) renseigné !' );
 }
 $liste_eleve_id = implode(',',array_keys($tab_eleve));
 
@@ -726,11 +762,12 @@ if($PAGE_PARCOURS)
     if(!empty($DB_TAB))
     {
       $DB_ROW = $DB_TAB[0]; // 1 parcours de chaque type au maximum par classe
-      $key_rubrique = 'PAR'.$DB_ROW['livret_parcours_id'].$key_periode;
+      $key_parcours = ($BILAN_TYPE_ETABL=='college') ? 'PAR'.$DB_ROW['livret_parcours_id'] : substr($parcours_code,-3).$classe_value ; // à cause des parcours définis au 1D sur des bouts de classe... et donc avec des ids différents
+      $key_rubrique = $key_parcours.$key_periode;
       $projet = isset($tab_saisie[0]['parcours'][$DB_ROW['livret_parcours_id']]['appreciation']) ? $tab_saisie[0]['parcours'][$DB_ROW['livret_parcours_id']]['appreciation']['saisie_valeur'] : NULL ;
       $tab_parcours[$key_rubrique] = array(
         'periode-ref' => $key_periode ,
-        $champ_classe => $classe_value ,
+        $champ_classe => $classe_eleve ,
         'code'        => $parcours_code ,
         'projet'      => $projet ,
       );

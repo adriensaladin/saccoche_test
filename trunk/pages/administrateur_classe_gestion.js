@@ -174,13 +174,13 @@ $(document).ready
         rules :
         {
           f_niveau : { required:true },
-          f_ref    : { required:true , maxlength:8 },
+          f_ref    : { required:true , maxlength:10 },
           f_nom    : { required:true , maxlength:20 }
         },
         messages :
         {
           f_niveau : { required:"niveau manquant" },
-          f_ref    : { required:"référence manquante" , maxlength:"8 caractères maximum" },
+          f_ref    : { required:"référence manquante" , maxlength:"10 caractères maximum" },
           f_nom    : { required:"nom manquant" , maxlength:"20 caractères maximum" }
         },
         errorElement : "label",

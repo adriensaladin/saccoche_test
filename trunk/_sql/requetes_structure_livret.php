@@ -1178,7 +1178,7 @@ public static function DB_lister_epi( $classe_id_or_listing_classe_id = NULL , $
   {
     $where = ''; // Profil administrateur ou directeur
   }
-  $saisie_count = ($page_ref) ? '' : 'COUNT(livret_saisie_id) AS nombre, ' ;
+  $saisie_count = ($page_ref) ? '' : 'COUNT(livret_saisie_id) AS epi_used, ' ;
   $saisie_join  = ($page_ref) ? '' : 'LEFT JOIN sacoche_livret_saisie ON sacoche_livret_epi.livret_epi_id=sacoche_livret_saisie.rubrique_id AND rubrique_type="epi" ' ;
   $DB_SQL = 'SELECT sacoche_livret_epi.*, livret_page_ordre, livret_page_moment, groupe_nom, livret_epi_theme_nom, '.$saisie_count;
   $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_id,"_",user_id) SEPARATOR " ") AS matiere_prof_id, ';
@@ -1386,7 +1386,9 @@ public static function DB_lister_ap( $classe_id_or_listing_classe_id = NULL , $p
   {
     $where = ''; // Profil administrateur ou directeur
   }
-  $DB_SQL = 'SELECT sacoche_livret_ap.*, livret_page_ordre, livret_page_moment, groupe_nom, ';
+  $saisie_count = ($page_ref) ? '' : 'COUNT(livret_saisie_id) AS ap_used, ' ;
+  $saisie_join  = ($page_ref) ? '' : 'LEFT JOIN sacoche_livret_saisie ON sacoche_livret_ap.livret_ap_id=sacoche_livret_saisie.rubrique_id AND rubrique_type="ap" ' ;
+  $DB_SQL = 'SELECT sacoche_livret_ap.*, livret_page_ordre, livret_page_moment, groupe_nom, '.$saisie_count;
   $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_id,"_",user_id) SEPARATOR " ") AS matiere_prof_id, ';
   $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(matiere_nom," - ",user_nom," ",user_prenom) SEPARATOR "§BR§") AS matiere_prof_texte ';
   $DB_SQL.= 'FROM sacoche_livret_ap ';
@@ -1396,6 +1398,7 @@ public static function DB_lister_ap( $classe_id_or_listing_classe_id = NULL , $p
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING(matiere_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_ap_prof.prof_id = sacoche_user.user_id ';
+  $DB_SQL.= $saisie_join;
   $DB_SQL.= $where;
   $DB_SQL.= 'GROUP BY livret_ap_id ';
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC, groupe_nom ASC ';
@@ -1558,7 +1561,9 @@ public static function DB_lister_parcours( $parcours_code , $classe_id_or_listin
   {
     $where = ''; // Profil administrateur ou directeur
   }
-  $DB_SQL = 'SELECT sacoche_livret_parcours.*, livret_parcours_type_nom, livret_page_ordre, livret_page_moment, ';
+  $saisie_count = ($page_ref) ? '' : 'COUNT(livret_saisie_id) AS parcours_used, ' ;
+  $saisie_join  = ($page_ref) ? '' : 'LEFT JOIN sacoche_livret_saisie ON sacoche_livret_parcours.livret_parcours_id=sacoche_livret_saisie.rubrique_id AND rubrique_type="parcours" ' ;
+  $DB_SQL = 'SELECT sacoche_livret_parcours.*, livret_parcours_type_nom, livret_page_ordre, livret_page_moment, '.$saisie_count;
   $DB_SQL.= 'groupe_nom, user_nom AS prof_nom, user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM sacoche_livret_parcours ';
   $DB_SQL.= 'INNER JOIN sacoche_livret_parcours_type USING(livret_parcours_type_code) ';
@@ -1566,6 +1571,7 @@ public static function DB_lister_parcours( $parcours_code , $classe_id_or_listin
   $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING(livret_page_ref) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_parcours.prof_id = sacoche_user.user_id ';
+  $DB_SQL.= $saisie_join;
   $DB_SQL.= 'WHERE livret_parcours_type_code=:parcours_code '.$where;
   $DB_SQL.= 'GROUP BY livret_page_ref, groupe_id, prof_id ';
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC, groupe_nom ASC ';
@@ -1767,6 +1773,21 @@ public static function DB_supprimer_eleve_modaccomp( $modaccomp_code , $eleve_id
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Enseignements de complément
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * tester_classes_enscompl
+ *
+ * @param void
+ * @return bool
+ */
+public static function DB_tester_classes_enscompl()
+{
+  $DB_SQL = 'SELECT COUNT(*) ';
+  $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
+  $DB_SQL.= 'WHERE livret_page_ref=:page_ref ';
+  $DB_VAR = array( ':page_ref' => '3e' );
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
 
 /**
  * tester_enscompl

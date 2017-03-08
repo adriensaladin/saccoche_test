@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 61 - Modification d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// Étape 61 - Modification d'affectations éventuelles (siecle_professeurs_directeurs | siecle_eleves | tableur_professeurs_directeurs | tableur_eleves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $lignes_classes_ras   = '';
@@ -52,9 +52,9 @@ $tab_i_fichier_TO_id_base = $tab_liens_id_base['users'];
 // On récupère le fichier avec les utilisateurs : $tab_users_fichier['champ'] : i -> valeur, avec comme champs : sconet_id / sconet_num / reference / profil_sigle / nom / prenom / classe / groupes / matieres / adresse / enfant
 $tab_users_fichier = FileSystem::recuperer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'users.txt' );
 //
-// Pour sconet_professeurs_directeurs, il faut regarder les associations profs/classes & profs/PP + profs/matières + profs/groupes.
+// Pour siecle_professeurs_directeurs, il faut regarder les associations profs/classes & profs/PP + profs/matières + profs/groupes.
 // Pour tableur_professeurs_directeurs, il faut regarder les associations profs/classes & profs/groupes.
-// Pour sconet_eleves & tableur_eleves, il faut juste à regarder les associations élèves/groupes.
+// Pour siecle_eleves & tableur_eleves, il faut juste à regarder les associations élèves/groupes.
 //
 if($import_profil=='professeur')
 {
@@ -119,7 +119,7 @@ if($import_profil=='professeur')
       $lignes_classes_del .= '<tr><th>Supprimer <input id="classe_'.$user_id.'_'.$groupe_id.'_0" name="classe_'.$user_id.'_'.$groupe_id.'_0" type="checkbox" checked /></th><td>'.html($tab_base_prof_identite[$user_id]).'</td><td>'.html($tab_base_classe[$groupe_id]).'</td></tr>'.NL;
     }
   }
-  if($import_origine=='sconet')
+  if($import_origine=='siecle')
   {
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // associations profs/PP
@@ -315,7 +315,7 @@ if($import_profil=='professeur')
   Json::add_str(    '<tr><th colspan="3">Associations utilisateurs / classes à supprimer.<q class="cocher_tout" title="Tout cocher."></q><q class="cocher_rien" title="Tout décocher."></q></th></tr>'.NL);
   Json::add_str(    $lignes_classes_del);
   Json::add_str(  '</tbody>'.NL);
-  if($import_origine=='sconet')
+  if($import_origine=='siecle')
   {
     if($mode=='complet')
     {

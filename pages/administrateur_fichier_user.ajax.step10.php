@@ -35,7 +35,7 @@ if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');
 // Nom du fichier à extraire si c'est un fichier zippé
 $alerte = '';
 $nom_fichier_extrait = '';
-if($import_origine=='sconet')
+if($import_origine=='siecle')
 {
   if($import_profil=='eleve')
   {

@@ -45,15 +45,15 @@ Json::add_str('</ul>'.NL);
 Json::add_str('<p class="danger">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</p>'.NL);
 switch($import_origine.'+'.$import_profil)
 {
-  case 'sconet+eleve'       : $etape = 6; $STEP = 61; break;
-  case 'sconet+professeur'  : $etape = 6; $STEP = 61; break;
+  case 'siecle+eleve'       : $etape = 6; $STEP = 61; break;
+  case 'siecle+professeur'  : $etape = 6; $STEP = 61; break;
   case 'tableur+eleve'      : $etape = 6; $STEP = 61; break;
   case 'tableur+professeur' : $etape = 6; $STEP = 61; break;
-  case 'sconet+parent'      : $etape = 4; $STEP = 71; break;
+  case 'siecle+parent'      : $etape = 4; $STEP = 71; break;
   case 'tableur+parent'     : $etape = 4; $STEP = 71; break;
-  case 'base_eleves+parent' : $etape = 4; $STEP = 71; break;
+  case 'onde+parent'        : $etape = 4; $STEP = 71; break;
   case 'factos+parent'      : $etape = 4; $STEP = 71; break;
-  case 'base_eleves+eleve'  : $etape = 5; $STEP = 90; break;
+  case 'onde+eleve'         : $etape = 5; $STEP = 90; break;
   case 'factos+eleve'       : $etape = 5; $STEP = 90; break;
 }
 Json::add_str('<ul class="puce p"><li><a href="#step'.$STEP.'" id="passer_etape_suivante">Passer à l\'étape '.$etape.'.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);

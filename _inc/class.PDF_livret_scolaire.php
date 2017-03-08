@@ -382,8 +382,8 @@ class PDF_livret_scolaire extends PDF
     // Largeur des rubriques ; total = 200 = 210 - 5*2 (marges)
     $reduc_position       = in_array($this->PAGE_COLONNE,array('moyenne','pourcentage')) ? 5 : 0 ;
     $largeur_domaine      = ($this->BILAN_TYPE_ETABL=='college') ? 40 : 50 ;
-    $largeur_elements     = ($this->BILAN_TYPE_ETABL=='college') ? 60+$reduc_position : 65+$reduc_position ;
-    $largeur_appreciation = ($this->BILAN_TYPE_ETABL=='college') ? 70+$reduc_position : 55+$reduc_position ;
+    $largeur_elements     = ($this->BILAN_TYPE_ETABL=='college') ? 65+$reduc_position : 70+$reduc_position ;
+    $largeur_appreciation = ($this->BILAN_TYPE_ETABL=='college') ? 65+$reduc_position : 50+$reduc_position ;
     $largeur_position     = 30 - 2*$reduc_position ;
     $largeur_sous_domaine = $largeur_domaine / 2; // 1er degré seulement
     // Titre
@@ -534,30 +534,7 @@ class PDF_livret_scolaire extends PDF
         $memoX = $this->GetX();
         $memoY = $this->GetY();
         // contenu
-        if($elements_info['saisie_valeur'])
-        {
-          $nb_lignes_elements = 0;
-          $tab_elements = array();
-          $tab_valeurs = json_decode($elements_info['saisie_valeur'], TRUE);
-          foreach($tab_valeurs as $texte => $nb_used)
-          {
-            if( ($nb_lignes_elements>=4) && ($nb_used==1) )
-            {
-              break;
-            }
-            $tab_elements[] = '- '.$texte;
-            $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$this->nb_caract_max_par_colonne) );
-            if($nb_lignes_elements>=6)
-            {
-              break;
-            }
-          }
-          $elements = implode("\n",$tab_elements);
-        }
-        else
-        {
-          $elements = '' ;
-        }
+        $elements = ($elements_info['saisie_valeur']) ? elements_programme_extraction( $elements_info['saisie_valeur'] , $this->nb_caract_max_par_colonne , 'pdf' /*objet_retour*/ ) : '' ;
         if( ($this->BILAN_TYPE_ETABL=='college') || ( $nombre_sous_rubriques == 1 ) )
         {
           $this->Rect( $memoX , $memoY , $largeur_elements , $hauteur_rubrique , 'DF' /*DrawFill*/ );

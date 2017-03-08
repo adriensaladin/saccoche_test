@@ -31,7 +31,7 @@ $TITRE = html(Lang::_("Étape n°4 - Générer le fichier d'export pour Notanet"
 // Test présence INE
 $nb_eleves_sans_INE = DB_STRUCTURE_BREVET::DB_compter_eleves_actuels_sans_INE();
 $s = ($nb_eleves_sans_INE>1) ? 's' : '' ;
-$msg_INE = (!$nb_eleves_sans_INE) ? '<label class="valide">Identifiants élèves présents.</label>' : '<label class="alerte">'.$nb_eleves_sans_INE.' élève'.$s.' (par forcément parmi ceux ci-dessous) trouvé'.$s.' dans la base sans Identifiant National Élève (INE).</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_sconet">DOC</a></span>' ;
+$msg_INE = (!$nb_eleves_sans_INE) ? '<label class="valide">Identifiants élèves présents.</label>' : '<label class="alerte">'.$nb_eleves_sans_INE.' élève'.$s.' (par forcément parmi ceux ci-dessous) trouvé'.$s.' dans la base sans Identifiant National Élève (INE).</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_siecle">DOC</a></span>' ;
 ?>
 
 <p>

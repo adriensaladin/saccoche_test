@@ -49,6 +49,13 @@ $puce_profils_autorises = ($_SESSION['USER_PROFIL_TYPE']!='professeur') ? '' : '
 <hr />
 
 <?php
+if( !DB_STRUCTURE_LIVRET::DB_tester_classes_enscompl() )
+{
+  $consigne = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'un administrateur ou directeur doit commencer' : 'commencez' ;
+  echo'<p class="danger">Aucune classe n\'est associée à une page du livret concernée par ce dispositif !<br />Si besoin, '.$consigne.' par <a href="./index.php?page=livret&amp;section=classes">associer les classes au livret scolaire</a>.</p>'.NL;
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
 $tab_groupe_js = array();
 // Fabrication des éléments select du formulaire
 if( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || ($_SESSION['USER_JOIN_GROUPES']=='all') ) // Directeurs et CPE, ces derniers ayant un 'USER_PROFIL_TYPE' à 'professeur'.
@@ -84,7 +91,6 @@ $select_enscompl = HtmlForm::afficher_select($tab_enscompl , 'f_enscompl'    /*s
 // Javascript
 $listing_classe_id = implode(',',$tab_groupe_js);
 Layout::add( 'js_inline_before' , 'var only_groupes_id="'.$listing_classe_id.'";' );
-Layout::add( 'js_inline_before' , 'var tab_commentaire = new Array();' );
 ?>
 
 <form action="#" method="post" id="form_select">

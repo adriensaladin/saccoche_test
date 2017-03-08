@@ -199,24 +199,7 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   $bouton_generer_position   = ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>';
   if( ($rubrique_type=='eval') && ($saisie_objet=='elements') )
   {
-    $nb_caract_max_par_colonne = 50;
-    $nb_lignes_elements = 0;
-    $tab_elements = array();
-    $tab_valeurs = $tab_saisie;
-    foreach($tab_valeurs as $texte => $nb_used)
-    {
-      if( ($nb_lignes_elements>=4) && ($nb_used==1) )
-      {
-        break;
-      }
-      $tab_elements[] = '<div><span class="notnow">[#'.$nb_used.']</span> '.html($texte).'</div>';
-      $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
-      if($nb_lignes_elements>=6)
-      {
-        break;
-      }
-    }
-    $saisie_valeur = implode('',$tab_elements);
+    $saisie_valeur = elements_programme_extraction( $saisie_valeur , 50 /*nb_caract_max_par_colonne*/ , 'html' /*objet_retour*/ );
     Json::end( TRUE , '<div class="elements">'.$saisie_valeur.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_eval_txt).$bouton_modifier.$bouton_supprimer.$bouton_generer.'</div>' );
   }
   else if( ($rubrique_type=='eval') && ($saisie_objet=='appreciation') )
@@ -392,24 +375,7 @@ if($ACTION=='recalculer_saisie')
   $bouton_supprimer_position = ' <button type="button" class="supprimer" title="Supprimer le positionnement">&nbsp;</button>';
   if( ($rubrique_type=='eval') && ($saisie_objet=='elements') )
   {
-    $nb_caract_max_par_colonne = 50;
-    $nb_lignes_elements = 0;
-    $tab_elements = array();
-    $tab_valeurs = json_decode($contenu, TRUE);
-    foreach($tab_valeurs as $texte => $nb_used)
-    {
-      if( ($nb_lignes_elements>=4) && ($nb_used==1) )
-      {
-        break;
-      }
-      $tab_elements[] = '<div><span class="notnow">[#'.$nb_used.']</span> '.html($texte).'</div>';
-      $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
-      if($nb_lignes_elements>=6)
-      {
-        break;
-      }
-    }
-    $saisie_valeur = implode('',$tab_elements);
+    $saisie_valeur = elements_programme_extraction( $contenu , 50 /*nb_caract_max_par_colonne*/ , 'html' /*objet_retour*/ );
     Json::end( TRUE , '<div class="elements">'.$saisie_valeur.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier.$bouton_supprimer.'</div>' );
   }
   else if( ($rubrique_type=='eval') && ($saisie_objet=='appreciation') )

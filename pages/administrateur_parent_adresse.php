@@ -41,7 +41,7 @@ $debut_prenom = (isset($_POST['f_debut_prenom'])) ? Clean::prenom($_POST['f_debu
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></li>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_sconet#toggle_responsables_doublons_adresses">DOC : Import d'utilisateurs depuis Siècle / STS-Web - Doublons d'adresses responsables</a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_siecle#toggle_responsables_doublons_adresses">DOC : Import d'utilisateurs depuis Siècle / STS-Web - Doublons d'adresses responsables</a></span></li>
 </ul>
 
 <hr />

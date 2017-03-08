@@ -30,6 +30,7 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 
 $action     = (isset($_POST['f_action'])) ? Clean::texte( $_POST['f_action']) : '';
 $epi_id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])     : 0;
+$epi_used   = (isset($_POST['f_usage']))  ? Clean::entier($_POST['f_usage'])  : 0;
 $page_ref   = (isset($_POST['f_page']))   ? Clean::id(    $_POST['f_page'])   : '';
 $groupe_id  = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0;
 $theme_code = (isset($_POST['f_theme']))  ? Clean::ref(   $_POST['f_theme'])  : '';
@@ -78,7 +79,7 @@ if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $test_matier
     DB_STRUCTURE_LIVRET::DB_ajouter_epi_jointure( $epi_id , ${'matiere_id_'.$i} , ${'prof_id_'.$i} );
   }
   // Afficher le retour
-  Json::add_str('<tr id="id_'.$epi_id.'" class="new">');
+  Json::add_str('<tr id="id_'.$epi_id.'" data-used="0" class="new">');
   Json::add_str(  '<td data-id="'.$page_ref.'">{{PAGE_MOMENT}}</td>');
   Json::add_str(  '<td data-id="'.$groupe_id.'">{{GROUPE_NOM}}</td>');
   Json::add_str(  '<td data-id="'.$theme_code.'">{{THEME_NOM}}</td>');
@@ -141,9 +142,17 @@ if( ($action=='modifier') && $epi_id && $groupe_id && $test_matiere_prof && ($no
 
 if( ($action=='supprimer') && $epi_id )
 {
-  // On ne supprime pas d'éventuelles saisies, comme ça pas de risque en cas de mauvaise manipulation, le ménage sera de toutes façons fait avec l'initialisation annuelle.
   // Effacer l'enregistrement
   DB_STRUCTURE_LIVRET::DB_supprimer_epi( $epi_id );
+  // Log d'une action sensible
+  if($epi_used)
+  {
+    // Log de l'action
+    SACocheLog::ajouter('Suppression d\'un E.P.I. utilisé ['.$page_ref.'] ['.$titre.'].');
+    // Notifications (rendues visibles ultérieurement)
+    $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé un E.P.I. utilisé ['.$page_ref.'] ['.$titre.'], et donc aussi les saisies associées.'."\r\n";
+    DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
+  }
   // Afficher le retour
   Json::end( TRUE );
 }

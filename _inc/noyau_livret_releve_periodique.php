@@ -313,24 +313,7 @@ if($make_pdf)
           }
         }
         // Principaux éléments du programme travaillés durant la période
-        $nb_lignes_elements = 0;
-        if($elements_info['saisie_valeur'])
-        {
-          $tab_valeurs = json_decode($elements_info['saisie_valeur'], TRUE);
-          foreach($tab_valeurs as $texte => $nb_used)
-          {
-            if( ($nb_lignes_elements>=4) && ($nb_used==1) )
-            {
-              break;
-            }
-            $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
-            if($nb_lignes_elements>=6)
-            {
-              break;
-            }
-          }
-          $nb_lignes_elements = max( 1 , $nb_lignes_elements );
-        }
+        $nb_lignes_elements = ($elements_info['saisie_valeur']) ? elements_programme_extraction( $elements_info['saisie_valeur'] , $nb_caract_max_par_colonne , 'nombre_lignes' /*objet_retour*/ ) : 0 ;
         // Acquisitions, progrès et difficultés éventuelles
         $nombre_rubriques_regroupees = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_premiere_sous_rubrique]) : 0 ;
         $nb_lignes_appreciation = 0;
@@ -649,23 +632,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 {
                   if($elements_info['saisie_valeur'])
                   {
-                    $nb_lignes_elements = 0;
-                    $tab_elements = array();
-                    $tab_valeurs = json_decode($elements_info['saisie_valeur'], TRUE);
-                    foreach($tab_valeurs as $texte => $nb_used)
-                    {
-                      if( ($nb_lignes_elements>=4) && ($nb_used==1) )
-                      {
-                        break;
-                      }
-                      $tab_elements[] = '<div><span class="notnow">[#'.$nb_used.']</span> '.html($texte).'</div>';
-                      $nb_lignes_elements += min( 3 , ceil(strlen($texte)/$nb_caract_max_par_colonne) );
-                      if($nb_lignes_elements>=6)
-                      {
-                        break;
-                      }
-                    }
-                    $elements = implode('',$tab_elements);
+                    $elements = elements_programme_extraction( $elements_info['saisie_valeur'] , $nb_caract_max_par_colonne , 'html' /*objet_retour*/ );
                     $origine = ($elements_info['saisie_origine']=='calcul') ? 'Généré automatiquement' : 'Validé par '.html($tab_profs[$elements_info['prof_id']]) ;
                     $actions = ($make_action=='modifier') ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
                     $actions.= ( ($make_action=='modifier') && ($elements_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;

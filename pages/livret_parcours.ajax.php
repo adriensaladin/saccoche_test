@@ -31,7 +31,6 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 $parcours_code = (isset($_POST['f_parcours'])) ? Clean::ref($_POST['f_parcours'])  : '';
 $action        = (isset($_POST['f_action']))   ? Clean::texte($_POST['f_action'])  : '';
 $parcours_id   = (isset($_POST['f_id']))       ? Clean::entier($_POST['f_id'])     : 0;
-$parcours_used = (isset($_POST['f_usage']))    ? Clean::entier($_POST['f_usage'])  : 0;
 $page_ref      = (isset($_POST['f_page']))     ? Clean::id($_POST['f_page'])       : '';
 $groupe_id     = (isset($_POST['f_groupe']))   ? Clean::entier($_POST['f_groupe']) : 0;
 $prof_id       = (isset($_POST['f_prof']))     ? Clean::entier($_POST['f_prof'])   : 0;
@@ -55,7 +54,7 @@ if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $prof_id )
   // Insérer l'enregistrement
   $parcours_id = DB_STRUCTURE_LIVRET::DB_ajouter_parcours( $parcours_code , $page_ref , $groupe_id , $prof_id );
   // Afficher le retour
-  Json::add_str('<tr id="id_'.$parcours_id.'" data-used="0" class="new">');
+  Json::add_str('<tr id="id_'.$parcours_id.'" class="new">');
   Json::add_str(  '<td data-id="'.$page_ref.'">{{PAGE_MOMENT}}</td>');
   Json::add_str(  '<td data-id="'.$groupe_id.'">{{GROUPE_NOM}}</td>');
   Json::add_str(  '<td data-id="'.$prof_id.'">{{PROF_NOM}}</td>');
@@ -100,17 +99,9 @@ if( ($action=='modifier') && $parcours_id && $groupe_id && $prof_id )
 
 if( ($action=='supprimer') && $parcours_id )
 {
+  // On ne supprime pas d'éventuelles saisies, comme ça pas de risque en cas de mauvaise manipulation, le ménage sera de toutes façons fait avec l'initialisation annuelle.
   // Effacer l'enregistrement
   DB_STRUCTURE_LIVRET::DB_supprimer_parcours( $parcours_id );
-  // Log d'une action sensible
-  if($parcours_used)
-  {
-    // Log de l'action
-    SACocheLog::ajouter('Suppression d\'un parcours utilisé ['.$parcours_code.'] ['.$page_ref.'].');
-    // Notifications (rendues visibles ultérieurement)
-    $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé un parcours utilisé ['.$parcours_code.'] ['.$page_ref.'], et donc aussi les saisies associées.'."\r\n";
-    DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
-  }
   // Afficher le retour
   Json::end( TRUE );
 }

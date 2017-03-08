@@ -265,11 +265,11 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 div.sousmenu{margin:0.5ex auto 0.5ex 2em}
-*.sousmenu a{display:inline-block;padding:0.5ex 1ex;margin:0.5ex 0.5ex 0.5ex 0.5ex;background:#66F;color:#FFF}
-*.sousmenu a.actif{background:#99F}
-*.sousmenu a:hover {color:#FFF}
-*.sousmenu a.disabled {color:#99F;cursor:default;font-style:italic}
-*.sousmenu a.disabled:hover {text-decoration:none;background-color:#66F;color:#99F;cursor:default}
+div.sousmenu a{display:inline-block;padding:0.5ex 1ex;margin:0.5ex 0.5ex 0.5ex 0.5ex;background:#66F;color:#FFF}
+div.sousmenu a.actif{background:#99F}
+div.sousmenu a:hover {color:#FFF}
+div.sousmenu a.disabled {color:#99F;cursor:default;font-style:italic}
+div.sousmenu a.disabled:hover {text-decoration:none;background-color:#66F;color:#99F;cursor:default}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Icones des navigateurs                                                                              */

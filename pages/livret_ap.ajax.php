@@ -30,7 +30,6 @@ if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée p
 
 $action    = (isset($_POST['f_action'])) ? Clean::texte( $_POST['f_action']) : '';
 $ap_id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])     : 0;
-$ap_used   = (isset($_POST['f_usage']))  ? Clean::entier($_POST['f_usage'])  : 0;
 $page_ref  = (isset($_POST['f_page']))   ? Clean::id(    $_POST['f_page'])   : '';
 $groupe_id = (isset($_POST['f_groupe'])) ? Clean::entier($_POST['f_groupe']) : 0;
 $nombre    = (isset($_POST['f_nombre'])) ? Clean::entier($_POST['f_nombre']) : 0;
@@ -72,7 +71,7 @@ if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $test_matier
     DB_STRUCTURE_LIVRET::DB_ajouter_ap_jointure( $ap_id , ${'matiere_id_'.$i} , ${'prof_id_'.$i} );
   }
   // Afficher le retour
-  Json::add_str('<tr id="id_'.$ap_id.'" data-used="0" class="new">');
+  Json::add_str('<tr id="id_'.$ap_id.'" class="new">');
   Json::add_str(  '<td data-id="'.$page_ref.'">{{PAGE_MOMENT}}</td>');
   Json::add_str(  '<td data-id="'.$groupe_id.'">{{GROUPE_NOM}}</td>');
   Json::add_str(  '<td data-id="'.implode(' ',$tab_matiere_prof_id).'">{{MATIERE_PROF_NOM}}</td>');
@@ -127,17 +126,9 @@ if( ($action=='modifier') && $ap_id && $groupe_id && $test_matiere_prof && ($nom
 
 if( ($action=='supprimer') && $ap_id )
 {
+  // On ne supprime pas d'éventuelles saisies, comme ça pas de risque en cas de mauvaise manipulation, le ménage sera de toutes façons fait avec l'initialisation annuelle.
   // Effacer l'enregistrement
   DB_STRUCTURE_LIVRET::DB_supprimer_ap( $ap_id );
-  // Log d'une action sensible
-  if($ap_used)
-  {
-    // Log de l'action
-    SACocheLog::ajouter('Suppression d\'un A.P. utilisé ['.$page_ref.'] ['.$titre.'].');
-    // Notifications (rendues visibles ultérieurement)
-    $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé un A.P. utilisé ['.$page_ref.'] ['.$titre.'], et donc aussi les saisies associées.'."\r\n";
-    DB_STRUCTURE_NOTIFICATION::enregistrer_action_sensible($notification_contenu);
-  }
   // Afficher le retour
   Json::end( TRUE );
 }

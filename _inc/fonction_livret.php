@@ -1132,56 +1132,6 @@ function rubrique_texte_intro( $rubrique_type , $for_id=0 , $bilan_type_etabl=''
   }
 }
 
-/**
- * Retourner le nombre de lignes requises ou le contenu affichable pour des éléments de programme travaillés
- * 
- * @param string $elements_json
- * @param int    $nb_caract_max_par_colonne
- * @param string $objet_retour   'nombre_lignes' | 'html' | 'pdf'
- * @return int|string
- */
-function elements_programme_extraction( $elements_json , $nb_caract_max_par_colonne , $objet_retour )
-{
-  $nb_elements = 0;
-  $nb_lignes_elements = 0;
-  $tab_elements = array();
-  $tab_valeurs = json_decode($elements_json, TRUE);
-  foreach($tab_valeurs as $texte => $nb_used)
-  {
-    $nb_lignes_element = ceil(strlen($texte)/$nb_caract_max_par_colonne);
-    if( ($nb_lignes_elements>=5) && ($nb_elements>=2) && ($nb_lignes_element>3) )
-    {
-      break;
-    }
-    if($objet_retour=='html')
-    {
-      $tab_elements[] = '<div><span class="notnow">[#'.$nb_used.']</span> '.html($texte).'</div>';
-    }
-    elseif($objet_retour=='pdf')
-    {
-      $tab_elements[] = '- '.$texte;
-    }
-    $nb_elements++;
-    $nb_lignes_elements += min( 3 , $nb_lignes_element );
-    if( ($nb_lignes_elements>=6) && ($nb_elements>2) )
-    {
-      break;
-    }
-  }
-  if($objet_retour=='nombre_lignes')
-  {
-    return max( 1 , $nb_lignes_elements );
-  }
-  elseif($objet_retour=='html')
-  {
-    return implode('',$tab_elements);
-  }
-  elseif($objet_retour=='pdf')
-  {
-    return implode("\n",$tab_elements);
-  }
-}
-
 function echo_origine($origine)
 {
   return ($origine) ? '<span title="'.$origine.'"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" />Origine</span>' : '' ;

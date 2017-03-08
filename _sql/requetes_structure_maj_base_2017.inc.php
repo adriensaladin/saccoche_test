@@ -189,35 +189,6 @@ if($version_base_structure_actuelle=='2017-02-10')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2017-03-01 => 2017-03-06
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2017-03-01')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2017-03-06';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // STSWeb 11.1.0 de janvier 2017 : passage du code groupe à 20 caractères + ajout d'un nouveau type de personnel "dir" et modification du format des nom d'usage et patronymique et du prénom
-    // SIÈCLE BEE 17.2.1.0 du 15/05/2017 : agrandissement des lignes d'adresse des élèves et des responsables de 32 caractères à 38 caractères. -> RAS car déjà à 50 dans SACoche
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe CHANGE groupe_ref groupe_ref VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Passage de 8 à 20 caractères pour les groupes dans SIÈCLE BEE (mais pas pour les classes)." ' );
-    // correction d'un positionnement modifié sur certaines installations suite à un bug
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_page SET livret_page_colonne = "reussite" WHERE livret_page_ref = "cycle1" ' );
-    // ajout d'une ligne à [sacoche_siecle_import]
-    if(empty($reload_sacoche_siecle_import))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_siecle_import VALUES ("Onde" , NULL, NULL, "") ' );
-    }
-    // ajout de colonne oublié dans la définition de la table lors d'une maj précédente !
-    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_referentiel LIKE "referentiel_mode_livret" ');
-    if(empty($DB_TAB))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel ADD referentiel_mode_livret ENUM("domaine","theme","item") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "domaine" AFTER referentiel_mode_synthese' );
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

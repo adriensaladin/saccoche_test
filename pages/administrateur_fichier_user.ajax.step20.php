@@ -84,10 +84,10 @@ function filter_init_negatif($var)
 // On passe aux différentes procédures selon le mode d'import...
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Extraction siecle_nomenclature
+// Extraction sconet_nomenclature
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($import_origine=='siecle') && ($import_profil=='nomenclature') )
+if( ($import_origine=='sconet') && ($import_profil=='nomenclature') )
 {
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   if($xml===FALSE)
@@ -114,10 +114,10 @@ if( ($import_origine=='siecle') && ($import_profil=='nomenclature') )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Extraction siecle_professeurs_directeurs
+// Extraction sconet_professeurs_directeurs
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($import_origine=='siecle') && ($import_profil=='professeur') )
+if( ($import_origine=='sconet') && ($import_profil=='professeur') )
 {
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   if($xml===FALSE)
@@ -418,10 +418,10 @@ if( ($import_origine=='siecle') && ($import_profil=='professeur') )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Extraction siecle_eleves
+// Extraction sconet_eleves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($import_origine=='siecle') && ($import_profil=='eleve') )
+if( ($import_origine=='sconet') && ($import_profil=='eleve') )
 {
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   if($xml===FALSE)
@@ -429,11 +429,7 @@ if( ($import_origine=='siecle') && ($import_profil=='eleve') )
     Json::end( FALSE , 'Le fichier transmis n\'est pas un XML valide !' );
   }
   $uai = $xml->PARAMETRES->UAJ;
-  if(!$uai)
-  {
-    Json::end( FALSE , 'Le contenu du fichier transmis ne correspond pas à ce qui est attendu !' );
-  }
-  if($uai!=$_SESSION['WEBMESTRE_UAI'])
+  if($uai===FALSE)
   {
     Json::end( FALSE , 'Le fichier transmis est issu de l\'établissement '.$uai.' et non '.$_SESSION['WEBMESTRE_UAI'].' !' );
   }
@@ -594,10 +590,10 @@ if( ($import_origine=='siecle') && ($import_profil=='eleve') )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Extraction siecle_parents
+// Extraction sconet_parents
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($import_origine=='siecle') && ($import_profil=='parent') )
+if( ($import_origine=='sconet') && ($import_profil=='parent') )
 {
   $xml = @simplexml_load_file(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   if($xml===FALSE)
@@ -1013,10 +1009,10 @@ if( ($import_origine=='tableur') && ($import_profil=='parent') )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Extraction onde_eleves
+// Extraction base_eleves_eleves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($import_origine=='onde') && ($import_profil=='eleve') )
+if( ($import_origine=='base_eleves') && ($import_profil=='eleve') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
@@ -1028,10 +1024,8 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
     'prenom'     => $init_negatif ,
     'birth_date' => $init_negatif ,
     'genre'      => $init_negatif ,
-    'reference'  => $init_negatif ,
     'niveau'     => $init_negatif ,
-    'classe_nom' => $init_negatif ,
-    'classe_id'  => $init_negatif ,
+    'classe'     => $init_negatif ,
   );
   $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   $numero_max = 0;
@@ -1039,34 +1033,24 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
   {
     switch($element)
     {
-      case 'Nom élève'          : $tab_numero_colonne['nom'   ]     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 0
-      case 'Prénom élève'       : $tab_numero_colonne['prenom']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 2
-      case 'Date naissance'     : $tab_numero_colonne['birth_date'] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 3
-      case 'Sexe'               : $tab_numero_colonne['genre']      = $numero; $numero_max = max($numero_max,$numero); break; // normalement 4
-      case 'INE'                : $tab_numero_colonne['reference']  = $numero; $numero_max = max($numero_max,$numero); break; // normalement 5
-      case 'Niveau'             : $tab_numero_colonne['niveau']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 15
-      case 'Libellé classe'     : $tab_numero_colonne['classe_nom'] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 16
-      case 'Identifiant classe' : $tab_numero_colonne['classe_id']  = $numero; $numero_max = max($numero_max,$numero); break; // normalement 17
+      case 'Nom Elève'      : $tab_numero_colonne['nom'   ]     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 0
+      case 'Prénom Elève'   : $tab_numero_colonne['prenom']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 2
+      case 'Date naissance' : $tab_numero_colonne['birth_date'] = $numero; $numero_max = max($numero_max,$numero); break; // normalement 3
+      case 'Sexe'           : $tab_numero_colonne['genre']      = $numero; $numero_max = max($numero_max,$numero); break; // normalement 4
+      case 'Niveau'         : $tab_numero_colonne['niveau']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 14
+      case 'Classe'         : $tab_numero_colonne['classe']     = $numero; $numero_max = max($numero_max,$numero); break; // normalement 15
     }
   }
   if(array_sum($tab_numero_colonne)<0)
   {
     Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
-  else
-  {
-    $DB_ROW = DB_STRUCTURE_SIECLE::DB_recuperer_import_date_annee('Onde');
-    $is_first_import_onde = ( empty($DB_ROW) || is_null($DB_ROW['siecle_import_date']) ) ? TRUE : FALSE ;
-    // Archivage car l'export vers le Livret Scolaire s'annonce complexe...
-    $annee_scolaire = To::annee_scolaire('siecle');
-    DB_STRUCTURE_SIECLE::DB_ajouter_import( 'Onde' , $annee_scolaire , $tab_lignes );
-  }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   /*
    * Des difficultés se posent.
    * D'une part, les noms des niveaux et des classes ne semblent pas soumis à un format particulier ; on peut facilement dépasser les 20 caractères maxi autorisés par SACoche
-   * D'autre part il n'existait pas de référence courte pour une classe, avant la mise en place d'un identifiant dans ONDE (ex-BASE-ÉLEVE).
-   * Enfin, des classes sont sur plusieurs niveaux, donc comportent plusieurs groupes (et dans ONDE c'est l'identifiant est unique pour une classe multi-niveaux) !
+   * D'autre part il n'existe pas de référence courte pour une classe.
+   * Enfin, des classes sont sur plusieurs niveaux, donc comportent plusieurs groupes !
    */
   $tab_bon = array(); $tab_bad = array();
   $tab_bon[] = 'T';   $tab_bad[] = array('Toute ','toute ','TOUTE ');
@@ -1096,13 +1080,11 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
     {
       $nom        = $tab_elements[$tab_numero_colonne['nom']   ];
       $prenom     = $tab_elements[$tab_numero_colonne['prenom']];
-      $reference  = mb_substr(Clean::ref($tab_elements[$tab_numero_colonne['reference']]),0,11);
       $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;
       $birth_date = strpos($tab_elements[$tab_numero_colonne['birth_date']],'-') ? To::date_mysql_to_french($tab_elements[$tab_numero_colonne['birth_date']]) : $tab_elements[$tab_numero_colonne['birth_date']] ; // Selon les fichiers, trouvé au format français ou mysql
       $niveau     = $tab_elements[$tab_numero_colonne['niveau']];
-      $classe_id  = $tab_elements[$tab_numero_colonne['classe_id']];
-      $classe     = $tab_elements[$tab_numero_colonne['classe_nom']];
-      if( ($nom!='') && ($prenom!='') && ($niveau!='') && ($classe_id!='') )
+      $classe     = $tab_elements[$tab_numero_colonne['classe']];
+      if( ($nom!='') && ($prenom!='') && ($niveau!='') && ($classe!='') )
       {
         // Réduire la longueur du niveau et de la classe
         foreach ($tab_bon as $i=>$bon)
@@ -1112,11 +1094,11 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
         }
         $niveau_ref = mb_substr(Clean::ref($niveau),0,8);
         $classe_nom = mb_substr('['.$niveau_ref.'] '.$classe,0,20); // On fait autant de classes que de groupes de niveaux par classes.
-        $classe_ref = mb_substr(Clean::ref($classe_id.'_'.$niveau_ref),0,10);
-        $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car si l'identifiant est numérique (ex : 123456) cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+        $classe_ref = mb_substr(Clean::ref($niveau_ref.'_'.md5($niveau_ref.$classe)),0,8);
+        $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
         $tab_users_fichier['sconet_id'   ][] = 0;
         $tab_users_fichier['sconet_num'  ][] = 0;
-        $tab_users_fichier['reference'   ][] = $reference;
+        $tab_users_fichier['reference'   ][] = '';
         $tab_users_fichier['profil_sigle'][] = 'ELV';
         $tab_users_fichier['genre'       ][] = $genre;
         $tab_users_fichier['nom'         ][] = Clean::nom($nom);
@@ -1132,11 +1114,6 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
           $tab_classes_fichier['ref'   ][$i_classe] = $classe_ref;
           $tab_classes_fichier['nom'   ][$i_classe] = $classe_nom;
           $tab_classes_fichier['niveau'][$i_classe] = $niveau_ref;
-          if($is_first_import_onde)
-          {
-            $classe_old_ref = mb_substr(Clean::ref($niveau_ref.'_'.md5($niveau_ref.$classe)),0,8);
-            DB_STRUCTURE_SIECLE::DB_modifier_groupe_ref_1d( $classe_old_ref , $classe_ref );
-          }
         }
       }
     }
@@ -1144,10 +1121,10 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Extraction onde_parents
+// Extraction base_eleves_parents
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($import_origine=='onde') && ($import_profil=='parent') )
+if( ($import_origine=='base_eleves') && ($import_profil=='parent') )
 {
   $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
@@ -1507,7 +1484,7 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Pour Nomenclature.xml on ne va pas plus loin
-if( ($import_origine=='siecle') && ($import_profil=='nomenclature') )
+if( ($import_origine=='sconet') && ($import_profil=='nomenclature') )
 {
   Json::add_str('<p><label class="valide">Nomenclatures pour le Livret Scolaire enregistrées.</label></p>'.NL);
   Json::add_str('<ul class="puce p"><li><a href="#step90" id="passer_etape_suivante">Passer à l\'étape 3.</a><label id="ajax_msg">&nbsp;</label></li></ul>'.NL);
@@ -1523,7 +1500,7 @@ $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i
 // On trie
 switch($import_origine.'+'.$import_profil)
 {
-  case 'siecle+professeur' :
+  case 'sconet+professeur' :
     $test1 = array_multisort(
       $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
       $tab_users_fichier['prenom'], SORT_ASC,SORT_STRING,
@@ -1572,7 +1549,7 @@ switch($import_origine.'+'.$import_profil)
       $tab_groupes_fichier['nom']   , SORT_ASC,SORT_STRING
     );
     break;
-  case  'siecle+eleve' :
+  case  'sconet+eleve' :
   case 'tableur+eleve' :
     $test1 = array_multisort(
       $tab_users_fichier['nom']   , SORT_ASC,SORT_STRING,
@@ -1601,7 +1578,7 @@ switch($import_origine.'+'.$import_profil)
       $tab_groupes_fichier['nom']   , SORT_ASC,SORT_STRING
     );
     break;
-  case        'onde+eleve' :
+  case 'base_eleves+eleve' :
     $test2 = array_multisort(
       $tab_classes_fichier['niveau'], SORT_DESC,SORT_STRING,
       $tab_classes_fichier['ref']   , SORT_ASC,SORT_STRING,
@@ -1624,8 +1601,8 @@ switch($import_origine.'+'.$import_profil)
       $tab_users_fichier['classe']
     );
     break;
-  case      'siecle+parent' :
-  case        'onde+parent' :
+  case      'sconet+parent' :
+  case 'base_eleves+parent' :
   case     'tableur+parent' :
   case      'factos+parent' :
     $test1 = array_multisort(
@@ -1651,7 +1628,7 @@ FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichie
 FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_sortie.txt'  , $tab_date_sortie );
 
 // On affiche le bilan des matières de SIECLE mises à jour
-if( ($import_origine=='siecle') && ($import_profil=='professeur') )
+if( ($import_origine=='sconet') && ($import_profil=='professeur') )
 {
   Json::add_str('<p><label class="valide">Matières du Livret Scolaire actualisées.</label></p>'.NL);
 }
@@ -1698,7 +1675,7 @@ else
 }
 
 // On affiche le bilan des groupes trouvés
-if( ($import_profil!='parent') && ($import_origine!='onde') && ($import_origine!='factos') )
+if( ($import_profil!='parent') && ($import_origine!='base_eleves') && ($import_origine!='factos') )
 {
   $nombre = count($tab_groupes_fichier['ref']);
   if($nombre)

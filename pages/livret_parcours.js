@@ -180,16 +180,11 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , usage , page_ref , groupe_id , prof_id , delete_txt )
+    function afficher_form_gestion( mode , id , page_ref , groupe_id , prof_id , delete_txt )
     {
       action_prof = 'ajouter';
       $('#f_action').val(mode);
       $('#f_id').val(id);
-      $('#f_usage').val(usage);
-      if( (mode=='ajouter') || (mode=='dupliquer') || !usage )
-        {$('#alerte_used').hide();}
-      else                 
-        {$('#alerte_used').show();}
       // Ci-dessous, les guillemets autour des valeurs transmises évitent une erreur en cas de valeur vide.
       $('#f_page option[value="'+page_ref+'"]').prop('selected',true);
       maj_f_groupe( page_ref , groupe_id , prof_id , true /*force_select_prof*/ );
@@ -219,7 +214,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , 0 /*id*/ , 0 /*usage*/ , '' /*page_ref*/ , 0 /*groupe_id*/ , 0 /*prof_id*/ , '' /*delete_txt*/ );
+      afficher_form_gestion( mode , '' /*id*/ , '' /*page_ref*/ , '' /*groupe_id*/ , '' /*prof_id*/ , '' /*delete_txt*/ );
     };
 
     /**
@@ -233,13 +228,12 @@ $(document).ready
       var objet_tds   = objet_tr.find('td');
       // Récupérer les informations de la ligne concernée
       var id         = (mode!='dupliquer') ? objet_tr.attr('id').substring(3) : '' ;
-      var usage      = objet_tr.data('used');
       var page_ref   = objet_tds.eq(0).data('id');
       var groupe_id  = objet_tds.eq(1).data('id');
       var prof_id    = objet_tds.eq(2).data('id');
       var delete_txt = (mode!='supprimer') ? '' : objet_tds.eq(1).html() + ' || ' + objet_tds.eq(2).html() ;
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , usage , page_ref , groupe_id , prof_id , unescapeHtml(delete_txt) );
+      afficher_form_gestion( mode , id , page_ref , groupe_id , prof_id , unescapeHtml(delete_txt) );
     };
 
     /**
@@ -271,39 +265,6 @@ $(document).ready
       }
     }
 
-    var prompt_etapes = {
-      etape_1: {
-        title   : 'Demande de confirmation',
-        html    : "Attention : les saisies associées à ce dispositif seront perdues !<br />Souhaitez-vous vraiment supprimer ce parcours ?",
-        buttons : {
-          "Non, c'est une erreur !" : false ,
-          "Oui, je confirme !" : true
-        },
-        submit  : function(event, value, message, formVals) {
-          if(value) {
-            formulaire.submit();
-          }
-          else {
-            $('#bouton_annuler').click();
-          }
-        }
-      }
-    };
-
-    var soumettre_formulaire = function()
-    {
-      // On demande confirmation pour la suppression d'un dispositif utilisé
-      if( ($('#f_action').val()=='supprimer') && ($('#f_usage').val()>0) )
-      {
-        $.prompt(prompt_etapes);
-      }
-      else
-      {
-        formulaire.submit();
-      }
-      return false;
-    }
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Appel des fonctions en fonction des événements
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -314,7 +275,7 @@ $(document).ready
     $('#table_action').on( 'click' , 'q.supprimer'     , modifier_dupliquer_supprimer );
 
     $('#form_gestion').on( 'click' , '#bouton_annuler' , annuler );
-    $('#form_gestion').on( 'click' , '#bouton_valider' , soumettre_formulaire );
+    $('#form_gestion').on( 'click' , '#bouton_valider' , function(){formulaire.submit();} );
     $('#form_gestion').on( 'keyup' , 'input'           , function(e){intercepter(e);} );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

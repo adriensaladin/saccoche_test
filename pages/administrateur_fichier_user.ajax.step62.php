@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 62 - Traitement des ajouts d'affectations éventuelles (siecle_professeurs_directeurs | siecle_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// Étape 62 - Traitement des ajouts d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Récupérer les éléments postés
@@ -96,7 +96,7 @@ if($nb_asso_groupes)
 if($import_profil=='professeur')
 {
   Json::add_str('<p><label class="valide">Modifications associations utilisateurs / classes effectuées : '.$nb_asso_classes.'</label></p>'.NL);
-  if($import_origine=='siecle')
+  if($import_origine=='sconet')
   {
     Json::add_str('<p><label class="valide">Modifications associations utilisateurs / p.principal effectuées : '.$nb_asso_pps.'</label></p>'.NL);
     Json::add_str('<p><label class="valide">Modifications associations utilisateurs / matières effectuées : '.$nb_asso_matieres.'</label></p>'.NL);

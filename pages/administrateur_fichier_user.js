@@ -43,7 +43,7 @@ $(document).ready
       {
         $('#ajax_msg').removeAttr('class').html('&nbsp;');
         // Masquer tout
-        $('#span_mode , #fieldset_siecle_nomenclature_non , #fieldset_siecle_nomenclature_oui , #fieldset_siecle_eleves_non , #fieldset_siecle_eleves_oui , #fieldset_siecle_parents_non , #fieldset_siecle_parents_oui , #fieldset_siecle_professeurs_directeurs_non , #fieldset_siecle_professeurs_directeurs_oui , #fieldset_onde_eleves , #fieldset_onde_parents , #fieldset_factos_eleves , #fieldset_factos_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
+        $('#span_mode , #fieldset_sconet_nomenclature_non , #fieldset_sconet_nomenclature_oui , #fieldset_sconet_eleves_non , #fieldset_sconet_eleves_oui , #fieldset_sconet_parents_non , #fieldset_sconet_parents_oui , #fieldset_sconet_professeurs_directeurs_non , #fieldset_sconet_professeurs_directeurs_oui , #fieldset_base_eleves_eleves , #fieldset_base_eleves_parents , #fieldset_factos_eleves , #fieldset_factos_parents , #fieldset_tableur_professeurs_directeurs , #fieldset_tableur_eleves , #fieldset_tableur_parents').hide(0);
         // Puis afficher ce qu'il faut
         f_action = $(this).val();
         $('#f_action').val(f_action);
@@ -57,15 +57,6 @@ $(document).ready
         }
       }
     );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialisation
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    if(auto_select_categorie)
-    {
-      $('#f_choix_principal option[value='+auto_select_categorie+']').prop('selected',true).trigger('change'); // trigger() sinon l'événement ci-dessus ne se déclenche pas (@see https://forum.jquery.com/topic/should-chk-prop-checked-true-trigger-change-event)
-    }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Clic sur le lien pour revenir au formulaire principal
@@ -135,13 +126,13 @@ $(document).ready
         {
           var fichier_nom = file.name;
           var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
-          if( (f_action.indexOf('siecle')!=-1) && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
+          if( (f_action.indexOf('sconet')!=-1) && ('.xml.zip.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
             $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
             $('#ajax_msg').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
             return false;
           }
-          else if ( (f_action.indexOf('onde')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
+          else if ( (f_action.indexOf('base_eleves')!=-1) && ('.csv.txt.'.indexOf('.'+fichier_ext+'.')==-1) )
           {
             $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom, après avoir changé la catégorie, alors l'événement change() ne se déclenche pas
             $('#ajax_msg').attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "csv" ou "txt".');

@@ -18,7 +18,6 @@ ALTER TABLE sacoche_siecle_import DISABLE KEYS;
 INSERT INTO sacoche_siecle_import (siecle_import_objet, siecle_import_date, siecle_import_annee, siecle_import_contenu) VALUES
 ('sts_emp_UAI' , NULL, NULL, ''),
 ('Nomenclature', NULL, NULL, ''),
-('Eleves'      , NULL, NULL, ''),
-('Onde'        , NULL, NULL, ''); -- Élèves du 1er degré
+('Eleves'      , NULL, NULL, '');
 
 ALTER TABLE sacoche_siecle_import ENABLE KEYS;

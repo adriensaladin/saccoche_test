@@ -33,35 +33,35 @@ $mode   = (isset($_POST['f_mode']))   ? $_POST['f_mode']                : '';
 $STEP   = (isset($_POST['f_step']))   ? Clean::entier($_POST['f_step']) : 0;
 
 $tab_action = array(
-  'siecle_nomenclature_oui'           => array('siecle'  ,'nomenclature'),
-  'siecle_professeurs_directeurs_oui' => array('siecle'  ,'professeur'  ),
-  'siecle_eleves_oui'                 => array('siecle'  ,'eleve'       ),
-  'siecle_parents_oui'                => array('siecle'  ,'parent'      ),
-  'onde_eleves'                       => array('onde'    ,'eleve'       ),
-  'onde_parents'                      => array('onde'    ,'parent'      ),
-  'factos_eleves'                     => array('factos'  ,'eleve'       ),
-  'factos_parents'                    => array('factos'  ,'parent'      ),
-  'tableur_professeurs_directeurs'    => array('tableur' ,'professeur'  ),
-  'tableur_eleves'                    => array('tableur' ,'eleve'       ),
-  'tableur_parents'                   => array('tableur' ,'parent'      ),
+  'sconet_nomenclature_oui'           => array('sconet'     ,'nomenclature'),
+  'sconet_professeurs_directeurs_oui' => array('sconet'     ,'professeur'  ),
+  'sconet_eleves_oui'                 => array('sconet'     ,'eleve'       ),
+  'sconet_parents_oui'                => array('sconet'     ,'parent'      ),
+  'base_eleves_eleves'                => array('base_eleves','eleve'       ),
+  'base_eleves_parents'               => array('base_eleves','parent'      ),
+  'factos_eleves'                     => array('factos'     ,'eleve'       ),
+  'factos_parents'                    => array('factos'     ,'parent'      ),
+  'tableur_professeurs_directeurs'    => array('tableur'    ,'professeur'  ),
+  'tableur_eleves'                    => array('tableur'    ,'eleve'       ),
+  'tableur_parents'                   => array('tableur'    ,'parent'      ),
 );
 
 $tab_step = array(
   10 => "Récupération du fichier (tous les cas)",
   20 => "Extraction des données (tous les cas)",
-  31 => "Analyse des données des classes (siecle_professeurs_directeurs | siecle_eleves | onde_eleves | factos_eleves | tableur_professeurs_directeurs | tableur_eleves)",
-  32 => "Traitement des actions à effectuer sur les classes (siecle_professeurs_directeurs | siecle_eleves | onde_eleves | factos_eleves | tableur_professeurs_directeurs | tableur_eleves)",
-  41 => "Analyse des données des groupes (siecle_professeurs_directeurs | siecle_eleves | tableur_professeurs_directeurs | tableur_eleves)",
-  42 => "Traitement des actions à effectuer sur les groupes (siecle_professeurs_directeurs | siecle_eleves | tableur_professeurs_directeurs | tableur_eleves)",
+  31 => "Analyse des données des classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | factos_eleves | tableur_professeurs_directeurs | tableur_eleves)",
+  32 => "Traitement des actions à effectuer sur les classes (sconet_professeurs_directeurs | sconet_eleves | base_eleves_eleves | factos_eleves | tableur_professeurs_directeurs | tableur_eleves)",
+  41 => "Analyse des données des groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)",
+  42 => "Traitement des actions à effectuer sur les groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)",
   51 => "Analyse des données des utilisateurs (tous les cas)",
   52 => "Traitement des actions à effectuer sur les utilisateurs (tous les cas)",
   53 => "Récupérer les identifiants des nouveaux utilisateurs (tous les cas)",
-  61 => "Modification d'affectations éventuelles (siecle_professeurs_directeurs | siecle_eleves | tableur_professeurs_directeurs | tableur_eleves)",
-  62 => "Traitement des ajouts d'affectations éventuelles (siecle_professeurs_directeurs | siecle_eleves | tableur_professeurs_directeurs | tableur_eleves)",
-  71 => "Adresses des parents (siecle_parents | onde_parents | factos_parents | tableur_parents)",
-  72 => "Traitement des ajouts/modifications d'adresses éventuelles (siecle_parents | onde_parents | factos_parents | tableur_parents)",
-  81 => "Liens de responsabilités des parents (siecle_parents | onde_parents | factos_parents | tableur_parents)",
-  82 => "Traitement des liens de responsabilités des parents (siecle_parents | onde_parents | factos_parents | tableur_parents)",
+  61 => "Modification d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)",
+  62 => "Traitement des ajouts d'affectations éventuelles (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)",
+  71 => "Adresses des parents (sconet_parents | base_eleves_parents | factos_parents | tableur_parents)",
+  72 => "Traitement des ajouts/modifications d'adresses éventuelles (sconet_parents | base_eleves_parents | factos_parents | tableur_parents)",
+  81 => "Liens de responsabilités des parents (sconet_parents | base_eleves_parents | factos_parents | tableur_parents)",
+  82 => "Traitement des liens de responsabilités des parents (sconet_parents | base_eleves_parents | factos_parents | tableur_parents)",
   90 => "Nettoyage des fichiers temporaires (tous les cas)",
 );
 
@@ -85,8 +85,8 @@ if( !isset($tab_action[$action]) || !isset($tab_step[$STEP]) )
 
 list( $import_origine , $import_profil ) = $tab_action[$action];
 
-$tab_extensions_autorisees = ($import_origine=='siecle') ? array('zip','xml') : array('txt','csv') ;
-$extension_fichier_dest    = ($import_origine=='siecle') ? 'xml'              : 'txt' ;
+$tab_extensions_autorisees = ($import_origine=='sconet') ? array('zip','xml') : array('txt','csv') ;
+$extension_fichier_dest    = ($import_origine=='sconet') ? 'xml'              : 'txt' ;
 $fichier_nom_debut   = 'import_'.$import_origine.'_'.$import_profil.'_'.FileSystem::generer_nom_structure_session().'_';
 $fichier_dest_nom    = $fichier_nom_debut.'import.'.$extension_fichier_dest ;
 
@@ -101,14 +101,14 @@ function afficher_etapes($import_origine,$import_profil)
   $puces = '<ul id="step">'.NL;
   switch($import_origine.'+'.$import_profil)
   {
-    case  'siecle+nomenclature' :
+    case  'sconet+nomenclature' :
       $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
       $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
       $puces .= '<li id="step9">Étape 3 - Nettoyage des fichiers temporaires</li>'.NL;
       break;
-    case  'siecle+professeur' :
+    case  'sconet+professeur' :
     case 'tableur+professeur' :
-    case  'siecle+eleve'      :
+    case  'sconet+eleve'      :
     case 'tableur+eleve'      :
       $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
       $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;
@@ -118,8 +118,8 @@ function afficher_etapes($import_origine,$import_profil)
       $puces .= '<li id="step6">Étape 6 - Affectations (ajouts / modifications / suppressions)</li>'.NL;
       $puces .= '<li id="step9">Étape 7 - Nettoyage des fichiers temporaires</li>'.NL;
       break;
-    case      'siecle+parent' :
-    case        'onde+parent' :
+    case      'sconet+parent' :
+    case 'base_eleves+parent' :
     case      'factos+parent' :
     case     'tableur+parent' :
       $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
@@ -129,7 +129,7 @@ function afficher_etapes($import_origine,$import_profil)
       $puces .= '<li id="step8">Étape 5 - Responsabilités (ajouts / modifications / suppressions)</li>'.NL;
       $puces .= '<li id="step9">Étape 6 - Nettoyage des fichiers temporaires</li>'.NL;
       break;
-    case         'onde+eleve' :
+    case  'base_eleves+eleve' :
     case       'factos+eleve' :
       $puces .= '<li id="step1">Étape 1 - Récupération du fichier</li>'.NL;
       $puces .= '<li id="step2">Étape 2 - Extraction des données</li>'.NL;

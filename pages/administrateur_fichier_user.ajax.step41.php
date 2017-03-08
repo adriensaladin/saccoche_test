@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 41 - Analyse des données des groupes (siecle_professeurs_directeurs | siecle_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// Étape 41 - Analyse des données des groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
@@ -83,20 +83,20 @@ if(count($tab_groupes_fichier['ref']))
   foreach($DB_TAB as $DB_ROW)
   {
     $select_niveau .= '<option value="'.$DB_ROW['niveau_id'].'">'.html($DB_ROW['niveau_nom']).'</option>';
-    $key = ( ($import_origine=='siecle') && ($import_profil=='eleve') ) ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
+    $key = ( ($import_origine=='sconet') && ($import_profil=='eleve') ) ? $DB_ROW['code_mef'] : $DB_ROW['niveau_ref'] ;
     $tab_niveau_ref[$key] = $DB_ROW['niveau_id'];
   }
   foreach($tab_groupes_fichier['ref'] as $i_groupe => $ref)
   {
     // On préselectionne un niveau :
-    // - pour siecle_eleves                 on compare avec un masque d'expression régulière
-    // - pour onde_eleves                   on compare avec les niveaux de SACoche
-    // - pour siecle_professeurs_directeurs on compare avec le début de la référence du groupe
+    // - pour sconet_eleves                 on compare avec un masque d'expression régulière
+    // - pour base_eleves_eleves            on compare avec les niveaux de SACoche
+    // - pour sconet_professeurs_directeurs on compare avec le début de la référence du groupe
     // - pour tableur_eleves                on compare avec le début de la référence du groupe
     $id_checked = '';
     foreach($tab_niveau_ref as $masque_recherche => $niveau_id)
     {
-      if( ($import_origine=='siecle') && ($import_profil=='eleve') )
+      if( ($import_origine=='sconet') && ($import_profil=='eleve') )
       {
         $id_checked = (preg_match('/^'.$masque_recherche.'$/',$tab_groupes_fichier['niveau'][$i_groupe])) ? $niveau_id : '';
       }
@@ -118,7 +118,7 @@ $tab_liens_id_base = array('classes'=>$tab_i_classe_TO_id_base,'groupes'=>$tab_i
 FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'liens_id_base.txt', $tab_liens_id_base );
 // On affiche
 Json::add_str('<p><label class="valide">Veuillez vérifier le résultat de l\'analyse des groupes.</label></p>'.NL);
-// Pour siecle_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
+// Pour sconet_professeurs_directeurs, les groupes ne figurent pas forcément dans le fichier si les services ne sont pas présents -> on ne procède qu'à des ajouts éventuels.
 if($lignes_del)
 {
   Json::add_str('<p class="danger">Des groupes non trouvés sont proposés à la suppression. Il se peut que les services / affectations manquent dans le fichier. Veuillez cochez ces suppressions pour les confirmer.</p>'.NL);

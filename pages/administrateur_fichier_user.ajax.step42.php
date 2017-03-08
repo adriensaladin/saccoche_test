@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 42 - Traitement des actions à effectuer sur les groupes (siecle_professeurs_directeurs | siecle_eleves | tableur_professeurs_directeurs | tableur_eleves)
+// Étape 42 - Traitement des actions à effectuer sur les groupes (sconet_professeurs_directeurs | sconet_eleves | tableur_professeurs_directeurs | tableur_eleves)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['classes'] -> $tab_i_classe_TO_id_base ; $tab_liens_id_base['groupes'] -> $tab_i_groupe_TO_id_base ; $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base

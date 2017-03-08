@@ -189,23 +189,14 @@ if($step==1)
     }
   }
 
-  // Vérif présence Id SIECLE | INE
+  // Vérif présence Id SIECLE
   if( count( array_intersect( $tab_page_ref , array('6e','5e','4e','3e','cycle3','cycle4') ) ) )
   {
     $nb_eleves_sans_sconet = DB_STRUCTURE_SOCLE::DB_compter_eleves_actuels_sans_id_sconet();
     if($nb_eleves_sans_sconet)
     {
       $s = ($nb_eleves_sans_sconet>1) ? 's' : '' ;
-      $tab_puce_info[] = '<li><span class="danger">'.$nb_eleves_sans_sconet.' élève'.$s.' trouvé'.$s.' sans identifiant Siècle.</span> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_siecle">DOC</a></span></li>';
-    }
-  }
-  if( count( array_intersect( $tab_page_ref , array('cp','ce1','ce2','cm1','cm2','cycle2') ) ) )
-  {
-    $nb_eleves_sans_INE = DB_STRUCTURE_BREVET::DB_compter_eleves_actuels_sans_INE();
-    if($nb_eleves_sans_INE)
-    {
-      $s = ($nb_eleves_sans_INE>1) ? 's' : '' ;
-      $tab_puce_info[] = '<li><span class="danger">'.$nb_eleves_sans_INE.' élève'.$s.' trouvé'.$s.' sans Identifiant National Élève (INE).</span> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_onde">DOC</a></span></li>';
+      $tab_puce_info[] = '<li><span class="danger">'.$nb_eleves_sans_sconet.' élève'.$s.' trouvé'.$s.' sans identifiant Sconet.</span> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_sconet">DOC</a></span></li>';
     }
   }
 
@@ -252,7 +243,8 @@ if($step==1)
           $info_export = ($tab_join['date_export']) ? '<div class="astuce">Récolté le '.To::date_mysql_to_french($tab_join['date_export']).'.</div>' : '<div class="danger">Données non récoltées.</div>' ;
           $page_ref = $tab_join['page_ref'];
           $id = '_'.$classe_id.'_'.$page_ref.'_'.$periode;
-          $bouton_recolte = ($page_ref!='cycle1') ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '' ;
+          $bouton_recolte = ($page_ref!='cycle1') ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '<button type="button" class="generer" disabled>Fonctionnalité à venir...</button>' ;
+          // $bouton_recolte = !in_array( $page_ref , array('cycle1') ) ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '' ;
           $tab_affich[$classe_id][$periode] = '<td class="hc">'.$info_export.$bouton_recolte.'</td>';
         }
       }
@@ -289,7 +281,16 @@ if($step==1)
 if($step==2)
 {
   // Fabrication des éléments select du formulaire
-  $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , TRUE /*tout*/ , TRUE /*ancien*/ );
+
+  if($_SESSION['USER_PROFIL_TYPE']=='professeur')
+  {
+    $tab_groupes = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
+  }
+  else // directeur ou administrateur
+  {
+    $tab_groupes = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , TRUE /*tout*/ , TRUE /*ancien*/ );
+  }
+
   $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_livret_periode_export();
 
   $select_groupe    = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ , ''                /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
@@ -322,68 +323,50 @@ if($step==2)
 
 afficher_entete_puce_doc_et_info();
 
-// Info sur les fichiers requis issus de SIECLE ou de ONDE
-$test_college = DB_STRUCTURE_LIVRET::DB_tester_jointure_classe_livret('"6e","5e","4e","3e","cycle3","cycle4"');
-$test_ecole   = DB_STRUCTURE_LIVRET::DB_tester_jointure_classe_livret('"cp","ce1","ce2","cm1","cm2","cycle2"');
-if( $test_college || $test_ecole )
+if( DB_STRUCTURE_LIVRET::DB_tester_jointure_classe_livret('"6e","5e","4e","3e"') )
 {
+  // Pour les bilans périodiques du collège, on a besoin de fichiers SIECLE
   $annee_scolaire = To::annee_scolaire('siecle');
   echo'<h2>Avertissement</h2>'.NL;
-  echo'<p>Pour la transmission des informations à LSU, la connaissance d\'informations issues de <em>Siècle</em> (2D) ou de <em>ONDE</em> (1D) pour l\'année scolaire en cours est nécessaire.</p>'.NL;
+  echo'<p>Pour les bilans périodiques des classes de collège, la connaissance d\'informations issues de <em>Siècle</em> pour l\'année scolaire en cours est nécessaire.</p>'.NL;
   $tab_fichier = array(
-    'Onde' => array(
-      'use' => $test_ecole ,
-      'nom' => 'CSVExtraction.csv' ,
-      'doc' => 'support_administrateur__import_users_onde#toggle_exporter_eleves' ,
-      'opt' => 'onde_eleves' ,
-    ),
     'Eleves' => array(
-      'use' => $test_college ,
-      'nom' => 'ExportXML_ElevesSansAdresses.zip' ,
-      'doc' => 'support_administrateur__import_users_siecle#toggle_exporter_eleves' ,
-      'opt' => 'siecle_eleves_oui' ,
+      'nom'=>'ExportXML_ElevesSansAdresses.zip' ,
+      'doc'=>'support_administrateur__import_users_sconet#toggle_exporter_eleves' ,
     ),
     'sts_emp_UAI' => array(
-      'use' => $test_college ,
-      'nom' => 'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml' ,
-      'doc' => 'support_administrateur__import_users_siecle#toggle_exporter_profs' ,
-      'opt' => 'siecle_professeurs_directeurs_oui' ,
+      'nom'=>'sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$annee_scolaire.'.xml' ,
+      'doc'=>'support_administrateur__import_users_sconet#toggle_exporter_profs' ,
     ),
     'Nomenclature' => array(
-      'use' => $test_college ,
-      'nom' => 'Nomenclature.xml' ,
-      'doc' => 'support_administrateur__import_users_siecle#toggle_nomenclatures' ,
-      'opt' => 'siecle_nomenclature_oui' ,
+      'nom'=>'Nomenclature.xml' ,
+      'doc'=>'support_administrateur__import_users_sconet#toggle_nomenclatures' ,
     ),
   );
+  echo'<form action="#" method="post" id="form_import">'.NL;
+  echo'<input type="hidden" id="f_action" name="f_action" value="" /><input id="f_import" type="file" name="userfile" />'.NL;
   foreach($tab_fichier as $fichier_id => $tab)
   {
-    if($tab['use'])
+    echo'<h3>Fichier [ '.$tab['nom'].' ]</h3>'.NL;
+    echo'<ul class="puce">'.NL;
+    $DB_ROW = DB_STRUCTURE_SIECLE::DB_recuperer_import_date_annee($fichier_id);
+    if( empty($DB_ROW) || is_null($DB_ROW['siecle_import_date']) )
     {
-      echo'<h3>Fichier [ '.$tab['nom'].' ]</h3>'.NL;
-      echo'<ul class="puce">'.NL;
-      $DB_ROW = DB_STRUCTURE_SIECLE::DB_recuperer_import_date_annee($fichier_id);
-      if( empty($DB_ROW) || is_null($DB_ROW['siecle_import_date']) )
-      {
-        echo'<li id="etat_'.$fichier_id.'"><span class="danger">Absence de fichier !</span></li>'.NL;
-      }
-      else if( $annee_scolaire != $DB_ROW['siecle_import_annee'] )
-      {
-        echo'<li id="etat_'.$fichier_id.'"><span class="danger">Dernier fichier connu antérieur à cette année scolaire !</span></li>'.NL;
-      }
-      else
-      {
-        echo'<li id="etat_'.$fichier_id.'"><span class="astuce">Dernier import en date du <b>'.To::date_mysql_to_french($DB_ROW['siecle_import_date']).'</b>.</span></li>'.NL;
-      }
-      $precision = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? '' : ' (à importer depuis un compte administrateur)';
-      echo'<li><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier='.$tab['doc'].'">Explications pour récupérer ce fichier'.$precision.'.</a></span></li>'.NL;
-      if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
-      {
-        echo'<li><span class="sousmenu"><a href="./index.php?page=administrateur_fichier_user&amp;categorie='.$tab['opt'].'">Menu administrateur pour importer ce fichier.</a></span></li>'.NL;
-      }
-      echo'</ul>'.NL;
+      echo'<li id="etat_'.$fichier_id.'"><span class="danger">Absence de fichier !</span></li>'.NL;
     }
+    else if( $annee_scolaire != $DB_ROW['siecle_import_annee'] )
+    {
+      echo'<li id="etat_'.$fichier_id.'"><span class="danger">Dernier fichier connu antérieur à cette année scolaire !</span></li>'.NL;
+    }
+    else
+    {
+      echo'<li id="etat_'.$fichier_id.'"><span class="astuce">Dernier import en date du <b>'.To::date_mysql_to_french($DB_ROW['siecle_import_date']).'</b>.</span></li>'.NL;
+    }
+    echo'<li><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier='.$tab['doc'].'">Explications pour récupérer ce fichier.</a></span></li>'.NL;
+    echo'<li>Importer ce fichier : <button id="import_'.$fichier_id.'" name="'.$fichier_id.'" type="button" class="fichier_import">Parcourir...</button><label id="ajax_msg_'.$fichier_id.'">&nbsp;</label></li>'.NL;
+    echo'</ul>'.NL;
   }
+  echo'</form>'.NL;
 }
 
 echo'<hr />'.NL;

@@ -533,9 +533,6 @@ define('IS_HEBERGEMENT_SESAMATH', $is_hebergement_sesamath);
 // define('FORCE_MINIFY' , TRUE);
 // define('FORCE_NO_MINIFY' , TRUE);
 
-// mail de contact en cas d'erreur applicative
-define('SACOCHE_CONTACT_COURRIEL','contact-sacoche@sesamath.net');
-
 // indiquer si une convention Établissement-ENT est requise et à compter de quand
 define('CONVENTION_ENT_REQUISE'         ,TRUE);
 define('CONVENTION_ENT_START_DATE_FR'   ,'01/09/2013');

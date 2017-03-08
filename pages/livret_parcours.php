@@ -158,9 +158,8 @@ foreach($DB_TAB as $DB_ROW)
     {
       foreach($DB_TAB as $DB_ROW)
       {
-        $parcours_used = $DB_ROW['parcours_used'] / 3;
         // Afficher une ligne du tableau
-        echo'<tr id="id_'.$DB_ROW['livret_parcours_id'].'" data-used="'.$parcours_used.'">';
+        echo'<tr id="id_'.$DB_ROW['livret_parcours_id'].'">';
         echo  '<td data-id="'.$DB_ROW['livret_page_ref'].'"><i>'.sprintf($page_ordre_format,$DB_ROW['livret_page_ordre']).'</i>'.html($DB_ROW['livret_page_moment']).'</td>';
         echo  '<td data-id="'.$DB_ROW['groupe_id'].'">'.html($DB_ROW['groupe_nom']).'</td>';
         echo  '<td data-id="'.$DB_ROW['prof_id'].'">'.html($DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom']).'</td>';
@@ -193,7 +192,6 @@ foreach($DB_TAB as $DB_ROW)
   <div id="gestion_delete">
     <p>Confirmez-vous la suppression du parcours &laquo;&nbsp;<b id="gestion_delete_identite"></b>&nbsp;&raquo; ?</p>
   </div>
-  <p id="alerte_used" class="fluo"><input id="f_usage" name="f_usage" type="hidden" value="" /><span class="danger b">Ce dispositif comporte des saisies sur le Livret scolaire.<br />Un parcours déjà utilisé ne devrait pas être modifié, et encore moins supprimé.</span></p>
   <p>
     <span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="" /><input id="f_id" name="f_id" type="hidden" value="" /><input id="f_parcours" name="f_parcours" type="hidden" value="<?php echo $parcours_code ?>" /><button id="bouton_valider" type="button" class="valider">Valider.</button> <button id="bouton_annuler" type="button" class="annuler">Annuler.</button><label id="ajax_msg_gestion">&nbsp;</label>
   </p>

@@ -190,7 +190,7 @@ public static function DB_lister_eleves_cibles_actuels_avec_INE($listing_eleve_i
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
   $DB_SQL.= 'WHERE user_id IN('.$listing_eleve_id.') AND user_profil_type=:profil_type AND user_sortie_date>NOW() ';
-  $DB_SQL.= 'AND (user_reference REGEXP "^[0-9]{9}[0-9A-Z]{1}[A-Z]{1}$") '; // au 2D c'est 10 chiffres et 1 lettre mais au 1D c'est 9 chiffres et 2 lettres
+  $DB_SQL.= 'AND (user_reference REGEXP "^[0-9]{10}[A-Z]{1}$") ';
   $DB_SQL.= 'ORDER BY user_reference ASC';
   $DB_VAR = array(':profil_type'=>'eleve');
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
@@ -411,7 +411,7 @@ public static function DB_compter_eleves_actuels_sans_INE()
   $DB_SQL = 'SELECT COUNT(*) AS nombre ';
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() AND (user_reference NOT REGEXP "^[0-9]{9}[0-9A-Z]{1}[A-Z]{1}$") '; // au 2D c'est 10 chiffres et 1 lettre mais au 1D c'est 9 chiffres et 2 lettres
+  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() AND (user_reference NOT REGEXP "^[0-9]{10}[A-Z]{1}$") ';
   $DB_VAR = array(':profil_type'=>'eleve');
   return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

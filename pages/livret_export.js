@@ -34,6 +34,104 @@ $(document).ready
   function()
   {
 
+    var file_objet = '';
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Traitement du formulaire #form_import
+    // Upload d'un fichier (avec jquery.form.js)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Le formulaire qui va être analysé et traité en AJAX
+    var formulaire_import = $('#form_import');
+
+    // Options d'envoi du formulaire (avec jquery.form.js)
+    var ajaxOptions_import =
+    {
+      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
+      type : 'POST',
+      dataType : 'json',
+      clearForm : false,
+      resetForm : false,
+      error : retour_form_erreur_import,
+      success : retour_form_valide_import
+    };
+
+    // Vérifications précédant l'envoi du formulaire, déclenchées au choix d'un fichier
+    $('#f_import').change
+    (
+      function()
+      {
+        var file = this.files[0];
+        if( typeof(file) == 'undefined' )
+        {
+          $('#ajax_msg_'+file_objet).removeAttr('class').html('');
+          return false;
+        }
+        else
+        {
+          var fichier_nom = file.name;
+          var fichier_ext = fichier_nom.split('.').pop().toLowerCase();
+          if( '.xml.zip.'.indexOf('.'+fichier_ext+'.') == -1 )
+          {
+            $('#ajax_msg_'+file_objet).attr('class','erreur').html('Le fichier "'+fichier_nom+'" n\'a pas une extension "xml" ou "zip".');
+            return false;
+          }
+          else
+          {
+            $('#form_import button').prop('disabled',true);
+            $('#ajax_msg_'+file_objet).attr('class','loader').html("En cours&hellip;");
+            formulaire_import.submit();
+          }
+        }
+      }
+    );
+
+    // Envoi du formulaire (avec jquery.form.js)
+    formulaire_import.submit
+    (
+      function()
+      {
+        $(this).ajaxSubmit(ajaxOptions_import);
+        return false;
+      }
+    );
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_erreur_import(jqXHR, textStatus, errorThrown)
+    {
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#form_import button').prop('disabled',false);
+      $('#ajax_msg_'+file_objet).attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+    }
+
+    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
+    function retour_form_valide_import(responseJSON)
+    {
+      $('#f_import').clearFields(); // Sinon si on fournit de nouveau un fichier de même nom alors l'événement change() ne se déclenche pas
+      $('#form_import button').prop('disabled',false);
+      if(responseJSON['statut']==false)
+      {
+        $('#ajax_msg_'+file_objet).attr('class','alerte').html(responseJSON['value']);
+      }
+      else
+      {
+        initialiser_compteur();
+        $('#form_import button').prop('disabled',false);
+        $('#ajax_msg_'+file_objet).attr('class','valide').html("Demande réalisée !");
+        $('#etat_'+file_objet).html('<span class="astuce">Dernier import en date du <b>'+TODAY_FR+'</b>.</span>');
+      }
+    }
+
+    $('button.fichier_import').click
+    (
+      function()
+      {
+        file_objet = $(this).attr('name'); // Eleves | sts_emp_UAI | Nomenclature
+        $('#f_action').val(file_objet);
+        $('#f_import').click();
+      }
+    );
+
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Récolter les données pour les élèves d'une classes et d'une période
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +148,11 @@ $(document).ready
         if(page_ref=='cycle1')
         {
           $.fancybox( '<label class="danger">'+'L\'application nationale ne gère pas le bilan de maternelle (qui ne fait pas partie du Livret Scolaire) !'+'</label>' , {'centerOnScroll':true , 'minWidth':500} );
+          return false;
+        }
+        if( (page_ref=='cp') || (page_ref=='ce1') || (page_ref=='ce2') || (page_ref=='cm1') || (page_ref=='cm2') || (page_ref=='cycle2') )
+        {
+          $.fancybox( '<p class="travaux">'+'Spécifications pour le 1er degré partiellement inutilisables&hellip;<br />Du côté de SACoche, la génération du fichier au bon format est déjà programmée.<br />Mais nous restons en attente d\'évolutions de BE1D initialement prévues pour février 2017.<br />La finalisation de l\'export LSU 1er degré sera effectuée dans la foulée.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
           return false;
         }
         $('button').prop('disabled',true);

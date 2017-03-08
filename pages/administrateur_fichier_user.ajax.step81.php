@@ -29,7 +29,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 if(!isset($STEP))       {exit('Ce fichier ne peut être appelé directement !');}
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Étape 81 - Liens de responsabilités des parents (siecle_parents | onde_parents | tableur_parents | factos_parents)
+// Étape 81 - Liens de responsabilités des parents (sconet_parents | base_eleves_parents | tableur_parents | factos_parents)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // On récupère le fichier avec des infos sur les correspondances : $tab_liens_id_base['users'] -> $tab_i_fichier_TO_id_base
@@ -55,7 +55,7 @@ $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_parents_par_eleve();
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_infos_eleve = array( 'nom'=>$DB_ROW['eleve_nom'] , 'prenom'=>$DB_ROW['eleve_prenom'] );
-  if( ($DB_ROW['parent_id']) && ( ( $DB_ROW['parent_sconet_id'] && $DB_ROW['eleve_sconet_id'] ) || ($import_origine=='onde') ) )
+  if( ($DB_ROW['parent_id']) && ( ( $DB_ROW['parent_sconet_id'] && $DB_ROW['eleve_sconet_id'] ) || ($import_origine=='base_eleves') ) )
   {
     $tab_infos_parent = array( 'id'=>(int)$DB_ROW['parent_id'] , 'nom'=>$DB_ROW['parent_nom'] , 'prenom'=>$DB_ROW['parent_prenom'] );
     if(!isset($tab_base_parents_par_eleve[(int)$DB_ROW['eleve_id']]))

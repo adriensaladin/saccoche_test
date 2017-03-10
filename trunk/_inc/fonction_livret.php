@@ -1008,10 +1008,11 @@ function texte_ligne_assiduite($tab_assiduite)
 {
   $intro = 'Assiduité et ponctualité : ';
   extract($tab_assiduite); // $absence $absence_nj $retard $retard_nj
-  $nb_absence    = is_null($absence)    ? NULL : (int)$absence ;
   $nb_absence_nj = is_null($absence_nj) ? NULL : (int)$absence_nj ;
-  $nb_retard     = is_null($retard)     ? NULL : (int)$retard ;
   $nb_retard_nj  = is_null($retard_nj)  ? NULL : (int)$retard_nj ;
+  // on corrige au passage une éventuelle anomalie de nb non justifié > nb total
+  $nb_absence    = is_null($absence)    ? NULL : max( (int)$absence , (int)$nb_absence_nj );
+  $nb_retard     = is_null($retard)     ? NULL : max( (int)$retard , (int)$retard_nj );
   // Quelques cas particuliers
   if( ($nb_absence===NULL) && ($nb_retard===NULL) )
   {

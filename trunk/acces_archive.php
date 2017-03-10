@@ -43,6 +43,7 @@ Session::execute();
 
 // Autres fonctions à charger
 require(CHEMIN_DOSSIER_INCLUDE.'fonction_divers.php');
+require(CHEMIN_DOSSIER_INCLUDE.'fonction_livret.php'); // Pour elements_programme_extraction()
 
 // Paramètre transmis
 $officiel_archive_id = (isset($_GET['id'])) ? Clean::entier($_GET['id']) : 0 ;

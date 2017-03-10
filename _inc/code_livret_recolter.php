@@ -1048,11 +1048,6 @@ foreach($tab_eleve as $eleve_id => $tab)
             unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
             retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
           }
-          elseif( mb_strlen($tab_rubrique_info['appreciation']) > 600 )
-          {
-            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Appréciation trop longue pour "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" (regroupement multiples du bulletin ?) : tronquée à 600 caractères.';
-            $tab_eleve[$eleve_id]['acquis'][$discipline_ref]['appreciation'] = mb_substr($tab_rubrique_info['appreciation'],0,600);
-          }
           // appréciation obligatoire sauf si élève non noté => "-" ajouté si besoin au moment de la conception du XML
           // élément de prg travaillé obligatoire => "-" ajouté si besoin au moment de la conception du XML
         }
@@ -1174,11 +1169,6 @@ if( $affichage_assiduite && !empty($tab_eleve) )
     $tab_eleve[$DB_ROW['user_id']]['viesco']['nb-retards']          = (int)$DB_ROW['assiduite_retard'];
     $tab_eleve[$DB_ROW['user_id']]['viesco']['nb-abs-justifiees']   = (int)$DB_ROW['assiduite_absence'] - (int)$DB_ROW['assiduite_absence_nj'];
     $tab_eleve[$DB_ROW['user_id']]['viesco']['nb-abs-injustifiees'] = (int)$DB_ROW['assiduite_absence_nj'];
-    if($tab_eleve[$DB_ROW['user_id']]['viesco']['nb-abs-justifiees']<0)
-    {
-      $tab_eleve[$DB_ROW['user_id']]['viesco']['nb-abs-justifiees'] = 0;
-      $tab_compte_rendu['alerte'][] = html($tab_eleve[$DB_ROW['user_id']]['eleve']['nom'].' '.$tab_eleve[$DB_ROW['user_id']]['eleve']['prenom'])." &rarr; Nb d'absences non justifiées supérieur au nb total d'absences : mise en cohérence pour l'export.";
-    }
   }
   $nb_eleves = count($tab_eleve);
   $nb_viesco = count($DB_TAB);

@@ -80,11 +80,13 @@ $bulletin_couleur                        = (isset($_POST['f_bulletin_couleur']))
 $bulletin_fond                           = (isset($_POST['f_bulletin_fond']))                           ? Clean::texte($_POST['f_bulletin_fond'])                            : '';
 $bulletin_legende                        = (isset($_POST['f_bulletin_legende']))                        ? Clean::texte($_POST['f_bulletin_legende'])                         : '';
 
-$livret_import_bulletin_notes = (isset($_POST['f_livret_import_bulletin_notes'])) ? Clean::texte($_POST['f_livret_import_bulletin_notes'])  : '';
-$livret_retroactif            = (isset($_POST['f_livret_retroactif']))            ? Clean::calcul_retroactif($_POST['f_livret_retroactif']) : '';
-$livret_only_socle            = (isset($_POST['f_livret_only_socle']))            ? 1                                                       : 0;
-$livret_couleur               = (isset($_POST['f_livret_couleur']))               ? Clean::texte($_POST['f_livret_couleur'])                : '';
-$livret_fond                  = (isset($_POST['f_livret_fond']))                  ? Clean::texte($_POST['f_livret_fond'])                   : '';
+$livret_appreciation_rubrique_longueur = (isset($_POST['f_livret_appreciation_rubrique_longueur'])) ? Clean::entier($_POST['f_livret_appreciation_rubrique_longueur']) : 0;
+$livret_appreciation_generale_longueur = (isset($_POST['f_livret_appreciation_generale_longueur'])) ? Clean::entier($_POST['f_livret_appreciation_generale_longueur']) : 0;
+$livret_import_bulletin_notes          = (isset($_POST['f_livret_import_bulletin_notes']))          ? Clean::texte($_POST['f_livret_import_bulletin_notes'])           : '';
+$livret_retroactif                     = (isset($_POST['f_livret_retroactif']))                     ? Clean::calcul_retroactif($_POST['f_livret_retroactif'])          : '';
+$livret_only_socle                     = (isset($_POST['f_livret_only_socle']))                     ? 1                                                                : 0;
+$livret_couleur                        = (isset($_POST['f_livret_couleur']))                        ? Clean::texte($_POST['f_livret_couleur'])                         : '';
+$livret_fond                           = (isset($_POST['f_livret_fond']))                           ? Clean::texte($_POST['f_livret_fond'])                            : '';
 
 $socle_appreciation_rubrique_longueur = (isset($_POST['f_socle_appreciation_rubrique_longueur'])) ? Clean::entier($_POST['f_socle_appreciation_rubrique_longueur']) : 0;
 $socle_appreciation_rubrique_report   = (isset($_POST['f_socle_appreciation_rubrique_report']))   ? 1                                                               : 0;
@@ -167,6 +169,8 @@ $tab_variables = array(
     'legende',
   ),
   'livret' => array(
+    'appreciation_rubrique_longueur',
+    'appreciation_generale_longueur',
     'import_bulletin_notes',
     'retroactif',
     'only_socle',

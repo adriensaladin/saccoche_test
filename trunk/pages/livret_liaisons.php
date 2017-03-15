@@ -186,11 +186,14 @@ foreach($DB_TAB as $DB_ROW)
   $tab_element_id = explode( ',' , $DB_ROW['listing_elements'] );
   foreach($tab_element_id as $element_id)
   {
-    $tab_rubrique[$rubrique_id]['join'][$tab_element[$element_id]['ordre']] = array(
-      'id'  => $element_id ,
-      'nom' => $tab_element[$element_id]['nom']
-    );
-    $tab_element[$element_id]['used'] = TRUE;
+    if(isset($tab_element[$element_id]))
+    {
+      $tab_rubrique[$rubrique_id]['join'][$tab_element[$element_id]['ordre']] = array(
+        'id'  => $element_id ,
+        'nom' => $tab_element[$element_id]['nom']
+      );
+      $tab_element[$element_id]['used'] = TRUE;
+    }
   }
 }
 
@@ -221,17 +224,20 @@ foreach($tab_rubrique as $rubrique_id => $tab_info)
   $tab_html_rubrique[$rubrique_id] .= '</div>';
 }
 
-// Texte d'explication / d'avertissement pour le collège
+// Texte d'explication / d'avertissement pour les livrets périodiques du collège
 
-if($liaison_rubrique_type=='matiere')
+if( DB_STRUCTURE_LIVRET::DB_tester_jointure_classe_livret('"6e","5e","4e","3e"') )
 {
+  $DB_ROW = DB_STRUCTURE_SIECLE::DB_recuperer_import_date_annee('sts_emp_UAI');
+  $lien_import = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? '<span class="sousmenu"><a href="./index.php?page=administrateur_fichier_user&amp;categorie=siecle_professeurs_directeurs_oui">Menu pour l\'importer.</a></span> ' : '' ;
+  $lien_doc    = '<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_siecle#toggle_exporter_profs">Documentation pour le récupérer.</a></span>';
   if(DB_STRUCTURE_MATIERE::DB_tester_matiere_siecle())
   {
-    $DB_ROW = DB_STRUCTURE_SIECLE::DB_recuperer_import_date_annee('sts_emp_UAI');
     if( empty($DB_ROW) || is_null($DB_ROW['siecle_import_date']) )
     {
       $texte_info_rubriques = "Votre import des matières de <em>siecle</em> n'a pas été trouvé, probablement à cause d'un bug corrigé courant septembre 2016.";
-      $texte_info_rubriques .= "<br /><b>Merci de ré-importer le fichier issu de <em>STS-Web</em> avec les données des professeurs : aller jusqu'à l'étape 2 suffit.</b>";
+      $texte_info_rubriques .= "<br /><span class=\"probleme\">Merci d'importer le fichier issu de <em>STS-Web</em> avec les données des professeurs : aller jusqu'à l'étape 2 suffit.</span>";
+      $texte_info_rubriques .= "<br />".$lien_import.$lien_doc;
     }
     else
     {
@@ -239,13 +245,24 @@ if($liaison_rubrique_type=='matiere')
       $annee_scolaire = To::annee_scolaire('siecle');
       if( $annee_scolaire != $DB_ROW['siecle_import_annee'] )
       {
-        $texte_info_rubriques .= "<br /><b>Attention : aucun import trouvé pour cette année scolaire &rarr; vous devez mettre à jour en important le fichier issu de <em>STS-Web</em> !</b>";
+        $texte_info_rubriques .= "<br /><span class=\"probleme\">Attention : aucun import trouvé pour cette année scolaire &rarr; vous devez mettre à jour en important le fichier issu de <em>STS-Web</em> !</span>";
+        $texte_info_rubriques .= "<br />".$lien_import.$lien_doc;
       }
     }
   }
   else
   {
     $texte_info_rubriques = "Aucun import <em>siecle</em> trouvé : les rubriques actuellement enregistrées sont celles de vos référentiels <em>SACoche</em>.";
+    if( !empty($DB_ROW) && !is_null($DB_ROW['siecle_import_date']) )
+    {
+      $texte_info_rubriques .= "<br /><span class=\"probleme\">Attention : import probable d'un fichier trop tardivement (juste avant l'export) &rarr; vous devez mettre à jour en important le fichier issu de <em>STS-Web</em>.</span>";
+      $texte_info_rubriques .= "<br />".$lien_import.$lien_doc;
+    }
+    else
+    {
+      $texte_info_rubriques .= "<br /><span class=\"probleme\">Attention : si vous dépendez de <em>siecle</em>, alors vous devez importer le fichier issu de <em>STS-Web</em> pour en récupérer les matières.</span>";
+      $texte_info_rubriques .= "<br />".$lien_import.$lien_doc;
+    }
   }
 }
 

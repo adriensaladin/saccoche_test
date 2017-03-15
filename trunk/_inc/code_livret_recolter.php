@@ -109,6 +109,8 @@ $champ_chef_etabl = ($BILAN_TYPE_ETABL=='college') ? 'responsable-etab' : 'direc
 $classe_value     = ($BILAN_TYPE_ETABL=='college') ? mb_substr($classe_ref,0,8) : mb_substr($classe_ref,0,6) ;
 $tab_classe = array();
 
+$millesime = To::annee_scolaire('siecle');
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et mettre en session les infos sur les seuils enregistrés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,7 +140,7 @@ $affichage_periode = ($PAGE_PERIODICITE=='periode') ? TRUE : FALSE ;
 
 $tab_periode = (!$affichage_periode) ? array() : array(
   $key_periode => array(
-    'millesime'   => To::annee_scolaire('siecle'),
+    'millesime'   => $millesime,
     'indice'      => substr($periode_nom,-3,1),
     'nb-periodes' => substr($periode_nom,-1),
     'date-debut'  => $date_debut, // 1D
@@ -215,7 +217,7 @@ $tab_bilan = array(
   $champ_chef_etabl_ref  => $key_chef_etabl,
   'position'             => $champ_position,
   'cycle'                => $cycle_id,
-  'millesime'            => To::annee_scolaire('siecle'),
+  'millesime'            => $millesime,
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1032,29 +1034,39 @@ foreach($tab_eleve as $eleve_id => $tab)
     {
       if($BILAN_TYPE_ETABL=='college')
       {
+        $tab_siecle_count = array( 'ok'=>0 , 'ko'=>0 );
         foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
         {
+          $key_rubrique = substr($discipline_ref,0,-1);
+          $key_count = ($tab_rubrique[$key_rubrique]['modalite-election']!='X') ? 'ok' : 'ko' ;
+          $tab_siecle_count[$key_count]++;
           // au moins un enseignant doit être associé à la discipline
           if(empty($tab_rubrique_info['profs']))
           {
-            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
+            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun enseignant rattaché à la discipline "'.$tab_rubrique[$key_rubrique]['libelle'].'" : rubrique non exportée.';
             unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
             retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
           }
           // jusqu'en avril 2016, en cas de positionnement sur 4 niveaux, un élève ne peut pas être non noté
           else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
           {
-            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" : rubrique non exportée.';
+            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[$key_rubrique]['libelle'].'" : rubrique non exportée.';
             unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
             retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
           }
           elseif( mb_strlen($tab_rubrique_info['appreciation']) > 600 )
           {
-            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Appréciation trop longue pour "'.$tab_rubrique[substr($discipline_ref,0,-1)]['libelle'].'" (regroupement multiples du bulletin ?) : tronquée à 600 caractères.';
+            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Appréciation trop longue pour "'.$tab_rubrique[$key_rubrique]['libelle'].'" (regroupement multiples du bulletin ?) : tronquée à 600 caractères.';
             $tab_eleve[$eleve_id]['acquis'][$discipline_ref]['appreciation'] = mb_substr($tab_rubrique_info['appreciation'],0,600);
           }
           // appréciation obligatoire sauf si élève non noté => "-" ajouté si besoin au moment de la conception du XML
           // élément de prg travaillé obligatoire => "-" ajouté si besoin au moment de la conception du XML
+        }
+        // un maximum de rubriques doivent coller aux matières issues de SIECLE
+        if( $tab_siecle_count['ok'] < $tab_siecle_count['ko'] )
+        {
+          $lien_assistance = ($tab_siecle_count['ok']) ? 'Étape n°2 configurée correctement ?' : HtmlMail::to(SACOCHE_CONTACT_COURRIEL,'export LSU - référentiels non liés à SIECLE','Prenez contact avec l\'assistance de SACoche','Veuillez joindre votre fichier "sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$millesime.'.xml".').' si besoin.' ;
+          Json::end( FALSE , $tab_siecle_count['ko'].' disciplines utilisées hors SIECLE alors qu\'elles devraient seulement constituer l\'exception !<br />'.$lien_assistance );
         }
       }
       else if($BILAN_TYPE_ETABL=='ecole')

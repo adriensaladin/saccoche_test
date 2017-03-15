@@ -268,8 +268,7 @@ if($make_pdf)
   $nb_lignes_intitule  = 1.5;
   $nb_lignes_eval_tete = 2;
   $nb_lignes_pos_legende = in_array($PAGE_COLONNE,array('moyenne','pourcentage')) ? 0 : 1 ;
-  $app_rubrique_longueur = $_SESSION['OFFICIEL']['LIVRET_APPRECIATION_RUBRIQUE_LONGUEUR'];
-  $app_generale_longueur = $_SESSION['OFFICIEL']['LIVRET_APPRECIATION_GENERALE_LONGUEUR'];
+  $app_rubrique_longueur = min($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'],600); // max 600 spécification LSU
 
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
@@ -414,7 +413,7 @@ if($make_pdf)
     $tab_nb_lignes_eleve_autre[$eleve_id]['bilan'] += 1; // texte introductif
     $tab_nb_lignes_eleve_autre[$eleve_id]['bilan'] += ($BILAN_TYPE_ETABL=='college') ? 1 : 0 ; // prof principal
     $bilan_info = isset($tab_saisie[$eleve_id]['bilan'][0]['appreciation']) ? $tab_saisie[$eleve_id]['bilan'][0]['appreciation'] : $tab_saisie_initialisation ;
-    $nb_lignes = ($bilan_info['saisie_valeur']) ? max( 6 , ceil(strlen($bilan_info['saisie_valeur'])/$nb_caract_max_par_ligne), min( substr_count($bilan_info['saisie_valeur'],"\n") + 1 , $app_generale_longueur / $nb_caract_max_par_ligne ) ) : 6 ; // On prévoit un emplacement par défaut
+    $nb_lignes = ($bilan_info['saisie_valeur']) ? max( 6 , ceil(strlen($bilan_info['saisie_valeur'])/$nb_caract_max_par_ligne), min( substr_count($bilan_info['saisie_valeur'],"\n") + 1 , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] / $nb_caract_max_par_ligne ) ) : 6 ; // On prévoit un emplacement par défaut
     $tab_nb_lignes_eleve_autre[$eleve_id]['bilan'] += $nb_lignes;
     // Communication avec la famille
     if( $PAGE_VIE_SCOLAIRE )
@@ -479,7 +478,7 @@ if( ($make_html) || ($make_graph) )
 if($make_pdf)
 {
   $releve_PDF = new PDF_livret_scolaire( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ );
-  $releve_PDF->initialiser( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $app_rubrique_longueur , $app_generale_longueur , $tab_saisie_initialisation );
+  $releve_PDF->initialiser( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $app_rubrique_longueur , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation );
   $tab_archive['user'][0][] = array( '__construct' , array( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , 'oui' /*couleur*/ , $fond , $legende , !empty($is_test_impression) /*filigrane*/ , $tab_archive['session'] ) );
 }
 // Pour chaque élève...
@@ -499,7 +498,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         if($is_archive)
         {
           $tab_archive['user'][$eleve_id]['image_md5'] = array();
-          $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $app_rubrique_longueur , $app_generale_longueur , $tab_saisie_initialisation ) );
+          $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $app_rubrique_longueur , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation ) );
         }
         $tab_infos_entete = 
           array(
@@ -550,8 +549,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           foreach($tab_rubriques['eval'] as $livret_rubrique_id => $tab_rubrique)
           {
             // récup éléments travaillés
-            $id_rubrique_elements = $livret_rubrique_id ; // On force une ligne par sous-rubrique, donc pas $tab_rubriques['eval'][$livret_rubrique_id]['elements'];
-            $elements_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_elements]['elements']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_elements]['elements'] : $tab_saisie_initialisation ;
+            if($eleve_id)
+            {
+              $id_rubrique_elements = $livret_rubrique_id ; // On force une ligne par sous-rubrique, donc pas $tab_rubriques['eval'][$livret_rubrique_id]['elements'];
+              $elements_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_elements]['elements']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_elements]['elements'] : $tab_saisie_initialisation ;
+            }
             // récup appréciation
             $id_rubrique_appreciation = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
             $appreciation_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation'] : $tab_saisie_initialisation ;
@@ -626,20 +628,24 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   }
                 }
                 // Principaux éléments du programme travaillés durant la période
-                if($elements_info['saisie_valeur'])
+                if($eleve_id)
                 {
-                  $elements = elements_programme_extraction( $elements_info['saisie_valeur'] , $nb_caract_max_par_colonne , 'html' /*objet_retour*/ );
-                  $origine = ($elements_info['saisie_origine']=='calcul') ? 'Généré automatiquement' : 'Validé par '.html($tab_profs[$elements_info['prof_id']]) ;
-                  $actions = ($make_action=='modifier') ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
+                  if($elements_info['saisie_valeur'])
+                  {
+                    $elements = elements_programme_extraction( $elements_info['saisie_valeur'] , $nb_caract_max_par_colonne , 'html' /*objet_retour*/ );
+                    $origine = ($elements_info['saisie_origine']=='calcul') ? 'Généré automatiquement' : 'Validé par '.html($tab_profs[$elements_info['prof_id']]) ;
+                    $actions = ($make_action=='modifier') ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
+                    $actions.= ( ($make_action=='modifier') && ($elements_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
+                  }
+                  else
+                  {
+                    $elements = '<div class="danger">Absence de saisie !</div>' ;
+                    $origine = ($elements_info['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$elements_info['prof_id']]) : '' ;
+                    $actions = ($make_action=='modifier') ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
+                    $actions.= ( ($make_action=='modifier') && ($elements_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
+                  }
+                  $tab_temp_HTML['elements'] .= '<td id="eval_'.$livret_rubrique_id.'_elements"><div class="elements">'.$elements.'</div><div class="notnow" data-id="'.$elements_info['saisie_id'].'">'.echo_origine($origine).$actions.'</div></td>';
                 }
-                else
-                {
-                  $elements = ($make_action=='modifier') ? '<div class="danger">Saisir des éléments pour le regroupement l\'impose à tous les élèves et annule leur récolte automatisée pour chacun.</div>' : '<div class="notnow">Pas de saisie imposée à tous les élèves du regroupement.</div>' ;
-                  $origine = ($elements_info['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$elements_info['prof_id']]) : '' ;
-                  // $actions = ($make_action=='modifier') ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
-                  $actions = ($make_action=='modifier') ? ' <button type="button" disabled>Fonctionnalité en travaux, à venir prochainement...</button>' : '' ;
-                }
-                $tab_temp_HTML['elements'] .= '<td id="eval_'.$livret_rubrique_id.'_elements"><div class="elements">'.$elements.'</div><div class="notnow" data-id="'.$elements_info['saisie_id'].'">'.echo_origine($origine).$actions.'</div></td>';
                 // Acquisitions, progrès et difficultés éventuelles
                 $nombre_rubriques_regroupees = isset($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) ? count($tab_id_rubrique[$eleve_id]['appreciation'][$id_rubrique_appreciation]) : 0 ;
                 if( ( $nombre_rubriques_regroupees == 1 ) || !isset($tab_deja_affiche[$eleve_id][$id_rubrique_appreciation]) )
@@ -725,7 +731,10 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $releve_HTML .= '<h4 class="eval">'.rubrique_texte_intro('eval',$eleve_id).'</h4>'.NL;
             $releve_HTML .= '<table class="livret"><thead>'.NL.'<tr>';
             $releve_HTML .= ($BILAN_TYPE_ETABL=='college') ? '<th'.$rowspan.' class="nu"></th>' : '<th colspan="2"'.$rowspan.'>Domaines d’enseignement</th>' ;
-            $releve_HTML .= '<th'.$rowspan.'>Principaux éléments du programme travaillés</th>';
+            if($eleve_id)
+            {
+              $releve_HTML .= '<th'.$rowspan.'>Principaux éléments du programme travaillés</th>';
+            }
             $releve_HTML .= '<th'.$rowspan.'>Acquisitions, progrès et difficultés éventuelles</th>';
             if( ( ($PAGE_COLONNE=='objectif') || ($PAGE_COLONNE=='position') ) && ( $eleve_id || $PAGE_MOYENNE_CLASSE ) )
             {

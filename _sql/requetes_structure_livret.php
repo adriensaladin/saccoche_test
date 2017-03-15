@@ -288,25 +288,6 @@ public static function DB_recuperer_chef_etabl_infos( $etablissement_chef_id )
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
-/**
- * recuperer_dgesco_elements_arborescence
- *
- * @param void
- * @return array
- */
-public static function DB_recuperer_dgesco_elements_arborescence()
-{
-  $DB_SQL = 'SELECT livret_element_cycle_nom, livret_element_domaine_nom, livret_element_niveau_nom, livret_element_theme_nom, livret_element_item_nom, ';
-  $DB_SQL.= 'sacoche_livret_element_cycle.livret_element_cycle_id, livret_element_domaine_id, livret_element_niveau_id, livret_element_theme_id, livret_element_item_id ';
-  $DB_SQL.= 'FROM sacoche_livret_element_item ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_element_theme USING(livret_element_theme_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_element_domaine USING(livret_element_domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_element_niveau USING(livret_element_niveau_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_element_cycle ON sacoche_livret_element_domaine.livret_element_cycle_id = sacoche_livret_element_cycle.livret_element_cycle_id ';
-  $DB_SQL.= 'ORDER BY sacoche_livret_element_cycle.livret_element_cycle_id, livret_element_domaine_id, livret_element_niveau_id, livret_element_theme_id, livret_element_item_id ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rubriques & Jointures rubriques / référentiels
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

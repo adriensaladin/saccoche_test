@@ -179,9 +179,8 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
     $nb_ent_possibles = count($tab_memo_ent_possible);
     if($nb_ent_possibles)
     {
-      $tab_texte_ent_possibles = array();
       $mot_ent = ($nb_ent_possibles>1) ? 'des ENT' : 'de l\'ENT' ;
-      $tab_texte_ent_possibles['intro'] = 'Sur votre département <em>SACoche</em> peut utiliser l\'authentification '.$mot_ent.' <b>'.implode(' - ',$tab_memo_ent_possible).'</b> &rarr; <a href="./index.php?page=administrateur_etabl_connexion">Gestion du mode d\'identification.</a>';
+      $texte_ent_possibles = 'Sur votre département <em>SACoche</em> peut utiliser l\'authentification '.$mot_ent.' <b>'.implode(' - ',$tab_memo_ent_possible).'</b> &rarr; <a href="./index.php?page=administrateur_etabl_connexion">Gestion du mode d\'identification.</a>';
       if( IS_HEBERGEMENT_SESAMATH && CONVENTION_ENT_REQUISE && is_file(CHEMIN_FICHIER_WS_SESAMATH_ENT) )
       {
         require(CHEMIN_FICHIER_WS_SESAMATH_ENT);
@@ -190,11 +189,11 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
           list($departement,$connexion_nom) = explode('|',$connexion_ref);
           if( isset($tab_connecteurs_convention[$connexion_ref]) && $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] )
           {
-            $tab_texte_ent_possibles[$connexion_ref] = '<a target="_blank" href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats">'.$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'</a>';
+            $texte_ent_possibles .= '<br /><a target="_blank" href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats">'.$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'</a>';
           }
         }
       }
-      $tab_accueil['user']['contenu'] .= '<p class="astuce">'.implode('<br />',$tab_texte_ent_possibles).'</p>';
+      $tab_accueil['user']['contenu'] .= '<p class="astuce">'.$texte_ent_possibles.'</p>';
     }
   }
   if(!$tab_accueil['alert']['contenu'])

@@ -3418,7 +3418,7 @@ $(document).ready
         {
           type : 'POST',
           url : 'ajax.php?page=_load_arborescence',
-          data : 'f_objet=referentiels'+'&f_item_comm=1'+'&f_all_if_pp=0',
+          data : 'f_item_comm=1'+'&f_all_if_pp=0',
           dataType : 'json',
           error : function(jqXHR, textStatus, errorThrown)
           {

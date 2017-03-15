@@ -155,8 +155,8 @@ if($ACTION=='initialiser')
         $clef = $DB_TAB[$eleve_id][0]['officiel_archive_id'];
         $_SESSION['tmp_droit_voir_archive'][$clef] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
         $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
-        $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
-        $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
+        $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
+        $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
       }
       Json::add_str('<tr>');
       Json::add_str(  '<td>'.$tab_eleve_td[$eleve_id].'</td>');

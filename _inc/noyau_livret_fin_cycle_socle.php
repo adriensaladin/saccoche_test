@@ -205,7 +205,7 @@ if($make_html)
 if($make_pdf)
 {
   $releve_PDF = new PDF_livret_scolaire( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende , !empty($is_test_impression) /*filigrane*/ );
-  $releve_PDF->initialiser( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $_SESSION['OFFICIEL']['LIVRET_APPRECIATION_RUBRIQUE_LONGUEUR'] , $_SESSION['OFFICIEL']['LIVRET_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation );
+  $releve_PDF->initialiser( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'] , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation );
   $tab_archive['user'][0][] = array( '__construct' , array( TRUE /*make_officiel*/ , $orientation , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , 'oui' /*couleur*/ , $fond , $legende , !empty($is_test_impression) /*filigrane*/ , $tab_archive['session'] ) );
 }
 // Pour chaque élève...
@@ -222,7 +222,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       if($is_archive)
       {
         $tab_archive['user'][$eleve_id]['image_md5'] = array();
-        $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $_SESSION['OFFICIEL']['LIVRET_APPRECIATION_RUBRIQUE_LONGUEUR'] , $_SESSION['OFFICIEL']['LIVRET_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation ) );
+        $tab_archive['user'][$eleve_id][] = array( 'initialiser' , array( $PAGE_REF , $BILAN_TYPE_ETABL , $PAGE_COLONNE , $PAGE_MOYENNE_CLASSE , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'] , $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] , $tab_saisie_initialisation ) );
       }
       $tab_infos_entete = 
         array(

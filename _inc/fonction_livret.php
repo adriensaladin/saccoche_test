@@ -510,7 +510,6 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         else
         {
           $tab_donnees_livret[$clef]['find'] = TRUE;
-          $tab_positions_calculees[$rubrique_id][$eleve_id] = $tab_donnees_livret[$clef]['valeur']; // Si une moyenne élève a été modifiée manuellement, il faut en tenir compte pour la moyenne du regroupement.
         }
         // détail des acquisitions
         if( ($PAGE_COLONNE=='maitrise') && !is_null($detail_determine) && ( $tab_donnees_livret[$clef]['acquis_detail'] !== $detail_determine ) )
@@ -520,13 +519,11 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       }
       if($PAGE_COLONNE!='maitrise')
       {
-        // Il arrive que le tableau suivant soit indéfini, peut-être à cause d'un élève changé de classe, je ne sais pas trop...
-        $tab_prof_rubrique_eleve = isset($tab_prof[$rubrique_id][$eleve_id]) ? $tab_prof[$rubrique_id][$eleve_id] : array() ;
-        if( $tab_donnees_livret[$clef]['listing_profs'] != implode(',',$tab_prof_rubrique_eleve) )
+        if( $tab_donnees_livret[$clef]['listing_profs'] != implode(',',$tab_prof[$rubrique_id][$eleve_id]) )
         {
           $tab_profs_livret = explode(',',$tab_donnees_livret[$clef]['listing_profs']);
-          $tab_add = array_diff( $tab_prof_rubrique_eleve , $tab_profs_livret );
-          $tab_del = array_diff( $tab_profs_livret , $tab_prof_rubrique_eleve );
+          $tab_add = array_diff( $tab_prof[$rubrique_id][$eleve_id] , $tab_profs_livret );
+          $tab_del = array_diff( $tab_profs_livret , $tab_prof[$rubrique_id][$eleve_id] );
           foreach($tab_add as $prof_id)
           {
             DB_STRUCTURE_LIVRET::DB_modifier_saisie_jointure_prof( $livret_saisie_id , $prof_id );
@@ -1146,8 +1143,6 @@ function rubrique_texte_intro( $rubrique_type , $for_id=0 , $bilan_type_etabl=''
  */
 function elements_programme_extraction( $elements_json , $nb_caract_max_par_colonne , $objet_retour )
 {
-  $nb_elements_mini = ($objet_retour=='html') ? 10 : 2 ;
-  $nb_lignes_maxi   = ($objet_retour=='html') ? 30 : 6 ;
   $nb_elements = 0;
   $nb_lignes_elements = 0;
   $tab_elements = array();
@@ -1155,7 +1150,7 @@ function elements_programme_extraction( $elements_json , $nb_caract_max_par_colo
   foreach($tab_valeurs as $texte => $nb_used)
   {
     $nb_lignes_element = ceil(strlen($texte)/$nb_caract_max_par_colonne);
-    if( ($nb_lignes_elements+1 >= $nb_lignes_maxi) && ($nb_elements >= $nb_elements_mini) && ($nb_lignes_element>3) )
+    if( ($nb_lignes_elements>=5) && ($nb_elements>=2) && ($nb_lignes_element>3) )
     {
       break;
     }
@@ -1169,7 +1164,7 @@ function elements_programme_extraction( $elements_json , $nb_caract_max_par_colo
     }
     $nb_elements++;
     $nb_lignes_elements += min( 3 , $nb_lignes_element );
-    if( ($nb_lignes_elements>=$nb_lignes_maxi) && ($nb_elements>$nb_elements_mini) )
+    if( ($nb_lignes_elements>=6) && ($nb_elements>2) )
     {
       break;
     }

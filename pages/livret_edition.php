@@ -190,8 +190,8 @@ Layout::add( 'js_inline_before' , 'var TODAY_FR              = "'.TODAY_FR.'";' 
 Layout::add( 'js_inline_before' , 'var URL_IMPORT            = "'.URL_DIR_IMPORT.'";' );
 Layout::add( 'js_inline_before' , 'var POURCENTAGE_MAXI      = '.$valeur_maxi.';' );
 Layout::add( 'js_inline_before' , 'var MOYENNE_MAXI          = '.($valeur_maxi/5).';' );
-Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = '.$_SESSION['OFFICIEL']['LIVRET_APPRECIATION_RUBRIQUE_LONGUEUR'].';' );
-Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFICIEL']['LIVRET_APPRECIATION_GENERALE_LONGUEUR'].';' );
+Layout::add( 'js_inline_before' , 'var APP_RUBRIQUE_LONGUEUR = '.min($_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_LONGUEUR'],600).';' ); // max 600 spécification LSU
+Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'].';' ); // max 999 vs 1000 dans les spécifications LSU
 
 // Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
 if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
@@ -818,11 +818,6 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
   </ul>
   <hr />
   <p><label id="ajax_msg_archiver_imprimer">&nbsp;</label></p>
-</div>
-
-<div id="zone_elements" class="arbre_dynamique hide">
-  <p>Choisir ci-dessous des éléments à ajouter (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>) :</p>
-  <div id="arborescence"><label class="loader">Chargement&hellip;</label></div>
 </div>
 
 

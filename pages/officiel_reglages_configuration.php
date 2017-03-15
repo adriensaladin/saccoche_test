@@ -43,11 +43,9 @@ $select_bulletin_couleur                        = HtmlForm::afficher_select(Form
 $select_bulletin_fond                           = HtmlForm::afficher_select(Form::$tab_select_fond         , 'f_bulletin_fond'                           /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['BULLETIN_FOND']                           /*selection*/ , '' /*optgroup*/ );
 $select_bulletin_legende                        = HtmlForm::afficher_select(Form::$tab_select_legende      , 'f_bulletin_legende'                        /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['BULLETIN_LEGENDE']                        /*selection*/ , '' /*optgroup*/ );
 
-$select_livret_appreciation_rubrique_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_livret_appreciation_rubrique_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_APPRECIATION_RUBRIQUE_LONGUEUR'] /*selection*/ , '' /*optgroup*/ );
-$select_livret_appreciation_generale_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_livret_appreciation_generale_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_APPRECIATION_GENERALE_LONGUEUR'] /*selection*/ , '' /*optgroup*/ );
-$select_livret_couleur                        = HtmlForm::afficher_select(Form::$tab_select_couleur      , 'f_livret_couleur'                        /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_COULEUR']                        /*selection*/ , '' /*optgroup*/ );
-$select_livret_fond                           = HtmlForm::afficher_select(Form::$tab_select_fond         , 'f_livret_fond'                           /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_FOND']                           /*selection*/ , '' /*optgroup*/ );
-$select_livret_import_bulletin_notes          = HtmlForm::afficher_select(Form::$tab_select_import_notes , 'f_livret_import_bulletin_notes'          /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES']          /*selection*/ , '' /*optgroup*/ );
+$select_livret_couleur               = HtmlForm::afficher_select(Form::$tab_select_couleur      , 'f_livret_couleur'               /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_COULEUR']               /*selection*/ , '' /*optgroup*/ );
+$select_livret_fond                  = HtmlForm::afficher_select(Form::$tab_select_fond         , 'f_livret_fond'                  /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_FOND']                  /*selection*/ , '' /*optgroup*/ );
+$select_livret_import_bulletin_notes = HtmlForm::afficher_select(Form::$tab_select_import_notes , 'f_livret_import_bulletin_notes' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] /*selection*/ , '' /*optgroup*/ );
 
 $select_socle_appreciation_rubrique_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_socle_appreciation_rubrique_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_LONGUEUR'] /*selection*/ , '' /*optgroup*/ );
 $select_socle_appreciation_generale_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_socle_appreciation_generale_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_LONGUEUR'] /*selection*/ , '' /*optgroup*/ );
@@ -145,15 +143,6 @@ else
   $matiere_nombre = ($nombre==1) ? 'Une exception (matière sans moyenne)' : ' '.$nombre.' exceptions (matières sans moyennes)' ;
 }
 $matiere_liste = str_replace( ',' , '_' , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES'] );
-
-// Limitation LSUN : appréciation matière non vide et max 600
-$tab_bad = array('value="0"'         ,'value="700"'         ,'value="800"'         ,'value="900"'         ,'value="999"'         );
-$tab_bon = array('value="0" disabled','value="700" disabled','value="800" disabled','value="900" disabled','value="999" disabled');
-$select_livret_appreciation_rubrique_longueur = str_replace( $tab_bad , $tab_bon , $select_livret_appreciation_rubrique_longueur );
-// Limitation LSUN : appréciation synthèse non vide et max 1000
-$tab_bad = array('value="0"'         );
-$tab_bon = array('value="0" disabled');
-$select_livret_appreciation_generale_longueur = str_replace( $tab_bad , $tab_bon , $select_livret_appreciation_generale_longueur );
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__reglages_syntheses_bilans#toggle_officiel_configuration">DOC : Réglages synthèses &amp; bilans &rarr; Configuration des bilans officiels</a></span></div>
@@ -252,8 +241,6 @@ $select_livret_appreciation_generale_longueur = str_replace( $tab_bad , $tab_bon
 
 <form action="#" method="post" id="form_livret">
   <p>
-    <label class="tab">Appr. matière :</label><?php echo $select_livret_appreciation_rubrique_longueur ?><br />
-    <label class="tab">Appr. générale :</label><?php echo $select_livret_appreciation_generale_longueur ?><br />
     <label class="tab">Impression :</label><?php echo $select_livret_couleur ?> <?php echo $select_livret_fond ?>
     <h3>Si récupération possible depuis un bulletin scolaire</h3>
     <label class="tab">Positionnement :</label><?php echo $select_livret_import_bulletin_notes ?>

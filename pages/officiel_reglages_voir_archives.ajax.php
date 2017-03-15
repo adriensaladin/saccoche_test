@@ -78,6 +78,8 @@ if( ($action=='generer_pdf') && !empty($tab_eleve) && !empty($tab_type) && !empt
   {
     Json::end( FALSE , 'Plus de 250 archives trouvées : veuillez ajouter un critère de sélection.' );
   }
+  // Pour elements_programme_extraction()
+  require(CHEMIN_DOSSIER_INCLUDE.'fonction_livret.php');
   // Remplacement des md5 par les images
   foreach($DB_TAB_Archives as $key => $DB_ROW)
   {

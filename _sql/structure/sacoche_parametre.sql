@@ -133,6 +133,8 @@ INSERT INTO sacoche_parametre VALUES
 ( "officiel_bulletin_retroactif"                     , "non" ),
 ( "officiel_infos_etablissement"                     , "denomination,adresse,telephone,fax,courriel,url" ),
 ( "officiel_infos_responsables"                      , "non" ),
+( "officiel_livret_appreciation_generale_longueur"   , "400" ),
+( "officiel_livret_appreciation_rubrique_longueur"   , "400" ),
 ( "officiel_livret_couleur"                          , "oui" ),
 ( "officiel_livret_fond"                             , "gris" ),
 ( "officiel_livret_import_bulletin_notes"            , "oui" ),

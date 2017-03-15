@@ -886,12 +886,24 @@ $(document).ready
           {
             var texte = 'Vie scolaire';
           }
-          memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
+          if(memo_saisie_objet!='elements')
+          {
+            var lien_dgesco = '';
+            var label_reste = '<label id="f_'+memo_saisie_objet+'_reste"></label>';
+            memo_long_max = (memo_rubrique_id) ? APP_RUBRIQUE_LONGUEUR : APP_GENERALE_LONGUEUR ;
+          }
+          else
+          {
+            var lien_dgesco = (memo_eleve) ? '' : '<div><a id="voir_elements" href="#">Piocher parmi les propositions IGEN / DGESCO.</a></div>' ;
+            var label_reste = '';
+            memo_long_max = 1000;
+          }
           var nb_lignes = parseInt(memo_long_max/100,10);
           var cols = ( (memo_rubrique_type=='eval') || (memo_rubrique_type=='socle') ) ? 50 : 125 ;
           var formulaire_saisie = '<div><b>'+texte+' [ '+$('#go_selection_eleve option:selected').text()+' ] :</b></div>'
+                                + lien_dgesco
                                 + '<div><textarea id="f_'+memo_saisie_objet+'" name="f_'+memo_saisie_objet+'" rows="'+nb_lignes+'" cols="'+cols+'"></textarea></div>'
-                                + '<div><label id="f_'+memo_saisie_objet+'_reste"></label></div>'
+                                + '<div>'+label_reste+'</div>'
                                 + '<div><button id="valider_precedent" type="button" class="valider_prev">Précédent</button> <button id="valider" type="button" class="valider">Valider</button> <button id="valider_suivant" type="button" class="valider_next">Suivant</button></div>'
                                 + '<div><button id="annuler_precedent" type="button" class="annuler_prev">Précédent</button> <button id="annuler" type="button" class="annuler">Annuler</button> <button id="annuler_suivant" type="button" class="annuler_next">Suivant</button></div>'
                                 + '<div><label id="ajax_msg_'+memo_saisie_objet+'">&nbsp;</label></div>';
@@ -1806,6 +1818,78 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // [livret_saisir] Clic sur le lien pour voir piocher dans la liste IGEN / DGESCO
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var piocher_elements_first_appel = true;
+
+    var correspondance_domaine = {
+      // Cycle 2
+      '2x111' : '2x21', // Enseignement moral et civique
+      '2x81'  : '2x22', // Éducation physique et sportive
+      '2x91'  : '2x23', // Enseignements artistiques
+      '2x61'  : '2x24', // Français
+      '2x121' : '2x25', // Langues vivantes
+      '2x71'  : '2x26', // Mathématiques
+      '2x101' : '2x27', // Questionner le monde
+      // Cycle 3 1D
+      '3x191' : '3x31', // Enseignement moral et civique
+      '3x151' : '3x32', // Éducation physique et sportive
+      '3x161' : '3x34', // Enseignements artistiques
+      '3x131' : '3x35', // Français
+      '3x181' : '3x37', // Histoire-Géographie
+      '3x201' : '3x38', // Langues vivantes
+      '3x141' : '3x39', // Mathématiques
+      '3x171' : '3x40', // Sciences et technologie
+      // Cycle 3 2D
+      '3x901'  : '3x30', // Arts plastiques
+      '3x438'  : '3x31', // Enseignement moral et civique
+      '3x1001' : '3x32', // Éducation physique et sportive
+      '3x813'  : '3x33', // Éducation musicale
+      '3x9943' : '3x34', // Enseignements artistiques
+      '3x207'  : '3x35', // Français
+      '3x2757' : '3x36', // Histoire des Arts
+      '3x437'  : '3x37', // Histoire-Géographie
+      '3x9944' : '3x38', // Langues vivantes
+      '3x613'  : '3x39', // Mathématiques
+      '3x9942' : '3x40', // Sciences et technologie
+      // Cycle 4
+      '4x901'  : '4x41', // Arts plastiques
+      '4x438'  : '4x42', // Enseignement moral et civique
+      '4x0'    : '4x43', // Éducation aux médias et à l’information (EMI)
+      '4x1001' : '4x44', // Éducation physique et sportive
+      '4x813'  : '4x45', // Éducation musicale
+      '4x207'  : '4x46', // Français
+      '4x2757' : '4x47', // Histoire des Arts
+      '4x437'  : '4x48', // Histoire-Géographie
+      '4x9944' : '4x49', // Langues vivantes
+      '4x613'  : '4x50', // Mathématiques
+      '4x623'  : '4x51', // Physique-Chimie
+      '4x629'  : '4x52', // Sciences de la vie et de la Terre
+      '4x708'  : '4x53'  // Technologie
+    };
+    // niveau : 3x100003 => 6e sinon CM1-CM2 (cycle 3) ou "Tous niveaux" (autres cycles)
+
+    $('#zone_action_eleve').on
+    (
+      'click',
+      '#voir_elements',
+      function()
+      {
+        var $zone_elements = $('#zone_elements');
+        // Replier tout sauf le plus haut niveau la 1e fois ; ensuite on laisse aussi volontairement ouvert ce qui a pu l'être précédemment
+        if(piocher_elements_first_appel)
+        {
+          $zone_elements.find('ul').css("display","none");
+          $zone_elements.find('ul.ul_n1').css("display","block");
+          piocher_elements_first_appel = false;
+        }
+        $.fancybox( { 'href':'#zone_elements' , onStart:function(){$('#zone_elements').css("display","block");} , onClosed:function(){$('#zone_elements').css("display","none");} , 'centerOnScroll':true , 'minWidth':800 , 'minHeight':800 } );
+        return false;
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Voir / masquer une photo
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1818,6 +1902,32 @@ $(document).ready
 
     $( "#cadre_photo" ).draggable({cursor:"move"});
     $( "#cadre_statut" ).draggable({cursor:"move"});
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Récupéré après le chargement de la page car un peu lourd (> 100 ko)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    if(PROFIL_TYPE=='professeur')
+    {
+      $.ajax
+      (
+        {
+          type : 'POST',
+          url : 'ajax.php?page=_load_arborescence',
+          data : 'f_objet=elements_dgesco',
+          dataType : 'json',
+          error : function(jqXHR, textStatus, errorThrown)
+          {
+            $('#arborescence label').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            return false;
+          },
+          success : function(responseJSON)
+          {
+            $('#arborescence').replaceWith(responseJSON['value']);
+          }
+        }
+      );
+    }
 
   }
 );

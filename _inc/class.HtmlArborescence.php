@@ -244,7 +244,6 @@ class HtmlArborescence
       if( (!is_null($DB_ROW['pilier_id'])) && ($DB_ROW['pilier_id']!=$pilier_id) )
       {
         $pilier_id = $DB_ROW['pilier_id'];
-        $tab_pilier[$palier_id][$pilier_id] = $DB_ROW['pilier_nom'];
         $tab_pilier[$palier_id][$pilier_id] = ($reference) ? $DB_ROW['pilier_ref'].' - '.$DB_ROW['pilier_nom'] : $DB_ROW['pilier_nom'];
       }
       if( (!is_null($DB_ROW['section_id'])) && ($DB_ROW['section_id']!=$section_id) )
@@ -373,6 +372,92 @@ class HtmlArborescence
     }
     $retour_html .= '</ul>'.NL;
     return array( $retour_html , $retour_js , $retour_select );
+  }
+
+  /**
+   * Retourner une liste HTML ordonnée de l'arborescence d'un référentiel socle à partir d'une requête SQL transmise.
+   * 
+   * @param void
+   * @return string
+   */
+  public static function afficher_dgesco_elements()
+  {
+    $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_dgesco_elements_arborescence();
+    // Traiter le retour SQL : on remplit les tableaux suivants.
+    $tab_cycle   = array(); // n1
+    $tab_domaine = array(); // m1
+    $tab_niveau  = array(); // m2
+    $tab_theme   = array(); // n2
+    $tab_item    = array(); // n3
+    $cycle_id   = 0;
+    $domaine_id = 0;
+    $niveau_id  = 0;
+    $theme_id   = 0;
+    $item_id    = 0;
+    foreach($DB_TAB as $DB_ROW)
+    {
+      if( $DB_ROW['livret_element_cycle_id'] != $cycle_id )
+      {
+        $cycle_id = $DB_ROW['livret_element_cycle_id'];
+        $tab_cycle[$cycle_id] = $DB_ROW['livret_element_cycle_nom'];
+      }
+      if( $DB_ROW['livret_element_domaine_id'] != $domaine_id )
+      {
+        $domaine_id = $DB_ROW['livret_element_domaine_id'];
+        $tab_domaine[$cycle_id][$domaine_id] = $DB_ROW['livret_element_domaine_nom'];
+        $niveau_id  = 0;
+      }
+      if( $DB_ROW['livret_element_niveau_id'] != $niveau_id )
+      {
+        $niveau_id = $DB_ROW['livret_element_niveau_id'];
+        $tab_niveau[$cycle_id][$domaine_id][$niveau_id] = $DB_ROW['livret_element_niveau_nom'];
+      }
+      if( $DB_ROW['livret_element_theme_id'] != $theme_id )
+      {
+        $theme_id = $DB_ROW['livret_element_theme_id'];
+        $tab_theme[$cycle_id][$domaine_id][$niveau_id][$theme_id] = $DB_ROW['livret_element_theme_nom'];
+      }
+      $item_id = $DB_ROW['livret_element_item_id'];
+      $tab_item[$cycle_id][$domaine_id][$niveau_id][$theme_id][$item_id] = '<q class="ajouter" title="Ajouter à la liste."></q> '.html($DB_ROW['livret_element_item_nom']);
+    }
+    // Affichage de l'arborescence
+    $span_avant = '<span>';
+    $span_apres = '</span>';
+    $retour = '<ul class="ul_n1">'.NL;
+    foreach($tab_cycle as $cycle_id => $cycle_texte)
+    {
+      $retour .= '<li class="li_n1" id="el'.$cycle_id.'">'.$span_avant.html($cycle_texte).$span_apres.NL;
+      $retour .= '<ul class="ul_m1">'.NL;
+      foreach($tab_domaine[$cycle_id] as $domaine_id => $domaine_texte)
+      {
+        $retour .= '<li class="li_m1" id="el'.$cycle_id.'x'.$domaine_id.'">'.$span_avant.html($domaine_texte).$span_apres.NL;
+        $retour .= '<ul class="ul_m2">'.NL;
+        foreach($tab_niveau[$cycle_id][$domaine_id] as $niveau_id => $niveau_texte)
+        {
+          $retour .= '<li class="li_m2" id="el'.$cycle_id.'x'.$domaine_id.'x'.$niveau_id.'">'.$span_avant.html($niveau_texte).$span_apres.NL;
+          $retour .= '<ul class="ul_n2">'.NL;
+          foreach($tab_theme[$cycle_id][$domaine_id][$niveau_id] as $theme_id => $theme_texte)
+          {
+            $retour .= '<li class="li_n2">'.$span_avant.html($theme_texte).$span_apres.NL;
+            $retour .= '<ul class="ul_n3">'.NL;
+            foreach($tab_item[$cycle_id][$domaine_id][$niveau_id][$theme_id] as $item_id => $item_texte)
+            {
+              $retour .= '<li class="li_n3">'.$item_texte.'</li>'.NL;
+            }
+            $retour .= '</ul>'.NL;
+            $retour .= '</li>'.NL;
+          }
+          $retour .= '</ul>'.NL;
+          $retour .= '</li>'.NL;
+        }
+        $retour .= '</ul>'.NL;
+        $retour .= '</li>'.NL;
+      }
+      $retour .= '</ul>'.NL;
+      $retour .= '</li>'.NL;
+    }
+    $retour .= '</ul>'.NL;
+    return $retour;
   }
 
 }

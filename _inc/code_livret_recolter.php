@@ -556,7 +556,7 @@ if($PAGE_PERIODICITE=='periode')
     {
       if($DB_ROW['matiere_siecle'])
       {
-        $code = sprintf("%06s",$DB_ROW['rubrique_id_livret']); // Pour des matières académiques ce peut être un littéral et non un entier.
+        $code = sprintf("%06u",$DB_ROW['rubrique_id_livret']);
         $modalite_election = ( isset($tab_siecle_modalite_election[$code]) && isset($tab_lsu_mod_election[$tab_siecle_modalite_election[$code]]) ) ? $tab_siecle_modalite_election[$code] : 'S' ;
       }
       else

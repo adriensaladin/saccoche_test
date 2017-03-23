@@ -219,7 +219,7 @@ foreach($tab_rubrique as $rubrique_id => $tab_info)
   }
   else
   {
-    $tab_html_rubrique[$rubrique_id] .= '<label class="alerte">Aucun élément de <em>SACoche</em> associé.</label>';
+    $tab_html_rubrique[$rubrique_id] .= '<span class="astuce">Aucun élément de <em>SACoche</em> associé.</span>';
   }
   $tab_html_rubrique[$rubrique_id] .= '</div>';
 }

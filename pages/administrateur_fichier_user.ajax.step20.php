@@ -1073,7 +1073,7 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
   $tab_bon[] = 'P';   $tab_bad[] = array('Petite ','petite ','PETITE ');
   $tab_bon[] = 'M';   $tab_bad[] = array('Moyenne ','moyenne ','MOYENNE ');
   $tab_bon[] = 'G';   $tab_bad[] = array('Grande ','grande ','GRANDE ');
-  $tab_bon[] = 'S';   $tab_bad[] = array('Section ','section ','SECTION ');
+  $tab_bon[] = 'S';   $tab_bad[] = array('Section','section','SECTION');
   $tab_bon[] = 'C';   $tab_bad[] = array('Cours ','cours ','COURS ');
   $tab_bon[] = 'P';   $tab_bad[] = array('Préparatoire','préparatoire','PRÉPARATOIRE','Preparatoire','preparatoire','PREPARATOIRE');
   $tab_bon[] = 'E';   $tab_bad[] = array('Élémentaire ','élémentaire ','ÉLÉMENTAIRE ','Elementaire ','elementaire ','ELEMENTAIRE ','Elémentaire ','elémentaire ','ELÉMENTAIRE ');
@@ -1102,7 +1102,7 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
       $niveau     = $tab_elements[$tab_numero_colonne['niveau']];
       $classe_id  = $tab_elements[$tab_numero_colonne['classe_id']];
       $classe     = $tab_elements[$tab_numero_colonne['classe_nom']];
-      if( ($nom!='') && ($prenom!='') && ($niveau!='') && ($classe_id!='') )
+      if( ($nom!='') && ($prenom!='') && ($niveau!='') && ($classe_id!='') ) // Le niveau peut ne pas être renseigné, par exemple pour une classe de CLIS... mais bon imposer un truc unique est embêtant dans ce cas
       {
         // Réduire la longueur du niveau et de la classe
         foreach ($tab_bon as $i=>$bon)
@@ -1654,6 +1654,16 @@ FileSystem::enregistrer_fichier_infos_serializees( CHEMIN_DOSSIER_IMPORT.$fichie
 if( ($import_origine=='siecle') && ($import_profil=='professeur') )
 {
   Json::add_str('<p><label class="valide">Matières du Livret Scolaire actualisées.</label></p>'.NL);
+}
+// Avertissement 1er import ONDE
+if($is_first_import_onde)
+{
+  Json::add_str('<p class="probleme">Lors du passage de BE1D à ONDE, les identifiants de classes changent.<br />
+  SACoche fait au mieux pour établir une correspondance, mais cela peut ne pas fonctionner si vous avez renommé des éléments.<br />
+  À l\'étape suivante, il se peut donc qu\'une liste de classes soit proposée à la suppression, et une autre à l\'ajout.<br />
+  Si vous êtes en cours d\'année scolaire, surtout ne validez pas une telle proposition !<br />
+  <a href="./index.php?page=administrateur_classe" target="_blank">Ouvrez le menu de gestion des classes dans un nouvel onglet</a> et modifiez manuellement les références de vos classes actuelles en y indiquant celles issues de ONDE.<br />
+  Ensuite, reprenez la procédure d\'import au début.</p>'.NL);
 }
 // On affiche le bilan des utilisateurs trouvés
 if(count($tab_users_fichier['profil_sigle']))

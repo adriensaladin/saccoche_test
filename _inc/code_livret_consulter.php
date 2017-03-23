@@ -93,7 +93,7 @@ if($ACTION=='voir_detail')
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
-  // list( $reussite , $origine , $contenu ) = calculer_et_enregistrer_donnee_eleve_rubrique_objet( $saisie_id , $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $rubrique_type , $rubrique_id , $cible_nature , $classe_id , $eleve_id , $saisie_objet , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] , $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['LIVRET_RETROACTIF'] );
+  // list( $reussite , $origine , $contenu ) = calculer_et_enregistrer_donnee_eleve_rubrique_objet( $saisie_id , $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $rubrique_type , $rubrique_id , $cible_nature , $classe_id , $groupe_id , $eleve_id , $saisie_objet , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] , $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['LIVRET_RETROACTIF'] );
   // if(!$reussite)
   // {
     // Json::end( FALSE , $contenu );
@@ -313,7 +313,8 @@ else
 
 if( ($PAGE_COLONNE!='maitrise') && empty($tab_saisie[$eleve_id]) && empty($is_appreciation_groupe) )
 {
-  $releve_HTML = '<div class="danger">Aucun item évalué sur la période '.$date_debut.' ~ '.$date_fin.' selon les paramètres choisis !</div>' ;
+  $indication_periode = ($PAGE_PERIODICITE=='periode') ? ' sur la période '.$date_debut.' ~ '.$date_fin : '';
+  $releve_HTML = '<div class="danger">Aucun item évalué'.$indication_periode.' selon les paramètres choisis !</div>' ;
 }
 
 if($ACTION=='initialiser')

@@ -86,6 +86,7 @@ public static function DB_recuperer_pays_majoritaire()
  */
 public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_type , $periode_id , $liste_eleve_id , $prof_id , $with_rubrique_nom , $with_periodes_avant , $only_synthese_generale )
 {
+  // TODO : retirer la récupération des groupes si la gestion d'appréciation par groupe n'est finalement pas possible
   if($with_rubrique_nom)
   {
     $rubrique_table       = (substr($officiel_type,0,6)!='palier') ? 'sacoche_matiere' : 'sacoche_socle_pilier' ;
@@ -95,6 +96,7 @@ public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_typ
   }
   $periode_where = ($with_periodes_avant) ? '' : 'AND periode_id=:periode_id' ;
   $DB_SQL = 'SELECT prof_id, eleve_ou_classe_id AS eleve_id, rubrique_id, saisie_note, saisie_appreciation, user_genre, user_nom, user_prenom ';
+  $DB_SQL.= ', 0 AS groupe_id, NULL AS groupe_nom ';
   $DB_SQL.= ($with_rubrique_nom)   ? ', '.$rubrique_champ_nom.' as rubrique_nom ' : '' ;
   $DB_SQL.= ($with_periodes_avant) ? ', periode_id , periode_ordre , periode_nom ' : '' ;
   $DB_SQL.= 'FROM sacoche_officiel_saisie ';
@@ -130,15 +132,18 @@ public static function DB_recuperer_bilan_officiel_saisies_eleves( $officiel_typ
  */
 public static function DB_recuperer_bilan_officiel_saisies_classe( $officiel_type , $periode_id , $classe_id , $prof_id , $with_periodes_avant , $only_synthese_generale )
 {
+  // TODO : retirer la jointure et la récupération des groupes si la gestion d'appréciation par groupe n'est finalement pas possible
   $rubrique_table       = (substr($officiel_type,0,6)!='palier') ? 'sacoche_matiere' : 'sacoche_socle_pilier' ;
   $rubrique_champ_id    = (substr($officiel_type,0,6)!='palier') ? 'matiere_id'      : 'pilier_id' ;
   $rubrique_champ_nom   = (substr($officiel_type,0,6)!='palier') ? 'matiere_nom'     : 'CONCAT("Compétence ",pilier_ref)' ;
   $rubrique_champ_ordre = (substr($officiel_type,0,6)!='palier') ? 'matiere_ordre'   : 'pilier_ordre' ;
   $periode_where = ($with_periodes_avant) ? '' : 'AND periode_id=:periode_id' ;
   $DB_SQL = 'SELECT prof_id, 0 AS eleve_id, rubrique_id, saisie_note, saisie_appreciation, user_genre, user_nom, user_prenom ';
+  $DB_SQL.= ', groupe_id, groupe_nom ';
   $DB_SQL.= ', '.$rubrique_champ_nom.' as rubrique_nom ';
   $DB_SQL.= ($with_periodes_avant) ? ', periode_id , periode_ordre , periode_nom ' : '' ;
   $DB_SQL.= 'FROM sacoche_officiel_saisie ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_officiel_saisie.prof_id=sacoche_user.user_id ';
   $DB_SQL.= 'LEFT JOIN '.$rubrique_table.' ON sacoche_officiel_saisie.rubrique_id='.$rubrique_table.'.'.$rubrique_champ_id.' ';
   $DB_SQL.= ($with_periodes_avant) ? 'LEFT JOIN sacoche_periode USING(periode_id) ' : '' ;
@@ -163,24 +168,27 @@ public static function DB_recuperer_bilan_officiel_saisies_classe( $officiel_typ
  *
  * @param int    $periode_id
  * @param int    $eleve_ou_classe_id
+ * @param int    $groupe_id
  * @param int    $rubrique_id
  * @param string $saisie_type   cible_nature
  * @param string $saisie_objet   position | appreciation
  * @return array  tableau dans le cas d'appréciations multiples
  */
-public static function DB_recuperer_bulletin_saisie_precise( $periode_id , $eleve_ou_classe_id , $rubrique_id , $saisie_type , $saisie_objet )
+public static function DB_recuperer_bulletin_saisie_precise( $periode_id , $eleve_ou_classe_id , $groupe_id , $rubrique_id , $saisie_type , $saisie_objet )
 {
+  $groupe_id = 0; // TODO : à supprimer lorsqu'une telle gestion d'appréciation par groupe sera effectivement possible
   $select = ($saisie_objet=='position') ? 'saisie_note' : 'saisie_appreciation' ;
   $where  = ($saisie_objet=='position') ? 'prof_id=0'   : 'prof_id!=0' ;
   $DB_SQL = 'SELECT prof_id , '.$select.' AS saisie_valeur ';
   $DB_SQL.= 'FROM sacoche_officiel_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_officiel_saisie.prof_id=sacoche_user.user_id ';
-  $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:eleve_ou_classe_id AND rubrique_id=:rubrique_id AND '.$where.' AND saisie_type=:saisie_type ';
+  $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:eleve_ou_classe_id AND groupe_id=:groupe_id AND rubrique_id=:rubrique_id AND '.$where.' AND saisie_type=:saisie_type ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
   $DB_VAR = array(
     ':officiel_type'      => 'bulletin',
     ':periode_id'         => $periode_id,
     ':eleve_ou_classe_id' => $eleve_ou_classe_id,
+    ':groupe_id'          => $groupe_id,
     ':rubrique_id'        => $rubrique_id,
     ':saisie_type'        => $saisie_type,
   );
@@ -745,6 +753,7 @@ public static function DB_modifier_bilan_officiel_fichier_date( $user_id , $offi
  * @param string  $officiel_type
  * @param int     $periode_id
  * @param int     $eleve_ou_classe_id
+ * @param int     $groupe_id
  * @param int     $rubrique_id
  * @param int     $prof_id
  * @param string  $saisie_type
@@ -752,17 +761,19 @@ public static function DB_modifier_bilan_officiel_fichier_date( $user_id , $offi
  * @param string  $appreciation
  * @return void
  */
-public static function DB_modifier_bilan_officiel_saisie( $officiel_type , $periode_id , $eleve_ou_classe_id , $rubrique_id , $prof_id , $saisie_type , $note , $appreciation )
+public static function DB_modifier_bilan_officiel_saisie( $officiel_type , $periode_id , $eleve_ou_classe_id , $groupe_id , $rubrique_id , $prof_id , $saisie_type , $note , $appreciation )
 {
+  $groupe_id = 0; // TODO : à supprimer lorsqu'une telle gestion d'appréciation par groupe sera effectivement possible
   // INSERT ON DUPLICATE KEY UPDATE est plus performant que REPLACE et mieux par rapport aux id autoincrémentés ou aux contraintes sur les clefs étrangères
   // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
-  $DB_SQL = 'INSERT INTO sacoche_officiel_saisie ( officiel_type,  periode_id,  eleve_ou_classe_id,  rubrique_id,  prof_id,  saisie_type,  saisie_note,  saisie_appreciation) ';
-  $DB_SQL.= 'VALUES                              (:officiel_type, :periode_id, :eleve_ou_classe_id, :rubrique_id, :prof_id, :saisie_type, :saisie_note, :saisie_appreciation) ';
+  $DB_SQL = 'INSERT INTO sacoche_officiel_saisie ( officiel_type,  periode_id,  eleve_ou_classe_id,  groupe_id,  rubrique_id,  prof_id,  saisie_type,  saisie_note,  saisie_appreciation) ';
+  $DB_SQL.= 'VALUES                              (:officiel_type, :periode_id, :eleve_ou_classe_id, :groupe_id, :rubrique_id, :prof_id, :saisie_type, :saisie_note, :saisie_appreciation) ';
   $DB_SQL.= 'ON DUPLICATE KEY UPDATE saisie_note=:saisie_note, saisie_appreciation=:saisie_appreciation ';
   $DB_VAR = array(
     ':officiel_type'       => $officiel_type,
     ':periode_id'          => $periode_id,
     ':eleve_ou_classe_id'  => $eleve_ou_classe_id,
+    ':groupe_id'           => $groupe_id,
     ':rubrique_id'         => $rubrique_id,
     ':prof_id'             => $prof_id,
     ':saisie_type'         => $saisie_type,
@@ -810,20 +821,23 @@ public static function DB_modifier_officiel_assiduite( $mode , $periode_id , $us
  * @param string  $officiel_type
  * @param int     $periode_id
  * @param int     $eleve_ou_classe_id
+ * @param int     $groupe_id
  * @param int     $rubrique_id
  * @param int     $prof_id
  * @param string  $saisie_type
  * @return void
  */
-public static function DB_supprimer_bilan_officiel_saisie( $officiel_type , $periode_id , $eleve_ou_classe_id , $rubrique_id , $prof_id , $saisie_type )
+public static function DB_supprimer_bilan_officiel_saisie( $officiel_type , $periode_id , $eleve_ou_classe_id , $groupe_id , $rubrique_id , $prof_id , $saisie_type )
 {
+  $groupe_id = 0; // TODO : à supprimer lorsqu'une telle gestion d'appréciation par groupe sera effectivement possible
   $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
-  $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:eleve_ou_classe_id AND rubrique_id=:rubrique_id AND saisie_type=:saisie_type ';
+  $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:eleve_ou_classe_id AND groupe_id=:groupe_id AND rubrique_id=:rubrique_id AND saisie_type=:saisie_type ';
   $DB_SQL.= ($rubrique_id>0) ? 'AND prof_id=:prof_id ' : '' ;
   $DB_VAR = array(
     ':officiel_type'      => $officiel_type,
     ':periode_id'         => $periode_id,
     ':eleve_ou_classe_id' => $eleve_ou_classe_id,
+    ':groupe_id'          => $groupe_id,
     ':rubrique_id'        => $rubrique_id,
     ':prof_id'            => $prof_id,
     ':saisie_type'        => $saisie_type,

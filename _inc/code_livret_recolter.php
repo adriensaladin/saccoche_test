@@ -104,16 +104,9 @@ $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matie
 
 $champ_classe     = ($BILAN_TYPE_ETABL=='college') ? 'code-division'    : 'classe-ref' ;
 $champ_chef_etabl = ($BILAN_TYPE_ETABL=='college') ? 'responsable-etab' : 'directeur' ;
-if($BILAN_TYPE_ETABL=='college')
-{
-  // Au 2D : 8 caractères dans SIECLE BEE, mais peut avoir été modifié car 10 max dans SACoche à cause du 1D.
-  $classe_value = mb_substr($classe_ref,0,8);
-}
-else
-{
-  // Au 1D : 5 à 6 chiffres dans ONDE, mais complété dans SACoche avec le niveau.
-  list( $classe_value , $classe_niveau ) = explode('_',$classe_ref,2) + array_fill(0,2,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
-}
+// Au 1D : 6 chiffres dans ONDE, mais complété dans SACoche avec le niveau.
+// Au 2D : 8 caractères dans SIECLE BEE, mais peut avoir été modifié car 10 max dans SACoche à cause du 1D.
+$classe_value     = ($BILAN_TYPE_ETABL=='college') ? mb_substr($classe_ref,0,8) : mb_substr($classe_ref,0,6) ;
 $tab_classe = array();
 
 $millesime = To::annee_scolaire('siecle');
@@ -641,7 +634,7 @@ if($PAGE_EPI)
     $key_rubrique = 'EPI'.$DB_ROW['livret_epi_id'].$key_periode;
     $description = isset($tab_saisie[0]['epi'][$DB_ROW['livret_epi_id']]['appreciation']) ? $tab_saisie[0]['epi'][$DB_ROW['livret_epi_id']]['appreciation']['saisie_valeur'] : NULL ;
     $tab_epi[$key_rubrique] = array(
-      'id'              => $key_rubrique ,
+      'id'              => 'EPI'.$DB_ROW['livret_epi_id'] ,
       'intitule'        => $DB_ROW['livret_epi_titre'] , // max 150 caractères : 128 dans SACoche
       'thematique'      => $DB_ROW['livret_epi_theme_code'] ,
       'description'     => $description , // max 600 caractères : idem dans SACoche
@@ -707,7 +700,7 @@ if($PAGE_AP)
     $key_rubrique = 'AP'.$DB_ROW['livret_ap_id'].$key_periode;
     $description = isset($tab_saisie[0]['ap'][$DB_ROW['livret_ap_id']]['appreciation']) ? $tab_saisie[0]['ap'][$DB_ROW['livret_ap_id']]['appreciation']['saisie_valeur'] : NULL ;
     $tab_ap[$key_rubrique] = array(
-      'id'              => $key_rubrique ,
+      'id'              => 'AP'.$DB_ROW['livret_ap_id'] ,
       'intitule'        => $DB_ROW['livret_ap_titre'] , // max 150 caractères : 128 dans SACoche
       'description'     => $description , // max 600 caractères : idem dans SACoche
       'discipline-refs' => array() ,

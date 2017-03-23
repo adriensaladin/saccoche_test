@@ -1357,37 +1357,23 @@ public static function DB_optimiser_tables_structure()
 public static function DB_fusionner_donnees_comptes_eleves( $user_id_ancien , $user_id_actuel )
 {
   $tab_table_champ = array(
-    'sacoche_saisie'                          => 'eleve_id' ,
-    'sacoche_demande'                         => 'eleve_id' ,
-    'sacoche_jointure_devoir_eleve'           => 'eleve_id' ,
-    'sacoche_livret_jointure_enscompl_eleve'  => 'eleve_id' ,
-    'sacoche_livret_jointure_modaccomp_eleve' => 'eleve_id' ,
-    'sacoche_jointure_user_entree'            => 'user_id' ,
-    'sacoche_jointure_user_pilier'            => 'user_id' ,
-    'sacoche_jointure_user_abonnement'        => 'user_id' ,
-    'sacoche_notification'                    => 'user_id' ,
-    'sacoche_officiel_archive'                => 'user_id' ,
-    'sacoche_officiel_assiduite'              => 'user_id' ,
-    'sacoche_brevet_fichier'                  => 'user_id' ,
-    'sacoche_officiel_fichier'                => 'user_id' ,
-    'sacoche_livret_export'                   => 'user_id' ,
-    'sacoche_officiel_saisie'                 => 'eleve_ou_classe_id' ,
-    'sacoche_brevet_saisie'                   => 'eleve_ou_classe_id' ,
-    'sacoche_livret_saisie'                   => 'cible_id' ,
+    'sacoche_saisie'                   => 'eleve_id' ,
+    'sacoche_demande'                  => 'eleve_id' ,
+    'sacoche_jointure_devoir_eleve'    => 'eleve_id' ,
+    'sacoche_jointure_user_entree'     => 'user_id' ,
+    'sacoche_jointure_user_pilier'     => 'user_id' ,
+    'sacoche_jointure_user_abonnement' => 'user_id' ,
+    'sacoche_notification'             => 'user_id' ,
+    'sacoche_officiel_archive'         => 'user_id' ,
+    'sacoche_officiel_assiduite'       => 'user_id' ,
+    'sacoche_brevet_fichier'           => 'user_id' ,
+    'sacoche_officiel_fichier'         => 'user_id' ,
+    'sacoche_officiel_saisie'          => 'eleve_ou_classe_id' ,
+    'sacoche_brevet_saisie'            => 'eleve_ou_classe_id' ,
   );
   foreach($tab_table_champ as $table_nom => $champ_nom)
   {
-    switch($champ_nom)
-    {
-      case 'eleve_ou_classe_id' :
-        $where_add = ' AND saisie_type="eleve"';
-        break;
-      case 'cible_id' :
-        $where_add = ' AND cible_nature="eleve"';
-        break;
-      default :
-        $where_add = '';
-    }
+    $where_add = ($champ_nom=='eleve_ou_classe_id') ? ' AND saisie_type="eleve"' : '' ;
     // UPDATE ... ON DUPLICATE KEY DELETE ...  n'existe pas, il faut s'y prendre en deux fois avec UPDATE IGNORE ... puis DELETE ...
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE IGNORE '.$table_nom.' SET '.$champ_nom.'='.$user_id_actuel.' WHERE '.$champ_nom.'='.$user_id_ancien.$where_add );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM '.$table_nom.' WHERE '.$champ_nom.'='.$user_id_ancien.$where_add );

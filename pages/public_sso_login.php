@@ -117,7 +117,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 if($connexion_mode=='normal')
 {
-  exit_error( 'Configuration manquante' /*titre*/ , 'Établissement non paramétré par l\'administrateur pour utiliser un service d\'authentification externe.<br />Un administrateur doit renseigner cette configuration dans le menu [Paramétrages][Mode&nbsp;d\'identification].' /*contenu*/ , 'contact' , $BASE );
+  exit_error( 'Configuration manquante' /*titre*/ , 'Etablissement non paramétré par l\'administrateur pour utiliser un service d\'authentification externe.<br />Un administrateur doit renseigner cette configuration dans le menu [Paramétrages][Mode&nbsp;d\'identification].' /*contenu*/ , 'contact' , $BASE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -543,31 +543,24 @@ if($connexion_mode=='shibboleth')
     if($auth_SUCCESS===FALSE)
     {
       // [3] Enfin, on peut regarder HTTP_FREDUVECTEUR, disponible pour les élèves et les parents (pour les parents, on a même que ça...).
-      // Pour les parents, il peut être multivalué, les différentes valeurs étant alors séparées par un « ; » ; on ne peut pas se contenter de tester la 1ère valeur au cas où il y a d'autres enfants dans d'autres établissement...
+      // Pour les parents, il peut être multivalué, les différentes valeurs étant alors séparées par un « ; » (je ne m'embête pas, je prends la première valeur, inutile de tester tous les enfants, les associations doivent avoir été faites dans SACoche).
       $fr_edu_vecteur = (!empty($_SERVER['HTTP_FREDUVECTEUR'])) ? $_SERVER['HTTP_FREDUVECTEUR'] : '' ;
       $tab_vecteur = explode( ';' , $fr_edu_vecteur );
-      foreach($tab_vecteur as $fr_edu_vecteur)
+      $fr_edu_vecteur = $tab_vecteur[0];
+      list( $vecteur_profil , $vecteur_nom , $vecteur_prenom , $vecteur_eleve_id , $vecteur_uai ) = explode('|',$fr_edu_vecteur ) + array_fill(0,5,NULL) ; // Evite des NOTICE en initialisant les valeurs manquantes
+      if( in_array($vecteur_profil,array(3,4)) && ($vecteur_eleve_id) && ($vecteur_eleve_id!=$eleve_sconet_id) ) // cas d'un élève
       {
-        list( $vecteur_profil , $vecteur_nom , $vecteur_prenom , $vecteur_eleve_id , $vecteur_uai ) = explode('|',$fr_edu_vecteur ) + array_fill(0,5,NULL) ; // Evite des NOTICE en initialisant les valeurs manquantes
-        if( in_array($vecteur_profil,array(3,4)) && ($vecteur_eleve_id) && ($vecteur_eleve_id!=$eleve_sconet_id) ) // cas d'un élève
+        list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_utilisateur( $BASE , $vecteur_eleve_id /*login*/ , FALSE /*password*/ , 'siecle' /*mode_connection*/ );
+      }
+      elseif( in_array($vecteur_profil,array(1,2)) && ($vecteur_eleve_id) ) // cas d'un parent
+      {
+        if( $vecteur_nom && $vecteur_prenom )
         {
-          list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_utilisateur( $BASE , $vecteur_eleve_id /*login*/ , FALSE /*password*/ , 'siecle' /*mode_connection*/ );
+          list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_utilisateur( $BASE , $vecteur_eleve_id /*login*/ , FALSE /*password*/ , 'vecteur_parent' /*mode_connection*/ , $vecteur_nom , $vecteur_prenom );
         }
-        elseif( in_array($vecteur_profil,array(1,2)) && ($vecteur_eleve_id) ) // cas d'un parent
+        else
         {
-          if( $vecteur_nom && $vecteur_prenom )
-          {
-            list( $auth_SUCCESS , $auth_DATA ) = SessionUser::tester_authentification_utilisateur( $BASE , $vecteur_eleve_id /*login*/ , FALSE /*password*/ , 'vecteur_parent' /*mode_connection*/ , $vecteur_nom , $vecteur_prenom );
-          }
-          else
-          {
-            list( $auth_SUCCESS , $auth_DATA ) = array( FALSE , 'Identification réussie mais vecteur d\'identité parent "' .$fr_edu_vecteur.'" incomplet, ce qui empêche de rechercher le compte SACoche correspondant.' );
-          }
-          if($auth_SUCCESS!==FALSE)
-          {
-            // Pour un parent, si ok pour l'enfant considéré, on s'arrête, sinon on teste avec l'enfant suivant
-            break;
-          }
+          list( $auth_SUCCESS , $auth_DATA ) = array( FALSE , 'Identification réussie mais vecteur d\'identité parent "' .$fr_edu_vecteur.'" incomplet, ce qui empêche de rechercher le compte SACoche correspondant.' );
         }
       }
     }

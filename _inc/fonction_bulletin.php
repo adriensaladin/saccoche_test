@@ -144,7 +144,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
       if( (!isset($tab_moyennes_enregistrees['eleve'][$matiere_id][$eleve_id])) || ( ($tab_moyennes_enregistrees['eleve'][$matiere_id][$eleve_id]!=$note) && ($tab_appreciations_enregistrees[$matiere_id][$eleve_id]=='') ) )
       {
         $note = ($note!==FALSE) ? $note : NULL ;
-        DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , 0 /*groupe_id*/ , $matiere_id , 0 /*prof_id*/ , 'eleve' , $note , '' /*appreciation*/ );
+        DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , $matiere_id , 0 /*prof_id*/ , 'eleve' , $note , '' /*appreciation*/ );
         $tab_moyennes_enregistrees['eleve'][$matiere_id][$eleve_id] = $note;
       }
     }
@@ -161,7 +161,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
         {
           if(!isset($tab_moyennes_calculees[$matiere_id][$eleve_id]))
           {
-            DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , 0 /*groupe_id*/ , $matiere_id , 0 /*prof_id*/ , 'eleve' );
+            DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , $matiere_id , 0 /*prof_id*/ , 'eleve' );
             unset($tab_moyennes_enregistrees['eleve'][$matiere_id][$eleve_id]);
           }
         }
@@ -181,13 +181,13 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
             $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
             if( (!isset($tab_moyennes_enregistrees['groupe'][$matiere_id])) || ( ($tab_moyennes_enregistrees['groupe'][$matiere_id]!=$moyenne) ) )
             {
-              DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , 0 /*groupe_id*/ , $matiere_id , 0 /*prof_id*/ , 'classe' , $moyenne , '' /*appreciation*/ );
+              DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , $matiere_id , 0 /*prof_id*/ , 'classe' , $moyenne , '' /*appreciation*/ );
             }
           }
           else
           {
             // Possible si toutes les notes viennent d'être supprimées car n'ayant plus lieu d'être (voir qq lignes plus haut)
-            DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , 0 /*groupe_id*/ , $matiere_id , 0 /*prof_id*/ , 'classe' );
+            DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , $matiere_id , 0 /*prof_id*/ , 'classe' );
             unset($tab_moyennes_enregistrees['eleve'][$matiere_id]);
           }
         }
@@ -216,7 +216,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
         $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
         if( (!isset($tab_moyennes_enregistrees['eleve'][0][$eleve_id])) || ( ($tab_moyennes_enregistrees['eleve'][0][$eleve_id]!=$note) ) )
         {
-          DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , 0 /*groupe_id*/ , 0 /*matiere_id*/ , 0 /*prof_id*/ , 'eleve' , $moyenne , '' /*appreciation*/ );
+          DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , 0 /*matiere_id*/ , 0 /*prof_id*/ , 'eleve' , $moyenne , '' /*appreciation*/ );
         }
         $tab_moyenne_eleve_generale[$eleve_id] = $moyenne;
       }
@@ -228,7 +228,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
         $moyenne = ($nombre) ? round($somme/$nombre,1) : NULL ;
         if( (!isset($tab_moyennes_enregistrees['groupe'][0])) || ( ($tab_moyennes_enregistrees['groupe'][0]!=$moyenne) ) )
         {
-          DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , 0 /*groupe_id*/ , 0 /*matiere_id*/ , 0 /*prof_id*/ , 'classe' , $moyenne , '' /*appreciation*/ );
+          DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $classe_id , 0 /*matiere_id*/ , 0 /*prof_id*/ , 'classe' , $moyenne , '' /*appreciation*/ );
         }
       }
     }
@@ -300,7 +300,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin( $periode_id , $classe
   // et voilà la moyenne des pourcentages d'acquisition
   if(!$somme_coefs) return FALSE;
   $moyennes_calculee = round($somme_scores_ponderes/$somme_coefs,0) / 5 ;
-  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , 0 /*groupe_id*/ , $matiere_id , 0 /*prof_id*/ , 'eleve' , $moyennes_calculee , '' /*appreciation*/ );
+  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( 'bulletin' , $periode_id , $eleve_id , $matiere_id , 0 /*prof_id*/ , 'eleve' , $moyennes_calculee , '' /*appreciation*/ );
   return $moyennes_calculee;
 }
 
@@ -405,18 +405,17 @@ function texte_ligne_assiduite($tab_assiduite)
 /*
  * Fonction appelée par code_officiel_saisir.php pour un enregistrement simple et aussi lors de l'enregistrement d'un import CSV
  */
-function enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $groupe_id , $rubrique_id , $prof_id , $appreciation )
+function enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $rubrique_id , $prof_id , $appreciation )
 {
   // élève ou classe
   $saisie_type        = ($eleve_id) ? 'eleve'   : 'classe' ;
   $eleve_ou_classe_id = ($eleve_id) ? $eleve_id : $classe_id ;
-  $saisie_groupe_id   = ($eleve_id) ? 0         : $groupe_id ;
   if($rubrique_id==0)
   {
     // Dans le cas d'une appréciation générale, si c'est une autre personne qui en a saisi la version précédente, un remplacement ne la supprimera pas.
-    DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $saisie_groupe_id , 0 /*rubrique_id*/ , 0 /*prof_id*/ , $saisie_type );
+    DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , 0 /*rubrique_id*/ , 0 /*prof_id*/ , $saisie_type );
   }
-  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $saisie_groupe_id , $rubrique_id , $prof_id , $saisie_type , NULL , $appreciation );
+  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $rubrique_id , $prof_id , $saisie_type , NULL , $appreciation );
 }
 
 /*
@@ -426,7 +425,7 @@ function enregistrer_note( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id 
 {
   $note = ($_SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? round($moyenne,1) : round($moyenne/5,1) ;
   $appreciation = 'Moyenne figée reportée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
-  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*groupe_id*/ , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
+  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
   return array( $note , $appreciation );
 }
 

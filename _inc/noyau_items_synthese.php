@@ -131,7 +131,7 @@ else
 {
   // Dans le cas d'une saisie globale sur le groupe, il faut "juste" récupérer les matières concernées.
   $liste_matiere_id = isset($liste_matiere_id) ? $liste_matiere_id : '' ;
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin , TRUE /*only_if_synthese*/ );
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_matiere[$DB_ROW['rubrique_id']] = array(

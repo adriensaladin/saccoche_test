@@ -631,28 +631,13 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   $elements = elements_programme_extraction( $elements_info['saisie_valeur'] , $nb_caract_max_par_colonne , 'html' /*objet_retour*/ );
                   $origine = ($elements_info['saisie_origine']=='calcul') ? 'Généré automatiquement' : 'Validé par '.html($tab_profs[$elements_info['prof_id']]) ;
                   $actions = ($make_action=='modifier') ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-                  $actions.= ( $eleve_id && ($make_action=='modifier') && ($elements_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
                 }
                 else
                 {
-                  if($eleve_id)
-                  {
-                    $elements = '<div class="danger">Absence de saisie !</div>' ;
-                  }
-                  else
-                  {
-                    $elements = ($make_action=='modifier') ? '<div class="danger">Saisir des éléments pour le regroupement l\'impose à tous les élèves et annule leur récolte automatisée pour chacun.</div>' : '<div class="notnow">Pas de saisie imposée à tous les élèves du regroupement.</div>' ;
-                  }
+                  $elements = ($make_action=='modifier') ? '<div class="danger">Saisir des éléments pour le regroupement l\'impose à tous les élèves et annule leur récolte automatisée pour chacun.</div>' : '<div class="notnow">Pas de saisie imposée à tous les élèves du regroupement.</div>' ;
                   $origine = ($elements_info['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$elements_info['prof_id']]) : '' ;
-                  if($eleve_id)
-                  {
-                    $actions = ($make_action=='modifier') ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
-                  }
-                  else
-                  {
-                    $actions = ($make_action=='modifier') ? ' <button type="button" disabled>Fonctionnalité en travaux, à venir prochainement...</button>' : '' ;
-                  }
-                  $actions.= ( $eleve_id && ($make_action=='modifier') && ($elements_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
+                  // $actions = ($make_action=='modifier') ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
+                  $actions = ($make_action=='modifier') ? ' <button type="button" disabled>Fonctionnalité en travaux, à venir prochainement...</button>' : '' ;
                 }
                 $tab_temp_HTML['elements'] .= '<td id="eval_'.$livret_rubrique_id.'_elements"><div class="elements">'.$elements.'</div><div class="notnow" data-id="'.$elements_info['saisie_id'].'">'.echo_origine($origine).$actions.'</div></td>';
                 // Acquisitions, progrès et difficultés éventuelles
@@ -736,12 +721,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           if($temp_HTML)
           {
             $rowspan = in_array($PAGE_COLONNE,array('moyenne','pourcentage')) ? '' : ' rowspan="2"' ;
-            $input_cycle = ($eleve_id) ? '' : '<input type="hidden" id="cycle_id" value="'.substr($PAGE_RUBRIQUE_TYPE,1,1).'" />' ;
             $head_ligne2 = '';
             $releve_HTML .= '<h4 class="eval">'.rubrique_texte_intro('eval',$eleve_id).'</h4>'.NL;
             $releve_HTML .= '<table class="livret"><thead>'.NL.'<tr>';
             $releve_HTML .= ($BILAN_TYPE_ETABL=='college') ? '<th'.$rowspan.' class="nu"></th>' : '<th colspan="2"'.$rowspan.'>Domaines d’enseignement</th>' ;
-            $releve_HTML .= '<th'.$rowspan.'>Principaux éléments du programme travaillés'.$input_cycle.'</th>';
+            $releve_HTML .= '<th'.$rowspan.'>Principaux éléments du programme travaillés</th>';
             $releve_HTML .= '<th'.$rowspan.'>Acquisitions, progrès et difficultés éventuelles</th>';
             if( ( ($PAGE_COLONNE=='objectif') || ($PAGE_COLONNE=='position') ) && ( $eleve_id || $PAGE_MOYENNE_CLASSE ) )
             {

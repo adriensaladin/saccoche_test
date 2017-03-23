@@ -101,7 +101,7 @@ if($ACTION!='enregistrer_saisie_csv')
   $tab_rubriques = array() ;
   if($OBJET=='modifier')
   {
-    $DB_TAB = (in_array($BILAN_TYPE,array('releve','bulletin'))) ? DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin , FALSE /*only_if_synthese*/ , $_SESSION['USER_ID'] ) : DB_STRUCTURE_SOCLE::DB_recuperer_piliers( (int)substr($BILAN_TYPE,-1) );
+    $DB_TAB = (in_array($BILAN_TYPE,array('releve','bulletin'))) ? DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin , $_SESSION['USER_ID'] ) : DB_STRUCTURE_SOCLE::DB_recuperer_piliers( (int)substr($BILAN_TYPE,-1) );
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_rubriques[$DB_ROW['rubrique_id']] = $DB_ROW['rubrique_nom'];
@@ -135,7 +135,7 @@ if($ACTION!='enregistrer_saisie_csv')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*
- * Le CSV proposé est VIERGE à la fois par facilité, parce qu'il ne n'agit pas d'un archivage,
+ * Le CSV proposé est VIERGE à la fois par facilité, parcequ'il ne n'agit pas d'un archivage,
  * et pour éviter - dans le cas d'un bulletin - de figer des moyennes sans trop le vouloir.
 */
 if($ACTION=='generer_csv_vierge')
@@ -296,11 +296,8 @@ if($ACTION=='uploader_saisie_csv')
     {
       if(isset($tab_donnees_csv[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['appreciation']))
       {
-        if( $DB_ROW['eleve_id'] || ($DB_ROW['groupe_id']==$groupe_id) )
-        {
-          $appreciation = $tab_donnees_csv[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['appreciation']['val'];
-          $tab_donnees_csv[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['appreciation']['mode'] = ( $appreciation == $DB_ROW['saisie_appreciation'] ) ? 'idem' : 'update' ;
-        }
+        $appreciation = $tab_donnees_csv[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['appreciation']['val'];
+        $tab_donnees_csv[$DB_ROW['rubrique_id']][$DB_ROW['eleve_id']]['appreciation']['mode'] = ( $appreciation == $DB_ROW['saisie_appreciation'] ) ? 'idem' : 'update' ;
       }
       unset($DB_TAB[$key]);
     }
@@ -439,7 +436,7 @@ if($ACTION=='enregistrer_saisie_csv')
       {
         if( ($tab_saisies['appreciation']) && ( ($rubrique_id>0) || ($OBJET=='tamponner') ) )
         {
-          enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $groupe_id , $rubrique_id , $_SESSION['USER_ID'] , $tab_saisies['appreciation'] );
+          enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $rubrique_id , $_SESSION['USER_ID'] , $tab_saisies['appreciation'] );
           $nb_modifs++;
         }
       }

@@ -127,16 +127,6 @@ if($lignes_del)
 {
   Json::add_str('<p class="danger">Des classes non trouvées sont proposées à la suppression. Il se peut que les services / affectations manquent dans le fichier. Veuillez cochez ces suppressions pour les confirmer.</p>'.NL);
 }
-// Avertissement ONDE
-if( ($import_origine=='onde') && ($import_profil=='eleve') && ($mode=='partiel') && ($lignes_del) && ($lignes_add) )
-{
-  Json::add_str('<p class="probleme">Lors du passage de BE1D à ONDE, les identifiants de classes changent.<br />
-  SACoche fait au mieux pour établir une correspondance, mais cela peut ne pas fonctionner si vous avez renommé des éléments.<br />
-  Ci-dessous, il se peut donc qu\'une liste de classes soit proposée à la suppression, et une autre à l\'ajout.<br />
-  Si vous êtes en cours d\'année scolaire, surtout ne validez pas une telle proposition !<br />
-  <a href="./index.php?page=administrateur_classe" target="_blank">Ouvrez le menu de gestion des classes dans un nouvel onglet</a> et modifiez manuellement les références de vos classes actuelles en y indiquant celles issues de ONDE.<br />
-  Ensuite, reprenez la procédure d\'import au début.</p>'.NL);
-}
 $ligne_vide = '<tr><td colspan="2">Aucune</td></tr>'.NL;
 if(empty($lignes_ras)) { $lignes_ras = $ligne_vide; }
 if(empty($lignes_add)) { $lignes_add = $ligne_vide; }

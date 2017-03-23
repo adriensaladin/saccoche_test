@@ -376,26 +376,23 @@ public static function DB_recuperer_items_travailles( $liste_eleve_id , $liste_m
  * @param string $liste_matiere_id id des matières séparés par des virgules (si pas fourni, pas de restriction matières)
  * @param string $date_mysql_debut
  * @param string $date_mysql_fin
- * @param bool   $only_if_synthese
  * @param int    $prof_id   pour restreindre aux saisies d'un prof donné (facultatif)
  * @return array
  */
-public static function DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin , $only_if_synthese , $prof_id=NULL )
+public static function DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin  ,$prof_id=NULL )
 {
-  $where_prof_id    = ($prof_id)          ? 'AND sacoche_saisie.prof_id=:prof_id '                 : '';
-  $where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') '            : 'AND matiere_active=1 ';
-  $where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut '                        : '';
-  $where_date_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '                          : '';
-  $where_synthese   = ($only_if_synthese) ? 'AND referentiel_mode_synthese IN("domaine","theme") ' : '';
+  $where_prof_id    = ($prof_id)          ? 'AND sacoche_saisie.prof_id=:prof_id '      : '';
+  $where_matiere    = ($liste_matiere_id) ? 'AND matiere_id IN('.$liste_matiere_id.') ' : 'AND matiere_active=1 ';
+  $where_date_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut '             : '';
+  $where_date_fin   = ($date_mysql_fin)   ? 'AND saisie_date<=:date_fin '               : '';
   $DB_SQL = 'SELECT matiere_id as rubrique_id, matiere_nom as rubrique_nom ';
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_saisie ON sacoche_user.user_id=sacoche_saisie.eleve_id ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
-  $DB_SQL.= 'WHERE eleve_classe_id=:classe_id '.$where_prof_id.$where_matiere.$where_date_debut.$where_date_fin.$where_synthese;
+  $DB_SQL.= 'WHERE eleve_classe_id=:classe_id '.$where_prof_id.$where_matiere.$where_date_debut.$where_date_fin;
   $DB_SQL.= 'GROUP BY matiere_id ';
   $DB_SQL.= 'ORDER BY matiere_ordre ASC, matiere_nom ASC';
   $DB_VAR = array(

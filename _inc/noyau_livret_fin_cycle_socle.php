@@ -191,9 +191,6 @@ if(!isset($tab_destinataires))
 // Pas de saisie pour la classe (donc $eleve_id obligé)
 // Pas de graphique
 
-// Permettre une édition des positionnements sur le socle au moment de la saisie de la synthèse
-$acces_modif_positionnement = ( ($make_action=='modifier') || ( ($make_action=='tamponner') && ($BILAN_ETAT=='3mixte') && Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_POSITIONNER_SOCLE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) ) ) ? TRUE : FALSE ;
-
 $tab_deja_affiche = array();
 
 // Préparatifs
@@ -292,15 +289,15 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         {
           $pourcentage = $position_info['saisie_valeur'];
           $origine = ($position_info['saisie_origine']=='calcul') ? 'Calculé automatiquement' : 'Saisi par '.html($tab_profs[$position_info['prof_id']]) ;
-          $actions = ( $eleve_id && $acces_modif_positionnement ) ? ' <button type="button" class="modifier" title="Modifier le positionnement">&nbsp;</button> <button type="button" class="supprimer" title="Supprimer le positionnement">&nbsp;</button>' : '' ;
-          $actions.= ( $acces_modif_positionnement && ($position_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>' : '' ;
+          $actions = ( $eleve_id && ($make_action=='modifier') ) ? ' <button type="button" class="modifier" title="Modifier le positionnement">&nbsp;</button> <button type="button" class="supprimer" title="Supprimer le positionnement">&nbsp;</button>' : '' ;
+          $actions.= ( ($make_action=='modifier') && ($position_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>' : '' ;
         }
         else
         {
           $pourcentage = FALSE ;
           $origine = ($position_info['saisie_origine']=='saisie') ? 'Supprimé par '.html($tab_profs[$position_info['prof_id']]) : '' ;
-          $actions = ( $eleve_id && $acces_modif_positionnement ) ? ' <button type="button" class="ajouter" title="Ajouter le positionnement">&nbsp;</button>' : '' ;
-          $actions.= ( $acces_modif_positionnement && ($position_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>' : '' ;
+          $actions = ( $eleve_id && ($make_action=='modifier') ) ? ' <button type="button" class="ajouter" title="Ajouter le positionnement">&nbsp;</button>' : '' ;
+          $actions.= ( ($make_action=='modifier') && ($position_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>' : '' ;
         }
         $indice = ($pourcentage!=='disp') ? OutilBilan::determiner_degre_maitrise($pourcentage) : 0 ;
         $origine .= ( $origine && ($position_info['saisie_origine']=='calcul') ) ? ' : '.$pourcentage.' %' : '' ;
@@ -361,13 +358,13 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         {
           $pourcentage = $position_info['saisie_valeur'];
           $origine = 'Saisi par '.html($tab_profs[$position_info['prof_id']]); // Pas de prépositionnement automatique
-          $actions = ( $eleve_id && $acces_modif_positionnement ) ? ' <button type="button" class="modifier" title="Modifier le positionnement">&nbsp;</button> <button type="button" class="supprimer" title="Supprimer le positionnement">&nbsp;</button>' : '' ;
+          $actions = ( $eleve_id && ($make_action=='modifier') ) ? ' <button type="button" class="modifier" title="Modifier le positionnement">&nbsp;</button> <button type="button" class="supprimer" title="Supprimer le positionnement">&nbsp;</button>' : '' ;
         }
         else
         {
           $pourcentage = FALSE ;
           $origine = ($position_info['saisie_origine']=='saisie') ? 'Supprimé par '.html($tab_profs[$position_info['prof_id']]) : '' ;
-          $actions = ( $eleve_id && $acces_modif_positionnement ) ? ' <button type="button" class="ajouter" title="Ajouter le positionnement">&nbsp;</button>' : '' ;
+          $actions = ( $eleve_id && ($make_action=='modifier') ) ? ' <button type="button" class="ajouter" title="Ajouter le positionnement">&nbsp;</button>' : '' ;
         }
         $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
         $origine .= ( $origine && ($position_info['saisie_origine']=='calcul') ) ? ' : '.$pourcentage.' %' : '' ;

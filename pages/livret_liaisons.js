@@ -285,7 +285,7 @@ $(document).ready
                 obj_liaison.remove();
                 if( !obj_rubrique.children().length )
                 {
-                  obj_rubrique.append('<span class="astuce">Aucun élément de <em>SACoche</em> associé.</span>');
+                  obj_rubrique.append('<label class="alerte">Aucun élément de <em>SACoche</em> associé.</label>');
                 }
                 // Déplacer l'élément si besoin + tri des éléments à relier
                 if( ! $('div[id^=f_liaison_'+element_id+']').length )

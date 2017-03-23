@@ -379,25 +379,25 @@ public static function DB_lister_matieres_alimentees()
  */
 public static function DB_lister_rubriques( $rubrique_type , $for_edition )
 {
+  $rubrique_ids = $livret_ids = '' ;
   if( substr($rubrique_type,3) == 'matiere' )
   {
     if($for_edition)
     {
-      $DB_SQL = 'SELECT matiere_id AS livret_rubrique_id, matiere_nom AS rubrique, NULL AS sous_rubrique, ';
-      $DB_SQL.= 'matiere_id AS rubrique_id_elements, matiere_id AS rubrique_id_appreciation, matiere_id AS rubrique_id_position, ';
-      $DB_SQL.= 'matiere_code AS rubrique_id_livret, matiere_siecle ';
-      $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-      $DB_SQL.= 'INNER JOIN sacoche_matiere ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_matiere.matiere_id ';
-      $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type AND matiere_siecle=1 OR matiere_active=1 ';
-      $DB_SQL.= 'ORDER BY matiere_ordre ASC ';
+      $rubrique_nom = 'matiere_nom AS rubrique, NULL AS sous_rubrique ' ;
+      $rubrique_ids = ', matiere_id AS rubrique_id_elements, matiere_id AS rubrique_id_appreciation, matiere_id AS rubrique_id_position ' ;
+      $livret_ids   = ', matiere_code AS rubrique_id_livret, matiere_siecle ' ;
+      $order_by     = 'matiere_ordre ASC ';
     }
     else
     {
-      $DB_SQL = 'SELECT matiere_id AS livret_rubrique_id, CONCAT( REPLACE( REPLACE(matiere_siecle,"1","SIECLE") , "0","REFÉRENTIEL AUTRE" ) , " - ", matiere_nom ) AS livret_rubrique_nom ';
-      $DB_SQL.= 'FROM sacoche_matiere ';
-      $DB_SQL.= 'WHERE matiere_siecle=1 OR matiere_active=1 ';
-      $DB_SQL.= 'ORDER BY matiere_siecle DESC, matiere_ordre ASC ';
+      $rubrique_nom = 'CONCAT( REPLACE( REPLACE(matiere_siecle,"1","SIECLE") , "0","REFÉRENTIEL AUTRE" ) , " - ", matiere_nom ) AS livret_rubrique_nom ' ;
+      $order_by     = 'matiere_siecle DESC, matiere_ordre ASC ';
     }
+    $DB_SQL = 'SELECT matiere_id AS livret_rubrique_id, '.$rubrique_nom.$rubrique_ids.$livret_ids;
+    $DB_SQL.= 'FROM sacoche_matiere ';
+    $DB_SQL.= 'WHERE matiere_siecle=1 OR matiere_active=1 ';
+    $DB_SQL.= 'ORDER BY '.$order_by;
   }
   else
   {
@@ -410,8 +410,6 @@ public static function DB_lister_rubriques( $rubrique_type , $for_edition )
     else
     {
       $rubrique_nom = 'CONCAT_WS( " - ", livret_rubrique_domaine, livret_rubrique_sous_domaine) AS livret_rubrique_nom ' ;
-      $rubrique_ids = '' ;
-      $livret_ids   = '' ;
     }
     $DB_SQL = 'SELECT livret_rubrique_id, '.$rubrique_nom.$rubrique_ids.$livret_ids;
     $DB_SQL.= 'FROM sacoche_livret_rubrique ';
@@ -502,6 +500,7 @@ public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , 
   $join_s2016     = ($only_socle)  ? 'INNER JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
   $where_socle    = ($only_socle)  ? 'AND ( entree_id !=0 OR socle_composante_id IS NOT NULL ) ' : '' ;
   $where_rubrique = ($rubrique_id) ? 'AND '.$champ_position.'=:rubrique_id ' : '' ;
+  $group_by       = ($rubrique_id) ? 'item_id ' : $champ_position.', '.$champ_elements.', item_id ' ;
   $DB_SQL = 'SELECT '.$champ_position.' AS rubrique_id_position , '.$champ_elements.' AS rubrique_id_elements , item_id ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
   $DB_SQL.= $join_rubrique;
@@ -539,7 +538,7 @@ public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , 
   }
   $DB_SQL.= $join_s2016;
   $DB_SQL.= 'WHERE matiere_active=1 AND niveau_actif=1 AND sacoche_livret_jointure_referentiel.livret_rubrique_type=:rubrique_type '.$where_socle.$where_rubrique;
-  $DB_SQL.= 'GROUP BY '.$champ_position.', '.$champ_elements.', item_id ';
+  $DB_SQL.= 'GROUP BY '.$group_by;
   $DB_VAR = array(
     ':rubrique_type' => $rubrique_type,
     ':rubrique_id'   => $rubrique_id,
@@ -1963,10 +1962,8 @@ public static function DB_supprimer_jointure_referentiel_obsolete()
   // Les liaisons aux matières du Livret Scolaire
   $DB_SQL = 'DELETE sacoche_livret_jointure_referentiel ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_page ON sacoche_livret_jointure_referentiel.livret_rubrique_type = sacoche_livret_page.livret_page_rubrique_type ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere AS matiere1 ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = matiere1.matiere_id ';
-  $DB_SQL.= 'LEFT JOIN sacoche_matiere AS matiere2 ON sacoche_livret_jointure_referentiel.element_id = matiere2.matiere_id ';
-  $DB_SQL.= 'WHERE livret_page_rubrique_join="matiere" AND ( (matiere1.matiere_id IS NULL) OR (matiere2.matiere_id IS NULL) OR ( matiere1.matiere_active=0 AND matiere1.matiere_siecle=0 ) OR ( matiere2.matiere_active=0 AND matiere2.matiere_siecle=0 ) ) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_matiere.matiere_id ';
+  $DB_SQL.= 'WHERE livret_rubrique_type IN ("c3_matiere","c4_matiere") AND sacoche_matiere.matiere_id IS NULL ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 

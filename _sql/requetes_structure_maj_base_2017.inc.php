@@ -263,22 +263,6 @@ if($version_base_structure_actuelle=='2017-03-06')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2017-03-15 => 2017-03-23
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2017-03-15')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2017-03-23';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // ajout d'une colonne à sacoche_officiel_saisie en espérant arriver un jour à l'exploiter...
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_saisie ADD groupe_id MEDIUMINT UNSIGNED NOT NULL DEFAULT 0 COMMENT "pour une appréciation sur un groupe, précise le groupe" AFTER eleve_ou_classe_id , ADD INDEX ( groupe_id ) ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_officiel_saisie DROP PRIMARY KEY, ADD PRIMARY KEY (eleve_ou_classe_id, groupe_id, officiel_type, periode_id, rubrique_id, prof_id, saisie_type)  ' );
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

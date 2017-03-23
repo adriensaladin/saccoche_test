@@ -657,7 +657,7 @@ class PDF_livret_scolaire extends PDF
     {
       // récup positionnement
       $id_rubrique_position = $livret_rubrique_id;
-      $position_info = isset($tab_saisie_eleve_socle[$id_rubrique_position]['position']) ? $tab_saisie_eleve_socle[$id_rubrique_position]['position'] : $this->tab_saisie_initialisation ;
+      $position_info = isset($tab_saisie_eleve_socle[$id_rubrique_position]['position']) ? $tab_saisie_eleve_socle[$id_rubrique_position]['position'] : $tab_saisie_initialisation ;
       $pourcentage = (!is_null($position_info['saisie_valeur'])) ? $position_info['saisie_valeur'] : FALSE ;
       // Domaine d’enseignement
       $this->CellFit( $largeur_intitule , $hauteur_case , To::pdf($tab_rubrique['nom_officiel']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );

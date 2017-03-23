@@ -55,7 +55,6 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_eleves">DOC : Gestion des élèves</a></span></p>
-<p><span class="danger">Si votre établissement dépend d'une base administrative <em>Siècle</em> (2D) ou <em>Onde</em> (1D), alors évitez au maximum les ajouts manuels : utilisez <a href="./index.php?page=administrateur_fichier_user" target="_blank">des imports de fichiers</a>.</span></p>
 
 <form action="./index.php?page=administrateur_eleve&amp;section=gestion" method="post" id="form_prechoix">
   <fieldset><label class="tab" for="f_groupes">Regroupement :</label><?php echo $select_f_groupes ?></fieldset>

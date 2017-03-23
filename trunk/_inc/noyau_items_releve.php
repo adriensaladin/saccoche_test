@@ -189,7 +189,7 @@ else
 {
   // Dans le cas d'une saisie globale sur le groupe, il faut "juste" récupérer les matières concernées.
   $liste_matiere_id = isset($liste_matiere_id) ? $liste_matiere_id : '' ;
-  $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin );
+  $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin , FALSE /*only_if_synthese*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $tab_matiere[$DB_ROW['rubrique_id']] = array(
@@ -563,7 +563,7 @@ if( $type_individuel && ($releve_individuel_format=='eleve') )
       if(isset($tab_eval[$eleve_id][$matiere_id])) // $tab_eval[] utilisé plutôt que $tab_score_eleve_item[] au cas où $calcul_acquisitions=FALSE
       {
         $tab_nb_lignes[$eleve_id][$matiere_id] = $nb_lignes_matiere_intitule_et_marge + count($tab_eval[$eleve_id][$matiere_id],COUNT_NORMAL) + $nb_lignes_matiere_synthese ;
-        if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']) && (isset($tab_saisie[$eleve_id][$matiere_id])) )
+        if( ($make_action=='imprimer') && ($_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']) && isset($tab_saisie[$eleve_id][$matiere_id]) )
         {
           $tab_nb_lignes[$eleve_id][$matiere_id] += ($nb_lignes_appreciation_intermediaire_par_prof_hors_intitule * count($tab_saisie[$eleve_id][$matiere_id]) ) + 1 ; // + 1 pour "Appréciation / Conseils pour progresser"
         }
@@ -710,7 +710,7 @@ if($type_individuel)
       if($make_officiel)
       {
         // Quelques variables récupérées ici car pose pb si placé dans la boucle par destinataire
-        $is_appreciation_generale_enregistree = (isset($tab_saisie[$eleve_id][0])) ? TRUE : FALSE ;
+        $is_appreciation_generale_enregistree = isset($tab_saisie[$eleve_id][0]) ? TRUE : FALSE ;
         list($prof_id_appreciation_generale,$tab_appreciation_generale) = ($is_appreciation_generale_enregistree) ? each($tab_saisie[$eleve_id][0]) : array( 0 , array('prof_info'=>'','appreciation'=>'') ) ;
       }
       foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)

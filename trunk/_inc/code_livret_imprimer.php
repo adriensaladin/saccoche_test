@@ -763,7 +763,8 @@ if(empty($is_test_impression))
 {
   if(!count($tab_pages_decoupe_pdf))
   {
-    Json::end( FALSE , 'Aucune donnée trouvée pour le ou les élèves concernés sur la période '.$date_debut.' ~ '.$date_fin.' !' );
+    $indication_periode = ($PAGE_PERIODICITE=='periode') ? ' sur la période '.$date_debut.' ~ '.$date_fin : '';
+    Json::end( FALSE , 'Aucune donnée trouvée pour le ou les élèves concernés'.$indication_periode.' !' );
   }
   unset($tab_archive['session']);
   $tab_memo = array(

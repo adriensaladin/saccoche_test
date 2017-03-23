@@ -344,6 +344,7 @@ if( ($ACTION!='imprimer') || ($etape!=1) )
 // Initialiser les signatures numériques
 
 $tab_saisie = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note);
+$tab_saisie_groupe = array();  // [groupe_id][prof_id] => array(groupe_info,prof_info,appreciation);
 $tab_signature = array(0=>NULL);  // [prof_id] => array(contenu,format,largeur,hauteur);
 $tab_assiduite = array_fill_keys( $tab_eleve_id , array( 'absence' => NULL , 'absence_nj' => NULL , 'retard' => NULL , 'retard_nj' => NULL ) );  // [eleve_id] => array(absence,absence_nj,retard,retard_nj);
 $tab_moyenne_exception_matieres = ( ($BILAN_TYPE!='bulletin') || !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES'] ) ? array() : explode(',',$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES']) ;
@@ -353,7 +354,7 @@ foreach($DB_TAB as $DB_ROW)
 {
   $prof_info = ($DB_ROW['prof_id']) ? To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
   $note = in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ? NULL : $DB_ROW['saisie_note'] ;
-  $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+  $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'groupe_info'=>$DB_ROW['groupe_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
   $tab_signature[$DB_ROW['prof_id']] = NULL ; // Initialisé
   $tab_prof_id[$DB_ROW['prof_id']] = $DB_ROW['prof_id']; // Pour savoir ensuite la liste des profs à chercher
 }
@@ -361,8 +362,17 @@ $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BI
 foreach($DB_TAB as $DB_ROW)
 {
   $prof_info = ($DB_ROW['prof_id']) ? To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
-  $note = in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ? NULL : $DB_ROW['saisie_note'] ;
-  $tab_saisie[0][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+  if(!$DB_ROW['groupe_id'])
+  {
+    $note = !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ? $DB_ROW['saisie_note'] : NULL ;
+    $tab_saisie[0][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+  }
+  else
+  {
+    // TODO : non utilisé pour l'instant, à voir si on le gère ainsi ou pas
+    // Cas d'une appréciation sur le groupe ; géré après coup et compliqué à intégrer au tableau existant sans tout casser
+    $tab_saisie_groupe[$DB_ROW['groupe_id']][$DB_ROW['prof_id']] = array( 'groupe_info'=>$DB_ROW['groupe_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] );
+  }
 }
 
 // Récupérer les signatures numériques

@@ -108,7 +108,7 @@ if($ACTION=='enregistrer_appr')
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
-  enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $rubrique_id , $_SESSION['USER_ID'] , $appreciation );
+  enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $groupe_id , $rubrique_id , $_SESSION['USER_ID'] , $appreciation );
   $prof_info = To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   $ACTION = ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>';
   Json::end( TRUE , '<div class="notnow">'.html($prof_info).$ACTION.'</div><div class="appreciation">'.html($appreciation).'</div>' );
@@ -120,7 +120,7 @@ if($ACTION=='corriger_faute')
   {
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
-  enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $rubrique_id , $prof_id , $appreciation );
+  enregistrer_appreciation( $BILAN_TYPE , $periode_id , $eleve_id , $classe_id , $groupe_id , $rubrique_id , $prof_id , $appreciation );
   Json::end( TRUE , html($appreciation) );
 }
 
@@ -147,10 +147,11 @@ if($ACTION=='supprimer_appr')
     Json::end( FALSE , 'Erreur avec les données transmises !' );
   }
   // élève ou classe
-  $saisie_type        = ($eleve_id) ? 'eleve' : 'classe' ;
+  $saisie_type        = ($eleve_id) ? 'eleve'   : 'classe' ;
   $eleve_ou_classe_id = ($eleve_id) ? $eleve_id : $classe_id ;
+  $saisie_groupe_id   = ($eleve_id) ? 0         : $groupe_id ;
   $texte_classe       = empty($is_appreciation_groupe) ? '' : ' sur la classe' ;
-  DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $rubrique_id , $_SESSION['USER_ID'] , $saisie_type );
+  DB_STRUCTURE_OFFICIEL::DB_supprimer_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_ou_classe_id , $saisie_groupe_id , $rubrique_id , $_SESSION['USER_ID'] , $saisie_type );
   $ACTION = ($rubrique_id!=0) ? '<button type="button" class="ajouter">Ajouter une appréciation'.$texte_classe.'.</button>' : '<button type="button" class="ajouter">Ajouter l\'appréciation générale'.$texte_classe.'.</button>' ;
   Json::end( TRUE , '<div class="hc">'.$ACTION.'</div>' );
 }
@@ -164,7 +165,7 @@ if($ACTION=='supprimer_note')
   }
   $note = NULL;
   $appreciation = 'Moyenne effacée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
-  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
+  DB_STRUCTURE_OFFICIEL::DB_modifier_bilan_officiel_saisie( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*groupe_id*/ , $rubrique_id , 0 /*prof_id*/ , 'eleve' , $note , $appreciation );
   Json::end( TRUE , '<td class="now moyenne">-</td><td class="now"><span class="notnow">'.html($appreciation).' <button type="button" class="modifier">Modifier</button> <button type="button" class="nettoyer">Effacer et recalculer.</button></span></td>' );
 }
 
@@ -254,8 +255,10 @@ if($ACTION=='initialiser')
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné, pour la période en cours et les périodes antérieures
 
-$tab_saisie       = array();  // [eleve_id][rubrique_id][prof_id] => array(prof_info,appreciation,note); avec eleve_id=0 pour note ou appréciation sur la classe
-$tab_saisie_avant = array();  // [eleve_id][rubrique_id][periode_ordre][prof_id] => array(periode_nom_avant,prof_info,appreciation,note);
+$tab_saisie       = array();  // [eleve_id][rubrique_id]][prof_id] => array(prof_info,appreciation,note); avec eleve_id=0 pour note ou appréciation sur la classe
+$tab_saisie_avant = array();  // [eleve_id][rubrique_id][periode_ordre]][prof_id] => array(periode_nom_avant,prof_info,appreciation,note);
+$tab_saisie_groupe = array();  // [groupe_id][prof_id] => array(groupe_info,prof_info,appreciation);
+$tab_saisie_groupe_avant = array();  // [periode_ordre][groupe_id][prof_id] => array(periode_nom_avant,groupe_info,prof_info,appreciation);
 $tab_moyenne_exception_matieres = ( ($BILAN_TYPE!='bulletin') || !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES'] ) ? array() : explode(',',$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES']) ;
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , TRUE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
@@ -275,15 +278,32 @@ $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BI
 foreach($DB_TAB as $DB_ROW)
 {
   $prof_info = ($DB_ROW['prof_id']) ? To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ) : '' ;
-  $note = in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ? NULL : $DB_ROW['saisie_note'] ;
-  if($DB_ROW['periode_id']==$periode_id)
+  if(!$DB_ROW['groupe_id'])
   {
-    $tab_saisie[0][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+    $note = !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ? $DB_ROW['saisie_note'] : NULL ;
+    if($DB_ROW['periode_id']==$periode_id)
+    {
+      $tab_saisie[0][$DB_ROW['rubrique_id']][$DB_ROW['prof_id']] = array( 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+    }
+    else
+    {
+      $tab_saisie_avant[0][$DB_ROW['rubrique_id']][$DB_ROW['periode_ordre']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+    }
   }
   else
   {
-    $tab_saisie_avant[0][$DB_ROW['rubrique_id']][$DB_ROW['periode_ordre']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+    // TODO : non utilisé pour l'instant, à voir si on le gère ainsi ou pas
+    // Cas d'une appréciation sur le groupe ; géré après coup et compliqué à intégrer au tableau existant sans tout casser
+    if($DB_ROW['periode_id']==$periode_id)
+    {
+      $tab_saisie_groupe[$DB_ROW['groupe_id']][$DB_ROW['prof_id']] = array( 'groupe_info'=>$DB_ROW['groupe_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] );
+    }
+    else
+    {
+      $tab_saisie_groupe_avant[$DB_ROW['periode_ordre']][$DB_ROW['groupe_id']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'groupe_info'=>$DB_ROW['groupe_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] );
+    }
   }
+
 }
 
 // Récupérer les absences / retards

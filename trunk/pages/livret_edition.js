@@ -237,6 +237,11 @@ $(document).ready
           memo_page_ref = tab_ids[3];
           memo_periode  = tab_ids[4];
           $('#f_objet').val(memo_objet);
+          if(memo_page_ref=='cycle1')
+          {
+            $.fancybox( '<p class="travaux">'+'Bilan de fin de maternelle non encore développé&hellip;<br />En prévision pour la fin de l\'année scolaire 2016-2017.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+            return false;
+          }
           if( (memo_section=='livret_saisir') || (memo_section=='livret_consulter') )
           {
             // Masquer le tableau ; Afficher la zone action et charger son contenu
@@ -1821,8 +1826,6 @@ $(document).ready
     // [livret_saisir] Clic sur le lien pour voir piocher dans la liste IGEN / DGESCO
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var piocher_elements_first_appel = true;
-
     var correspondance_domaine = {
       // Cycle 2
       '2x111' : '2x21', // Enseignement moral et civique
@@ -1844,31 +1847,56 @@ $(document).ready
       // Cycle 3 2D
       '3x901'  : '3x30', // Arts plastiques
       '3x438'  : '3x31', // Enseignement moral et civique
+      '3x414'  : '3x31', // Education civique
       '3x1001' : '3x32', // Éducation physique et sportive
       '3x813'  : '3x33', // Éducation musicale
       '3x9943' : '3x34', // Enseignements artistiques
       '3x207'  : '3x35', // Français
       '3x2757' : '3x36', // Histoire des Arts
       '3x437'  : '3x37', // Histoire-Géographie
+      '3x406'  : '3x37', // Histoire et géographie
+      '3x416'  : '3x37', // Histoire - géographie - instruction civique
+      '3x421'  : '3x37', // Histoire - géographie - éducation civique
       '3x9944' : '3x38', // Langues vivantes
+      '3x301'  : '3x38', // Allemand
+      '3x302'  : '3x38', // Anglais
+      '3x306'  : '3x38', // Espagnol
+      '3x315'  : '3x38', // Allemand LV1
+      '3x316'  : '3x38', // Anglais LV1
+      '3x320'  : '3x38', // Espagnol LV1
+      '3x327'  : '3x38', // Allemand LV2
+      '3x328'  : '3x38', // Anglais LV2
+      '3x332'  : '3x38', // Espagnol LV2
       '3x613'  : '3x39', // Mathématiques
       '3x9942' : '3x40', // Sciences et technologie
       // Cycle 4
       '4x901'  : '4x41', // Arts plastiques
       '4x438'  : '4x42', // Enseignement moral et civique
+      '4x414'  : '4x42', // Education civique
       '4x0'    : '4x43', // Éducation aux médias et à l’information (EMI)
       '4x1001' : '4x44', // Éducation physique et sportive
       '4x813'  : '4x45', // Éducation musicale
       '4x207'  : '4x46', // Français
       '4x2757' : '4x47', // Histoire des Arts
       '4x437'  : '4x48', // Histoire-Géographie
+      '4x406'  : '4x48', // Histoire et géographie
+      '4x416'  : '4x48', // Histoire - géographie - instruction civique
+      '4x421'  : '4x48', // Histoire - géographie - éducation civique
       '4x9944' : '4x49', // Langues vivantes
+      '4x301'  : '4x49', // Allemand
+      '4x302'  : '4x49', // Anglais
+      '4x306'  : '4x49', // Espagnol
+      '4x315'  : '4x49', // Allemand LV1
+      '4x316'  : '4x49', // Anglais LV1
+      '4x320'  : '4x49', // Espagnol LV1
+      '4x327'  : '4x49', // Allemand LV2
+      '4x328'  : '4x49', // Anglais LV2
+      '4x332'  : '4x49', // Espagnol LV2
       '4x613'  : '4x50', // Mathématiques
       '4x623'  : '4x51', // Physique-Chimie
       '4x629'  : '4x52', // Sciences de la vie et de la Terre
       '4x708'  : '4x53'  // Technologie
     };
-    // niveau : 3x100003 => 6e sinon CM1-CM2 (cycle 3) ou "Tous niveaux" (autres cycles)
 
     $('#zone_action_eleve').on
     (
@@ -1878,14 +1906,36 @@ $(document).ready
       {
         var $zone_elements = $('#zone_elements');
         // Replier tout sauf le plus haut niveau la 1e fois ; ensuite on laisse aussi volontairement ouvert ce qui a pu l'être précédemment
-        if(piocher_elements_first_appel)
+        $zone_elements.find('ul').css("display","none");
+        $zone_elements.find('ul.ul_n1').css("display","block");
+        $zone_elements.find('li.li_n3').css("display","block");
+        // ouvrir le cycle
+        var cycle_id = $('#cycle_id').val();
+        $('#el'+cycle_id).find('ul.ul_m1').css("display","block");
+        // ouvrir le domaine / la matière
+        var clef = cycle_id+'x'+memo_rubrique_id;
+        if(typeof(correspondance_domaine[clef])!='undefined')
         {
-          $zone_elements.find('ul').css("display","none");
-          $zone_elements.find('ul.ul_n1').css("display","block");
-          piocher_elements_first_appel = false;
+          var domaine_id = correspondance_domaine[clef];
+          $('#el'+domaine_id).find('ul.ul_m2').css("display","block");
+          // ouvrir le niveau
+          var niveau_id = (cycle_id!='3') ? cycle_id+'0' : ( (memo_page_ref=='6') ? '34' : '33' ) ;
+          $('#el'+domaine_id+'x'+niveau_id).find('ul.ul_n2').css("display","block");
         }
         $.fancybox( { 'href':'#zone_elements' , onStart:function(){$('#zone_elements').css("display","block");} , onClosed:function(){$('#zone_elements').css("display","none");} , 'centerOnScroll':true , 'minWidth':800 , 'minHeight':800 } );
         return false;
+      }
+    );
+
+    $('#zone_elements').on
+    (
+      'click',
+      'q.ajouter',
+      function()
+      {
+        var ligne = $(this).parent().text().trim();
+        $('#f_'+memo_saisie_objet).focus().html( $('#f_'+memo_saisie_objet).val() + ligne + "\n" );
+        $(this).parent().css("display","none");
       }
     );
 

@@ -1001,7 +1001,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $appreciation = html($bilan_info['saisie_valeur']);
             $origine = ($bilan_info['saisie_origine']=='bulletin') ? ' Report automatique du bulletin' : ' Dernière saisie par '.html($tab_profs[$bilan_info['prof_id']]) ;
             $actions = ($make_action=='tamponner') ? ' <button type="button" class="modifier">Modifier</button> <button type="button" class="supprimer">Supprimer</button>' : '' ;
-            $actions.= ( ($make_action=='tamponner') && ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
+            $actions.= ( ($make_action=='tamponner') && ($bilan_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
             if( ($make_action=='consulter') && in_array($BILAN_ETAT,array('2rubrique','3mixte','4synthese')) && ($bilan_info['prof_id']!=$_SESSION['USER_ID']) )
             {
               $actions .= ' <button type="button" class="signaler">Signaler une faute</button>';
@@ -1014,7 +1014,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $appreciation = ($BILAN_ETAT=='2rubrique') ? '<span class="astuce">Absence de saisie.</span>' : '<span class="danger">Absence de saisie !</span>' ;
             $origine = ($bilan_info['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$bilan_info['prof_id']]) : '' ;
             $actions = ($make_action=='tamponner') ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
-            $actions.= ( ($make_action=='tamponner') && ($bilan_info['saisie_origine']=='saisie') && ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
+            $actions.= ( ($make_action=='tamponner') && ($bilan_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
           }
           $releve_HTML .= '<div id="bilan_0_appreciation">';
           $releve_HTML .=   '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id,$BILAN_TYPE_ETABL).'</span>'.$br;

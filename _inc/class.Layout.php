@@ -37,8 +37,8 @@ class Layout
    */
   const SITE_NAME          = 'SACoche';
   const TITLE_SEPARATOR    = ' » ';
-  const META_DESCRIPTION   = 'Logiciel libre et gratuit de suivi d\'acquisition de compétences, pour évaluer par compétences et positionner sur le socle commun.';
-  const META_KEYWORDS      = 'Sésamath évaluer évaluation compétences compétence logiciel libre gratuit socle commun collège école points note notes Lomer';
+  const META_DESCRIPTION   = 'Suivi d\'Acquisition de Compétences - Evaluer par compétences - Valider le socle commun';
+  const META_KEYWORDS      = 'Sésamath évaluer évaluation compétences compétence validation valider socle commun collège points note notes Lomer';
   const META_AUTHOR        = 'Thomas Crespin pour Sésamath';
   const META_ROBOTS        = 'index,follow';
   const FLUX_RSS_LINK      = SERVEUR_RSS;

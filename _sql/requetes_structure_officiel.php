@@ -164,9 +164,8 @@ public static function DB_recuperer_bilan_officiel_saisies_classe( $officiel_typ
 }
 
 /**
- * DB_recuperer_bilan_officiel_saisie_precise
+ * DB_recuperer_bulletin_saisie_precise
  *
- * @param string $officiel_type   bulletin | releve
  * @param int    $periode_id
  * @param int    $eleve_ou_classe_id
  * @param int    $groupe_id
@@ -175,7 +174,7 @@ public static function DB_recuperer_bilan_officiel_saisies_classe( $officiel_typ
  * @param string $saisie_objet   position | appreciation
  * @return array  tableau dans le cas d'appréciations multiples
  */
-public static function DB_recuperer_bilan_officiel_saisie_precise( $officiel_type , $periode_id , $eleve_ou_classe_id , $groupe_id , $rubrique_id , $saisie_type , $saisie_objet )
+public static function DB_recuperer_bulletin_saisie_precise( $periode_id , $eleve_ou_classe_id , $groupe_id , $rubrique_id , $saisie_type , $saisie_objet )
 {
   $groupe_id = 0; // TODO : à supprimer lorsqu'une telle gestion d'appréciation par groupe sera effectivement possible
   $select = ($saisie_objet=='position') ? 'saisie_note' : 'saisie_appreciation' ;
@@ -186,7 +185,7 @@ public static function DB_recuperer_bilan_officiel_saisie_precise( $officiel_typ
   $DB_SQL.= 'WHERE officiel_type=:officiel_type AND periode_id=:periode_id AND eleve_ou_classe_id=:eleve_ou_classe_id AND groupe_id=:groupe_id AND rubrique_id=:rubrique_id AND '.$where.' AND saisie_type=:saisie_type ';
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
   $DB_VAR = array(
-    ':officiel_type'      => $officiel_type,
+    ':officiel_type'      => 'bulletin',
     ':periode_id'         => $periode_id,
     ':eleve_ou_classe_id' => $eleve_ou_classe_id,
     ':groupe_id'          => $groupe_id,

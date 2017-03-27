@@ -193,7 +193,7 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   $origine_position = ' Saisi par '.html($prof_info);
   $bouton_modifier  = ' <button type="button" class="modifier">Modifier</button>';
   $bouton_supprimer = ' <button type="button" class="supprimer">Supprimer</button>';
-  $bouton_generer = ( ($saisie_objet=='elements') || ($rubrique_type=='bilan') || ( ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
+  $bouton_generer = ( ($saisie_objet=='elements')  || ( ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
   $bouton_modifier_position  = ' <button type="button" class="modifier" title="Modifier le positionnement">&nbsp;</button>';
   $bouton_supprimer_position = ' <button type="button" class="supprimer" title="Supprimer le positionnement">&nbsp;</button>';
   $bouton_generer_position   = ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>';
@@ -279,7 +279,7 @@ if($ACTION=='supprimer_saisie')
   $prof_info = To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']);
   $origine = ' Supprimé par '.html($prof_info);
   $bouton_ajouter = ' <button type="button" class="ajouter">Ajouter</button>';
-  $bouton_generer = ( ($saisie_objet=='elements') || ($rubrique_type=='bilan') || ( ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
+  $bouton_generer = ( ($saisie_objet=='elements')  || ( ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
   $bouton_ajouter_position = ' <button type="button" class="ajouter" title="Ajouter le positionnement">&nbsp;</button>';
   $bouton_generer_position = ' <button type="button" class="eclair" title="Re-générer le positionnement">&nbsp;</button>';
   $saisie_eval_danger = '<div class="danger">Absence de saisie !</div>' ;

@@ -207,7 +207,7 @@ $(document).ready
               else
               {
                 // Retirer l'éventuel signalement d'absence d'élément associé
-                obj_rubrique.children('label').remove();
+                obj_rubrique.children('span').remove();
                 // Déplacer les éléments restants
                 $("#f_elements_rest input:checked").each(function(){
                   var element_id    = $(this).val();

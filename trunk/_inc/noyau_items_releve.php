@@ -931,7 +931,7 @@ if($type_individuel)
                     $releve_HTML_table_foot = '';
                   }
                   // affichage des bilans des scores
-                  if($aff_etat_acquisition)
+                  if($eleve_id && $aff_etat_acquisition)
                   {
                     // ... un pour la moyenne des pourcentages d'acquisition
                     if( $aff_moyenne_scores )

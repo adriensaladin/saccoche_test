@@ -1051,7 +1051,7 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
   }
   if(array_sum($tab_numero_colonne)<0)
   {
-    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
+    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode('" ; "',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   else
   {
@@ -1187,7 +1187,7 @@ if( ($import_origine=='onde') && ($import_profil=='parent') )
   $nb_enfants_maxi = min( count($tab_numero_colonne['enfant_nom']) , count($tab_numero_colonne['enfant_prenom']) );
   if( (array_sum($tab_numero_colonne)<0) || ($nb_enfants_maxi==0) )
   {
-    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
+    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode('" ; "',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   $numero_max = max( $numero_max , $tab_numero_colonne['enfant_nom'][0] , $tab_numero_colonne['enfant_prenom'][0] );
   unset($tab_lignes[0]); // Supprimer la 1e ligne
@@ -1296,7 +1296,7 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
   }
   if(array_sum($tab_numero_colonne)<0)
   {
-    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
+    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode('" ; "',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   //
@@ -1422,7 +1422,7 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
   }
   if(array_sum($tab_numero_colonne)<0)
   {
-    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode(' ";" ',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
+    Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode('" ; "',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   unset($tab_lignes[0]); // Supprimer la 1e ligne
   // On récupère les élèves pour vérifier que ceux trouvé dans le fichier des parents sont bien dans la base.

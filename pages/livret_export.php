@@ -137,8 +137,8 @@ if($step==1)
         'periode_id'    => $DB_ROW['periode_id'],
         'date_debut'    => $DB_ROW['jointure_date_debut'],
         'date_fin'      => $DB_ROW['jointure_date_fin'],
+        'date_verrou'   => $DB_ROW['jointure_date_verrou'],
         'date_export'   => $DB_ROW['jointure_date_export'],
-        'nb_impression' => 0,
       );
       $tab_page_ref[] = $DB_ROW['livret_page_ref'];
     }
@@ -171,14 +171,6 @@ if($step==1)
     $consigne = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? ' <a href="./index.php?page=administrateur_periode&section=classe_groupe">Effectuer les associations.</a>' : '<br />Un administrateur doit <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_periodes#toggle_affecter_periodes">effectuer les associations</a></span>.' ;
     echo'<p><label class="erreur">Association datée des périodes aux classes non effectuée pour '.$tab_periode_pb['pbdates'].' période'.$s.' !'.$consigne.'</label></p>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
-  }
-  // On compte aussi le nb de bilans déjà imprimé (PDF) pour limiter ceux qui tente d'exporter sans édition donc même parfois sans aucune tentative de remplissage automatique
-  $tab_periode_livret_key = array( 'T1' => 'periodeT1' , 'T2' => 'periodeT2' , 'T3' => 'periodeT3' , 'S1' => 'periodeS1' , 'S2' => 'periodeS2' , '' => 'cycle' );
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_compter_impression_archives();
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $periode = $tab_periode_livret_key[$DB_ROW['periode_livret']];
-    $tab_join_classe_periode[$DB_ROW['eleve_classe_id']][$periode]['nb_impression'] = $DB_ROW['nombre'];
   }
 
   // Besoin de connaitre le chef d'établissement
@@ -249,15 +241,15 @@ if($step==1)
         $etat = $tab_join['etat'];
         if($etat!='5complet')
         {
-          $tab_affich[$classe_id][$periode] = '<td class="hc"><label class="erreur">'.$tab_etats[$etat].'</label></td>';
+          $tab_affich[$classe_id][$periode] = '<td class="hc notnow">'.$tab_etats[$etat].'</td>';
         }
-        elseif(!$tab_join['nb_impression'])
+        elseif(!$tab_join['date_verrou'])
         {
-          $tab_affich[$classe_id][$periode] = '<td class="hc"><label class="erreur">Pas de <em>pdf</em> généré</label></td>';
+          $tab_affich[$classe_id][$periode] = '<td class="hc notnow">Impression PDF non générée.</td>';
         }
         else
         {
-          $info_export = ($tab_join['date_export']) ? '<div class="astuce">Récolté le '.To::date_mysql_to_french($tab_join['date_export']).'.</div>' : '<div><label class="alerte">Données non récoltées</label></div>' ;
+          $info_export = ($tab_join['date_export']) ? '<div class="astuce">Récolté le '.To::date_mysql_to_french($tab_join['date_export']).'.</div>' : '<div class="danger">Données non récoltées.</div>' ;
           $page_ref = $tab_join['page_ref'];
           $id = '_'.$classe_id.'_'.$page_ref.'_'.$periode;
           $bouton_recolte = ($page_ref!='cycle1') ? '<button id="ids'.$id.'" type="button" class="generer">Récolter les données</button>' : '' ;

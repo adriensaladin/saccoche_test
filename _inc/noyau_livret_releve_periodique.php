@@ -93,10 +93,6 @@ $tab_used_eval_eleve_rubrique = array();
 // Suivi des acquis scolaires (évaluations)
 
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_rubriques( $PAGE_RUBRIQUE_TYPE , TRUE /*for_edition*/ );
-if(empty($DB_TAB))
-{
-  Json::end( FALSE , 'Aucune matiere du livret n\'est associée aux référentiels ! Il faut configurer un minimum le livret avant son édition...' );
-}
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_rubriques['eval'][$DB_ROW['livret_rubrique_id']] = array(

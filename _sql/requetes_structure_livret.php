@@ -910,23 +910,6 @@ public static function DB_modifier_legende( $colonne_id , $colonne_legende )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
- * compter_impression_archives
- *
- * @param void
- * @return array
- */
-public static function DB_compter_impression_archives()
-{
-  $DB_SQL = 'SELECT COUNT(officiel_archive_id) AS nombre, eleve_classe_id, periode_livret ';
-  $DB_SQL.= 'FROM sacoche_officiel_archive ';
-  $DB_SQL.= 'LEFT JOIN sacoche_periode USING(periode_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) ';
-  $DB_SQL.= 'WHERE archive_type="livret" ';
-  $DB_SQL.= 'GROUP BY eleve_classe_id, periode_livret ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * tester_jointure_classe_livret
  *
  * @param string $liste_page_ref
@@ -948,7 +931,7 @@ public static function DB_tester_jointure_classe_livret($liste_page_ref)
  */
 public static function DB_lister_jointures_classes_livret()
 {
-  $DB_SQL = 'SELECT groupe_id, livret_page_ref, sacoche_livret_jointure_groupe.livret_page_periodicite, jointure_periode, jointure_etat, jointure_date_export, ';
+  $DB_SQL = 'SELECT groupe_id, livret_page_ref, sacoche_livret_jointure_groupe.livret_page_periodicite, jointure_periode, jointure_etat, jointure_date_verrou, jointure_date_export, ';
   $DB_SQL.= 'livret_page_rubrique_type, periode_id, jointure_date_debut, jointure_date_fin ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING(livret_page_ref) ';

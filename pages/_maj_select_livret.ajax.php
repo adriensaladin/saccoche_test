@@ -56,6 +56,14 @@ if( ($select=='profs_matiere') && $page_ref && $rubrique_join && $groupe_id && $
   Json::end( TRUE );
 }
 
+else if( ($select=='profs_classe') && $groupe_id )
+{
+  $tab_meilleure_suggestion = DB_STRUCTURE_LIVRET::DB_recuperer_profs_classe( $groupe_id );
+  $tab_meilleure_suggestion = empty($tab_meilleure_suggestion) ? array() : array_keys($tab_meilleure_suggestion);
+  Json::add_row( 'script' , 'tab_meilleure_suggestion='.json_encode($tab_meilleure_suggestion).';' );
+  Json::end( TRUE );
+}
+
 else if( ($select=='groupes') && $page_ref )
 {
   if($only_groupes_id)

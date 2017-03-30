@@ -35,7 +35,8 @@ $(document).ready
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     var mode = false;
-    var action_prof = 'ajouter';
+
+    var memo_nombre = 1;
 
     // tri du tableau (avec jquery.tablesorter.js).
     $('#table_action').tablesorter({ headers:{3:{sorter:false}} });
@@ -44,16 +45,15 @@ $(document).ready
     tableau_tri();
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Mettre à jour la liste des professeurs de la classe
+    // Mettre à jour la liste des professeurs associés à une classe
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_prof( groupe_id , prof_id , force_select_prof )
+    function maj_f_prof( groupe_id , select_numero , prof_id , force_select_prof )
     {
-      $('#f_prof').html('<option></option>');
+      $('#f_prof_'+select_numero).html('<option></option>');
       $('#ajax_msg_gestion').removeAttr('class').html("");
-      if(groupe_id)
+      if( groupe_id )
       {
-        var is_all = (action_prof == 'retirer') ? 1 : 0 ;
         $('#bouton_valider').prop('disabled',true);
         $('#ajax_msg_gestion').attr('class','loader').html("En cours&hellip;");
         $.ajax
@@ -61,7 +61,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_livret',
-            data : 'f_select=profs'+'&f_groupe_id='+groupe_id+'&f_prof_id='+prof_id+'&f_is_all='+is_all,
+            data : 'f_select=profs_classe'+'&f_groupe_id='+groupe_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -70,20 +70,44 @@ $(document).ready
             success : function(responseJSON)
             {
               initialiser_compteur();
-              $('#modifier_prof').attr('class','form_'+action_prof);
               $('#bouton_valider').prop('disabled',false);
               if(responseJSON['statut']==true)
               {
-                if( prof_id && force_select_prof && ( responseJSON['value'].indexOf(' selected>') == -1 ) && (action_prof=='ajouter') )
+                $('#ajax_msg_gestion').removeAttr('class').html("");
+                eval( responseJSON['script'] );
+                var select_prof_copie = select_prof;
+                var options = '<option value="">&nbsp;</option>';
+                var nb_meilleure_suggestion = tab_meilleure_suggestion.length;
+                if(nb_meilleure_suggestion)
                 {
-                  action_prof = 'retirer' ;
-                  maj_f_prof( groupe_id , prof_id , false /*force_select_prof*/ );
+                  options += '<optgroup label="Meilleures suggestions">';
+                  for(i in tab_meilleure_suggestion)
+                  {
+                    id = tab_meilleure_suggestion[i];
+                    new_option = '<option value="'+id+'">'+tab_prof[id]+'</option>';
+                    options += new_option;
+                    select_prof_copie = select_prof_copie.replace(new_option,'');
+                    select_prof_copie = select_prof_copie.replace('<option value="'+id+'">'+tab_prof[id]+'</option>','');
+                  }
+                  options += '</optgroup>';
                 }
-                else
+                var nb_profs = tab_prof.length;
+                if( nb_profs > nb_meilleure_suggestion )
                 {
-                  $('#ajax_msg_gestion').removeAttr('class').html("");
-                  $('#f_prof').html(responseJSON['value']);
+                  options += '<optgroup label="Personnels restants">';
+                  options += select_prof_copie;
+                  options += '</optgroup>';
                 }
+                if( prof_id && force_select_prof )
+                {
+                  options = options.replace('value="'+prof_id+'"','value="'+prof_id+'" selected');
+                }
+                else if ( nb_meilleure_suggestion == 1 )
+                {
+                  prof_id = tab_meilleure_suggestion[0];
+                  options = options.replace('value="'+prof_id+'"','value="'+prof_id+'" selected');
+                }
+                $('#f_prof_'+select_numero).html(options);
               }
               else
               {
@@ -100,20 +124,11 @@ $(document).ready
       function()
       {
         var groupe_id = $(this).val();
-        var prof_id   = $('#f_prof option:selected').val();
-        maj_f_prof( groupe_id , prof_id , false /*force_select_prof*/ );
-      }
-    );
-
-
-    $("#modifier_prof").click
-    (
-      function()
-      {
-        action_prof = (action_prof=='ajouter') ? 'retirer' : 'ajouter' ;
-        var groupe_id = $('#f_groupe option:selected').val();
-        var prof_id   = $('#f_prof option:selected').val();
-        maj_f_prof( groupe_id , prof_id , false /*force_select_prof*/ );
+        for( var select_numero=1 ; select_numero<=memo_nombre ; select_numero++ )
+        {
+          var prof_id = $('#f_prof_'+select_numero+' option:selected').val();
+          maj_f_prof( groupe_id , select_numero , prof_id , true /*force_select_prof*/ );
+        }
       }
     );
 
@@ -121,10 +136,23 @@ $(document).ready
     // Mettre à jour la liste des classes associées à un moment
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function maj_f_groupe( page_ref , groupe_id , prof_id , force_select_prof )
+    function maj_f_groupe( page_ref , groupe_id , tab_join , force_select_prof )
     {
+      memo_nombre = Math.max( tab_join.length , 1 );
+      $('#f_nombre option[value="'+memo_nombre+'"]').prop('selected',true);
       $('#f_groupe').html('<option></option>');
-      $('#f_prof').html('<option></option>');
+      for( var i=1 ; i<=15 ; i++ )
+      {
+        $('#f_prof_'+i).html('<option></option>');
+        if(i<=memo_nombre)
+        {
+          $('#join_'+i).show(0);
+        }
+        else
+        {
+          $('#join_'+i).hide(0);
+        }
+      }
       $('#ajax_msg_gestion').removeAttr('class').html("");
       if( page_ref )
       {
@@ -152,7 +180,16 @@ $(document).ready
                 groupe_id = $('#f_groupe option:selected').val(); // ce peut être le groupe_id transmis ou la valeur de l'option unique du select
                 if(groupe_id)
                 {
-                  maj_f_prof( groupe_id , prof_id , force_select_prof );
+                  if(tab_join.length)
+                  {
+                    var select_numero = 0;
+                    for(var i in tab_join)
+                    {
+                      select_numero++;
+                      var tab_id = tab_join[i].split('_');
+                      maj_f_prof( groupe_id , select_numero , tab_join[i] /*prof_id*/ , force_select_prof );
+                    }
+                  }
                 }
               }
               else
@@ -171,8 +208,34 @@ $(document).ready
       {
         var page_ref  = $(this).val();
         var groupe_id = $('#f_groupe option:selected').val();
-        var prof_id   = $('#f_prof option:selected').val();
-        maj_f_groupe( page_ref , groupe_id , prof_id , false /*force_select_prof*/ );
+        var tab_join  = new Array();
+        for( var i=1 ; i<=memo_nombre ; i++ )
+        {
+          var prof_id = $('#f_prof_'+i+' option:selected').val();
+          tab_join[i-1] = prof_id;
+        }
+        maj_f_groupe( page_ref , groupe_id , tab_join , false /*force_select_prof*/ );
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Mettre à jour le nombre de profs
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $("#f_nombre").change
+    (
+      function()
+      {
+        var nombre = $(this).val();
+        var page_ref    = $('#f_page option:selected').val();
+        var groupe_id   = $('#f_groupe option:selected').val();
+        var tab_join  = new Array();
+        for( var i=1 ; i<=nombre ; i++ )
+        {
+          var prof_id = $('#f_prof_'+i+' option:selected').val();
+          tab_join[i-1] = prof_id;
+        }
+        maj_f_groupe( page_ref , groupe_id , tab_join , true /*force_select_prof*/ );
       }
     );
 
@@ -180,9 +243,8 @@ $(document).ready
 // Fonctions utilisées
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    function afficher_form_gestion( mode , id , usage , page_ref , groupe_id , prof_id , delete_txt )
+    function afficher_form_gestion( mode , id , usage , page_ref , groupe_id , join_ids , delete_txt )
     {
-      action_prof = 'ajouter';
       $('#f_action').val(mode);
       $('#f_id').val(id);
       $('#f_usage').val(usage);
@@ -192,7 +254,7 @@ $(document).ready
         {$('#alerte_used').show();}
       // Ci-dessous, les guillemets autour des valeurs transmises évitent une erreur en cas de valeur vide.
       $('#f_page option[value="'+page_ref+'"]').prop('selected',true);
-      maj_f_groupe( page_ref , groupe_id , prof_id , true /*force_select_prof*/ );
+      maj_f_groupe( page_ref , groupe_id , join_ids.toString().split(' ') , true /*force_select_prof*/ );
       // pour finir
       $('#gestion_titre_action').html( mode[0].toUpperCase() + mode.substring(1) );
       if(mode!='supprimer')
@@ -219,7 +281,7 @@ $(document).ready
     {
       mode = $(this).attr('class');
       // Afficher le formulaire
-      afficher_form_gestion( mode , 0 /*id*/ , 0 /*usage*/ , '' /*page_ref*/ , 0 /*groupe_id*/ , 0 /*prof_id*/ , '' /*delete_txt*/ );
+      afficher_form_gestion( mode , 0 /*id*/ , 0 /*usage*/ , '' /*page_ref*/ , 0 /*groupe_id*/ , '' /*join_ids*/ , '' /*delete_txt*/ );
     };
 
     /**
@@ -236,10 +298,10 @@ $(document).ready
       var usage      = objet_tr.data('used');
       var page_ref   = objet_tds.eq(0).data('id');
       var groupe_id  = objet_tds.eq(1).data('id');
-      var prof_id    = objet_tds.eq(2).data('id');
+      var join_ids   = objet_tds.eq(2).data('id');
       var delete_txt = (mode!='supprimer') ? '' : objet_tds.eq(1).html() + ' || ' + objet_tds.eq(2).html() ;
       // Afficher le formulaire
-      afficher_form_gestion( mode , id , usage , page_ref , groupe_id , prof_id , unescapeHtml(delete_txt) );
+      afficher_form_gestion( mode , id , usage , page_ref , groupe_id , join_ids , unescapeHtml(delete_txt) );
     };
 
     /**
@@ -330,15 +392,43 @@ $(document).ready
       {
         rules :
         {
-          f_page   : { required:true },
-          f_groupe : { required:true },
-          f_prof   : { required:true }
+          f_page    : { required:true },
+          f_groupe  : { required:true },
+          f_prof_1  : { required:true },
+          f_prof_2  : { required:function(){return memo_nombre>=2;} },
+          f_prof_3  : { required:function(){return memo_nombre>=3;} },
+          f_prof_4  : { required:function(){return memo_nombre>=4;} },
+          f_prof_5  : { required:function(){return memo_nombre>=5;} },
+          f_prof_6  : { required:function(){return memo_nombre>=6;} },
+          f_prof_7  : { required:function(){return memo_nombre>=7;} },
+          f_prof_8  : { required:function(){return memo_nombre>=8;} },
+          f_prof_9  : { required:function(){return memo_nombre>=9;} },
+          f_prof_10 : { required:function(){return memo_nombre>=10;} },
+          f_prof_11 : { required:function(){return memo_nombre>=11;} },
+          f_prof_12 : { required:function(){return memo_nombre>=12;} },
+          f_prof_13 : { required:function(){return memo_nombre>=13;} },
+          f_prof_14 : { required:function(){return memo_nombre>=14;} },
+          f_prof_15 : { required:function(){return memo_nombre>=15;} }
         },
         messages :
         {
-          f_page   : { required:"moment manquant" },
-          f_groupe : { required:"classe manquante" },
-          f_prof   : { required:"professeur manquant" }
+          f_page    : { required:"moment manquant" },
+          f_groupe  : { required:"classe manquante" },
+          f_prof_1  : { required:"professeur manquant" },
+          f_prof_2  : { required:"professeur manquant" },
+          f_prof_3  : { required:"professeur manquant" },
+          f_prof_4  : { required:"professeur manquant" },
+          f_prof_5  : { required:"professeur manquant" },
+          f_prof_6  : { required:"professeur manquant" },
+          f_prof_7  : { required:"professeur manquant" },
+          f_prof_8  : { required:"professeur manquant" },
+          f_prof_9  : { required:"professeur manquant" },
+          f_prof_10 : { required:"professeur manquant" },
+          f_prof_11 : { required:"professeur manquant" },
+          f_prof_12 : { required:"professeur manquant" },
+          f_prof_13 : { required:"professeur manquant" },
+          f_prof_14 : { required:"professeur manquant" },
+          f_prof_15 : { required:"professeur manquant" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -420,7 +510,13 @@ $(document).ready
           case 'dupliquer':
             var page_moment = $('#f_page option:selected').text();
             var groupe_nom  = $('#f_groupe option:selected').text();
-            var prof_nom    = $('#f_prof option:selected').text();
+            var tab_prof_nom = new Array();
+            for( var i=1 ; i<=memo_nombre ; i++ )
+            {
+              var prof_nom = $('#f_prof_'+i+' option:selected').text();
+              tab_prof_nom[i-1] = prof_nom;
+            }
+            var prof_nom = tab_prof_nom.join('<br />');
             responseJSON['value'] = responseJSON['value']
                                     .replace('{{PAGE_MOMENT}}','<i>'+tab_page_ordre[page_moment]+'</i>'+page_moment)
                                     .replace('{{GROUPE_NOM}}',groupe_nom)

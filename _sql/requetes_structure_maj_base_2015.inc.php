@@ -680,8 +680,6 @@ if($version_base_structure_actuelle=='2015-06-09')
     {
       // Ajout de familles de matières
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT sacoche_matiere_famille VALUES ( 47, 2, "Activités non spécialisées (suite)") , ( 48, 2, "Sciences (suite)") ');
-      // réordonner la table sacoche_matiere_famille (ligne à déplacer vers la dernière MAJ lors d'ajouts dans sacoche_matiere_famille)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere_famille ORDER BY matiere_famille_id' );
     }
     if(empty($reload_sacoche_niveau_famille))
     {

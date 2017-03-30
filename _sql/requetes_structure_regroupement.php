@@ -605,7 +605,7 @@ public static function DB_supprimer_groupe_par_admin( $groupe_id , $groupe_type 
   }
   if($groupe_type=='classe')
   {
-    $tab_tables = array_merge( $tab_tables , array( 'sacoche_livret_jointure_groupe' , 'sacoche_livret_parcours' ) );
+    $tab_tables[] = 'sacoche_livret_jointure_groupe';
   }
   $DB_VAR = array(':groupe_id'=>$groupe_id);
   foreach( $tab_tables as $table )
@@ -613,8 +613,8 @@ public static function DB_supprimer_groupe_par_admin( $groupe_id , $groupe_type 
     $DB_SQL = 'DELETE FROM '.$table.' WHERE groupe_id=:groupe_id ';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
-  // Il faut aussi supprimer les ap et les epi portant sur le groupe, avec les jointures aux profs/matières
-  $tab_tables = array( 'ap' , 'epi' );
+  // Il faut aussi supprimer les ap / epi / parcours portant sur le groupe, avec les jointures aux profs/matières
+  $tab_tables = array( 'ap' , 'epi' , 'parcours' );
   foreach( $tab_tables as $table )
   {
     $DB_SQL = 'DELETE sacoche_livret_'.$table.', sacoche_livret_jointure_'.$table.'_prof ';

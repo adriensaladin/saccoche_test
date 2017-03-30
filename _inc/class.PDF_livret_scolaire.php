@@ -847,9 +847,15 @@ class PDF_livret_scolaire extends PDF
         $memoY = $this->GetY();
         // fond & contour
         $this->Rect( $this->GetX() , $this->GetY() , $this->page_largeur_moins_marges , $hauteur_parcours , 'DF' /*DrawFill*/ );
-        // type de parcours + nom prof
+        // type de parcours + noms profs
+        $tab_parcours['prof_txt'] = is_array($tab_parcours['prof_txt']) ? $tab_parcours['prof_txt'] : array( $tab_parcours['prof_txt'] ); // au début SACoche ne permettait d'associer qu'un seul prof
+        if(count($tab_parcours['prof_txt'])>4)
+        {
+          $tab_parcours['prof_txt'] = array_slice( $tab_parcours['prof_txt'] , 0 , 3 );
+          $tab_parcours['prof_txt'][3] = '[...]';
+        }
         $this->SetFont('Arial' , 'B' , $this->taille_police);
-        $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($tab_parcours['type_nom'].' ('.$tab_parcours['prof_txt'].')') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+        $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($tab_parcours['type_nom'].' ('.implode(' ; ',$tab_parcours['prof_txt']).')') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
         $this->SetFont('Arial' , '' , $this->taille_police);
         // Projet mis en oeuvre
         if($nb_lignes_classe)

@@ -793,8 +793,6 @@ if($version_base_structure_actuelle=='2016-08-29')
         (9943, 0, 1,  99, 0, 255,      0, "C23EA", "Enseignements artistiques (cycles 2-3)"),
         (9944, 0, 1,  99, 0, 255,      0, "C23LV", "Langue vivante (cycles 2-3)") ';
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES '.$insert );
-      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_matiere)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
     }
     // recharger [sacoche_siecle_import] qui comportait un défaut de définition
     if(empty($reload_sacoche_siecle_import))

@@ -34,7 +34,16 @@ $parcours_id   = (isset($_POST['f_id']))       ? Clean::entier($_POST['f_id'])  
 $parcours_used = (isset($_POST['f_usage']))    ? Clean::entier($_POST['f_usage'])  : 0;
 $page_ref      = (isset($_POST['f_page']))     ? Clean::id($_POST['f_page'])       : '';
 $groupe_id     = (isset($_POST['f_groupe']))   ? Clean::entier($_POST['f_groupe']) : 0;
-$prof_id       = (isset($_POST['f_prof']))     ? Clean::entier($_POST['f_prof'])   : 0;
+$nombre        = (isset($_POST['f_nombre']))   ? Clean::entier($_POST['f_nombre']) : 0;
+
+$test_prof = TRUE;
+$tab_prof = array();
+for( $num=1 ; $num<=$nombre ; $num++)
+{
+  ${'prof_id_'.$num} = (isset($_POST['f_prof_'.$num])) ? Clean::entier($_POST['f_prof_'.$num]) : 0;
+  $test_prof = $test_prof && ${'prof_id_'.$num} ;
+  $tab_prof[$num] = ${'prof_id_'.$num};
+}
 
 if( !$parcours_code || !$page_ref || !DB_STRUCTURE_LIVRET::DB_tester_page_avec_dispositif( $page_ref , 'parcours' , $parcours_code ) )
 {
@@ -45,20 +54,28 @@ if( !$parcours_code || !$page_ref || !DB_STRUCTURE_LIVRET::DB_tester_page_avec_d
 // Ajouter un nouveau parcours
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $prof_id )
+if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $test_prof )
 {
+  if( count(array_unique($tab_prof)) != $nombre )
+  {
+    Json::end( FALSE , 'Enseignants identiques !' );
+  }
   // Vérifier que le parcours est disponible
   if( DB_STRUCTURE_LIVRET::DB_tester_parcours( $parcours_code , $page_ref , $groupe_id ) )
   {
     Json::end( FALSE , 'Parcours déjà existant sur cette classe !' );
   }
   // Insérer l'enregistrement
-  $parcours_id = DB_STRUCTURE_LIVRET::DB_ajouter_parcours( $parcours_code , $page_ref , $groupe_id , $prof_id );
+  $parcours_id = DB_STRUCTURE_LIVRET::DB_ajouter_parcours( $parcours_code , $page_ref , $groupe_id );
+  for( $i=1 ; $i<=$nombre ; $i++ )
+  {
+    DB_STRUCTURE_LIVRET::DB_ajouter_parcours_jointure( $parcours_id , ${'prof_id_'.$i} );
+  }
   // Afficher le retour
   Json::add_str('<tr id="id_'.$parcours_id.'" data-used="0" class="new">');
   Json::add_str(  '<td data-id="'.$page_ref.'">{{PAGE_MOMENT}}</td>');
   Json::add_str(  '<td data-id="'.$groupe_id.'">{{GROUPE_NOM}}</td>');
-  Json::add_str(  '<td data-id="'.$prof_id.'">{{PROF_NOM}}</td>');
+  Json::add_str(  '<td data-id="'.implode(' ',$tab_prof).'">{{PROF_NOM}}</td>');
   Json::add_str(  '<td class="nu">');
   Json::add_str(    '<q class="modifier" title="Modifier ce parcours."></q>');
   Json::add_str(    '<q class="dupliquer" title="Dupliquer ce parcours."></q>');
@@ -72,8 +89,12 @@ if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $prof_id )
 // Modifier un parcours existant
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='modifier') && $parcours_id && $groupe_id && $prof_id )
+if( ($action=='modifier') && $parcours_id && $groupe_id && $test_prof )
 {
+  if( count(array_unique($tab_prof)) != $nombre )
+  {
+    Json::end( FALSE , 'Enseignants identiques !' );
+  }
   // Vérifier que le parcours est disponible
   if( DB_STRUCTURE_LIVRET::DB_tester_parcours( $parcours_code , $page_ref , $groupe_id , $parcours_id ) )
   {
@@ -81,11 +102,17 @@ if( ($action=='modifier') && $parcours_id && $groupe_id && $prof_id )
   }
   // Mettre à jour l'enregistrement
   // Remarque : il est possible qu'il n'y ait aucun changement, on ne s'en préoccupe pas.
-  DB_STRUCTURE_LIVRET::DB_modifier_parcours( $parcours_id , $parcours_code , $page_ref , $groupe_id , $prof_id );
+  // Remarque : on ne fait pas dans la dentelle pour les jointures : on les supprime et on les crée de nouveau.
+  DB_STRUCTURE_LIVRET::DB_modifier_parcours( $parcours_id , $parcours_code , $page_ref , $groupe_id );
+  DB_STRUCTURE_LIVRET::DB_supprimer_parcours_jointure( $parcours_id );
+  for( $i=1 ; $i<=$nombre ; $i++ )
+  {
+    DB_STRUCTURE_LIVRET::DB_ajouter_parcours_jointure( $parcours_id , ${'prof_id_'.$i} );
+  }
   // Afficher le retour
   Json::add_str('<td data-id="'.$page_ref.'">{{PAGE_MOMENT}}</td>');
   Json::add_str('<td data-id="'.$groupe_id.'">{{GROUPE_NOM}}</td>');
-  Json::add_str('<td data-id="'.$prof_id.'">{{PROF_NOM}}</td>');
+  Json::add_str('<td data-id="'.implode(' ',$tab_prof).'">{{PROF_NOM}}</td>');
   Json::add_str('<td class="nu">');
   Json::add_str(  '<q class="modifier" title="Modifier ce parcours."></q>');
   Json::add_str(  '<q class="dupliquer" title="Dupliquer ce parcours."></q>');

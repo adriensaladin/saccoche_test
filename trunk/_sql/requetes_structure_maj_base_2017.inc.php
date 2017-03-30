@@ -279,6 +279,80 @@ if($version_base_structure_actuelle=='2017-03-15')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-03-23 => 2017-03-30
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-03-23')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-03-30';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // nouvelle table [sacoche_livret_jointure_parcours_prof]
+    $reload_sacoche_livret_jointure_parcours_prof = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_jointure_parcours_prof.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // suppression d'un champ de [sacoche_livret_parcours] + déplacement du nom du prof de [sacoche_livret_parcours] vers [sacoche_livret_jointure_parcours_prof]
+    if(empty($reload_sacoche_livret_parcours))
+    {
+      $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT livret_parcours_id, prof_id FROM sacoche_livret_parcours');
+      foreach($DB_TAB as $DB_ROW)
+      {
+        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_livret_jointure_parcours_prof VALUES ( '.$DB_ROW['livret_parcours_id'].' , '.$DB_ROW['prof_id'].' )' );
+      }
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_parcours DROP INDEX prof_id ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_parcours DROP prof_id ' );
+    }
+    if(empty($reload_sacoche_matiere_famille))
+    {
+      // Ajout de familles de matières
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT sacoche_matiere_famille VALUES ( 96, 4, "Spécialités de baccalauréat professionnel (suite)") ');
+      // réordonner la table sacoche_matiere_famille (ligne à déplacer vers la dernière MAJ lors d'ajouts dans sacoche_matiere_famille)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere_famille ORDER BY matiere_famille_id' );
+    }
+    if(empty($reload_sacoche_matiere))
+    {
+      // Matières renommées
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_nom = "Indonésien-malais" WHERE matiere_id = 9342 ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_nom = "Peul"              WHERE matiere_id = 9344 ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref = "BPAMS", matiere_nom = "Artisanat et métiers d\'art - option mét. enseigne signalétique" WHERE matiere_id = 9713 ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_ref = "BPTDM", matiere_nom = "Traitements des matériaux"                                       WHERE matiere_id = 9784 ' );
+      // Ajout de matières
+      $insert = '
+        ( 237, 0, 0, 0,   2, 0, 255, "023700", "LCUCO", "Langue, culture et communication"),
+        ( 743, 0, 0, 0,   7, 0, 255, "074300", "TECNO", "Technologies"),
+        (3473, 0, 0, 0,  34, 0, 255, "347300", "VDECO", "Vente et développement commercial"),
+        (4167, 0, 0, 0,  41, 0, 255, "416700", "RCLSI", "Relation client sinistres"),
+        (4212, 0, 0, 0,  42, 0, 255, "421200", "CUPRA", "Culture professionnelle appliquée"),
+        (4213, 0, 0, 0,  42, 0, 255, "421300", "GESIN", "Gestion des sinistres"),
+        (4704, 0, 0, 0,  47, 0, 255, "470400", "PAREX", "Parcours d\'excellence"),
+        (9601, 0, 0, 0,  96, 0, 255,       "", "BPAAV", "Aéronautique - option avionique"),
+        (9602, 0, 0, 0,  96, 0, 255,       "", "BPAST", "Aéronautique - option structure"),
+        (9603, 0, 0, 0,  96, 0, 255,       "", "BPASY", "Aéronautique - option systèmes"),
+        (9604, 0, 0, 0,  96, 0, 255,       "", "BPERA", "Étude et réalisation d\'agencement"),
+        (9605, 0, 0, 0,  96, 0, 255,       "", "BPMCS", "Métiers du cuir option sellerie garnissage"),
+        (9606, 0, 0, 0,  96, 0, 255,       "", "BPMAP", "Métiers et arts de la pierre"),
+        (9607, 0, 0, 0,  96, 0, 255,       "", "BPAMV", "Artisanat et métiers d\'art - option verrerie scient. et techn."),
+        (9608, 0, 0, 0,  96, 0, 255,       "", "BPEEC", "Métiers de l\'électricité et de ses environnements connectés"),
+        (9609, 0, 0, 0,  96, 0, 255,       "", "BPSNA", "Systèmes numériques A - Sûreté et sécu. infra., hab. et tert."),
+        (9610, 0, 0, 0,  96, 0, 255,       "", "BPSNB", "Systèmes numériques B - Audiovisuels, réseau et équip. domest."),
+        (9611, 0, 0, 0,  96, 0, 255,       "", "BPSNC", "Systèmes numériques C - Réseaux inform. et syst. communicants"),
+        (9612, 0, 0, 0,  96, 0, 255,       "", "BPTAO", "Technicien en appareillage orthopédique") ';
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES '.$insert );
+      // Déplacement de l'EIST
+      $id_avant = 600;
+      $id_apres = 4802;
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_id = '.$id_apres.', matiere_usuelle = 1, matiere_famille_id = 48, matiere_code = "480200" WHERE matiere_id = '.$id_avant.' ' );
+      DB_STRUCTURE_MATIERE::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
+      SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
+      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_matiere)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

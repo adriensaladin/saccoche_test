@@ -129,39 +129,11 @@ if(empty($DB_TAB))
   echo'<p class="danger">Aucune classe n\'est associée à une page du livret concernée par ce dispositif !<br />Si besoin, '.$consigne.' par <a href="./index.php?page=livret&amp;section=classes">associer les classes au livret scolaire</a>.</p>'.NL;
   return; // Ne pas exécuter la suite de ce fichier inclus.
 }
+
 foreach($DB_TAB as $DB_ROW)
 {
   $select_page .= '<option value="'.$DB_ROW['livret_page_ref'].'">'.html($DB_ROW['livret_page_moment']).'</option>';
   Layout::add( 'js_inline_before' , 'tab_page_ordre["'.html($DB_ROW['livret_page_moment']).'"]="'.sprintf($page_ordre_format,$DB_ROW['livret_page_ordre']).'";' );
-}
-
-// Liste des personnels de l'établissement ; select_prof en complément du tab_prof[] sinon le parcours du tableau suit l'ordre des ids et perd donc l'ordre alphabétique
-$select_prof = '';
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_professeurs_etabl('all');
-if(empty($DB_TAB))
-{
-  echo'<p class="danger">Aucun professeur n\'est enregistré dans l\'établissement !<br />Commencez par importer les utilisateurs.</p>'.NL;
-  return; // Ne pas exécuter la suite de ce fichier inclus.
-}
-Layout::add( 'js_inline_before' , 'var tab_prof = new Array();' );
-foreach($DB_TAB as $DB_ROW)
-{
-  Layout::add( 'js_inline_before' , 'tab_prof['.$DB_ROW['valeur'].']="'.html($DB_ROW['texte']).'";' );
-  $select_prof .= '<option value="'.$DB_ROW['valeur'].'">'.html($DB_ROW['texte']).'</option>';
-}
-Layout::add( 'js_inline_before' , '// <![CDATA[' );
-Layout::add( 'js_inline_before' , 'var select_prof="'.str_replace('"','\"',$select_prof).'";' );
-Layout::add( 'js_inline_before' , '// ]]>' );
-
-// Formulaire f_prof_*
-$select_f_nombre = '';
-$p_prof = '';
-for( $nb=1 ; $nb<=15 ; $nb++)
-{
-  $select_f_nombre .= '<option value="'.$nb.'">'.$nb.'</option>';
-  $p_prof .= '<p id="join_'.$nb.'" class="hide">';
-  $p_prof .=   '<label class="tab" for="f_prof_'.$nb.'">Professeur '.$nb.' :</label><select id="f_prof_'.$nb.'" name="f_prof_'.$nb.'"><option></option></select>';
-  $p_prof .= '</p>'."\r\n";
 }
 ?>
 
@@ -186,13 +158,12 @@ for( $nb=1 ; $nb<=15 ; $nb++)
     {
       foreach($DB_TAB as $DB_ROW)
       {
-        $nb_prof = substr_count( $DB_ROW['prof_texte'] , '§BR§' ) + 1 ;
-        $parcours_used = $DB_ROW['parcours_used'] / ( 3 * $nb_prof );
+        $parcours_used = $DB_ROW['parcours_used'] / 3;
         // Afficher une ligne du tableau
         echo'<tr id="id_'.$DB_ROW['livret_parcours_id'].'" data-used="'.$parcours_used.'">';
         echo  '<td data-id="'.$DB_ROW['livret_page_ref'].'"><i>'.sprintf($page_ordre_format,$DB_ROW['livret_page_ordre']).'</i>'.html($DB_ROW['livret_page_moment']).'</td>';
         echo  '<td data-id="'.$DB_ROW['groupe_id'].'">'.html($DB_ROW['groupe_nom']).'</td>';
-        echo  '<td data-id="'.$DB_ROW['prof_id'].'">'.str_replace('§BR§','<br />',html($DB_ROW['prof_texte'])).'</td>';
+        echo  '<td data-id="'.$DB_ROW['prof_id'].'">'.html($DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom']).'</td>';
         echo  '<td class="nu">';
         echo    '<q class="modifier" title="Modifier ce parcours."></q>';
         echo    '<q class="dupliquer" title="Dupliquer ce parcours."></q>';
@@ -215,9 +186,8 @@ for( $nb=1 ; $nb<=15 ; $nb++)
     <p>
       <label class="tab" for="f_page">Moment :</label><select id="f_page" name="f_page"><?php echo $select_page ?></select><br />
       <label class="tab" for="f_groupe">Classe :</label><select id="f_groupe" name="f_groupe"><option></option></select><br />
-      <label class="tab" for="f_nombre">Nombre professeurs :</label><select id="f_nombre" name="f_nombre"><?php echo $select_f_nombre ?></select>
+      <label class="tab" for="f_prof">Professeur <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Enseignant en charge d'indiquer une appréciation sur le livret." /> :</label><select id="f_prof" name="f_prof"><option></option></select><button id="modifier_prof" type="button" class="form_ajouter">&plusmn;</button>
     </p>
-    <?php echo $p_prof ?>
     <p class="astuce">Le projet mis en &oelig;uvre est renseigné ultérieurement via le commentaire sur la classe.</p>
   </div>
   <div id="gestion_delete">

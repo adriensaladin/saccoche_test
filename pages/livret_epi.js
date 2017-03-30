@@ -62,7 +62,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page=_maj_select_livret',
-            data : 'f_select=profs_matiere'+'&f_page_ref='+page_ref+'&f_rubrique_join='+rubrique_join+'&f_groupe_id='+groupe_id+'&f_matiere_id='+matiere_id,
+            data : 'f_select=profs_matiere'+'&f_page_ref='+page_ref+'&f_rubrique_join='+rubrique_join+'&f_groupe_id='+groupe_id+'&f_matiere_id='+matiere_id+'&f_prof_id='+prof_id,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

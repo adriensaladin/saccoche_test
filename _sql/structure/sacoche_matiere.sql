@@ -191,9 +191,6 @@ INSERT INTO sacoche_matiere VALUES
 ( 234, 0, 0, 0,   2, 0, 255, "023400", "CUGEX", "Culture générale et expression"),
 ( 235, 0, 0, 0,   2, 0, 255, "023500", "FHGEC", "Français - histoire-géo. - éduc. civique"),
 ( 236, 0, 0, 0,   2, 0, 255, "023600", "LGLIT", "Langue et littérature"),
-( 237, 0, 0, 0,   2, 0, 255, "023700", "LCUCO", "Langue, culture et communication"),
-( 238, 0, 0, 0,   2, 0, 255, "023800", "FRLET", "Français langue étrangère"),
-( 239, 0, 0, 0,   2, 0, 255, "023900", "FRLSE", "Français langue seconde"),
 ( 299, 0, 0, 0,   2, 0, 255, "029900", "LETDI", "Lettres divers"),
 
 -- 3 Langues vivantes ; voir la famille 93 pour le rangement des autres langues...
@@ -368,6 +365,7 @@ INSERT INTO sacoche_matiere VALUES
 
 -- 6 Sciences
 
+( 600, 0, 0, 0,   6, 0, 255,       "", "EIST" , "Enseignement intégré de science et technologie"), -- Utilisée mais pas dans la BCN...
 ( 601, 0, 0, 0,   6, 0, 255, "060100", "PCAPP", "Physique et chimie appliquées"),
 ( 602, 0, 0, 0,   6, 0, 255, "060200", "TPPHC", "Travaux pratiques de physique-chimie"),
 ( 603, 0, 0, 0,   6, 0, 255, "060300", "CH-GE", "Chimie générale"),
@@ -512,7 +510,6 @@ INSERT INTO sacoche_matiere VALUES
 ( 740, 0, 0, 0,   7, 0, 255, "074000", "TPROF", "Technologies professionnelles"),
 ( 741, 0, 0, 0,   7, 0, 255, "074100", "ETP"  , "Enseignements techniques et professionnels"),
 ( 742, 0, 0, 0,   7, 0, 255, "074200", "TTPRO", "Technologie & techniques professionnelles"),
-( 743, 0, 0, 0,   7, 0, 255, "074300", "TECNO", "Technologies"),
 ( 799, 0, 0, 0,   7, 0, 255, "079900", "TECDI", "Technologie divers"),
 
 -- 8 Éducation musicale
@@ -1674,7 +1671,6 @@ INSERT INTO sacoche_matiere VALUES
 (3470, 0, 0, 0,  34, 0, 255, "347000", "DSACC", "Développement & suivi de l'activité commerciale"),
 (3471, 0, 0, 0,  34, 0, 255, "347100", "MAGRH", "Management gestion des ressources humaines"),
 (3472, 0, 0, 0,  34, 0, 255, "347200", "MERMA", "Mercatique (marketing)"),
-(3473, 0, 0, 0,  34, 0, 255, "347300", "VDECO", "Vente et développement commercial"),
 (3499, 0, 0, 0,  34, 0, 255, "349900", "E-GSD", "Économie et gestion divers"),
 
 -- 35 Bureautique et secrétariat
@@ -2035,7 +2031,6 @@ INSERT INTO sacoche_matiere VALUES
 (4164, 0, 0, 0,  41, 0, 255, "416400", "CTECO", "Communication technique et commerciale"),
 (4165, 0, 0, 0,  41, 0, 255, "416500", "OAEXC", "Outils analyse expression et communication"),
 (4166, 0, 0, 0,  41, 0, 255, "416600", "RHCOM", "Ressources humaines et communication"),
-(4167, 0, 0, 0,  41, 0, 255, "416700", "RCLSI", "Relation client sinistres"),
 (4199, 0, 0, 0,  41, 0, 255, "419900", "CMNDV", "Communication divers"),
 
 -- 42 Assurances
@@ -2051,8 +2046,6 @@ INSERT INTO sacoche_matiere VALUES
 (4209, 0, 0, 0,  42, 0, 255, "420900", "ATRSP", "Assurances transports"),
 (4210, 0, 0, 0,  42, 0, 255, "421000", "EOASS", "Économie et organisation de l'assurance"),
 (4211, 0, 0, 0,  42, 0, 255, "421100", "EJBCA", "Ens eco jur out bur tec comm comp adm"),
-(4212, 0, 0, 0,  42, 0, 255, "421200", "CUPRA", "Culture professionnelle appliquée"),
-(4213, 0, 0, 0,  42, 0, 255, "421300", "GESIN", "Gestion des sinistres"),
 (4299, 0, 0, 0,  42, 0, 255, "429900", "ASSUD", "Assurances divers"),
 
 -- 43 Gestion des entreprises
@@ -2155,12 +2148,10 @@ INSERT INTO sacoche_matiere VALUES
 (4701, 0, 0, 0,  47, 0, 255, "470100", "ACMET", "Accompagnement méthodologique"),
 (4702, 0, 0, 0,  47, 0, 255, "470200", "MODAS", "Module d'aides spécifiques"),
 (4703, 0, 0, 0,  47, 0, 255, "470300", "ENSHL", "Enseignement non suivi hors langue vivante"),
-(4704, 0, 0, 0,  47, 0, 255, "470400", "PAREX", "Parcours d'excellence"),
 
 -- 48 Sciences (suite)
 
 (4801, 0, 0, 0,  48, 0, 255, "480100", "TSYOP", "Technologie des systèmes optiques"),
-(4802, 0, 0, 1,  48, 0, 255, "480200", "EIST" , "Enseignement intégré de science et technologie"), -- Ouverture officielle au 01/09/2017
 
 -- 50 Langue technique
 
@@ -2334,9 +2325,9 @@ INSERT INTO sacoche_matiere VALUES
 (9339, 0, 0, 0,  93, 0, 255, "033900", "COE", "Coréen"),
 (9340, 0, 0, 0,  93, 0, 255, "034000", "HAO", "Haoussa"),
 (9341, 0, 0, 0,  93, 0, 255, "034100", "HIN", "Hindi"),
-(9342, 0, 0, 0,  93, 0, 255, "034200", "INM", "Indonésien-malais"),
+(9342, 0, 0, 0,  93, 0, 255, "034200", "INM", "Indonésien-malaysien"),
 (9343, 0, 0, 0,  93, 0, 255, "034300", "MAC", "Macédonien"),
-(9344, 0, 0, 0,  93, 0, 255, "034400", "PEU", "Peul"),
+(9344, 0, 0, 0,  93, 0, 255, "034400", "PEU", "Peuhl"),
 (9345, 0, 0, 0,  93, 0, 255, "034500", "SLQ", "Slovaque"),
 (9346, 0, 0, 0,  93, 0, 255, "034600", "SLN", "Slovène"),
 (9347, 0, 0, 0,  93, 0, 255, "034700", "SWA", "Swahili"),
@@ -2368,36 +2359,21 @@ INSERT INTO sacoche_matiere VALUES
 (9381, 0, 0, 0,  93, 0, 255, "038100", "LIT", "Lituanien"),
 (9382, 0, 0, 0,  93, 0, 255, "038200", "EST", "Estonien"),
 
--- 96 Spécialités de baccalauréat professionnel (suite) (http://eduscol.education.fr/cid47640/le-baccalaureat-professionnel.html#lien2)
-
-(9601, 0, 0, 0,  96, 0, 255,       "", "BPAAV", "Aéronautique - option avionique"), -- première session 2016
-(9602, 0, 0, 0,  96, 0, 255,       "", "BPAST", "Aéronautique - option structure"), -- première session 2016
-(9603, 0, 0, 0,  96, 0, 255,       "", "BPASY", "Aéronautique - option systèmes"),  -- première session 2016
-(9604, 0, 0, 0,  96, 0, 255,       "", "BPERA", "Étude et réalisation d'agencement"), -- ex "Agencement de l'espace architectural"
-(9605, 0, 0, 0,  96, 0, 255,       "", "BPMCS", "Métiers du cuir option sellerie garnissage"), -- première session 2018
-(9606, 0, 0, 0,  96, 0, 255,       "", "BPMAP", "Métiers et arts de la pierre"), -- première session 2018
-(9607, 0, 0, 0,  96, 0, 255,       "", "BPAMV", "Artisanat et métiers d'art - option verrerie scient. et techn."),
-(9608, 0, 0, 0,  96, 0, 255,       "", "BPEEC", "Métiers de l'électricité et de ses environnements connectés"), -- remplace 9725 -- premiere session 2019
-(9609, 0, 0, 0,  96, 0, 255,       "", "BPSNA", "Systèmes numériques A - Sûreté et sécu. infra., hab. et tert."), -- première session 2019
-(9610, 0, 0, 0,  96, 0, 255,       "", "BPSNB", "Systèmes numériques B - Audiovisuels, réseau et équip. domest."), -- première session 2019
-(9611, 0, 0, 0,  96, 0, 255,       "", "BPSNC", "Systèmes numériques C - Réseaux inform. et syst. communicants"), -- première session 2019
-(9612, 0, 0, 0,  96, 0, 255,       "", "BPTAO", "Technicien en appareillage orthopédique"),
-
 -- 97 Spécialités de baccalauréat professionnel (http://eduscol.education.fr/cid47640/le-baccalaureat-professionnel.html#lien2)
 
 (9701, 0, 0, 0,  97, 0, 255,       "", "BPASS", "Accompagnement soins et services à la personne"),
 (9702, 0, 0, 0,  97, 0, 255,       "", "BPARC", "Accueil - relation clients et usagers"),
 (9703, 0, 0, 0,  97, 0, 255,       "", "BPAOA", "Aéronautique - option mécanicien systèmes avionique"), -- à retirer
 (9704, 0, 0, 0,  97, 0, 255,       "", "BPAOC", "Aéronautique - option mécanicien système cellule"), -- à retirer
-(9705, 0, 0, 0,  97, 0, 255,       "", "BPA3O", "Aéronautique à trois options (avionique - syst. et structures)"), -- à retirer
-(9706, 0, 0, 0,  97, 0, 255,       "", "BPAEA", "Agencement de l'espace architectural"), -- à retirer
+(9705, 0, 0, 0,  97, 0, 255,       "", "BPA3O", "Aéronautique à trois options (avionique - syst. et structures)"),
+(9706, 0, 0, 0,  97, 0, 255,       "", "BPAEA", "Agencement de l'espace architectural"),
 (9707, 0, 0, 0,  97, 0, 255,       "", "BPAFB", "Aménagement et finition du bâtiment"),
 (9708, 0, 0, 0,  97, 0, 255,       "", "BPAMP", "Artisanat et métiers d'art - option arts de la pierre"), -- dernière session 2017
 (9709, 0, 0, 0,  97, 0, 255,       "", "BPAMC", "Artisanat et métiers d'art - option comm. visuelle pluri média"),
 (9710, 0, 0, 0,  97, 0, 255,       "", "BPAME", "Artisanat et métiers d'art - option ébéniste"), -- dernière session 2016
 (9711, 0, 0, 0,  97, 0, 255,       "", "BPAMM", "Artisanat et métiers d'art - option marchandisage visuel"),
 (9712, 0, 0, 0,  97, 0, 255,       "", "BPAMT", "Artisanat et métiers d'art - option tapissier d'ameublement"),
-(9713, 0, 0, 0,  97, 0, 255,       "", "BPAMS", "Artisanat et métiers d'art - option mét. enseigne signalétique"),
+(9713, 0, 0, 0,  97, 0, 255,       "", "BPAMV", "Artisanat et métiers d'art - verrerie + enseigne / signalétique"),
 (9714, 0, 0, 0,  97, 0, 255,       "", "BPAG" , "Aviation générale"),
 (9715, 0, 0, 0,  97, 0, 255,       "", "BPBIT", "Bio-industries de transformation"),
 (9716, 0, 0, 0,  97, 0, 255,       "", "BPBP" , "Boulanger - pâtissier"),
@@ -2409,23 +2385,23 @@ INSERT INTO sacoche_matiere VALUES
 (9722, 0, 0, 0,  97, 0, 255,       "", "BPCR" , "Construction des carrosseries"),
 (9723, 0, 0, 0,  97, 0, 255,       "", "BPCUI", "Cuisine"),
 (9724, 0, 0, 0,  97, 0, 255,       "", "BPCM" , "Cultures marines"),
-(9725, 0, 0, 0,  97, 0, 255,       "", "BPEEE", "Électrotechnique, énergie, équipement communicants"), -- dernière session 2018
+(9725, 0, 0, 0,  97, 0, 255,       "", "BPEEE", "Électrotechnique, énergie, équipement communicants"),
 (9726, 0, 0, 0,  97, 0, 255,       "", "BPEN" , "Environnement nucléaire"), -- dernière session 2016
 (9727, 0, 0, 0,  97, 0, 255,       "", "BPECP", "Esthétique cosmétique parfumerie"),
 (9728, 0, 0, 0,  97, 0, 255,       "", "BPEPI", "Étude et définition de produits industriels"),
 (9729, 0, 0, 0,  97, 0, 255,       "", "BPFPI", "Façonnage de produits imprimés, routage"),
 (9730, 0, 0, 0,  97, 0, 255,       "", "BPFON", "Fonderie"),
 (9731, 0, 0, 0,  97, 0, 255,       "", "BPGA" , "Gestion administration"),
-(9732, 0, 0, 0,  97, 0, 255,       "", "BPGP" , "Gestion des pollutions et protection de l'environnement"), -- première session 2016
+(9732, 0, 0, 0,  97, 0, 255,       "", "BPGP" , "Gestion des pollutions et protection de l'environnement"),
 (9733, 0, 0, 0,  97, 0, 255,       "", "BPHE" , "Hygiène et environnement"),
-(9734, 0, 0, 0,  97, 0, 255,       "", "BPHPS", "Hygiène, propreté et stérilisation"), -- première session 2016
+(9734, 0, 0, 0,  97, 0, 255,       "", "BPHPS", "Hygiène, propreté et stérilisation"),
 (9735, 0, 0, 0,  97, 0, 255,       "", "BPIP" , "Industrie de procédés"), -- à retirer
 (9736, 0, 0, 0,  97, 0, 255,       "", "BPIPC", "Industries des pates, papiers et cartons"), -- à retirer
-(9737, 0, 0, 0,  97, 0, 255,       "", "BPIPB", "Interventions sur le patrimoine bâti"), -- première session 2016
+(9737, 0, 0, 0,  97, 0, 255,       "", "BPIPB", "Interventions sur le patrimoine bâti"),
 (9738, 0, 0, 0,  97, 0, 255,       "", "BPLOG", "Logistique"),
 (9739, 0, 0, 0,  97, 0, 255,       "", "BPMV" , "Maintenance de véhicules automobiles"), -- dernière session 2016
 (9740, 0, 0, 0,  97, 0, 255,       "", "BPMEI", "Maintenance des équipements industriels"),
-(9741, 0, 0, 0,  97, 0, 255,       "", "BPMM" , "Maintenance des matériels"), -- dernières sessions 2018-2019 / premières sessions 2018-2019
+(9741, 0, 0, 0,  97, 0, 255,       "", "BPMM" , "Maintenance des matériels"), -- dernières sessions 2018-2019
 (9742, 0, 0, 0,  97, 0, 255,       "", "BPMN" , "Maintenance nautique"),
 (9743, 0, 0, 0,  97, 0, 255,       "", "BPMMV", "Métiers de la mode - vêtements"),
 (9744, 0, 0, 0,  97, 0, 255,       "", "BPMCC", "Métiers du cuir option chaussures"),
@@ -2452,14 +2428,14 @@ INSERT INTO sacoche_matiere VALUES
 (9765, 0, 0, 0,  97, 0, 255,       "", "BPSEC", "Secrétariat"), -- à retirer
 (9766, 0, 0, 0,  97, 0, 255,       "", "BPSP" , "Sécurité prévention"), -- dernière session 2016
 (9767, 0, 0, 0,  97, 0, 255,       "", "BPSPL", "Services de proximité et vie locale"),
-(9768, 0, 0, 0,  97, 0, 255,       "", "BPSEN", "Systèmes électroniques numériques"), -- dernière session 2018
+(9768, 0, 0, 0,  97, 0, 255,       "", "BPSEN", "Systèmes électroniques numériques"),
 (9769, 0, 0, 0,  97, 0, 255,       "", "BPTA" , "Technicien aérostructure"), -- à retirer
 (9770, 0, 0, 0,  97, 0, 255,       "", "BPTCB", "Technicien constructeur bois"),
 (9771, 0, 0, 0,  97, 0, 255,       "", "BPTFB", "Technicien de fabrication bois et matériaux associes"),
 (9772, 0, 0, 0,  97, 0, 255,       "", "BPTEC", "Technicien de maintenance de syst. énergétiques et climatiques"),
 (9773, 0, 0, 0,  97, 0, 255,       "", "BPTSC", "Technicien de scierie"),
 (9774, 0, 0, 0,  97, 0, 255,       "", "BPTB" , "Technicien du bâtiment : organisation réalisation du gros œuvre"),
-(9775, 0, 0, 0,  97, 0, 255,       "", "BPTFC", "Technicien du froid et du conditionnement de l'air"),
+(9775, 0, 0, 0,  97, 0, 255,       "", "BPTFC", "Technique du froid et du conditionnement de l'air"),
 (9776, 0, 0, 0,  97, 0, 255,       "", "BPTEB", "Technicien d'études du bâtiment"),
 (9777, 0, 0, 0,  97, 0, 255,       "", "BPTU" , "Technicien d'usinage"),
 (9778, 0, 0, 0,  97, 0, 255,       "", "BPTCI", "Technicien en chaudronnerie industrielle"),
@@ -2468,21 +2444,22 @@ INSERT INTO sacoche_matiere VALUES
 (9781, 0, 0, 0,  97, 0, 255,       "", "BPTMA", "Technicien menuisier agenceur"),
 (9782, 0, 0, 0,  97, 0, 255,       "", "BPTM" , "Technicien modeleur"),
 (9783, 0, 0, 0,  97, 0, 255,       "", "BPTO" , "Technicien outilleur"),
-(9784, 0, 0, 0,  97, 0, 255,       "", "BPTDM", "Traitements des matériaux"), -- ex "Traitements de surfaces"
+(9784, 0, 0, 0,  97, 0, 255,       "", "BPTSU", "Traitements de surfaces"),
 (9785, 0, 0, 0,  97, 0, 255,       "", "BPTRA", "Transport"),
 (9786, 0, 0, 0,  97, 0, 255,       "", "BPTF" , "Transport fluvial"),
 (9787, 0, 0, 0,  97, 0, 255,       "", "BPTP" , "Travaux publics"),
 (9788, 0, 0, 0,  97, 0, 255,       "", "BPV"  , "Vente (prospection-négociation-suivi de clientèle)"),
 (9789, 0, 0, 0,  97, 0, 255,       "", "BPAOO", "Artisanat et métiers d'art - facteur d'orgues option organier"),
 (9790, 0, 0, 0,  97, 0, 255,       "", "BPAOT", "Artisanat et métiers d'art - facteur d'orgues option tuyautier"),
-(9791, 0, 0, 0,  97, 0, 255,       "", "BPMVA", "Maintenance de véhicules - option A voitures particulières"),    -- première session 2017
-(9792, 0, 0, 0,  97, 0, 255,       "", "BPMVB", "Maintenance de véhicules - option B véh. de transport routier"), -- première session 2017
-(9793, 0, 0, 0,  97, 0, 255,       "", "BPMVC", "Maintenance de véhicules - option C motocycles"),                -- première session 2017
+(9791, 0, 0, 0,  97, 0, 255,       "", "BPMVA", "Maintenance de véhicules - option A voitures particulières"),
+(9792, 0, 0, 0,  97, 0, 255,       "", "BPMVB", "Maintenance de véhicules - option B véh. de transport routier"),
+(9793, 0, 0, 0,  97, 0, 255,       "", "BPMVC", "Maintenance de véhicules - option C motocycles"),
 (9794, 0, 0, 0,  97, 0, 255,       "", "BPMAV", "Menuiserie aluminium verre"),
-(9795, 0, 0, 0,  97, 0, 255,       "", "BPMS" , "Métiers de la sécurité"), -- remplace 9766 -- première session 2017
-(9796, 0, 0, 0,  97, 0, 255,       "", "BPRPG", "Réal. de prod. imprimés et plurimédia option A prod. graphiques"), -- remplace 9760 -- première session 2017
-(9797, 0, 0, 0,  97, 0, 255,       "", "BPRPI", "Réal. de prod. imprimés et plurimédia option B prod. imprimées"),  -- remplace 9761 -- première session 2017
-(9798, 0, 0, 0,  97, 0, 255,       "", "BPTIN", "Techniques d'interventions sur installations nucléaires"), -- remplace 9726 -- première session 2017
+(9795, 0, 0, 0,  97, 0, 255,       "", "BPMS" , "Métiers de la sécurité"), -- remplace 9766
+(9796, 0, 0, 0,  97, 0, 255,       "", "BPRPG", "Réal. de prod. imprimés et plurimédia option A prod. graphiques"), -- remplace 9760
+(9797, 0, 0, 0,  97, 0, 255,       "", "BPRPI", "Réal. de prod. imprimés et plurimédia option B prod. imprimées"), -- remplace 9761
+(9798, 0, 0, 0,  97, 0, 255,       "", "BPTIN", "Techniques d'interventions sur installations nucléaires"), -- remplace 9726
+
 
 -- 98 Champs professionnels en SEGPA (http://www.education.gouv.fr/cid24467/mene0900316c.html)
 

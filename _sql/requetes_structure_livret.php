@@ -601,25 +601,6 @@ public static function DB_recuperer_profs_jointure_rubrique( $rubrique_type , $r
 }
 
 /**
- * recuperer_profs_classe
- *
- * @param int      $classe_id
- * @return array
- */
-public static function DB_recuperer_profs_classe( $classe_id )
-{
-  $DB_SQL = 'SELECT user_id ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_groupe USING (user_id) ';
-  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND user_sortie_date>NOW() ';
-  $DB_SQL.= 'ORDER BY user_nom, user_prenom ';
-  $DB_VAR = array(
-    ':groupe_id'  => $classe_id,
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR, TRUE);
-}
-
-/**
  * recuperer_profs_jointure_rubriques
  *
  * @param string   $rubrique_type
@@ -1619,19 +1600,17 @@ public static function DB_lister_parcours( $parcours_code , $classe_id_or_listin
   }
   $saisie_count = ($page_ref) ? '' : 'COUNT(livret_saisie_id) AS parcours_used, ' ;
   $saisie_join  = ($page_ref) ? '' : 'LEFT JOIN sacoche_livret_saisie ON sacoche_livret_parcours.livret_parcours_id=sacoche_livret_saisie.rubrique_id AND rubrique_type="parcours" ' ;
-  $DB_SQL = 'SELECT sacoche_livret_parcours.*, livret_parcours_type_nom, livret_page_ordre, livret_page_moment, groupe_nom, '.$saisie_count;
-  $DB_SQL.= 'GROUP_CONCAT( DISTINCT user_id SEPARATOR " ") AS prof_id, ';
-  $DB_SQL.= 'GROUP_CONCAT( DISTINCT CONCAT(user_nom," ",user_prenom) SEPARATOR "§BR§") AS prof_texte ';
+  $DB_SQL = 'SELECT sacoche_livret_parcours.*, livret_parcours_type_nom, livret_page_ordre, livret_page_moment, '.$saisie_count;
+  $DB_SQL.= 'groupe_nom, user_nom AS prof_nom, user_prenom AS prof_prenom ';
   $DB_SQL.= 'FROM sacoche_livret_parcours ';
   $DB_SQL.= 'INNER JOIN sacoche_livret_parcours_type USING(livret_parcours_type_code) ';
   $DB_SQL.= 'INNER JOIN sacoche_livret_jointure_groupe USING(livret_page_ref, groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_parcours_prof USING(livret_parcours_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING(livret_page_ref) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_parcours_prof.prof_id = sacoche_user.user_id ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_parcours.prof_id = sacoche_user.user_id ';
   $DB_SQL.= $saisie_join;
   $DB_SQL.= 'WHERE livret_parcours_type_code=:parcours_code '.$where;
-  $DB_SQL.= 'GROUP BY livret_page_ref, groupe_id ';
+  $DB_SQL.= 'GROUP BY livret_page_ref, groupe_id, prof_id ';
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC, groupe_nom ASC ';
   $DB_VAR = array(
     ':parcours_code' => $parcours_code ,
@@ -1690,37 +1669,21 @@ public static function DB_tester_parcours( $parcours_code , $page_ref , $groupe_
  * @param string $parcours_code
  * @param string $page_ref
  * @param int    $groupe_id
+ * @param int    $prof_id
  * @return int
  */
-public static function DB_ajouter_parcours( $parcours_code , $page_ref , $groupe_id )
+public static function DB_ajouter_parcours( $parcours_code , $page_ref , $groupe_id , $prof_id )
 {
-  $DB_SQL = 'INSERT INTO sacoche_livret_parcours( livret_parcours_type_code, livret_page_ref, groupe_id) ';
-  $DB_SQL.= 'VALUES                             (            :parcours_code,       :page_ref,:groupe_id)';
+  $DB_SQL = 'INSERT INTO sacoche_livret_parcours( livret_parcours_type_code, livret_page_ref, groupe_id, prof_id) ';
+  $DB_SQL.= 'VALUES                             (            :parcours_code,       :page_ref,:groupe_id,:prof_id)';
   $DB_VAR = array(
     ':parcours_code' => $parcours_code,
     ':page_ref'      => $page_ref,
     ':groupe_id'     => $groupe_id,
+    ':prof_id'       => $prof_id,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);
-}
-
-/**
- * ajouter_parcours_jointure
- *
- * @param int    $parcours_id
- * @param int    $prof_id
- * @return void
- */
-public static function DB_ajouter_parcours_jointure( $parcours_id , $prof_id )
-{
-  $DB_SQL = 'INSERT INTO sacoche_livret_jointure_parcours_prof(livret_parcours_id, prof_id) ';
-  $DB_SQL.= 'VALUES                                           (      :parcours_id,:prof_id)';
-  $DB_VAR = array(
-    ':parcours_id' => $parcours_id,
-    ':prof_id'     => $prof_id,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -1730,18 +1693,20 @@ public static function DB_ajouter_parcours_jointure( $parcours_id , $prof_id )
  * @param string $parcours_code
  * @param string $page_ref
  * @param int    $groupe_id
+ * @param int    $prof_id
  * @return void
  */
-public static function DB_modifier_parcours( $parcours_id , $parcours_code , $page_ref , $groupe_id )
+public static function DB_modifier_parcours( $parcours_id , $parcours_code , $page_ref , $groupe_id , $prof_id )
 {
   $DB_SQL = 'UPDATE sacoche_livret_parcours ';
-  $DB_SQL.= 'SET livret_parcours_type_code=:parcours_code, livret_page_ref=:page_ref, groupe_id=:groupe_id ';
+  $DB_SQL.= 'SET livret_parcours_type_code=:parcours_code, livret_page_ref=:page_ref, groupe_id=:groupe_id, prof_id=:prof_id ';
   $DB_SQL.= 'WHERE livret_parcours_id=:parcours_id ';
   $DB_VAR = array(
     ':parcours_id'   => $parcours_id,
     ':parcours_code' => $parcours_code,
     ':page_ref'      => $page_ref,
     ':groupe_id'     => $groupe_id,
+    ':prof_id'       => $prof_id,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -1755,28 +1720,12 @@ public static function DB_modifier_parcours( $parcours_id , $parcours_code , $pa
 public static function DB_supprimer_parcours( $parcours_id )
 {
   // le dispositif
-  $DB_SQL = 'DELETE sacoche_livret_parcours, sacoche_livret_jointure_parcours_prof ';
-  $DB_SQL.= 'FROM sacoche_livret_parcours ';
-  $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_parcours_prof USING (livret_parcours_id) ';
+  $DB_SQL = 'DELETE FROM sacoche_livret_parcours ';
   $DB_SQL.= 'WHERE livret_parcours_id=:parcours_id ';
   $DB_VAR = array( ':parcours_id' => $parcours_id );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   // les saisies
   DB_STRUCTURE_LIVRET::DB_supprimer_saisies_dispositif( 'parcours' , $parcours_id );
-}
-
-/**
- * supprimer_parcours_jointure
- *
- * @param int    $parcours_id
- * @return void
- */
-public static function DB_supprimer_parcours_jointure( $parcours_id )
-{
-  $DB_SQL = 'DELETE FROM sacoche_livret_jointure_parcours_prof ';
-  $DB_SQL.= 'WHERE livret_parcours_id=:parcours_id ';
-  $DB_VAR = array( ':parcours_id' => $parcours_id );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2050,9 +1999,8 @@ public static function DB_vider_livret()
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_epi'      , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_export'   , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_parcours' , NULL);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_ap_prof'       , NULL);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_epi_prof'      , NULL);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_parcours_prof' , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_ap_prof'  , NULL);
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_epi_prof' , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_enscompl_eleve'  , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_jointure_modaccomp_eleve' , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie' , NULL);

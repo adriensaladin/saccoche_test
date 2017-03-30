@@ -214,15 +214,9 @@ if($PAGE_PARCOURS)
         'type_nom'  => $DB_ROW['livret_parcours_type_nom'] ,
         'projet'    => $projet ,
         'prof_id'   => $DB_ROW['prof_id'] ,
-        'prof_txt'  => array() ,
+        'prof_txt'  => $DB_ROW['prof_nom'].' '.$DB_ROW['prof_prenom'] ,
       );
-      $tab_id  = explode(' ',$DB_ROW['prof_id']);
-      foreach($tab_id as $key => $user_id)
-      {
-        $prof_nom = isset($tab_profs[$user_id]) ? $tab_profs[$user_id] : $tab_profs_autres[$user_id] ;
-        $tab_join_rubrique_profs['parcours'][$DB_ROW['livret_parcours_id']][$user_id] = $user_id;
-        $tab_rubriques['parcours'][$DB_ROW['livret_parcours_id']]['prof_txt'][] = $prof_nom;
-      }
+      $tab_join_rubrique_profs['parcours'][$DB_ROW['livret_parcours_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
     }
   }
 }
@@ -932,7 +926,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 {
                   $temp_HTML .= '<div class="b notnow">'.html($tab_parcours['projet']).'</div>';
                 }
-                $temp_HTML .= '<div class="notnow">'.html(implode(' ; ',$tab_parcours['prof_txt'])).'</div>';
+                $temp_HTML .= '<div class="notnow">'.html($tab_parcours['prof_txt']).'</div>';
                 if( ($BILAN_TYPE_ETABL=='college') || !$eleve_id )
                 {
                   if($parcours_saisie['saisie_valeur'])

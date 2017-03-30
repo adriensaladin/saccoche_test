@@ -398,26 +398,16 @@ public static function DB_deplacer_referentiel_matiere($matiere_id_avant,$matier
   }
   // Déplacer les référentiels d'une matière vers une autre
   $tab_tables = array(
-    'sacoche_referentiel'              => 'matiere_id',
-    'sacoche_referentiel_domaine'      => 'matiere_id',
-    'sacoche_demande'                  => 'matiere_id',
-    'sacoche_livret_jointure_ap_prof'  => 'matiere_id',
-    'sacoche_livret_jointure_epi_prof' => 'matiere_id',
-    'sacoche_officiel_saisie'          => 'rubrique_id',
-    'sacoche_livret_saisie'            => 'rubrique_id',
+    'sacoche_referentiel'           => 'matiere_id',
+    'sacoche_referentiel_domaine'   => 'matiere_id',
+    'sacoche_demande'               => 'matiere_id',
+    'sacoche_officiel_saisie'       => 'rubrique_id',
+    'sacoche_livret_saisie'         => 'rubrique_id',
   );
   foreach($tab_tables as $table_nom => $table_champ)
   {
     $where_add = ($table_nom=='sacoche_livret_saisie') ? ' AND rubrique_type="eval"' : '' ;
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE '.$table_nom.' SET '.$table_champ.'='.$matiere_id_apres.' WHERE '.$table_champ.'='.$matiere_id_avant.$where_add );
-  }
-  $tab_champs = array(
-    'livret_rubrique_ou_matiere_id',
-    'element_id',
-  );
-  foreach($tab_champs as $champ)
-  {
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_jointure_referentiel LEFT JOIN sacoche_livret_page ON sacoche_livret_jointure_referentiel.livret_rubrique_type = sacoche_livret_page.livret_page_rubrique_type SET '.$champ.' = '.$matiere_id_apres.' WHERE '.$champ.' = '.$matiere_id_avant.' AND livret_page_rubrique_join="matiere" ' );
   }
   // Pour "sacoche_jointure_user_matiere" c'est un peu particulier : il ne faut pas déclencher d'erreur si le user est déjà rattaché à la nouvelle matière.
   // UPDATE ... ON DUPLICATE KEY DELETE ...  n'existe pas, il faut s'y prendre en deux fois avec UPDATE IGNORE ... puis DELETE ...

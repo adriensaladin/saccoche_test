@@ -266,7 +266,7 @@ if( ($action=='import_pronote') && $periode_id )
         else
         {
           $tab_users_fichier[$id][7] += 1;
-          $tab_users_fichier[$id][8] += $nb_retard_nj;
+          $tab_users_fichier[$id][8] += 1;
         }
         $memo_date_debut = min( $memo_date_debut , $date );
         $memo_date_fin   = max( $memo_date_fin   , $date );

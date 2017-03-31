@@ -384,9 +384,13 @@ class Outil
    */
   public static function make_lien( $texte , $contexte )
   {
-    $masque_recherche = '#\['.'([^\|]+)'.'\|'.'([^\|]+)'.'\|?'.'([^\|]*)'.'\]#' ;
+    $masque_recherche = '#\['.'([^\|\]]+)'.'\|'.'([^\|\]]+)'.'\|'.'([^\|\]]+)'.'\]#' ;
     $masque_remplacement = ($contexte=='html') ? '<a href="$2" target="$3">$1</a>' : '$1 [$2]' ;
-    return str_replace( 'target=""' , '' , preg_replace( $masque_recherche , $masque_remplacement , $texte ) );
+    $texte = preg_replace( $masque_recherche , $masque_remplacement , $texte );
+    $masque_recherche = '#\['.'([^\|\]]+)'.'\|'.'([^\|\]]+)'.'\]#' ;
+    $masque_remplacement = ($contexte=='html') ? '<a href="$2">$1</a>' : '$1 [$2]' ;
+    $texte = preg_replace( $masque_recherche , $masque_remplacement , $texte );
+    return $texte;
   }
 
   /**

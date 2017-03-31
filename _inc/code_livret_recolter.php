@@ -628,7 +628,6 @@ foreach($DB_TAB as $DB_ROW)
   );
 }
 
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // EPI
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -680,12 +679,11 @@ if($PAGE_EPI)
     {
       foreach($tab_eleve as $eleve_id => $tab)
       {
-        $tab_eleve[$eleve_id]['commun']['epi'][$key_rubrique] = $tab_epi[$key_rubrique];
-        $tab_eleve[$eleve_id]['epi'][$key_rubrique] = array(); // Pour le relier à l'élève même en cas d'absence de commentaire sur l'implication de l'élève
         foreach($tab_id as $ids)
         {
           list($matiere_id,$user_id) = explode('_',$ids);
           $modelec = $tab_rubrique['MAT'.$matiere_id]['modalite-election'];
+          $tab_eleve[$eleve_id]['commun']['epi'][$key_rubrique] = $tab_epi[$key_rubrique];
           $tab_eleve[$eleve_id]['commun']['enseignant']['ENS'.$user_id] = $tab_prof['ENS'.$user_id];
           $tab_eleve[$eleve_id]['commun']['discipline']['MAT'.$matiere_id.$modelec] = $tab_rubrique['MAT'.$matiere_id];
           $tab_objet_used['ENS'.$user_id] = TRUE;
@@ -744,12 +742,11 @@ if($PAGE_AP)
     {
       foreach($tab_eleve as $eleve_id => $tab)
       {
-        $tab_eleve[$eleve_id]['commun']['ap'][$key_rubrique] = $tab_ap[$key_rubrique];
-        $tab_eleve[$eleve_id]['ap'][$key_rubrique] = array(); // Pour le relier à l'élève même en cas d'absence de commentaire sur l'implication de l'élève
         foreach($tab_id as $ids)
         {
           list($matiere_id,$user_id) = explode('_',$ids);
           $modelec = $tab_rubrique['MAT'.$matiere_id]['modalite-election'];
+          $tab_eleve[$eleve_id]['commun']['ap'][$key_rubrique] = $tab_ap[$key_rubrique];
           $tab_eleve[$eleve_id]['commun']['enseignant']['ENS'.$user_id] = $tab_prof['ENS'.$user_id];
           $tab_eleve[$eleve_id]['commun']['discipline']['MAT'.$matiere_id.$modelec] = $tab_rubrique['MAT'.$matiere_id];
           $tab_objet_used['ENS'.$user_id] = TRUE;
@@ -1066,7 +1063,7 @@ foreach($tab_eleve as $eleve_id => $tab)
           }
           elseif( mb_strlen($tab_rubrique_info['appreciation']) > 600 )
           {
-            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Appréciation trop longue pour "'.$tab_rubrique[$key_rubrique]['libelle'].'" (regroupements multiples du bulletin ?) : tronquée à 600 caractères.';
+            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Appréciation trop longue pour "'.$tab_rubrique[$key_rubrique]['libelle'].'" (regroupement multiples du bulletin ?) : tronquée à 600 caractères.';
             $tab_eleve[$eleve_id]['acquis'][$discipline_ref]['appreciation'] = mb_substr($tab_rubrique_info['appreciation'],0,600);
           }
           // appréciation obligatoire sauf si élève non noté => "-" ajouté si besoin au moment de la conception du XML

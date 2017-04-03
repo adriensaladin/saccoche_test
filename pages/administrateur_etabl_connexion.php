@@ -37,14 +37,11 @@ if(IS_HEBERGEMENT_SESAMATH)
     echo'<p class="danger">Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !</p>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }  
-  // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention & $tab_moratoire_conventions_etablissements
-  require(CHEMIN_FICHIER_WS_SESAMATH_ENT);
-  $info_moratoire = '<p class="astuce">Ces conventions sont gratuites pour les années scolaires '.implode(' &amp; ',array_keys($tab_moratoire_conventions_etablissements)).' (moratoire décidé par le C.A. de l\'association).</p>';
+  require(CHEMIN_FICHIER_WS_SESAMATH_ENT); // Charge les tableaux   $tab_connecteurs_hebergement & $tab_connecteurs_convention
 }
 else
 {
   $tab_connecteurs_hebergement = $tab_connecteurs_convention = array();
-  $info_moratoire = '';
 }
 
 // Javascript
@@ -207,7 +204,6 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
     La signature d'un contrat et son règlement est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.<br />
     Veuillez consulter <a href="<?php echo SERVEUR_GUIDE_ENT ?>#toggle_partenariats" target="_blank">la documentation</a> pour davantage d'explications.
   </p>
-  <?php echo $info_moratoire ?>
   <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification#toggle_gestion_convention">DOC : Gestion d'une convention ENT-SACoche par un établissement</a></span></p>
   <table id="table_action" class="form hsort">
     <thead>
@@ -247,15 +243,6 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
           $class_signature  = (substr($texte_signature ,0,3)=='Non') ? 'br' : 'bv' ;
           $class_paiement   = (substr($texte_paiement  ,0,3)=='Non') ? 'br' : 'bv' ;
           $class_activation = (substr($texte_activation,0,3)=='Non') ? 'br' : 'bv' ;
-          // Test moratoire
-          foreach($tab_moratoire_conventions_etablissements as $annee_scolaire => $tab_dates)
-          {
-            if( ($DB_ROW['convention_date_debut']>$tab_dates['debut']) && ($DB_ROW['convention_date_fin']<$tab_dates['fin']) )
-            {
-              $texte_paiement = 'Sans objet';
-              $class_paiement = 'bj';
-            }
-          }
           // Afficher une ligne du tableau
           echo'<tr id="id_'.$DB_ROW['convention_id'].'">';
           echo  '<td>'.html($DB_ROW['connexion_nom']).'</td>';

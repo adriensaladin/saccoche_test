@@ -31,3 +31,10 @@ Dans fpdi_bridge.php, "class fpdi_bridge extends FPDF" remplacé par "class fpdi
 - It's problem in PDFmerger on line 118, where FPDI returns empty string (which is ok), but Merger interprets it as false. I suggest fix that part or use another way:
   $fileString = $merger->merge('string',$filename);
   file_put_contents($filename, $fileString);
+
+<<< Usage >>>
+
+FPDI était utilisé pour les fiches brevet et les conventions ENT-établissement (ouvrir un PDF existant pour y ajouter des informations).
+Désormais, les fiches brevet n'existent plus et les conventions sont générées entièrement en PHP.
+Donc FPDI n'est plus utilisé par SACoche que pour son extension PDFMerger.
+01/04/2017

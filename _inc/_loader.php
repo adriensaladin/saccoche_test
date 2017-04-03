@@ -173,7 +173,7 @@ define('CHEMIN_FICHIER_WS_ENTLIBRE_PICARDIE' , CHEMIN_DOSSIER_WEBSERVICES.'EntLi
 define('CHEMIN_FICHIER_WS_ENTLIBRE_TEST'     , CHEMIN_DOSSIER_WEBSERVICES.'EntLibre_RecupId_ServeurTest.php');
 define('CHEMIN_FICHIER_WS_LACLASSE'          , CHEMIN_DOSSIER_WEBSERVICES.'Laclasse-recup_id_ent.php');
 define('CHEMIN_FICHIER_WS_LCS'               , CHEMIN_DOSSIER_WEBSERVICES.'import_lcs.php');
-define('CHEMIN_FICHIER_WS_SESAMATH_ENT'      , CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_hebergements_conventions.php');
+define('CHEMIN_FICHIER_WS_SESAMATH_ENT'      , CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions.php');
 
 // ============================================================================
 // Constantes de DEBUG
@@ -540,7 +540,7 @@ define('SACOCHE_CONTACT_COURRIEL','contact-sacoche@sesamath.net');
 define('CONVENTION_ENT_REQUISE'         ,TRUE);
 define('CONVENTION_ENT_START_DATE_FR'   ,'01/09/2013');
 define('CONVENTION_ENT_START_DATE_MYSQL','2013-09-01');
-define('CONVENTION_ENT_ID_ETABL_MAXI'   ,100000); // Les établissements d'id >= sont des établissements de test.
+define('CONVENTION_ENT_ID_ETABL_MAXI'   ,1000000); // Les établissements d'id >= sont des établissements de test (connecteurs ENT...).
 
 // Identifiants particuliers (à NE PAS modifier)
 define('ID_DEMO'                   ,   9999); // id de l'établissement de démonstration (pour $_SESSION['SESAMATH_ID']) ; 0 pose des pbs, et il fallait prendre un id disponible dans la base d'établissements de Sésamath

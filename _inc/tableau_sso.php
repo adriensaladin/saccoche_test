@@ -154,7 +154,7 @@ $tab_connexion_mode = array(
 
 /**
  * Tableau avec les informations relatives à chaque connecteur
- * Attention : penser aussi à vérifier que cela n'impacte pas ./sacoche/webservices/sesamath_ent_conventions.php (ENT des installations académiques).
+ * Attention : penser aussi à vérifier que cela n'impacte pas ./sacoche/webservices/sesamath_ent_hebergements_conventions.php (ENT des installations académiques).
  */
 $tab_connexion_info = array();
 $tab_connexion_info['normal']['|sacoche']                      = array( 'txt'=>"Connexion avec les identifiants enregistrés dans SACoche" );

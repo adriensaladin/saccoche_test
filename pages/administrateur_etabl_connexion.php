@@ -248,7 +248,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
           $class_paiement   = (substr($texte_paiement  ,0,3)=='Non') ? 'br' : 'bv' ;
           $class_activation = (substr($texte_activation,0,3)=='Non') ? 'br' : 'bv' ;
           // Test moratoire
-          ifis_moratoire($DB_ROW['convention_date_debut'])
+          if(is_moratoire($DB_ROW['convention_date_debut']))
           {
             $texte_paiement = 'Sans objet';
             $class_paiement = 'bj';

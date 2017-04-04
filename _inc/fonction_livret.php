@@ -72,8 +72,8 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         $tab_rubrique_a_eviter[$DB_ROW['user_id']] += $tab_id_lv1;
         unset($tab_rubrique_a_eviter[$DB_ROW['user_id']][$matiere_id_lv1]);
       }
-      $matiere_id_lv2 = ($DB_ROW['eleve_lv1']!=100) ? $tab_langues[$DB_ROW['eleve_lv2']]['tab_matiere_id'][3] : 0 ;
-      if(isset($tab_id_lv2[$matiere_id_lv2]))
+      $matiere_id_lv2 = ($DB_ROW['eleve_lv2']!=100) ? $tab_langues[$DB_ROW['eleve_lv2']]['tab_matiere_id'][3] : 0 ;
+      if( isset($tab_id_lv2[$matiere_id_lv2]) || ( $matiere_id_lv1 && !$matiere_id_lv2 ) )
       {
         $tab_rubrique_a_eviter[$DB_ROW['user_id']] += $tab_id_lv2;
         unset($tab_rubrique_a_eviter[$DB_ROW['user_id']][$matiere_id_lv2]);

@@ -248,13 +248,10 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
           $class_paiement   = (substr($texte_paiement  ,0,3)=='Non') ? 'br' : 'bv' ;
           $class_activation = (substr($texte_activation,0,3)=='Non') ? 'br' : 'bv' ;
           // Test moratoire
-          foreach($tab_moratoire_conventions_etablissements as $annee_scolaire => $tab_dates)
+          ifis_moratoire($DB_ROW['convention_date_debut'])
           {
-            if( ($DB_ROW['convention_date_debut']>$tab_dates['debut']) && ($DB_ROW['convention_date_fin']<$tab_dates['fin']) )
-            {
-              $texte_paiement = 'Sans objet';
-              $class_paiement = 'bj';
-            }
+            $texte_paiement = 'Sans objet';
+            $class_paiement = 'bj';
           }
           // Afficher une ligne du tableau
           echo'<tr id="id_'.$DB_ROW['convention_id'].'">';

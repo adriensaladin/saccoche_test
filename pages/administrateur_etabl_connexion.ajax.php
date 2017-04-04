@@ -291,15 +291,7 @@ if( IS_HEBERGEMENT_SESAMATH && ($f_action=='imprimer_documents') && $f_conventio
     Json::end( FALSE , 'Le fichier &laquo;&nbsp;<b>'.FileSystem::fin_chemin(CHEMIN_FICHIER_WS_SESAMATH_ENT).'</b>&nbsp;&raquo; (uniquement présent sur le serveur Sésamath) n\'a pas été détecté !' );
   }
   require(CHEMIN_FICHIER_WS_SESAMATH_ENT);
-  $montant = 50;
-  foreach($tab_moratoire_conventions_etablissements as $annee_scolaire => $tab_dates)
-  {
-    if( ($DB_ROW['convention_date_debut']>$tab_dates['debut']) && ($DB_ROW['convention_date_fin']<$tab_dates['fin']) )
-    {
-      $montant = 0;
-      break;
-    }
-  }
+  $montant = is_moratoire($DB_ROW['convention_date_debut']) ? 0 : 50 ;
   // Charge la classe PDF
   require(CHEMIN_DOSSIER_WEBSERVICES.'sesamath_ent_conventions_sacoche_etablissement_pdf.class.php');
   //

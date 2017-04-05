@@ -35,7 +35,7 @@ $(document).ready
   {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Récolter les données pour les élèves d'une classes et d'une période
+    // Récolter les données pour les élèves d'une classe et d'une période
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     $('button.generer').click
@@ -74,7 +74,7 @@ $(document).ready
               $('button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true} );
+                $.fancybox( '<label class="alerte">'+responseJSON['value']+'</label>' , {'centerOnScroll':true , 'minWidth':600} );
               }
               else
               {

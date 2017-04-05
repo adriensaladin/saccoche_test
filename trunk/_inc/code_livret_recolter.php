@@ -1031,6 +1031,7 @@ function retrait_commun_elements( $tab_eleve_acquis_elements , $eleve_id , $disc
   }
 }
 
+$tab_siecle_count = array( 'ok'=>array() , 'ko'=>array() );
 foreach($tab_eleve as $eleve_id => $tab)
 {
   if($PAGE_PERIODICITE=='periode')
@@ -1044,12 +1045,13 @@ foreach($tab_eleve as $eleve_id => $tab)
     {
       if($BILAN_TYPE_ETABL=='college')
       {
-        $tab_siecle_count = array( 'ok'=>0 , 'ko'=>0 );
+        $tab_siecle_count['ok'][$eleve_id] = 0;
+        $tab_siecle_count['ko'][$eleve_id] = 0;
         foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
         {
           $key_rubrique = substr($discipline_ref,0,-1);
           $key_count = ($tab_rubrique[$key_rubrique]['modalite-election']!='X') ? 'ok' : 'ko' ;
-          $tab_siecle_count[$key_count]++;
+          $tab_siecle_count[$key_count][$eleve_id]++;
           // au moins un enseignant doit être associé à la discipline
           if(empty($tab_rubrique_info['profs']))
           {
@@ -1071,12 +1073,6 @@ foreach($tab_eleve as $eleve_id => $tab)
           }
           // appréciation obligatoire sauf si élève non noté => "-" ajouté si besoin au moment de la conception du XML
           // élément de prg travaillé obligatoire => "-" ajouté si besoin au moment de la conception du XML
-        }
-        // un maximum de rubriques doivent coller aux matières issues de SIECLE
-        if( $tab_siecle_count['ok'] < $tab_siecle_count['ko'] )
-        {
-          $lien_assistance = ($tab_siecle_count['ok']) ? 'Étape n°2 configurée correctement ?' : HtmlMail::to(SACOCHE_CONTACT_COURRIEL,'export LSU - référentiels non liés à SIECLE','Prenez contact avec l\'assistance de SACoche','Veuillez joindre votre fichier "sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$millesime.'.xml".').' si besoin.' ;
-          Json::end( FALSE , $tab_siecle_count['ko'].' disciplines utilisées hors SIECLE alors qu\'elles devraient seulement constituer l\'exception !<br />'.$lien_assistance );
         }
       }
       else if($BILAN_TYPE_ETABL=='ecole')
@@ -1124,7 +1120,14 @@ foreach($tab_eleve as $eleve_id => $tab)
           }
         }
       }
-      if(empty($tab_eleve[$eleve_id]['acquis']))
+      // 2D : un maximum de rubriques doivent coller aux matières issues de SIECLE ; cela peut ne concerner qu'un élève (absent donc sans autre remontée), auquel cas on ne bloque pas tout
+      if( ($BILAN_TYPE_ETABL=='college') && ( $tab_siecle_count['ok'][$eleve_id] < $tab_siecle_count['ko'][$eleve_id] ) )
+      {
+        $s = ($tab_siecle_count['ko'][$eleve_id]>1) ? 's' : '' ;
+        $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; '.$tab_siecle_count['ko'][$eleve_id].' discipline'.$s.' sur '.($tab_siecle_count['ok'][$eleve_id]+$tab_siecle_count['ko'][$eleve_id]).' hors SIECLE alors que cela devrait être une exception : données non exportables.';
+        unset($tab_eleve[$eleve_id]);
+      }
+      else if(empty($tab_eleve[$eleve_id]['acquis']))
       {
         $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Plus de rubriques d\'acquis : données non exportables.';
         unset($tab_eleve[$eleve_id]);
@@ -1179,6 +1182,18 @@ foreach($tab_eleve as $eleve_id => $tab)
         $tab_eleve[$eleve_id]['synthese']['appreciation'] = '-';
       }
     }
+  }
+}
+
+// un maximum de rubriques doivent coller aux matières issues de SIECLE ; si cela concerne la majorité des élèves c'est qu'il y a un problème de configuration : on bloque tout
+if($BILAN_TYPE_ETABL=='college')
+{
+  $nb_siecle_count_ok = array_sum($tab_siecle_count['ok']);
+  $nb_siecle_count_ko = array_sum($tab_siecle_count['ko']);
+  if( $nb_siecle_count_ok < $nb_siecle_count_ko )
+  {
+    $lien_assistance = ($nb_siecle_count_ok) ? 'Étape n°2 configurée correctement ?' : HtmlMail::to(SACOCHE_CONTACT_COURRIEL,'export LSU - référentiels non liés à SIECLE','Prenez contact avec l\'assistance de SACoche','Veuillez joindre votre fichier "sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$millesime.'.xml".').' si besoin.' ;
+    Json::end( FALSE , 'Majorité des disciplines hors SIECLE alors que cela devrait être une exception !<br />'.$lien_assistance );
   }
 }
 

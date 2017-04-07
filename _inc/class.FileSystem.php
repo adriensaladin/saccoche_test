@@ -1155,8 +1155,9 @@ class FileSystem
    */
   public static function afficher_fichier_taille( $fichier_chemin_or_taille , $decimals = 1 )
   {
-    $bytes = is_int($fichier_chemin_or_taille) ? $fichier_chemin_or_taille : filesize($fichier_chemin_or_taille) ;
-    $size_unit = ' KMGTP';
+    // ne pas utiliser is_int() qui pose pb pour les grands nombres
+    $bytes = is_numeric($fichier_chemin_or_taille) ? $fichier_chemin_or_taille : filesize($fichier_chemin_or_taille) ;
+    $size_unit = ' KMGTPEZB'; // kilo mega giga tera peta exa zetta yotta
     $factor = (int) floor((strlen($bytes) - 1) / 3);
     return round( $bytes / pow(1024,$factor) , $decimals ) . $size_unit[$factor].'o';
   }

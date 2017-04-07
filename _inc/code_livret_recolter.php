@@ -139,10 +139,10 @@ if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Au 1D, il faut transmettre les dates de début / fin avec la période, et celles-ci peuvent en théorie différer d'une classe à une autre.
-// La clef d'unicité n'étant pas seulement sur millésime x indice x période, la solution consiste à avoir un id de période différent par classe
+// Une clef d'unicité étant sur millésime x indice x nb période x dates, la solution consiste à insérer tout ça ou presque dans l'identifiant
 
 $tab_periode = array();
-$key_periode = ($BILAN_TYPE_ETABL=='college') ? 'PER'.$periode_id : 'PER'.$periode_id.'CL'.$classe_value ;
+$key_periode = ($BILAN_TYPE_ETABL=='college') ? 'PER'.$periode_id : 'PER'.$periode_id.'D'.substr($date_debut,-5,2).substr($date_debut,-2,2).'F'.substr($date_fin,-5,2).substr($date_fin,-2,2) ;
 $affichage_periode = ($PAGE_PERIODICITE=='periode') ? TRUE : FALSE ;
 
 $tab_periode = (!$affichage_periode) ? array() : array(
@@ -1013,6 +1013,9 @@ unset($tab_saisie);
 // pour les bilans de fin de cycle -> tous les positionnements définis + une appréciation de synthèse
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+$is_lsu_17_2 = version_compare(TODAY_MYSQL,'2017-05-01','>') ? TRUE : FALSE ;
+$is_lsu_17_2 = FALSE ;
+
 /*
  * En cas de retrait d'une rubrique, on retire aussi les éléments de programmes associés, sauf s'ils sont utilisés par une autre rubrique.
  * Ceci n'a ceppendant rien d'obligatoire : un bilan avec des éléments de programmes inutilisés est importé sans aucun alerte.
@@ -1062,9 +1065,16 @@ foreach($tab_eleve as $eleve_id => $tab)
           // jusqu'en avril 2016, en cas de positionnement sur 4 niveaux, un élève ne peut pas être non noté
           else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
           {
-            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[$key_rubrique]['libelle'].'" : rubrique non exportée.';
-            unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-            retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
+            if($is_lsu_17_2)
+            {
+              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[$key_rubrique]['libelle'].'" : import possible vers LSU &ge; 17.2 uniquement.';
+            }
+            else
+            {
+              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[$key_rubrique]['libelle'].'" : rubrique non exportable vers LSU &lt; 17.2.';
+              unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+              retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
+            }
           }
           elseif( mb_strlen($tab_rubrique_info['appreciation']) > 600 )
           {
@@ -1093,9 +1103,17 @@ foreach($tab_eleve as $eleve_id => $tab)
             }
             else
             {
-              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Éléments travaillés sans positionnement (ni appréciation) pour "'.$discipline_ref.'" : rubrique non exportée.';
-              unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-              retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
+              if($is_lsu_17_2)
+              {
+                $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Éléments travaillés sans positionnement (ni appréciation) pour "'.$discipline_ref.'" : import possible vers LSU &ge; 17.2 uniquement.';
+                $tab_domaines_renseignes[$domaine_principal] = TRUE;
+              }
+              else
+              {
+                $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Éléments travaillés sans positionnement (ni appréciation) pour "'.$discipline_ref.'" : rubrique non exportable vers LSU &lt; 17.2.';
+                unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+                retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
+              }
             }
           }
           // il ne peut pas y avoir de positionnement sans élément(s) de programme (mais, en cas d'appréciation, il peut y avoir ni l'un ni l'autre)

@@ -247,8 +247,7 @@ if( ($import_origine=='siecle') && ($import_profil=='professeur') )
     $tab_genre = array( 0=>'I' , 1=>'M' , 2=>'F' );
     foreach ($xml->DONNEES->INDIVIDUS->INDIVIDU as $individu)
     {
-      // $type = Clean::login($individu->attributes()->TYPE); // à compter de STS 11.1.2 d'avril 2017, peut valoir epp | local | dir
-      $fonction = ($individu->FONCTION) ? Clean::ref($individu->FONCTION) : 'ENS' ; // DIR | EDU | ENS | FIJ (Fonds d'Insertion des Jeunes ?) ; non renseigné pour un type "local"
+      $fonction = Clean::ref($individu->FONCTION) ;
       if( (isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$fonction])) && (in_array($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$fonction],array('professeur','directeur'))) )
       {
         $sconet_id = Clean::entier($individu->attributes()->ID);

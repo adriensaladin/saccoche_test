@@ -139,10 +139,10 @@ if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Au 1D, il faut transmettre les dates de début / fin avec la période, et celles-ci peuvent en théorie différer d'une classe à une autre.
-// Une clef d'unicité étant sur millésime x indice x nb période x dates, la solution consiste à insérer tout ça ou presque dans l'identifiant
+// La clef d'unicité n'étant pas seulement sur millésime x indice x période, la solution consiste à avoir un id de période différent par classe
 
 $tab_periode = array();
-$key_periode = ($BILAN_TYPE_ETABL=='college') ? 'PER'.$periode_id : 'PER'.$periode_id.'D'.substr($date_debut,-5,2).substr($date_debut,-2,2).'F'.substr($date_fin,-5,2).substr($date_fin,-2,2) ;
+$key_periode = ($BILAN_TYPE_ETABL=='college') ? 'PER'.$periode_id : 'PER'.$periode_id.'CL'.$classe_value ;
 $affichage_periode = ($PAGE_PERIODICITE=='periode') ? TRUE : FALSE ;
 
 $tab_periode = (!$affichage_periode) ? array() : array(
@@ -1013,9 +1013,6 @@ unset($tab_saisie);
 // pour les bilans de fin de cycle -> tous les positionnements définis + une appréciation de synthèse
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$is_lsu_17_2 = version_compare(TODAY_MYSQL,'2017-05-01','>') ? TRUE : FALSE ;
-$is_lsu_17_2 = FALSE ;
-
 /*
  * En cas de retrait d'une rubrique, on retire aussi les éléments de programmes associés, sauf s'ils sont utilisés par une autre rubrique.
  * Ceci n'a ceppendant rien d'obligatoire : un bilan avec des éléments de programmes inutilisés est importé sans aucun alerte.
@@ -1034,7 +1031,6 @@ function retrait_commun_elements( $tab_eleve_acquis_elements , $eleve_id , $disc
   }
 }
 
-$tab_siecle_count = array( 'ok'=>array() , 'ko'=>array() );
 foreach($tab_eleve as $eleve_id => $tab)
 {
   if($PAGE_PERIODICITE=='periode')
@@ -1048,13 +1044,12 @@ foreach($tab_eleve as $eleve_id => $tab)
     {
       if($BILAN_TYPE_ETABL=='college')
       {
-        $tab_siecle_count['ok'][$eleve_id] = 0;
-        $tab_siecle_count['ko'][$eleve_id] = 0;
+        $tab_siecle_count = array( 'ok'=>0 , 'ko'=>0 );
         foreach($tab['acquis'] as $discipline_ref => $tab_rubrique_info)
         {
           $key_rubrique = substr($discipline_ref,0,-1);
           $key_count = ($tab_rubrique[$key_rubrique]['modalite-election']!='X') ? 'ok' : 'ko' ;
-          $tab_siecle_count[$key_count][$eleve_id]++;
+          $tab_siecle_count[$key_count]++;
           // au moins un enseignant doit être associé à la discipline
           if(empty($tab_rubrique_info['profs']))
           {
@@ -1065,16 +1060,9 @@ foreach($tab_eleve as $eleve_id => $tab)
           // jusqu'en avril 2016, en cas de positionnement sur 4 niveaux, un élève ne peut pas être non noté
           else if( ($champ_position=='positionnement') && is_null($tab_rubrique_info[$champ_position]) )
           {
-            if($is_lsu_17_2)
-            {
-              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[$key_rubrique]['libelle'].'" : import possible vers LSU &ge; 17.2 uniquement.';
-            }
-            else
-            {
-              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[$key_rubrique]['libelle'].'" : rubrique non exportable vers LSU &lt; 17.2.';
-              unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-              retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
-            }
+            $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Aucun positionnement pour la discipline "'.$tab_rubrique[$key_rubrique]['libelle'].'" : rubrique non exportée.';
+            unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+            retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
           }
           elseif( mb_strlen($tab_rubrique_info['appreciation']) > 600 )
           {
@@ -1083,6 +1071,12 @@ foreach($tab_eleve as $eleve_id => $tab)
           }
           // appréciation obligatoire sauf si élève non noté => "-" ajouté si besoin au moment de la conception du XML
           // élément de prg travaillé obligatoire => "-" ajouté si besoin au moment de la conception du XML
+        }
+        // un maximum de rubriques doivent coller aux matières issues de SIECLE
+        if( $tab_siecle_count['ok'] < $tab_siecle_count['ko'] )
+        {
+          $lien_assistance = ($tab_siecle_count['ok']) ? 'Étape n°2 configurée correctement ?' : HtmlMail::to(SACOCHE_CONTACT_COURRIEL,'export LSU - référentiels non liés à SIECLE','Prenez contact avec l\'assistance de SACoche','Veuillez joindre votre fichier "sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$millesime.'.xml".').' si besoin.' ;
+          Json::end( FALSE , $tab_siecle_count['ko'].' disciplines utilisées hors SIECLE alors qu\'elles devraient seulement constituer l\'exception !<br />'.$lien_assistance );
         }
       }
       else if($BILAN_TYPE_ETABL=='ecole')
@@ -1103,17 +1097,9 @@ foreach($tab_eleve as $eleve_id => $tab)
             }
             else
             {
-              if($is_lsu_17_2)
-              {
-                $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Éléments travaillés sans positionnement (ni appréciation) pour "'.$discipline_ref.'" : import possible vers LSU &ge; 17.2 uniquement.';
-                $tab_domaines_renseignes[$domaine_principal] = TRUE;
-              }
-              else
-              {
-                $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Éléments travaillés sans positionnement (ni appréciation) pour "'.$discipline_ref.'" : rubrique non exportable vers LSU &lt; 17.2.';
-                unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
-                retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
-              }
+              $tab_compte_rendu['alerte'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Éléments travaillés sans positionnement (ni appréciation) pour "'.$discipline_ref.'" : rubrique non exportée.';
+              unset($tab_eleve[$eleve_id]['acquis'][$discipline_ref]);
+              retrait_commun_elements( $tab_rubrique_info['elements'] , $eleve_id , $discipline_ref );
             }
           }
           // il ne peut pas y avoir de positionnement sans élément(s) de programme (mais, en cas d'appréciation, il peut y avoir ni l'un ni l'autre)
@@ -1138,14 +1124,7 @@ foreach($tab_eleve as $eleve_id => $tab)
           }
         }
       }
-      // 2D : un maximum de rubriques doivent coller aux matières issues de SIECLE ; cela peut ne concerner qu'un élève (absent donc sans autre remontée), auquel cas on ne bloque pas tout
-      if( ($BILAN_TYPE_ETABL=='college') && ( $tab_siecle_count['ok'][$eleve_id] < $tab_siecle_count['ko'][$eleve_id] ) )
-      {
-        $s = ($tab_siecle_count['ko'][$eleve_id]>1) ? 's' : '' ;
-        $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; '.$tab_siecle_count['ko'][$eleve_id].' discipline'.$s.' sur '.($tab_siecle_count['ok'][$eleve_id]+$tab_siecle_count['ko'][$eleve_id]).' hors SIECLE alors que cela devrait être une exception : données non exportables.';
-        unset($tab_eleve[$eleve_id]);
-      }
-      else if(empty($tab_eleve[$eleve_id]['acquis']))
+      if(empty($tab_eleve[$eleve_id]['acquis']))
       {
         $tab_compte_rendu['erreur'][] = html($tab['eleve']['nom'].' '.$tab['eleve']['prenom']).' &rarr; Plus de rubriques d\'acquis : données non exportables.';
         unset($tab_eleve[$eleve_id]);
@@ -1200,18 +1179,6 @@ foreach($tab_eleve as $eleve_id => $tab)
         $tab_eleve[$eleve_id]['synthese']['appreciation'] = '-';
       }
     }
-  }
-}
-
-// un maximum de rubriques doivent coller aux matières issues de SIECLE ; si cela concerne la majorité des élèves c'est qu'il y a un problème de configuration : on bloque tout
-if($BILAN_TYPE_ETABL=='college')
-{
-  $nb_siecle_count_ok = array_sum($tab_siecle_count['ok']);
-  $nb_siecle_count_ko = array_sum($tab_siecle_count['ko']);
-  if( $nb_siecle_count_ok < $nb_siecle_count_ko )
-  {
-    $lien_assistance = ($nb_siecle_count_ok) ? 'Étape n°2 configurée correctement ?' : HtmlMail::to(SACOCHE_CONTACT_COURRIEL,'export LSU - référentiels non liés à SIECLE','Prenez contact avec l\'assistance de SACoche','Veuillez joindre votre fichier "sts_emp_'.$_SESSION['WEBMESTRE_UAI'].'_'.$millesime.'.xml".').' si besoin.' ;
-    Json::end( FALSE , 'Majorité des disciplines hors SIECLE alors que cela devrait être une exception !<br />'.$lien_assistance );
   }
 }
 

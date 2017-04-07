@@ -135,8 +135,6 @@ class InfoServeur
       case 'zend_ze1_compatibility_mode'    : return "Activer le mode de compatibilité avec le Zend Engine 1 (PHP 4).<br />C'est incompatible avec classe PDO, et l'utilisation de simplexml_load_string() ou DOMDocument (par exemples) provoquent des erreurs fatales.<br />Fonctionnalité obsolète et supprimée depuis PHP 5.3.";
       case 'server_protocole'               : return "Variable serveur indiquant le protocole ; on regarde dans l'ordre :<br />- HTTPS si définie correctement<br />- HTTP_X_FORWARDED_PROTO si définie correctement<br />- c'est HTTP sinon";
       case 'server_IP_client'               : return "IP cliente présentée au serveur ; on regarde dans l'ordre :<br />- HTTP_X_REAL_IP si définie<br />- HTTP_X_FORWARDED_FOR si définie<br />- REMOTE_ADDR sinon";
-      case 'space_disk_total'               : return "Sur le système de fichiers ou la partition.";
-      case 'space_disk_free'                : return "Sur le système de fichiers ou la partition.";
       case 'modules_PHP'                    : return "Les modules sur fond coloré sont requis par SACoche.<br />Cliquer sur un module pour consulter le détail des informations.";
       case 'suhosin'                        : return "Module retiré à compter de PHP 5.4 (PHP prenant nativement en charge la plupart des fonctionnalités).";
       default                               : return "";
@@ -645,40 +643,6 @@ class InfoServeur
     return InfoServeur::cellule_coloree_centree($valeur,'jaune');
   }
 
-  /**
-   * space_disk_total
-   * Retourne l'espace tosque total.
-   *
-   * @param void
-   * @return string
-   */
-  private static function space_disk_total()
-  {
-    $valeur = disk_total_space('/'); // ne pas convertir en entier car trop grand nombre
-    return InfoServeur::cellule_coloree_centree(FileSystem::afficher_fichier_taille($valeur),'vert');
-  }
-
-  /**
-   * space_disk_free
-   * Retourne l'espace tosque total.
-   *
-   * @param void
-   * @return string
-   */
-  private static function space_disk_free()
-  {
-    $valeur = disk_free_space('/'); // ne pas convertir en entier car trop grand nombre
-    $min_vert  = (HEBERGEUR_INSTALLATION=='multi-structures') ? '10737418240' : '1073741824' ; // 10Go 1024*1024*1024*10 | 1Go 1024*1024*1024
-    $min_jaune = (HEBERGEUR_INSTALLATION=='multi-structures') ?  '1048576000' :  '104857600' ; // 100Mo 1024*1024*100 | 10Mo 1024*1024*10
-    $str_val   = sprintf('%020s',$valeur);
-    $str_vert  = sprintf('%020s',$min_vert);
-    $str_jaune = sprintf('%020s',$min_jaune);
-    if($str_val>$str_vert)      { $couleur = 'vert';  }
-    elseif($str_val>$str_jaune) { $couleur = 'jaune'; }
-    else                        { $couleur = 'rouge'; }
-    return InfoServeur::cellule_coloree_centree(FileSystem::afficher_fichier_taille($valeur),$couleur);
-  }
-
   // //////////////////////////////////////////////////
   // Méthodes publiques génériques
   // //////////////////////////////////////////////////
@@ -843,15 +807,6 @@ class InfoServeur
       'server_IP_client' => 'adresse IP',
     );
     return InfoServeur::tableau_deux_colonnes( 'Connexion au serveur' , $tab_objets );
-  }
-
-  public static function tableau_espace_disque()
-  {
-    $tab_objets = array(
-      'space_disk_total' => 'total',
-      'space_disk_free'  => 'disponible',
-    );
-    return InfoServeur::tableau_deux_colonnes( 'Espace disque' , $tab_objets );
   }
 
   public static function tableau_modules_PHP($nb_lignes)

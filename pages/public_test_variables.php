@@ -38,5 +38,4 @@ $TITRE = "Test de variables"; // Pas de traduction car pas de choix de langue à
 <?php
 echo InfoServeur::tableau_verification_variables();
 echo InfoServeur::tableau_verification_serveur();
-echo InfoServeur::tableau_espace_disque();
 ?>

@@ -37,5 +37,4 @@ echo InfoServeur::tableau_configuration_MySQL();
 echo InfoServeur::tableau_modules_PHP(5 /*nb_lignes*/);
 echo InfoServeur::tableau_reglages_Suhosin();
 echo InfoServeur::tableau_reglages_GD();
-echo InfoServeur::tableau_espace_disque();
 ?>

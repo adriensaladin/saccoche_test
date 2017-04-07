@@ -49,6 +49,8 @@ Layout::add( 'js_inline_before' , 'var select_livret="'.str_replace('"','\"',$se
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_periodes">DOC : Gestion des périodes</a></span></p>
 
+<div class="travaux">"Livret Scolaire" ajouté en prévision de la réforme entrant en vigueur en septembre 2016.</div>
+
 <hr />
 
 <table id="table_action" class="form hsort">

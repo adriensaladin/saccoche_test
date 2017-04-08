@@ -289,7 +289,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     if(!$DB_TAB) return FALSE;
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note']; // pas besoin de la date ici
+      $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
     }
     // Initialiser les tableaux pour retenir les données
     $tab_init_score = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array( 'nb' => 0 ) + array( 'detail' => array() );
@@ -400,10 +400,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
             {
               if(!isset($tab_rubrique_a_eviter[$DB_ROW['eleve_id']][$rubrique_id]))
               {
-                $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][] = array(
-                  'note' => $DB_ROW['note'],
-                  'date' => $DB_ROW['date'],
-                );
+                $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
                 if($DB_ROW['date']>=$date_mysql_debut)
                 {
                   $tab_prof[$rubrique_id][$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
@@ -477,10 +474,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
             {
               if(!isset($tab_rubrique_a_eviter[$DB_ROW['eleve_id']][$rubrique_id]))
               {
-                $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][] = array(
-                  'note' => $DB_ROW['note'],
-                  'date' => $DB_ROW['date'],
-                );
+                $tab_eval[$DB_ROW['eleve_id']][$rubrique_id][$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
                 if($DB_ROW['date']>=$date_mysql_debut)
                 {
                   $tab_prof[$rubrique_id][$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
@@ -934,7 +928,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
     if(!$DB_TAB) return array( FALSE , NULL , "Pas de données trouvées pour estimer ce positionnement." );
     foreach($DB_TAB as $DB_ROW)
     {
-      $tab_eval[$DB_ROW['item_id']][]['note'] = $DB_ROW['note']; // pas besoin de la date ici
+      $tab_eval[$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
     }
     // Déterminer les scores, et donc états d'acquisition
     $tab_score = array_fill_keys( array_keys($_SESSION['ACQUIS']) , 0 ) + array('nb'=>0) ;
@@ -1000,10 +994,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
           $retro_item = $tab_item_infos[$DB_ROW['item_id']]['calcul_retroactif'];
           if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
           {
-            $tab_eval[$DB_ROW['item_id']][] = array(
-              'note' => $DB_ROW['note'],
-              'date' => $DB_ROW['date'],
-            );
+            $tab_eval[$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
           }
         }
         if(empty($tab_eval)) return array( FALSE , NULL , $texte_objet );
@@ -1050,10 +1041,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
             $retro_item = $tab_item_infos[$DB_ROW['item_id']]['calcul_retroactif'];
             if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
             {
-              $tab_eval[$DB_ROW['item_id']][] = array(
-                'note' => $DB_ROW['note'],
-                'date' => $DB_ROW['date'],
-              );
+              $tab_eval[$DB_ROW['item_id']][]['note'] = $DB_ROW['note'];
             }
           }
         }

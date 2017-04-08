@@ -221,7 +221,10 @@ foreach($DB_TAB as $DB_ROW)
   $retro_item = $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'];
   if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
   {
-    $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
+    $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array(
+      'note' => $DB_ROW['note'],
+      'date' => $DB_ROW['date'],
+    );
     if($objet=='matiere_synthese')
     {
       $rubrique_ref = $tab_item[$DB_ROW['item_id']][0]['synthese_ref'];
@@ -280,7 +283,7 @@ if(count($tab_date))
     {
       extract($tab_item[$item_id][0]);  // $item_coef $calcul_methode $calcul_limite $calcul_retroactif
       $rubrique_id = $tab_rubrique_for_item[$item_id];
-      $tab_score_eleve_item[$eleve_id][$rubrique_id][$item_id] = OutilBilan::calculer_score( array_slice($tab_eval[$eleve_id][$item_id],0,$nb_evals) , $calcul_methode , $calcul_limite );
+      $tab_score_eleve_item[$eleve_id][$rubrique_id][$item_id] = OutilBilan::calculer_score( array_slice($tab_eval[$eleve_id][$item_id],0,$nb_evals) , $calcul_methode , $calcul_limite , $date_mysql_debut );
       $tab_rubrique_todo_moyenne[] = $rubrique_id;
     }
     // On (re)-calcule les moyennes des matières concernées

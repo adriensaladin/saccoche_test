@@ -311,7 +311,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       {
         extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite $item_ref $item_nom
         // calcul du bilan de l'item
-        $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+        $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , NULL /*date_mysql_debut*/ );
         if($score!==FALSE)
         {
           // on détermine si il est acquis ou pas
@@ -497,7 +497,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         foreach($tab_eval_rubrique as $item_id => $tab_devoirs)
         {
           extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite $item_nom
-          $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+          $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut );
           $tab_score_eleve_rubrique[$eleve_id][$rubrique_id][$item_id] = $score;
 
           foreach($tab_join_item_rubrique_elements[$item_id] as $rubrique_id_elements)
@@ -936,7 +936,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
     {
       extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite
       // calcul du bilan de l'item
-      $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+      $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , NULL /*date_mysql_debut*/ );
       if($score!==FALSE)
       {
         // on détermine si il est acquis ou pas
@@ -1055,7 +1055,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
       foreach($tab_eval as $item_id => $tab_devoirs)
       {
         extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite
-        $tab_score[$item_id] = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+        $tab_score[$item_id] = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut );
       }
       // calculer les moyennes des pourcentages
       $tableau_score_filtre = array_filter($tab_score,'non_vide');

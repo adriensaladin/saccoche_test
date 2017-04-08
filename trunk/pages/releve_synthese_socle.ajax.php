@@ -235,7 +235,7 @@ if($type=='pourcentage')
         {
           extract($tab_item[$item_id]);  // $calcul_methode $calcul_limite
           // calcul du bilan de l'item
-          $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+          $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , NULL /*date_mysql_debut*/ );
           if($score!==FALSE)
           {
             // on détermine si il est acquis ou pas

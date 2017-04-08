@@ -339,7 +339,11 @@ if($besoin_notes)
     foreach($DB_TAB as $DB_ROW)
     {
       $user_id = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? $_SESSION['USER_ID'] : $DB_ROW['eleve_id'] ;
-      $tab_eval[$user_id][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
+      $tab_eval[$user_id][$DB_ROW['item_id']][] = array(
+        'note' => $DB_ROW['note'],
+        'date' => $DB_ROW['date'],
+        'info' => $DB_ROW['info'],
+      );
     }
   }
 }
@@ -390,7 +394,7 @@ if(count($tab_eval))
     foreach($tab_items as $item_id => $tab_devoirs)
     {
       // calcul du bilan de l'item
-      $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+      $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut );
       if( ($only_etat=='tous') || OutilBilan::tester_acquisition( $score , $only_etat ) )
       {
         $tab_score_eleve_item[$eleve_id][$item_id] = $score;

@@ -177,23 +177,30 @@ class OutilBilan
    * @param array  $tab_devoirs      $tab_devoirs[$i]['note'] = note
    * @param string $calcul_methode   "geometrique" | "arithmetique" | "classique" | "bestof1" | "bestof2" | "bestof3" | "frequencemin" | "frequencemax"
    * @param int    $calcul_limite    nb maxi d'éval à prendre en compte
+   * @param string $date_mysql_debut date de début de période, pour vérifier qu'il y a au moins une vraie note sur cette période
    * @return int|FALSE
    */
-  public static function calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite )
+  public static function calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut=NULL )
   {
     // on passe en revue les évaluations disponibles, et on retient les notes exploitables
     $tab_note = array(); // pour retenir les notes en question
+    $is_note_periode = FALSE;
     $nb_devoir = count($tab_devoirs);
     for($i=0;$i<$nb_devoir;$i++)
     {
       if(isset($_SESSION['NOTE'][$tab_devoirs[$i]['note']])) // Note {1;...;6} prise en compte dans le calcul du score
       {
         $tab_note[] = $_SESSION['NOTE'][$tab_devoirs[$i]['note']]['VALEUR'];
+        if( is_null($date_mysql_debut) || ($tab_devoirs[$i]['date']>=$date_mysql_debut) )
+        {
+          $is_note_periode = TRUE;
+        }
       }
     }
     // si pas de notes exploitables, on arrête de suite (sinon, on est certain de pouvoir renvoyer un score)
+    // idem si les seules notes exploitables le sont en dehors de la période considérée
     $nb_note = count($tab_note);
-    if($nb_note==0)
+    if( !$nb_note || !$is_note_periode )
     {
       return FALSE;
     }

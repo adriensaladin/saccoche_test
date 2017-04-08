@@ -190,7 +190,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $texte_comm  = ($DB_ROW['item_comm']) ? ' <img src="./_img/etat/comm_oui.png" title="'.convertCRtoBR(html(html($DB_ROW['item_comm']))).'" />' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
-    $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? OutilBilan::calculer_score( $tab_devoirs[$item_id]  ,$DB_ROW['referentiel_calcul_methode'] , $DB_ROW['referentiel_calcul_limite'] ) : FALSE ;
+    $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? OutilBilan::calculer_score( $tab_devoirs[$item_id]  ,$DB_ROW['referentiel_calcul_methode'] , $DB_ROW['referentiel_calcul_limite'] , NULL /*date_mysql_debut*/ ) : FALSE ;
     if($_SESSION['USER_PROFIL_TYPE']=='parent')    { $texte_demande_eval = '<q class="demander_non" title="Les demandes d\'évaluations s\'effectuent depuis un compte élève."></q>'; }
     elseif($_SESSION['USER_PROFIL_TYPE']!='eleve') { $texte_demande_eval = ''; }
     elseif(!$DB_ROW['matiere_nb_demandes'])        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }

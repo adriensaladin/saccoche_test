@@ -74,7 +74,10 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
       $retro_item = $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'];
       if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
       {
-        $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
+        $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['matiere_id']][$DB_ROW['item_id']][] = array(
+          'note' => $DB_ROW['note'],
+          'date' => $DB_ROW['date'],
+        );
       }
     }
   }
@@ -100,7 +103,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
           {
             extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite $calcul_retroactif
             // calcul du bilan de l'item
-            $tab_score[$item_id] = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+            $tab_score[$item_id] = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut );
           }
           // calcul des bilans des scores
           $tableau_score_filtre = array_filter($tab_score,'non_vide');
@@ -270,7 +273,10 @@ function calculer_et_enregistrer_moyenne_precise_bulletin( $periode_id , $classe
     $retro_item = $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'];
     if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
     {
-      $tab_eval[$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note']);
+      $tab_eval[$DB_ROW['item_id']][] = array(
+        'note' => $DB_ROW['note'],
+        'date' => $DB_ROW['date'],
+      );
     }
   }
   if(empty($tab_eval)) return FALSE;
@@ -281,7 +287,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin( $periode_id , $classe
   {
     extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_socle $item_lien $calcul_methode $calcul_limite
     // calcul du bilan de l'item
-    $tab_score[$item_id] = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
+    $tab_score[$item_id] = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut );
   }
   // calcul des bilans des scores
   $tableau_score_filtre = array_filter($tab_score,'non_vide');

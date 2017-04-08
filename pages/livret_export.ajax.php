@@ -751,7 +751,7 @@ if(!$dom_xml->schemaValidate(CHEMIN_DOSSIER_XSD.$tab_xml_param[$export_objet]['f
     Json::add_str( libxml_display_error($error) );
   }
   libxml_clear_errors();
-  // Json::end( FALSE );
+  Json::end( FALSE );
 }
 
 // Enregistrement du fichier

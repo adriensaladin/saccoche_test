@@ -378,7 +378,7 @@ if(empty($is_appreciation_groupe))
             {
               extract($tab_item_infos[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_comm $item_lien $calcul_methode $calcul_limite $calcul_retroactif ($item_abrev)
               // calcul du bilan de l'item
-              $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut );
+              $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
               if( ($only_etat=='tous') || OutilBilan::tester_acquisition( $score , $only_etat ) )
               {
                 $tab_score_eleve_item[$eleve_id][$matiere_id][$item_id] = $score;

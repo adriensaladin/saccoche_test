@@ -103,7 +103,7 @@ if( ($action=='actualiser_score') && $demande_id && $item_id && ($score>-2) )
   {
     $tab_devoirs[] = array('note'=>$DB_ROW['note']);
   }
-  $score_new = (count($tab_devoirs)) ? OutilBilan::calculer_score( $tab_devoirs , $DB_ROW['calcul_methode'] , $DB_ROW['calcul_limite'] , NULL /*date_mysql_debut*/ ) : FALSE ;
+  $score_new = (count($tab_devoirs)) ? OutilBilan::calculer_score( $tab_devoirs , $DB_ROW['calcul_methode'] , $DB_ROW['calcul_limite'] ) : FALSE ;
   if( ( ($score==-1) && ($score_new!==FALSE) ) || ( ($score>-1) && ($score_new!==$score) ) )
   {
     // maj score

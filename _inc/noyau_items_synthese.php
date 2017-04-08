@@ -217,11 +217,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
       $retro_item = $tab_item[$DB_ROW['item_id']][0]['calcul_retroactif'];
       if( ($retroactif!='auto') || ($retro_item=='oui') || (($retro_item=='non')&&($DB_ROW['date']>=$date_mysql_debut)) || (($retro_item=='annuel')&&($DB_ROW['date']>=$date_mysql_debut_annee_scolaire)) )
       {
-        $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array(
-          'note' => $DB_ROW['note'],
-          'date' => $DB_ROW['date'],
-          'info' => $DB_ROW['info'],
-        );
+        $tab_eval[$DB_ROW['eleve_id']][$DB_ROW['item_id']][] = array('note'=>$DB_ROW['note'],'date'=>$DB_ROW['date'],'info'=>$DB_ROW['info']);
       }
     }
   }
@@ -275,7 +271,7 @@ if(empty($is_appreciation_groupe))
         // le score bilan
         extract($tab_item[$item_id][0]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_lien $matiere_id $calcul_methode $calcul_limite $calcul_retroactif $synthese_ref
         $matiere_nb_demandes = $tab_matiere[$matiere_id]['matiere_nb_demandes'];
-        $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut ) ;
+        $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite ) ;
         $tab_score_eleve_item[$eleve_id][$matiere_id][$synthese_ref][$item_id] = $score;
         // le détail HTML
         if($make_html)

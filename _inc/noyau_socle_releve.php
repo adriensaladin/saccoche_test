@@ -277,7 +277,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 {
                   extract($tab_item[$item_id]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $matiere_nb_demandes $calcul_methode $calcul_limite
                   // calcul du bilan de l'item
-                  $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , NULL /*date_mysql_debut*/ );
+                  $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite );
                   if($score!==FALSE)
                   {
                     // on détermine si il est acquis ou pas

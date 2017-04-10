@@ -801,7 +801,7 @@ table.bilan_synthese tr.vide td{font-size:0;height:6px}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 table.livret img {vertical-align:text-bottom}
-table.livret td {white-space:normal}
+table.livret td {white-space:normal;min-width:3em}
 table.livret td , table.livret th {vertical-align:middle}
 table.livret td.eval , table.livret th.eval {background:#96B3D5}
 table.livret td.pos0 , table.livret th.pos0 {text-align:center}

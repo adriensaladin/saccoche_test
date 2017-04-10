@@ -38,6 +38,9 @@ $groupe_id                 = (isset($_POST['f_groupe']))                  ? Clea
 $groupe_nom                = (isset($_POST['f_groupe_nom']))              ? Clean::texte($_POST['f_groupe_nom'])              : '';
 $groupe_type               = (isset($_POST['f_groupe_type']))             ? Clean::lettres($_POST['f_groupe_type'])           : '';
 $eleves_ordre              = (isset($_POST['f_eleves_ordre']))            ? Clean::texte($_POST['f_eleves_ordre'])            : '';
+$mode                      = (isset($_POST['f_mode']))                    ? Clean::texte($_POST['f_mode'])                    : '';
+$matiere_nom               = (isset($_POST['f_matiere_nom']))             ? Clean::texte($_POST['f_matiere_nom'])             : '';
+$aff_socle_items_acquis    = (isset($_POST['f_socle_items_acquis']))      ? 1                                                 : 0;
 $aff_socle_position        = (isset($_POST['f_socle_position']))          ? 1                                                 : 0;
 $aff_socle_points_DNB      = (isset($_POST['f_socle_points_dnb']))        ? 1                                                 : 0;
 $only_presence             = (isset($_POST['f_only_presence']))           ? 1                                                 : 0;
@@ -49,9 +52,11 @@ $legende                   = (isset($_POST['f_legende']))                 ? Clea
 $marge_min                 = (isset($_POST['f_marge_min']))               ? Clean::entier($_POST['f_marge_min'])              : 0;
 $pages_nb                  = (isset($_POST['f_pages_nb']))                ? Clean::texte($_POST['f_pages_nb'])                : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
-$tab_eleve = (isset($_POST['f_eleve'])) ? ( is_array($_POST['f_eleve']) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
-$tab_type  = (isset($_POST['f_type']))  ? ( is_array($_POST['f_type'])  ? $_POST['f_type']  : explode(',',$_POST['f_type'])  ) : array() ;
-$tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
+$tab_eleve   = (isset($_POST['f_eleve']))   ? ( is_array( $_POST['f_eleve'])  ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
+$tab_matiere = (isset($_POST['f_matiere'])) ? ( is_array($_POST['f_matiere']) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
+$tab_type    = (isset($_POST['f_type']))    ? ( is_array( $_POST['f_type'])   ? $_POST['f_type']    : explode(',',$_POST['f_type'])    ) : array() ;
+$tab_eleve   = array_filter( Clean::map('entier',$tab_eleve)   , 'positif' );
+$tab_matiere = array_filter( Clean::map('entier',$tab_matiere) , 'positif' );
 $tab_type  = Clean::map('texte',$tab_type);
 
 // En cas de manipulation du formulaire (avec les outils de développements intégrés au navigateur ou un module complémentaire)...
@@ -104,7 +109,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUP
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
 
-if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$tableau_tri_maitrise_mode || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || !$eleves_ordre )
+if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$tableau_tri_maitrise_mode || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || !$eleves_ordre )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }

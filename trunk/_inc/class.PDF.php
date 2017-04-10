@@ -532,10 +532,22 @@ class PDF extends FPDF
     $this->filigrane   = $filigrane;
     // Valeurs de session utilisées
     // Peuvent être surchargées lors de l'impression d'une archive d'un bilan officiel (sauf les 2 derniers qui ne sont pas utilisés dans cette situation).
-    $tab_clefs = array( 'OFFICIEL' , 'ACQUIS' , 'VALID' , 'LIVRET' , 'NOTE' , 'NOTE_ACTIF' , 'NOMBRE_CODES_NOTATION' , 'DROIT_VOIR_SCORE_BILAN' , 'DROIT_VOIR_SCORE_MAITRISE' , 'ENVELOPPE' , 'ETABLISSEMENT_DENOMINATION' );
-    foreach( $tab_clefs as $CLEF )
+    $tab_clefs = array(
+      'OFFICIEL'                   => array(),
+      'ACQUIS'                     => array(),
+      'VALID'                      => array(),
+      'LIVRET'                     => array(),
+      'NOTE'                       => array(),
+      'NOTE_ACTIF'                 => array(),
+      'NOMBRE_CODES_NOTATION'      => 0,
+      'DROIT_VOIR_SCORE_BILAN'     => '',
+      'DROIT_VOIR_SCORE_MAITRISE'  => '',
+      'ENVELOPPE'                  => array(),
+      'ETABLISSEMENT_DENOMINATION' => '',
+    );
+    foreach( $tab_clefs as $CLEF => $default_value )
     {
-      $this->SESSION[$CLEF] = ( $officiel && isset($session_archive[$CLEF]) ) ? $session_archive[$CLEF] : ( isset($_SESSION[$CLEF]) ? $_SESSION[$CLEF] : NULL ) ;
+      $this->SESSION[$CLEF] = ( $officiel && isset($session_archive[$CLEF]) ) ? $session_archive[$CLEF] : ( isset($_SESSION[$CLEF]) ? $_SESSION[$CLEF] : $default_value ) ;
     }
     // Pour un bilan officiel on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
     $forcer_profil_sigle  = ($this->officiel) ? 'TUT'    : NULL ;
@@ -835,12 +847,29 @@ class PDF extends FPDF
   // Méthode pour afficher un degré de maîtrise (valeur sur 100 et couleur de fond suivant l'indice du degré atteint)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function afficher_degre_maitrise( $indice , $pourcentage , $pourcent='' )
+  public function afficher_degre_maitrise( $indice , $pourcentage , $pourcent='' , $all_columns=TRUE )
   {
     if($pourcentage===FALSE)
     {
+      $largeur = ($all_columns) ? $this->cases_largeur * 4 : $this->cases_largeur ;
       $this->choisir_couleur_fond('blanc');
-      $this->Cell( $this->cases_largeur , $this->cases_hauteur , '-' , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $this->Cell( $largeur , $this->cases_hauteur , '-' , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    }
+    elseif($all_columns)
+    {
+      for( $i=1 ; $i<5 ; $i++ )
+      {
+        $this->choisir_couleur_fond('M'.$i.$this->couleur);
+        if($i==$indice)
+        {
+          $affichage = ($this->afficher_degre) ? $pourcentage.$pourcent : 'X' ;
+        }
+        else
+        {
+          $affichage = '';
+        }
+        $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      }
     }
     else
     {

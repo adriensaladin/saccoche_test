@@ -1013,7 +1013,7 @@ unset($tab_saisie);
 // pour les bilans de fin de cycle -> tous les positionnements définis + une appréciation de synthèse
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$is_lsu_17_2 = version_compare(TODAY_MYSQL,'2017-05-01','>') ? TRUE : FALSE ;
+$is_lsu_17_2 = version_compare(TODAY_MYSQL,'2017-05-14','>') ? TRUE : FALSE ;
 $is_lsu_17_2 = FALSE ;
 
 /*

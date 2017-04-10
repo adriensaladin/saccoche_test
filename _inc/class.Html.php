@@ -192,9 +192,10 @@ class Html
    * @param int|FALSE $pourcentage
    * @param string    $methode_tri    'score' | 'etat'
    * @param string    $pourcent       '%' | ''
+   * @param bool      $all_columns
    * @return string
    */
-  public static function td_maitrise( $indice , $pourcentage , $methode_tri='score' , $pourcent='' )
+  public static function td_maitrise( $indice , $pourcentage , $methode_tri='score' , $pourcent='' , $all_columns=TRUE )
   {
     if( Html::$afficher_degre === NULL )
     {
@@ -203,12 +204,35 @@ class Html
     }
     if($pourcentage===FALSE)
     {
-      return '<td class="hc">-</td>';
+      $colspan = ($all_columns) ? ' colspan="4"' : '' ;
+      return '<td'.$colspan.' class="hc">-</td>';
     }
-    $class = 'M'.$indice;
-    $affichage = (Html::$afficher_degre) ? $pourcentage.$pourcent : '' ;
-    $tri = ($methode_tri=='pourcentage') ? $pourcentage : $indice ;
-    return '<td class="hc '.$class.'" data-sort="'.$tri.'">'.$affichage.'</td>';
+    elseif($all_columns)
+    {
+      $td = '';
+      $tri = ($methode_tri=='pourcentage') ? $pourcentage : $indice ;
+      for( $i=1 ; $i<5 ; $i++ )
+      {
+        $class = 'M'.$i;
+        if($i==$indice)
+        {
+          $affichage = (Html::$afficher_degre) ? $pourcentage.$pourcent : 'X' ;
+        }
+        else
+        {
+          $affichage = '';
+        }
+        $td .= '<td class="hc '.$class.'" data-sort="'.$tri.'">'.$affichage.'</td>';
+      }
+      return $td;
+    }
+    else
+    {
+      $class = 'M'.$indice;
+      $affichage = (Html::$afficher_degre) ? $pourcentage.$pourcent : '' ;
+      $tri = ($methode_tri=='pourcentage') ? $pourcentage : $indice ;
+      return '<td class="hc '.$class.'" data-sort="'.$tri.'">'.$affichage.'</td>';
+    }
   }
 
   /**
@@ -278,25 +302,6 @@ class Html
       }
       $retour .= '</div>'.NL;
     }
-    // légende degrés de maîtrise du socle
-    if(!empty($tab_legende['degre_maitrise']))
-    {
-      if( Html::$afficher_degre === NULL )
-      {
-        // En cas de bilan officiel, doit être déterminé avant
-        Html::$afficher_degre = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_MAITRISE']);
-      }
-      $retour .= '<div><b>Maîtrise :</b>'; // Degrés de maîtrise
-      foreach( $_SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
-      {
-        !
-        $texte_seuil = (Html::$afficher_degre) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' ;
-        $texte_legende = empty($tab_legende['socle_points']) ? $tab_maitrise_info['LEGENDE'] : $tab_maitrise_info['LEGENDE'].' ('.$tab_maitrise_info['POINTS'].' pts)' ;
-        $texte_legende = ucfirst( str_replace( array('Maîtrise ','maîtrise ') , '' , $texte_legende ) ); // Peut sinon ne pas rentrer sur une ligne
-        $retour .= '<span class="cadre maitrise M'.$maitrise_id.'">'.$texte_seuil.'</span>'.html($texte_legende);
-      }
-      $retour .= '</div>'.NL;
-    }
     // légende etat_acquisition
     if(!empty($tab_legende['etat_acquisition']))
     {
@@ -318,6 +323,25 @@ class Html
       {
         $texte = $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'];
         $retour .= '<span class="cadre A'.$acquis_id.'">'.$texte.'</span>';
+      }
+      $retour .= '</div>'.NL;
+    }
+    // légende degrés de maîtrise du socle
+    if(!empty($tab_legende['degre_maitrise']))
+    {
+      if( Html::$afficher_degre === NULL )
+      {
+        // En cas de bilan officiel, doit être déterminé avant
+        Html::$afficher_degre = Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_SCORE_MAITRISE']);
+      }
+      $retour .= '<div><b>Maîtrise :</b>'; // Degrés de maîtrise
+      foreach( $_SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
+      {
+        !
+        $texte_seuil = (Html::$afficher_degre) ? $tab_maitrise_info['SEUIL_MIN'].' à '.$tab_maitrise_info['SEUIL_MAX'] : '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' ;
+        $texte_legende = empty($tab_legende['socle_points']) ? $tab_maitrise_info['LEGENDE'] : $tab_maitrise_info['LEGENDE'].' ('.$tab_maitrise_info['POINTS'].' pts)' ;
+        $texte_legende = ucfirst( str_replace( array('Maîtrise ','maîtrise ') , '' , $texte_legende ) ); // Peut sinon ne pas rentrer sur une ligne
+        $retour .= '<span class="cadre maitrise M'.$maitrise_id.'">'.$texte_seuil.'</span>'.html($texte_legende);
       }
       $retour .= '</div>'.NL;
     }

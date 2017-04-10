@@ -50,39 +50,49 @@ if(is_string($tab_cycles))
 }
 
 Form::load_choix_memo();
-$check_type_individuel  = (Form::$tab_choix['type_individuel']) ? ' checked' : '' ;
-$check_type_synthese    = (Form::$tab_choix['type_synthese'])   ? ' checked' : '' ;
-$class_form_individuel  = (Form::$tab_choix['type_individuel']) ? 'show'     : 'hide' ;
-$class_form_synthese    = (Form::$tab_choix['type_synthese'])   ? 'show'     : 'hide' ;
-$class_socle_points_DNB = ( (Form::$tab_choix['cycle_id']==4) && (Form::$tab_choix['socle_detail']=='livret') ) ? 'show' : 'hide' ;
+$check_type_individuel    = (Form::$tab_choix['type_individuel']) ? ' checked' : '' ;
+$check_type_synthese      = (Form::$tab_choix['type_synthese'])   ? ' checked' : '' ;
+$class_form_individuel    = (Form::$tab_choix['type_individuel']) ? 'show'     : 'hide' ;
+$class_form_synthese      = (Form::$tab_choix['type_synthese'])   ? 'show'     : 'hide' ;
+$class_socle_points_DNB   = ( (Form::$tab_choix['cycle_id']==4) && (Form::$tab_choix['socle_detail']=='livret') ) ? 'show' : 'hide' ;
 
-$check_only_presence    = (Form::$tab_choix['only_presence'])        ? ' checked' : '' ;
-$check_aff_lien         = (Form::$tab_choix['aff_lien'])             ? ' checked' : '' ;
-$check_aff_start        = (Form::$tab_choix['aff_start'])            ? ' checked' : '' ;
-$check_socle_position   = (Form::$tab_choix['aff_socle_position'])   ? ' checked' : '' ;
-$check_socle_points_DNB = (Form::$tab_choix['aff_socle_points_DNB']) ? ' checked' : '' ;
+$check_only_presence      = (Form::$tab_choix['only_presence'])          ? ' checked' : '' ;
+$check_aff_lien           = (Form::$tab_choix['aff_lien'])               ? ' checked' : '' ;
+$check_aff_start          = (Form::$tab_choix['aff_start'])              ? ' checked' : '' ;
+$check_socle_items_acquis = (Form::$tab_choix['aff_socle_items_acquis']) ? ' checked' : '' ;
+$check_socle_position     = (Form::$tab_choix['aff_socle_position'])     ? ' checked' : '' ;
+$check_socle_points_DNB   = (Form::$tab_choix['aff_socle_points_DNB'])   ? ' checked' : '' ;
+$check_mode_auto          = (Form::$tab_choix['mode']=='auto')           ? ' checked' : '' ;
+$check_mode_manuel        = (Form::$tab_choix['mode']=='manuel')         ? ' checked' : '' ;
+$class_div_matiere        = (Form::$tab_choix['mode']=='manuel')         ? 'show'     : 'hide' ;
+
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
   // Une éventuelle restriction d'accès doit surcharger toute mémorisation antérieure de formulaire
   $check_socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? ' checked' : '' ;
   $check_socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? ' checked' : '' ;
 }
-$socle_position   = '<label for="f_socle_position"><input type="checkbox" id="f_socle_position" name="f_socle_position" value="1"'.$check_socle_position.' /> Proposition de positionnement</label>';
-$socle_points_DNB = '<label for="f_socle_points_dnb"><input type="checkbox" id="f_socle_points_dnb" name="f_socle_points_dnb" value="1"'.$check_socle_points_DNB.' /> Prévision du nombre de points pour le brevet</label>';
+$socle_items_acquis = '<label for="f_socle_items_acquis"><input type="checkbox" id="f_socle_items_acquis" name="f_socle_items_acquis" value="1"'.$check_socle_items_acquis.' /> Acquisition des items</label>';
+$socle_position     = '<label for="f_socle_position"><input type="checkbox" id="f_socle_position" name="f_socle_position" value="1"'.$check_socle_position.' /> Proposition de positionnement</label>';
+$socle_points_DNB   = '<label for="f_socle_points_dnb"><input type="checkbox" id="f_socle_points_dnb" name="f_socle_points_dnb" value="1"'.$check_socle_points_DNB.' /> Prévision du nombre de points pour le brevet</label>';
+
 if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
   $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_option_groupe = 'hide';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $class_form_type    = 'show';
+  $class_option_mode  = 'show';
   $is_select_multiple = 1;
 }
+
 elseif($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
   $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_option_groupe = 'hide';
   $select_eleves = '<span id="f_eleve" class="select_multiple"></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span>'; // maj en ajax suivant le choix du groupe
   $class_form_type    = 'show';
+  $class_option_mode  = 'show';
   $is_select_multiple = 1;
 }
 
@@ -92,16 +102,19 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']>1) )
   $of_g = ''; $sel_g = FALSE; $class_form_eleve = 'show'; $class_option_groupe = 'hide';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option></option></select>'; // maj en ajax suivant le choix du groupe
   $class_form_type    = 'hide';
+  $class_option_mode  = 'hide';
   $is_select_multiple = 0; // volontaire
   $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
   $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Prévision du nombre de points pour le brevet</del>' ;
 }
+
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && ($_SESSION['NB_ENFANTS']==1) )
 {
   $tab_groupes  = array(0=>array('valeur'=>$_SESSION['ELEVE_CLASSE_ID'],'texte'=>$_SESSION['ELEVE_CLASSE_NOM'],'optgroup'=>'classe'));
   $of_g = FALSE; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_option_groupe = 'show';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['OPT_PARENT_ENFANTS'][0]['valeur'].'" selected>'.html($_SESSION['OPT_PARENT_ENFANTS'][0]['texte']).'</option></select>';
   $class_form_type    = 'hide';
+  $class_option_mode  = 'hide';
   $is_select_multiple = 0;
   $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
   $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Prévision du nombre de points pour le brevet</del>' ;
@@ -113,10 +126,12 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $of_g = FALSE; $sel_g = TRUE;  $class_form_eleve = 'hide'; $class_option_groupe = 'show';
   $select_eleves = '<select id="f_eleve" name="f_eleve[]"><option value="'.$_SESSION['USER_ID'].'" selected>'.html($_SESSION['USER_NOM'].' '.$_SESSION['USER_PRENOM']).'</option></select>';
   $class_form_type    = 'hide';
+  $class_option_mode  = 'hide';
   $is_select_multiple = 0;
   $socle_position   = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PROPOSITION_POSITIONNEMENT']) ? $socle_position   : '<del>Proposition de positionnement</del>' ;
   $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Prévision du nombre de points pour le brevet</del>' ;
 }
+
 $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
 $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
@@ -128,6 +143,7 @@ $select_socle_detail            = HtmlForm::afficher_select(Form::$tab_select_so
 $select_tri_maitrise_mode       = HtmlForm::afficher_select(Form::$tab_select_tri_maitrise_mode       , 'f_tri_maitrise_mode'       /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['tableau_tri_maitrise_mode'] /*selection*/ ,              '' /*optgroup*/ );
 $select_groupe                  = HtmlForm::afficher_select($tab_groupes                              , 'f_groupe'                  /*select_nom*/ , $of_g /*option_first*/ , $sel_g                                        /*selection*/ , 'regroupements' /*optgroup*/ );
 $select_eleves_ordre            = HtmlForm::afficher_select(Form::$tab_select_eleves_ordre            , 'f_eleves_ordre'            /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['eleves_ordre']              /*selection*/ ,              '' /*optgroup*/ );
+$select_matiere                 = HtmlForm::afficher_select($tab_matieres                             , 'f_matiere'                 /*select_nom*/ , FALSE /*option_first*/ , TRUE                                          /*selection*/ ,              '' /*optgroup*/ , TRUE /*multiple*/);
 $select_marge_min               = HtmlForm::afficher_select(Form::$tab_select_marge_min               , 'f_marge_min'               /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['marge_min']                 /*selection*/ ,              '' /*optgroup*/ );
 $select_pages_nb                = HtmlForm::afficher_select(Form::$tab_select_pages_nb                , 'f_pages_nb'                /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['pages_nb']                  /*selection*/ ,              '' /*optgroup*/ );
 $select_couleur                 = HtmlForm::afficher_select(Form::$tab_select_couleur                 , 'f_couleur'                 /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['couleur']                   /*selection*/ ,              '' /*optgroup*/ );
@@ -169,9 +185,13 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
   </p>
   <div id="option_groupe" class="<?php echo $class_option_groupe ?>">
-    <label class="tab">Indication :</label><?php echo $socle_position ?>&nbsp;&nbsp;&nbsp;<span id="span_points_DNB" class="<?php echo $class_socle_points_DNB ?>"><?php echo $socle_points_DNB ?></span><br />
+    <label class="tab">Indication :</label><?php echo $socle_items_acquis ?>&nbsp;&nbsp;&nbsp;<?php echo $socle_position ?>&nbsp;&nbsp;&nbsp;<span id="span_points_DNB" class="<?php echo $class_socle_points_DNB ?>"><?php echo $socle_points_DNB ?></span><br />
     <label class="tab">Restriction :</label><label for="f_only_presence"><input type="checkbox" id="f_only_presence" name="f_only_presence" value="1"<?php echo $check_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation</label><br />
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le relévé individuel, le détail des items peut être affiché (sortie HTML)." /> Infos items :</label><label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés au chargement</label>
+  </div>
+  <div id="option_mode" class="<?php echo $class_option_mode ?>">
+    <label class="tab">Matières utilisées :</label><label for="f_mode_auto"><input type="radio" id="f_mode_auto" name="f_mode" value="auto"<?php echo $check_mode_auto ?> /> Toutes (recommandé)</label>&nbsp;&nbsp;&nbsp;<label for="f_mode_manuel"><input type="radio" id="f_mode_manuel" name="f_mode" value="manuel"<?php echo $check_mode_manuel ?> /> Sélection manuelle <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour choisir les matières des référentiels dont les items collectés sont issus." /></label><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" />
+    <div id="div_matiere" class="<?php echo $class_div_matiere ?>"><span class="tab"></span><span id="f_matiere" class="select_multiple"><?php echo $select_matiere ?></span><span class="check_multiple"><q class="cocher_tout" title="Tout cocher."></q><br /><q class="cocher_rien" title="Tout décocher."></q></span></div>
   </div>
   <div class="toggle">
     <span class="tab"></span><a href="#" class="puce_plus toggle">Afficher plus d'options</a>

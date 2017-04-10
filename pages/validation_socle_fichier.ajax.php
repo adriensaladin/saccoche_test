@@ -57,17 +57,19 @@ if( ($action=='export_gepi') && count($tab_eleve) && $cycle_id )
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  $groupe_nom            = 'GEPI';
-  $groupe_type           = '';
-  $eleves_ordre          = 'alpha';
-  $socle_detail          = 'livret';
-  $cycle_nom             = '';
-  $socle_synthese_format = '';
-  $aff_socle_position    = FALSE;
-  $aff_socle_points_DNB  = FALSE;
-  $only_presence         = TRUE;
-  $type_individuel       = 0;
-  $type_synthese         = 1;
+  $groupe_nom             = 'GEPI';
+  $groupe_type            = '';
+  $eleves_ordre           = 'alpha';
+  $socle_detail           = 'livret';
+  $cycle_nom              = '';
+  $socle_synthese_format  = '';
+  $mode                   = 'auto';
+  $aff_socle_items_acquis = FALSE;
+  $aff_socle_position     = FALSE;
+  $aff_socle_points_DNB   = FALSE;
+  $only_presence          = TRUE;
+  $type_individuel        = 0;
+  $type_synthese          = 1;
   $make_officiel = FALSE;
   $make_livret   = FALSE;
   $make_action   = '';

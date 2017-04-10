@@ -32,13 +32,13 @@
 class PDF_socle2016_releve extends PDF
 {
 
-  public function initialiser( $socle_individuel_format , $eleve_nb , $composante_nb , $eleve_nb_moyen , $composante_nb_moyen , $pages_nb_methode , $aff_socle_items_acquis , $aff_socle_position , $aff_socle_points_DNB )
+  public function initialiser( $socle_individuel_format , $eleve_nb , $composante_nb , $eleve_nb_moyen , $composante_nb_moyen , $pages_nb_methode ,$aff_socle_position , $aff_socle_points_DNB )
   {
     $hauteur_entete = 10;
-    $largeur = $this->page_largeur_moins_marges / ( 8 + (6*$aff_socle_items_acquis) + (4*$aff_socle_position) + (2*$aff_socle_points_DNB) );
+    $largeur = $this->page_largeur_moins_marges / ( 14 + (2*$aff_socle_position) + (2*$aff_socle_points_DNB) );
     $this->intitule_largeur  = $largeur * 8;
     $this->synthese_largeur  = $largeur * 6;
-    $this->cases_largeur     = $largeur;
+    $this->cases_largeur     = $largeur * 2;
     $this->SetAutoPageBreak(FALSE);
     $lignes_nb  = ($socle_individuel_format=='eleve') ? $composante_nb_moyen : $eleve_nb_moyen ;
     $parties_nb = ($socle_individuel_format=='eleve') ? $eleve_nb            : $composante_nb ;
@@ -124,7 +124,7 @@ class PDF_socle2016_releve extends PDF
   public function cellule_nombre_points( $texte )
   {
     $this->SetFont('Arial' , 'B' , $this->taille_police);
-    $this->CellFit( $this->cases_largeur * 2 , $this->cases_hauteur , To::pdf($texte) , 0 /*border*/ , 0 /*br*/ , 'L' , FALSE , '' );
+    $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($texte) , 0 /*border*/ , 0 /*br*/ , 'L' , FALSE , '' );
     $this->SetFont('Arial' , '' , $this->taille_police);
   }
 
@@ -133,19 +133,16 @@ class PDF_socle2016_releve extends PDF
     $this->SetXY( $this->marge_gauche , $this->GetY() + $this->cases_hauteur );
   }
 
-  public function legende( $aff_socle_items_acquis , $aff_socle_position , $aff_socle_points_DNB )
+  public function legende( $aff_socle_position , $aff_socle_points_DNB )
   {
     $ordonnee = $this->GetY() + $this->lignes_hauteur*0.5 ;
-    if($aff_socle_items_acquis)
-    {
-      $this->afficher_legende( 'etat_acquisition' /*type_legende*/ , $ordonnee /*ordonnée*/ );
-      $ordonnee = $this->GetY();
-    }
     if($aff_socle_position)
     {
       $info_points = ($aff_socle_points_DNB) ? '_points' : '' ;
       $this->afficher_legende( 'degre_maitrise'.$info_points /*type_legende*/ , $ordonnee /*ordonnée*/ );
+      $ordonnee = $this->GetY();
     }
+    $this->afficher_legende( 'etat_acquisition' /*type_legende*/ , $ordonnee /*ordonnée*/ );
   }
 
 }

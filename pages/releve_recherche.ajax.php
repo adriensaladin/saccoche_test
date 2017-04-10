@@ -424,7 +424,7 @@ if( $is_s2016_domaine_maitrise || $is_s2016_composante_maitrise )
     if( in_array( $indice , $critere_tab_seuil_maitrise ) )
     {
       $checkbox = ($affichage_checkbox) ? '<td class="nu"><input type="checkbox" name="id_user[]" value="'.$user_id.'" /></td>' : '' ;
-      $tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_maitrise( $indice , $pourcentage , 'score' /*methode_tri*/ , '%' /*pourcent*/ , FALSE /*all_columns*/ ).'</tr>';
+      $tab_tr[] = '<tr>'.$checkbox.'<td>'.html($user_nom.' '.$user_prenom).'</td>'.Html::td_maitrise( $indice , $pourcentage , 'score' /*methode_tri*/ , '%' /*pourcent*/ ).'</tr>';
     }
   }
 }

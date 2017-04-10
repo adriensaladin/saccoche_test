@@ -104,22 +104,6 @@ $(document).ready
       }
     );
 
-    $('#f_mode_auto').click
-    (
-      function()
-      {
-        $("#div_matiere").hide();
-      }
-    );
-
-    $('#f_mode_manuel').click
-    (
-      function()
-      {
-        $("#div_matiere").show();
-      }
-    );
-
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Charger le select f_eleve en ajax
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,12 +206,9 @@ $(document).ready
           f_groupe                  : { required:true },
           'f_eleve[]'               : { required:true },
           f_eleves_ordre            : { required:true },
-          f_socle_items_acquis      : { required:false },
           f_socle_position          : { required:false },
           f_socle_points_dnb        : { required:false },
           f_only_presence           : { required:false },
-          f_mode                    : { required:true },
-          'f_matiere[]'             : { required:function(){return $('#f_mode_manuel').is(':checked');} },
           f_lien                    : { required:false },
           f_start                   : { required:false },
           f_couleur                 : { required:true },
@@ -247,12 +228,9 @@ $(document).ready
           f_groupe                  : { required:"groupe manquant" },
           'f_eleve[]'               : { required:"élève(s) manquant(s)" },
           f_eleves_ordre            : { required:"ordre manquant" },
-          f_socle_items_acquis      : { },
           f_socle_position          : { },
           f_socle_points_dnb        : { },
           f_only_presence           : { },
-          f_mode                    : { required:"choix manquant" },
-          'f_matiere[]'             : { required:"matière(s) manquante(s)" },
           f_lien                    : { },
           f_start                   : { },
           f_couleur                 : { required:"couleur manquante" },
@@ -297,11 +275,9 @@ $(document).ready
       function()
       {
         // récupération d'éléments
-        var matiere_nom = $('#f_mode_manuel').is(':checked') ? $('#f_matiere input[type=checkbox]:checked').parent().text() : '' ;
         $('#f_cycle_nom'  ).val( $("#f_cycle option:selected").text() );
         $('#f_groupe_nom' ).val( $("#f_groupe option:selected").text() );
         $('#f_groupe_type').val( groupe_type );
-        $('#f_matiere_nom').val( matiere_nom );
         $(this).ajaxSubmit(ajaxOptions);
         return false;
       }

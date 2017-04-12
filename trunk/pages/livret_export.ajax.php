@@ -191,21 +191,24 @@ foreach($DB_TAB as $key => $DB_ROW)
           $tab_periode_tmp[$key_periode] = $tab;
         }
       }
-      $tab_export_donnees[$key]['commun']['periode'] = $tab_periode_tmp;
-      // parcours
-      if(!empty($tab_export_donnees[$key]['commun']['parcours']))
+      if(!empty($tab_periode_key))
       {
+        $tab_export_donnees[$key]['commun']['periode'] = $tab_periode_tmp;
         $tab_bad = array_keys($tab_periode_key);
         $tab_bon = array_values($tab_periode_key);
-        foreach($tab_export_donnees[$key]['commun']['parcours'] as $id_parcours => $tab)
+        // parcours
+        if(!empty($tab_export_donnees[$key]['commun']['parcours']))
         {
-          $tab_export_donnees[$key]['commun']['parcours'][$id_parcours]['periode-ref'] = str_replace( $tab_bad , $tab_bon , $tab['periode-ref'] );
+          foreach($tab_export_donnees[$key]['commun']['parcours'] as $id_parcours => $tab)
+          {
+            $tab_export_donnees[$key]['commun']['parcours'][$id_parcours]['periode-ref'] = str_replace( $tab_bad , $tab_bon , $tab['periode-ref'] );
+          }
         }
-      }
-      // bilan
-      if($tab_export_donnees[$key]['bilan']['type']=='periode')
-      {
-        $tab_export_donnees[$key]['bilan']['periode-ref'] = str_replace( $tab_bad , $tab_bon , $tab_export_donnees[$key]['bilan']['periode-ref'] );
+        // bilan
+        if($tab_export_donnees[$key]['bilan']['type']=='periode')
+        {
+          $tab_export_donnees[$key]['bilan']['periode-ref'] = str_replace( $tab_bad , $tab_bon , $tab_export_donnees[$key]['bilan']['periode-ref'] );
+        }
       }
     }
     // END - Avril 2017 - patch correctif pour les identifiants de périodes au 1D - TODO : à supprimer à compter de la prochaine rentrée

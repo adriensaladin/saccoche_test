@@ -34,7 +34,7 @@ $jointure  = (isset($_POST['f_jointure'])) ? Clean::ref($_POST['f_jointure'])  :
 $cycle     = (isset($_POST['f_cycle']))    ? Clean::id($_POST['f_cycle'])      : NULL ;
 $college   = (isset($_POST['f_college']))  ? Clean::id($_POST['f_college'])    : NULL ;
 
-if( !$groupe_id ||is_null($periode) || is_null($jointure) || is_null($cycle) || is_null($college) || ( $periode && !$jointure ) )
+if( !$groupe_id || is_null($periode) || is_null($jointure) || is_null($cycle) || is_null($college) || ( $periode && !$jointure ) )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
@@ -51,9 +51,9 @@ $tab_jointures_old = array(
 );
 $jointure_old = FALSE;
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_classes_avec_jointures_livret( $groupe_id );
-if(!empty($DB_TAB))
+foreach($DB_TAB as $DB_ROW)
 {
-  foreach($DB_TAB as $DB_ROW)
+  if(!is_null($DB_ROW['livret_page_ref']))
   {
     $tab_jointures_old[$DB_ROW['periodicite']] = $DB_ROW['livret_page_ref'];
     if($DB_ROW['listing_periodes'])

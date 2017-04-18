@@ -729,7 +729,7 @@ if( in_array($PAGE_COLONNE,array('objectif','position')) )
   $tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // Besoin pour OutilBilan::determiner_degre_maitrise(), en cas de positionnement sans note ni pourcentage ou en cas de maitrise du socle
 }
 
-$orientation  = ($PAGE_REF!='cycle1') ? 'portrait' : 'paysage' ;
+$orientation  = ($PAGE_REF!='cycle1') ? 'portrait' : 'landscape' ;
 $couleur      = $_SESSION['OFFICIEL']['LIVRET_COULEUR'];
 $fond         = $_SESSION['OFFICIEL']['LIVRET_FOND'];
 $legende      = 'oui';

@@ -54,13 +54,13 @@ public static function DB_initialiser_jointures_livret_classes()
   $DB_SQL = 'SELECT COUNT(DISTINCT groupe_id) ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $nb_classes_livret = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  // Mais sans tenir compte des classes d'un niveau inférieur ou supérieur à la converture du Livret Scolaire
+  // Mais sans tenir compte des classes d'un niveau inférieur ou supérieur à l'objet du Livret Scolaire
   $DB_SQL = 'SELECT COUNT(DISTINCT groupe_id) ';
   $DB_SQL.= 'FROM sacoche_groupe ';
   $DB_SQL.= 'WHERE groupe_type="classe" AND NOT (niveau_id BETWEEN 1033 AND 200000) ';
   $nb_classes_hors_lsu = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $nb_classes_concernees = $nb_classes_structure - $nb_classes_hors_lsu;
-  if( $nb_classes_livret == $nb_classes_concernees )
+  if( $nb_classes_livret >= $nb_classes_concernees )
   {
     return TRUE;
   }
@@ -943,6 +943,21 @@ public static function DB_compter_impression_archives()
   $DB_SQL.= 'WHERE archive_type="livret" ';
   $DB_SQL.= 'GROUP BY eleve_classe_id, periode_livret ';
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
+ * tester_classes_periode
+ *
+ * @param void
+ * @return bool
+ */
+public static function DB_tester_classes_periode()
+{
+  $DB_SQL = 'SELECT COUNT(*) ';
+  $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
+  $DB_SQL.= 'WHERE livret_page_periodicite=:periodicite ';
+  $DB_VAR = array( ':periodicite' => 'periode' );
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
 /**
@@ -2399,7 +2414,7 @@ public static function DB_ajouter_livret_export_eleve( $user_id , $livret_page_r
   // @see http://stackoverflow.com/questions/9168928/what-are-practical-differences-between-replace-and-insert-on-duplicate-ke
   $DB_SQL = 'INSERT INTO sacoche_livret_export ( user_id,  livret_page_ref,  livret_page_periodicite,  jointure_periode,  sacoche_version,  export_contenu) ';
   $DB_SQL.= 'VALUES                            (:user_id, :livret_page_ref, :livret_page_periodicite, :jointure_periode, :sacoche_version, :export_contenu) ';
-  $DB_SQL.= 'ON DUPLICATE KEY UPDATE sacoche_version=:sacoche_version, export_contenu=:export_contenu ';
+  $DB_SQL.= 'ON DUPLICATE KEY UPDATE livret_page_ref=:livret_page_ref, sacoche_version=:sacoche_version, export_contenu=:export_contenu ';
   $DB_VAR = array(
     ':user_id'                 => $user_id,
     ':livret_page_ref'         => $livret_page_ref,

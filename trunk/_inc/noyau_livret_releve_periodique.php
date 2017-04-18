@@ -240,6 +240,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // Communication avec la famille
+
 if( $PAGE_VIE_SCOLAIRE )
 {
   $is_cpe = ($_SESSION['USER_PROFIL_SIGLE']=='EDU') ? TRUE : FALSE ;
@@ -513,15 +514,14 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         }
         $tab_infos_entete = 
           array(
-            'tab_menesr_logo'           => $tab_menesr_logo ,
-            'tab_etabl_coords'          => $tab_etabl_coords ,
-            'tab_etabl_logo'            => $tab_etabl_logo ,
-        //  'etabl_coords_bloc_hauteur' => $etabl_coords_bloc_hauteur ,
-            'tab_bloc_titres'           => $tab_bloc_titres ,
-            'tab_adresse'               => $tab_adresse ,
-            'tag_date_heure_initiales'  => $tag_date_heure_initiales ,
-            'eleve_genre'               => $eleve_genre ,
-            'date_naissance'            => $date_naissance ,
+            'tab_menesr_logo'          => $tab_menesr_logo ,
+            'tab_etabl_coords'         => $tab_etabl_coords ,
+            'tab_etabl_logo'           => $tab_etabl_logo ,
+            'tab_bloc_titres'          => $tab_bloc_titres ,
+            'tab_adresse'              => $tab_adresse ,
+            'tag_date_heure_initiales' => $tag_date_heure_initiales ,
+            'eleve_genre'              => $eleve_genre ,
+            'date_naissance'           => $date_naissance ,
           ) ;
         $releve_PDF->entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , $tab_nb_lignes_eleve_eval_total[$eleve_id] );
         if($is_archive)
@@ -755,7 +755,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $releve_HTML .= '<th'.$rowspan.'>Acquisitions, progrès et difficultés éventuelles</th>';
             if( ( ($PAGE_COLONNE=='objectif') || ($PAGE_COLONNE=='position') ) && ( $eleve_id || $PAGE_MOYENNE_CLASSE ) )
             {
-              $releve_HTML .= '<th colspan="4" class="eval">'.$legende_positionnement.'</th><th class="nu"></th>';
+              $releve_HTML .= '<th colspan="4" class="eval hc">'.$legende_positionnement.'</th><th class="nu"></th>';
               $tab_th = array();
               foreach($_SESSION['LIVRET'] as $id => $tab)
               {

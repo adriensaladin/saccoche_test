@@ -49,13 +49,6 @@ $puce_profils_autorises = ($_SESSION['USER_PROFIL_TYPE']!='professeur') ? '' : '
 <hr />
 
 <?php
-if( !DB_STRUCTURE_LIVRET::DB_tester_classes_periode() )
-{
-  $consigne = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? 'un administrateur ou directeur doit commencer' : 'commencez' ;
-  echo'<p class="danger">Aucune classe n\'est associée à une page du livret avec un bilan périodique !<br />Si besoin, '.$consigne.' par <a href="./index.php?page=livret&amp;section=classes">associer les classes au livret scolaire</a>.</p>'.NL;
-  return; // Ne pas exécuter la suite de ce fichier inclus.
-}
-
 $tab_matiere = array();
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {

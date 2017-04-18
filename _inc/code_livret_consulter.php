@@ -105,6 +105,11 @@ if($ACTION=='voir_detail')
 // Affichage des données d'un élève indiqué (si initialisation, alors le groupe classe, sauf socle)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
+{
+  $is_bouton_test_impression = ($eleve_id) ? TRUE : FALSE ;
+}
+
 // Si besoin, fabriquer le formulaire avec la liste des élèves concernés : soit d'une classe (en général) soit d'une classe ET d'un sous-groupe pour un prof affecté à un groupe d'élèves
 $groupe_nom = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
 
@@ -153,11 +158,6 @@ if($ACTION=='initialiser')
 if(!$eleve_id)
 {
   $is_appreciation_groupe = TRUE;
-}
-
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_LIVRET_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
-{
-  $is_bouton_test_impression = ($eleve_id) ? TRUE : FALSE ;
 }
 
 // Récupérer les saisies déjà effectuées ou enregistrées pour la période en cours

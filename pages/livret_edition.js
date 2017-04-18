@@ -197,10 +197,10 @@ $(document).ready
     var memo_conteneur     = [];
     var memo_saisie_id     = 0;
     var memo_objet_id      = '';
-    var memo_rubrique_type = ''; // eval | socle | epi | ap | parcours | bilan | viesco | enscompl | attitude
+    var memo_rubrique_type = ''; // eval | socle | epi | ap | parcours | bilan | viesco
     var memo_rubrique_id   = 0;
     var memo_saisie_objet  = ''; // position | appreciation | elements
-    var memo_page_colonne  = ''; // objectif | position | moyenne | pourcentage | pourcentage | maitrise | reussite
+    var memo_page_colonne  = ''; // objectif | position | moyenne | pourcentage
     var memo_html          = '';
     var memo_div_assiduite = '';
     var memo_long_max      = 0;
@@ -237,6 +237,11 @@ $(document).ready
           memo_page_ref = tab_ids[3];
           memo_periode  = tab_ids[4];
           $('#f_objet').val(memo_objet);
+          if(memo_page_ref=='cycle1')
+          {
+            $.fancybox( '<p class="travaux">'+'Bilan de fin de maternelle non encore développé&hellip;<br />En prévision pour la fin de l\'année scolaire 2016-2017.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+            return false;
+          }
           if( (memo_section=='livret_saisir') || (memo_section=='livret_consulter') )
           {
             // Masquer le tableau ; Afficher la zone action et charger son contenu
@@ -829,10 +834,10 @@ $(document).ready
         memo_saisie_id  = $(this).parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
-        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco | enscompl | attitude
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco | enscompl
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
-        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise | reussite
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise
         // Contenu de la saisie existante
         if(memo_action=='ajouter')
         {
@@ -844,7 +849,7 @@ $(document).ready
           // http://www.w3schools.com/jsref/prop_node_nodetype.asp
           $(this).parent().prev().find('div').contents().filter( function(){return this.nodeType == 3;} ).each( function(){saisie_contenu+=$(this).text().trim()+"\n";} );
         }
-        else if( (memo_saisie_objet=='position') && ( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') || (memo_page_colonne=='reussite') ) )
+        else if( (memo_saisie_objet=='position') && ( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') ) )
         {
           var saisie_contenu = $(this).parent().next().html();
         }
@@ -864,7 +869,7 @@ $(document).ready
           memo_html = memo_conteneur.html();
           if( (memo_rubrique_type=='eval') || (memo_rubrique_type=='socle') )
           {
-            var texte = (memo_saisie_objet=='appreciation') ? ( (memo_page_ref!='cycle1') ? 'Acquisitions / Conseils' : 'Points forts / Besoins' ) : 'Principaux éléments travaillés' ;
+            var texte = (memo_saisie_objet=='appreciation') ? 'Acquisitions / Conseils' : 'Principaux éléments travaillés' ;
           }
           else if(memo_rubrique_type=='epi')
           {
@@ -881,10 +886,6 @@ $(document).ready
           else if(memo_rubrique_type=='bilan')
           {
             var texte = (memo_eleve) ? 'Synthèse / Conseils' : 'Synthèse' ;
-          }
-          else if(memo_rubrique_type=='attitude')
-          {
-            var texte = 'Observations';
           }
           else if(memo_rubrique_type=='viesco')
           {
@@ -927,14 +928,13 @@ $(document).ready
           memo_conteneur.html(formulaire_saisie);
         }
         // 3/3 Fabriquer un formulaire de saisie input[type=radio]
-        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='reussite') )
+        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') )
         {
           memo_html = memo_conteneur.parent().html();
           var id_debut = memo_rubrique_type+'_'+memo_rubrique_id+'_'+memo_saisie_objet+'_';
-          var i_fin = (memo_page_colonne!='reussite') ? 4 : 3 ;
-          for( var i=1 ; i<=i_fin ; i++ )
+          for( var i=1 ; i<5 ; i++ )
           {
-            $('#'+id_debut+i).html('<label for="f_position_'+i+'"><input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" /></label>');
+            $('#'+id_debut+i).html('<label for="f_position_'+i+'" style="padding:2em 3em;"><input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" /></label>');
           }
           var formulaire_saisie = '<div><button id="valider_precedent" type="button" class="valider_prev" title="Valider & Précédent">&nbsp;</button> <button id="valider" type="button" class="valider" title="Valider">&nbsp;</button> <button id="valider_suivant" type="button" class="valider_next" title="Valider & Suivant">&nbsp;</button></div>'
                                 + '<div><button id="annuler_precedent" type="button" class="annuler_prev" title="Annuler & Précédent">&nbsp;</button> <button id="annuler" type="button" class="annuler" title="Annuler">&nbsp;</button> <button id="annuler_suivant" type="button" class="annuler_next" title="Annuler & Suivant">&nbsp;</button></div>'
@@ -957,8 +957,7 @@ $(document).ready
           }
           memo_html = memo_conteneur.parent().html();
           var id_debut = memo_rubrique_type+'_'+memo_rubrique_id+'_'+memo_saisie_objet+'_';
-          var i_fin = (memo_page_colonne!='reussite') ? 4 : 3 ;
-          for( var i=i_debut ; i<i_fin ; i++ )
+          for( var i=i_debut ; i<5 ; i++ )
           {
             $('#'+id_debut+i).html('<label for="f_position_'+i+'" style="padding:2em 3em;"><input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" /></label>');
           }
@@ -990,7 +989,7 @@ $(document).ready
           valeur = (isNaN(valeur)) ? '' : valeur ;
           $('#f_'+memo_saisie_objet).focus().val(valeur);
         }
-        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') || (memo_page_colonne=='reussite') )
+        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') )
         {
           // report d'un positionnement sur une échelle
           if(saisie_contenu!=='')
@@ -1089,7 +1088,7 @@ $(document).ready
           }
         }
         // positionnement sur une échelle
-        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') || (memo_page_colonne=='reussite') )
+        else if( (memo_page_colonne=='objectif') || (memo_page_colonne=='position') || (memo_page_colonne=='maitrise') )
         {
           position = $("input[name=f_position]:checked").val();
           if(typeof(position)=='undefined')
@@ -1148,8 +1147,7 @@ $(document).ready
                   {
                     var i_debut = 1;
                   }
-                  var i_fin = (memo_page_colonne!='reussite') ? 4 : 3 ;
-                  for( var i=i_debut ; i<=i_fin ; i++ )
+                  for( var i=i_debut ; i<5 ; i++ )
                   {
                     $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
                   }
@@ -1181,10 +1179,10 @@ $(document).ready
         memo_saisie_id  = memo_bouton.parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
-        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco | enscompl | attitude
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements | saisiejointure
-        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise | reussite
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise
         // Contenu de la saisie existante
         if(memo_rubrique_type=='viesco')
         {
@@ -1243,8 +1241,7 @@ $(document).ready
                   {
                     var i_debut = 1;
                   }
-                  var i_fin = (memo_page_colonne!='reussite') ? 4 : 3 ;
-                  for( var i=i_debut ; i<=i_fin ; i++ )
+                  for( var i=i_debut ; i<5 ; i++ )
                   {
                     $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
                   }
@@ -1273,10 +1270,10 @@ $(document).ready
         memo_saisie_id  = $(this).parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
-        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco | enscompl | attitude
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // position | appreciation | elements
-        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise | reussite
+        memo_page_colonne  = (memo_saisie_objet=='position') ? tab_ids[3] : '' ; // objectif | position | moyenne | pourcentage | maitrise
         // Désactiver les autres boutons d'action
         $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',true);
         $.ajax
@@ -1321,8 +1318,7 @@ $(document).ready
                   {
                     var i_debut = 1;
                   }
-                  var i_fin = (memo_page_colonne!='reussite') ? 4 : 3 ;
-                  for( var i=i_debut ; i<=i_fin ; i++ )
+                  for( var i=i_debut ; i<5 ; i++ )
                   {
                     $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+i).html(responseJSON['td_'+i]);
                   }
@@ -1658,7 +1654,7 @@ $(document).ready
         memo_saisie_id  = $(this).parent().attr('data-id');
         memo_objet_id   = memo_conteneur.attr('id');
         var tab_ids     = memo_objet_id.split('_');
-        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco | enscompl | attitude
+        memo_rubrique_type = tab_ids[0]; // eval | socle | epi | ap | parcours | bilan | viesco
         memo_rubrique_id   = parseInt( tab_ids[1] , 10 );
         memo_saisie_objet  = tab_ids[2]; // appreciation
         var prof_id        = parseInt( tab_ids[3] , 10 );
@@ -1823,7 +1819,6 @@ $(document).ready
       {
         var id = $(this).attr('data-id');
         $.fancybox( { 'href':'#detail_'+id , onStart:function(){$('#detail_'+id).css("display","block");} , onClosed:function(){$('#detail_'+id).css("display","none");} , 'centerOnScroll':true , 'minWidth':600 } );
-        return false;
       }
     );
 

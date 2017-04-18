@@ -540,11 +540,7 @@ foreach($tab_classe as $classe_id => $tab)
         // images action : tamponner
         if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
         {
-          if( $page_ref=='cycle1' )
-          {
-            $icone_tampon = '<q class="tamponner_non" title="Sans objet pour ce bilan (pas de synthèse à saisir)."></q>';
-          }
-          else if(in_array($etat,array('3mixte','4synthese')))
+          if(in_array($etat,array('3mixte','4synthese')))
           {
             $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($periode!='college') ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Saisies de synthèse sans objet pour ce document."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
           }

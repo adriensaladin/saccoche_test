@@ -42,7 +42,7 @@ $liste_matiere_id = implode(',',$tab_matiere_id);
 $tab_objet  = array('modifier','tamponner','voir'); // "voir" car on peut corriger une appréciation dans ce mode
 $tab_action = array('initialiser','charger','ajouter_saisie','modifier_saisie','supprimer_saisie','recalculer_saisie','corriger_faute');
 $tab_mode  = array('texte','graphique');
-$tab_rubrique_type = array('eval','socle','epi','ap','parcours','bilan','viesco','enscompl','attitude');
+$tab_rubrique_type = array('eval','socle','epi','ap','parcours','bilan','viesco','enscompl');
 $tab_saisie_objet = array('position','appreciation','elements','saisiejointure');
 
 // On vérifie les paramètres principaux
@@ -128,7 +128,7 @@ if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
 {
   // Vérif saisie
-  $test_pb_saisie   = ( (($saisie_objet=='appreciation')&&!$appreciation) || (($saisie_objet=='elements')&&!$elements) || (in_array($page_colonne,array('objectif','position'))&&!in_array($position,array(1,2,3,4))) || (($page_colonne=='reussite')&&!in_array($position,array(1,2,3))) ) ? TRUE : FALSE ;
+  $test_pb_saisie   = ( (($saisie_objet=='appreciation')&&!$appreciation) || (($saisie_objet=='elements')&&!$elements) || (in_array($page_colonne,array('objectif','position'))&&!in_array($position,array(1,2,3,4))) ) ? TRUE : FALSE ;
   $test_pb_position = ( ($saisie_objet=='position') && ( ($position<0) || !$rubrique_id || !in_array($rubrique_type,array('eval','socle','enscompl')) || ($ACTION=='tamponner') ) ) ? TRUE : FALSE ;
   $test_pb_maitrise = ( ($page_colonne=='maitrise') && ( !in_array($position,array(0,1,2,3,4)) || ( !$position && ($rubrique_id!=12) /*dispensé*/ ) || ( ($position<3) && ($rubrique_type=='enscompl') ) ) ) ? TRUE : FALSE ;
   if( ( ($ACTION=='modifier_saisie') && !$saisie_id ) || $test_pb_saisie || $test_pb_position || $test_pb_maitrise )
@@ -164,7 +164,7 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
     $saisie_valeur = round($position*5,1);
     $affich_note = round($position,1);
   }
-  else if(in_array($page_colonne,array('objectif','position','maitrise','reussite')))
+  else if(in_array($page_colonne,array('objectif','position','maitrise')))
   {
     if( $position )
     {
@@ -202,7 +202,7 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
     $saisie_valeur = elements_programme_extraction( $saisie_valeur , 50 /*nb_caract_max_par_colonne*/ , 'html' /*objet_retour*/ );
     Json::end( TRUE , '<div class="elements">'.$saisie_valeur.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_eval_txt).$bouton_modifier.$bouton_supprimer.$bouton_generer.'</div>' );
   }
-  else if( in_array($rubrique_type,array('eval','attitude')) && ($saisie_objet=='appreciation') )
+  else if( ($rubrique_type=='eval') && ($saisie_objet=='appreciation') )
   {
     Json::end( TRUE , '<div class="appreciation">'.$saisie_valeur.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_eval_txt).$bouton_modifier.$bouton_supprimer.$bouton_generer.'</div>' );
   }
@@ -210,7 +210,7 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   {
     Json::end( TRUE , '<div class="position">'.$affich_note.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine_position).$bouton_modifier_position.$bouton_supprimer_position.$bouton_generer_position.'</div>' );
   }
-  else if( in_array($rubrique_type,array('eval','socle','enscompl')) && in_array($page_colonne,array('objectif','position','maitrise','reussite')) ) // forcément 'maitrise' pour 'enscompl'
+  else if( in_array($rubrique_type,array('eval','socle','enscompl')) && in_array($page_colonne,array('objectif','position','maitrise')) ) // forcément 'maitrise' pour 'enscompl'
   {
     if($rubrique_type=='enscompl')
     {
@@ -225,8 +225,7 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
     {
       $id_debut = 1;
     }
-    $id_fin = ($page_colonne!='reussite') ? 4 : 3 ;
-    for( $id=$id_debut ; $id<=$id_fin ; $id++ )
+    for( $id=$id_debut ; $id<5 ; $id++ )
     {
       $texte = ($id==$position) ? '<b>X</b>' : '' ;
       Json::add_row( 'td_'.$id , $texte );
@@ -290,7 +289,7 @@ if($ACTION=='supprimer_saisie')
   {
     Json::end( TRUE , '<div class="elements">'.$saisie_eval_danger.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter.$bouton_generer.'</div>' );
   }
-  else if( in_array($rubrique_type,array('eval','attitude')) && ($saisie_objet=='appreciation') )
+  else if( ($rubrique_type=='eval') && ($saisie_objet=='appreciation') )
   {
     Json::end( TRUE , '<div class="appreciation">'.$saisie_eval_danger.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter.$bouton_generer.'</div>' );
   }
@@ -299,7 +298,7 @@ if($ACTION=='supprimer_saisie')
     $saisie = '-';
     Json::end( TRUE , '<div class="position">'.$saisie.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_ajouter_position.$bouton_generer_position.'</div>' );
   }
-  else if( in_array($rubrique_type,array('eval','socle','enscompl')) && in_array($page_colonne,array('objectif','position','maitrise','reussite')) ) // forcément 'maitrise' pour 'enscompl'
+  else if( in_array($rubrique_type,array('eval','socle','enscompl')) && in_array($page_colonne,array('objectif','position','maitrise')) ) // forcément 'maitrise' pour 'enscompl'
   {
     if($rubrique_type=='enscompl')
     {
@@ -314,8 +313,7 @@ if($ACTION=='supprimer_saisie')
     {
       $id_debut = 1;
     }
-    $id_fin = ($page_colonne!='reussite') ? 4 : 3 ;
-    for( $id=$id_debut ; $id<=$id_fin ; $id++ )
+    for( $id=$id_debut ; $id<5 ; $id++ )
     {
       Json::add_row( 'td_'.$id , '' );
     }
@@ -391,7 +389,7 @@ if($ACTION=='recalculer_saisie')
     $note = ($PAGE_COLONNE=='moyenne') ? round(($contenu/5),1) : $contenu.'&nbsp;%' ;
     Json::end( TRUE , '<div class="position">'.$note.'</div><div class="notnow" data-id="'.$saisie_id.'">'.echo_origine($origine).$bouton_modifier_position.$bouton_supprimer_position.'</div>' );
   }
-  else if( in_array($rubrique_type,array('eval','socle')) && in_array($page_colonne,array('objectif','position','maitrise','reussite')) ) // pas d'automatisation pour 'enscompl'
+  else if( in_array($rubrique_type,array('eval','socle')) && in_array($page_colonne,array('objectif','position','maitrise')) ) // pas d'automatisation pour 'enscompl'
   {
     $indice = OutilBilan::determiner_degre_maitrise($contenu); // pas de valeur "dispensé" qui puisse être générée automatiquement
     $origine .= ' : '.$contenu.' %';
@@ -403,8 +401,7 @@ if($ACTION=='recalculer_saisie')
     {
       $id_debut = 1;
     }
-    $id_fin = ($page_colonne!='reussite') ? 4 : 3 ;
-    for( $id=$id_debut ; $id<=$id_fin ; $id++ )
+    for( $id=$id_debut ; $id<5 ; $id++ )
     {
       $texte = ($id==$indice) ? '<b>X</b>' : '' ;
       Json::add_row( 'td_'.$id , $texte );

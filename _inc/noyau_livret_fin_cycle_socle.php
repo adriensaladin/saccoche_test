@@ -110,6 +110,7 @@ foreach($DB_TAB as $DB_ROW)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $cycle_id = substr($PAGE_REF,-1);
+
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos('cycle'.$cycle_id);
 foreach($DB_TAB as $DB_ROW)
 {
@@ -228,14 +229,15 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       }
       $tab_infos_entete = 
         array(
-          'tab_menesr_logo'          => $tab_menesr_logo ,
-          'tab_etabl_coords'         => $tab_etabl_coords ,
-          'tab_etabl_logo'           => $tab_etabl_logo ,
-          'tab_bloc_titres'          => $tab_bloc_titres ,
-          'tab_adresse'              => $tab_adresse ,
-          'tag_date_heure_initiales' => $tag_date_heure_initiales ,
-          'eleve_genre'              => $eleve_genre ,
-          'date_naissance'           => $date_naissance ,
+          'tab_menesr_logo'           => $tab_menesr_logo ,
+          'tab_etabl_coords'          => $tab_etabl_coords ,
+          'tab_etabl_logo'            => $tab_etabl_logo ,
+      //  'etabl_coords_bloc_hauteur' => $etabl_coords_bloc_hauteur ,
+          'tab_bloc_titres'           => $tab_bloc_titres ,
+          'tab_adresse'               => $tab_adresse ,
+          'tag_date_heure_initiales'  => $tag_date_heure_initiales ,
+          'eleve_genre'               => $eleve_genre ,
+          'date_naissance'            => $date_naissance ,
         ) ;
       $releve_PDF->entete( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , 0 /*nb_lignes_eleve_eval_total*/ );
       if($is_archive)

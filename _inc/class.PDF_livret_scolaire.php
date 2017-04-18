@@ -117,24 +117,12 @@ class PDF_livret_scolaire extends PDF
   // Une première ligne de blocs de 3cm de haut : Logo EN + Infos établ + Logo niveau livret + Logo établ
   private function entete_blocs_premiere_ligne( $hauteur_blocs_ligne1 , $tab_menesr_logo , $tab_etabl_coords , $tab_etabl_logo )
   {
-    if($this->PAGE_REF!='cycle1')
-    {
-      // largeur (mm) : 5 marge + 20 logo EN + 2.5 espace + 72.5 infos établ + 2.5 espace + 40 logo livret + 2.5 espace + 60 logo établ + 5 marge = 210
-      $largeur_logo_en     = 20; // non modifiable
-      $largeur_info_etabl  = 72.5;
-      $largeur_logo_livret = 40; // non modifiable
-      $largeur_logo_etabl  = 60;
-      $largeur_espace      = 2.5;
-    }
-    else
-    {
-      // largeur (mm) : 5 marge + 20 logo EN + 2.5 espace + 72.5 infos établ + 2.5 espace + 60 logo établ + 2.5 espace + 127 blocs titres + 5 marge = 297
-      $largeur_logo_en     = 20; // non modifiable
-      $largeur_info_etabl  = 72.5;
-      $largeur_logo_etabl  = 60;
-      $largeur_bloc_titre  = 127;
-      $largeur_espace      = 2.5;
-    }
+    // largeur (mm) : 5 marge + 20 logo + 2.5 espace + 72.5 infos établ + 2.5 espace + 40 logo livret + 2.5 espace + 60 logo établ + 5 marge = 210
+    $largeur_logo_en     = 20; // non modifiable
+    $largeur_info_etabl  = 72.5;
+    $largeur_logo_livret = 40; // non modifiable
+    $largeur_logo_etabl  = 60;
+    $largeur_espace      = 2.5;
     // Logo EN : 542 x 791 donc 2,05 cm x 3cm
     $memoX = $this->GetX();
     $memoY = $this->GetY();
@@ -155,34 +143,31 @@ class PDF_livret_scolaire extends PDF
     }
     $this->SetXY( $memoX+$largeur_info_etabl+$largeur_espace , $memoY );
     // Logo niveau livret
-    if($this->PAGE_REF!='cycle1')
+    $memoX = $this->GetX();
+    $taille_case_livret_ext = $largeur_logo_livret / 4; // 10
+    $taille_case_livret_int = $taille_case_livret_ext - 1; // 9
+    $rayon = ($taille_case_livret_int - 2) / 2; // 3.5
+    $this->SetFont('Arial' , 'B' , 10);
+    $this->choisir_couleur_texte('blanc');
+    $this->choisir_couleur_trait('blanc');
+    foreach($this->tab_livret_damier_cases as $num_ligne => $tab_ligne)
     {
-      $memoX = $this->GetX();
-      $taille_case_livret_ext = $largeur_logo_livret / 4; // 10
-      $taille_case_livret_int = $taille_case_livret_ext - 1; // 9
-      $rayon = ($taille_case_livret_int - 2) / 2; // 3.5
-      $this->SetFont('Arial' , 'B' , 10);
-      $this->choisir_couleur_texte('blanc');
-      $this->choisir_couleur_trait('blanc');
-      foreach($this->tab_livret_damier_cases as $num_ligne => $tab_ligne)
+      foreach($tab_ligne as $num_colonne => $tab_case)
       {
-        foreach($tab_ligne as $num_colonne => $tab_case)
+        $this->SetXY( $memoX+$num_colonne*$taille_case_livret_ext , $memoY+$num_ligne*$taille_case_livret_ext );
+        $couleur_fond = isset($tab_case[$this->PAGE_REF]) ? 'livret_'.$tab_case[$this->PAGE_REF] : 'livret_gris' ;
+        $this->choisir_couleur_fond($couleur_fond);
+        $this->Rect( $this->GetX() , $this->GetY() , $taille_case_livret_int /*largeur*/ , $taille_case_livret_int /*hauteur*/ , 'F' /*fill*/ );
+        if(!$num_colonne)
         {
-          $this->SetXY( $memoX+$num_colonne*$taille_case_livret_ext , $memoY+$num_ligne*$taille_case_livret_ext );
-          $couleur_fond = isset($tab_case[$this->PAGE_REF]) ? 'livret_'.$tab_case[$this->PAGE_REF] : 'livret_gris' ;
-          $this->choisir_couleur_fond($couleur_fond);
-          $this->Rect( $this->GetX() , $this->GetY() , $taille_case_livret_int /*largeur*/ , $taille_case_livret_int /*hauteur*/ , 'F' /*fill*/ );
-          if(!$num_colonne)
-          {
-            $this->Circle( $this->GetX()+1+$rayon , $this->GetY()+1+$rayon , $rayon /*rayon*/ , 'D' /*draw*/ );
-          }
-          $this->CellFit( $taille_case_livret_int /*bloc_largeur*/ , $taille_case_livret_int+0.5 /*ligne_hauteur*/ , To::pdf($tab_case['txt']) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+          $this->Circle( $this->GetX()+1+$rayon , $this->GetY()+1+$rayon , $rayon /*rayon*/ , 'D' /*draw*/ );
         }
+        $this->CellFit( $taille_case_livret_int /*bloc_largeur*/ , $taille_case_livret_int+0.5 /*ligne_hauteur*/ , To::pdf($tab_case['txt']) , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
       }
-      $this->choisir_couleur_texte('noir');
-      $this->choisir_couleur_trait('noir');
-      $this->SetXY( $memoX+$largeur_logo_livret+$largeur_espace , $memoY );
     }
+    $this->choisir_couleur_texte('noir');
+    $this->choisir_couleur_trait('noir');
+    $this->SetXY( $memoX+$largeur_logo_livret+$largeur_espace , $memoY );
     // Logo établ
     $memoX = $this->GetX();
     if($tab_etabl_logo)
@@ -206,17 +191,10 @@ class PDF_livret_scolaire extends PDF
         $largeur_dispo = $largeur_logo_etabl - $reduc_largeur;
         $hauteur_dispo = $hauteur_blocs_ligne1;
       }
-      $largeur_logo_etabl = $this->afficher_image( $largeur_dispo , $hauteur_dispo , $tab_etabl_logo , 'logo_seul' );
+      $largeur_logo = $this->afficher_image( $largeur_dispo , $hauteur_dispo , $tab_etabl_logo , 'logo_seul' );
     }
     // Repositionnement
-    if($this->PAGE_REF!='cycle1')
-    {
-      $this->SetXY( $this->marge_gauche , $this->marge_haut+$hauteur_blocs_ligne1 );
-    }
-    else
-    {
-      $this->SetXY( $memoX+$largeur_logo_etabl , $this->marge_haut );
-    }
+    $this->SetXY( $this->marge_gauche , $this->marge_haut+$hauteur_blocs_ligne1 );
   }
 
   private function entete_bloc_adresse( $hauteur_blocs_ligne1 , $hauteur_blocs_ligne2 , $tab_adresse )
@@ -310,8 +288,7 @@ class PDF_livret_scolaire extends PDF
     $tab_bloc_titres[3] = $this->eleve_nom.' '.$this->eleve_prenom.' ('.$tab_bloc_titres[3].')';
     $couleur_fond = ($this->couleur=='oui') ? 'livret_bleu_clair' : ( ($this->fond) ? 'gris_clair' : 'blanc' ) ;
     $this->choisir_couleur_fond($couleur_fond);
-    $pos_x = ($this->PAGE_REF!='cycle1') ? $this->marge_gauche : $this->GetX() ;
-    $this->SetXY( $pos_x , $this->marge_haut + $hauteur_blocs_ligne1 + $marge_haut_bloc_titre + 1 );
+    $this->SetXY( $this->marge_gauche , $this->marge_haut + $hauteur_blocs_ligne1 + $marge_haut_bloc_titre + 1 );
     $this->Rect( $this->GetX() , $this->GetY() , $largeur_bloc_titre , $bloc_hauteur , 'DF' /*DrawFill*/ );
     $this->SetXY( $this->GetX() , $this->GetY() + 0.25*$ligne_hauteur );
     foreach($tab_bloc_titres as $key => $ligne_titre)
@@ -336,22 +313,14 @@ class PDF_livret_scolaire extends PDF
     $this->entete_blocs_premiere_ligne( $hauteur_blocs_ligne1 , $tab_menesr_logo , $tab_etabl_coords , $tab_etabl_logo );
     $this->doc_titre = $tab_bloc_titres[0].' - '.$tab_bloc_titres[1];
     // Bloc adresse en positionnement contraint ou en positionnement libre
-    if($this->PAGE_REF!='cycle1')
+    if(is_array($tab_adresse))
     {
-      if(is_array($tab_adresse))
-      {
-        list( $hauteur_blocs_ligne2 , $largeur_bloc_titre ) = $this->entete_bloc_adresse( $hauteur_blocs_ligne1 , $hauteur_blocs_ligne2 , $tab_adresse );
-      }
-      else
-      {
-        $hauteur_blocs_ligne2 = 25;
-        $largeur_bloc_titre = 200 ;
-      }
+      list( $hauteur_blocs_ligne2 , $largeur_bloc_titre ) = $this->entete_bloc_adresse( $hauteur_blocs_ligne1 , $hauteur_blocs_ligne2 , $tab_adresse );
     }
     else
     {
-      $hauteur_blocs_ligne1 = 3.5; /*reduc_hauteur*/
-      $largeur_bloc_titre = 127 ;
+      $hauteur_blocs_ligne2 = 25;
+      $largeur_bloc_titre = 200 ;
     }
     // Bloc titres
     $this->entete_bloc_titres( $largeur_bloc_titre , $hauteur_blocs_ligne1 , $hauteur_blocs_ligne2 , $tab_bloc_titres );
@@ -632,8 +601,8 @@ class PDF_livret_scolaire extends PDF
             }
           }
         }
-        // positionnement ligne suivante
         $tab_deja_affiche[$id_premiere_sous_rubrique] = TRUE;
+        // positionnement ligne suivante
         $nextY = ( $nombre_sous_rubriques == 1 ) ? $memoY + $hauteur_rubrique : $memoY + $hauteur_sous_rubrique ;
         $this->SetXY( $this->marge_gauche , $nextY );
       }
@@ -650,147 +619,6 @@ class PDF_livret_scolaire extends PDF
     $this->lignes_hauteur = min ( $this->lignes_hauteur , $hauteur_ligne_maximale ) ;
     $this->taille_police  = $this->lignes_hauteur * 2 ; // 5mm de hauteur par ligne donne une taille de 10
     $this->taille_police  = min ( $this->taille_police , 11 ) ; // Au dessus ça fait quand même gros
-  }
-
-  public function bloc_cycle1_eval( $tab_rubriques , $tab_id_rubrique , $tab_saisie )
-  {
-    $tab_deja_affiche = array();
-    $this->SetY( $this->GetY() - 0.5*$this->lignes_hauteur );
-    // Largeur des rubriques ; total = 287 = 297 - 5*2 (marges)
-    $largeur_domaine      = 35;
-    $largeur_sous_domaine = 105;
-    $largeur_position     = 20; // * 3
-    $largeur_appreciation = 87;
-    // Titre
-    $this->bloc_titre( 'eval' , 'Synthèse des acquis scolaires à la fin de l’école maternelle' );
-    // Première ligne du tableau
-    $entete_hauteur = 2*$this->lignes_hauteur;
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
-    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : ( ($this->fond) ? 'livret_fond_eval' : 'blanc' ) ;
-    $this->choisir_couleur_fond($couleur_fond);
-    $this->CellFit( $largeur_domaine+$largeur_sous_domaine , $entete_hauteur , To::pdf('Domaines d’enseignement') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-    foreach($this->SESSION['LIVRET'] as $id => $tab)
-    {
-      if($tab['USED'])
-      {
-        $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
-        $this->choisir_couleur_fond($couleur_fond);
-        $memoX = $this->GetX();
-        $memoY = $this->GetY();
-        $this->Rect( $memoX , $memoY , $largeur_position , $entete_hauteur , 'DF' /*DrawFill*/ );
-        $this->afficher_appreciation( $largeur_position , $entete_hauteur , $this->taille_police , 0.8*$this->lignes_hauteur /*taille_interligne*/ , $tab['LEGENDE'] );
-        $this->SetXY( $memoX + $largeur_position , $memoY );
-        // $this->CellFit( $largeur_position , $entete_hauteur , To::pdf($) , 1 /*bordure*/ , 0 , 'C' /*alignement*/ , TRUE /*fond*/ );
-      }
-    }
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
-    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
-    $this->choisir_couleur_fond($couleur_fond);
-    $this->CellFit( $largeur_appreciation , $entete_hauteur , To::pdf('Points forts et besoins à prendre en compte') , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
-    $this->choisir_couleur_fond($couleur_fond);
-    $this->SetFont('Arial' , '' , $this->taille_police);
-    // On passe en revue les rubriques...
-    foreach($tab_rubriques as $livret_rubrique_id => $tab_rubrique)
-    {
-      // récup appréciation
-      $id_rubrique_appreciation = $tab_rubriques[$livret_rubrique_id]['appreciation'];
-      $appreciation_info = isset($tab_saisie[$id_rubrique_appreciation]['appreciation']) ? $tab_saisie[$id_rubrique_appreciation]['appreciation'] : $this->tab_saisie_initialisation ;
-      // récup positionnement
-      $id_rubrique_position = $tab_rubriques[$livret_rubrique_id]['position'];
-      $position_info = isset($tab_saisie[$id_rubrique_position]['position']) ? $tab_saisie[$id_rubrique_position]['position'] : $this->tab_saisie_initialisation ;
-      // ensuite...
-      $id_premiere_sous_rubrique = $tab_rubriques[$livret_rubrique_id]['appreciation'];
-      $nombre_sous_rubriques = count($tab_id_rubrique['appreciation'][$id_premiere_sous_rubrique]);
-      $hauteur_sous_rubrique = ($nombre_sous_rubriques>2) ? $this->lignes_hauteur : 2*$this->lignes_hauteur ;
-      $hauteur_rubrique = $nombre_sous_rubriques*$hauteur_sous_rubrique;
-      // Domaine d’enseignement
-      $memoX = $this->GetX();
-      $memoY = $this->GetY();
-      // domaine et / ou sous-domaine
-      if(isset($tab_deja_affiche[$id_premiere_sous_rubrique]))
-      {
-        $this->SetXY( $memoX + $largeur_domaine , $memoY_sous_rubrique_suivante );
-        $this->afficher_sous_domaine( $largeur_sous_domaine , $hauteur_sous_rubrique , $tab_rubrique['sous_partie'] );
-        // $this->CellFit( $largeur_domaine , $hauteur_sous_rubrique , To::pdf($tab_rubrique['sous_partie']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
-      }
-      else
-      {
-        $this->afficher_sous_domaine( $largeur_domaine      , $hauteur_rubrique      , $tab_rubrique['partie'] );
-        $this->afficher_sous_domaine( $largeur_sous_domaine , $hauteur_sous_rubrique , $tab_rubrique['sous_partie'] );
-        // $this->CellFit( $largeur_domaine      , $hauteur_rubrique      , To::pdf($tab_rubrique['partie'])      , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
-        // $this->CellFit( $largeur_sous_domaine , $hauteur_sous_rubrique , To::pdf($tab_rubrique['sous_partie']) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
-      }
-      $memoY_sous_rubrique_suivante = $this->GetY() + $hauteur_sous_rubrique ;
-      // Positionnement
-      $memoX = $this->GetX();
-      $memoY = $this->GetY();
-      $pourcentage = !is_null($position_info['saisie_valeur']) ? $position_info['saisie_valeur'] : FALSE ;
-      $indice = OutilBilan::determiner_degre_maitrise($pourcentage,$this->SESSION['LIVRET']);
-      $taille_croix = min( 12 , 1.5*$this->taille_police );
-      $this->SetFont('Arial' , 'B' , $taille_croix);
-      foreach($this->SESSION['LIVRET'] as $id => $tab)
-      {
-        if($tab['USED'])
-        {
-          $texte = ($id==$indice) ? 'X' : '' ;
-          $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
-          $this->choisir_couleur_fond($couleur_fond);
-          $this->Cell( $largeur_position , $hauteur_sous_rubrique , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-        }
-      }
-      $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
-      $this->choisir_couleur_fond($couleur_fond);
-      $this->SetFont('Arial' , '' , $this->taille_police);
-      // Points forts et besoins à prendre en compte
-      $memoX = $this->GetX();
-      $memoY = $this->GetY();
-      if(!isset($tab_deja_affiche[$id_rubrique_appreciation]))
-      {
-        $appreciation = ($appreciation_info['saisie_valeur']) ? $appreciation_info['saisie_valeur'] : '' ;
-        $this->Rect( $memoX , $memoY , $largeur_appreciation , $hauteur_rubrique , 'DF' /*DrawFill*/ );
-        $this->afficher_appreciation( $largeur_appreciation , $hauteur_rubrique , $this->taille_police , 0.8*$this->lignes_hauteur /*taille_interligne*/ , $appreciation );
-        $nextY = $memoY + $hauteur_rubrique;
-      }
-      else
-      {
-        $nextY = $memoY + $hauteur_sous_rubrique;
-      }
-      // positionnement ligne suivante
-      $tab_deja_affiche[$id_premiere_sous_rubrique] = TRUE;
-      $this->SetXY( $this->marge_gauche , $nextY );
-    }
-  }
-
-  public function bloc_cycle1_attitude( $tab_rubriques , $tab_saisie )
-  {
-    // Nouvelle page
-    $this->rappel_eleve_page( FALSE /*$anticipe*/ );
-    $this->SetFont('Arial' , 'B' , $this->taille_police);
-    // Largeur des rubriques ; total = 287 = 297 - 5*2 (marges)
-    $largeur_domaine      = 140; // domaine et sous-domaine précédents
-    $largeur_appreciation = 147; // positionnement et appréciation précédents
-    // Première ligne du tableau
-    $entete_hauteur = 2*$this->lignes_hauteur;
-    $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_eval' : 'blanc' ;
-    $this->choisir_couleur_fond($couleur_fond);
-    $this->CellFit( $largeur_domaine      , $entete_hauteur , To::pdf('Apprendre ensemble et vivre ensemble')       , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-    $this->CellFit( $largeur_appreciation , $entete_hauteur , To::pdf('Observations réalisées par l’enseignant(e)') , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-    $this->SetFont('Arial' , '' , $this->taille_police);
-    // On passe en revue les rubriques...
-    $hauteur_rubrique = 3*$this->lignes_hauteur;
-    foreach($tab_rubriques as $livret_attitude_id => $attitude_intitule)
-    {
-      $this->CellFit( $largeur_domaine , $hauteur_rubrique , To::pdf($attitude_intitule) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
-      // récup appréciation
-      $appreciation_info = isset($tab_saisie[$livret_attitude_id]['appreciation']) ? $tab_saisie[$livret_attitude_id]['appreciation'] : $this->tab_saisie_initialisation ;
-      $appreciation = ($appreciation_info['saisie_valeur']) ? $appreciation_info['saisie_valeur'] : '' ;
-      $memoX = $this->GetX();
-      $memoY = $this->GetY();
-      $this->Rect( $memoX , $memoY , $largeur_appreciation , $hauteur_rubrique , 'DF' /*DrawFill*/ );
-      $this->afficher_appreciation( $largeur_appreciation , $hauteur_rubrique , $this->taille_police , 0.8*$this->lignes_hauteur /*taille_interligne*/ , $appreciation );
-      $this->SetXY( $this->marge_gauche , $memoY + $hauteur_rubrique );
-    }
   }
 
   public function bloc_socle( $tab_rubriques , $tab_saisie_eleve_socle )
@@ -1186,7 +1014,7 @@ class PDF_livret_scolaire extends PDF
     $this->bloc_titre( 'viesco' , 'Communication avec la famille' );
     // calculs
     $hauteur_viesco = ( max( $nb_instit , 3 ) + 2 )*$this->lignes_hauteur; // hauteur minimale + ligne intro + ligne date
-    $hauteur_signature = $hauteur_viesco;
+    $hauteur_signature = $hauteur_viesco; // 2 lignes de moins pour chef établ + date
     $largeur_sousbloc_signature = $this->page_largeur_moins_marges / 4;
     $largeur_sousbloc_saisie    = $this->page_largeur_moins_marges / 4;
     $largeur_sousbloc_parent    = $this->page_largeur_moins_marges / 2;
@@ -1242,11 +1070,6 @@ class PDF_livret_scolaire extends PDF
   public function bloc_cycle_signatures( $DATE_VERROU , $texte_chef_etabl , $tab_profs , $tab_signature_chef , $tab_signature_prof , $tab_parent_lecture )
   {
     $this->SetXY( $this->marge_gauche , $this->GetY() + 1.5*$this->lignes_hauteur );
-    if($this->PAGE_REF=='cycle1')
-    {
-      // Titre
-      $this->bloc_titre( 'viesco' , 'Communication avec la famille' );
-    }
     // couleur de fond (pas de titre)
     $couleur_fond = ($this->couleur=='oui') ? 'livret_fond_viesco' : 'blanc' ;
     $this->choisir_couleur_fond($couleur_fond);
@@ -1332,13 +1155,6 @@ class PDF_livret_scolaire extends PDF
         $this->CellFit( $largeur_bloc , $this->lignes_hauteur , To::pdf($parent_info) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
       }
     }
-  }
-
-  public function cycle1_ref_eduscol()
-  {
-    $this->SetXY( $this->marge_gauche , $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur );
-    $this->SetFont('Arial' , '' , $this->taille_police * 0.75 );
-    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf('Ministère de l’Éducation nationale, de l’Enseignement supérieur et de la Recherche – Janvier 2016 – http://eduscol.education.fr/ressources-maternelle') , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
   }
 
 }

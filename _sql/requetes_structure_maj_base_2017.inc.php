@@ -369,30 +369,6 @@ if($version_base_structure_actuelle=='2017-03-30')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2017-04-03 => 2017-04-18
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2017-04-03')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2017-04-18';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    if(empty($reload_sacoche_livret_export))
-    {
-      // Modification de clef après retrait de doublons qui pourraient poser pb
-      $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT user_id,livret_page_periodicite,jointure_periode, COUNT(*) AS nombre FROM sacoche_livret_export GROUP BY user_id,livret_page_periodicite,jointure_periode HAVING nombre>1');
-      foreach($DB_TAB as $DB_ROW)
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_livret_export WHERE user_id='.$DB_ROW['user_id'].' AND livret_page_periodicite="'.$DB_ROW['livret_page_periodicite'].'" AND jointure_periode="'.$DB_ROW['jointure_periode'].'" ' );
-      }
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_export DROP INDEX export_id ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_export ADD UNIQUE export_id ( user_id , livret_page_periodicite , jointure_periode )' );
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

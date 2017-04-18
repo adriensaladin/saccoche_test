@@ -59,7 +59,7 @@ foreach($DB_TAB as $DB_ROW)
 }
 
 // Javascript
-Layout::add( 'js_inline_before' , 'var SERVEUR_LSU_PDF = "'.SERVEUR_LSU_PDF.'";' );
+Layout::add( 'js_inline_before' , 'var URL_DIR_PDF = "'.URL_DIR_PDF.'";' );
 ?>
 
 <ul class="puce">

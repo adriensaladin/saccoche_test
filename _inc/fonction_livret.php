@@ -1236,8 +1236,6 @@ function rubrique_texte_intro( $rubrique_type , $for_id=0 , $bilan_type_etabl=''
       return 'Maîtrise des composantes du socle en fin de cycle '.$for_id;
     case 'eval' :
       return ($for_id) ? 'Suivi des acquis scolaires de l’élève' : 'Suivi des acquis de la classe' ;
-    case 'cycle1' :
-      return 'Synthèse des acquis scolaires à la fin de l’école maternelle';
     case 'epi' :
       return ($for_id) ? 'Implication de l’élève : ' : 'Projet réalisé : ' ;
     case 'ap' :

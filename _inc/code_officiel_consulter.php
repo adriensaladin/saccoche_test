@@ -82,11 +82,6 @@ if( (in_array($BILAN_ETAT,array('0absence','1vide'))) || ( ($BILAN_ETAT=='5compl
   Json::end( FALSE , 'Bilan interdit d\'accès pour cette action !' );
 }
 
-if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
-{
-  $is_bouton_test_impression = ($eleve_id) ? TRUE : FALSE ;
-}
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage des données d'un élève indiqué (si initialisation, alors le groupe classe)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,6 +129,11 @@ if($ACTION=='initialiser')
     }
     calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe_id , $liste_eleve_id , '' /*liste_matiere_id*/ , $_SESSION['OFFICIEL']['BULLETIN_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_CLASSE'] , $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_GENERALE'] );
   }
+}
+
+if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_IMPRESSION_PDF'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , $classe_id /*matiere_id_or_groupe_id_a_tester*/ ) )
+{
+  $is_bouton_test_impression = ($eleve_id) ? TRUE : FALSE ;
 }
 
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné

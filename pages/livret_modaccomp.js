@@ -232,39 +232,42 @@ $(document).ready
     // Initialisation : charger le tableau
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#ajax_msg').addClass('loader').html("En cours&hellip;");
-    $.ajax
-    (
-      {
-        type : 'POST',
-        url : 'ajax.php?page='+PAGE,
-        data : 'csrf='+CSRF+'&f_action=initialiser'+'&only_groupes_id='+only_groupes_id,
-        dataType : 'json',
-        error : function(jqXHR, textStatus, errorThrown)
+    if( typeof(only_groupes_id) !== 'undefined' )
+    {
+      $('#ajax_msg').addClass('loader').html("En cours&hellip;");
+      $.ajax
+      (
         {
-          $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-          return false;
-        },
-        success : function(responseJSON)
-        {
-          initialiser_compteur();
-          if(responseJSON['statut']==true)
+          type : 'POST',
+          url : 'ajax.php?page='+PAGE,
+          data : 'csrf='+CSRF+'&f_action=initialiser'+'&only_groupes_id='+only_groupes_id,
+          dataType : 'json',
+          error : function(jqXHR, textStatus, errorThrown)
           {
-            $('#ajax_msg').removeAttr('class').html("");
-            $('#table_action tbody').prepend(responseJSON['html']);
-            if( typeof(responseJSON['script']) !== 'undefined' )
+            $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+            return false;
+          },
+          success : function(responseJSON)
+          {
+            initialiser_compteur();
+            if(responseJSON['statut']==true)
             {
-              eval( responseJSON['script'] );
+              $('#ajax_msg').removeAttr('class').html("");
+              $('#table_action tbody').prepend(responseJSON['html']);
+              if( typeof(responseJSON['script']) !== 'undefined' )
+              {
+                eval( responseJSON['script'] );
+              }
+              tableau_maj();
             }
-            tableau_maj();
-          }
-          else
-          {
-            $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+            else
+            {
+              $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
+            }
           }
         }
-      }
-    );
+      );
+    }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Suppression d'un dispositif

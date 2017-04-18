@@ -9,7 +9,7 @@ CREATE TABLE sacoche_livret_export (
   jointure_periode        ENUM("","T1","T2","T3","S1","S2") COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Renseigné si livret_page_periodicite = periode ; @see sacoche_periode.periode_livret",
   sacoche_version         VARCHAR(11)                       COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Pour écarter des exports obsolètes si besoin.",
   export_contenu          TEXT                              COLLATE utf8_unicode_ci          DEFAULT NULL,
-  UNIQUE KEY export_id (user_id,livret_page_ref,livret_page_periodicite,jointure_periode),
+  UNIQUE KEY export_id (user_id,livret_page_periodicite,jointure_periode),
   KEY livret_page_ref (livret_page_ref),
   KEY livret_page_periodicite (livret_page_periodicite),
   KEY jointure_periode (jointure_periode)

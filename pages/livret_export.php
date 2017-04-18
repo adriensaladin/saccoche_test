@@ -244,6 +244,10 @@ if($step==1)
       {
         $tab_affich[$classe_id][$periode] = '<td class="hc notnow"">-</td>';
       }
+      else if( $tab_join['page_ref'] == 'cycle1' )
+      {
+        $tab_affich[$classe_id][$periode] = '<td class="hc notnow"">sans objet (hors LSU)</td>';
+      }
       else
       {
         $etat = $tab_join['etat'];

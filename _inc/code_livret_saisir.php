@@ -540,7 +540,10 @@ foreach($DB_TAB as $DB_ROW)
   }
   else
   {
-    $tab_saisie_avant[$eleve_id][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']][$DB_ROW['jointure_periode']] = $DB_ROW['saisie_valeur'];
+    $tab_saisie_avant[$eleve_id][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['jointure_periode']][$DB_ROW['saisie_objet']] = array(
+      'prof_id'       => $DB_ROW['user_id'] ,
+      'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
+    );
   }
 }
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_classe( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '' /*liste_rubrique_type*/ , $classe_id , 0 /*prof_id*/ , TRUE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
@@ -558,7 +561,10 @@ foreach($DB_TAB as $DB_ROW)
   }
   else
   {
-    $tab_saisie_avant[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['saisie_objet']][$DB_ROW['jointure_periode']] = $DB_ROW['saisie_valeur'];
+    $tab_saisie_avant[0][$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$DB_ROW['jointure_periode']][$DB_ROW['saisie_objet']] = array(
+      'prof_id'       => $DB_ROW['user_id'] ,
+      'saisie_valeur' => $DB_ROW['saisie_valeur'] ,
+    );
   }
 }
 

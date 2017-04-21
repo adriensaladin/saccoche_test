@@ -473,8 +473,7 @@ if( ($make_html) || ($make_graph) )
   $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;
   $bouton_print_appr = (!$make_graph)                                       ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
   $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
-  $info_details      = (!$make_graph && !empty($tab_saisie_avant))          ? 'Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail (<a href="#" id="montrer_details">tout montrer</a>).' : '' ;
-  $releve_HTML = (!$make_graph) ? '<div>'.$info_details.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
+  $releve_HTML = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
   // légende
   if( ($PAGE_COLONNE=='objectif') || ($PAGE_COLONNE=='position') )
   {
@@ -557,8 +556,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         else
         {
           $temp_HTML = '';
-          $avant_colspan  = ( !$eleve_id && !$PAGE_MOYENNE_CLASSE ) ? 2 : ( in_array($PAGE_COLONNE,array('objectif','position')) ? 6 : 7 ) ;
-          $avant_td_apres = ( ( $eleve_id || $PAGE_MOYENNE_CLASSE ) && in_array($PAGE_COLONNE,array('objectif','position')) ) ? '<td class="nu"></td>' : '' ;
           // On passe en revue les rubriques...
           foreach($tab_rubriques['eval'] as $livret_rubrique_id => $tab_rubrique)
           {
@@ -601,45 +598,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               $id_premiere_sous_rubrique = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
               if($make_html)
               {
-                // Info saisies périodes antérieures
-                if( isset($tab_saisie_avant[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation']) || isset($tab_saisie_avant[$eleve_id]['eval'][$id_rubrique_position]['position']) )
-                {
-                  $tab_avant_info = array();
-                  if(isset($tab_saisie_avant[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation']))
-                  {
-                    foreach($tab_saisie_avant[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation'] as $jointure_periode => $saisie_valeur)
-                    {
-                      $tab_avant_info[$jointure_periode]['appreciation'] = $saisie_valeur;
-                    }
-                  }
-                  if(isset($tab_saisie_avant[$eleve_id]['eval'][$id_rubrique_position]['position']))
-                  {
-                    foreach($tab_saisie_avant[$eleve_id]['eval'][$id_rubrique_position]['position'] as $jointure_periode => $saisie_valeur)
-                    {
-                      $tab_avant_info[$jointure_periode]['position'] = $saisie_valeur;
-                    }
-                  }
-                  ksort($tab_avant_info);
-                  $tab_periode_liens  = array();
-                  $tab_periode_textes = array();
-                  foreach($tab_avant_info as $jointure_periode => $tab)
-                  {
-                    $note = '-';
-                    $appreciation = '-';
-                    if(isset($tab['position']))
-                    {
-                      $pourcentage = !is_null($tab['position']) ? $tab['position'] : FALSE ;
-                      $note = in_array($PAGE_COLONNE,array('objectif','position')) ? OutilBilan::determiner_degre_maitrise($pourcentage).'/4' : ( ($PAGE_COLONNE=='moyenne') ? round(($pourcentage/5),1).'/20' : $pourcentage.'%' ) ;
-                    }
-                    if(isset($tab['appreciation']))
-                    {
-                      $appreciation = html($tab['appreciation']);
-                    }
-                    $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_eval_'.$livret_rubrique_id.'_'.$jointure_periode.'"></a> '.$tab_periode_livret['periode'.$jointure_periode];
-                    $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_eval_'.$livret_rubrique_id.'_'.$jointure_periode.'" class="appreciation bordertop hide"><b>'.$tab_periode_livret['periode'.$jointure_periode].'&nbsp;:&nbsp;</b>'.$note.' | '.$appreciation.'</div>';
-                  }
-                  $temp_HTML .= '<tr><td class="nu"></td><td colspan="'.$avant_colspan.'" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$avant_td_apres.'</tr>'.NL;
-                }
                 $tab_temp_HTML = array( 'domaine'=>'' , 'elements'=>'' , 'appreciation'=>'' , 'position'=>'' );
                 // Domaine d’enseignement
                 $details = ( $eleve_id && $elements_info['acquis_detail'] ) ? '<div><a href="#" class="voir_detail" data-id="'.$id_rubrique_elements.'">[ détail travaillé ]</a></div><div id="detail_'.$id_rubrique_elements.'" class="hide">'.$elements_info['acquis_detail'].'</div>' : '' ;
@@ -848,24 +806,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 $temp_HTML .= '<div class="epi">';
                 $temp_HTML .= '<div class="b notnow">'.html($tab_epi['titre']).'</div>';
                 $temp_HTML .= '<div class="b notnow">'.html($tab_epi['theme_nom']).'</div>';
-                // Info saisies périodes antérieures
-                if( isset($tab_saisie_avant[$eleve_id]['epi'][$livret_epi_id]['appreciation']) )
-                {
-                  $tab_avant_info = array();
-                  foreach($tab_saisie_avant[$eleve_id]['epi'][$livret_epi_id]['appreciation'] as $jointure_periode => $saisie_valeur)
-                  {
-                    $tab_avant_info[$jointure_periode]['appreciation'] = $saisie_valeur;
-                  }
-                  ksort($tab_avant_info);
-                  $tab_periode_liens  = array();
-                  $tab_periode_textes = array();
-                  foreach($tab_avant_info as $jointure_periode => $tab)
-                  {
-                    $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_epi_'.$livret_epi_id.'_'.$jointure_periode.'"></a> '.$tab_periode_livret['periode'.$jointure_periode];
-                    $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_epi_'.$livret_epi_id.'_'.$jointure_periode.'" class="appreciation bordertop hide"><b>'.$tab_periode_livret['periode'.$jointure_periode].'&nbsp;:&nbsp;</b>'.html($tab['appreciation']).'</div>';
-                  }
-                  $temp_HTML .= '<div class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</div>'.NL;
-                }
                 $temp_HTML .= '<div class="notnow">'.html(implode(' ; ',$tab_epi['mat_prof_txt'])).'</div>';
                 if($epi_saisie['saisie_valeur'])
                 {
@@ -927,24 +867,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               {
                 $temp_HTML .= '<div class="ap">';
                 $temp_HTML .= '<div class="b notnow">'.html($tab_ap['titre']).'</div>';
-                // Info saisies périodes antérieures
-                if( isset($tab_saisie_avant[$eleve_id]['ap'][$livret_ap_id]['appreciation']) )
-                {
-                  $tab_avant_info = array();
-                  foreach($tab_saisie_avant[$eleve_id]['ap'][$livret_ap_id]['appreciation'] as $jointure_periode => $saisie_valeur)
-                  {
-                    $tab_avant_info[$jointure_periode]['appreciation'] = $saisie_valeur;
-                  }
-                  ksort($tab_avant_info);
-                  $tab_periode_liens  = array();
-                  $tab_periode_textes = array();
-                  foreach($tab_avant_info as $jointure_periode => $tab)
-                  {
-                    $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_ap_'.$livret_ap_id.'_'.$jointure_periode.'"></a> '.$tab_periode_livret['periode'.$jointure_periode];
-                    $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_ap_'.$livret_ap_id.'_'.$jointure_periode.'" class="appreciation bordertop hide"><b>'.$tab_periode_livret['periode'.$jointure_periode].'&nbsp;:&nbsp;</b>'.html($tab['appreciation']).'</div>';
-                  }
-                  $temp_HTML .= '<div class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</div>'.NL;
-                }
                 $temp_HTML .= '<div class="notnow">'.html(implode(' ; ',$tab_ap['mat_prof_txt'])).'</div>';
                 if($ap_saisie['saisie_valeur'])
                 {
@@ -1006,24 +928,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               {
                 $temp_HTML .= '<div class="parcours">';
                 $temp_HTML .= '<div class="b notnow">'.html($tab_parcours['type_nom']).'</div>';
-                // Info saisies périodes antérieures
-                if( isset($tab_saisie_avant[$eleve_id]['parcours'][$livret_parcours_id]['appreciation']) )
-                {
-                  $tab_avant_info = array();
-                  foreach($tab_saisie_avant[$eleve_id]['parcours'][$livret_parcours_id]['appreciation'] as $jointure_periode => $saisie_valeur)
-                  {
-                    $tab_avant_info[$jointure_periode]['appreciation'] = $saisie_valeur;
-                  }
-                  ksort($tab_avant_info);
-                  $tab_periode_liens  = array();
-                  $tab_periode_textes = array();
-                  foreach($tab_avant_info as $jointure_periode => $tab)
-                  {
-                    $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_parcours_'.$livret_parcours_id.'_'.$jointure_periode.'"></a> '.$tab_periode_livret['periode'.$jointure_periode];
-                    $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_parcours_'.$livret_parcours_id.'_'.$jointure_periode.'" class="appreciation bordertop hide"><b>'.$tab_periode_livret['periode'.$jointure_periode].'&nbsp;:&nbsp;</b>'.html($tab['appreciation']).'</div>';
-                  }
-                  $temp_HTML .= '<div class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</div>'.NL;
-                }
                 if( $eleve_id && $tab_parcours['projet'] )
                 {
                   $temp_HTML .= '<div class="b notnow">'.html($tab_parcours['projet']).'</div>';
@@ -1100,24 +1004,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         {
           $titre = 
           $releve_HTML .= '<h4 class="bilan">Bilan de l’acquisition des connaissances et compétences</h4>'.NL;
-          // Info saisies périodes antérieures
-          if( isset($tab_saisie_avant[$eleve_id]['bilan'][0]['appreciation']) )
-          {
-            $tab_avant_info = array();
-            foreach($tab_saisie_avant[$eleve_id]['bilan'][0]['appreciation'] as $jointure_periode => $saisie_valeur)
-            {
-              $tab_avant_info[$jointure_periode]['appreciation'] = $saisie_valeur;
-            }
-            ksort($tab_avant_info);
-            $tab_periode_liens  = array();
-            $tab_periode_textes = array();
-            foreach($tab_avant_info as $jointure_periode => $tab)
-            {
-              $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_bilan_0_'.$jointure_periode.'"></a> '.$tab_periode_livret['periode'.$jointure_periode];
-              $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_bilan_0_'.$jointure_periode.'" class="appreciation bordertop hide"><b>'.$tab_periode_livret['periode'.$jointure_periode].'&nbsp;:&nbsp;</b>'.html($tab['appreciation']).'</div>';
-            }
-            $releve_HTML .= '<div class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</div>'.NL;
-          }
           $releve_HTML .= '<div class="bilan">'.NL;
           if($bilan_info['saisie_valeur'])
           {
@@ -1182,24 +1068,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           if( $make_html && ( ($make_action=='consulter') || $is_acces_viesco ) )
           {
             $releve_HTML .= '<h4 class="viesco">Communication avec la famille</h4>'.NL;
-            // Info saisies périodes antérieures
-            if( isset($tab_saisie_avant[$eleve_id]['viesco'][0]['appreciation']) )
-            {
-              $tab_avant_info = array();
-              foreach($tab_saisie_avant[$eleve_id]['viesco'][0]['appreciation'] as $jointure_periode => $saisie_valeur)
-              {
-                $tab_avant_info[$jointure_periode]['appreciation'] = $saisie_valeur;
-              }
-              ksort($tab_avant_info);
-              $tab_periode_liens  = array();
-              $tab_periode_textes = array();
-              foreach($tab_avant_info as $jointure_periode => $tab)
-              {
-                $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_viesco_0_'.$jointure_periode.'"></a> '.$tab_periode_livret['periode'.$jointure_periode];
-                $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_viesco_0_'.$jointure_periode.'" class="appreciation bordertop hide"><b>'.$tab_periode_livret['periode'.$jointure_periode].'&nbsp;:&nbsp;</b>'.html($tab['appreciation']).'</div>';
-              }
-              $releve_HTML .= '<div class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</div>'.NL;
-            }
             $releve_HTML .= '<div class="viesco">'.NL;
             if($viesco_info['saisie_valeur'])
             {

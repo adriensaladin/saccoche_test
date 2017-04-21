@@ -648,11 +648,10 @@ if($type_individuel)
     $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;
     $bouton_print_appr = ($make_officiel)                                     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
     $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
-    $info_details      = (!empty($tab_saisie_avant))                          ? 'Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail (<a href="#" id="montrer_details">tout montrer</a>).' : '' ;
     $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$bilan_titre.'</h1>'.NL;
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>'.NL;
-    $releve_HTML_individuel .= ($info_details || $bouton_print_appr || $bouton_print_test || $bouton_import_csv) ? '<div class="ti">'.$info_details.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '' ;
+    $releve_HTML_individuel .= ($bouton_print_appr || $bouton_print_test || $bouton_import_csv) ? '<div class="ti">'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '' ;
     $bilan_colspan = $cases_nb + 2 ;
     $tfoot_td_nu  = ($longueur_ref_max) ? '<td class="nu">&nbsp;</td>'       : '' ;
     $thead_th_ref = ($longueur_ref_max) ? '<th data-sorter="text">Ref.</th>' : '' ;

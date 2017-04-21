@@ -1610,34 +1610,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Voir / masquer tous les détails
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_action_eleve').on
-    (
-      'click',
-      '#montrer_details',
-      function()
-      {
-        $('#zone_action_eleve').find('a.toggle_plus').click();
-        $(this).replaceWith('<a href="#" id="masquer_details">tout masquer</a>');
-        return false;
-      }
-    );
-
-    $('#zone_action_eleve').on
-    (
-      'click',
-      '#masquer_details',
-      function()
-      {
-        $('#zone_action_eleve').find('a.toggle_moins').click();
-        $(this).replaceWith('<a href="#" id="montrer_details">tout montrer</a>');
-        return false;
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Voir / masquer une photo
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

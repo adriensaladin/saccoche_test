@@ -1118,9 +1118,9 @@ $(document).ready
             success : function(responseJSON)
             {
               initialiser_compteur();
+              $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
-                $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
                 $('#ajax_msg_'+memo_saisie_objet).attr('class','alerte').html(responseJSON['value']);
               }
               else
@@ -1155,7 +1155,6 @@ $(document).ready
                   }
                   $('#'+memo_rubrique_type+'_'+memo_rubrique_id+'_position_'+memo_page_colonne).html(responseJSON['td_'+memo_page_colonne]);
                 }
-                $('#form_choix_eleve button , #form_choix_eleve select , #zone_resultat_eleve button').prop('disabled',false);
                 if(memo_auto_next) { $('#go_suivant_eleve').click(); }
                 if(memo_auto_prev) { $('#go_precedent_eleve').click(); }
               }
@@ -1942,34 +1941,6 @@ $(document).ready
         var ligne = $(this).parent().text().trim();
         $('#f_'+memo_saisie_objet).focus().html( $('#f_'+memo_saisie_objet).val() + ligne + "\n" );
         $(this).parent().css("display","none");
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Voir / masquer tous les détails
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#zone_action_eleve').on
-    (
-      'click',
-      '#montrer_details',
-      function()
-      {
-        $('#zone_action_eleve').find('a.toggle_plus').click();
-        $(this).replaceWith('<a href="#" id="masquer_details">tout masquer</a>');
-        return false;
-      }
-    );
-
-    $('#zone_action_eleve').on
-    (
-      'click',
-      '#masquer_details',
-      function()
-      {
-        $('#zone_action_eleve').find('a.toggle_moins').click();
-        $(this).replaceWith('<a href="#" id="montrer_details">tout montrer</a>');
-        return false;
       }
     );
 

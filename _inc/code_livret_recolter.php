@@ -1316,13 +1316,6 @@ foreach($tab_compte_rendu as $type_alerte => $tab_message)
   }
 }
 
-if( !empty($tab_eleve) )
-{
-  Json::end( TRUE , $retour );
-}
-else
-{
-  Json::end( FALSE , 'Données récoltables pour aucun élève !<br />'.$retour );
-}
+Json::end( TRUE , $retour );
 
 ?>

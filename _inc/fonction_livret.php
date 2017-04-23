@@ -109,6 +109,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       'origine'       => $DB_ROW['saisie_origine'] ,
       'prof'          => $DB_ROW['user_id'] ,
       'listing_profs' => $DB_ROW['listing_profs'] ,
+      'acquis_detail' => '' ,
     );
   }
   //
@@ -171,13 +172,13 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
                   if(!isset($tab_donnees_livret[$clef]))
                   {
                     $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $rubrique_type , $rubrique_id , $cible_nature , $cible_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
-                    $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
+                    $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE , 'acquis_detail' =>'' );
                   }
                   else if( ($tab_donnees_livret[$clef]['valeur']!==$saisie_valeur) && ($tab_donnees_livret[$clef]['origine']!='saisie') )
                   {
                     $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
                     DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id );
-                    $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
+                    $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE , 'acquis_detail' =>'' );
                   }
                   else
                   {
@@ -236,13 +237,13 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
           if(!isset($tab_donnees_livret[$clef]))
           {
             $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $rubrique_type , $rubrique_id , $cible_nature , $cible_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id ); // on laisse "bulletin" comme origine...
-            $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
+            $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE , 'acquis_detail' =>'' );
           }
           else if( ($tab_donnees_livret[$clef]['valeur']!==$saisie_valeur) && ($tab_donnees_livret[$clef]['origine']!='saisie') )
           {
             $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
             DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , $saisie_objet , $saisie_valeur , 'bulletin' /*saisie_origine*/ , $prof_id ); // on laisse "bulletin" comme origine...
-            $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE );
+            $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $saisie_valeur , 'origine' => 'bulletin' , 'prof' => $prof_id , 'listing_profs'=>'' , 'find' => TRUE , 'acquis_detail' =>'' );
           }
           else
           {
@@ -574,7 +575,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         if( ($tab_donnees_livret[$clef]['valeur']!==$position_calculee) && ( ($tab_donnees_livret[$clef]['origine']=='calcul') || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$is_recup_bulletin ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'] ) || ( ($tab_donnees_livret[$clef]['origine']=='bulletin') && is_null($tab_donnees_livret[$clef]['valeur']) && ($import_bulletin_notes=='reel') ) ) )
         {
           DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'position' /*$saisie_objet*/ , $position_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-          $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $position_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
+          $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $position_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE , 'acquis_detail' =>'' );
           // On ne supprime pas une position NULL pour conserver les liaisons des profs aux élèves notés ABS etc.
           /*
           if(is_null($position_calculee))
@@ -634,13 +635,13 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     if(!isset($tab_donnees_livret[$clef]))
     {
       $livret_saisie_id = DB_STRUCTURE_LIVRET::DB_ajouter_saisie( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $RUBRIQUE_TYPE , $rubrique_id , 'classe' , $classe_id , 'position' , $moyenne_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-      $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $moyenne_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
+      $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $moyenne_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE , 'acquis_detail' =>'' );
     }
     else if($tab_donnees_livret[$clef]['valeur']!==$moyenne_calculee)
     {
       $livret_saisie_id = $tab_donnees_livret[$clef]['id'];
       DB_STRUCTURE_LIVRET::DB_modifier_saisie( $livret_saisie_id , 'position' /*$saisie_objet*/ , $moyenne_calculee , 'calcul' /*saisie_origine*/ , 0 /*prof_id*/ );
-      $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $moyenne_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE );
+      $tab_donnees_livret[$clef] = array( 'id' => $livret_saisie_id , 'valeur' => $moyenne_calculee , 'origine' => 'calcul' , 'prof' => 0 , 'listing_profs'=>'' , 'find' => TRUE , 'acquis_detail' =>'' );
       // On ne supprime pas une moyenne NULL pour conserver les liaisons des profs aux élèves notés ABS etc.
       /*
       if(is_null($moyenne_calculee))

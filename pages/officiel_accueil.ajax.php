@@ -111,12 +111,12 @@ if( ($action=='signaler_faute') || ($action=='corriger_faute') )
 
 $tab_actions = array
 (
-  'imprimer_donnees_eleves_prof'          => 'Mes appréciations pour chaque élève et le groupe classe',
-  'imprimer_donnees_eleves_collegues'     => 'Appréciations des collègues pour chaque élève',
-  'imprimer_donnees_classe_collegues'     => 'Appréciations des collègues sur le groupe classe',
-  'imprimer_donnees_eleves_syntheses'     => 'Appréciations de synthèse générale pour chaque élève',
-  'imprimer_donnees_eleves_moyennes'      => 'Tableau des moyennes pour chaque élève',
-  'imprimer_donnees_eleves_recapitulatif' => 'Récapitulatif annuel des moyennes et appréciations par élève',
+  'imprimer_donnees_eleves_prof'            => 'Mes appréciations pour chaque élève et le groupe classe',
+  'imprimer_donnees_eleves_collegues'       => 'Appréciations des collègues pour chaque élève',
+  'imprimer_donnees_classe_collegues'       => 'Appréciations des collègues sur le groupe classe',
+  'imprimer_donnees_eleves_syntheses'       => 'Appréciations de synthèse générale pour chaque élève',
+  'imprimer_donnees_eleves_positionnements' => 'Tableau des positionnements pour chaque élève',
+  'imprimer_donnees_eleves_recapitulatif'   => 'Récapitulatif annuel des positionnements et appréciations par élève',
 );
 
 if( isset($tab_actions[$action]) )

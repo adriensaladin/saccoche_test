@@ -167,7 +167,7 @@ if($action=='imprimer_donnees_eleves_prof')
         if(isset($tab[$eleve_id]))
         {
           extract($tab[$eleve_id]);  // $note $appreciation
-          $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
+          $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , 'bulletin' /*objet_document*/ );
         }
       }
     }
@@ -224,7 +224,7 @@ if($action=='imprimer_donnees_eleves_collegues')
       foreach($tab_saisie[$eleve_id] as $rubrique_id => $tab)
       {
         extract($tab);  // $rubrique_nom $note $appreciation
-        $archivage_tableau_PDF->appreciation_rubrique_eleves_collegues( $eleve_nom , $eleve_prenom , $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne );
+        $archivage_tableau_PDF->appreciation_rubrique_eleves_collegues( $eleve_nom , $eleve_prenom , $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne , 'bulletin' /*objet_document*/ );
         $eleve_nom = $eleve_prenom = '' ;
       }
     }
@@ -272,7 +272,7 @@ if($action=='imprimer_donnees_classe_collegues')
   foreach($tab_saisie as $rubrique_id => $tab)
   {
     extract($tab);  // $rubrique_nom $note $appreciation
-    $archivage_tableau_PDF->appreciation_rubrique_classe_collegues( $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne );
+    $archivage_tableau_PDF->appreciation_rubrique_classe_collegues( $rubrique_nom , $note , implode("\r\n",$tab_appreciation) , $with_moyenne , 'bulletin' /*objet_document*/ );
   }
 }
 
@@ -324,22 +324,22 @@ if($action=='imprimer_donnees_eleves_syntheses')
       $note = NULL;
       $appreciation = '';
     }
-    $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , FALSE /*is_brevet*/ );
+    $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , 'bulletin' /*objet_document*/ );
   }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 5/6 imprimer_donnees_eleves_moyennes : Tableau des moyennes pour chaque élève
+// Cas 5/6 imprimer_donnees_eleves_positionnements : Tableau des positionnements pour chaque élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if($action=='imprimer_donnees_eleves_moyennes')
+if($action=='imprimer_donnees_eleves_positionnements')
 {
   if(!$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES'])
   {
     Json::end( FALSE , 'Les bulletins sont configurés sans notes !' );
   }
   // Rechercher les notes enregistrées pour les élèves
-  $tab_saisie = array();  // [eleve_id][rubrique_id] => array(note,appreciation);
+  $tab_saisie = array();  // [eleve_id][rubrique_id] => note
   $tab_rubriques = array();
   $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_notes_eleves_periode( $periode_id , $liste_eleve_id , TRUE /*tri_matiere*/ );
   foreach($DB_TAB as $DB_ROW)
@@ -387,7 +387,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
   $archivage_tableau_CSV = '';
   $separateur = ';';
   // 1ère ligne : intitulés, noms rubriques
-  $archivage_tableau_PDF->moyennes_intitule( $classe_nom , $periode_nom , FALSE /*is_brevet*/ );
+  $archivage_tableau_PDF->moyennes_intitule( $classe_nom , $periode_nom , 'bulletin' /*objet_document*/ );
   $archivage_tableau_CSV .= '"'.$classe_nom.' | '.$periode_nom.'"';
   foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
   {
@@ -406,7 +406,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
     foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
     {
       $note = (isset($tab_saisie[$eleve_id][$rubrique_id])) ? $tab_saisie[$eleve_id][$rubrique_id] : NULL ;
-      $archivage_tableau_PDF->moyennes_note( $eleve_id , $rubrique_id , $note , FALSE /*is_brevet*/ );
+      $archivage_tableau_PDF->moyennes_note( $eleve_id , $rubrique_id , $note , 'bulletin' /*objet_document*/ );
       $archivage_tableau_CSV .= $separateur.'"'.str_replace('.',',',$note).'"'; // Remplacer le point décimal par une virgule pour le tableur.
     }
     $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->GetY()+$archivage_tableau_PDF->cases_hauteur );
@@ -415,7 +415,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 6/6 imprimer_donnees_eleves_recapitulatif : Récapitulatif annuel des moyennes et appréciations par élève
+// Cas 6/6 imprimer_donnees_eleves_recapitulatif : Récapitulatif annuel des positionnements et appréciations par élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_recapitulatif')
@@ -521,7 +521,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
   $classe_effectif = count($tab_eleve_id);
   foreach($tab_eleve_id as $eleve_id => $tab_eleve)
   {
-    $archivage_tableau_PDF->recapitulatif_initialiser( $tab_etabl_coords , $tab_eleve , $classe_nom , $classe_effectif , $annee_affichee , $tag_date_heure_initiales , $tab_nb_lignes[$eleve_id][0] );
+    $archivage_tableau_PDF->recapitulatif_initialiser( $tab_etabl_coords , $tab_eleve , $classe_nom , $classe_effectif , $annee_affichee , $tag_date_heure_initiales , $tab_nb_lignes[$eleve_id][0] , 'bulletin' /*objet_document*/ );
     foreach($tab_rubriques as $rubrique_id => $rubrique_nom)
     {
       $tab_profs = isset($tab_saisies[$eleve_id][$rubrique_id]['professeur']) ? $tab_saisies[$eleve_id][$rubrique_id]['professeur'] : NULL ;
@@ -542,7 +542,7 @@ $fichier_export = 'saisies_'.$BILAN_TYPE.'_'.Clean::fichier($periode_nom).'_'.Cl
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
 Json::add_str('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>');
 // Et le csv éventuel
-if($action=='imprimer_donnees_eleves_moyennes')
+if($action=='imprimer_donnees_eleves_positionnements')
 {
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($archivage_tableau_CSV) );
   Json::add_str('<br />'.NL.'<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>');

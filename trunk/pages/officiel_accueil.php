@@ -776,7 +776,7 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
 
 <div id="zone_archiver_imprimer" class="hide">
   <h2>Archiver / Imprimer des données</h2>
-  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__imprimer_saisies">DOC : Imprimer tableaux notes / appréciations.</a></span></p>
+  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__imprimer_saisies">DOC : Tableaux de positionnements / d'appréciations.</a></span></p>
   <p class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</p>
   <ul class="puce">
     <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève et le groupe classe.</li>
@@ -786,8 +786,8 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
       <li><button id="imprimer_donnees_eleves_syntheses" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations de synthèse générale pour chaque élève.</li>
     <?php endif; ?>
     <?php if( ($BILAN_TYPE=='bulletin') && ($_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']) ): ?>
-      <li><button id="imprimer_donnees_eleves_moyennes" type="button" class="imprimer">Archiver / Imprimer</button> le tableau des moyennes pour chaque élève.</li>
-      <li><button id="imprimer_donnees_eleves_recapitulatif" type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif annuel des moyennes et appréciations par élève.</li>
+      <li><button id="imprimer_donnees_eleves_positionnements" type="button" class="imprimer">Archiver / Imprimer</button> le tableau des positionnements pour chaque élève.</li>
+      <li><button id="imprimer_donnees_eleves_recapitulatif" type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif annuel des positionnements et appréciations par élève.</li>
     <?php endif; ?>
   </ul>
   <hr />

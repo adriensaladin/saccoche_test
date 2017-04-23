@@ -32,10 +32,10 @@
 class PDF_archivage_tableau extends PDF
 {
 
-  private function appreciation_page_break($nb_lignes=3)
+  private function appreciation_page_break()
   {
     $hauteur_restante = $this->page_hauteur - $this->GetY() - $this->marge_bas;
-    $hauteur_requise = $nb_lignes*$this->lignes_hauteur;
+    $hauteur_requise = 3*$this->lignes_hauteur;
     if($hauteur_requise > $hauteur_restante)
     {
       $this->AddPage($this->orientation , 'A4');
@@ -103,7 +103,7 @@ class PDF_archivage_tableau extends PDF
     $this->choisir_couleur_fond('gris_clair');
   }
 
-  public function appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , $objet_document )
+  public function appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , $with_moyenne , $is_brevet )
   {
     $nb_lignes = max( 2 , ceil(mb_strlen($appreciation)/125) );
     $note_largeur = 10; // valeur fixe
@@ -121,7 +121,7 @@ class PDF_archivage_tableau extends PDF
     $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
     if($with_moyenne)
     {
-      if($objet_document=='bulletin')
+      if(!$is_brevet)
       {
         $moyenne_eleve = ($note!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
       }
@@ -133,18 +133,18 @@ class PDF_archivage_tableau extends PDF
     }
     else
     {
-      $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+$nb_lignes*$this->lignes_hauteur );
+      $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+2*$this->lignes_hauteur );
     }
     // appréciation
     $this->afficher_appreciation( $this->cases_largeur , $nb_lignes*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $appreciation );
     $this->SetXY($memo_x , $memo_y+$nb_lignes*$this->lignes_hauteur);
   }
 
-  public function appreciation_rubrique_eleves_collegues( $eleve_nom , $eleve_prenom , $rubrique_nom , $note , $appreciations , $with_moyenne , $objet_document )
+  public function appreciation_rubrique_eleves_collegues( $eleve_nom , $eleve_prenom , $rubrique_nom , $note , $appreciations , $with_moyenne )
   {
     $nb_lignes = max( 2 , ceil(mb_strlen($appreciations)/125) );
     // On prend une nouvelle page PDF si besoin
-    $this->appreciation_page_break( $nb_lignes + ($eleve_nom && $eleve_prenom) );
+    $this->appreciation_page_break();
     $this->choisir_couleur_fond('gris_moyen');
     // nom-prénom
     if($eleve_nom && $eleve_prenom)
@@ -163,14 +163,7 @@ class PDF_archivage_tableau extends PDF
     $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     if($with_moyenne)
     {
-      if($objet_document=='bulletin')
-      {
-        $moyenne_eleve = ($note!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
-      }
-      else
-      {
-        $moyenne_eleve = $note;
-      }
+      $moyenne_eleve = ($note!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
       $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     }
     $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+$nb_lignes*$this->lignes_hauteur );
@@ -180,7 +173,7 @@ class PDF_archivage_tableau extends PDF
     $this->SetXY($memo_x , $memo_y+$nb_lignes*$this->lignes_hauteur);
   }
 
-  public function appreciation_rubrique_classe_collegues( $rubrique_nom , $note , $appreciations , $with_moyenne , $objet_document )
+  public function appreciation_rubrique_classe_collegues( $rubrique_nom , $note , $appreciations , $with_moyenne )
   {
     $nb_lignes = max( 2 , ceil(mb_strlen($appreciations)/125) );
     // marge
@@ -195,14 +188,7 @@ class PDF_archivage_tableau extends PDF
     $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom)    , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     if($with_moyenne)
     {
-      if($objet_document=='bulletin')
-      {
-        $moyenne_eleve = ($note!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
-      }
-      else
-      {
-        $moyenne_eleve = $note;
-      }
+      $moyenne_eleve = ($note!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
       $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($moyenne_eleve) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     }
     $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+$nb_lignes*$this->lignes_hauteur );
@@ -231,23 +217,10 @@ class PDF_archivage_tableau extends PDF
     $this->SetAutoPageBreak(TRUE);
   }
 
-  public function moyennes_intitule( $classe_nom , $periode_nom , $objet_document )
+  public function moyennes_intitule( $classe_nom , $periode_nom , $is_brevet )
   {
-    if($objet_document=='bulletin')
-    {
-      $ligne1 = 'Bulletin scolaire';
-      $ligne2 = 'Tableau des positionnements';
-    }
-    if($objet_document=='livret')
-    {
-      $ligne1 = 'Livret scolaire';
-      $ligne2 = 'Tableau des positionnements';
-    }
-    if($objet_document=='brevet')
-    {
-      $ligne1 = 'Fiche Brevet';
-      $ligne2 = 'Notes et total des points';
-    }
+    $ligne1 = (!$is_brevet) ? 'Bulletin scolaire'    : 'Fiche Brevet'              ;
+    $ligne2 = (!$is_brevet) ? 'Tableau des moyennes' : 'Notes et total des points' ;
     $hauteur_quart = $this->etiquette_hauteur / 4 ;
     $this->SetXY($this->marge_gauche , $this->marge_haut);
     $this->SetFont('Arial' , 'B' , $this->taille_police);
@@ -274,22 +247,22 @@ class PDF_archivage_tableau extends PDF
     $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($eleve_nom_prenom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
   }
 
-  public function moyennes_note( $eleve_id , $rubrique_id , $note , $objet_document )
+  public function moyennes_note( $eleve_id , $rubrique_id , $note , $is_brevet )
   {
-    $couleur = ($eleve_id && ( (($objet_document!='brevet')&&($rubrique_id)) || (($objet_document=='brevet')&&($rubrique_id!=CODE_BREVET_EPREUVE_TOTAL)) ) ) ? 'blanc' : 'gris_fonce' ;
+    $couleur = ($eleve_id && ( ((!$is_brevet)&&($rubrique_id)) || (($is_brevet)&&($rubrique_id!=CODE_BREVET_EPREUVE_TOTAL)) ) ) ? 'blanc' : 'gris_fonce' ;
     $this->choisir_couleur_fond($couleur);
-    if($objet_document=='bulletin')
-    {
-      $moyenne_eleve = ($note!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
-    }
-    else
-    {
-      $moyenne_eleve = $note;
-    }
+      if(!$is_brevet)
+      {
+        $moyenne_eleve = ($note!==NULL) ? ( ($this->SESSION['OFFICIEL']['BULLETIN_CONVERSION_SUR_20']) ? number_format($note,1,',','') : ($note*5).'%' ) : '-' ;
+      }
+      else
+      {
+        $moyenne_eleve = $note;
+      }
     $this->CellFit( $this->cases_largeur , $this->cases_hauteur , To::pdf($moyenne_eleve) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
   }
 
-  public function recapitulatif_initialiser( $tab_etabl_coords , $tab_eleve , $classe_nom , $classe_effectif , $annee_affichee , $tag_date_heure_initiales , $nb_lignes , $objet_document )
+  public function recapitulatif_initialiser( $tab_etabl_coords , $tab_eleve , $classe_nom , $classe_effectif , $annee_affichee , $tag_date_heure_initiales , $nb_lignes )
   {
     $this->SetMargins($this->marge_gauche , $this->marge_haut , $this->marge_droite);
     $this->AddPage($this->orientation , 'A4');
@@ -317,8 +290,6 @@ class PDF_archivage_tableau extends PDF
     $taille_police = 12 ;
     $ligne_hauteur = $taille_police*0.4 ;
     $this->SetFont('Arial' , '' , $taille_police);
-    $titre1 = ($objet_document=='bulletin') ? 'Bulletins scolaires' : 'Livret scolaire' ;
-    $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf($titre1)                , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf('Récapitulatif annuel') , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf($annee_affichee)        , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     $taille_police = 5 ;
@@ -326,7 +297,7 @@ class PDF_archivage_tableau extends PDF
     $this->SetFont('Arial' , '' , $taille_police);
     $this->Cell( $largeur_tiers , $ligne_hauteur+4 , To::pdf($tag_date_heure_initiales) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     // On passe au tableau
-    $hauteur_entete = max( $bloc_etabl_hauteur , (12+8+12)*0.4 , (12+12+12+5)*0.4+4 ) + 2 ;
+    $hauteur_entete = max( $bloc_etabl_hauteur , (12+8+12)*0.4 , (12+12+5)*0.4+4 ) + 2 ;
     $hauteur_restante = $this->page_hauteur_moins_marges - $hauteur_entete;
     $hauteur_ligne_calcule = $hauteur_restante / ($nb_lignes+2) ;
     $this->lignes_hauteur = round( $hauteur_ligne_calcule , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
@@ -361,7 +332,7 @@ class PDF_archivage_tableau extends PDF
     // case 4
     $memo_x += $this->cases_largeur;
     $this->SetXY( $memo_x , $memo_y );
-    $this->CellFit( $this->intitule_largeur  , $bloc_hauteur , To::pdf('Positionnements et appréciations par période') , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->CellFit( $this->intitule_largeur  , $bloc_hauteur , To::pdf('Moyennes et appréciations par période') , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
   }
 
   public function recapitulatif_rubrique( $nb_lignes , $rubrique_nom , $tab_profs , $moyenne_eleve , $moyenne_classe , $tab_appreciations )
@@ -369,7 +340,6 @@ class PDF_archivage_tableau extends PDF
     $memo_y = $this->GetY() ;
     $bloc_hauteur = $nb_lignes*$this->lignes_hauteur;
     $taille_police_minimum = max(10,$this->taille_police);
-    $taille_police_maximum = min(12,$this->taille_police);
     // case 1
     $memo_x = $this->marge_gauche;
     $this->Rect( $memo_x , $memo_y , $this->reference_largeur , $bloc_hauteur , 'D' /* DrawFill */ );
@@ -401,14 +371,14 @@ class PDF_archivage_tableau extends PDF
     $memo_x += $this->cases_largeur;
     $this->SetXY( $memo_x , $memo_y );
     $line_y = $memo_y;
-    $this->SetFont('Arial' , '' , $taille_police_maximum);
+    $this->SetFont('Arial' , '' , $this->taille_police);
     if($tab_appreciations)
     {
       $this->choisir_couleur_trait('gris_moyen');
       foreach($tab_appreciations as $appreciation)
       {
         $nb_lignes = ceil(mb_strlen($appreciation)/125);
-        $this->afficher_appreciation( $this->intitule_largeur , $nb_lignes*$this->lignes_hauteur , $taille_police_maximum , $this->lignes_hauteur , $appreciation );
+        $this->afficher_appreciation( $this->intitule_largeur , $nb_lignes*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $appreciation );
         $line_y = $line_y + $nb_lignes*$this->lignes_hauteur;
         $this->Line( $memo_x , $line_y , $memo_x+$this->intitule_largeur , $line_y );
       }

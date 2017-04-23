@@ -1613,25 +1613,24 @@ public static function DB_lister_parcours_type()
 /**
  * lister_parcours
  *
- * @param string     $parcours_code                  facultatif, pour restreindre à un type de parcours
+ * @param string     $parcours_code
  * @param int|string $classe_id_or_listing_classe_id facultatif, pour restreindre à une classe ou un ensemble de classes
  * @param string     $page_ref                       facultatif, pour restreindre à une page du livret
  * @return array
  */
 public static function DB_lister_parcours( $parcours_code , $classe_id_or_listing_classe_id = NULL , $page_ref = NULL )
 {
-  $tab_where = array();
-  if($parcours_code)
-  {
-    $tab_where[] = 'livret_parcours_type_code=:parcours_code ';
-  }
   if($classe_id_or_listing_classe_id && $page_ref)
   {
-    $tab_where[] = 'livret_page_ref=:page_ref AND groupe_id=:groupe_id ';
+    $where = 'AND livret_page_ref=:page_ref AND groupe_id=:groupe_id ';
   }
-  else if($classe_id_or_listing_classe_id)
+  elseif($classe_id_or_listing_classe_id)
   {
-    $tab_where[] = 'groupe_id IN('.$classe_id_or_listing_classe_id.') ';
+    $where = 'AND groupe_id IN('.$classe_id_or_listing_classe_id.') ';
+  }
+  else
+  {
+    $where = ''; // Profil administrateur ou directeur
   }
   $saisie_count = ($page_ref) ? '' : 'COUNT(livret_saisie_id) AS parcours_used, ' ;
   $saisie_join  = ($page_ref) ? '' : 'LEFT JOIN sacoche_livret_saisie ON sacoche_livret_parcours.livret_parcours_id=sacoche_livret_saisie.rubrique_id AND rubrique_type="parcours" ' ;
@@ -1646,8 +1645,8 @@ public static function DB_lister_parcours( $parcours_code , $classe_id_or_listin
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_parcours_prof.prof_id = sacoche_user.user_id ';
   $DB_SQL.= $saisie_join;
-  $DB_SQL.= 'WHERE '.implode('AND ',$tab_where);
-  $DB_SQL.= 'GROUP BY livret_parcours_type_code, livret_page_ref, groupe_id ';
+  $DB_SQL.= 'WHERE livret_parcours_type_code=:parcours_code '.$where;
+  $DB_SQL.= 'GROUP BY livret_page_ref, groupe_id ';
   $DB_SQL.= 'ORDER BY livret_page_ordre ASC, groupe_nom ASC ';
   $DB_VAR = array(
     ':parcours_code' => $parcours_code ,

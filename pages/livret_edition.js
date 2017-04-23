@@ -719,8 +719,12 @@ $(document).ready
       '#archiver_imprimer',
       function()
       {
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+        return false;
+        /*
         $('#ajax_msg_archiver_imprimer').removeAttr('class').html("");
         $.fancybox( { 'href':'#zone_archiver_imprimer' , onStart:function(){$('#zone_archiver_imprimer').css("display","block");} , onClosed:function(){$('#zone_archiver_imprimer').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
+        */
       }
     );
 
@@ -953,8 +957,8 @@ $(document).ready
           }
           memo_html = memo_conteneur.parent().html();
           var id_debut = memo_rubrique_type+'_'+memo_rubrique_id+'_'+memo_saisie_objet+'_';
-          var i_fin = 4;
-          for( var i=i_debut ; i<=i_fin ; i++ )
+          var i_fin = (memo_page_colonne!='reussite') ? 4 : 3 ;
+          for( var i=i_debut ; i<i_fin ; i++ )
           {
             $('#'+id_debut+i).html('<label for="f_position_'+i+'" style="padding:2em 3em;"><input id="f_position_'+i+'" name="f_position" type="radio" value="'+i+'" /></label>');
           }

@@ -240,7 +240,7 @@ if($action=='imprimer_donnees_eleves_syntheses')
       $note = NULL;
       $appreciation = '';
     }
-    $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , TRUE /*with_moyenne*/ , 'brevet' /*objet_document*/ );
+    $archivage_tableau_PDF->appreciation_rubrique_eleves_prof( $eleve_id , $eleve_nom , $eleve_prenom , $note , $appreciation , TRUE /*with_moyenne*/ , TRUE /*is_brevet*/ );
   }
 }
 
@@ -283,7 +283,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
   $archivage_tableau_CSV = '';
   $separateur = ';';
   // 1ère ligne : intitulés, noms rubriques
-  $archivage_tableau_PDF->moyennes_intitule( $classe_nom , 'Session '.$annee_session_brevet , 'brevet' /*objet_document*/ );
+  $archivage_tableau_PDF->moyennes_intitule( $classe_nom , 'Session '.$annee_session_brevet , TRUE /*is_brevet*/ );
   $archivage_tableau_CSV .= '"'.$classe_nom.' | Session '.$annee_session_brevet.'"';
   foreach($tab_brevet_serie as $serie_ref => $serie_nom)
   {
@@ -307,7 +307,7 @@ if($action=='imprimer_donnees_eleves_moyennes')
       foreach($tab_brevet_epreuve[$serie_ref] as $epreuve_ref => $epreuve_nom)
       {
         $note = (isset($tab_saisie[$eleve_id][$serie_ref.$epreuve_ref])) ? $tab_saisie[$eleve_id][$serie_ref.$epreuve_ref] : NULL ;
-        $archivage_tableau_PDF->moyennes_note( $eleve_id , $epreuve_ref , $note , 'brevet' /*objet_document*/ );
+        $archivage_tableau_PDF->moyennes_note( $eleve_id , $epreuve_ref , $note , TRUE /*is_brevet*/ );
         $archivage_tableau_CSV .= $separateur.'"'.str_replace('.',',',$note).'"'; // Remplacer le point décimal par une virgule pour le tableur.
       }
     }

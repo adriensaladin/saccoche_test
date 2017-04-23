@@ -199,7 +199,7 @@ $tab_deja_affiche = array();
 if($make_html)
 {
   $bouton_print_test = isset($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : '' ;
-  $bouton_print_appr = ''; // Bilans périodiques uniquement
+  $bouton_print_appr = ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>';
   $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>' : '' ;
   $releve_HTML = '<div>'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL;
 }

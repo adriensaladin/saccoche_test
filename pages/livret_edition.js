@@ -200,7 +200,7 @@ $(document).ready
     var memo_rubrique_type = ''; // eval | socle | epi | ap | parcours | bilan | viesco | enscompl | attitude
     var memo_rubrique_id   = 0;
     var memo_saisie_objet  = ''; // position | appreciation | elements
-    var memo_page_colonne  = ''; // objectif | position | moyenne | pourcentage | maitrise | reussite
+    var memo_page_colonne  = ''; // objectif | position | moyenne | pourcentage | pourcentage | maitrise | reussite
     var memo_html          = '';
     var memo_div_assiduite = '';
     var memo_long_max      = 0;
@@ -286,10 +286,14 @@ $(document).ready
           }
           else if(memo_section=='livret_examiner')
           {
+            $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+            return false;
             // Masquer le tableau ; Afficher la zone de choix des rubriques
+            /*
             $('#cadre_statut , #table_accueil').hide(0);
             $('#zone_action_classe h2').html('Recherche de saisies manquantes');
             $('#zone_chx_rubriques').show(0);
+            */
           }
           else if(memo_section=='livret_imprimer')
           {
@@ -1643,6 +1647,8 @@ $(document).ready
       'button.signaler , button.corriger',
       function()
       {
+        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
+        return false;
         memo_action = $(this).attr('class'); // signaler | corriger
         memo_conteneur = $(this).parent().parent();
         // Récupération des principaux identifiants
@@ -1656,7 +1662,7 @@ $(document).ready
         // Préparation de l'affichage
         $('#f_action').val(memo_action+'_faute');
         $('#zone_signaler_corriger h2').html(memo_action[0].toUpperCase() + memo_action.substring(1) + " une faute");
-        var appreciation_contenu = $(this).parent().prev().html();
+        var appreciation_contenu = $(this).parent().next().html();
         var message_contenu = 'Livret Scolaire - '+$('#periode_'+memo_periode).text()+' - '+$('#groupe_'+memo_classe+'_'+memo_groupe).text()+"\n\n"+'Concernant '+$('#go_selection_eleve option:selected').text()+', ';
         $('#f_destinataire_id').val(prof_id);
         // Affichage supplémentaire si correction de l'appréciation

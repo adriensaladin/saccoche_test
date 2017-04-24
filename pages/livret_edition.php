@@ -451,11 +451,11 @@ foreach($tab_classe as $classe_id => $tab)
       // images action : vérification
       if($etat=='2rubrique')
       {
-        $icone_verification = !in_array($periode,array('cycle','college')) ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet pour ce document."></q>' ;
+        $icone_verification = (substr($tab_join['rubrique_type'],3)=='matiere') ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet pour ce document."></q>' ;
       }
       elseif(in_array($etat,array('3mixte','4synthese')))
       {
-        $icone_verification = ($periode!='college') ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet pour ce document."></q>' ;
+        $icone_verification = (substr($tab_join['rubrique_type'],3)=='matiere') ? '<q class="detailler" title="Rechercher les saisies manquantes."></q>' : '<q class="detailler_non" title="Recherche de saisies manquantes sans objet pour ce document."></q>' ;
       }
       else
       {
@@ -621,9 +621,8 @@ if($affichage_formulaire_statut)
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Formulaire de choix des matières pour une recherche de saisies manquantes. -> zone_chx_rubriques
+// Formulaire de choix des enseignements pour une recherche de saisies manquantes. -> zone_chx_rubriques
 // Paramètres supplémentaires envoyés pour éviter d'avoir à les retrouver à chaque fois. -> form_hidden
-// TODO : partie non reprise
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $form_hidden = '';
@@ -637,11 +636,14 @@ $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_b
 foreach($DB_TAB as $DB_ROW)
 {
   $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;
-  $tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<label for="rubrique_'.$DB_ROW['matiere_id'].'"><input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.' /> '.html($DB_ROW['matiere_nom']).'</label><br />';
+  $tab_checkbox_rubriques[] = '<label for="eval_'.$DB_ROW['matiere_id'].'"><input type="checkbox" name="f_rubrique[]" id="eval_'.$DB_ROW['matiere_id'].'" value="eval_'.$DB_ROW['matiere_id'].'"'.$checked.' /> '.html($DB_ROW['matiere_nom']).'</label><br />';
 }
 $commentaire_selection = '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
-// Choix de vérifier ou pas l'appréciation générale ; le test (in_array($etat,array('3mixte','4synthese'))) dépend de chaque classe...
-$tab_checkbox_rubriques[0] = '<label for="rubrique_0"><input type="checkbox" name="f_rubrique[]" id="rubrique_0" value="0" /> <i>Appréciation de synthèse générale</i></label><br />';
+// Choix de vérifier ou pas l'appréciation générale ainsi que les autres dispositifs ; le test (in_array($etat,array('3mixte','4synthese'))) dépend de chaque classe...
+$tab_checkbox_rubriques[] = '<label for="epi_0"><input type="checkbox" name="f_rubrique[]" id="epi_0" value="epi_0" /> <i>Enseignements Pratiques Interdisciplinaires</i></label><br />';
+$tab_checkbox_rubriques[] = '<label for="ap_0"><input type="checkbox" name="f_rubrique[]" id="ap_0" value="ap_0" /> <i>Accompagnements Personnalisés</i></label><br />';
+$tab_checkbox_rubriques[] = '<label for="parcours_0"><input type="checkbox" name="f_rubrique[]" id="parcours_0" value="parcours_0" /> <i>Parcours</i></label><br />';
+$tab_checkbox_rubriques[] = '<label for="bilan_0"><input type="checkbox" name="f_rubrique[]" id="bilan_0" value="bilan_0" /> <i>Appréciation de synthèse générale</i></label><br />';
 // Présenter les rubriques en colonnes de hauteur raisonnables
 $tab_checkbox_rubriques    = array_values($tab_checkbox_rubriques);
 $nb_rubriques              = count($tab_checkbox_rubriques);

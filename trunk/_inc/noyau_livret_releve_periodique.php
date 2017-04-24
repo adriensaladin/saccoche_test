@@ -84,7 +84,7 @@ $eleve_nb = count( $tab_eleve_infos , COUNT_NORMAL );
 // Récupération de la liste des rubriques et des profs ayant accès aux différentes rubriques, et de leur usage
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$tab_rubriques = array();
+$tab_rubriques = array( 'eval' => array() );
 $tab_id_rubrique = array();
 $tab_join_rubrique_profs = array();
 $tab_join_eval_eleve_profs = array();
@@ -99,14 +99,17 @@ if(empty($DB_TAB))
 }
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_rubriques['eval'][$DB_ROW['livret_rubrique_id']] = array(
-    'partie'       => $DB_ROW['rubrique'],
-    'sous_partie'  => $DB_ROW['sous_rubrique'],
-    'livret_code'  => $DB_ROW['rubrique_id_livret'],
-    'elements'     => $DB_ROW['rubrique_id_elements'],
-    'appreciation' => $DB_ROW['rubrique_id_appreciation'],
-    'position'     => $DB_ROW['rubrique_id_position'],
-  );
+  if( ($make_action!='examiner') || isset($tab_exam_rubrique['eval'][$DB_ROW['livret_rubrique_id']]) )
+  {
+    $tab_rubriques['eval'][$DB_ROW['livret_rubrique_id']] = array(
+      'partie'       => $DB_ROW['rubrique'],
+      'sous_partie'  => $DB_ROW['sous_rubrique'],
+      'livret_code'  => $DB_ROW['rubrique_id_livret'],
+      'elements'     => $DB_ROW['rubrique_id_elements'],
+      'appreciation' => $DB_ROW['rubrique_id_appreciation'],
+      'position'     => $DB_ROW['rubrique_id_position'],
+    );
+  }
 }
 foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
 {
@@ -146,7 +149,7 @@ foreach($DB_TAB as $DB_ROW)
 
 // EPI
 
-if($PAGE_EPI)
+if( $PAGE_EPI && ( ($make_action!='examiner') || isset($tab_exam_rubrique['epi']) ) )
 {
   $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_epi( $classe_id , $PAGE_REF );
   foreach($DB_TAB as $DB_ROW)
@@ -173,7 +176,7 @@ if($PAGE_EPI)
 
 // AP
 
-if($PAGE_AP)
+if( $PAGE_AP && ( ($make_action!='examiner') || isset($tab_exam_rubrique['ap']) ) )
 {
   $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_ap( $classe_id , $PAGE_REF );
   foreach($DB_TAB as $DB_ROW)
@@ -198,7 +201,7 @@ if($PAGE_AP)
 
 // Parcours
 
-if($PAGE_PARCOURS)
+if( $PAGE_PARCOURS && ( ($make_action!='examiner') || isset($tab_exam_rubrique['parcours']) ) )
 {
   $tab_parcours_code = explode(',',$PAGE_PARCOURS);
   foreach($tab_parcours_code as $parcours_code)
@@ -549,7 +552,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       // AQUIS SCOLAIRES : Suivi des acquis scolaires (évaluations)
       if( isset($tab_saisie[$eleve_id]['eval']) || !$eleve_id )
       {
-        if($make_pdf)
+       if($make_pdf)
         {
           $releve_PDF->bloc_eval( $tab_rubriques['eval'] , $tab_used_eval_eleve_rubrique[$eleve_id] , $tab_id_rubrique[$eleve_id] , $tab_saisie[$eleve_id]['eval'] , $tab_saisie[0]['eval'] , $tab_nb_lignes_eleve_eval[$eleve_id] , $tab_nb_lignes_eleve_autre_total[$eleve_id] , $tab_profs );
           if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'bloc_eval' , array( $tab_rubriques['eval'] , $tab_used_eval_eleve_rubrique[$eleve_id] , $tab_id_rubrique[$eleve_id] , $tab_saisie[$eleve_id]['eval'] , $tab_saisie[0]['eval'] , $tab_nb_lignes_eleve_eval[$eleve_id] , $tab_nb_lignes_eleve_autre_total[$eleve_id] , $tab_profs ) ); }
@@ -574,7 +577,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $position_info = isset($tab_saisie[$eleve_id]['eval'][$id_rubrique_position]['position']) ? $tab_saisie[$eleve_id]['eval'][$id_rubrique_position]['position'] : $tab_saisie_initialisation ;
             $tab_profs_position = is_null($position_info['listing_profs']) ? array() : explode(',',$position_info['listing_profs']) ;
             // test accès à la rubrique
-            $is_acces_prof = ( ($BILAN_TYPE_ETABL=='ecole') || in_array($make_action,array('consulter','tamponner','imprimer')) || in_array($_SESSION['USER_ID'],$tab_profs_position) ) ? TRUE : FALSE ;
+            $is_acces_prof = ( ($BILAN_TYPE_ETABL=='ecole') || in_array($make_action,array('consulter','tamponner','imprimer','examiner')) || in_array($_SESSION['USER_ID'],$tab_profs_position) ) ? TRUE : FALSE ;
             $is_rubrique_used   = isset($tab_used_eval_eleve_rubrique[$eleve_id][$livret_rubrique_id]) ? TRUE : FALSE ;
             if( $is_rubrique_used && $is_acces_prof )
             {
@@ -783,6 +786,15 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 $temp_HTML .= '<tr>'.implode('',$tab_temp_HTML).'</tr>'.NL;
                 $tab_deja_affiche[$eleve_id][$id_premiere_sous_rubrique] = TRUE;
               }
+              // Examen de présence des appréciations intermédiaires et des positionnements
+              if( ($make_action=='examiner') && is_null($position_info['saisie_valeur']) )
+              {
+                $tab_resultat_examen[$tab_rubrique['partie']][] = 'Absence de positionnement pour '.html($eleve_nom.' '.$eleve_prenom);
+              }
+              if( ($make_action=='examiner') && is_null($appreciation_info['saisie_valeur']) )
+              {
+                $tab_resultat_examen[$tab_rubrique['partie']][] = 'Absence d\'appréciation pour '.html($eleve_nom.' '.$eleve_prenom);
+              }
             }
           }
           if($temp_HTML)
@@ -838,9 +850,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           // On passe en revue les rubriques...
           foreach($tab_rubriques['epi'] as $livret_epi_id => $tab_epi)
           {
-
             $is_epi_prof = isset($tab_join_rubrique_profs['epi'][$livret_epi_id][$_SESSION['USER_ID']]) ? TRUE : FALSE ;
-            if( ($make_action=='tamponner') || ( ($make_action=='modifier') && $is_epi_prof ) || ( ($make_action=='examiner') && $is_epi_prof ) || ($make_action=='consulter') || ($make_action=='imprimer') )
+            if( ($make_action=='tamponner') || ( ($make_action=='modifier') && $is_epi_prof ) || ( ($make_action=='examiner') && isset($tab_exam_rubrique['epi']) ) || ($make_action=='consulter') || ($make_action=='imprimer') )
             {
               $epi_saisie = isset($tab_saisie[$eleve_id]['epi'][$livret_epi_id]['appreciation']) ? $tab_saisie[$eleve_id]['epi'][$livret_epi_id]['appreciation'] : $tab_saisie_initialisation ;
               if( $make_html || $make_graph )
@@ -891,6 +902,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 $temp_HTML .= '</div>';
                 $temp_HTML .= '</div>';
               }
+              // Examen de présence de l'appréciation EPI
+              else if( ($make_action=='examiner') && is_null($epi_saisie['saisie_valeur']) )
+              {
+                $tab_resultat_examen['Enseignements Pratiques Interdisciplinaires'][] = 'Absence d\'appréciation EPI "'.html($tab_epi['titre']).'" pour '.html($eleve_nom.' '.$eleve_prenom);
+              }
             }
           }
           if($temp_HTML)
@@ -920,7 +936,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           foreach($tab_rubriques['ap'] as $livret_ap_id => $tab_ap)
           {
             $is_ap_prof = isset($tab_join_rubrique_profs['ap'][$livret_ap_id][$_SESSION['USER_ID']]) ? TRUE : FALSE ;
-            if( ($make_action=='tamponner') || ( ($make_action=='modifier') && $is_ap_prof ) || ( ($make_action=='examiner') && $is_ap_prof ) || ($make_action=='consulter') || ($make_action=='imprimer') )
+            if( ($make_action=='tamponner') || ( ($make_action=='modifier') && $is_ap_prof ) || ( ($make_action=='examiner') && isset($tab_exam_rubrique['ap']) ) || ($make_action=='consulter') || ($make_action=='imprimer') )
             {
               $ap_saisie = isset($tab_saisie[$eleve_id]['ap'][$livret_ap_id]['appreciation']) ? $tab_saisie[$eleve_id]['ap'][$livret_ap_id]['appreciation'] : $tab_saisie_initialisation ;
               if( $make_html || $make_graph )
@@ -970,6 +986,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 $temp_HTML .= '</div>';
                 $temp_HTML .= '</div>';
               }
+              // Examen de présence de l'appréciation AP
+              else if( ($make_action=='examiner') && is_null($ap_saisie['saisie_valeur']) )
+              {
+                $tab_resultat_examen['Accompagnements Personnalisés'][] = 'Absence d\'appréciation AP "'.html($tab_ap['titre']).'" pour '.html($eleve_nom.' '.$eleve_prenom);
+              }
             }
           }
           if($temp_HTML)
@@ -999,7 +1020,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           foreach($tab_rubriques['parcours'] as $livret_parcours_id => $tab_parcours)
           {
             $is_parcours_prof = isset($tab_join_rubrique_profs['parcours'][$livret_parcours_id][$_SESSION['USER_ID']]) ? TRUE : FALSE ;
-            if( ($make_action=='tamponner') || ( ($make_action=='modifier') && $is_parcours_prof ) || ( ($make_action=='examiner') && $is_parcours_prof ) || ($make_action=='consulter') || ($make_action=='imprimer') )
+            if( ($make_action=='tamponner') || ( ($make_action=='modifier') && $is_parcours_prof ) || ( ($make_action=='examiner') && isset($tab_exam_rubrique['parcours']) ) || ($make_action=='consulter') || ($make_action=='imprimer') )
             {
               $parcours_saisie = isset($tab_saisie[$eleve_id]['parcours'][$livret_parcours_id]['appreciation']) ? $tab_saisie[$eleve_id]['parcours'][$livret_parcours_id]['appreciation'] : $tab_saisie_initialisation ;
               if( $make_html || $make_graph )
@@ -1055,6 +1076,11 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   $temp_HTML .= '</div>';
                 }
                 $temp_HTML .= '</div>';
+              }
+              // Examen de présence de l'appréciation Parcours
+              else if( ($make_action=='examiner') && is_null($parcours_saisie['saisie_valeur']) )
+              {
+                $tab_resultat_examen['Parcours'][] = 'Absence d\'appréciation "'.html($tab_parcours['type_nom']).'" pour '.html($eleve_nom.' '.$eleve_prenom);
               }
             }
           }
@@ -1148,9 +1174,14 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           $releve_HTML .= '</div>'.NL;
         }
       }
+      // Examen de présence de l'appréciation générale
+      else if( ($make_action=='examiner') && isset($tab_exam_rubrique['bilan']) && is_null($bilan_info['saisie_valeur']) )
+      {
+        $tab_resultat_examen['Synthèse générale'][] = 'Absence d\'appréciation générale pour '.html($eleve_nom.' '.$eleve_prenom);
+      }
 
       // Communication avec la famille
-      if( $PAGE_VIE_SCOLAIRE && $eleve_id )
+      if( $PAGE_VIE_SCOLAIRE && $eleve_id && ( ($make_html) || ($make_pdf) ) )
       {
         // Collège
         $viesco_info = isset($tab_saisie[$eleve_id]['viesco'][0]['appreciation']) ? $tab_saisie[$eleve_id]['viesco'][0]['appreciation'] : $tab_saisie_initialisation ;

@@ -36,8 +36,7 @@ $action         = (isset($_POST['f_action']))      ? Clean::texte($_POST['f_acti
 $uai_origine    = (isset($_POST['f_uai_origine'])) ? Clean::uai($_POST['f_uai_origine'])    : '';
 $structure_uai  = (isset($_POST['f_structure']))   ? Clean::uai($_POST['f_structure'])      : '';
 $annee_scolaire = (isset($_POST['f_annee']))       ? Clean::code($_POST['f_annee'])         : '';
-$periode_id     = (isset($_POST['f_periode']))     ? Clean::entier($_POST['f_periode'])     : NULL;
-$periode_id     = ($periode_id!==0) ? $periode_id : NULL ;
+$periode_id     = ($_POST['f_periode']!=='')       ? Clean::entier($_POST['f_periode'])     : NULL;
 
 $tab_eleve    = (isset($_POST['listing_ids'])) ? explode(',',$_POST['listing_ids']) : array() ;
 $tab_type_ref = (isset($_POST['f_type_ref']))  ? ( (is_array($_POST['f_type_ref'])) ? $_POST['f_type_ref'] : explode(',',$_POST['f_type_ref']) ) : array() ;

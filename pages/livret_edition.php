@@ -631,16 +631,12 @@ $tab_checkbox_rubriques = array();
 $listing_matieres_id = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? DB_STRUCTURE_COMMUN::DB_recuperer_matieres_professeur($_SESSION['USER_ID']) : '' ;
 $form_hidden .= '<input type="hidden" id="f_listing_matieres" name="f_listing_matieres" value="'.$listing_matieres_id.'" />';
 $tab_matieres_id = explode(',',$listing_matieres_id);
-// Lister les matières du livret
-$DB_TAB = array_merge
-(
-  DB_STRUCTURE_LIVRET::DB_lister_rubriques( 'c3_matiere' , TRUE /*for_edition*/ ) ,
-  DB_STRUCTURE_LIVRET::DB_lister_rubriques( 'c4_matiere' , TRUE /*for_edition*/ )
-);
+// Lister les matières de l'établissement
+$DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['livret_rubrique_id'],$tab_matieres_id) ) ? ' checked' : '' ;
-  $tab_checkbox_rubriques[$DB_ROW['livret_rubrique_id']] = '<label for="eval_'.$DB_ROW['livret_rubrique_id'].'"><input type="checkbox" name="f_rubrique[]" id="eval_'.$DB_ROW['livret_rubrique_id'].'" value="eval_'.$DB_ROW['livret_rubrique_id'].'"'.$checked.' /> '.html($DB_ROW['rubrique']).'</label><br />';
+  $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;
+  $tab_checkbox_rubriques[] = '<label for="eval_'.$DB_ROW['matiere_id'].'"><input type="checkbox" name="f_rubrique[]" id="eval_'.$DB_ROW['matiere_id'].'" value="eval_'.$DB_ROW['matiere_id'].'"'.$checked.' /> '.html($DB_ROW['matiere_nom']).'</label><br />';
 }
 $commentaire_selection = '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
 // Choix de vérifier ou pas l'appréciation générale ainsi que les autres dispositifs ; le test (in_array($etat,array('3mixte','4synthese'))) dépend de chaque classe...
@@ -682,6 +678,7 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
 <?php
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaires utilisés pour les opérations ultérieures sur les bilans.
+// TODO : partie non reprise
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 ?>
 
@@ -743,13 +740,14 @@ foreach($tab_checkbox_rubriques as $i => $contenu)
 <?php
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Formulaire pour afficher le résultat de l'analyse d'un fichier CSV et demander confirmation.
+// TODO : partie non reprise
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:grey}' ); // Pour le rapport d'analyse
 ?>
 
 <form action="#" method="post" id="zone_action_deport" class="hide" onsubmit="return false">
   <h2>Saisie déportée</h2>
-  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__saisies_deportees">DOC : Saisie déportée.</a></span></p>
+  <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__evaluations_saisie_deportee">DOC : Saisie déportée.</a></span></p>
   <ul class="puce">
     <li><a id="export_file_saisie_deportee" target="_blank" href=""><span class="file file_txt">Récupérer un fichier vierge à compléter pour une saisie déportée (format <em>csv</em>).</span></a></li>
     <li><input id="f_saisie_deportee" type="file" name="userfile" /><button id="bouton_choisir_saisie_deportee" type="button" class="fichier_import">Envoyer un fichier d'appréciations complété (format <em>csv</em>).</button></li>
@@ -757,7 +755,7 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
   <p class="ti">
     <label id="msg_import">&nbsp;</label>
     <input type="hidden" name="f_action" value="uploader_saisie_csv" />
-    <input type="hidden" name="f_section" value="livret_importer" />
+    <input type="hidden" name="f_section" value="officiel_importer" />
     <input type="hidden" id="f_upload_classe" name="f_classe" value="" />
     <input type="hidden" id="f_upload_groupe" name="f_groupe" value="" />
     <input type="hidden" id="f_upload_page_ref" name="f_page_ref" value="" />

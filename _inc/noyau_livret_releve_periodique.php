@@ -129,6 +129,24 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   }
 }
 
+// Au contraire de l'interface des bulletins scolaires, on ne récupère pas à chaque fois la liste des évaluations pour en ré-établir un bilan.
+// La liste des profs associés aux rubriques est enregistrée lors du calcul des scores (items travaillés) et mise à jour lors de la saisie d'appréciation.
+// Le code ci-dessous est désormais inutilisé.
+/*
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_profs_jointure_rubriques( $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN );
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_join_rubrique_profs['eval'][$DB_ROW['livret_rubrique_ou_matiere_id']][$DB_ROW['user_id']] = $DB_ROW['user_id'];
+}
+
+$liste_eleve_id = empty($is_appreciation_groupe) ? implode(',',array_keys($tab_eleve_infos)) : '' ;
+$DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_profs_jointure_eval_eleves( $classe_id , $liste_eleve_id , $date_mysql_debut , $date_mysql_fin );
+foreach($DB_TAB as $DB_ROW)
+{
+  $tab_join_eval_eleve_profs[$DB_ROW['eleve_id']][$DB_ROW['prof_id']] = $DB_ROW['prof_id'];
+}
+*/
+
 // EPI
 
 if( $PAGE_EPI && ( ($make_action!='examiner') || isset($tab_exam_rubrique['epi']) ) )
@@ -456,8 +474,8 @@ $tab_deja_affiche = array();
 if( ($make_html) || ($make_graph) )
 {
   $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;
-  $bouton_print_appr = (!$make_graph && ($BILAN_TYPE_ETABL=='college'))     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>' : '' ;
-  $bouton_import_csv = (in_array($make_action,array('modifier','tamponner')) && ($BILAN_TYPE_ETABL=='college')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>' : '' ;
+  $bouton_print_appr = (!$make_graph && ($BILAN_TYPE_ETABL=='college'))     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>'           : '' ;
+  $bouton_import_csv = in_array($make_action,array('modifier','tamponner')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>'                         : '' ;
   $info_details      = (!$make_graph && !empty($tab_saisie_avant))          ? 'Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail (<a href="#" id="montrer_details">tout montrer</a>).' : '' ;
   $releve_HTML = (!$make_graph) ? '<div>'.$info_details.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
   // légende

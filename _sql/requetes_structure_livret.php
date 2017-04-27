@@ -620,6 +620,88 @@ public static function DB_recuperer_profs_classe( $classe_id )
 }
 
 /**
+ * recuperer_profs_jointure_rubriques
+ *
+ * @param string   $rubrique_type
+ * @param string   $rubrique_join
+ * @return array
+ */
+/*
+public static function DB_recuperer_profs_jointure_rubriques( $rubrique_type , $rubrique_join )
+{
+  $DB_SQL = 'SELECT user_id, livret_rubrique_ou_matiere_id ';
+  $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
+  if( $rubrique_join == 'user' )
+  {
+    $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_livret_jointure_referentiel.element_id = sacoche_user.user_id ';
+  }
+  else
+  {
+    if( $rubrique_join == 'matiere' )
+    {
+      $DB_SQL.= 'LEFT JOIN sacoche_matiere ON sacoche_livret_jointure_referentiel.element_id = sacoche_matiere.matiere_id ';
+    }
+    if( $rubrique_join == 'domaine' )
+    {
+      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_domaine.domaine_id ';
+    }
+    if( $rubrique_join == 'theme' )
+    {
+      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_theme.theme_id ';
+      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+    }
+    if( $rubrique_join == 'item' )
+    {
+      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item ON sacoche_livret_jointure_referentiel.element_id = sacoche_referentiel_item.item_id ';
+      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (theme_id) ';
+      $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
+    }
+    $DB_SQL.= 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ';
+    $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
+  }
+  $DB_SQL.= 'WHERE livret_rubrique_type=:rubrique_type AND user_sortie_date>NOW() ';
+  $DB_SQL.= 'GROUP BY user_id, livret_rubrique_ou_matiere_id ';
+  $DB_VAR = array( ':rubrique_type' => $rubrique_type );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+*/
+
+/**
+ * Lister les professeurs ayant évalué des élèves donnés sur une période donnée.
+ *
+ * @param int    $classe_id
+ * @param string $liste_eleve_id
+ * @param string $date_mysql_debut
+ * @param string $date_mysql_fin
+ * @return array
+ */
+/*
+public static function DB_recuperer_profs_jointure_eval_eleves( $classe_id , $liste_eleve_id , $date_mysql_debut , $date_mysql_fin )
+{
+  if($liste_eleve_id)
+  {
+    $DB_SQL = 'SELECT eleve_id, prof_id ';
+    $DB_SQL.= 'FROM sacoche_saisie ';
+    $DB_SQL.= 'WHERE eleve_id IN('.$liste_eleve_id.') AND saisie_date>="'.$date_mysql_debut.'" AND saisie_date<="'.$date_mysql_fin.'" ';
+  }
+  else
+  {
+    $DB_SQL = 'SELECT 0 AS eleve_id, prof_id ';
+    $DB_SQL.= 'FROM sacoche_user ';
+    $DB_SQL.= 'LEFT JOIN sacoche_saisie ON sacoche_user.user_id = sacoche_saisie.eleve_id ';
+    $DB_SQL.= 'WHERE eleve_classe_id=:classe_id AND saisie_date>="'.$date_mysql_debut.'" AND saisie_date<="'.$date_mysql_fin.'" ';
+    $DB_SQL.= 'GROUP BY prof_id ';
+  }
+  $DB_VAR = array(
+    ':classe_id'        => $classe_id,
+    ':date_mysql_debut' => $date_mysql_debut,
+    ':date_mysql_fin'   => $date_mysql_fin,
+  );
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+*/
+
+/**
  * tester_page_jointure_rubrique
  *
  * @param string $rubrique_type

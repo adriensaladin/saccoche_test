@@ -105,7 +105,7 @@ $DB_TAB = (!$is_sous_groupe) ? DB_STRUCTURE_COMMUN::DB_lister_users_regroupement
                              : DB_STRUCTURE_COMMUN::DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_id , 2 /*actuels_et_anciens*/ , $periode_id ) ;
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$groupe_nom.' !' );
+  Json::end( FALSE , 'Aucun élève évalué trouvé dans le regroupement '.$groupe_nom.' !' );
 }
 $csv_lignes_eleves = array( 0 => 'groupe_'.$groupe_id.$separateur.'"Classe / Groupe"'.$separateur );
 $tab_eleve_id      = array( 0 => 'Classe / Groupe' );

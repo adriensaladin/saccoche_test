@@ -668,9 +668,6 @@ $(document).ready
       '#saisir_deport',
       function()
       {
-        $.fancybox( '<p class="travaux">'+'Fonctionnalité non prioritaire&hellip; Sera développée ultérieurement.'+'</p>' , {'centerOnScroll':true , 'minWidth':500} );
-        return false;
-        /*
         $('#msg_import').removeAttr('class').html("");
         $.fancybox( '<label class="loader">'+"En cours&hellip;"+'</label>' , {'centerOnScroll':true} );
         $.ajax
@@ -701,7 +698,6 @@ $(document).ready
             }
           }
         );
-        */
       }
     );
 

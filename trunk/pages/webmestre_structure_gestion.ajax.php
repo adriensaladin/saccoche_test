@@ -104,7 +104,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   // Lancer les requêtes pour créer et remplir les tables
   DB_STRUCTURE_COMMUN::DB_creer_remplir_tables_structure();
   // Il est arrivé que la fonction DB_modifier_parametres() retourne une erreur disant que la table n'existe pas.
-  // Comme si les requêtes de DB_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parcequ'au final, quand on va voir la base, toutes les tables sont bien là).
+  // Comme si les requêtes de DB_creer_remplir_tables_structure() étaient en cache, et pas encore toutes passées (parce qu'au final, quand on va voir la base, toutes les tables sont bien là).
   // Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ?
   // En attendant une réponse de SebR, j'ai mis ce sleep(1)... sans trop savoir si cela pouvait aider...
   @sleep(1);

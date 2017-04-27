@@ -92,7 +92,7 @@ if($ACTION!='enregistrer_saisie_csv')
   $DB_ROW = DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , 'La classe et la période ne sont pas reliées !' );
+    Json::end( FALSE , 'Le regroupement et la période ne sont pas reliés !' );
   }
   $date_mysql_debut = $DB_ROW['jointure_date_debut'];
   $date_mysql_fin   = $DB_ROW['jointure_date_fin'];

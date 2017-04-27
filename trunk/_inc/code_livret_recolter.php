@@ -394,7 +394,7 @@ $tab_eleve = array();
 $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 2 /*actuels_et_anciens*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ , 'user_id,user_nom,user_prenom,user_sconet_id,user_reference' /*champs*/ , $periode_id );
 if(empty($DB_TAB))
 {
-  Json::end( FALSE , 'Aucun élève trouvé dans le regroupement '.$classe_nom.' !' );
+  Json::end( FALSE , 'Aucun élève évalué trouvé dans le regroupement '.$classe_nom.' !' );
 }
 foreach($DB_TAB as $DB_ROW)
 {

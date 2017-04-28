@@ -247,13 +247,13 @@ if( in_array( $action , array('export_lpc','export_sacoche') ) && count($tab_ele
   {
     $xml.= '  </donnees>'."\r\n";
     $xml.= '</lpc>'."\r\n";
-    // Pour LPC, ajouter la signature via un appel au serveur sécurisé ==> Tout a été retiré côté serveur communautaire au 28/04/2017
-    // $xml = utf8_decode($xml);
-    // $xml = ServeurCommunautaire::signer_exportLPC( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $xml ); // fonction sur le modèle de envoyer_arborescence_XML()
-    // if(substr($xml,0,5)!='<?xml')
-    // {
-      // Json::end( FALSE , html($xml) );
-    // }
+    // Pour LPC, ajouter la signature via un appel au serveur sécurisé
+    $xml = utf8_decode($xml);
+    $xml = ServeurCommunautaire::signer_exportLPC( $_SESSION['SESAMATH_ID'] , $_SESSION['SESAMATH_KEY'] , $xml ); // fonction sur le modèle de envoyer_arborescence_XML()
+    if(substr($xml,0,5)!='<?xml')
+    {
+      Json::end( FALSE , html($xml) );
+    }
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $xml );
     $fichier_lien = './force_download.php?fichier='.$fichier_nom;
   }

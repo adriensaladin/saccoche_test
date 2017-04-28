@@ -849,22 +849,18 @@ public static function DB_modifier_legende( $colonne_id , $colonne_legende )
 /**
  * compter_impression_archives
  *
- * @param string $annee_scolaire
+ * @param void
  * @return array
  */
-public static function DB_compter_impression_archives($annee_scolaire)
+public static function DB_compter_impression_archives()
 {
   $DB_SQL = 'SELECT COUNT(officiel_archive_id) AS nombre, eleve_classe_id, periode_livret ';
   $DB_SQL.= 'FROM sacoche_officiel_archive ';
   $DB_SQL.= 'LEFT JOIN sacoche_periode USING(periode_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING(user_id) ';
-  $DB_SQL.= 'WHERE archive_type=:archive_type AND annee_scolaire=:annee_scolaire ';
+  $DB_SQL.= 'WHERE archive_type="livret" ';
   $DB_SQL.= 'GROUP BY eleve_classe_id, periode_livret ';
-  $DB_VAR = array(
-    ':archive_type'   => "livret",
-    ':annee_scolaire' => $annee_scolaire,
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -1996,7 +1992,6 @@ public static function DB_vider_livret()
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie' , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie_jointure_prof' , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_livret_saisie_memo_detail'   , NULL);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_jointure_groupe SET jointure_etat="1vide", jointure_date_verrou=NULL, jointure_date_export=NULL' , NULL);
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

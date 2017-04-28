@@ -36,7 +36,7 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 // Chemin d'enregistrement
 
-$fichier_nom = Clean::fichier('livret_'.$PAGE_REF.'_'.$JOINTURE_PERIODE.'_'.$groupe_nom.'_').FileSystem::generer_fin_nom_fichier__date_et_alea();
+$fichier_nom = 'livret_'.$PAGE_REF.'_'.$JOINTURE_PERIODE.'_'.Clean::fichier($groupe_nom).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
 
 // Initialisation de tableaux
 

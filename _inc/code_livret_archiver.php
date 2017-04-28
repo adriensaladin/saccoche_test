@@ -724,7 +724,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
 // Enregistrement et affichage du retour.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$fichier_export = Clean::fichier('livret_'.$PAGE_REF.'_'.$JOINTURE_PERIODE.'_'.$classe_nom.'_'.$action.'_').FileSystem::generer_fin_nom_fichier__date_et_alea();
+$fichier_export = 'livret_'.$PAGE_REF.'_'.$JOINTURE_PERIODE.'_'.Clean::fichier($classe_nom).'_'.$action.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
 Json::add_str('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>');
 // Et le csv éventuel

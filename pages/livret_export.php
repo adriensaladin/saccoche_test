@@ -172,10 +172,9 @@ if($step==1)
     echo'<p><label class="erreur">Association datée des périodes aux classes non effectuée pour '.$tab_periode_pb['pbdates'].' période'.$s.' !'.$consigne.'</label></p>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }
-  // On compte aussi le nb de bilans déjà imprimé pour l'année scolaire en cours (PDF) pour limiter ceux qui tente d'exporter sans édition donc même parfois sans aucune tentative de remplissage automatique
-  $annee_scolaire = To::annee_scolaire('code');
+  // On compte aussi le nb de bilans déjà imprimé (PDF) pour limiter ceux qui tente d'exporter sans édition donc même parfois sans aucune tentative de remplissage automatique
   $tab_periode_livret_key = array( 'T1' => 'periodeT1' , 'T2' => 'periodeT2' , 'T3' => 'periodeT3' , 'S1' => 'periodeS1' , 'S2' => 'periodeS2' , '' => 'cycle' );
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_compter_impression_archives($annee_scolaire);
+  $DB_TAB = DB_STRUCTURE_LIVRET::DB_compter_impression_archives();
   foreach($DB_TAB as $DB_ROW)
   {
     $periode = $tab_periode_livret_key[$DB_ROW['periode_livret']];

@@ -53,7 +53,7 @@ if($action=='numeroter')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Recherche et suppression de données orphelines
+// Recherche et suppression de correspondances anormales
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='nettoyer')
@@ -94,7 +94,7 @@ if($action=='purger')
     }
   }
   SACocheLog::ajouter('Suppression de tous les groupes, hors classes, sans les devoirs associés.');
-  // Supprimer les jointures classes/périodes, et donc les états des bilans officiels, mais pas le Livret Scolaire
+  // Supprimer les jointures classes/périodes, et donc les états des bilans officiels
   DB_STRUCTURE_PERIODE::DB_supprimer_liaisons_groupe_periode();
   // Supprimer les données des bilans officiels (sauf archives)
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();

@@ -240,7 +240,7 @@ if($ACTION=='generer_csv_vierge')
 if($ACTION=='uploader_saisie_csv')
 {
   // Récupération du fichier
-  $fichier_nom = 'saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.'livret_'.$PAGE_REF.'_'.$JOINTURE_PERIODE.'_'.$groupe_id.'_'.$BILAN_ETAT.'_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
+  $fichier_nom = Clean::fichier('saisie_deportee_'.$_SESSION['BASE'].'_'.$_SESSION['USER_ID'].'_'.'livret_'.$PAGE_REF.'_'.$JOINTURE_PERIODE.'_'.$groupe_id.'_'.$BILAN_ETAT.'_').FileSystem::generer_fin_nom_fichier__date_et_alea();
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_nom.'.<EXT>' /*fichier_nom*/ , array('txt','csv') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {

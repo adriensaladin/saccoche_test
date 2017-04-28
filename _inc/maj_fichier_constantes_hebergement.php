@@ -46,7 +46,7 @@ if(!defined('SERVEUR_PROXY_USED'))
 }
 */
 
-// A compter du 26/05/2011, ajout de paramètres pour les dates CNIL. [TODO] peut être retiré dans un an environ
+// A compter du 26/05/2011, ajout de paramètres pour les dates CNIL. Peut être retiré dans un an environ
 /*
 if(!defined('CNIL_NUMERO'))
 {
@@ -58,7 +58,7 @@ if(!defined('CNIL_NUMERO'))
 }
 */
 
-// A compter du 14/03/2012, ajout de paramètres pour les fichiers associés aux devoirs. [TODO] peut être retiré dans un an environ
+// A compter du 14/03/2012, ajout de paramètres pour les fichiers associés aux devoirs. Peut être retiré dans un an environ
 /*
 if(!defined('FICHIER_DUREE_CONSERVATION'))
 {
@@ -69,7 +69,7 @@ if(!defined('FICHIER_DUREE_CONSERVATION'))
 }
 */
 
-// A compter du 18/10/2012, ajout de paramètre pour le chemin des logs phpCAS. [TODO] peut être retiré dans un an environ
+// A compter du 18/10/2012, ajout de paramètre pour le chemin des logs phpCAS. Peut être retiré dans un an environ
 /*
 if( !defined('CHEMIN_LOGS_PHPCAS') && !defined('PHPCAS_CHEMIN_LOGS') )
 {
@@ -79,7 +79,7 @@ if( !defined('CHEMIN_LOGS_PHPCAS') && !defined('PHPCAS_CHEMIN_LOGS') )
 }
 */
 
-// A compter du 17/10/2012, ajout de paramètre pour fixer un niveau de restriction de droits d'accès (CHMOD). [TODO] peut être retiré dans un an environ
+// A compter du 17/10/2012, ajout de paramètre pour fixer un niveau de restriction de droits d'accès (CHMOD). Peut être retiré dans un an environ
 /*
 if(!defined('SYSTEME_UMASK'))
 {
@@ -87,7 +87,8 @@ if(!defined('SYSTEME_UMASK'))
 }
 */
 
-// A compter du 30/11/2013, ajout de paramètre pour indiquer si les admins peuvent modifier les coordonnées de la personne contact (multi-structures). [TODO] peut être retiré dans un an environ
+// A compter du 30/11/2013, ajout de paramètre pour indiquer si les admins peuvent modifier les coordonnées de la personne contact (multi-structures). Peut être retiré dans un an environ
+/*
 if(!defined('CONTACT_MODIFICATION_USER'))
 {
   $tab_constantes_modifiees += array(
@@ -95,8 +96,9 @@ if(!defined('CONTACT_MODIFICATION_USER'))
     'CONTACT_MODIFICATION_MAIL' => 'non',
   );
 }
+*/
 
-// A compter du 14/01/2014, ajout de paramètres pour le debug phpCAS. [TODO] peut être retiré dans un an environ
+// A compter du 14/01/2014, ajout de paramètres pour le debug phpCAS. Peut être retiré dans un an environ
 /*
 if(!defined('PHPCAS_CHEMIN_LOGS'))
 {
@@ -107,7 +109,7 @@ if(!defined('PHPCAS_CHEMIN_LOGS'))
 }
 */
 
-// A compter du 08/02/2014, ajout de paramètre pour permettre de ne pas vérifier le certificat ssl de certaines connexions CAS
+// A compter du 08/02/2014, ajout de paramètre pour permettre de ne pas vérifier le certificat ssl de certaines connexions CAS. Peut être retiré dans un an environ
 /*
 if(!defined('PHPCAS_NO_CERTIF_LISTING'))
 {
@@ -115,7 +117,7 @@ if(!defined('PHPCAS_NO_CERTIF_LISTING'))
 }
 */
 
-// A compter du 17/02/2015, ajout de paramètres pour définir une adresse de rebond et si le serveur envoie les notifications
+// A compter du 17/02/2015, ajout de paramètres pour définir une adresse de rebond et si le serveur envoie les notifications. Peut être retiré dans un an environ
 if(!defined('HEBERGEUR_MAILBOX_BOUNCE'))
 {
   $tab_constantes_modifiees += array(
@@ -124,19 +126,19 @@ if(!defined('HEBERGEUR_MAILBOX_BOUNCE'))
   );
 }
 
-// A compter du 23/02/2015, retrait du paramètre pour retenir la date de tentative de connexion erronée du webmestre (désormais géré en session)
+// A compter du 23/02/2015, retrait du paramètre pour retenir la date de tentative de connexion erronée du webmestre (désormais géré en session). [TODO] Peut être retiré dans un an environ
 if(defined('WEBMESTRE_ERREUR_DATE'))
 {
   $tab_constantes_modifiees += array( 'WEBMESTRE_ERREUR_DATE' => '' ); // Appeler fabriquer_fichier_hebergeur_info() sans paramètre suffit en fait à retirer la constante
 }
 
-// A compter du 17/09/2015, retrait du paramètre listant les ENT sans certif SSL (désormais gestion au cas par cas par les établissements)
+// A compter du 17/09/2015, retrait du paramètre listant les ENT sans certif SSL (désormais gestion au cas par cas par les établissements). [TODO] Peut être retiré dans un an environ
 if(defined('PHPCAS_NO_CERTIF_LISTING'))
 {
   $tab_constantes_modifiees += array( 'PHPCAS_NO_CERTIF_LISTING' => '' ); // Appeler fabriquer_fichier_hebergeur_info() sans paramètre suffit en fait à retirer la constante
 }
 
-// A compter du 17/09/2015, 2 constantes renommées
+// A compter du 17/09/2015, 2 constantes renommées. [TODO] Peut être retiré dans un an environ
 if(!defined('PHPCAS_LOGS_CHEMIN'))
 {
   $chemin = defined('PHPCAS_CHEMIN_LOGS') ? PHPCAS_CHEMIN_LOGS : CHEMIN_DOSSIER_TMP ;

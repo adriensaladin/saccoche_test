@@ -80,29 +80,6 @@ class ServeurCommunautaire
     return TRUE;
   }
 
-  /**
-   * Fabriquer un md5 attestant l'intégrité des fichiers d'une installation.
-   * 
-   * @param void
-   * @return string
-   */
-  private static function fabriquer_chaine_integrite()
-  {
-    // Liste de fichiers représentatifs mais n'impactant pas sur des modifs à la marge.
-    // Dans un tableau (et pas dans la classe) car appelé par un autre fichier du serveur communautaire.
-    require(CHEMIN_DOSSIER_INCLUDE.'tableau_fichier_integrite.php');
-    // Fabrication de la chaine
-    $chaine = '';
-    $tab_crlf = Clean::tab_crlf();
-    foreach($tab_fichier_integrite as $fichier)
-    {
-      // Lors du transfert FTP de fichiers, il arrive que les \r\n en fin de ligne soient convertis en \n, ce qui fait que md5_file() renvoie un résultat différent.
-      // Pour y remédier on utilise son équivalent md5(file_get_contents()) couplé à une suppression des caractères de fin de ligne.
-      $chaine .= md5( str_replace( $tab_crlf , '' , file_get_contents(CHEMIN_DOSSIER_SACOCHE.$fichier) ) );
-    }
-    return md5($chaine);
-  }
-
   // //////////////////////////////////////////////////
   // Méthodes publiques
   // //////////////////////////////////////////////////
@@ -219,7 +196,6 @@ class ServeurCommunautaire
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
     $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières ou référentiels modifiée...)
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
-    $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
     return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post , 20 /*timeout, à cause de gethostbyaddr()*/ );
   }
 
@@ -241,7 +217,6 @@ class ServeurCommunautaire
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
     $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières modifiée...)
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
-    $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
     return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post , 20 /*timeout, à cause de gethostbyaddr()*/ );
   }
 
@@ -429,31 +404,6 @@ class ServeurCommunautaire
   }
 
   /**
-   * Ajouter la signature au XML d'export des validations vers LPC.
-   * Timeout augmenté à 30s car il arrive que des XML pèsent 2 à 3Mo et cela a coincé sur un serveur avec un timeout de 15s.
-   * 
-   * @param int       $sesamath_id
-   * @param string    $sesamath_key
-   * @param int       $matiere_id
-   * @param int       $niveau_id
-   * @param string    $exportXML
-   * @return string   le XML signé ou un message d'erreur
-   */
-  public static function signer_exportLPC( $sesamath_id , $sesamath_key , $exportXML )
-  {
-    $tab_post = array();
-    $tab_post['fichier']        = 'lpc_signature';
-    $tab_post['sesamath_id']    = $sesamath_id;
-    $tab_post['sesamath_key']   = $sesamath_key;
-    $tab_post['exportXML']      = $exportXML;
-    $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
-    $tab_post['version_base']   = VERSION_BASE_STRUCTURE; // La base doit être compatible (table socle ou matières modifiée...)
-    $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
-    $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
-    return cURL::get_contents( SERVEUR_LPC_SIGNATURE , $tab_post , 30 /*timeout*/ );
-  }
-
-  /**
    * Appel au serveur communautaire pour élaborer / éditer une page de liens (ressources pour travailler).
    * 
    * @param int       $sesamath_id
@@ -500,7 +450,6 @@ class ServeurCommunautaire
     $tab_post['page_serialize'] = $page_serialize;
     $tab_post['version_prog']   = VERSION_PROG; // Le service web doit être compatible
     $tab_post['adresse_retour'] = URL_INSTALL_SACOCHE;
-    $tab_post['integrite_key']  = ServeurCommunautaire::fabriquer_chaine_integrite();
     return cURL::get_contents( SERVEUR_COMMUNAUTAIRE , $tab_post , 20 /*timeout, à cause de gethostbyaddr()*/ );
   }
 
@@ -563,7 +512,6 @@ class ServeurCommunautaire
     $tab_post['fichier_contenu'] = base64_encode($fichier_contenu);
     $tab_post['version_prog']    = VERSION_PROG; // Le service web doit être compatible
     $tab_post['adresse_retour']  = URL_INSTALL_SACOCHE;
-    $tab_post['integrite_key']   = ServeurCommunautaire::fabriquer_chaine_integrite();
     return cURL::get_contents( SERVEUR_COMMUNAUTAIRE ,$tab_post , 30 /*timeout*/ );
   }
 

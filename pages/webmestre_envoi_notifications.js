@@ -31,34 +31,14 @@ $(document).ready
   {
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Afficher / masquer des éléments du formulaire
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    $('#f_change_remove , #f_change_replace').click
-    (
-      function()
-      {
-        if($('#f_change_replace').is(':checked'))
-        {
-          $('#span_replace').show();
-          $('#f_courriel_new').focus();
-        }
-        else
-        {
-          $('#span_replace').hide();
-        }
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du premier formulaire
+    // Traitement du formulaire principal
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire_choix_envoi = $('#form_choix_envoi');
+    var formulaire = $('#form_gestion');
 
     // Vérifier la validité du formulaire (avec jquery.validate.js)
-    var validation_choix_envoi = formulaire_choix_envoi.validate
+    var validation = formulaire.validate
     (
       {
         rules :
@@ -73,163 +53,68 @@ $(document).ready
         errorClass : "erreur",
         errorPlacement : function(error,element)
         {
-          $('#ajax_msg_choix_envoi').html(error);
+          $('#ajax_msg').html(error);
         }
         // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
       }
     );
 
     // Options d'envoi du formulaire (avec jquery.form.js)
-    var ajaxOptions_choix_envoi =
+    var ajaxOptions =
     {
       url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
       type : 'POST',
       dataType : 'json',
       clearForm : false,
       resetForm : false,
-      target : "#ajax_msg_choix_envoi",
-      beforeSubmit : test_form_avant_envoi_choix_envoi,
-      error : retour_form_erreur_choix_envoi,
-      success : retour_form_valide_choix_envoi
+      target : "#ajax_msg",
+      beforeSubmit : test_form_avant_envoi,
+      error : retour_form_erreur,
+      success : retour_form_valide
     };
 
     // Envoi du formulaire (avec jquery.form.js)
-    formulaire_choix_envoi.submit
+    formulaire.submit
     (
       function()
       {
-        $(this).ajaxSubmit(ajaxOptions_choix_envoi);
+        $(this).ajaxSubmit(ajaxOptions);
         return false;
       }
     );
 
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
-    function test_form_avant_envoi_choix_envoi(formData, jqForm, options)
+    function test_form_avant_envoi(formData, jqForm, options)
     {
-      $('#ajax_msg_choix_envoi').removeAttr('class').html("");
-      var readytogo = validation_choix_envoi.form();
+      $('#ajax_msg').removeAttr('class').html("");
+      var readytogo = validation.form();
       if(readytogo)
       {
         $("button").prop('disabled',true);
-        $('#ajax_msg_choix_envoi').attr('class','loader').html("En cours&hellip;");
+        $('#ajax_msg').attr('class','loader').html("En cours&hellip;");
       }
       return readytogo;
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_erreur_choix_envoi(jqXHR, textStatus, errorThrown)
+    function retour_form_erreur(jqXHR, textStatus, errorThrown)
     {
       $("button").prop('disabled',false);
-      $('#ajax_msg_choix_envoi').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
+      $('#ajax_msg').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
     }
 
     // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide_choix_envoi(responseJSON)
+    function retour_form_valide(responseJSON)
     {
       initialiser_compteur();
       $("button").prop('disabled',false);
       if(responseJSON['statut']==true)
       {
-        $('#ajax_msg_choix_envoi').attr('class','valide').html("Choix enregistré !");
+        $('#ajax_msg').attr('class','valide').html("Choix enregistré !");
       }
       else
       {
-        $('#ajax_msg_choix_envoi').attr('class','alerte').html(responseJSON['value']);
-      }
-    }
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du second formulaire
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Le formulaire qui va être analysé et traité en AJAX
-    var formulaire_modif = $('#form_modif_mail');
-
-    // Vérifier la validité du formulaire (avec jquery.validate.js)
-    var validation_modif = formulaire_modif.validate
-    (
-      {
-        rules :
-        {
-          f_base_id      : { required:true , digits:true },
-          f_courriel_old : { required:true , email:true , maxlength:63 },
-          f_change       : { required:true },
-          f_courriel_new : { required:function(){return $('#f_change_replace').is(':checked');} , email:true , maxlength:63 }
-        },
-        messages :
-        {
-          f_base_id      : { required:"id structure manquant" , digits:"id structure en chiffres" },
-          f_courriel_old : { required:"courriel manquant" , email:"courriel invalide" , maxlength:"63 caractères maximum" },
-          f_change       : { required:"action manquante" },
-          f_courriel_new : { required:"courriel manquant" , email:"courriel invalide" , maxlength:"63 caractères maximum" }
-        },
-        errorElement : "label",
-        errorClass : "erreur",
-        errorPlacement : function(error,element)
-        {
-          if(element.attr("type")=="radio") {element.parent().next().next().after(error);}
-          else { element.after(error); }
-        }
-        // success: function(label) {label.text("ok").attr('class','valide');} Pas pour des champs soumis à vérification PHP
-      }
-    );
-
-    // Options d'envoi du formulaire (avec jquery.form.js)
-    var ajaxOptions_modif =
-    {
-      url : 'ajax.php?page='+PAGE+'&csrf='+CSRF,
-      type : 'POST',
-      dataType : 'json',
-      clearForm : false,
-      resetForm : false,
-      target : "#ajax_msg_modif",
-      beforeSubmit : test_form_avant_envoi_modif,
-      error : retour_form_erreur_modif,
-      success : retour_form_valide_modif
-    };
-
-    // Envoi du formulaire (avec jquery.form.js)
-    formulaire_modif.submit
-    (
-      function()
-      {
-        $(this).ajaxSubmit(ajaxOptions_modif);
-        return false;
-      }
-    );
-
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
-    function test_form_avant_envoi_modif(formData, jqForm, options)
-    {
-      $('#ajax_msg_modif').removeAttr('class').html("");
-      var readytogo = validation_modif.form();
-      if(readytogo)
-      {
-        $("button").prop('disabled',true);
-        $('#ajax_msg_modif').attr('class','loader').html("En cours&hellip;");
-      }
-      return readytogo;
-    }
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_erreur_modif(jqXHR, textStatus, errorThrown)
-    {
-      $("button").prop('disabled',false);
-      $('#ajax_msg_modif').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-    }
-
-    // Fonction suivant l'envoi du formulaire (avec jquery.form.js)
-    function retour_form_valide_modif(responseJSON)
-    {
-      initialiser_compteur();
-      $("button").prop('disabled',false);
-      if(responseJSON['statut']==true)
-      {
-        $('#ajax_msg_modif').attr('class','valide').html(responseJSON['value']);
-      }
-      else
-      {
-        $('#ajax_msg_modif').attr('class','alerte').html(responseJSON['value']);
+        $('#ajax_msg').attr('class','alerte').html(responseJSON['value']);
       }
     }
 

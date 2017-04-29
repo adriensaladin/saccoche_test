@@ -39,7 +39,7 @@ class DBextra
    * - pour savoir si le mode de connexion est SSO ou pas
    * - pour mettre à jour la base si besoin
    * - pour l'identification (méthode SessionUser::tester_authentification_utilisateur())
-   * - pour le webmestre (création d'un admin, info sur les admins, initialisation du mdp, retrait d'un email, mise à jour, stats...)
+   * - pour le webmestre (création d'un admin, info sur les admins, initialisation du mdp, mise à jour, stats...)
    * - pour contacter un administrateur ou obtenir de nouveaux identifiants égarés
    * Dans le cas d'une installation de type multi-structures, on peut avoir besoin d'effectuer une requête sur la base du webmestre :
    * - pour avoir des infos sur le contact référent, ou l'état d'une convention ENT

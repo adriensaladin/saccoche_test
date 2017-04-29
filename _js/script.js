@@ -870,7 +870,7 @@ function fermer_session_en_ajax(motif)
           $('#menu').remove();
           if(CONNEXION_USED=='normal')
           {
-            var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') && (PROFIL_TYPE!='developpeur') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
+            var adresse = ( (PROFIL_TYPE!='webmestre') && (PROFIL_TYPE!='partenaire') ) ? './index.php' : './index.php?'+PROFIL_TYPE ;
             $('#top_info').html('<div><span class="top expiration">Votre session a expiré. Vous êtes désormais déconnecté de SACoche !</span><br /><span class="top connexion"><a href="'+adresse+'">Se reconnecter&hellip;</a></span></div>');
           }
           else

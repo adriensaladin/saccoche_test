@@ -47,7 +47,6 @@ INSERT INTO sacoche_niveau_famille VALUES
 (371, 3,  6, "BTSa (Brevet de Technicien Supérieur Agricole) en 2 ans"), -- dispositif de formation 371
 (390, 3,  7, "Préparations diverses post-BAC"),                          -- dispositif de formation 390~441
 (740, 3,  7, "Formation complémentaire / Décrochage scolaire"),          -- dispositif de formation 740~742 & 753
-(900, 3,  7, "LMD (Diplôme d'enseignement supérieur)"),                  -- dispositif de formation 900 (non référencé)
 (999, 1,  0, "Niveaux principaux");
 
 ALTER TABLE sacoche_niveau_famille ENABLE KEYS;

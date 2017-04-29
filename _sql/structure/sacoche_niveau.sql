@@ -2251,17 +2251,6 @@ INSERT INTO sacoche_niveau VALUES
 ( 742001, 0, 0, 740, 742,  "FCND3", "7429990111.", "Formation complémentaire non diplômante hors MLDS de niveau 3"),
 ( 753001, 0, 0, 740, 753,    "APF", "7534100111.", "Accompagnement parcours de formation MLDS"),
 
--- 900 LMD (Diplôme d'enseignement supérieur) -- dispositif de formation 900 (non référencé)
-
-( 900001, 0, 0, 900, 900,     "L1",            "", "Licence, 1ère année"),
-( 900002, 0, 0, 900, 900,     "L2",            "", "Licence, 2ème année"),
-( 900003, 0, 0, 900, 900,     "L3",            "", "Licence, 3ème année"),
-( 900011, 0, 0, 900, 900,     "M1",            "", "Master, 1ère année"),
-( 900012, 0, 0, 900, 900,     "M2",            "", "Master, 2ème année"),
-( 900021, 0, 0, 900, 900,     "D1",            "", "Doctorat, 1ère année"),
-( 900022, 0, 0, 900, 900,     "D2",            "", "Doctorat, 2ème année"),
-( 900023, 0, 0, 900, 900,     "D3",            "", "Doctorat, 3ème année"),
-
 -- Niveau vierge permettant de s'assurer que les niveaux spécifiques créés auront un id supérieur
 -- ALTER TABLE sacoche_niveau auto_increment = 1000000 poserait pb en cas de restauration de base ou de niveaux spécifiques déjà existants
 

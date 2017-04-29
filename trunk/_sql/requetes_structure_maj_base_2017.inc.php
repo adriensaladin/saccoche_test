@@ -393,6 +393,40 @@ if($version_base_structure_actuelle=='2017-04-03')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-04-18 => 2017-04-29
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-04-18')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-04-29';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // Ajout de familles de niveaux
+    if(empty($reload_sacoche_niveau_famille))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT sacoche_niveau_famille VALUES (900, 3,  7, "LMD (Diplôme d\'enseignement supérieur)") ');
+      // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_niveau)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau_famille ORDER BY niveau_famille_id' );
+    }
+    // Ajout de niveaux
+    if(empty($reload_sacoche_niveau))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900001, 0, 0, 900, 900, "L1", "", "Licence, 1ère année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900002, 0, 0, 900, 900, "L2", "", "Licence, 2ème année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900003, 0, 0, 900, 900, "L3", "", "Licence, 3ème année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900011, 0, 0, 900, 900, "M1", "", "Master, 1ère année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900012, 0, 0, 900, 900, "M2", "", "Master, 2ème année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900021, 0, 0, 900, 900, "D1", "", "Doctorat, 1ère année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900022, 0, 0, 900, 900, "D2", "", "Doctorat, 2ème année") ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900023, 0, 0, 900, 900, "D3", "", "Doctorat, 3ème année") ' );
+      // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_niveau)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau ORDER BY niveau_id' );
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

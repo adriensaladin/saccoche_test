@@ -50,12 +50,37 @@ $send_check_non = (COURRIEL_NOTIFICATION=='non') ? ' checked' : '' ;
 
 <hr />
 
-<form action="#" method="post" id="form_gestion"><fieldset>
+<form action="#" method="post" id="form_choix_envoi"><fieldset>
   <p>
     <label class="tab">Envoi des courriels :</label>
     <label for="f_send_oui"><input type="radio" id="f_send_oui" name="f_send" value="oui"<?php echo $send_check_oui ?> /> Oui (installation en production)</label>
     &nbsp;&nbsp;&nbsp;
     <label for="f_send_non"><input type="radio" id="f_send_non" name="f_send" value="non"<?php echo $send_check_non ?> /> Non (serveur de test)</label>
   </p>
-  <p><span class="tab"></span><button id="f_submit" type="submit" class="parametre">Valider ce réglage.</button><label id="ajax_msg">&nbsp;</label></p>
+  <p><span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="choix_envoi" /><button id="f_submit" type="submit" class="parametre">Valider ce réglage.</button><label id="ajax_msg_choix_envoi">&nbsp;</label></p>
 </fieldset></form>
+
+<?php if(HEBERGEUR_INSTALLATION=='multi-structures'): /* * * * * * MULTI-STRUCTURES DEBUT * * * * * */ ?>
+
+<hr />
+
+<p>
+  Si l'adresse de rebond reçoit des notifications de courriels en erreur pour un établissement, il est possible d'intervenir sur sa base.
+</p>
+
+<hr />
+
+<form action="#" method="post" id="form_modif_mail"><fieldset>
+  <p>
+    <label class="tab" for="f_base_id">Structure Id :</label><input id="f_base_id" name="f_base_id" size="6" type="text" value="" /><br />
+    <label class="tab" for="f_courriel_old">Courriel :</label><input id="f_courriel_old" name="f_courriel_old" size="60" type="text" value="" /><br />
+    <label class="tab">Action :</label>
+    <label for="f_change_remove"><input type="radio" id="f_change_remove" name="f_change" value="remove" checked /> Retirer</label>
+    &nbsp;&nbsp;&nbsp;
+    <label for="f_change_replace"><input type="radio" id="f_change_replace" name="f_change" value="replace" /> Remplacer</label>
+    <span id="span_replace" class="hide"><input id="f_courriel_new" name="f_courriel_new" size="60" type="text" value="" /></span>
+  </p>
+  <p><span class="tab"></span><input id="f_action" name="f_action" type="hidden" value="modif_mail" /><button id="f_submit" type="submit" class="parametre">Valider ce changement.</button><label id="ajax_msg_modif">&nbsp;</label></p>
+</fieldset></form>
+
+<?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>

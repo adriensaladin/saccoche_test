@@ -118,7 +118,7 @@ $tab_jointure = array(
   'theme'   => "liaisons aux thèmes",
   'domaine' => "liaisons aux domaines",
   'matiere' => "liaisons aux matières",
-  'user'    => "liaisons aux enseignants (en projet, faisabilité à étudier)",
+  'user'    => "liaisons aux enseignants (expérimental : voir documentation)",
 );
 $select_jointure = '';
 foreach($tab_jointure as $jointure_key => $jointure_txt)

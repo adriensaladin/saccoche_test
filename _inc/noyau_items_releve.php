@@ -122,7 +122,7 @@ $tab_precision_retroactif = array
   'annuel' => 'notes antérieures de l\'année scolaire',
 );
 $precision_socle = $only_socle ? ', restriction au socle' : '' ;
-$texte_periode = ($releve_modele!='evaluation') ? 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision_retroactif[$retroactif].$precision_socle.').' : 'Sans notes antérieures' ;
+$texte_periode = 'Du '.$date_debut.' au '.$date_fin.' ('.$tab_precision_retroactif[$retroactif].$precision_socle.').';
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupération de la liste des items travaillés durant la période choisie, pour les élèves selectionnés, pour la ou les matières ou les items indiqués ou le prof indiqué
@@ -351,7 +351,6 @@ if(empty($is_appreciation_groupe))
 {
   if($calcul_acquisitions)
   {
-    $date_mysql_debut = ($releve_modele!='evaluation') ? $date_mysql_debut : NULL ; // Pour vérifier qu'il y a au moins une vraie note sur cette période
     // Pour chaque élève...
     foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
     {

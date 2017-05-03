@@ -506,22 +506,10 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
           extract($tab_item_infos[$item_id]);  // $calcul_methode $calcul_limite $item_nom
           $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , $date_mysql_debut );
           $tab_score_eleve_rubrique[$eleve_id][$rubrique_id][$item_id] = $score;
-          if( $PAGE_RUBRIQUE_JOIN != 'user' )
+
+          foreach($tab_join_item_rubrique_elements[$item_id] as $rubrique_id_elements)
           {
-            foreach($tab_join_item_rubrique_elements[$item_id] as $rubrique_id_elements)
-            {
-              $tab_eleve_item_rubrique[$eleve_id][$item_id][$rubrique_id_elements] = $rubrique_id_elements;
-            }
-          }
-          else
-          {
-            foreach($tab_join_item_prof[$item_id] as $prof_id)
-            {
-              foreach($tab_join_prof_rubrique[$prof_id] as $rubrique_id)
-              {
-                $tab_eleve_item_rubrique[$eleve_id][$item_id][$rubrique_id] = $rubrique_id; // est-ce que cela correspond à rubrique_id_elements ???
-              }
-            }
+            $tab_eleve_item_rubrique[$eleve_id][$item_id][$rubrique_id_elements] = $rubrique_id_elements;
           }
           if($score!==FALSE)
           {

@@ -109,6 +109,7 @@ foreach($DB_TAB as $DB_ROW)
       'theme'   => "liaisons aux thèmes",
       'domaine' => "liaisons aux domaines",
       'matiere' => "liaisons aux matières",
+      'user'    => "liaisons aux enseignants",
       ''        => "",
     );
     $tab_notation = array(

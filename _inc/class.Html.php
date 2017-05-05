@@ -191,7 +191,7 @@ class Html
    * @param int|FALSE $indice
    * @param int|FALSE $pourcentage
    * @param string    $methode_tri    'score' | 'etat'
-   * @param string    $pourcent       '%' | '' | 'pts'
+   * @param string    $pourcent       '%' | ''
    * @param bool      $all_columns
    * @return string
    */

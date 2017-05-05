@@ -32,12 +32,11 @@
 class PDF_socle2016_synthese extends PDF
 {
 
-  public function initialiser( $socle_synthese_format , $eleve_nb , $composante_nb , $socle_synthese_affichage )
+  public function initialiser( $socle_synthese_format , $eleve_nb , $composante_nb , $aff_socle_points_DNB )
   {
     $hauteur_entete = 10;
     $intitule_facteur  = ($socle_synthese_format=='eleve')      ? 6 : 8 ;
     $etiquette_facteur = ($socle_synthese_format=='composante') ? 6 : 5 ;
-    $aff_socle_points_DNB = ($socle_synthese_affichage=='points') ? 1 : 0 ;
     $colonnes_nb = ($socle_synthese_format=='eleve')      ? $composante_nb+$aff_socle_points_DNB : $eleve_nb ;
     $lignes_nb   = ($socle_synthese_format=='composante') ? $composante_nb+$aff_socle_points_DNB : $eleve_nb ;
     $this->cases_largeur     = ($this->page_largeur_moins_marges - 2) / ( $colonnes_nb + $intitule_facteur ); // -2 pour une petite marge ; identité/composante
@@ -54,15 +53,15 @@ class PDF_socle2016_synthese extends PDF
     $this->SetAutoPageBreak(TRUE);
   }
 
-  public function entete( $titre , $groupe_nom , $objet , $socle_synthese_format )
+  public function entete( $titre , $groupe_nom , $socle_synthese_format )
   {
     $hauteur_entete = 10;
-    $format = ($socle_synthese_format=='eleve') ? 'élèves' : 'composantes' ;
+    $objet = ($socle_synthese_format=='eleve') ? 'élèves' : 'composantes' ;
     // Intitulé
     $this->SetFont('Arial' , 'B' , 10);
     $this->SetXY($this->marge_gauche , $this->marge_haut);
     $this->Cell( $this->page_largeur , 4 , To::pdf($titre                                          ) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    $this->Cell( $this->page_largeur , 4 , To::pdf($groupe_nom.' - '.$objet.' ('.$format.' en lignes)') , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->Cell( $this->page_largeur , 4 , To::pdf($groupe_nom.' - SYNTHÈSE ('.$objet.' en lignes)') , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
     // On se positionne sous l'en-tête
     $this->SetXY($this->marge_gauche , $this->marge_haut+$hauteur_entete);
     $this->SetFont('Arial' , '' , $this->taille_police);
@@ -131,11 +130,11 @@ class PDF_socle2016_synthese extends PDF
     }
   }
 
-  public function legende( $socle_synthese_affichage )
+  public function legende( $aff_socle_points_DNB )
   {
     $this->lignes_hauteur = $this->cases_hauteur;
     $ordonnee = $this->page_hauteur - $this->marge_bas - $this->lignes_hauteur*0.75;
-    $info_points = ($socle_synthese_affichage=='points') ? '_points' : '' ;
+    $info_points = ($aff_socle_points_DNB) ? '_points' : '' ;
     $this->afficher_legende( 'degre_maitrise'.$info_points /*type_legende*/ , $ordonnee /*ordonnée*/ );
   }
 

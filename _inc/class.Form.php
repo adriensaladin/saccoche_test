@@ -390,7 +390,6 @@ class Form
       'socle_detail'              => 'livret',
       'socle_individuel_format'   => 'eleve',
       'socle_synthese_format'     => 'eleve',
-      'socle_synthese_affichage'  => 'pourcentage',
       'tableau_tri_etat_mode'     => 'score',
       'tableau_tri_maitrise_mode' => 'score',
       'repeter_entete'            => 0 ,
@@ -462,8 +461,8 @@ class Form
         $tab_choix_new = compact('eleves_ordre','matiere_id','mode_synthese','fusion_niveaux','retroactif','only_socle','only_niveau','aff_coef','aff_socle','aff_lien','aff_start','couleur','fond','legende','marge_min');
         break;
       case 'releve_socle2016' :
-        global $eleves_ordre,$cycle_id,$socle_detail,$type_individuel,$type_synthese,$socle_individuel_format,$socle_synthese_format,$socle_synthese_affichage,$tableau_tri_maitrise_mode,$aff_socle_items_acquis,$aff_socle_position,$aff_socle_points_DNB,$only_presence,$aff_lien,$aff_start,$mode,$couleur,$fond,$legende,$marge_min,$pages_nb;
-        $tab_choix_new = compact('eleves_ordre','cycle_id','socle_detail','type_individuel','type_synthese','socle_individuel_format','socle_synthese_format','socle_synthese_affichage','tableau_tri_maitrise_mode','aff_socle_items_acquis','aff_socle_position','aff_socle_points_DNB','only_presence','aff_lien','aff_start','mode','couleur','fond','legende','marge_min','pages_nb');
+        global $eleves_ordre,$cycle_id,$socle_detail,$type_individuel,$type_synthese,$socle_individuel_format,$socle_synthese_format,$tableau_tri_maitrise_mode,$aff_socle_items_acquis,$aff_socle_position,$aff_socle_points_DNB,$only_presence,$aff_lien,$aff_start,$mode,$couleur,$fond,$legende,$marge_min,$pages_nb;
+        $tab_choix_new = compact('eleves_ordre','cycle_id','socle_detail','type_individuel','type_synthese','socle_individuel_format','socle_synthese_format','tableau_tri_maitrise_mode','aff_socle_items_acquis','aff_socle_position','aff_socle_points_DNB','only_presence','aff_lien','aff_start','mode','couleur','fond','legende','marge_min','pages_nb');
         break;
       case 'releve_socle' :
         global $eleves_ordre,$palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_start,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$fond,$legende,$marge_min;

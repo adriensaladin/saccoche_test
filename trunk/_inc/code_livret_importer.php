@@ -473,15 +473,15 @@ if($ACTION=='enregistrer_saisie_csv')
   {
     Json::end( FALSE , 'Données d\'un autre utilisateur !' );
   }
-  if($info_page_ref!=$PAGE_REF)
+  if($info_page_ref!=Clean::fichier($PAGE_REF))
   {
     Json::end( FALSE , 'Objet de document non concordant ('.$info_page_ref.' reçu / '.$PAGE_REF.' attendu) !' );
   }
-  if($info_etat!=$BILAN_ETAT)
+  if($info_etat!=Clean::fichier($BILAN_ETAT))
   {
     Json::end( FALSE , 'Étape du bilan non concordante ('.$info_etat.' reçu / '.$BILAN_ETAT.' attendu) !' );
   }
-  if($info_periode!=$JOINTURE_PERIODE)
+  if($info_periode!=Clean::fichier($JOINTURE_PERIODE))
   {
     Json::end( FALSE , 'Données d\'une autre période ('.$info_periode.' reçu / '.$JOINTURE_PERIODE.' attendu) !' );
   }

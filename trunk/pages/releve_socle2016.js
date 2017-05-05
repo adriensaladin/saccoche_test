@@ -95,11 +95,11 @@ $(document).ready
       {
         if( ($("#f_cycle option:selected").val()==4) && ($("#f_socle_detail option:selected").val()=='livret') )
         {
-          $("#span_points_DNB").show();
+          $("#span_points_DNB, #label_points_DNB").show();
         }
         else
         {
-          $("#span_points_DNB").hide();
+          $("#span_points_DNB, #label_points_DNB").hide();
         }
       }
     );
@@ -213,53 +213,55 @@ $(document).ready
       {
         rules :
         {
-          f_cycle                   : { required:true },
-          f_socle_detail            : { required:true },
-          'f_type[]'                : { required:true },
-          f_socle_individuel_format : { required:true },
-          f_socle_synthese_format   : { required:true },
-          f_tri_maitrise_mode       : { required:true },
-          f_groupe                  : { required:true },
-          'f_eleve[]'               : { required:true },
-          f_eleves_ordre            : { required:true },
-          f_socle_items_acquis      : { required:false },
-          f_socle_position          : { required:false },
-          f_socle_points_dnb        : { required:false },
-          f_only_presence           : { required:false },
-          f_mode                    : { required:true },
-          'f_matiere[]'             : { required:function(){return $('#f_mode_manuel').is(':checked');} },
-          f_lien                    : { required:false },
-          f_start                   : { required:false },
-          f_couleur                 : { required:true },
-          f_fond                    : { required:true },
-          f_legende                 : { required:true },
-          f_marge_min               : { required:true },
-          f_pages_nb                : { required:true }
+          f_cycle                    : { required:true },
+          f_socle_detail             : { required:true },
+          'f_type[]'                 : { required:true },
+          f_socle_individuel_format  : { required:true },
+          f_socle_synthese_format    : { required:true },
+          f_tri_maitrise_mode        : { required:true },
+          f_socle_synthese_affichage : { required:function(){return $('#f_type_synthese').is(':checked');} },
+          f_groupe                   : { required:true },
+          'f_eleve[]'                : { required:true },
+          f_eleves_ordre             : { required:true },
+          f_socle_items_acquis       : { required:false },
+          f_socle_position           : { required:false },
+          f_socle_points_dnb         : { required:false },
+          f_only_presence            : { required:false },
+          f_mode                     : { required:true },
+          'f_matiere[]'              : { required:function(){return $('#f_mode_manuel').is(':checked');} },
+          f_lien                     : { required:false },
+          f_start                    : { required:false },
+          f_couleur                  : { required:true },
+          f_fond                     : { required:true },
+          f_legende                  : { required:true },
+          f_marge_min                : { required:true },
+          f_pages_nb                 : { required:true }
         },
         messages :
         {
-          f_cycle                   : { required:"cycle manquant" },
-          f_socle_detail            : { required:"détail manquant" },
-          'f_type[]'                : { required:"type(s) manquant(s)" },
-          f_socle_individuel_format : { required:"choix manquant" },
-          f_socle_synthese_format   : { required:"choix manquant" },
-          f_tri_maitrise_mode       : { required:"choix manquant" },
-          f_groupe                  : { required:"groupe manquant" },
-          'f_eleve[]'               : { required:"élève(s) manquant(s)" },
-          f_eleves_ordre            : { required:"ordre manquant" },
-          f_socle_items_acquis      : { },
-          f_socle_position          : { },
-          f_socle_points_dnb        : { },
-          f_only_presence           : { },
-          f_mode                    : { required:"choix manquant" },
-          'f_matiere[]'             : { required:"matière(s) manquante(s)" },
-          f_lien                    : { },
-          f_start                   : { },
-          f_couleur                 : { required:"couleur manquante" },
-          f_fond                    : { required:"fond manquant" },
-          f_legende                 : { required:"légende manquante" },
-          f_marge_min               : { required:"marge mini manquante" },
-          f_pages_nb                : { required:"nb pages manquant" }
+          f_cycle                    : { required:"cycle manquant" },
+          f_socle_detail             : { required:"détail manquant" },
+          'f_type[]'                 : { required:"type(s) manquant(s)" },
+          f_socle_individuel_format  : { required:"choix manquant" },
+          f_socle_synthese_format    : { required:"choix manquant" },
+          f_tri_maitrise_mode        : { required:"choix manquant" },
+          f_socle_synthese_affichage : { required:"choix manquant" },
+          f_groupe                   : { required:"groupe manquant" },
+          'f_eleve[]'                : { required:"élève(s) manquant(s)" },
+          f_eleves_ordre             : { required:"ordre manquant" },
+          f_socle_items_acquis       : { },
+          f_socle_position           : { },
+          f_socle_points_dnb         : { },
+          f_only_presence            : { },
+          f_mode                     : { required:"choix manquant" },
+          'f_matiere[]'              : { required:"matière(s) manquante(s)" },
+          f_lien                     : { },
+          f_start                    : { },
+          f_couleur                  : { required:"couleur manquante" },
+          f_fond                     : { required:"fond manquant" },
+          f_legende                  : { required:"légende manquante" },
+          f_marge_min                : { required:"marge mini manquante" },
+          f_pages_nb                 : { required:"nb pages manquant" }
         },
         errorElement : "label",
         errorClass : "erreur",
@@ -310,6 +312,10 @@ $(document).ready
     // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
     function test_form_avant_envoi(formData, jqForm, options)
     {
+      if( $('#f_type_synthese').is(':checked') && ( ($("#f_cycle option:selected").val()!=4) || ($("#f_socle_detail option:selected").val()!='livret') ) )
+      {
+        $('#f_socle_synthese_affichage_pourcentage').prop('checked',true);
+      }
       $('#ajax_msg').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)

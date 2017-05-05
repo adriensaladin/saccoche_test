@@ -28,29 +28,30 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {}
 
-$cycle_id                  = (isset($_POST['f_cycle']))                   ? Clean::entier($_POST['f_cycle'])                  : 0;
-$cycle_nom                 = (isset($_POST['f_cycle_nom']))               ? Clean::texte($_POST['f_cycle_nom'])               : '';
-$socle_detail              = (isset($_POST['f_socle_detail']))            ? Clean::texte($_POST['f_socle_detail'])            : '';
-$socle_individuel_format   = (isset($_POST['f_socle_individuel_format'])) ? Clean::texte($_POST['f_socle_individuel_format']) : '';
-$socle_synthese_format     = (isset($_POST['f_socle_synthese_format']))   ? Clean::texte($_POST['f_socle_synthese_format'])   : '';
-$tableau_tri_maitrise_mode = (isset($_POST['f_tri_maitrise_mode']))       ? Clean::texte($_POST['f_tri_maitrise_mode'])       : '';
-$groupe_id                 = (isset($_POST['f_groupe']))                  ? Clean::entier($_POST['f_groupe'])                 : 0;
-$groupe_nom                = (isset($_POST['f_groupe_nom']))              ? Clean::texte($_POST['f_groupe_nom'])              : '';
-$groupe_type               = (isset($_POST['f_groupe_type']))             ? Clean::lettres($_POST['f_groupe_type'])           : '';
-$eleves_ordre              = (isset($_POST['f_eleves_ordre']))            ? Clean::texte($_POST['f_eleves_ordre'])            : '';
-$mode                      = (isset($_POST['f_mode']))                    ? Clean::texte($_POST['f_mode'])                    : '';
-$matiere_nom               = (isset($_POST['f_matiere_nom']))             ? Clean::texte($_POST['f_matiere_nom'])             : '';
-$aff_socle_items_acquis    = (isset($_POST['f_socle_items_acquis']))      ? 1                                                 : 0;
-$aff_socle_position        = (isset($_POST['f_socle_position']))          ? 1                                                 : 0;
-$aff_socle_points_DNB      = (isset($_POST['f_socle_points_dnb']))        ? 1                                                 : 0;
-$only_presence             = (isset($_POST['f_only_presence']))           ? 1                                                 : 0;
-$aff_lien                  = (isset($_POST['f_lien']))                    ? 1                                                 : 0;
-$aff_start                 = (isset($_POST['f_start']))                   ? 1                                                 : 0;
-$couleur                   = (isset($_POST['f_couleur']))                 ? Clean::texte($_POST['f_couleur'])                 : '';
-$fond                      = (isset($_POST['f_fond']))                    ? Clean::texte($_POST['f_fond'])                    : '';
-$legende                   = (isset($_POST['f_legende']))                 ? Clean::texte($_POST['f_legende'])                 : '';
-$marge_min                 = (isset($_POST['f_marge_min']))               ? Clean::entier($_POST['f_marge_min'])              : 0;
-$pages_nb                  = (isset($_POST['f_pages_nb']))                ? Clean::texte($_POST['f_pages_nb'])                : '';
+$cycle_id                  = (isset($_POST['f_cycle']))                    ? Clean::entier($_POST['f_cycle'])                   : 0;
+$cycle_nom                 = (isset($_POST['f_cycle_nom']))                ? Clean::texte($_POST['f_cycle_nom'])                : '';
+$socle_detail              = (isset($_POST['f_socle_detail']))             ? Clean::texte($_POST['f_socle_detail'])             : '';
+$socle_individuel_format   = (isset($_POST['f_socle_individuel_format']))  ? Clean::texte($_POST['f_socle_individuel_format'])  : '';
+$socle_synthese_format     = (isset($_POST['f_socle_synthese_format']))    ? Clean::texte($_POST['f_socle_synthese_format'])    : '';
+$socle_synthese_affichage  = (isset($_POST['f_socle_synthese_affichage'])) ? Clean::texte($_POST['f_socle_synthese_affichage']) : '';
+$tableau_tri_maitrise_mode = (isset($_POST['f_tri_maitrise_mode']))        ? Clean::texte($_POST['f_tri_maitrise_mode'])        : '';
+$groupe_id                 = (isset($_POST['f_groupe']))                   ? Clean::entier($_POST['f_groupe'])                  : 0;
+$groupe_nom                = (isset($_POST['f_groupe_nom']))               ? Clean::texte($_POST['f_groupe_nom'])               : '';
+$groupe_type               = (isset($_POST['f_groupe_type']))              ? Clean::lettres($_POST['f_groupe_type'])            : '';
+$eleves_ordre              = (isset($_POST['f_eleves_ordre']))             ? Clean::texte($_POST['f_eleves_ordre'])             : '';
+$mode                      = (isset($_POST['f_mode']))                     ? Clean::texte($_POST['f_mode'])                     : '';
+$matiere_nom               = (isset($_POST['f_matiere_nom']))              ? Clean::texte($_POST['f_matiere_nom'])              : '';
+$aff_socle_items_acquis    = (isset($_POST['f_socle_items_acquis']))       ? 1                                                  : 0;
+$aff_socle_position        = (isset($_POST['f_socle_position']))           ? 1                                                  : 0;
+$aff_socle_points_DNB      = (isset($_POST['f_socle_points_dnb']))         ? 1                                                  : 0;
+$only_presence             = (isset($_POST['f_only_presence']))            ? 1                                                  : 0;
+$aff_lien                  = (isset($_POST['f_lien']))                     ? 1                                                  : 0;
+$aff_start                 = (isset($_POST['f_start']))                    ? 1                                                  : 0;
+$couleur                   = (isset($_POST['f_couleur']))                  ? Clean::texte($_POST['f_couleur'])                  : '';
+$fond                      = (isset($_POST['f_fond']))                     ? Clean::texte($_POST['f_fond'])                     : '';
+$legende                   = (isset($_POST['f_legende']))                  ? Clean::texte($_POST['f_legende'])                  : '';
+$marge_min                 = (isset($_POST['f_marge_min']))                ? Clean::entier($_POST['f_marge_min'])               : 0;
+$pages_nb                  = (isset($_POST['f_pages_nb']))                 ? Clean::texte($_POST['f_pages_nb'])                 : '';
 // Normalement ce sont des tableaux qui sont transmis, mais au cas où...
 $tab_eleve   = (isset($_POST['f_eleve']))   ? ( is_array( $_POST['f_eleve'])  ? $_POST['f_eleve']   : explode(',',$_POST['f_eleve'])   ) : array() ;
 $tab_matiere = (isset($_POST['f_matiere'])) ? ( is_array($_POST['f_matiere']) ? $_POST['f_matiere'] : explode(',',$_POST['f_matiere']) ) : array() ;
@@ -109,7 +110,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUP
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
 
-if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$tableau_tri_maitrise_mode || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || !$eleves_ordre )
+if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$tableau_tri_maitrise_mode || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || !$eleves_ordre || ( $type_synthese && !in_array($socle_synthese_affichage,array('pourcentage','points')) ) )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }

@@ -50,21 +50,23 @@ if(is_string($tab_cycles))
 }
 
 Form::load_choix_memo();
-$check_type_individuel    = (Form::$tab_choix['type_individuel']) ? ' checked' : '' ;
-$check_type_synthese      = (Form::$tab_choix['type_synthese'])   ? ' checked' : '' ;
-$class_form_individuel    = (Form::$tab_choix['type_individuel']) ? 'show'     : 'hide' ;
-$class_form_synthese      = (Form::$tab_choix['type_synthese'])   ? 'show'     : 'hide' ;
-$class_socle_points_DNB   = ( (Form::$tab_choix['cycle_id']==4) && (Form::$tab_choix['socle_detail']=='livret') ) ? 'show' : 'hide' ;
+$check_type_individuel      = (Form::$tab_choix['type_individuel']) ? ' checked' : '' ;
+$check_type_synthese        = (Form::$tab_choix['type_synthese'])   ? ' checked' : '' ;
+$class_form_individuel      = (Form::$tab_choix['type_individuel']) ? 'show'     : 'hide' ;
+$class_form_synthese        = (Form::$tab_choix['type_synthese'])   ? 'show'     : 'hide' ;
+$class_socle_points_DNB     = ( (Form::$tab_choix['cycle_id']==4) && (Form::$tab_choix['socle_detail']=='livret') ) ? 'show' : 'hide' ;
 
-$check_only_presence      = (Form::$tab_choix['only_presence'])          ? ' checked' : '' ;
-$check_aff_lien           = (Form::$tab_choix['aff_lien'])               ? ' checked' : '' ;
-$check_aff_start          = (Form::$tab_choix['aff_start'])              ? ' checked' : '' ;
-$check_socle_items_acquis = (Form::$tab_choix['aff_socle_items_acquis']) ? ' checked' : '' ;
-$check_socle_position     = (Form::$tab_choix['aff_socle_position'])     ? ' checked' : '' ;
-$check_socle_points_DNB   = (Form::$tab_choix['aff_socle_points_DNB'])   ? ' checked' : '' ;
-$check_mode_auto          = (Form::$tab_choix['mode']=='auto')           ? ' checked' : '' ;
-$check_mode_manuel        = (Form::$tab_choix['mode']=='manuel')         ? ' checked' : '' ;
-$class_div_matiere        = (Form::$tab_choix['mode']=='manuel')         ? 'show'     : 'hide' ;
+$check_only_presence        = (Form::$tab_choix['only_presence'])          ? ' checked' : '' ;
+$check_aff_lien             = (Form::$tab_choix['aff_lien'])               ? ' checked' : '' ;
+$check_aff_start            = (Form::$tab_choix['aff_start'])              ? ' checked' : '' ;
+$check_socle_items_acquis   = (Form::$tab_choix['aff_socle_items_acquis']) ? ' checked' : '' ;
+$check_socle_position       = (Form::$tab_choix['aff_socle_position'])     ? ' checked' : '' ;
+$check_socle_points_DNB     = (Form::$tab_choix['aff_socle_points_DNB'])   ? ' checked' : '' ;
+$check_synthese_pourcentage = (Form::$tab_choix['socle_synthese_affichage']=='pourcentage') ? ' checked' : '' ;
+$check_synthese_points      = (Form::$tab_choix['socle_synthese_affichage']=='points')      ? ' checked' : '' ;
+$check_mode_auto            = (Form::$tab_choix['mode']=='auto')           ? ' checked' : '' ;
+$check_mode_manuel          = (Form::$tab_choix['mode']=='manuel')         ? ' checked' : '' ;
+$class_div_matiere          = (Form::$tab_choix['mode']=='manuel')         ? 'show'     : 'hide' ;
 
 if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 {
@@ -172,12 +174,14 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
       <label for="f_type_individuel"><input type="checkbox" id="f_type_individuel" name="f_type[]" value="individuel"<?php echo $check_type_individuel ?> /> Relevé individuel</label>&nbsp;&nbsp;&nbsp;
       <label for="f_type_synthese"><input type="checkbox" id="f_type_synthese" name="f_type[]" value="synthese"<?php echo $check_type_synthese ?> /> Synthèse collective</label>
     </div>
-    <div id="options_individuel" class="<?php echo $class_form_individuel ?>">
-      <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le relévé individuel, deux présentations sont possibles." /> Opt. relevé :</label><?php echo $select_socle_individuel_format ?>
-    </div>
-    <div id="options_synthese" class="<?php echo $class_form_synthese ?>">
-      <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_socle_synthese_format ?> <?php echo $select_tri_maitrise_mode ?>
-    </div>
+    <p id="options_individuel" class="<?php echo $class_form_individuel ?>">
+      <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le relévé individuel, deux présentations sont possibles." /> Opt. relevé :</label><?php echo $select_socle_individuel_format ?><br />
+      <label class="tab">Indication relevé :</label><?php echo $socle_items_acquis ?>&nbsp;&nbsp;&nbsp;<?php echo $socle_position ?>&nbsp;&nbsp;&nbsp;<span id="span_points_DNB" class="<?php echo $class_socle_points_DNB ?>"><?php echo $socle_points_DNB ?></span>
+    </p>
+    <p id="options_synthese" class="<?php echo $class_form_synthese ?>">
+      <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_socle_synthese_format ?> <?php echo $select_tri_maitrise_mode ?><br />
+      <label class="tab">Indication synthèse :</label><label for="f_socle_synthese_affichage_pourcentage"><input type="radio" id="f_socle_synthese_affichage_pourcentage" name="f_socle_synthese_affichage" value="pourcentage"<?php echo $check_synthese_pourcentage ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_synthese_affichage_points" id="label_points_DNB" class="<?php echo $class_socle_points_DNB ?>"><input type="radio" id="f_socle_synthese_affichage_points" name="f_socle_synthese_affichage" value="points"<?php echo $check_synthese_points ?> /> Prévision du nombre de points pour le brevet</label>
+    </p>
   </div>
 
   <p class="<?php echo $class_form_eleve ?>">
@@ -185,7 +189,6 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
     <span id="bloc_eleve" class="hide"><label class="tab" for="f_eleve">Élève(s) :</label><?php echo $select_eleves ?></span>
   </p>
   <div id="option_groupe" class="<?php echo $class_option_groupe ?>">
-    <label class="tab">Indication :</label><?php echo $socle_items_acquis ?>&nbsp;&nbsp;&nbsp;<?php echo $socle_position ?>&nbsp;&nbsp;&nbsp;<span id="span_points_DNB" class="<?php echo $class_socle_points_DNB ?>"><?php echo $socle_points_DNB ?></span><br />
     <label class="tab">Restriction :</label><label for="f_only_presence"><input type="checkbox" id="f_only_presence" name="f_only_presence" value="1"<?php echo $check_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation</label><br />
     <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le relévé individuel, le détail des items peut être affiché (sortie HTML)." /> Infos items :</label><label for="f_lien"><input type="checkbox" id="f_lien" name="f_lien" value="1"<?php echo $check_aff_lien ?> /> Liens (ressources pour travailler)</label>&nbsp;&nbsp;&nbsp;<label for="f_start"><input type="checkbox" id="f_start" name="f_start" value="1"<?php echo $check_aff_start ?> /> Détails affichés par défaut</label>
   </div>

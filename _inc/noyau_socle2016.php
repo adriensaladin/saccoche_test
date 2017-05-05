@@ -290,7 +290,7 @@ if($calcul_positionnement)
       $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
       $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id]['%'] = $pourcentage;
       $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id]['indice'] = $indice;
-      $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id]['points'] = $tab_points_valeur[$indice];
+      $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id]['points'] = ($indice!==FALSE) ? $tab_points_valeur[$indice] : FALSE ;
       $total_dnb += $tab_points_valeur[$indice];
     }
     $tab_bilan_eleve_composante[$eleve_id]['total_dnb'] = $total_dnb;
@@ -595,11 +595,23 @@ if($type_individuel)
 
 if($type_synthese)
 {
+  if($socle_synthese_affichage=='pourcentage')
+  {
+    $objet = 'Synthèse du pourcentage d\'items acquis';
+    $clef = '%';
+    $unit = '%';
+  }
+  else
+  {
+    $objet = 'Synthèse de la prévision du nombre de points pour le brevet';
+    $clef = 'points';
+    $unit = ' pts';
+  }
   if($make_html)
   {
     $releve_HTML_synthese  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
     $releve_HTML_synthese .= $affichage_direct ? '' : '<h1>'.$titre.'</h1>'.NL;
-    $releve_HTML_synthese .= '<hr />'.NL.'<h2>'.html($groupe_nom).' - SYNTHÈSE (selon l\'objet et le mode de tri choisis)</h2>'.NL;
+    $releve_HTML_synthese .= '<hr />'.NL.'<h2>'.html($groupe_nom).' - '.$objet.' (selon l\'objet et le mode de tri choisis)</h2>'.NL;
     $th     = ($socle_synthese_format=='eleve') ? 'Élève' : 'Socle' ;
     $sorter = ($socle_synthese_format=='eleve') ? ' data-sorter="text"' : ' data-sorter="FromData"' ;
     $releve_HTML_table_head = '<thead><tr><th'.$sorter.'>'.$th.'</th>';
@@ -612,8 +624,8 @@ if($type_synthese)
     // On définit l'orientation la plus adaptée
     $orientation_auto = ( ( ($eleve_nb>$composante_nb) && ($socle_synthese_format=='eleve') ) || ( ($composante_nb>$eleve_nb) && ($socle_synthese_format=='composante') ) ) ? 'portrait' : 'landscape' ;
     $releve_PDF_synthese = new PDF_socle2016_synthese( $make_officiel , $orientation_auto , $marge_gauche , $marge_droite , $marge_haut , $marge_bas , $couleur , $fond , $legende );
-    $releve_PDF_synthese->initialiser( $socle_synthese_format , $eleve_nb , $composante_nb , $aff_socle_points_DNB );
-    $releve_PDF_synthese->entete( $titre , $groupe_nom , $socle_synthese_format );
+    $releve_PDF_synthese->initialiser( $socle_synthese_format , $eleve_nb , $composante_nb , $socle_synthese_affichage );
+    $releve_PDF_synthese->entete( $titre , $groupe_nom , $objet , $socle_synthese_format );
     $releve_PDF_synthese->ligne_tete_cellule_debut();
   }
   if($socle_synthese_format=='eleve')
@@ -633,7 +645,7 @@ if($type_synthese)
         }
       }
     }
-    if($aff_socle_points_DNB)
+    if($socle_synthese_affichage=='points')
     {
       $txt_full  = 'Nombre de points pour le brevet (sur 400)';
       $txt_abrev = 'Nombre de points (sur 400)';
@@ -680,12 +692,12 @@ if($type_synthese)
             if($tab_contenu_presence['composante'][$socle_composante_id])
             {
               $tab_bilan = $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id];
-              if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , $tableau_tri_maitrise_mode , '%' /*pourcent*/ , FALSE /*all_columns*/ ); }
-              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , '%' /*pourcent*/ , FALSE /*all_columns*/ ); }
+              if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan[$clef] , $tableau_tri_maitrise_mode , $unit /*pourcent*/ , FALSE /*all_columns*/ ); }
+              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan[$clef] , $unit /*pourcent*/ , FALSE /*all_columns*/ ); }
             }
           }
         }
-        if($aff_socle_points_DNB)
+        if($socle_synthese_affichage=='points')
         {
           $points = $tab_bilan_eleve_composante[$eleve_id]['total_dnb'];
           if($make_html) { $releve_HTML_table_body .= '<th class="hc">'.$points.'</th>'; }
@@ -769,10 +781,10 @@ if($type_synthese)
   {
     $tab_legende = array(
       'degre_maitrise' => TRUE ,
-      'socle_points'   => $aff_socle_points_DNB ,
+      'socle_points'   => ($socle_synthese_affichage=='points') ,
     );
     if($make_html) { $releve_HTML_synthese .= Html::legende($tab_legende); }
-    if($make_pdf)  { $releve_PDF_synthese->legende( $aff_socle_points_DNB ); }
+    if($make_pdf)  { $releve_PDF_synthese->legende( $socle_synthese_affichage ); }
   }
   $script = $affichage_direct ? '$("#table_s").tablesorter();' : 'function tri(){$("#table_s").tablesorter();}' ;
   if($make_html)

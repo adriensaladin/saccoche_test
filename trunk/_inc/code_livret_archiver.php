@@ -245,6 +245,11 @@ if($action=='imprimer_donnees_eleves_prof')
       }
     }
   }
+  $nb_rubriques = count($tab_rubrique);
+  if(!$nb_rubriques)
+  {
+    Json::end( FALSE , 'Aucune saisie trouvée pour aucun élève !' );
+  }
   recuperer_intitules_rubriques( $PAGE_RUBRIQUE_TYPE , $classe_id , $PAGE_REF );
   // Fabrication du PDF
   $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
@@ -340,6 +345,11 @@ if($action=='imprimer_donnees_eleves_collegues')
       }
     }
   }
+  $nb_rubriques = count($tab_rubrique);
+  if(!$nb_rubriques)
+  {
+    Json::end( FALSE , 'Aucune saisie trouvée pour aucun élève !' );
+  }
   recuperer_intitules_rubriques( $PAGE_RUBRIQUE_TYPE , $classe_id , $PAGE_REF );
   // Fabrication du PDF
   $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
@@ -427,9 +437,13 @@ if($action=='imprimer_donnees_classe_collegues')
       }
     }
   }
+  $nb_rubriques = count($tab_rubrique);
+  if(!$nb_rubriques)
+  {
+    Json::end( FALSE , 'Aucune saisie trouvée pour aucun élève !' );
+  }
   recuperer_intitules_rubriques( $PAGE_RUBRIQUE_TYPE , $classe_id , $PAGE_REF );
   // Fabrication du PDF
-  $nb_rubriques = count($tab_saisie);
   $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
   $archivage_tableau_PDF->appreciation_initialiser_classe_collegues( $nb_eleves , $nb_rubriques , $nb_lignes_supplémentaires );
   $archivage_tableau_PDF->appreciation_intitule( 'Livret scolaire - '.$classe_nom.' - '.$periode_nom.' - '.'Appréciations du groupe classe' );
@@ -533,6 +547,11 @@ if($action=='imprimer_donnees_eleves_positionnements')
       }
     }
   }
+  $nb_rubriques = count($tab_rubrique['eval']);
+  if(!$nb_rubriques)
+  {
+    Json::end( FALSE , 'Aucune rubrique trouvée avec un positionnement pour un élève !' );
+  }
   recuperer_intitules_rubriques( $PAGE_RUBRIQUE_TYPE , $classe_id , $PAGE_REF );
   // ( mettre le groupe classe en dernier )
   if(!$PAGE_MOYENNE_CLASSE)
@@ -547,7 +566,6 @@ if($action=='imprimer_donnees_eleves_positionnements')
   }
   // Fabrication du PDF ; on a besoin de tourner du texte à 90°
   // Fabrication d'un CSV en parallèle
-  $nb_rubriques = count($tab_rubrique['eval']);
   $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
   $archivage_tableau_PDF->moyennes_initialiser( $nb_eleves , $nb_rubriques );
   $archivage_tableau_CSV = '';
@@ -623,6 +641,11 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
       $pourcentage = $DB_ROW['saisie_valeur'] ;
       $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['note'][$DB_ROW['jointure_periode']] = $pourcentage;
     }
+  }
+  $nb_rubriques = count($tab_rubrique['eval']);
+  if(!$nb_rubriques)
+  {
+    Json::end( FALSE , 'Aucune donnée trouvée pour aucun élève !' );
   }
   recuperer_intitules_rubriques( $PAGE_RUBRIQUE_TYPE , $classe_id , $PAGE_REF );
   // Calcul des moyennes annuelles et de classe

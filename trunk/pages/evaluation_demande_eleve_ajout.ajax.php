@@ -28,13 +28,14 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO){Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action       = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
-$matiere_id   = (isset($_POST['f_matiere_id'])) ? Clean::entier($_POST['f_matiere_id']) : 0;
-$item_id      = (isset($_POST['f_item_id']))    ? Clean::entier($_POST['f_item_id'])    : 0;
-$prof_id      = (isset($_POST['f_prof_id']))    ? Clean::entier($_POST['f_prof_id'])    : -1;
-$score        = (isset($_POST['f_score']))      ? Clean::entier($_POST['f_score'])      : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
-$message      = (isset($_POST['f_message']))    ? Clean::texte($_POST['f_message'])     : '' ;
-$document_nom = (isset($_POST['f_doc_nom']))    ? Clean::texte($_POST['f_doc_nom'])     : '' ;
+$action       = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])          : '';
+$matiere_id   = (isset($_POST['f_matiere_id'])) ? Clean::entier($_POST['f_matiere_id'])     : 0;
+$item_id      = (isset($_POST['f_item_id']))    ? Clean::entier($_POST['f_item_id'])        : 0;
+$prof_id      = (isset($_POST['f_prof_id']))    ? Clean::entier($_POST['f_prof_id'])        : -1;
+$debut_date   = (isset($_POST['f_debut_date'])) ? Clean::date_mysql($_POST['f_debut_date']) : '0000-00-00';
+$score        = (isset($_POST['f_score']))      ? Clean::entier($_POST['f_score'])          : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
+$message      = (isset($_POST['f_message']))    ? Clean::texte($_POST['f_message'])         : '' ;
+$document_nom = (isset($_POST['f_doc_nom']))    ? Clean::texte($_POST['f_doc_nom'])         : '' ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Lister les profs associés à l'élève et à une matière
@@ -131,8 +132,9 @@ if( ($action=='confirmer_ajout') && $matiere_id && $item_id && ($prof_id!==-1) &
   }
 
   // Enregistrement de la demande
+  $debut_date = ($debut_date!='0000-00-00') ? $debut_date : NULL ;
   $score = ($score!=-1) ? $score : NULL ;
-  $demande_id = DB_STRUCTURE_DEMANDE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , $prof_id , $score , 'eleve' /*statut*/ , $message , $demande_doc );
+  $demande_id = DB_STRUCTURE_DEMANDE::DB_ajouter_demande( $_SESSION['USER_ID'] , $matiere_id , $item_id , $prof_id , $debut_date , $score , 'eleve' /*statut*/ , $message , $demande_doc );
 
   // Ajout aux flux RSS des profs concernés
   $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;

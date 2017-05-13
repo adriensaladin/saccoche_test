@@ -289,10 +289,11 @@ $(document).ready
       'q.actualiser',
       function()
       {
-        var obj_q   = $(this);
-        var obj_td  = $(this).parent();
-        var ids     = obj_td.parent().children('td:first').children('input').val();
-        var score   = $(this).prev('i').html();
+        var obj_q      = $(this);
+        var obj_td     = $(this).parent();
+        var ids        = obj_td.parent().children('td:first').children('input').val();
+        var score      = $(this).prev('i').html();
+        var debut_date = $(this).attr('data-debut_date');
         score = (typeof(score)!=='undefined') ? parseInt(score,10) : -1 ;
         obj_q.removeAttr('class');
         $.ajax
@@ -300,7 +301,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+'actualiser_score'+'&ids='+ids+'&score='+score,
+            data : 'csrf='+CSRF+'&f_action='+'actualiser_score'+'&ids='+ids+'&score='+score+'&f_debut_date='+debut_date,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

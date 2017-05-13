@@ -301,7 +301,7 @@ if( $step==6 )
     Json::add_str('<p class="danger">Comme indiqué précédemment, '.$texte_alerte.'.</p>'.NL);
     Json::add_str('<fieldset>'.NL);
     Json::add_str('<h2>Paramètres MySQL</h2>'.NL);
-    Json::add_str('<label class="tab" for="f_host"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Parfois \'localhost\' sur un serveur que l\'on administre." /> Hôte ou IP :</label><input id="f_host" name="f_host" size="20" type="text" value="" /><br />'.NL);
+    Json::add_str('<label class="tab" for="f_host"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="En général \'localhost\' sur un serveur local." /> Hôte ou IP :</label><input id="f_host" name="f_host" size="20" type="text" value="" /><br />'.NL);
     Json::add_str('<label class="tab" for="f_port"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Valeur 3306 par défaut (dans la quasi totalité des situations)." /> Port :</label><input id="f_port" name="f_port" size="20" type="text" value="3306" /><label class="alerte">Ne changez pas cette valeur, sauf rares exceptions !</label><br />'.NL);
     Json::add_str('<label class="tab" for="f_user">Nom d\'utilisateur :</label><input id="f_user" name="f_user" size="20" type="text" value="" /><br />'.NL);
     Json::add_str('<label class="tab" for="f_pass">Mot de passe :</label><input id="f_pass" name="f_pass" size="20" type="password" value="" /><br />'.NL);

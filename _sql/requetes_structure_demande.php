@@ -106,23 +106,26 @@ public static function DB_lister_demandes_prof( $prof_id , $matiere_id , $listin
 /**
  * Retourner les résultats pour 1 élève donné, pour 1 item matière donné
  *
- * @param int $eleve_id
- * @param int $item_id
+ * @param int    $eleve_id
+ * @param int    $item_id
+ * @param string $date_mysql_debut
  * @return array
  */
-public static function DB_lister_result_eleve_item( $eleve_id , $item_id )
+public static function DB_lister_result_eleve_item( $eleve_id , $item_id , $date_mysql_debut )
 {
-  $DB_SQL = 'SELECT saisie_note AS note , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
+  $sql_debut = ($date_mysql_debut) ? 'AND saisie_date>=:date_debut ' : '';
+  $DB_SQL = 'SELECT saisie_note AS note , saisie_date AS date , referentiel_calcul_methode AS calcul_methode , referentiel_calcul_limite AS calcul_limite ';
   $DB_SQL.= 'FROM sacoche_saisie ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_item USING (item_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_theme USING (theme_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel_domaine USING (domaine_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_referentiel USING (matiere_id,niveau_id) ';
-  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id=:item_id AND saisie_note!="PA" ';
+  $DB_SQL.= 'WHERE eleve_id=:eleve_id AND item_id=:item_id AND saisie_note!="PA" '.$sql_debut;
   $DB_SQL.= 'ORDER BY saisie_date ASC, devoir_id ASC '; // ordre sur devoir_id ajouté à cause des items évalués plusieurs fois le même jour
   $DB_VAR = array(
-    ':eleve_id'  => $eleve_id,
-    ':item_id'   => $item_id,
+    ':eleve_id'   => $eleve_id,
+    ':item_id'    => $item_id,
+    ':date_debut' => $date_mysql_debut,
   );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -321,26 +324,28 @@ public static function DB_tester_demande_existante( $eleve_id , $matiere_id , $i
  * @param int      $matiere_id
  * @param int      $item_id
  * @param int      $prof_id
+ * @param string   $debut_date
  * @param int|null $demande_score
  * @param string   $demande_statut
  * @param string   $message
  * @param string   $demande_doc
  * @return int
  */
-public static function DB_ajouter_demande( $eleve_id , $matiere_id , $item_id , $prof_id , $demande_score , $demande_statut , $message , $demande_doc )
+public static function DB_ajouter_demande( $eleve_id , $matiere_id , $item_id , $prof_id , $debut_date , $demande_score , $demande_statut , $message , $demande_doc )
 {
   $demande_messages = ($message) ? To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE)."\r\n".$message : '' ;
-  $DB_SQL = 'INSERT INTO sacoche_demande( eleve_id, matiere_id, item_id, prof_id,demande_date, demande_score, demande_statut, demande_messages, demande_doc) ';
-  $DB_SQL.= 'VALUES                     (:eleve_id,:matiere_id,:item_id,:prof_id,       NOW(),:demande_score,:demande_statut,:demande_messages,:demande_doc)';
+  $DB_SQL = 'INSERT INTO sacoche_demande( eleve_id, matiere_id, item_id, prof_id, periode_debut_date, demande_date, demande_score, demande_statut, demande_messages, demande_doc) ';
+  $DB_SQL.= 'VALUES                     (:eleve_id,:matiere_id,:item_id,:prof_id,:periode_debut_date,        NOW(),:demande_score,:demande_statut,:demande_messages,:demande_doc)';
   $DB_VAR = array(
-    ':eleve_id'         => $eleve_id,
-    ':matiere_id'       => $matiere_id,
-    ':item_id'          => $item_id,
-    ':prof_id'          => $prof_id,
-    ':demande_score'    => $demande_score,
-    ':demande_statut'   => $demande_statut,
-    ':demande_messages' => $demande_messages,
-    ':demande_doc'      => $demande_doc,
+    ':eleve_id'           => $eleve_id,
+    ':matiere_id'         => $matiere_id,
+    ':item_id'            => $item_id,
+    ':prof_id'            => $prof_id,
+    ':periode_debut_date' => $debut_date,
+    ':demande_score'      => $demande_score,
+    ':demande_statut'     => $demande_statut,
+    ':demande_messages'   => $demande_messages,
+    ':demande_doc'        => $demande_doc,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);

@@ -203,6 +203,7 @@ $(document).ready
         var demande_id = tab_ids[1];
         var item_id    = tab_ids[2];
         var score      = $(this).prev('i').html();
+        var debut_date = $(this).attr('data-debut_date');
         score = (typeof(score)!=='undefined') ? parseInt(score,10) : -1 ;
         obj_q.removeAttr('class');
         $.ajax
@@ -210,7 +211,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_action='+'actualiser_score'+'&f_demande_id='+demande_id+'&f_item_id='+item_id+'&score='+score,
+            data : 'csrf='+CSRF+'&f_action='+'actualiser_score'+'&f_demande_id='+demande_id+'&f_item_id='+item_id+'&score='+score+'&f_debut_date='+debut_date,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

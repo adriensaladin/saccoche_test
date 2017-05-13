@@ -1747,6 +1747,7 @@ $(document).ready
         item_id    = tab_infos[2];
         score      = (tab_infos[3]!='') ? tab_infos[3] : -1 ; // si absence de score...
         item_nom   = $(this).parent().text();
+        debut_date = ( $('#demande_periode_debut_date').length ) ? $('#demande_periode_debut_date').val() : '' ;
         // Récupérer le nombre de profs potentiellements concernés
         $.fancybox( '<label class="loader">'+'En cours&hellip;'+'</label>' , {'centerOnScroll':true} );
         $.ajax
@@ -1774,7 +1775,7 @@ $(document).ready
                             + '<p><label class="tab">Destinaire(s) :</label><select name="f_prof_id">'+responseJSON['value']+'</select></p>'
                             + '<p><label class="tab">Message (facultatif) :</label><textarea id="zone_message" name="f_message" rows="5" cols="75"></textarea><br /><span class="tab"></span><label id="zone_message_reste"></label></p>'
                             + '<div><label class="tab">Document (facultatif) :</label><input id="f_demande_evaluation_document" type="file" name="userfile" /><button id="bouton_choisir_demande_evaluation_document" type="button" class="fichier_import">Choisir un fichier.</button><label id="ajax_demande_evaluation_document"></label><input type="hidden" id="f_demande_evaluation_action" name="f_action" value="" /><input id="f_doc_nom" name="f_doc_nom" type="hidden" value="" /></div>'
-                            + '<p><span class="tab"></span><input name="f_matiere_id" type="hidden" value="'+matiere_id+'" /><input name="f_item_id" type="hidden" value="'+item_id+'" /><input name="f_score" type="hidden" value="'+score+'" />'
+                            + '<p><span class="tab"></span><input name="f_matiere_id" type="hidden" value="'+matiere_id+'" /><input name="f_item_id" type="hidden" value="'+item_id+'" /><input name="f_score" type="hidden" value="'+score+'" /><input name="f_debut_date" type="hidden" value="'+debut_date+'" />'
                             + '<button id="confirmer_demande_evaluation" type="button" class="valider">Confirmer.</button> <button id="fermer_demande_evaluation" type="button" class="annuler">Annuler.</button><label id="ajax_msg_confirmer_demande"></label></p>'
                             + '</form>';
                 $.fancybox( contenu , { 'modal':true , 'centerOnScroll':true } );

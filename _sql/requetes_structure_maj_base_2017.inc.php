@@ -427,6 +427,24 @@ if($version_base_structure_actuelle=='2017-04-18')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-04-29 => 2017-05-13
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-04-29')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-05-13';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // ajout de colonne à [sacoche_demande]
+    if(empty($reload_sacoche_demande))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_demande ADD periode_debut_date DATE DEFAULT NULL COMMENT "Date de début de la période considérée pour calculer le score." AFTER prof_id' );
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

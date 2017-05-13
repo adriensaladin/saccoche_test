@@ -555,7 +555,7 @@ if($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']!='sans')
       $tab_signature['prof'] = $tab_signature['tmp'][0];
     }
   }
-  elseif($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature')
+  if( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') )
   {
     if( $affichage_chef_etabl && !empty($tab_signature['tmp'][$_SESSION['ETABLISSEMENT']['CHEF_ID']]) )
     {

@@ -154,21 +154,23 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
   // Préparation de l'export CSV
   $separateur = ';';
   // ajout du préfixe 'SACOCHE_' pour éviter un bug avec M$ Excel « SYLK : Format de fichier non valide » (http://support.microsoft.com/kb/323626/fr). 
-  $export_csv  = 'SACOCHE_ID'.$separateur.'LOGIN'.$separateur.'GENRE'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'GROUPE'."\r\n\r\n";
+  $export_csv  = 'SACOCHE_ID'.$separateur.'LOGIN'.$separateur.'GENRE'.$separateur.'NOM'.$separateur.'PRENOM'.$separateur.'DATE_NAISSANCE'.$separateur.'GROUPE'."\r\n\r\n";
   // Préparation de l'export HTML
-  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Login</th><th>Genre</th><th>Nom</th><th>Prénom</th><th>Groupe</th></tr>'.NL.'</thead><tbody>'.NL;
+  $export_html = '<table class="p"><thead>'.NL.'<tr><th>Id</th><th>Login</th><th>Genre</th><th>Nom</th><th>Prénom</th><th>Date Naiss.</th><th>Groupe</th></tr>'.NL.'</thead><tbody>'.NL;
   // Récupérer les élèves de la classe ou du groupe
-  $champs = 'user_id, user_login, user_genre, user_nom, user_prenom';
+  $champs = 'user_id, user_login, user_genre, user_nom, user_prenom, user_naissance_date';
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
   if(!empty($DB_TAB))
   {
     foreach($DB_TAB as $DB_ROW)
     {
+      $date_fr = To::date_mysql_to_french($DB_ROW['user_naissance_date']);
       $export_csv .= $DB_ROW['user_id']
         .$separateur.$DB_ROW['user_login']
         .$separateur.Html::$tab_genre['enfant'][$DB_ROW['user_genre']]
         .$separateur.$DB_ROW['user_nom']
         .$separateur.$DB_ROW['user_prenom']
+        .$separateur.$date_fr
         .$separateur.$groupe_nom
         ."\r\n";
       $export_html .= '<tr>'
@@ -177,6 +179,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
                        .'<td>'.Html::$tab_genre['enfant'][$DB_ROW['user_genre']].'</td>'
                        .'<td>'.html($DB_ROW['user_nom']).'</td>'
                        .'<td>'.html($DB_ROW['user_prenom']).'</td>'
+                       .'<td>'.$date_fr.'</td>'
                        .'<td>'.html($groupe_nom).'</td>'
                      .'</tr>'.NL;
     }
@@ -240,7 +243,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
     {
       $item_ref = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['niveau_ref'].'.'.$DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
       $demande_eval = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
-      $s2016_texte = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? ( (count($DB_TAB_socle2016[$DB_ROW['item_id']]['id'])==1) ? $DB_TAB_socle2016[$DB_ROW['item_id']]['nom'][0] : count($DB_TAB_socle2016[$DB_ROW['item_id']]['id']).' liaisons' ) : 'Hors-socle 2016.' ;
+      $s2016_texte = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? implode("\r\n",$DB_TAB_socle2016[$DB_ROW['item_id']]['nom']) : 'Hors-socle 2016.' ;
       $export_csv .= $DB_ROW['item_id']
         .$separateur.$matiere_nom
         .$separateur.'"'.$DB_ROW['niveau_nom'].'"'
@@ -267,8 +270,8 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
                        .'<td>'.html($demande_eval).'</td>'
                        .'<td>'.html($DB_ROW['item_lien']).'</td>'
                        .'<td>'.html($DB_ROW['entree_nom']).'</td>'
-                       .'<td>'.html($s2016_texte).'</td>'
-                       .'<td>'.html($DB_ROW['item_comm']).'</td>'
+                       .'<td>'.convertCRtoBR(html($s2016_texte)).'</td>'
+                       .'<td>'.convertCRtoBR(html($DB_ROW['item_comm'])).'</td>'
                      .'</tr>'.NL;
     }
   }

@@ -653,6 +653,7 @@ if($type_individuel)
     $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>Bilan '.$bilan_titre.'</h1>'.NL;
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($texte_periode).'</h2>'.NL;
+    $releve_HTML_individuel .= $affichage_direct ? '<input type="hidden" id="demande_periode_debut_date" value="'.$date_mysql_debut.'" />'.NL : '' ;
     $releve_HTML_individuel .= ($info_details || $bouton_print_appr || $bouton_print_test || $bouton_import_csv) ? '<div class="ti">'.$info_details.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '' ;
     $bilan_colspan = $cases_nb + 2 ;
     $tfoot_td_nu  = ($longueur_ref_max) ? '<td class="nu">&nbsp;</td>'       : '' ;

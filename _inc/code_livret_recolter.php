@@ -1014,6 +1014,7 @@ unset($tab_saisie);
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $is_lsu_17_2 = version_compare(TODAY_MYSQL,'2017-05-14','>') ? TRUE : FALSE ;
+$is_lsu_17_2 = FALSE ;
 
 /*
  * En cas de retrait d'une rubrique, on retire aussi les éléments de programmes associés, sauf s'ils sont utilisés par une autre rubrique.

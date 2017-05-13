@@ -87,7 +87,7 @@ else
         echo  '<td>'.html($DB_ROW['matiere_nom']).'</td>';
         echo  '<td>'.$destinataires.'</td>';
         echo  '<td>'.$texte_lien_avant.html($item_ref).$texte_lien_apres.' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /></td>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-        echo  str_replace( '</td>' , ' <q class="actualiser" title="Actualiser le score (enregistré lors de la demande)." data-debut_date="'.$DB_ROW['periode_debut_date'].'"></q></td>' , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
+        echo  str_replace( '</td>' , ' <q class="actualiser" title="Actualiser le score (enregistré lors de la demande)."></q></td>' , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
         echo  '<td>'.$statut.'</td>';
         echo  '<td>'.$commentaire.'</td>';
         echo  '<td>'.$document.'</td>';

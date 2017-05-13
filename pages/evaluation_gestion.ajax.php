@@ -322,18 +322,12 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $date_visible_mysql  = To::date_french_to_mysql($date_visible);
   $date_autoeval_mysql = To::date_french_to_mysql($date_autoeval);
   // Tester les dates
-  $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
-  $jour_fin_annee_scolaire   = To::jour_fin_annee_scolaire('mysql');
   $date_stamp          = strtotime($date_mysql);
   $date_visible_stamp  = strtotime($date_visible_mysql);
   $date_autoeval_stamp = strtotime($date_autoeval_mysql);
   $mini_stamp          = strtotime("-3 month");
   $maxi_stamp          = strtotime("+3 month");
   $maxi_visible_stamp  = strtotime("+10 month");
-  if( ($date_mysql<$jour_debut_annee_scolaire) || ($date_mysql>$jour_fin_annee_scolaire) )
-  {
-    Json::end( FALSE , 'Date devoir hors année scolaire ('.To::jour_debut_annee_scolaire('french').' - '.To::jour_fin_annee_scolaire('french').') !' );
-  }
   if( ($date_stamp<$mini_stamp) || ($date_stamp>$maxi_stamp) )
   {
     Json::end( FALSE , 'Date devoir trop éloignée !' );
@@ -513,17 +507,11 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $date_visible_mysql  = To::date_french_to_mysql($date_visible);
   $date_autoeval_mysql = To::date_french_to_mysql($date_autoeval);
   // Tester les dates
-  $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
-  $jour_fin_annee_scolaire   = To::jour_fin_annee_scolaire('mysql');
   $date_stamp          = strtotime($date_mysql);
   $date_visible_stamp  = strtotime($date_visible_mysql);
   $date_autoeval_stamp = strtotime($date_autoeval_mysql);
   $mini_stamp          = strtotime("-10 month");
   $maxi_stamp          = strtotime("+10 month");
-  if( ($date_mysql<$jour_debut_annee_scolaire) || ($date_mysql>$jour_fin_annee_scolaire) )
-  {
-    Json::end( FALSE , 'Date devoir hors année scolaire ('.To::jour_debut_annee_scolaire('french').' - '.To::jour_fin_annee_scolaire('french').') !' );
-  }
   if( ($date_stamp<$mini_stamp) || ($date_stamp>$maxi_stamp) )
   {
     Json::end( FALSE , 'Date devoir trop éloignée !' );

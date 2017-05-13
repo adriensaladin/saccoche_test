@@ -28,13 +28,12 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])          : '';
-$demande_id = (isset($_POST['f_demande_id'])) ? Clean::entier($_POST['f_demande_id'])     : 0;
-$item_id    = (isset($_POST['f_item_id']))    ? Clean::entier($_POST['f_item_id'])        : 0;
-$matiere_id = (isset($_POST['f_matiere_id'])) ? Clean::entier($_POST['f_matiere_id'])     : 0;
-$prof_id    = (isset($_POST['f_prof_id']))    ? Clean::entier($_POST['f_prof_id'])        : -1;
-$score      = (isset($_POST['score']))        ? Clean::entier($_POST['score'])            : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
-$debut_date = (isset($_POST['f_debut_date'])) ? Clean::date_mysql($_POST['f_debut_date']) : '0000-00-00';
+$action     = (isset($_POST['f_action']))     ? Clean::texte($_POST['f_action'])      : '';
+$demande_id = (isset($_POST['f_demande_id'])) ? Clean::entier($_POST['f_demande_id']) : 0;
+$item_id    = (isset($_POST['f_item_id']))    ? Clean::entier($_POST['f_item_id'])    : 0;
+$matiere_id = (isset($_POST['f_matiere_id'])) ? Clean::entier($_POST['f_matiere_id']) : 0;
+$prof_id    = (isset($_POST['f_prof_id']))    ? Clean::entier($_POST['f_prof_id'])    : -1;
+$score      = (isset($_POST['score']))        ? Clean::entier($_POST['score'])        : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Supprimer une demande
@@ -98,21 +97,20 @@ if( ($action=='supprimer') && $demande_id && $item_id && $matiere_id && ($prof_i
 
 if( ($action=='actualiser_score') && $demande_id && $item_id && ($score>-2) )
 {
-  $debut_date = ($debut_date!='0000-00-00') ? $debut_date : NULL ;
   $tab_devoirs = array();
-  $DB_TAB = DB_STRUCTURE_DEMANDE::DB_lister_result_eleve_item( $_SESSION['USER_ID'] , $item_id , $debut_date );
+  $DB_TAB = DB_STRUCTURE_DEMANDE::DB_lister_result_eleve_item( $_SESSION['USER_ID'] , $item_id );
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_devoirs[] = array( 'note'=>$DB_ROW['note'] , 'date'=>$DB_ROW['date'] );
+    $tab_devoirs[] = array('note'=>$DB_ROW['note']);
   }
-  $score_new = (count($tab_devoirs)) ? OutilBilan::calculer_score( $tab_devoirs , $DB_ROW['calcul_methode'] , $DB_ROW['calcul_limite'] , $debut_date ) : FALSE ;
+  $score_new = (count($tab_devoirs)) ? OutilBilan::calculer_score( $tab_devoirs , $DB_ROW['calcul_methode'] , $DB_ROW['calcul_limite'] , NULL /*date_mysql_debut*/ ) : FALSE ;
   if( ( ($score==-1) && ($score_new!==FALSE) ) || ( ($score>-1) && ($score_new!==$score) ) )
   {
     // maj score
     $score_new_bdd = ($score_new!=-1) ? $score_new : NULL ;
     DB_STRUCTURE_DEMANDE::DB_modifier_demande_score( $demande_id , $score_new_bdd );
   }
-  $score_retour = str_replace( '</td>' , ' <q class="actualiser" title="Actualiser le score (enregistré lors de la demande)." data-debut_date="'.$debut_date.'"></q></td>' , Html::td_score( $score_new , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
+  $score_retour = str_replace( '</td>' , ' <q class="actualiser" title="Actualiser le score (enregistré lors de la demande)."></q></td>' , Html::td_score( $score_new , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
   Json::end( TRUE , $score_retour );
 }
 

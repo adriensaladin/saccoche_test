@@ -369,7 +369,6 @@ if($type_individuel)
   {
     $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
     $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>'.$titre.'</h1>'.NL;
-    $releve_HTML_individuel .= $affichage_direct ? '<input type="hidden" id="demande_periode_debut_date" value="'.$date_mysql_debut.'" />'.NL : '' ;
     $separation = (count($tab_eleve_infos)>1) ? '<hr class="breakafter" />'.NL : '' ;
     $releve_HTML_individuel_javascript = '';
     $tab_legende = array(

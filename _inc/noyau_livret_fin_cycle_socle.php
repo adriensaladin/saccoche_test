@@ -453,12 +453,12 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         if(!empty($tab_signature['prof']))
         {
           // On remet la bonne image pour les tirages suivants
-          $tab_signature['prof']['contenu'] = $image_contenu_prof;
+          $tab_signature['prof']['contenu'] = $image_contenu;
         }
         if(!empty($tab_signature['chef']))
         {
           // On remet la bonne image pour les tirages suivants
-          $tab_signature['chef']['contenu'] = $image_contenu_chef;
+          $tab_signature['chef']['contenu'] = $image_contenu;
         }
       }
     }

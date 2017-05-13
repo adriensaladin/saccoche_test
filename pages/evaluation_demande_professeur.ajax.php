@@ -48,7 +48,6 @@ $message       = (isset($_POST['f_message']))       ? Clean::texte($_POST['f_mes
 $devoir_saisie = (isset($_POST['devoir_saisie']))   ? TRUE                                      : FALSE ;
 
 $score         = (isset($_POST['score']))           ? Clean::entier($_POST['score'])            : -2; // normalement entier entre 0 et 100 ou -1 si non évalué
-$debut_date    = (isset($_POST['f_debut_date']))    ? Clean::date_mysql($_POST['f_debut_date']) : '0000-00-00';
 
 $tab_demande_id = array();
 $tab_user_id    = array();
@@ -170,7 +169,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $retour .= '<td class="label">$'.$DB_ROW['item_id'].'$</td>';
     $retour .= '<td class="label">'.html($tab_groupes[$DB_ROW['eleve_id']]).'</td>';
     $retour .= '<td class="label">'.html($tab_eleves[$DB_ROW['eleve_id']]).'</td>';
-    $retour .= str_replace( '></q>' , ' data-debut_date="'.$DB_ROW['periode_debut_date'].'"></q>' , str_replace( $tab_td_score_bad , $tab_td_score_bon , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) ) );
+    $retour .= str_replace( $tab_td_score_bad , $tab_td_score_bon , Html::td_score( $score , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
     $retour .= '<td class="label">'.$date.'</td>';
     $retour .= '<td class="label">'.$dest.'</td>';
     $retour .= '<td class="label">'.$statut.'</td>';
@@ -430,21 +429,20 @@ if( ($action=='retirer') && $nb_demandes )
 
 if( ($action=='actualiser_score') && ($nb_demandes==1) && ($nb_users==1) && ($nb_items==1) && ($score>-2) )
 {
-  $debut_date = ($debut_date!='0000-00-00') ? $debut_date : NULL ;
   $tab_devoirs = array();
-  $DB_TAB = DB_STRUCTURE_DEMANDE::DB_lister_result_eleve_item( $tab_user_id[0] , $tab_item_id[0] , $debut_date );
+  $DB_TAB = DB_STRUCTURE_DEMANDE::DB_lister_result_eleve_item( $tab_user_id[0] , $tab_item_id[0] );
   foreach($DB_TAB as $DB_ROW)
   {
-    $tab_devoirs[] = array( 'note'=>$DB_ROW['note'] , 'date'=>$DB_ROW['date'] );
+    $tab_devoirs[] = array('note'=>$DB_ROW['note']);
   }
-  $score_new = (count($tab_devoirs)) ? OutilBilan::calculer_score( $tab_devoirs , $DB_ROW['calcul_methode'] , $DB_ROW['calcul_limite'] , $debut_date ) : FALSE ;
+  $score_new = (count($tab_devoirs)) ? OutilBilan::calculer_score( $tab_devoirs , $DB_ROW['calcul_methode'] , $DB_ROW['calcul_limite'] , NULL /*date_mysql_debut*/ ) : FALSE ;
   if( ( ($score==-1) && ($score_new!==FALSE) ) || ( ($score>-1) && ($score_new!==$score) ) )
   {
     // maj score
     $score_new_bdd = ($score_new!=-1) ? $score_new : NULL ;
     DB_STRUCTURE_DEMANDE::DB_modifier_demande_score( $tab_demande_id[0] , $score_new_bdd );
   }
-  $score_retour = str_replace( '></q>' , ' data-debut_date="'.$debut_date.'"></q>' , str_replace( $tab_td_score_bad , $tab_td_score_bon , Html::td_score( $score_new , 'score' /*methode_tri*/ , '' /*pourcent*/ ) ) );
+  $score_retour = str_replace( $tab_td_score_bad , $tab_td_score_bon , Html::td_score( $score_new , 'score' /*methode_tri*/ , '' /*pourcent*/ ) );
   Json::end( TRUE , $score_retour );
 }
 

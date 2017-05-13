@@ -556,7 +556,6 @@ if( $type_generique || $type_individuel )
   $releve_HTML_individuel  = $affichage_direct ? '' : '<style type="text/css">'.$_SESSION['CSS'].'</style>'.NL;
   $releve_HTML_individuel .= $affichage_direct ? '' : '<h1>'.$bilan_titre.'</h1>'.NL;
   $releve_HTML_individuel .= $affichage_direct ? '' : '<h2>'.html($matiere_nom.' - Niveau '.$niveau_nom.$msg_socle.$msg_periode).'</h2>'.NL;
-  $releve_HTML_individuel .= $affichage_direct ? '<input type="hidden" id="demande_periode_debut_date" value="'.$date_mysql_debut.'" />'.NL : '' ;
   // Appel de la classe et définition de qqs variables supplémentaires pour la mise en page PDF
   $ETABLISSEMENT_NOM = $_SESSION['ETABLISSEMENT']['DENOMINATION'];
   $releve_PDF = new PDF_grille_referentiel( FALSE /*officiel*/ , $orientation , $marge_min /*marge_gauche*/ , $marge_min /*marge_droite*/ , $marge_min /*marge_haut*/ , $marge_min /*marge_bas*/ , $couleur , $fond , $legende , $ETABLISSEMENT_NOM );

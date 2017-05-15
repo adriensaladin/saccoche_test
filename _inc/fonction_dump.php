@@ -107,7 +107,7 @@ function formater_valeur($val)
   {
     return 'NULL';
   }
-  else if( ctype_digit($val) && ( $val{0} || !$val ) ) // 2nd test par exemple pour le cas des codes postaux qui commencent par 0
+  else if( ctype_digit($val) && $val{0} ) // 2nd test par exemple pour le cas des codes postaux qui commencent par 0
   {
     return $val;
   }

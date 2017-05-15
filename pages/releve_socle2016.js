@@ -288,7 +288,6 @@ $(document).ready
       clearForm : false,
       resetForm : false,
       target : "#ajax_msg",
-      beforeSerialize : action_form_avant_serialize,
       beforeSubmit : test_form_avant_envoi,
       error : retour_form_erreur,
       success : retour_form_valide
@@ -310,18 +309,13 @@ $(document).ready
       }
     );
 
-    // Fonction précédent le traitement du formulaire (avec jquery.form.js)
-    function action_form_avant_serialize(jqForm, options)
+    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
+    function test_form_avant_envoi(formData, jqForm, options)
     {
       if( $('#f_type_synthese').is(':checked') && ( ($("#f_cycle option:selected").val()!=4) || ($("#f_socle_detail option:selected").val()!='livret') ) )
       {
         $('#f_socle_synthese_affichage_pourcentage').prop('checked',true);
       }
-    }
-
-    // Fonction précédant l'envoi du formulaire (avec jquery.form.js)
-    function test_form_avant_envoi(formData, jqForm, options)
-    {
       $('#ajax_msg').removeAttr('class').html("");
       var readytogo = validation.form();
       if(readytogo)

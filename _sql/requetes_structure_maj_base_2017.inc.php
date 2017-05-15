@@ -445,22 +445,6 @@ if($version_base_structure_actuelle=='2017-04-29')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2017-05-13 => 2017-05-15
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2017-05-13')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2017-05-15';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // inversion ordre lignes dans maj 2017-04-03
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel CHANGE referentiel_calcul_methode referentiel_calcul_methode ENUM("geometrique","arithmetique","classique","bestof1","bestof2","bestof3","frequencemin","frequencemax") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT "geometrique" COMMENT "Coefficients en progression géométrique, arithmetique, ou moyenne classique non pondérée, ou conservation des meilleurs scores, ou de la plus fréquente. Valeur surclassant la configuration par défaut." ' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_referentiel SET referentiel_calcul_methode="frequencemax" WHERE referentiel_calcul_methode=""' );
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

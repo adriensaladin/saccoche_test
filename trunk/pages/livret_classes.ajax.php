@@ -32,9 +32,8 @@ $groupe_id = (isset($_POST['f_groupe']))   ? Clean::entier($_POST['f_groupe']) :
 $periode   = (isset($_POST['f_periode']))  ? Clean::id($_POST['f_periode'])    : NULL ;
 $jointure  = (isset($_POST['f_jointure'])) ? Clean::ref($_POST['f_jointure'])  : NULL ;
 $cycle     = (isset($_POST['f_cycle']))    ? Clean::id($_POST['f_cycle'])      : NULL ;
-$college   = (isset($_POST['f_college']))  ? Clean::id($_POST['f_college'])    : NULL ;
 
-if( !$groupe_id || is_null($periode) || is_null($jointure) || is_null($cycle) || is_null($college) || ( $periode && !$jointure ) )
+if( !$groupe_id || is_null($periode) || is_null($jointure) || is_null($cycle) || ( $periode && !$jointure ) )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
@@ -45,9 +44,8 @@ if( !$groupe_id || is_null($periode) || is_null($jointure) || is_null($cycle) ||
 
 // On récupère déjà l'existant
 $tab_jointures_old = array(
-  'periode'  => FALSE ,
-  'cycle'    => FALSE ,
-  'college'  => FALSE ,
+  'periode' => FALSE ,
+  'cycle'   => FALSE ,
 );
 $jointure_old = FALSE;
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_classes_avec_jointures_livret( $groupe_id );

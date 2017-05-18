@@ -121,25 +121,22 @@ $liste_eleve_id = implode(',',$tab_eleve_id);
 // Du coup le plus simple est de simuler la génération du document, sans sortie html / pdf, mais en notant au fur et à mesure ce qui manque
 
 // (re)calculer les données du livret
-if( ($PAGE_REF!='brevet') && ($PAGE_COLONNE!='rien') ) // TODO : enlever le test "rien" si ce n'est pas autorisé (pour l'instant ce n'est même pas implémenté...)
+// Attention ! On doit calculer des moyennes de classe, pas de groupe !
+if(!$is_sous_groupe)
 {
-  // Attention ! On doit calculer des moyennes de classe, pas de groupe !
-  if(!$is_sous_groupe)
-  {
-    $liste_eleve_id_tmp = $liste_eleve_id;
-  }
-  else
-  {
-    $tab_eleve_id_tmp = array();
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ );
-    foreach($DB_TAB as $DB_ROW)
-    {
-      $tab_eleve_id_tmp[] = $DB_ROW['user_id'];
-    }
-    $liste_eleve_id_tmp = implode(',',$tab_eleve_id_tmp);
-  }
-  calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id_tmp , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] , $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['LIVRET_RETROACTIF'] );
+  $liste_eleve_id_tmp = $liste_eleve_id;
 }
+else
+{
+  $tab_eleve_id_tmp = array();
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , 'classe' , $classe_id , 'alpha' /*eleves_ordre*/ );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_eleve_id_tmp[] = $DB_ROW['user_id'];
+  }
+  $liste_eleve_id_tmp = implode(',',$tab_eleve_id_tmp);
+}
+calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $PAGE_RUBRIQUE_TYPE , $PAGE_RUBRIQUE_JOIN , $PAGE_COLONNE , $periode_id , $date_mysql_debut , $date_mysql_fin , $classe_id , $liste_eleve_id_tmp , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES'] , $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE'] , $_SESSION['OFFICIEL']['LIVRET_RETROACTIF'] );
 
 // Récupérer les saisies déjà effectuées ou enregistrées pour la période en cours et les périodes antérieures
 

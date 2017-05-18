@@ -461,6 +461,38 @@ if($version_base_structure_actuelle=='2017-05-13')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-05-15 => 2017-05-18
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-05-15')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-05-18';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // retrait de la page "Brevet"
+    if(empty($reload_sacoche_livret_page))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_livret_page WHERE livret_page_ref="brevet" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_page CHANGE livret_page_periodicite livret_page_periodicite ENUM("periode","cycle") COLLATE utf8_unicode_ci NOT NULL DEFAULT "periode" ' );
+    }
+    if(empty($reload_sacoche_livret_jointure_groupe))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_livret_jointure_groupe WHERE livret_page_periodicite="college" ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_jointure_groupe CHANGE livret_page_periodicite livret_page_periodicite ENUM("periode","cycle") COLLATE utf8_unicode_ci NOT NULL DEFAULT "periode" ' );
+    }
+    if(empty($reload_sacoche_livret_export))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_export CHANGE livret_page_periodicite livret_page_periodicite ENUM("periode","cycle") COLLATE utf8_unicode_ci NOT NULL DEFAULT "periode" ' );
+    }
+    if(empty($reload_sacoche_livret_saisie))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_saisie CHANGE livret_page_periodicite livret_page_periodicite ENUM("periode","cycle") COLLATE utf8_unicode_ci NOT NULL DEFAULT "periode" ' );
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

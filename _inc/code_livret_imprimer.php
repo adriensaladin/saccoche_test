@@ -149,7 +149,7 @@ if($ACTION=='initialiser')
     $tab_eleve_td[$DB_ROW['user_id']] = html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']);
   }
   // (re)calculer les données du livret
-  if( ($OBJET=='imprimer') && ($PAGE_REF!='brevet') && ($PAGE_COLONNE!='rien') ) // TODO : enlever le test "rien" si ce n'est pas autorisé (pour l'instant ce n'est même pas implémenté...)
+  if($OBJET=='imprimer')
   {
     // Attention ! On doit calculer des moyennes de classe, pas de groupe !
     if(!$is_sous_groupe)

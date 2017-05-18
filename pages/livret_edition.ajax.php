@@ -105,7 +105,6 @@ $tab_periode_livret = array(
   'periodeS1' => 'Semestre 1/2'  ,
   'periodeS2' => 'Semestre 2/2'  ,
   'cycle'     => 'Fin de cycle'  ,
-  'college'   => 'Fin du collège',
 );
 
 // Vérification période + extraction des infos sur la période
@@ -175,6 +174,7 @@ $tab_actions = array
   'imprimer_donnees_eleves_syntheses'       => 'Appréciations de synthèse générale pour chaque élève',
   'imprimer_donnees_eleves_positionnements' => 'Tableau des positionnements pour chaque élève',
   'imprimer_donnees_eleves_recapitulatif'   => 'Récapitulatif annuel des positionnements et appréciations par élève',
+  'imprimer_donnees_eleves_affelnet'        => 'Récapitulatif des points calculés pour saisie dans Affelnet si hors LSU',
 );
 
 if( isset($tab_actions[$action]) )

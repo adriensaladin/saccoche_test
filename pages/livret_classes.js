@@ -94,7 +94,6 @@ $(document).ready
         var f_periode  = $('#f_periode_' +groupe_id).val();
         var f_jointure = $('#f_jointure_'+groupe_id).val();
         var f_cycle    = $('#f_cycle_'   +groupe_id).val();
-        var f_college  = $('#f_college_' +groupe_id).val();
         obj_bouton.prop('disabled',true);
         obj_label.attr('class','loader').html("En cours&hellip;");
         $.ajax
@@ -102,7 +101,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_groupe='+groupe_id+'&f_periode='+f_periode+'&f_jointure='+f_jointure+'&f_cycle='+f_cycle+'&f_college='+f_college,
+            data : 'csrf='+CSRF+'&f_groupe='+groupe_id+'&f_periode='+f_periode+'&f_jointure='+f_jointure+'&f_cycle='+f_cycle,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
@@ -132,11 +131,6 @@ $(document).ready
                 if(f_cycle)
                 {
                   vignettes += '<a href="'+SERVEUR_LSU_PDF+'livret_'+f_cycle+'.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_cycle_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_cycle+'"></span></a>';
-                  td_class = 'bv';
-                }
-                if(f_college)
-                {
-                  vignettes += '<a href="'+SERVEUR_LSU_PDF+'livret_'+f_college+'.pdf" class="fancybox" rel="gallery_'+groupe_id+'" data-titre="'+$('#f_college_'+groupe_id+' option:selected').text()+'"><span class="livret livret_'+f_college+'"></span></a>';
                   td_class = 'bv';
                 }
                 obj_td.prev('td').attr('class',td_class);

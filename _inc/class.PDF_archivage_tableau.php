@@ -317,10 +317,14 @@ class PDF_archivage_tableau extends PDF
     $taille_police = 12 ;
     $ligne_hauteur = $taille_police*0.4 ;
     $this->SetFont('Arial' , '' , $taille_police);
-    $titre1 = ($objet_document=='bulletin') ? 'Bulletins scolaires' : 'Livret scolaire' ;
-    $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf($titre1)                , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
-    $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf('Récapitulatif annuel') , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
-    $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf($annee_affichee)        , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+    $tab_titre = array(
+      'bulletin' => 'Bulletins scolaires',
+      'livret'   => 'Livret scolaire',
+      'affelnet' => 'Points Affelnet',
+    );
+    $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf($tab_titre[$objet_document]) , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+    $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf('Récapitulatif annuel')      , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
+    $this->CellFit( $largeur_tiers , $ligne_hauteur , To::pdf($annee_affichee)             , 0 /*bordure*/ , 2 /*br*/ , 'R' /*alignement*/ , FALSE /*fond*/ );
     $taille_police = 5 ;
     $ligne_hauteur = $taille_police*0.4 ;
     $this->SetFont('Arial' , '' , $taille_police);
@@ -329,39 +333,70 @@ class PDF_archivage_tableau extends PDF
     $hauteur_entete = max( $bloc_etabl_hauteur , (12+8+12)*0.4 , (12+12+12+5)*0.4+4 ) + 2 ;
     $hauteur_restante = $this->page_hauteur_moins_marges - $hauteur_entete;
     $hauteur_ligne_calcule = $hauteur_restante / ($nb_lignes+2) ;
-    $this->lignes_hauteur = round( $hauteur_ligne_calcule , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut
+    $this->lignes_hauteur = min( 10 , round( $hauteur_ligne_calcule , 1 , PHP_ROUND_HALF_DOWN ) ) ; // valeur approchée au dixième près par défaut
     $this->taille_police  = $this->lignes_hauteur * 1.6 ; // 5mm de hauteur par ligne donne une taille de 8
-    $this->reference_largeur = 30;
-    $this->cases_largeur     = 15;
-    $this->intitule_largeur  = $this->page_largeur_moins_marges - $this->reference_largeur - 2 * $this->cases_largeur ;
     // Ligne d'en-tête ; d'abord le cadre puis le texte quand il est sur plusieurs lignes
     $this->choisir_couleur_fond('gris_clair');
     $memo_y = $this->marge_haut + $hauteur_entete + 2 ;
     $bloc_hauteur = 2*$this->lignes_hauteur;
     $taille_police_minimum = max(10,$this->taille_police);
     $this->SetFont('Arial' , '' , $taille_police_minimum );
-    // case 1
-    $memo_x = $this->marge_gauche;
-    $this->Rect( $memo_x , $memo_y , $this->reference_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
-    $this->SetXY( $memo_x , $memo_y );
-    $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf('Enseignements') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf('Professeur(s)') , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    // case 2
-    $memo_x += $this->reference_largeur;
-    $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
-    $this->SetXY( $memo_x , $memo_y );
-    $this->CellFit( $this->cases_largeur     , $this->lignes_hauteur , To::pdf('Moy. annuelle') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
-    $this->CellFit( $this->cases_largeur     , $this->lignes_hauteur , To::pdf('de l\'élève')   , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
-    // case 3
-    $memo_x += $this->cases_largeur;
-    $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
-    $this->SetXY( $memo_x , $memo_y );
-    $this->CellFit( $this->cases_largeur     , $this->lignes_hauteur , To::pdf('Moy. annuelle') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
-    $this->CellFit( $this->cases_largeur     , $this->lignes_hauteur , To::pdf('de la classe')  , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
-    // case 4
-    $memo_x += $this->cases_largeur;
-    $this->SetXY( $memo_x , $memo_y );
-    $this->CellFit( $this->intitule_largeur  , $bloc_hauteur , To::pdf('Positionnements et appréciations par période') , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    if($objet_document!='affelnet')
+    {
+      $this->reference_largeur = 30;
+      $this->cases_largeur     = 15;
+      $this->intitule_largeur  = $this->page_largeur_moins_marges - $this->reference_largeur - 2 * $this->cases_largeur ;
+      // case 1
+      $memo_x = $this->marge_gauche;
+      $this->Rect( $memo_x , $memo_y , $this->reference_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
+      $this->SetXY( $memo_x , $memo_y );
+      $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf('Enseignements') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf('Professeur(s)') , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      // case 2
+      $memo_x += $this->reference_largeur;
+      $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
+      $this->SetXY( $memo_x , $memo_y );
+      $this->CellFit( $this->cases_largeur     , $this->lignes_hauteur , To::pdf('Moy. annuelle') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->cases_largeur     , $this->lignes_hauteur , To::pdf('de l\'élève')   , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      // case 3
+      $memo_x += $this->cases_largeur;
+      $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
+      $this->SetXY( $memo_x , $memo_y );
+      $this->CellFit( $this->cases_largeur     , $this->lignes_hauteur , To::pdf('Moy. annuelle') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->cases_largeur     , $this->lignes_hauteur , To::pdf('de la classe')  , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      // case 4
+      $memo_x += $this->cases_largeur;
+      $this->SetXY( $memo_x , $memo_y );
+      $this->CellFit( $this->intitule_largeur  , $bloc_hauteur , To::pdf('Positionnements et appréciations par période') , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    }
+    else
+    {
+      $this->cases_largeur = $this->page_largeur_moins_marges / 4;
+      // case 1
+      $memo_x = $this->marge_gauche;
+      $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
+      $this->SetXY( $memo_x , $memo_y );
+      $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf('Enseignements') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf('Professeur(s)') , 0 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      // case 2
+      $memo_x += $this->cases_largeur;
+      $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
+      $this->SetXY( $memo_x , $memo_y );
+      $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf('Positionnements') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf('livret scolaire') , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      // case 3
+      $memo_x += $this->cases_largeur;
+      $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
+      $this->SetXY( $memo_x , $memo_y );
+      $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf('Points') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf('Affelnet')  , 0 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      // case 4
+      $memo_x += $this->cases_largeur;
+      $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'DF' /* DrawFill */ );
+      $this->SetXY( $memo_x , $memo_y );
+      $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf('Moyenne') , 0 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf('Affelnet')  , 0 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+    }
   }
 
   public function recapitulatif_rubrique( $nb_lignes , $rubrique_nom , $tab_profs , $moyenne_eleve , $moyenne_classe , $tab_appreciations )
@@ -417,6 +452,60 @@ class PDF_archivage_tableau extends PDF
     $this->Rect( $memo_x , $memo_y , $this->intitule_largeur , $bloc_hauteur , 'D' /* DrawFill */ );
     // retour à la ligne
     $this->SetXY( $this->marge_gauche , $memo_y + $bloc_hauteur );
+  }
+
+  public function recapitulatif_rubrique_affelnet( $nb_lignes , $rubrique_nom , $tab_profs , $tab_notes , $tab_points , $moyenne_eleve )
+  {
+    $memo_y = $this->GetY() ;
+    $bloc_hauteur = $nb_lignes*$this->lignes_hauteur;
+    $taille_police_minimum = max(10,$this->taille_police);
+    $taille_police_maximum = min(12,$this->taille_police);
+    // case 1
+    $memo_x = $this->marge_gauche;
+    $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'D' /* DrawFill */ );
+    $nb_lignes_case1 = ($tab_profs) ? 1 + count($tab_profs) : 1 ;
+    $this->SetXY( $memo_x , $memo_y + ($nb_lignes-$nb_lignes_case1)*$this->lignes_hauteur/2 );
+    $this->SetFont('Arial' , 'B' , $taille_police_minimum);
+    $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf($rubrique_nom) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->SetFont('Arial' , '' , $taille_police_minimum);
+    if($tab_profs)
+    {
+      foreach($tab_profs as $prof_info)
+      {
+        $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf($prof_info) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      }
+    }
+    // case 2
+    $memo_x += $this->cases_largeur;
+    $this->SetXY( $memo_x , $memo_y );
+    $this->SetFont('Arial' , '' , $taille_police_maximum);
+    if($tab_notes)
+    {
+      foreach($tab_notes as $note)
+      {
+        $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf($note) , 1 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+      }
+    }
+    $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'D' /* DrawFill */ );
+    // case 3
+    $memo_x += $this->cases_largeur;
+    $this->SetXY( $memo_x , $memo_y );
+    $this->SetFont('Arial' , '' , $taille_police_maximum);
+    if($tab_points)
+    {
+      foreach($tab_notes as $jointure_periode => $note)
+      {
+        $texte_point = isset($tab_points[$jointure_periode]) ? $tab_points[$jointure_periode].' points' : '-' ;
+        $this->CellFit( $this->cases_largeur , $this->lignes_hauteur , To::pdf($texte_point) , 1 /*bordure*/ , 2 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+      }
+    }
+    $this->Rect( $memo_x , $memo_y , $this->cases_largeur , $bloc_hauteur , 'D' /* DrawFill */ );
+    // case 4
+    $memo_x += $this->cases_largeur;
+    $this->SetXY( $memo_x , $memo_y );
+    $moyenne_eleve = ($moyenne_eleve!==NULL) ? number_format($moyenne_eleve,1,',','').' points' : '-' ;
+    $this->SetFont('Arial' , 'B' , $taille_police_minimum+1);
+    $this->CellFit( $this->cases_largeur , $bloc_hauteur , To::pdf($moyenne_eleve) , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
   }
 
   public function appreciation_epreuve_eleves_collegues_thead(  $eleve_nom , $eleve_prenom , $serie_nom )

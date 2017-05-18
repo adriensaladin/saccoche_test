@@ -49,7 +49,6 @@ $tab_bon = array( "Bilan des acquisitions" );
 $tab_option = array(
   'periode'  => '<option value="">Non concerné</option>' ,
   'cycle'    => '<option value="">Non concerné</option>' ,
-  'college'  => '<option value="">Non concerné</option>' ,
   'jointure' => '<option value="T">Trimestriel</option><option value="S">Semestriel</option>' ,
 );
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_pages( FALSE /*with_info_classe*/ );
@@ -87,7 +86,7 @@ Layout::add( 'js_inline_before' , 'var SERVEUR_LSU_PDF = "'.SERVEUR_LSU_PDF.'";'
     {
       $classe_nom = $DB_TAB_Classe[0]['groupe_nom'];
       $tab_option_classe = $tab_option;
-      $tab_image_classe = array( 'periode' => '' , 'cycle' => '' , 'college'  => '' );
+      $tab_image_classe = array( 'periode' => '' , 'cycle' => '' );
       $periode_type = FALSE;
       foreach($DB_TAB_Classe as $DB_ROW)
       {
@@ -113,8 +112,7 @@ Layout::add( 'js_inline_before' , 'var SERVEUR_LSU_PDF = "'.SERVEUR_LSU_PDF.'";'
       echo  '<td class="'.$td_class.'">'.html($classe_nom).'</td>';
       echo  '<td data-id="'.$classe_id.'">';
       echo    '<label class="tab" for="f_periode_'.$classe_id.'">Périodique :</label><select id="f_periode_'.$classe_id.'" name="f_periode">'.$tab_option_classe['periode'].'</select> <select id="f_jointure_'.$classe_id.'" name="f_jointure" class="'.$class_jointure.'">'.$tab_option_classe['jointure'].'</select><br />';
-      echo    '<label class="tab" for="f_cycle_'.$classe_id.'">Fin de cycle :</label><select id="f_cycle_'.$classe_id.'" name="f_cycle">'.$tab_option_classe['cycle'].'</select><br />';
-      echo    '<label class="tab" for="f_college_'.$classe_id.'">Fin du collège :</label><select id="f_college_'.$classe_id.'" name="f_college">'.$tab_option_classe['college'].'</select><span></span>';
+      echo    '<label class="tab" for="f_cycle_'.$classe_id.'">Fin de cycle :</label><select id="f_cycle_'.$classe_id.'" name="f_cycle">'.$tab_option_classe['cycle'].'</select>';
       echo  '</td>';
       echo  '<td class="nu">'.implode('',$tab_image_classe).'</td>';
       echo'</tr>'.NL;

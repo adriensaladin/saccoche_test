@@ -90,6 +90,8 @@ if($step==1)
     'periodeS1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2'  ),
     'periodeS2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2'  ),
     'cycle'     => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin de cycle'  ),
+    // On n'affiche pas le bilan "Fin de collège" qui n'aura probablement pas lieu d'être (autre modif plus bas)
+    // 'college'   => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin du collège'),
   );
 
   $tab_etats = array
@@ -115,27 +117,31 @@ if($step==1)
   $tab_join_classe_periode = array();
   foreach($DB_TAB as $DB_ROW)
   {
-    $periode = $DB_ROW['livret_page_periodicite'].$DB_ROW['jointure_periode'];
-    $tab_periode_livret[$periode]['used'] = TRUE;
-    if($DB_ROW['periode_id'])
+    // On n'affiche pas le bilan "Fin de collège" qui n'aura probablement pas lieu d'être (autre modif plus haut)
+    if( $DB_ROW['livret_page_periodicite'] != 'college' )
     {
-      $tab_periode_livret[$periode]['defined'] = TRUE;
+      $periode = $DB_ROW['livret_page_periodicite'].$DB_ROW['jointure_periode'];
+      $tab_periode_livret[$periode]['used'] = TRUE;
+      if($DB_ROW['periode_id'])
+      {
+        $tab_periode_livret[$periode]['defined'] = TRUE;
+      }
+      if( $DB_ROW['jointure_date_debut'] && $DB_ROW['jointure_date_fin'] )
+      {
+        $tab_periode_livret[$periode]['dates'] = TRUE;
+      }
+      $tab_join_classe_periode[$DB_ROW['groupe_id']][$periode] = array(
+        'page_ref'      => $DB_ROW['livret_page_ref'],
+        'etat'          => $DB_ROW['jointure_etat'],
+        'rubrique_type' => $DB_ROW['livret_page_rubrique_type'],
+        'periode_id'    => $DB_ROW['periode_id'],
+        'date_debut'    => $DB_ROW['jointure_date_debut'],
+        'date_fin'      => $DB_ROW['jointure_date_fin'],
+        'date_export'   => $DB_ROW['jointure_date_export'],
+        'nb_impression' => 0,
+      );
+      $tab_page_ref[] = $DB_ROW['livret_page_ref'];
     }
-    if( $DB_ROW['jointure_date_debut'] && $DB_ROW['jointure_date_fin'] )
-    {
-      $tab_periode_livret[$periode]['dates'] = TRUE;
-    }
-    $tab_join_classe_periode[$DB_ROW['groupe_id']][$periode] = array(
-      'page_ref'      => $DB_ROW['livret_page_ref'],
-      'etat'          => $DB_ROW['jointure_etat'],
-      'rubrique_type' => $DB_ROW['livret_page_rubrique_type'],
-      'periode_id'    => $DB_ROW['periode_id'],
-      'date_debut'    => $DB_ROW['jointure_date_debut'],
-      'date_fin'      => $DB_ROW['jointure_date_fin'],
-      'date_export'   => $DB_ROW['jointure_date_export'],
-      'nb_impression' => 0,
-    );
-    $tab_page_ref[] = $DB_ROW['livret_page_ref'];
   }
   $tab_periode_pb = array( 'undefined' => array() , 'pbdates' => 0 );
   foreach($tab_periode_livret as $periode => $tab)

@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS sacoche_livret_saisie;
 CREATE TABLE sacoche_livret_saisie (
   livret_saisie_id        MEDIUMINT(8)                               UNSIGNED                NOT NULL AUTO_INCREMENT,
   livret_page_ref         VARCHAR(6)                                 COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
-  livret_page_periodicite ENUM("periode","cycle")                    COLLATE utf8_unicode_ci NOT NULL DEFAULT "periode",
+  livret_page_periodicite ENUM("periode","cycle","college")          COLLATE utf8_unicode_ci NOT NULL DEFAULT "periode",
   jointure_periode        ENUM("","T1","T2","T3","S1","S2")          COLLATE utf8_unicode_ci NOT NULL DEFAULT ""         COMMENT "renseigné si livret_page_periodicite = periode ; @see sacoche_periode.periode_livret",
   rubrique_type           VARCHAR(8)                                 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""         COMMENT "eval | socle | ap | epi | parcours | viesco | bilan | enscompl | attitude",
   rubrique_id             SMALLINT(5)                                UNSIGNED                NOT NULL DEFAULT 0          COMMENT "livret_rubrique_id | socle_composante (11;12;13;14;20;30;40;50) | livret_enscompl_id ; 0 pour viesco | bilan",

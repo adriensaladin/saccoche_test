@@ -711,14 +711,6 @@ $(document).ready
       '#archiver_imprimer',
       function()
       {
-        if(memo_page_ref=='3e')
-        {
-          $('#imprimer_donnees_eleves_affelnet').prop('disabled',false);
-        }
-        else
-        {
-          $('#imprimer_donnees_eleves_affelnet').prop('disabled',true);
-        }
         $('#ajax_msg_archiver_imprimer').removeAttr('class').html("");
         $.fancybox( { 'href':'#zone_archiver_imprimer' , onStart:function(){$('#zone_archiver_imprimer').css("display","block");} , onClosed:function(){$('#zone_archiver_imprimer').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
       }

@@ -187,7 +187,7 @@ $prof_nom = ($action=='imprimer_donnees_eleves_prof') ? $_SESSION['USER_NOM'].' 
 $tab_moyenne_exception_matieres = array();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 1/7 imprimer_donnees_eleves_prof : Mes appréciations pour chaque élève et le groupe classe
+// Cas 1/6 imprimer_donnees_eleves_prof : Mes appréciations pour chaque élève et le groupe classe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_prof')
@@ -230,15 +230,18 @@ if($action=='imprimer_donnees_eleves_prof')
     }
   }
   // ... puis dans une seconde on ajoute les seules notes à garder.
-  foreach($DB_TAB as $DB_ROW)
+  if($PAGE_COLONNE!='rien') // TODO : enlever le test "rien" si ce n'est pas autorisé (pour l'instant ce n'est même pas implémenté...)
   {
-    if( ($DB_ROW['saisie_objet']=='position') && isset($tab_rubrique[$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']]) )
+    foreach($DB_TAB as $DB_ROW)
     {
-      $eleve_id = isset($DB_ROW['eleve_id']) ? $DB_ROW['eleve_id'] : 0 ;
-      if( ($DB_ROW['rubrique_id']) && ( $eleve_id || $PAGE_MOYENNE_CLASSE ) && !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) )
+      if( ($DB_ROW['saisie_objet']=='position') && isset($tab_rubrique[$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']]) )
       {
-        $pourcentage = $DB_ROW['saisie_valeur'] ;
-        $tab_saisie[$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$eleve_id]['note'] = !is_null($pourcentage) ? ( in_array($PAGE_COLONNE,array('objectif','position')) ? OutilBilan::determiner_degre_maitrise($pourcentage).'/4' : ( ($PAGE_COLONNE=='moyenne') ? round(($pourcentage/5),1).'/20' : $pourcentage.'%' ) ) : '-' ;
+        $eleve_id = isset($DB_ROW['eleve_id']) ? $DB_ROW['eleve_id'] : 0 ;
+        if( ($DB_ROW['rubrique_id']) && ( $eleve_id || $PAGE_MOYENNE_CLASSE ) && !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) )
+        {
+          $pourcentage = $DB_ROW['saisie_valeur'] ;
+          $tab_saisie[$DB_ROW['rubrique_type']][$DB_ROW['rubrique_id']][$eleve_id]['note'] = !is_null($pourcentage) ? ( in_array($PAGE_COLONNE,array('objectif','position')) ? OutilBilan::determiner_degre_maitrise($pourcentage).'/4' : ( ($PAGE_COLONNE=='moyenne') ? round(($pourcentage/5),1).'/20' : $pourcentage.'%' ) ) : '-' ;
+        }
       }
     }
   }
@@ -279,7 +282,7 @@ if($action=='imprimer_donnees_eleves_prof')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 2/7 imprimer_donnees_eleves_collegues : Appréciations des collègues pour chaque élève
+// Cas 2/6 imprimer_donnees_eleves_collegues : Appréciations des collègues pour chaque élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_collegues')
@@ -380,7 +383,7 @@ if($action=='imprimer_donnees_eleves_collegues')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 3/7 imprimer_donnees_classe_collegues : Appréciations des collègues sur le groupe classe
+// Cas 3/6 imprimer_donnees_classe_collegues : Appréciations des collègues sur le groupe classe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_classe_collegues')
@@ -463,7 +466,7 @@ if($action=='imprimer_donnees_classe_collegues')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 4/7 imprimer_donnees_eleves_syntheses : Appréciations de synthèse générale pour chaque élève
+// Cas 4/6 imprimer_donnees_eleves_syntheses : Appréciations de synthèse générale pour chaque élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_syntheses')
@@ -514,7 +517,7 @@ if($action=='imprimer_donnees_eleves_syntheses')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 5/7 imprimer_donnees_eleves_positionnements : Tableau des positionnements pour chaque élève
+// Cas 5/6 imprimer_donnees_eleves_positionnements : Tableau des positionnements pour chaque élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_positionnements')
@@ -596,7 +599,7 @@ if($action=='imprimer_donnees_eleves_positionnements')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 6/7 imprimer_donnees_eleves_recapitulatif : Récapitulatif annuel des positionnements et appréciations par élève
+// Cas 6/6 imprimer_donnees_eleves_recapitulatif : Récapitulatif annuel des positionnements et appréciations par élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_recapitulatif')
@@ -735,140 +738,6 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
       $moyenne_classe = !is_null($tab_moyennes[$rubrique_id][0]) ? round(($tab_moyennes[$rubrique_id][0]/5),1) : NULL ; // Forcé sur 20 dans tous les cas
       $tab_appreciations = isset($tab_saisie[$eleve_id][$rubrique_id]['appreciation']) ? $tab_saisie[$eleve_id][$rubrique_id]['appreciation'] : array() ;
       $archivage_tableau_PDF->recapitulatif_rubrique( $tab_nb_lignes[$eleve_id][$rubrique_id] , $rubrique_nom , $tab_prof , $moyenne_eleve , $moyenne_classe , $tab_appreciations );
-    }
-  }
-  $periode_nom = 'Année Scolaire';
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 7/7 imprimer_donnees_eleves_affelnet : Récapitulatif des points calculés pour saisie dans Affelnet si hors LSU
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($action=='imprimer_donnees_eleves_affelnet')
-{
-  // Rechercher et mémoriser les données enregistrées ; on laisse tomber les appréciations de synthèses / EPI / AP / Parcours, ce n'est pas dans les modèles de livret scolaire CAP ou Bac Pro
-  $tab_point    = array( 1=>3 , 2=>8 , 3=>13 , 4=>16 );
-  $tab_saisie   = array();  // [eleve_id][rubrique_id] => array(note[periode],point[periode],professeur[id])
-  $tab_periode  = array();
-  $tab_rubrique = array();
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '"eval"' /*liste_rubrique_type*/ , $liste_eleve_id , 0 /*prof_id*/ , TRUE /*with_periodes_avant*/ );
-  foreach($DB_TAB as $DB_ROW)
-  {
-    // Initialisation
-    if(!isset($tab_rubrique['eval'][$DB_ROW['rubrique_id']]))
-    {
-      $tab_rubrique['eval'][$DB_ROW['rubrique_id']] = FALSE;
-    }
-    if(!isset($tab_periode[$DB_ROW['jointure_periode']]))
-    {
-      $tab_periode[$DB_ROW['jointure_periode']] = $tab_periode_livret['periode'.$DB_ROW['jointure_periode']];
-    }
-    if($DB_ROW['saisie_objet']=='position')
-    {
-      $pourcentage = $DB_ROW['saisie_valeur'] ;
-      $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['note'][$DB_ROW['jointure_periode']] = $pourcentage;
-      // Calcul des points Affelnet
-      if(!is_null($pourcentage))
-      {
-        if(in_array($PAGE_COLONNE,array('objectif','position')))
-        {
-          $point = $tab_point[ OutilBilan::determiner_degre_maitrise($pourcentage) ];
-        }
-        else
-        {
-          $point = $tab_point[ min( 4 , 1 + floor($pourcentage/25) ) ];
-        }
-        $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['point'][$DB_ROW['jointure_periode']] = $point;
-      }
-    }
-  }
-  $nb_rubriques = count($tab_rubrique['eval']);
-  if(!$nb_rubriques)
-  {
-    Json::end( FALSE , 'Aucune donnée trouvée pour aucun élève !' );
-  }
-  recuperer_intitules_rubriques( $PAGE_RUBRIQUE_TYPE , $classe_id , $PAGE_REF );
-  // Calcul des moyennes annuelles des points Affelnet
-  $tab_moyennes = array();  // [rubrique_id][eleve_id|0] => moyenne
-  foreach($tab_rubrique['eval'] as $rubrique_id => $rubrique_nom)
-  {
-    foreach($tab_eleve_id as $eleve_id => $tab_eleve)
-    {
-      $tab_moyennes[$rubrique_id][$eleve_id] = isset($tab_saisie[$eleve_id][$rubrique_id]['point']) ? round( array_sum($tab_saisie[$eleve_id][$rubrique_id]['point']) / count($tab_saisie[$eleve_id][$rubrique_id]['point']) , 1 ) : NULL ;
-    }
-    $somme  = array_sum($tab_moyennes[$rubrique_id]);
-    $nombre = count( array_filter($tab_moyennes[$rubrique_id],'non_vide') );
-    $tab_moyennes[$rubrique_id][0] = ($nombre) ? round($somme/$nombre,1) : NULL ;
-  }
-  // Calcul du nb de lignes requises par élève
-  $tab_nb_lignes = array();  // [eleve_id][rubrique_id] => nb
-  foreach($tab_eleve_id as $eleve_id => $tab_eleve)
-  {
-    foreach($tab_rubrique['eval'] as $rubrique_id => $rubrique_nom)
-    {
-      $nb_lignes_premiere_colonne = isset($tab_saisie[$eleve_id][$rubrique_id]['professeur']) ? 1 + count($tab_saisie[$eleve_id][$rubrique_id]['professeur']) : 1 ;
-      foreach($tab_periode as $jointure_periode => $periode_nom)
-      {
-        $pourcentage = isset($tab_saisie[$eleve_id][$rubrique_id]['note'][$jointure_periode]) ? $tab_saisie[$eleve_id][$rubrique_id]['note'][$jointure_periode] : NULL ;
-        $note = !is_null($pourcentage) ? ( in_array($PAGE_COLONNE,array('objectif','position')) ? OutilBilan::determiner_degre_maitrise($pourcentage).'/4' : ( ($PAGE_COLONNE=='moyenne') ? round(($pourcentage/5),1).'/20' : $pourcentage.'%' ) ) : '-' ;
-        $tab_saisie[$eleve_id][$rubrique_id]['note'][$jointure_periode] = $periode_nom.' : '.$note;
-      }
-      $nb_lignes_periodes = isset($tab_saisie[$eleve_id][$rubrique_id]['note']) ? count($tab_saisie[$eleve_id][$rubrique_id]['note']) : 1 ;
-      $tab_nb_lignes[$eleve_id][$rubrique_id] = max( $nb_lignes_premiere_colonne , $nb_lignes_periodes );
-    }
-    $tab_nb_lignes[$eleve_id][0] = isset($tab_nb_lignes[$eleve_id]) ? array_sum($tab_nb_lignes[$eleve_id]) : 1 ;
-  }
-  // Bloc des coordonnées de l'établissement (code repris de [code_officiel_imprimer.php] )
-  $tab_etabl_coords = array();
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'denomination'))
-  {
-    $tab_etabl_coords['denomination'] = $_SESSION['ETABLISSEMENT']['DENOMINATION'];
-  }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'adresse'))
-  {
-    if($_SESSION['ETABLISSEMENT']['ADRESSE1']) { $tab_etabl_coords['adresse1'] = $_SESSION['ETABLISSEMENT']['ADRESSE1']; }
-    if($_SESSION['ETABLISSEMENT']['ADRESSE2']) { $tab_etabl_coords['adresse2'] = $_SESSION['ETABLISSEMENT']['ADRESSE2']; }
-    if($_SESSION['ETABLISSEMENT']['ADRESSE3']) { $tab_etabl_coords['adresse3'] = $_SESSION['ETABLISSEMENT']['ADRESSE3']; }
-  }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'telephone'))
-  {
-    if($_SESSION['ETABLISSEMENT']['TELEPHONE']) { $tab_etabl_coords['telephone'] = 'Tél : '.$_SESSION['ETABLISSEMENT']['TELEPHONE']; }
-  }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'fax'))
-  {
-    if($_SESSION['ETABLISSEMENT']['FAX']) { $tab_etabl_coords['fax'] = 'Fax : '.$_SESSION['ETABLISSEMENT']['FAX']; }
-  }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'courriel'))
-  {
-    if($_SESSION['ETABLISSEMENT']['COURRIEL']) { $tab_etabl_coords['courriel'] = 'Mél : '.$_SESSION['ETABLISSEMENT']['COURRIEL']; } // @see http://www.langue-fr.net/Courriel-E-Mail-Mel | https://fr.wiktionary.org/wiki/m%C3%A9l | https://fr.wikipedia.org/wiki/Courrier_%C3%A9lectronique#.C3.89volution_des_termes_employ.C3.A9s_par_les_utilisateurs
-  }
-  if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'url'))
-  {
-    if($_SESSION['ETABLISSEMENT']['URL']) { $tab_etabl_coords['url'] = 'Web : '.$_SESSION['ETABLISSEMENT']['URL']; }
-  }
-  // Indication de l'année scolaire (code repris de [code_officiel_imprimer.php] )
-  $mois_actuel    = date('n');
-  $annee_actuelle = date('Y');
-  $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'];
-  $annee_affichee = To::annee_scolaire('texte');
-  // Tag date heure initiales (code repris de [code_officiel_imprimer.php] )
-  $tag_date_heure_initiales = date('d/m/Y H:i').' '.To::texte_identite($_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_NOM'],TRUE);
-  // Fabrication du PDF
-  $archivage_tableau_PDF = new PDF_archivage_tableau( TRUE /*officiel*/ , 'portrait' /*orientation*/ , 5 /*marge_gauche*/ , 5 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'non' /*couleur*/ );
-  unset($tab_eleve_id[0]);
-  $classe_effectif = count($tab_eleve_id);
-  foreach($tab_eleve_id as $eleve_id => $tab_eleve)
-  {
-    $archivage_tableau_PDF->recapitulatif_initialiser( $tab_etabl_coords , $tab_eleve , $classe_nom , $classe_effectif , $annee_affichee , $tag_date_heure_initiales , $tab_nb_lignes[$eleve_id][0] , 'affelnet' /*objet_document*/ );
-    foreach($tab_rubrique['eval'] as $rubrique_id => $rubrique_nom)
-    {
-      $tab_prof   = isset($tab_saisie[$eleve_id][$rubrique_id]['professeur']) ? $tab_saisie[$eleve_id][$rubrique_id]['professeur'] : NULL ;
-      $tab_notes  = isset($tab_saisie[$eleve_id][$rubrique_id]['note'])  ? $tab_saisie[$eleve_id][$rubrique_id]['note']  : array() ;
-      $tab_points = isset($tab_saisie[$eleve_id][$rubrique_id]['point']) ? $tab_saisie[$eleve_id][$rubrique_id]['point'] : array() ;
-      $moyenne_eleve = !is_null($tab_moyennes[$rubrique_id][$eleve_id]) ? $tab_moyennes[$rubrique_id][$eleve_id] : NULL ;
-      ksort($tab_notes);
-      ksort($tab_points);
-      $archivage_tableau_PDF->recapitulatif_rubrique_affelnet( $tab_nb_lignes[$eleve_id][$rubrique_id] , $rubrique_nom , $tab_prof , $tab_notes , $tab_points , $moyenne_eleve );
     }
   }
   $periode_nom = 'Année Scolaire';

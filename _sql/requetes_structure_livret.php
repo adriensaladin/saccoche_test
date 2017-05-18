@@ -135,6 +135,7 @@ public static function DB_initialiser_jointures_livret_classes()
       case 103 : // Troisièmes
         DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , '3e' , 'periode' , $jointure_periode );
         DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle4' , 'cycle' , array('') );
+        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'brevet' , 'college' , array('') );
         $nb_associations += 3;
         break;
     }

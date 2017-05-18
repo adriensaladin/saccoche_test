@@ -55,6 +55,7 @@ $tab_periode_livret = array(
   'periodeS1' => 'Semestre 1/2'  ,
   'periodeS2' => 'Semestre 2/2'  ,
   'cycle'     => 'Fin de cycle'  ,
+  'college'   => 'Fin du collège',
 );
 
 $tab_export_type = array(

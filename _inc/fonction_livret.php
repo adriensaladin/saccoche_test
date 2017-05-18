@@ -28,7 +28,7 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 
 /**
- * Pour une page de livret d'une période et d'une classe donnée, calculer et mettre à jour tous les positionnements & éléments travaillés qui en ont besoin et qui ne sont pas figées manuellement.
+ * Pour une page de livret d'une période et d'une classe donnée, calculer et mettre à jour tous les positionnements qui en ont besoin et qui ne sont pas figées manuellement.
  * Si demandé, calcule et met en session les moyennes de classe.
  * 
  * @param string $PAGE_REF
@@ -197,7 +197,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
   //
   // On continue par une recherche dans le relevé d'évaluations correspondant (s'il existe, et uniquement pour une appréciation de synthèse générale)
   //
-  if( ($RUBRIQUE_TYPE=='eval') && !$is_recup_bulletin )
+  if( !$is_recup_bulletin )
   {
     $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_infos($classe_id,$periode_id,'releve');
     // un test ci-dessous a pour but d'éviter une récupération obsolète en cas de données issues d'un relevé d'évaluations qui depuis a été abandonné
@@ -605,14 +605,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
         // détail des acquisitions
         if( ($PAGE_COLONNE=='maitrise') && !is_null($detail_determine) && ( $tab_donnees_livret[$clef]['acquis_detail'] !== $detail_determine ) )
         {
-          if(!is_null($tab_donnees_livret[$clef]['acquis_detail']))
-          {
-            DB_STRUCTURE_LIVRET::DB_modifier_saisie_memo_detail( $livret_saisie_id , $detail_determine );
-          }
-          else
-          {
-            DB_STRUCTURE_LIVRET::DB_ajouter_saisie_memo_detail( $livret_saisie_id , $detail_determine );
-          }
+          DB_STRUCTURE_LIVRET::DB_modifier_saisie_memo_detail( $livret_saisie_id , $detail_determine );
         }
       }
       if($PAGE_COLONNE!='maitrise')

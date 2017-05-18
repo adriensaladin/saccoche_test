@@ -37,6 +37,8 @@ $tab_periode_livret = array(
   'periodeS1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2'  ),
   'periodeS2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2'  ),
   'cycle'     => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin de cycle'  ),
+  // On n'affiche pas le bilan "Fin de collège" qui n'aura probablement pas lieu d'être (autre modif plus bas)
+  // 'college'   => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin du collège'),
 );
 
 $tab_etats = array
@@ -211,28 +213,32 @@ $tab_page_ref = array();
 $tab_join_classe_periode = array();
 foreach($DB_TAB as $DB_ROW)
 {
-  // La requête ne peut restreindre aux jointures classe/période renseignées à cause des bilans de cycles, donc il faut aussi vérifier les dates.
-  if( ($DB_ROW['livret_page_periodicite']=='cycle') || ( !is_null($DB_ROW['jointure_date_debut']) && !is_null($DB_ROW['jointure_date_fin']) ) )
+  // On n'affiche pas le bilan "Fin de collège" qui n'aura probablement pas lieu d'être (autre modif plus haut)
+  if( $DB_ROW['livret_page_periodicite'] != 'college' )
   {
-    $periode = $DB_ROW['livret_page_periodicite'].$DB_ROW['jointure_periode'];
-    $tab_periode_livret[$periode]['used'] = TRUE;
-    if($DB_ROW['periode_id'])
+    // La requête ne peut restreindre aux jointures classe/période renseignées à cause des bilans de cycles, donc il faut aussi vérifier les dates.
+    if( ($DB_ROW['livret_page_periodicite']=='cycle') || ( !is_null($DB_ROW['jointure_date_debut']) && !is_null($DB_ROW['jointure_date_fin']) ) )
     {
-      $tab_periode_livret[$periode]['defined'] = TRUE;
+      $periode = $DB_ROW['livret_page_periodicite'].$DB_ROW['jointure_periode'];
+      $tab_periode_livret[$periode]['used'] = TRUE;
+      if($DB_ROW['periode_id'])
+      {
+        $tab_periode_livret[$periode]['defined'] = TRUE;
+      }
+      if( $DB_ROW['jointure_date_debut'] && $DB_ROW['jointure_date_fin'] )
+      {
+        $tab_periode_livret[$periode]['dates'] = TRUE;
+      }
+      $tab_join_classe_periode[$DB_ROW['groupe_id']][$periode] = array(
+        'page_ref'      => $DB_ROW['livret_page_ref'],
+        'etat'          => $DB_ROW['jointure_etat'],
+        'rubrique_type' => $DB_ROW['livret_page_rubrique_type'],
+        'periode_id'    => $DB_ROW['periode_id'],
+        'date_debut'    => $DB_ROW['jointure_date_debut'],
+        'date_fin'      => $DB_ROW['jointure_date_fin'],
+      );
+      $tab_page_ref[] = $DB_ROW['livret_page_ref'];
     }
-    if( $DB_ROW['jointure_date_debut'] && $DB_ROW['jointure_date_fin'] )
-    {
-      $tab_periode_livret[$periode]['dates'] = TRUE;
-    }
-    $tab_join_classe_periode[$DB_ROW['groupe_id']][$periode] = array(
-      'page_ref'      => $DB_ROW['livret_page_ref'],
-      'etat'          => $DB_ROW['jointure_etat'],
-      'rubrique_type' => $DB_ROW['livret_page_rubrique_type'],
-      'periode_id'    => $DB_ROW['periode_id'],
-      'date_debut'    => $DB_ROW['jointure_date_debut'],
-      'date_fin'      => $DB_ROW['jointure_date_fin'],
-    );
-    $tab_page_ref[] = $DB_ROW['livret_page_ref'];
   }
 }
 $tab_periode_pb = array( 'undefined' => array() , 'pbdates' => 0 );
@@ -519,7 +525,7 @@ foreach($tab_classe as $classe_id => $tab)
             }
             else
             {
-              $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? '<q class="modifier" title="Renseigner '.$tab_modif_rubrique[$tab_join['rubrique_type']].'."></q>' : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
+              $icone_saisie = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? ( ($periode!='college') ? '<q class="modifier" title="Renseigner '.$tab_modif_rubrique[$tab_join['rubrique_type']].'."></q>' : '<q class="modifier_non" title="Saisies intermédiaires sans objet pour ce document."></q>' ) : '<q class="modifier_non" title="Accès réservé aux professeurs."></q>' ;
             }
           }
           else
@@ -540,7 +546,7 @@ foreach($tab_classe as $classe_id => $tab)
           }
           else if(in_array($etat,array('3mixte','4synthese')))
           {
-            $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
+            $icone_tampon = ($tab_droits['droit_appreciation_generale']) ? ( ($periode!='college') ? '<q class="tamponner" title="Saisir l\'appréciation générale."></q>' : '<q class="tamponner_non" title="Saisies de synthèse sans objet pour ce document."></q>' ) : '<q class="tamponner_non" title="Accès restreint à la saisie de l\'appréciation générale :<br />'.$profils_appreciation_generale.'."></q>' ;
           }
           else
           {
@@ -817,7 +823,6 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
     <li><button id="imprimer_donnees_eleves_syntheses" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations de synthèse générale pour chaque élève.</li>
     <li><button id="imprimer_donnees_eleves_positionnements" type="button" class="imprimer">Archiver / Imprimer</button> le tableau des positionnements pour chaque élève.</li>
     <li><button id="imprimer_donnees_eleves_recapitulatif" type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif annuel des positionnements et appréciations par élève.</li>
-    <li><button id="imprimer_donnees_eleves_affelnet" type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif des points calculés pour saisie dans <em>Affelnet</em> si hors <em>LSU</em>.</li>
   </ul>
   <hr />
   <p><label id="ajax_msg_archiver_imprimer">&nbsp;</label></p>

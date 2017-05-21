@@ -137,5 +137,6 @@ FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom.$fichier_fin_e
 // Redirection du navigateur
 header('Status: 302 Found', TRUE, 302);
 header('Location: '.URL_DIR_EXPORT.$fichier_nom.$fichier_fin_ext);
+header('Content-Length: 0'); // Varnish (le frontal web), en cas de redirection dans le header HTTP avec un body HTTP vide, envoie le header tout de suite mais attends 5s un éventuel body avant de couper la connexion si la réponse ne précise pas sa taille ; or Firefox, qui reçoit une redirection, dit au serveur de fermer la connexion TCP et attend la réponse à cette demande de fermeture avant de suivre la redirection ; moralité, quand on fait une redirection via les headers il faudrait toujours ajouter 'Content-Length: 0'
 exit();
 ?>

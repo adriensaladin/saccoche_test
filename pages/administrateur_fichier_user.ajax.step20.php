@@ -731,11 +731,10 @@ if( ($import_origine=='siecle') && ($import_profil=='parent') )
 
 if( ($import_origine=='tableur') && ($import_profil=='professeur') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   //
   // On passe les utilisateurs en revue : on mémorise leurs infos
   //
@@ -750,9 +749,8 @@ if( ($import_origine=='tableur') && ($import_profil=='professeur') )
     'MME' =>'F' ,
     'F'   =>'F' ,
   );
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,8);
     if(count($tab_elements)>=5)
     {
@@ -823,11 +821,10 @@ if( ($import_origine=='tableur') && ($import_profil=='professeur') )
 
 if( ($import_origine=='tableur') && ($import_profil=='eleve') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   //
   // On passe les utilisateurs en revue : on mémorise leurs infos et les classes trouvées
   //
@@ -842,9 +839,8 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
     'MME' =>'F' ,
     'F'   =>'F' ,
   );
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,8);
     if(count($tab_elements)>=6)
     {
@@ -915,11 +911,10 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
 
 if( ($import_origine=='tableur') && ($import_profil=='parent') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   // L'import ne contient aucun id parent ni enfant.
   // On récupère la liste des références des élèves actuels pour comparer au contenu du fichier.
   $tab_eleves_actuels  = array();
@@ -945,9 +940,8 @@ if( ($import_origine=='tableur') && ($import_profil=='parent') )
     'F'   =>'F' ,
   );
   $tab_adresses_uniques = array();
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,21);
     if(count($tab_elements)>=13)
     {
@@ -1019,10 +1013,8 @@ if( ($import_origine=='tableur') && ($import_profil=='parent') )
 
 if( ($import_origine=='onde') && ($import_profil=='eleve') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
     'nom'        => $init_negatif ,
@@ -1034,7 +1026,8 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
     'classe_nom' => $init_negatif ,
     'classe_id'  => $init_negatif ,
   );
-  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+  // Données de la ligne d'en-tête
+  $tab_elements = $tab_lignes[0];
   $numero_max = 0;
   foreach ($tab_elements as $numero=>$element)
   {
@@ -1062,7 +1055,8 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
     $annee_scolaire = To::annee_scolaire('siecle');
     DB_STRUCTURE_SIECLE::DB_ajouter_import( 'Onde' , $annee_scolaire , $tab_lignes );
   }
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   /*
    * Des difficultés se posent.
    * D'une part, les noms des niveaux et des classes ne semblent pas soumis à un format particulier ; on peut facilement dépasser les 20 caractères maxi autorisés par SACoche
@@ -1090,9 +1084,8 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
   // On passe les utilisateurs en revue : on mémorise leurs infos, les classes trouvées, les groupes trouvés
   //
   $tab_genre = array( ''=>'I' , 'M'=>'M' , 'F'=>'F' );
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>$numero_max)
     {
       $nom        = $tab_elements[$tab_numero_colonne['nom']   ];
@@ -1150,10 +1143,8 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
 
 if( ($import_origine=='onde') && ($import_profil=='parent') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
     'genre'         => $init_negatif ,
@@ -1167,7 +1158,8 @@ if( ($import_origine=='onde') && ($import_profil=='parent') )
     'enfant_nom'    => array() ,
     'enfant_prenom' => array() ,
   );
-  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+  // Données de la ligne d'en-tête
+  $tab_elements = $tab_lignes[0];
   $numero_max = 0;
   foreach ($tab_elements as $numero=>$element)
   {
@@ -1191,7 +1183,8 @@ if( ($import_origine=='onde') && ($import_profil=='parent') )
     Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode('" ; "',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
   $numero_max = max( $numero_max , $tab_numero_colonne['enfant_nom'][0] , $tab_numero_colonne['enfant_prenom'][0] );
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   // L'import ne contient aucun id parent ni enfant.
   // On récupère la liste des noms prénoms des élèves actuels pour comparer au contenu du fichier.
   $tab_eleves_actuels  = array();
@@ -1207,9 +1200,8 @@ if( ($import_origine=='onde') && ($import_profil=='parent') )
   //
   $tab_genre = array( ''=>'I' , 'M.'=>'M' , 'MME'=>'F' );
   $tab_adresses_uniques = array();
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>$numero_max)
     {
       $genre      = isset($tab_genre[$tab_elements[$tab_numero_colonne['genre']]]) ? $tab_genre[$tab_elements[$tab_numero_colonne['genre']]] : 'I' ;
@@ -1268,10 +1260,8 @@ if( ($import_origine=='onde') && ($import_profil=='parent') )
 
 if( ($import_origine=='factos') && ($import_profil=='eleve') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
     'sconet_num' => $init_negatif ,
@@ -1281,7 +1271,8 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
     'birth_date' => $init_negatif ,
     'classe'     => $init_negatif ,
   );
-  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+  // Données de la ligne d'en-tête
+  $tab_elements = $tab_lignes[0];
   $numero_max = 0;
   foreach ($tab_elements as $numero=>$element)
   {
@@ -1299,15 +1290,15 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
   {
     Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode('" ; "',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   //
   // On passe les utilisateurs en revue : on mémorise leurs infos, les classes trouvées
   // Attention : en l'absence de donnée, un champ peut contenir la valeur "Non saisi"
   //
   $tab_genre = array( ''=>'I' , 'Non saisi'=>'I' , 'Masculin'=>'M' , 'Féminin'=>'F' );
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>$numero_max)
     {
       $sconet_num = ($tab_elements[$tab_numero_colonne['sconet_num']]!="Non saisi") ? $tab_elements[$tab_numero_colonne['sconet_num']] : '' ;
@@ -1349,10 +1340,8 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
 
 if( ($import_origine=='factos') && ($import_profil=='parent') )
 {
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest_nom);
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $tab_numero_colonne = array(
     'sconet_num_1'     => $init_negatif ,
@@ -1381,7 +1370,8 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
     'enfant_nom'       => $init_negatif ,
     'enfant_prenom'    => $init_negatif ,
   );
-  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+  // Données de la ligne d'en-tête
+  $tab_elements = $tab_lignes[0];
   $numero_max = 0;
   // 1) Les noms des champs manquent d'homogénéité ("Code postal du responsable 1" vs "CpVille Resp2" etc) ; cela fait très amateur...
   // 2) Pour le responsable 1 le champ "Ville du responsable 1" ne contient que la ville comme attendu (par exemple "LONDON"),
@@ -1425,7 +1415,8 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
   {
     Json::end( FALSE , 'Un ou plusieurs champs n\'ont pas pu être repérés ("'.implode('" ; "',array_keys(array_filter($tab_numero_colonne,'filter_init_negatif'))).'") !' );
   }
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   // On récupère les élèves pour vérifier que ceux trouvé dans le fichier des parents sont bien dans la base.
   $tab_eleves_actuels  = array();
   $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' /*profil_type*/ , 1 /*only_actuels*/ , 'user_id,user_sconet_elenoet' /*liste_champs*/ , FALSE /*with_classe*/ , FALSE /*tri_statut*/ );
@@ -1439,9 +1430,8 @@ if( ($import_origine=='factos') && ($import_profil=='parent') )
   $tab_genre = array( ''=>'I' , 'Non saisi'=>'I' , 'M.'=>'M' , 'M'=>'M' , 'MME'=>'F' , 'Mme'=>'F' , 'MLLE'=>'F' , 'Mlle'=>'F' );
   $tab_adresses_uniques = array();
   $nb_lien_responsabilite = 0;
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>$numero_max)
     {
       $sconet_num_eleve = ( $tab_elements[$tab_numero_colonne['enfant_sconet']] && ($tab_elements[$tab_numero_colonne['enfant_sconet']]!='Non saisi') ) ? Clean::entier($tab_elements[$tab_numero_colonne['enfant_sconet']]) : NULL ;
@@ -1657,7 +1647,7 @@ if( ($import_origine=='siecle') && ($import_profil=='professeur') )
   Json::add_str('<p><label class="valide">Matières du Livret Scolaire actualisées.</label></p>'.NL);
 }
 // Avertissement 1er import ONDE
-if($is_first_import_onde)
+if(!empty($is_first_import_onde))
 {
   Json::add_str('<p class="probleme">Lors du passage de BE1D à ONDE, les identifiants de classes changent.<br />
   SACoche fait au mieux pour établir une correspondance, mais cela peut ne pas fonctionner si vous avez renommé des éléments.<br />

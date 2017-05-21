@@ -753,7 +753,12 @@ if(!$dom_xml->schemaValidate(CHEMIN_DOSSIER_XSD.$tab_xml_param[$export_objet]['f
     Json::add_str( libxml_display_error($error) );
   }
   libxml_clear_errors();
-  Json::end( FALSE );
+  // En PROD on ne donne pas ce fichier qui de toutes façons sera rejeté par LSU.
+  // Hors PROD on laisse la possibilité de récupérer le fichier pour l'analyser.
+  if(SERVEUR_TYPE == 'PROD')
+  {
+    Json::end( FALSE );
+  }
 }
 
 // Enregistrement du fichier

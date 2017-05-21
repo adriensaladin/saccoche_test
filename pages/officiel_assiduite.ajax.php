@@ -123,16 +123,13 @@ if( ($action=='import_gepi') && $periode_id )
   {
     Json::end( FALSE , $result );
   }
-  // Récupération des données du fichier
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   $tab_users_fichier = array();
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,7);
     if(count($tab_elements)==7)
     {
@@ -302,11 +299,8 @@ if( ($action=='import_moliere') && $periode_id )
   {
     Json::end( FALSE , $result );
   }
-  // Récupération des données du fichier
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_dest);
   // utiliser la 1ère ligne pour déterminer l'emplacement des données
   $tab_numero_colonne = array(
     'csv_nom'    => -100 ,
@@ -315,7 +309,8 @@ if( ($action=='import_moliere') && $periode_id )
     'csv_ret_nb' => -100 ,
     'csv_INE'    => -100 ,
   );
-  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+  // Données de la ligne d'en-tête
+  $tab_elements = $tab_lignes[0];
   $numero_max = 0;
   foreach ($tab_elements as $numero=>$element)
   {
@@ -332,11 +327,11 @@ if( ($action=='import_moliere') && $periode_id )
   {
     Json::end( FALSE , 'Les champs nécessaires n\'ont pas pu être repérés !' );
   }
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   $tab_users_fichier = array();
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if( count($tab_elements) >= $numero_max )
     {
       $reference  = $tab_elements[ $tab_numero_colonne['csv_INE']    ];

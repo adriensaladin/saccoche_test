@@ -868,7 +868,7 @@ class InfoServeur
       for($numero_colonne=0 ; $numero_colonne<$nb_colonnes ; $numero_colonne++)
       {
         $indice = $numero_colonne*$nb_lignes + $numero_ligne ;
-        $style  = ( ($indice<$nb_modules) && (in_array(strtolower($tab_extensions_chargees[$indice]),$tab_extensions_requises)) ) ? ' class="'.InfoServeur::$tab_style['vert'].'"' : '' ;
+        $style  = ( ($indice<$nb_modules) && (in_array($tab_extensions_chargees[$indice],$tab_extensions_requises)) ) ? ' class="'.InfoServeur::$tab_style['vert'].'"' : '' ;
         $lignes .= ($indice<$nb_modules) ? '<td'.$style.'><a href="#'.$tab_extensions_chargees[$indice].'">'.$tab_extensions_chargees[$indice].'</a></td>' : '<td class="hc">-</td>' ;
       }
       $lignes .= '</tr>';

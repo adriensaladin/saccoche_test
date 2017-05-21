@@ -139,11 +139,10 @@ if($action=='importer_csv')
     $tab_geo[$DB_ROW['geo_id']] = TRUE;
   }
   // Tester si le contenu est correct, et mémoriser les infos en session
-  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
-  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
-  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_csv_nom);
+  // Supprimer la 1e ligne
+  unset($tab_lignes[0]);
   $tab_nouvel_uai = array();
   $tab_nouvel_id  = array();
   $nb_lignes_trouvees = 0;
@@ -156,9 +155,8 @@ if($action=='importer_csv')
     'fichier' => array('nb'=>0,'txt'=>' avec nom de fichier de sauvegarde incorrect !') ,
     'id'      => array('nb'=>0,'txt'=>' avec identifiant de base déjà utilisé ou en double !') ,
   );
-  foreach ($tab_lignes as $ligne_contenu)
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,11);
     if(count($tab_elements)==11)
     {

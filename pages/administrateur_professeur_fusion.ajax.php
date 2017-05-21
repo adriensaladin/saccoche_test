@@ -34,7 +34,7 @@ $id_actuel = (isset($_POST['f_id_actuel'])) ? Clean::entier($_POST['f_id_actuel'
 $id_ancien = (isset($_POST['f_id_ancien'])) ? Clean::entier($_POST['f_id_ancien']) : 0 ;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rechercher un élève
+// Rechercher un professeur / personnel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_statut = array(
@@ -44,11 +44,11 @@ $tab_statut = array(
 
 if( ($action=='chercher') && isset($tab_statut[$statut]) && $nom )
 {
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_user_for_fusion( $nom , 'eleve' , $tab_statut[$statut] );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_user_for_fusion( $nom , 'personnel' , $tab_statut[$statut] );
   $nb_reponses = count($DB_TAB) ;
   if($nb_reponses==0)
   {
-    Json::end( FALSE , 'Aucun élève trouvé !' );
+    Json::end( FALSE , 'Aucun professeur / personnel trouvé !' );
   }
   else if($nb_reponses==1)
   {
@@ -66,7 +66,7 @@ if( ($action=='chercher') && isset($tab_statut[$statut]) && $nom )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fusionner deux comptes élève
+// Fusionner deux comptes professeur / personnel
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='fusionner') && $id_actuel && $id_ancien )
@@ -76,18 +76,22 @@ if( ($action=='fusionner') && $id_actuel && $id_ancien )
     1 => DB_STRUCTURE_PUBLIC::DB_recuperer_donnees_utilisateur( 'switch' , $id_actuel ),
   );
   // Vérifier l'existence / le profil / le statut
-  if( empty($DB_ROW[0]) || ($DB_ROW[0]['user_profil_type']!='eleve') || ($DB_ROW[0]['user_sortie_date']>TODAY_MYSQL) )
+  if( empty($DB_ROW[0]) || ( ($DB_ROW[0]['user_profil_type']!='professeur') && ($DB_ROW[0]['user_profil_type']!='directeur') ) || ($DB_ROW[0]['user_sortie_date']>TODAY_MYSQL) )
   {
     Json::end( FALSE , 'Identifiant du compte désactivé incompatible !' );
   }
-  if( empty($DB_ROW[1]) || ($DB_ROW[1]['user_profil_type']!='eleve') || ($DB_ROW[1]['user_sortie_date']<TODAY_MYSQL) )
+  if( empty($DB_ROW[1]) || ( ($DB_ROW[1]['user_profil_type']!='professeur') && ($DB_ROW[1]['user_profil_type']!='directeur') ) || ($DB_ROW[1]['user_sortie_date']<TODAY_MYSQL) )
   {
     Json::end( FALSE , 'Identifiant du compte activé incompatible !' );
   }
-  // On fusionne les données (sauf traitement de sacoche_user + sacoche_jointure_user_groupe + sacoche_jointure_parent_eleve + sacoche_jointure_message_destinataire)
-  DB_STRUCTURE_ADMINISTRATEUR::DB_fusionner_donnees_comptes_eleves( $id_ancien , $id_actuel );
-  // On supprime l'ancien compte (dont liaisons sacoche_jointure_user_groupe + sacoche_jointure_parent_eleve + sacoche_jointure_message_destinataire)
-  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $id_ancien , 'ELV' );
+  if( $DB_ROW[1]['user_profil_sigle'] != $DB_ROW[0]['user_profil_sigle'] )
+  {
+    Json::end( FALSE , 'Comptes de profils différents ('.$DB_ROW[0]['user_profil_nom_court_singulier'].'/'.$DB_ROW[1]['user_profil_nom_court_singulier'].') !' );
+  }
+  // On fusionne les données (sauf tables sacoche_user, sacoche_jointure_user_groupe, sacoche_jointure_message_destinataire)
+  DB_STRUCTURE_ADMINISTRATEUR::DB_fusionner_donnees_comptes_personnels( $id_ancien , $id_actuel );
+  // On supprime l'ancien compte (dont liaisons sacoche_user, sacoche_jointure_user_groupe, sacoche_jointure_message_destinataire)
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_utilisateur( $id_ancien , $DB_ROW[0]['user_profil_sigle'] );
   // On met à jour les données du comptes restant
   $tab_donnees = array();
   if( $DB_ROW[0]['user_connexion_date'] > $DB_ROW[1]['user_connexion_date'] )
@@ -106,11 +110,6 @@ if( ($action=='fusionner') && $id_actuel && $id_ancien )
     ':email_origine' => 'user_email_origine',
     ':langue'        => 'user_langue',
     ':daltonisme'    => 'user_daltonisme',
-    ':elv_langue'    => 'eleve_langue',
-    ':lv1'           => 'eleve_lv1',
-    ':lv2'           => 'eleve_lv2',
-    ':uai_origine'   => 'eleve_uai_origine',
-    ':elv_brevet'    => 'eleve_brevet_serie',
     ':id_ent'        => 'user_id_ent',
     ':id_gepi'       => 'user_id_gepi',
   );
@@ -130,8 +129,8 @@ if( ($action=='fusionner') && $id_actuel && $id_ancien )
     DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_user( $id_actuel , $tab_donnees );
   }
   // Log de l'action
-  SACocheLog::ajouter('Fusion des comptes élèves '.$DB_ROW[0]['user_nom'].' '.$DB_ROW[0]['user_prenom'].' ('.$DB_ROW[0]['user_id'].') et '.$DB_ROW[1]['user_nom'].' '.$DB_ROW[1]['user_prenom'].' ('.$DB_ROW[1]['user_id'].').');
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a fusionné les comptes élèves '.$DB_ROW[0]['user_nom'].' '.$DB_ROW[0]['user_prenom'].' ('.$DB_ROW[0]['user_id'].') et '.$DB_ROW[1]['user_nom'].' '.$DB_ROW[1]['user_prenom'].' ('.$DB_ROW[1]['user_id'].').'."\r\n";
+  SACocheLog::ajouter('Fusion des comptes personnels '.$DB_ROW[0]['user_nom'].' '.$DB_ROW[0]['user_prenom'].' ('.$DB_ROW[0]['user_id'].') et '.$DB_ROW[1]['user_nom'].' '.$DB_ROW[1]['user_prenom'].' ('.$DB_ROW[1]['user_id'].').');
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a fusionné les comptes personnels '.$DB_ROW[0]['user_nom'].' '.$DB_ROW[0]['user_prenom'].' ('.$DB_ROW[0]['user_id'].') et '.$DB_ROW[1]['user_nom'].' '.$DB_ROW[1]['user_prenom'].' ('.$DB_ROW[1]['user_id'].').'."\r\n";
   // Afficher le retour
   Json::end( TRUE );
 }

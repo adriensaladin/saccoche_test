@@ -138,7 +138,6 @@ $tab_droits_par_page = array
   'administrateur_professeur'               => $tab_droits_profil_administrateur,
   'administrateur_professeur_classe'        => $tab_droits_profil_administrateur,
   'administrateur_professeur_coordonnateur' => $tab_droits_profil_administrateur,
-  'administrateur_professeur_fusion'        => $tab_droits_profil_administrateur,
   'administrateur_professeur_gestion'       => $tab_droits_profil_administrateur,
   'administrateur_professeur_groupe'        => $tab_droits_profil_administrateur,
   'administrateur_professeur_matiere'       => $tab_droits_profil_administrateur,

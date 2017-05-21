@@ -1,5 +1,5 @@
 ================================================================================
-Librairie : phpCAS                      Version : 1.3.5
+Librairie : phpCAS                      Version : 1.3.4
 ================================================================================
 
 phpCAS est une classe PHP utilisée comme client CAS, pour communiquer avec un serveur CAS.
@@ -33,12 +33,13 @@ en particulier quand le serveur d'authentification renvoie un XML invalide du st
 ce qui remplit les logs PHP en plus de l'affichage à l'utilisateur.
 Pour y remédier, dans le fichier
 ./phpCAS/CAS/Client.php
-on a remplacé 4 fois
+on a remplacé 3 fois
 !($dom->loadXML(...)
 par
 !(@$dom->loadXML(...)
 (l'erreur demeure interceptée mais elle ne remplit plus les logs PHP)
 Y penser lors de futures mises à jour de la librairie...
+==> Plus la peine : dans sa version 1.3.4 phpCAS a aussi intégré cette modification !!!
 
 ========================================
 Fichier de certificats

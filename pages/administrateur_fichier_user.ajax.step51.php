@@ -149,17 +149,15 @@ foreach($tab_indices_fichier as $i_fichier)
       'prenom'        => $tab_users_fichier['prenom'      ][$i_fichier] ,
       'courriel'      => $tab_users_fichier['courriel'    ][$i_fichier] ,
       'email_origine' => $email_origine ,
+      'uai_origine'   => $tab_users_fichier['uai_origine' ][$i_fichier] ,
+      'lv1'           => $tab_users_fichier['lv1'         ][$i_fichier] ,
+      'lv2'           => $tab_users_fichier['lv2'         ][$i_fichier] ,
       'profil_sigle'  => $tab_users_fichier['profil_sigle'][$i_fichier] ,
       'classe'        => $id_classe
     );
     if($import_profil=='eleve')
     {
-      $tab_users_ajouter[$i_fichier] = array_merge( $tab_users_ajouter[$i_fichier] , array(
-        'birth_date'  => $tab_users_fichier['birth_date'  ][$i_fichier] ,
-        'uai_origine' => $tab_users_fichier['uai_origine' ][$i_fichier] ,
-        'lv1'         => $tab_users_fichier['lv1'         ][$i_fichier] ,
-        'lv2'         => $tab_users_fichier['lv2'         ][$i_fichier] ,
-      ) );
+      $tab_users_ajouter[$i_fichier]['birth_date'] = $tab_users_fichier['birth_date'][$i_fichier];
     }
   }
   // Cas [3] : présent dans le fichier, présent dans la base, pas de classe dans le fichier (élèves uniquements), actuel dans la base : contenu à retirer (probablement des élèves nouvellement sortants)

@@ -73,7 +73,7 @@ if(version_compare(PHP_VERSION,PHP_VERSION_MINI_REQUISE,'<'))
 // Modules PHP requis
 // ============================================================================
 
-define('PHP_LISTE_EXTENSIONS' , ' curl , dom , gd , json , mbstring , PDO , pdo_mysql , session , SPL , zip , zlib '); // respecter le séparateur " , "
+define('PHP_LISTE_EXTENSIONS' , ' curl , dom , gd , json , mbstring , PDO , pdo_mysql , session , zip , zlib '); // respecter le séparateur " , "
 
 // Vérifier la présence des modules nécessaires
 $tab_extensions_chargees = get_loaded_extensions();
@@ -279,6 +279,7 @@ function SACoche_autoload($class_name)
     'MyDOMDocument'               => '_inc'.DS.'class.domdocument.php' ,
     'Outil'                       => '_inc'.DS.'class.Outil.php' ,
     'OutilBilan'                  => '_inc'.DS.'class.OutilBilan.php' ,
+    'OutilCSV'                    => '_inc'.DS.'class.OutilCSV.php' ,
     'PDF'                         => '_inc'.DS.'class.PDF.php' ,
     'PDF_archivage_tableau'       => '_inc'.DS.'class.PDF_archivage_tableau.php' ,
     'PDF_evaluation_cartouche'    => '_inc'.DS.'class.PDF_evaluation_cartouche.php' ,
@@ -649,10 +650,6 @@ function getServerProtocole()
   {
     return 'https://';
   }
-  if( isset($_SERVER['HTTP_X_FORWARDED_PROTOCOL']) && ($_SERVER['HTTP_X_FORWARDED_PROTOCOL']=='https') )
-  {
-    return 'https://';
-  }
   return 'http://';
 }
 
@@ -787,7 +784,6 @@ function exit_redirection($adresse)
   // Cette fois-ci on y va
   header('Status: 307 Temporary Redirect', TRUE, 307);
   header('Location: '.$adresse);
-  header('Content-Length: 0'); // Varnish (le frontal web), en cas de redirection dans le header HTTP avec un body HTTP vide, envoie le header tout de suite mais attends 5s un éventuel body avant de couper la connexion si la réponse ne précise pas sa taille ; or Firefox, qui reçoit une redirection, dit au serveur de fermer la connexion TCP et attend la réponse à cette demande de fermeture avant de suivre la redirection ; moralité, quand on fait une redirection via les headers il faudrait toujours ajouter 'Content-Length: 0'
   exit();
 }
 

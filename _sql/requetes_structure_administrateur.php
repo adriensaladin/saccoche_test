@@ -71,21 +71,19 @@ public static function DB_rechercher_users($champ_nom,$champ_val)
 /**
  * rechercher_eleves
  *
- * @param string   user_nom_like
- * @param string   user_profil_type
+ * @param string   user_nom
  * @param int      user_statut
  * @return array
  */
-public static function DB_rechercher_user_for_fusion( $user_nom_like , $user_profil_type , $user_statut )
+public static function DB_rechercher_eleves($user_nom_like,$user_statut)
 {
-  $where_profil = ($user_profil_type=='eleve') ? 'user_profil_type="eleve"' : 'user_profil_type IN("professeur","directeur")' ;
   $where_statut = ($user_statut) ? 'user_sortie_date>NOW() ' : 'user_sortie_date<NOW() ' ;
   $DB_SQL = 'SELECT user_id, user_nom, user_prenom, user_login ';
   $DB_SQL.= 'FROM sacoche_user ';
   $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE user_nom LIKE :user_nom_like AND '.$where_profil.' AND '.$where_statut;
+  $DB_SQL.= 'WHERE user_nom LIKE :user_nom_like AND user_profil_type="eleve" AND '.$where_statut;
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
-  $DB_VAR = array( ':user_nom_like' => $user_nom_like );
+  $DB_VAR = array(':user_nom_like'=>$user_nom_like);
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 
@@ -744,8 +742,8 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':elv_langue'    : $tab_set[] = 'eleve_langue='       .$key; break;
       case ':lv1'           : $tab_set[] = 'eleve_lv1='          .$key; break;
       case ':lv2'           : $tab_set[] = 'eleve_lv2='          .$key; break;
-      case ':uai_origine'   : $tab_set[] = 'eleve_uai_origine='  .$key; break;
       case ':elv_brevet'    : $tab_set[] = 'eleve_brevet_serie=' .$key; break;
+      case ':uai_origine'   : $tab_set[] = 'eleve_uai_origine='  .$key; break;
       case ':id_ent'        : $tab_set[] = 'user_id_ent='        .$key; break;
       case ':id_gepi'       : $tab_set[] = 'user_id_gepi='       .$key; break;
       case ':param_accueil' : $tab_set[] = 'user_param_accueil=' .$key; break;
@@ -1359,22 +1357,22 @@ public static function DB_optimiser_tables_structure()
 public static function DB_fusionner_donnees_comptes_eleves( $user_id_ancien , $user_id_actuel )
 {
   $tab_table_champ = array(
+    'sacoche_saisie'                          => 'eleve_id' ,
     'sacoche_demande'                         => 'eleve_id' ,
     'sacoche_jointure_devoir_eleve'           => 'eleve_id' ,
     'sacoche_livret_jointure_enscompl_eleve'  => 'eleve_id' ,
     'sacoche_livret_jointure_modaccomp_eleve' => 'eleve_id' ,
-    'sacoche_saisie'                          => 'eleve_id' ,
-    'sacoche_brevet_fichier'                  => 'user_id' ,
-    'sacoche_jointure_user_abonnement'        => 'user_id' ,
     'sacoche_jointure_user_entree'            => 'user_id' ,
     'sacoche_jointure_user_pilier'            => 'user_id' ,
-    'sacoche_livret_export'                   => 'user_id' ,
+    'sacoche_jointure_user_abonnement'        => 'user_id' ,
     'sacoche_notification'                    => 'user_id' ,
     'sacoche_officiel_archive'                => 'user_id' ,
     'sacoche_officiel_assiduite'              => 'user_id' ,
+    'sacoche_brevet_fichier'                  => 'user_id' ,
     'sacoche_officiel_fichier'                => 'user_id' ,
-    'sacoche_brevet_saisie'                   => 'eleve_ou_classe_id' ,
+    'sacoche_livret_export'                   => 'user_id' ,
     'sacoche_officiel_saisie'                 => 'eleve_ou_classe_id' ,
+    'sacoche_brevet_saisie'                   => 'eleve_ou_classe_id' ,
     'sacoche_livret_saisie'                   => 'cible_id' ,
   );
   foreach($tab_table_champ as $table_nom => $champ_nom)
@@ -1393,43 +1391,6 @@ public static function DB_fusionner_donnees_comptes_eleves( $user_id_ancien , $u
     // UPDATE ... ON DUPLICATE KEY DELETE ...  n'existe pas, il faut s'y prendre en deux fois avec UPDATE IGNORE ... puis DELETE ...
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE IGNORE '.$table_nom.' SET '.$champ_nom.'='.$user_id_actuel.' WHERE '.$champ_nom.'='.$user_id_ancien.$where_add );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM '.$table_nom.' WHERE '.$champ_nom.'='.$user_id_ancien.$where_add );
-  }
-}
-
-/**
- * Fusionner les données associées à 2 comptes professeurs / personnels (sauf tables sacoche_user, sacoche_jointure_user_groupe, sacoche_jointure_message_destinataire)
- *
- * @param int   $user_id_ancien
- * @param int   $user_id_actuel
- * @return bool
- */
-public static function DB_fusionner_donnees_comptes_personnels( $user_id_ancien , $user_id_actuel )
-{
-  $tab_table_champ = array(
-    'sacoche_demande'                       => 'prof_id' ,
-    'sacoche_jointure_devoir_prof'          => 'prof_id' ,
-    'sacoche_jointure_selection_prof'       => 'prof_id' ,
-    'sacoche_livret_jointure_ap_prof'       => 'prof_id' ,
-    'sacoche_livret_jointure_epi_prof'      => 'prof_id' ,
-    'sacoche_livret_jointure_parcours_prof' => 'prof_id' ,
-    'sacoche_livret_saisie'                 => 'prof_id' ,
-    'sacoche_livret_saisie_jointure_prof'   => 'prof_id' ,
-    'sacoche_officiel_saisie'               => 'prof_id' ,
-    'sacoche_saisie'                        => 'prof_id' ,
-    'sacoche_image'                         => 'user_id' ,
-    'sacoche_jointure_user_abonnement'      => 'user_id' ,
-    'sacoche_jointure_user_matiere'         => 'user_id' ,
-    'sacoche_jointure_user_module'          => 'user_id' ,
-    'sacoche_message'                       => 'user_id' ,
-    'sacoche_notification'                  => 'user_id' ,
-    'sacoche_devoir'                        => 'proprio_id' ,
-    'sacoche_selection_item'                => 'proprio_id' ,
-  );
-  foreach($tab_table_champ as $table_nom => $champ_nom)
-  {
-    // UPDATE ... ON DUPLICATE KEY DELETE ...  n'existe pas, il faut s'y prendre en deux fois avec UPDATE IGNORE ... puis DELETE ...
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE IGNORE '.$table_nom.' SET '.$champ_nom.'='.$user_id_actuel.' WHERE '.$champ_nom.'='.$user_id_ancien );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM '.$table_nom.' WHERE '.$champ_nom.'='.$user_id_ancien );
   }
 }
 

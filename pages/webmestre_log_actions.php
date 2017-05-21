@@ -48,7 +48,7 @@ else
   
   // 1 En extraire le plus récent (les 100 derniers enregistrements)
   $table_log_extrait = '<table class="p"><thead><tr><th>Date &amp; Heure</th><th>Utilisateur</th><th>Action</th></tr></thead><tbody>';
-  $tab_lignes = SACocheLog::extraire_lignes($fichier_log_contenu);
+  $tab_lignes = OutilCSV::extraire_lignes($fichier_log_contenu);
   $indice_ligne_debut = count($tab_lignes)-1 ;
   $indice_ligne_fin   = max(-1 , $indice_ligne_debut-100) ;
   $nb_lignes          = $indice_ligne_debut - $indice_ligne_fin ;

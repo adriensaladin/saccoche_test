@@ -46,14 +46,6 @@ class DB_STRUCTURE_SIECLE extends DB
  */
 public static function DB_ajouter_import( $import_objet , $import_annee , $import_data )
 {
-  // Certains fichiers sont très lourds -> on enlève des éléments dont on est certain qu'ils ne serviront pas -> cependant c'est le fichier des élèves le plus lourd et je n'ai pas osé y enlever grand chose...
-  switch($import_objet)
-  {
-    case 'Eleves'      : unset( $import_data->DONNEES->BOURSES , $import_data->DONNEES->ADRESSES ); break;
-    case 'sts_emp_UAI' : unset( $import_data->DONNEES->HORAIRES , $import_data->DONNEES->ALTERNANCES , $import_data->DONNEES->SALLES_COURS ); break;
-    case 'Nomenclature': unset( $import_data->DONNEES->MODALITES_ELECTION , $import_data->DONNEES->REGIMES , $import_data->DONNEES->LIENS_PARENTE , $import_data->DONNEES->BOURSES , $import_data->DONNEES->PROFESSIONS , $import_data->DONNEES->SITUATIONS_EMPLOI , $import_data->DONNEES->PCS_SITUATIONS_EMPLOI , $import_data->DONNEES->PROVENANCES , $import_data->DONNEES->MOTIFS_SORTIE , $import_data->DONNEES->STATUTS_ELEVE , $import_data->DONNEES->CONTRATS , $import_data->DONNEES->TYPES_ETABLISSEMENT ); break;
-  }
-  // Conversion JSON
   $import_json = json_encode( (array)$import_data );
   if($import_objet=='Eleves')
   {

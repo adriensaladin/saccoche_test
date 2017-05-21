@@ -730,8 +730,8 @@ if($type_synthese)
             if($tab_contenu_presence['eleve'][$eleve_id])
             {
               $tab_bilan = $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id];
-              if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan[$clef] , $tableau_tri_maitrise_mode , $unit /*pourcent*/ , FALSE /*all_columns*/ ); }
-              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan[$clef] , $unit /*pourcent*/ , FALSE /*all_columns*/ ); }
+              if($make_html) { $releve_HTML_table_body .= Html::td_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , $tableau_tri_maitrise_mode , '%' /*pourcent*/ , FALSE /*all_columns*/ ); }
+              if($make_pdf)  { $releve_PDF_synthese->afficher_degre_maitrise( $tab_bilan['indice'] , $tab_bilan['%'] , '%' /*pourcent*/ , FALSE /*all_columns*/ ); }
             }
           }
           if($make_html) { $releve_HTML_table_body .= '</tr>'.NL; }
@@ -739,7 +739,7 @@ if($type_synthese)
         }
       }
     }
-    if($socle_synthese_affichage=='points')
+    if($aff_socle_points_DNB)
     {
       $txt_full  = 'Nombre de points pour le brevet (sur 400)';
       if($make_html) { $releve_HTML_table_body .= '<tr><th>'.$txt_full.'</th>'; }

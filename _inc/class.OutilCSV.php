@@ -25,36 +25,45 @@
  * 
  */
 
-if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Professeurs / Personnels"));
-
-// Par défaut, faire arriver sur la page de gestion des profs
-$SECTION = ($SECTION) ? $SECTION : 'gestion' ;
-
-// Sous-Menu d'en-tête
-$SOUS_MENU = '';
-$tab_sous_menu = array(
-  'gestion' => Lang::_("Professeurs / Personnels (gestion)"),
-  'groupe'  => Lang::_("Professeurs & groupes"),
-  'classe'  => Lang::_("Professeurs & classes / Professeurs principaux"),
-  'matiere' => Lang::_("Professeurs & matières / Personnels coordonnateurs"),
-);
-foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
+class OutilCSV
 {
-  $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
-}
 
-// Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
-{
-  $PAGE = $PAGE.'_'.$SECTION ;
-  require($fichier_section);
-}
-else
-{
-  echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>'.NL;
-  echo'<p><span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs et personnels</a></span></p>'.NL;
+  // //////////////////////////////////////////////////
+  // Méthodes publiques
+  // //////////////////////////////////////////////////
+
+  /**
+   * Retourner un tableau de lignes à partir d'un texte en se basant sur les retours chariot.
+   * Utilisé notamment lors de la récupération d'un fichier CSV.
+   * 
+   * @param string   $texte
+   * @return array
+   */
+  public static function extraire_lignes($texte)
+  {
+    $texte = trim($texte);
+    $texte = str_replace('"','',$texte);
+    $texte = str_replace(Clean::tab_crlf(),'®',$texte);
+    return explode('®',$texte);
+  }
+
+  /**
+   * Déterminer la nature du séparateur d'un fichier CSV.
+   * 
+   * @param string   $ligne   la première ligne du fichier
+   * @return string
+   */
+  public static function extraire_separateur($ligne)
+  {
+    $tab_separateur = array( ';'=>0 , ','=>0 , ':'=>0 , "\t"=>0 );
+    foreach($tab_separateur as $separateur => $occurrence)
+    {
+      $tab_separateur[$separateur] = mb_substr_count($ligne,$separateur);
+    }
+    arsort($tab_separateur);
+    reset($tab_separateur);
+    return key($tab_separateur);
+  }
+
 }
 ?>

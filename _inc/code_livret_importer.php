@@ -246,15 +246,17 @@ if($ACTION=='uploader_saisie_csv')
   {
     Json::end( FALSE , $result );
   }
-  // Extraire les lignes du fichier
-  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+  // On passe au contenu
+  $contenu_csv = file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
+  $contenu_csv = To::deleteBOM(To::utf8($contenu_csv)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $tab_lignes = OutilCSV::extraire_lignes($contenu_csv); // Extraire les lignes du fichier
   if(count($tab_lignes)<4)
   {
     Json::end( FALSE , 'Absence de données suffisantes (fichier comportant moins de 4 lignes) !' );
   }
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[2]); // Déterminer la nature du séparateur
   // Données de la ligne d'en-tête
-  $tab_elements = $tab_lignes[0];
-  // Supprimer la 1e ligne
+  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
   unset($tab_lignes[0]);
   list( $string_references , $titre ) = $tab_elements + array_fill(0,2,NULL); // Evite des NOTICE en initialisant les valeurs manquantes
   $tab_references = explode('_',$string_references);
@@ -288,8 +290,9 @@ if($ACTION=='uploader_saisie_csv')
   $rubrique_id   = NULL;
   $tab_donnees_csv = array(); // [rubrique_type][rubrique_id][eleve_id][type(position|appreciation)] => [valeur][idem|insert|update]
   // $nb_colonnes = ($with_note) ? 4 : 3 ;
-  foreach ($tab_lignes as $tab_elements)
+  foreach ($tab_lignes as $ligne_contenu)
   {
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,4);
     if(count($tab_elements)>=3)
     {

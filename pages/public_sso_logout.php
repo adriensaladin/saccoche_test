@@ -162,7 +162,6 @@ if($connexion_mode=='shibboleth')
   // Remarque : le code 307 peut causer des soucis ; le code 302 semble mieux. http://fr.wikipedia.org/wiki/Liste_des_codes_HTTP
   header('Status: 302 Found', TRUE, 302);
   header('Location: https://ent2d.ac-bordeaux.fr/Shibboleth.sso/Logout');
-  header('Content-Length: 0'); // Varnish (le frontal web), en cas de redirection dans le header HTTP avec un body HTTP vide, envoie le header tout de suite mais attends 5s un éventuel body avant de couper la connexion si la réponse ne précise pas sa taille ; or Firefox, qui reçoit une redirection, dit au serveur de fermer la connexion TCP et attend la réponse à cette demande de fermeture avant de suivre la redirection ; moralité, quand on fait une redirection via les headers il faudrait toujours ajouter 'Content-Length: 0'
   exit();
 }
 

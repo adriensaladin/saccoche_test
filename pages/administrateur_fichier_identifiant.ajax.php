@@ -210,12 +210,14 @@ if($action=='import_loginmdp')
   $tab_users_fichier['mdp']    = array();
   $tab_users_fichier['nom']    = array();
   $tab_users_fichier['prenom'] = array();
-  // Extraire les lignes du fichier
-  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
-  // Supprimer la 1e ligne
-  unset($tab_lignes[0]);
-  foreach ($tab_lignes as $tab_elements)
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
+  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  unset($tab_lignes[0]); // Supprimer la 1e ligne
+  foreach ($tab_lignes as $ligne_contenu)
   {
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $tab_elements = array_slice($tab_elements,0,4);
     if(count($tab_elements)==4)
     {
@@ -440,12 +442,15 @@ if( ($action=='import_gepi_profs') || ($action=='import_gepi_parents') || ($acti
   $tab_users_fichier['nom']        = array();
   $tab_users_fichier['prenom']     = array();
   $tab_users_fichier['sconet_num'] = array(); // Ne servira que pour les élèves
-  // Extraire les lignes du fichier
-  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
+  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
   // Pas de ligne d'en-tête à supprimer
   // Récupérer les données du fichier
-  foreach ($tab_lignes as $tab_elements)
+  foreach ($tab_lignes as $ligne_contenu)
   {
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>2)
     {
       $id_gepi    = $tab_elements[2];
@@ -595,8 +600,10 @@ if($action=='import_ent')
   $tab_users_fichier['nom']       = array();
   $tab_users_fichier['prenom']    = array();
   $tab_users_fichier['id_sconet'] = array();
-  // Extraire les lignes du fichier
-  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
+  $contenu = file_get_contents(CHEMIN_DOSSIER_IMPORT.$fichier_nom);
+  $contenu = To::deleteBOM(To::utf8($contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $tab_lignes = OutilCSV::extraire_lignes($contenu); // Extraire les lignes du fichier
+  $separateur = OutilCSV::extraire_separateur($tab_lignes[$tab_infos_csv['csv_entete']]); // Déterminer la nature du séparateur
   // CSV avec ordre des champs variables : utiliser la 1ère ligne pour déterminer l'emplacement des données
   if( $tab_infos_csv['csv_entete'] && !$tab_infos_csv['csv_ordre'] )
   {
@@ -605,7 +612,7 @@ if($action=='import_ent')
       'csv_prenom' => -100 ,
       'csv_id_ent' => -100 ,
     );
-    $tab_elements = $tab_lignes[0];
+    $tab_elements = str_getcsv($tab_lignes[0],$separateur);
     $numero_max = 0;
     foreach ($tab_elements as $numero=>$element)
     {
@@ -627,8 +634,9 @@ if($action=='import_ent')
   // Supprimer la ou les première(s) ligne(s) ou aucune
   $tab_lignes = array_slice( $tab_lignes , $tab_infos_csv['csv_entete'] );
   // Récupérer les données
-  foreach ($tab_lignes as $tab_elements)
+  foreach ($tab_lignes as $ligne_contenu)
   {
+    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>2)
     {
       $id_ent    = $tab_elements[ $tab_infos_csv['csv_id_ent'] ];

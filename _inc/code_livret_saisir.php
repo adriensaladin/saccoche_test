@@ -142,10 +142,8 @@ if( ($ACTION=='ajouter_saisie') || ($ACTION=='modifier_saisie') )
   }
   else if($saisie_objet=='elements')
   {
-    // Un élément par ligne
-    $elements = str_replace( Clean::tab_crlf() , '‡‡‡' , trim($elements) );
-    $tab_elements = explode( '‡‡‡' , $elements );
-    $tab_elements = array_filter($tab_elements,'non_chaine_vide'); // Pour éviter des sauts de ligne entre les éléments
+    $tab_elements = OutilCSV::extraire_lignes($elements);
+    $tab_elements = array_filter($tab_elements,'non_chaîne_vide'); // Pour éviter des sauts de ligne entre les éléments
     $tab_elements = array_unique($tab_elements); // Pas indispensable car ce sont ensuite les éléments qui sont pris comme clefs
     $tab_elements = array_values($tab_elements); // Pour ré-indexer les clefs proprement
     $nb_elements  = count($tab_elements);

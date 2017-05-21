@@ -44,7 +44,7 @@ $tab_statut = array(
 
 if( ($action=='chercher') && isset($tab_statut[$statut]) && $nom )
 {
-  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_user_for_fusion( $nom , 'eleve' , $tab_statut[$statut] );
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_rechercher_eleves( $nom , $tab_statut[$statut] );
   $nb_reponses = count($DB_TAB) ;
   if($nb_reponses==0)
   {
@@ -107,9 +107,6 @@ if( ($action=='fusionner') && $id_actuel && $id_ancien )
     ':langue'        => 'user_langue',
     ':daltonisme'    => 'user_daltonisme',
     ':elv_langue'    => 'eleve_langue',
-    ':lv1'           => 'eleve_lv1',
-    ':lv2'           => 'eleve_lv2',
-    ':uai_origine'   => 'eleve_uai_origine',
     ':elv_brevet'    => 'eleve_brevet_serie',
     ':id_ent'        => 'user_id_ent',
     ':id_gepi'       => 'user_id_gepi',

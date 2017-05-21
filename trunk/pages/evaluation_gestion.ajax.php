@@ -433,21 +433,24 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   if(!$mode_discret)
   {
     $listing_eleves = ($type=='selection') ? implode(',',$tab_eleves) : DB_STRUCTURE_PROFESSEUR::DB_recuperer_listing_eleves_id( $groupe_type , $groupe_id ) ;
-    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
-    $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
-    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
-    if($listing_abonnes)
+    if($listing_eleves)
     {
-      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id2.'&eleve_id=');
-      $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
-      $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
-      $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
-      foreach($tab_abonnes as $abonne_id => $tab_abonne)
+      $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
+      $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+      $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
+      if($listing_abonnes)
       {
-        foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+        $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id2.'&eleve_id=');
+        $notification_date = ( TODAY_MYSQL < $date_visible_mysql ) ? $date_visible_mysql : NULL ;
+        $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+        $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
+        foreach($tab_abonnes as $abonne_id => $tab_abonne)
         {
-          $notification_lien = 'Voir le détail :'."\r\n".$adresse_lien_profond.$eleve_id;
-          DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id2 , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien );
+          foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+          {
+            $notification_lien = 'Voir le détail :'."\r\n".$adresse_lien_profond.$eleve_id;
+            DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id2 , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien );
+          }
         }
       }
     }
@@ -661,20 +664,23 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   {
     DB_STRUCTURE_NOTIFICATION::DB_supprimer_log_attente( $abonnement_ref_edition , $devoir_id );
     $listing_eleves = ($type=='selection') ? implode(',',$tab_eleves) : DB_STRUCTURE_PROFESSEUR::DB_recuperer_listing_eleves_id( $groupe_type , $groupe_id ) ;
-    $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
-    $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
-    $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
-    if($listing_abonnes)
+    if($listing_eleves)
     {
-      $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id=');
-      $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
-      $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
-      foreach($tab_abonnes as $abonne_id => $tab_abonne)
+      $listing_parents = DB_STRUCTURE_NOTIFICATION::DB_lister_parents_listing_id($listing_eleves);
+      $listing_users = ($listing_parents) ? $listing_eleves.','.$listing_parents : $listing_eleves ;
+      $listing_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_destinataires_listing_id( $abonnement_ref_edition , $listing_users );
+      if($listing_abonnes)
       {
-        foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+        $adresse_lien_profond = Sesamail::adresse_lien_profond('page=evaluation&section=voir&devoir_id='.$devoir_id.'&eleve_id=');
+        $notification_contenu = 'Évaluation "'.$description.'" du '.$date.' paramétrée par '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],TRUE,$_SESSION['USER_GENRE']).'.'."\r\n\r\n";
+        $tab_abonnes = DB_STRUCTURE_NOTIFICATION::DB_lister_detail_abonnes_envois( $listing_abonnes , $listing_eleves , $listing_parents );
+        foreach($tab_abonnes as $abonne_id => $tab_abonne)
         {
-          $notification_lien = 'Voir le détail :'."\r\n".$adresse_lien_profond.$eleve_id;
-          DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien );
+          foreach($tab_abonne as $eleve_id => $notification_intro_eleve)
+          {
+            $notification_lien = 'Voir le détail :'."\r\n".$adresse_lien_profond.$eleve_id;
+            DB_STRUCTURE_NOTIFICATION::DB_ajouter_log_attente( $abonne_id , $abonnement_ref_edition , $devoir_id , $notification_date , $notification_intro_eleve.$notification_contenu.$notification_lien );
+          }
         }
       }
     }
@@ -2015,14 +2021,12 @@ if($action=='importer_saisie_csv')
     Json::end( FALSE , $result );
   }
   // On passe à son contenu
-  $contenu_csv = file_get_contents(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
-  $contenu_csv = To::deleteBOM(To::utf8($contenu_csv)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
-  $tab_lignes = OutilCSV::extraire_lignes($contenu_csv); // Extraire les lignes du fichier
-  $separateur = OutilCSV::extraire_separateur($tab_lignes[0]); // Déterminer la nature du séparateur
+  // Extraire les lignes du fichier
+  $tab_lignes = FileSystem::extraire_lignes_csv(CHEMIN_DOSSIER_IMPORT.FileSystem::$file_saved_name);
   // Pas de ligne d'en-tête à supprimer
   // Mémoriser les eleve_id de la 1ère ligne
   $tab_eleve = array();
-  $tab_elements = str_getcsv($tab_lignes[0],$separateur);
+  $tab_elements = $tab_lignes[0];
   unset($tab_elements[0]);
   foreach ($tab_elements as $num_colonne => $element_contenu)
   {
@@ -2032,7 +2036,7 @@ if($action=='importer_saisie_csv')
       $tab_eleve[$num_colonne] = $eleve_id ;
     }
   }
-  // Parcourir les lignes suivantes et mémoriser les scores
+  // Supprimer la 1ère ligne
   unset($tab_lignes[0]);
 
   $tab_codes = array();
@@ -2051,9 +2055,9 @@ if($action=='importer_saisie_csv')
   );
 
   $scores_autorises = '0123456789AaDdNnEeFfRrPp';
-  foreach ($tab_lignes as $ligne_contenu)
+  // Parcourir les lignes suivantes et mémoriser les scores
+  foreach ($tab_lignes as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     $item_id = Clean::entier($tab_elements[0]);
     if($item_id)
     {

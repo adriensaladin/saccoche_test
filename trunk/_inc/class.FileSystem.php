@@ -1145,6 +1145,50 @@ class FileSystem
     return TRUE;
   }
 
+
+  /**
+   * Retourner un tableau de lignes à partir du chemin d'un fichier CSV.
+   * 
+   * @param string   $fichier_chemin
+   * @return array
+   */
+  public static function extraire_lignes_csv($fichier_chemin)
+  {
+    $contenu_csv = file_get_contents($fichier_chemin);
+    // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+    $contenu_csv = trim( To::deleteBOM( To::utf8($contenu_csv) ) );
+    // Extraire la 1ère ligne (on estime qu'il n'y a pas de retour chariot dans les cellules d'au moins cette ligne...)
+    $pos_max = mb_strlen($contenu_csv);
+    $pos_cr = mb_strpos( $contenu_csv , "\r" );
+    $pos_lf = mb_strpos( $contenu_csv , "\n" );
+    $pos_cr = ($pos_cr!==FALSE) ? $pos_cr : $pos_max ;
+    $pos_lf = ($pos_lf!==FALSE) ? $pos_lf : $pos_max ;
+    $pos_fin_ligne1 = min($pos_cr,$pos_lf);
+    $contenu_ligne1 = mb_substr( $contenu_csv , 0 , $pos_fin_ligne1 );
+    // Déterminer la nature du séparateur à partir de la première ligne
+    $tab_separateur = array( ';'=>0 , ','=>0 , ':'=>0 , "\t"=>0 );
+    foreach($tab_separateur as $separateur => $occurrence)
+    {
+      $tab_separateur[$separateur] = mb_substr_count( $contenu_ligne1 , $separateur );
+    }
+    arsort($tab_separateur);
+    reset($tab_separateur);
+    $separateur = key($tab_separateur);
+    // str_getcsv() ou fgetcsv() ou un code maison ne permettent pas d'interpréter correctement un fichier CSV comportant des cellules avec retours à la ligne
+    // d'où l'usage de SplFileObject, mais qui nécessite de partir d'un fichier et non d'une chaîne texte
+    FileSystem::ecrire_fichier( $fichier_chemin , $contenu_csv );
+    $objet_csv = new SplFileObject($fichier_chemin);
+    $objet_csv->setFlags(SplFileObject::READ_CSV);
+    $objet_csv->setCsvControl($separateur);
+    // On préfère un tableau plus facile à manipuler qu'un objet
+    $tab_lignes = array();
+    foreach($objet_csv as $tab_ligne)
+    {
+      $tab_lignes[] = $tab_ligne;
+    }
+    return $tab_lignes;
+  }
+
   /**
    * Renvoyer une taille de fichier lisible pour un humain :)
    * @see http://fr2.php.net/manual/fr/function.filesize.php#106569

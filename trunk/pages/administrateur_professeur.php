@@ -38,6 +38,7 @@ $tab_sous_menu = array(
   'groupe'  => Lang::_("Professeurs & groupes"),
   'classe'  => Lang::_("Professeurs & classes / Professeurs principaux"),
   'matiere' => Lang::_("Professeurs & matières / Personnels coordonnateurs"),
+  'fusion'  => Lang::_("Fusion de comptes"),
 );
 foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
 {

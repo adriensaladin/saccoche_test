@@ -251,18 +251,18 @@ unset($tab_lsu_mod_election['N']); // Dans SIECLE mais pas dans les spécificati
 if($BILAN_TYPE_ETABL=='college')
 {
   // Fichier sts_emp_UAI
-  $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('sts_emp_UAI');
-  if(empty($DB_TAB))
+  $tab_SIECLE = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('sts_emp_UAI');
+  if(empty($tab_SIECLE))
   {
     Json::end( FALSE , 'Fichier sts_emp_UAI manquant ! Voir page précédente pour les consignes.' );
   }
   // Ref classe
-  if(empty($DB_TAB['DONNEES']['STRUCTURE']['DIVISIONS']['DIVISION']))
+  if(empty($tab_SIECLE['DONNEES']['STRUCTURE']['DIVISIONS']['DIVISION']))
   {
     Json::end( FALSE , 'Classes absentes du fichier sts_emp_UAI !' );
   }
   $tab_siecle_division = array();
-  foreach($DB_TAB['DONNEES']['STRUCTURE']['DIVISIONS']['DIVISION'] as $tab)
+  foreach($tab_SIECLE['DONNEES']['STRUCTURE']['DIVISIONS']['DIVISION'] as $tab)
   {
     $division_ref = $tab['@attributes']['CODE'];
     if(isset($tab['MEFS_APPARTENANCE']['MEF_APPARTENANCE']['@attributes']['CODE']))
@@ -284,28 +284,28 @@ if($BILAN_TYPE_ETABL=='college')
     Json::end( FALSE , 'La référence de la classe "'.$classe_value.'" ne figure pas dans celles du fichier SIECLE !<br />SIECLE comporte '.implode(' ',array_keys($tab_siecle_division)) );
   }
   // Type epp | local
-  if(empty($DB_TAB['DONNEES']['INDIVIDUS']['INDIVIDU']))
+  if(empty($tab_SIECLE['DONNEES']['INDIVIDUS']['INDIVIDU']))
   {
     Json::end( FALSE , 'Enseignants absents du fichier sts_emp_UAI !' );
   }
   $tab_siecle_prof_type = array();
-  foreach($DB_TAB['DONNEES']['INDIVIDUS']['INDIVIDU'] as $tab)
+  foreach($tab_SIECLE['DONNEES']['INDIVIDUS']['INDIVIDU'] as $tab)
   {
     $tab_siecle_prof_type[ $tab['@attributes']['ID'] ] = $tab['@attributes']['TYPE'];
   }
   // Fichier Nomenclature
-  $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Nomenclature');
-  if(empty($DB_TAB))
+  $tab_SIECLE = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Nomenclature');
+  if(empty($tab_SIECLE))
   {
     Json::end( FALSE , 'Fichier Nomenclature manquant ! Voir page précédente pour les consignes.' );
   }
   // Modalités d'élection
-  if(empty($DB_TAB['DONNEES']['PROGRAMMES']['PROGRAMME']))
+  if(empty($tab_SIECLE['DONNEES']['PROGRAMMES']['PROGRAMME']))
   {
     Json::end( FALSE , 'Enseignements absents du fichier Nomenclature !' );
   }
   $tab_siecle_modalite_election = array();
-  foreach($DB_TAB['DONNEES']['PROGRAMMES']['PROGRAMME'] as $tab)
+  foreach($tab_SIECLE['DONNEES']['PROGRAMMES']['PROGRAMME'] as $tab)
   {
     if( isset($tab_siecle_division[$classe_value][$tab['CODE_MEF']]) && (float)$tab['HORAIRE'] )
     {
@@ -313,17 +313,17 @@ if($BILAN_TYPE_ETABL=='college')
     }
   }
   // Fichier Eleves
-  $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Eleves');
-  if(empty($DB_TAB))
+  $tab_SIECLE = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Eleves');
+  if(empty($tab_SIECLE))
   {
     Json::end( FALSE , 'Fichier ElevesSansAdresses manquant ! Voir page précédente pour les consignes.' );
   }
-  if(empty($DB_TAB['DONNEES']['ELEVES']['ELEVE']))
+  if(empty($tab_SIECLE['DONNEES']['ELEVES']['ELEVE']))
   {
     Json::end( FALSE , 'Élèves absents du fichier ElevesSansAdresses !' );
   }
   $tab_siecle_eleve_date = array();
-  foreach($DB_TAB['DONNEES']['ELEVES']['ELEVE'] as $tab)
+  foreach($tab_SIECLE['DONNEES']['ELEVES']['ELEVE'] as $tab)
   {
     $eleve_id = $tab['@attributes']['ELEVE_ID'];
     if( isset($tab['DATE_ENTREE']) )
@@ -340,16 +340,16 @@ if($BILAN_TYPE_ETABL=='college')
 
 if($BILAN_TYPE_ETABL=='ecole')
 {
-  $DB_TAB = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Onde');
-  if(empty($DB_TAB))
+  $tab_ONDE = DB_STRUCTURE_SIECLE::DB_recuperer_import_contenu('Onde');
+  if(empty($tab_ONDE))
   {
     Json::end( FALSE , 'Fichier CSVExtraction manquant ! Voir page précédente pour les consignes.' );
   }
-  $separateur = OutilCSV::extraire_separateur($DB_TAB[0]); // Déterminer la nature du séparateur
   // Utiliser la 1e ligne pour repérer les colonnes intéressantes
   $numero_colonne_classe_id  = -1;
   $numero_colonne_classe_nom = -1;
-  $tab_elements = str_getcsv($DB_TAB[0],$separateur);
+  // Données de la ligne d'en-tête
+  $tab_elements = $tab_ONDE[0];
   foreach ($tab_elements as $numero=>$element)
   {
     $numero_colonne_classe_id  = ($element=='Identifiant classe') ? $numero : $numero_colonne_classe_id ;
@@ -359,12 +359,12 @@ if($BILAN_TYPE_ETABL=='ecole')
   {
     Json::end( FALSE , 'Données de classe absentes du fichier CSVExtraction !' );
   }
-  unset($DB_TAB[0]); // Supprimer la 1e ligne
+  // Supprimer la 1e ligne
+  unset($tab_ONDE[0]);
   $tab_onde_classe = array();
   $numero_colonne_max = max($numero_colonne_classe_id,$numero_colonne_classe_nom);
-  foreach ($DB_TAB as $ligne_contenu)
+  foreach ($tab_ONDE as $tab_elements)
   {
-    $tab_elements = str_getcsv($ligne_contenu,$separateur);
     if(count($tab_elements)>$numero_colonne_max)
     {
       $onde_classe_id  = $tab_elements[$numero_colonne_classe_id];

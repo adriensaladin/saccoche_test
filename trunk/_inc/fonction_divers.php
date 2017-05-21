@@ -99,7 +99,7 @@ function non_vide($n)
  * Fonctions utilisées avec array_filter() ; teste si différent d'une chaîne de texte inconsistante.
  * @return bool
  */
-function non_chaîne_vide($n)
+function non_chaine_vide($n)
 {
   return strlen(trim($n)) ;
 }

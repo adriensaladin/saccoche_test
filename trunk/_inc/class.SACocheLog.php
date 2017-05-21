@@ -81,6 +81,17 @@ class SACocheLog
   }
 
   /**
+   * Retourner un tableau de lignes à partir d'un log en se basant sur les retours chariot.
+   * 
+   * @param string   $fichier_log_contenu
+   * @return array
+   */
+  public static function extraire_lignes($fichier_log_contenu)
+  {
+    return explode( "\r\n" , trim($fichier_log_contenu) );
+  }
+
+  /**
    * Allège le contenu d'un fichier de log (si besoin).
    * 
    * @param int $base_id
@@ -91,7 +102,7 @@ class SACocheLog
     $fichier_log_contenu = SACocheLog::lire($base_id);
     if(!is_null($fichier_log_contenu))
     {
-      $tab_lignes = OutilCSV::extraire_lignes($fichier_log_contenu);
+      $tab_lignes = SACocheLog::extraire_lignes($fichier_log_contenu);
       unset($fichier_log_contenu);
       if( count($tab_lignes) > 10000 )
       {

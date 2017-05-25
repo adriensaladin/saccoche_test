@@ -46,12 +46,13 @@ $(document).ready
       function()
       {
         choix = $(this).val();
-        if( (choix=='listing_eleves') || (choix=='devoirs_commentaires') || (choix.substring(0,6)=='infos_') ) {requis='groupe';  $('#div_groupe' ).slideDown();} else {$('#div_groupe' ).slideUp();}
-        if( (choix=='listing_matiere') || (choix=='item_matiere_usage') || (choix=='arbre_matiere') )          {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
-        if( (choix=='arbre_socle') || (choix=='jointure_socle_matiere') )                                      {requis='palier';  $('#div_palier' ).slideDown();} else {$('#div_palier' ).slideUp();}
-        if(choix=='jointure_socle2016_matiere')                                                                {requis='cycle';   $('#div_cycle'  ).slideDown();} else {$('#div_cycle'  ).slideUp();}
-        if(choix=='devoirs_commentaires')                                                                      {                  $('#div_periode').slideDown();} else {$('#div_periode').slideUp();}
-        if(choix=='')                                                                                          {requis='';        $('#p_submit'   ).hide(0);    } else {$('#p_submit'   ).show(0);  }
+        if( (choix=='listing_eleves') || (choix=='devoirs_commentaires') || (choix.substring(0,6)=='infos_') || (choix=='socle2016_gepi') ) {requis='groupe';  $('#div_groupe' ).slideDown();} else {$('#div_groupe' ).slideUp();}
+        if( (choix=='listing_matiere') || (choix=='item_matiere_usage') || (choix=='arbre_matiere') )                                       {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
+        if( (choix=='arbre_socle') || (choix=='jointure_socle_matiere') )                                                                   {requis='palier';  $('#div_palier' ).slideDown();} else {$('#div_palier' ).slideUp();}
+        if( (choix=='jointure_socle2016_matiere') || (choix=='socle2016_gepi') )                                                            {requis='cycle';   $('#div_cycle'  ).slideDown();} else {$('#div_cycle'  ).slideUp();}
+        if(choix=='socle2016_gepi')                                                                                                         {                  $('#div_sconet' ).slideDown();} else {$('#div_sconet' ).slideUp();}
+        if(choix=='devoirs_commentaires')                                                                                                   {                  $('#div_periode').slideDown();} else {$('#div_periode').slideUp();}
+        if(choix=='')                                                                                                                       {requis='';        $('#p_submit'   ).hide(0);    } else {$('#p_submit'   ).show(0);  }
         $('#bilan').html("");
       }
     );
@@ -168,7 +169,7 @@ $(document).ready
         rules :
         {
           f_type       : { required:true },
-          f_groupe     : { required:function(){return requis=='groupe';} },
+          f_groupe     : { required:function(){return (requis=='groupe') || (choix=='socle2016_gepi');} },
           f_matiere    : { required:function(){return requis=='matiere';} },
           f_palier     : { required:function(){return requis=='palier';} },
           f_cycle      : { required:function(){return requis=='cycle';} },

@@ -54,7 +54,7 @@ $tab_sous_menu = array
     'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")                    , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
     'consultation_date_connexion'      => array( 'texte' => Lang::_("Date de dernière connexion")              , 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
     'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")                      , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
-    'export_fichier'                   => array( 'texte' => Lang::_("Export de données")                       , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
+    'export_fichier'                   => array( 'texte' => Lang::_("Extraction de données")                   , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
     'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")                    , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
     'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")                   , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
     'consultation_referentiel_externe' => array( 'texte' => Lang::_("Référentiels partagés")                   , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),

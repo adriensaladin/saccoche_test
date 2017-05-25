@@ -26,13 +26,13 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Import / Export des évaluations"));
+$TITRE = html(Lang::_("Transfert de saisies depuis SACoche"));
 
 // Fabrication des éléments select du formulaire
 $select_f_groupes = HtmlForm::afficher_select(DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( TRUE /*sans*/ , FALSE /*tout*/ , TRUE /*ancien*/ ) , 'f_groupe' /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ , 'regroupements' /*optgroup*/ );
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__evaluations_export_import">DOC : Import / Export des évaluations</a></span></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_sacoche">DOC : Transfert de saisies depuis SACoche</a></span></p>
 
 <hr />
 

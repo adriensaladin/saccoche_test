@@ -39,7 +39,7 @@ $dossier_temp_import = CHEMIN_DOSSIER_IMPORT.$_SESSION['BASE'].DS;
 $dossier_temp_export = CHEMIN_DOSSIER_EXPORT.$_SESSION['BASE'].DS;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Exporter un fichier d'évaluations - 1 Récupération du élèves + Extraction des saisies
+// Exporter un fichier de saisies SACoche - 1 Récupération des élèves + Extraction des saisies
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='export') && ($etape==1) && count($tab_eleve) )
@@ -91,7 +91,7 @@ if( ($action=='export') && ($etape==1) && count($tab_eleve) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Exporter un fichier d'évaluations - 2 Extraction des élèves
+// Exporter un fichier de saisies SACoche - 2 Extraction des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='export') && ($etape==2) )
@@ -117,7 +117,7 @@ if( ($action=='export') && ($etape==2) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Exporter un fichier d'évaluations - 3 Extraction des référentiels
+// Exporter un fichier de saisies SACoche - 3 Extraction des référentiels
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='export') && ($etape==3) )
@@ -153,27 +153,63 @@ if( ($action=='export') && ($etape==3) )
   // On enregistre les autres infos
   FileSystem::ecrire_fichier( $dossier_temp_export.'nb_items.txt' , $nb_items );
   // Passage à l'étape suivante
-  Json::end( TRUE , 'Fabrication du fichier compressé final&hellip;' );
+  Json::end( TRUE , 'Extraction des archives PDF&hellip;' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Exporter un fichier d'évaluations - 4 Extraction des référentiels
+// Exporter un fichier de saisies SACoche - 4 Extraction des archives PDF
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='export') && ($etape==4) )
 {
   // Variables nécessaires
-  $nb_saisies = file_get_contents($dossier_temp_export.'nb_saisies.txt');
-  $nb_eleves  = file_get_contents($dossier_temp_export.'nb_eleves.txt');
-  $nb_items   = file_get_contents($dossier_temp_export.'nb_items.txt');
+  $tab_user = unserialize( file_get_contents($dossier_temp_export.'users.txt') );
+  $listing_user_id = implode(',',$tab_user);
+  list( $DB_TAB_Archives , $DB_TAB_Images ) = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_archive_avec_infos( $listing_user_id );
+  $nb_archives = count($DB_TAB_Archives);
+  // Infos concernant les archives
+  $xml_archive = '<archives>'."\r\n";
+  foreach($DB_TAB_Archives as $key => $DB_ROW)
+  {
+    $xml_archive.= '  <archive user_id="'.$DB_ROW['user_id'].'" uai="'.$DB_ROW['structure_uai'].'" annee="'.$DB_ROW['annee_scolaire'].'" type="'.$DB_ROW['archive_type'].'" ref="'.$DB_ROW['archive_ref'].'" periode_id="'.$DB_ROW['periode_id'].'" periode_nom="'.html($DB_ROW['periode_nom']).'" structure="'.html($DB_ROW['structure_denomination']).'" version="'.$DB_ROW['sacoche_version'].'" date_generation="'.$DB_ROW['archive_date_generation'].'" date_eleve="'.$DB_ROW['archive_date_consultation_eleve'].'" date_parent="'.$DB_ROW['archive_date_consultation_parent'].'" contenu="'.html($DB_ROW['archive_contenu']).'" image1="'.$DB_ROW['archive_md5_image1'].'" image2="'.$DB_ROW['archive_md5_image2'].'" image3="'.$DB_ROW['archive_md5_image3'].'" image4="'.$DB_ROW['archive_md5_image4'].'" />'."\r\n";
+  }
+  $xml_archive.= '</archives>'."\r\n";
+  FileSystem::ecrire_fichier( $dossier_temp_export.'archives.xml' , $xml_archive );
+  // Infos concernant les images
+  $xml_image   = '<images>'."\r\n";
+  foreach($DB_TAB_Images as $image_md5 => $DB_ROW)
+  {
+    $xml_image.= '  <image md5="'.$image_md5.'" hexa="'.bin2hex($DB_ROW[0]['archive_image_contenu']).'" />'."\r\n";
+  }
+  $xml_image.= '</images>'."\r\n";
+  FileSystem::ecrire_fichier( $dossier_temp_export.'images.xml' , $xml_image );
+  unset($xml_user);
+  // On enregistre les autres infos
+  FileSystem::ecrire_fichier( $dossier_temp_export.'nb_archives.txt' , $nb_archives );
+  // Passage à l'étape suivante
+  Json::end( TRUE , 'Fabrication du fichier compressé final&hellip;' );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Exporter un fichier de saisies SACoche - 5 Zip et bilan
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='export') && ($etape==5) )
+{
+  // Variables nécessaires
+  $nb_saisies  = file_get_contents($dossier_temp_export.'nb_saisies.txt');
+  $nb_eleves   = file_get_contents($dossier_temp_export.'nb_eleves.txt');
+  $nb_items    = file_get_contents($dossier_temp_export.'nb_items.txt');
+  $nb_archives = file_get_contents($dossier_temp_export.'nb_archives.txt');
   // Retirer les fichiers de travail temporaires
   FileSystem::supprimer_fichier( $dossier_temp_export.'users.txt' );
   FileSystem::supprimer_fichier( $dossier_temp_export.'items.txt' );
   FileSystem::supprimer_fichier( $dossier_temp_export.'nb_saisies.txt' );
   FileSystem::supprimer_fichier( $dossier_temp_export.'nb_eleves.txt' );
   FileSystem::supprimer_fichier( $dossier_temp_export.'nb_items.txt' );
+  FileSystem::supprimer_fichier( $dossier_temp_export.'nb_archives.txt' );
   // On zippe (gain significatif de facteur 15 à 20)
-  $fichier_zip_nom = 'evaluations_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
+  $fichier_zip_nom = 'sacoche_transfert_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
   $result = FileSystem::zip_fichiers( $dossier_temp_export , CHEMIN_DOSSIER_EXPORT , $fichier_zip_nom );
   if($result!==TRUE)
   {
@@ -183,23 +219,24 @@ if( ($action=='export') && ($etape==4) )
   FileSystem::supprimer_dossier($dossier_temp_export);
   // Afficher le retour
   $fichier_lien = URL_DIR_EXPORT.$fichier_zip_nom;
-  $ss = ($nb_saisies>1) ? 's' : '' ;
-  $se = ($nb_eleves>1)  ? 's' : '' ;
-  $si = ($nb_items>1)   ? 's' : '' ;
-  Json::add_str('<li><label class="valide">Fichier d\'export généré : '.number_format($nb_saisies,0,'',' ').' saisie'.$ss.' d\'évaluation'.$ss.' trouvée'.$ss.' concernant '.number_format($nb_eleves,0,'',' ').' élève'.$se.' et '.number_format($nb_items,0,'',' ').' item'.$si.'.</label></li>'.NL);
+  $ss = ($nb_saisies>1)  ? 's' : '' ;
+  $se = ($nb_eleves>1)   ? 's' : '' ;
+  $si = ($nb_items>1)    ? 's' : '' ;
+  $sa = ($nb_archives>1) ? 's' : '' ;
+  Json::add_str('<li><label class="valide">Fichier d\'export généré avec '.number_format($nb_saisies,0,'',' ').' saisie'.$ss.' d\'évaluation'.$ss.' trouvée'.$ss.' concernant '.number_format($nb_eleves,0,'',' ').' élève'.$se.' et '.number_format($nb_items,0,'',' ').' item'.$si.', ainsi que '.number_format($nb_archives,0,'',' ').' archive'.$sa.'.</label></li>'.NL);
   Json::add_str('<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_zip">Récupérer le fichier au format <em>zip</em>.</span></a></li>'.NL);
   Json::add_str('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>'.NL);
   Json::end( TRUE );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 0 Récupération du fichier + Analyse des codes de notation
+// Importer un fichier de saisies SACoche - 0 Récupération du fichier + Analyse des codes de notation
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==0) )
 {
   // Récupération du fichier
-  $fichier_upload_nom = 'evaluations_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
+  $fichier_upload_nom = 'sacoche_transfert_'.$_SESSION['BASE'].'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.zip';
   $result = FileSystem::recuperer_upload( CHEMIN_DOSSIER_IMPORT /*fichier_chemin*/ , $fichier_upload_nom /*fichier_nom*/ , array('zip') /*tab_extensions_autorisees*/ , NULL /*tab_extensions_interdites*/ , NULL /*taille_maxi*/ , NULL /*filename_in_zip*/ );
   if($result!==TRUE)
   {
@@ -215,7 +252,7 @@ if( ($action=='import') && ($etape==0) )
     Json::end( FALSE , 'Erreur d\'extraction du contenu ('.FileSystem::$tab_zip_error[$code_erreur].') !' );
   }
   // Vérifier le contenu : noms des fichiers
-  $tab_fichiers_archive = array( 'matieres.xml' , 'niveaux.xml'  , 'domaines.xml' , 'themes.xml' , 'items.xml' , 'users.xml' , 'saisies.xml' , 'codes.xml' );
+  $tab_fichiers_archive = array( 'matieres.xml' , 'niveaux.xml'  , 'domaines.xml' , 'themes.xml' , 'items.xml' , 'users.xml' , 'saisies.xml' , 'codes.xml' , 'archives.xml' , 'images.xml' );
   $tab_fichiers_cherches = array_fill_keys( $tab_fichiers_archive , TRUE );
   $tab_fichiers_trouves  = FileSystem::lister_contenu_dossier($dossier_temp_import);
   foreach($tab_fichiers_trouves as $fichier_nom)
@@ -225,7 +262,7 @@ if( ($action=='import') && ($etape==0) )
   if(count($tab_fichiers_cherches))
   {
     FileSystem::supprimer_dossier($dossier_temp_import); // Pas seulement vider, au cas où il y aurait des sous-dossiers créés par l'archive.
-    Json::end( FALSE , 'Cette archive ZIP ne semble pas contenir les fichiers d\'un export d\'évaluations effectué par SACoche !' );
+    Json::end( FALSE , 'Cette archive ZIP ne semble pas contenir les fichiers d\'un export de saisies effectué par SACoche !' );
   }
   // On passe à l'analyse des codes de notation
   $fichier_nom = 'codes';
@@ -249,7 +286,7 @@ if( ($action=='import') && ($etape==0) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 1 Analyse des matières
+// Importer un fichier de saisies SACoche - 1 Analyse des matières
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==1) )
@@ -346,7 +383,7 @@ if( ($action=='import') && ($etape==1) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 2 Analyse des niveaux
+// Importer un fichier de saisies SACoche - 2 Analyse des niveaux
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==2) )
@@ -443,7 +480,7 @@ if( ($action=='import') && ($etape==2) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 3 Analyse des référentiels et des domaines
+// Importer un fichier de saisies SACoche - 3 Analyse des référentiels et des domaines
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==3) )
@@ -565,7 +602,7 @@ if( ($action=='import') && ($etape==3) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 4 - Analyse des thèmes
+// Importer un fichier de saisies SACoche - 4 - Analyse des thèmes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==4) )
@@ -666,7 +703,7 @@ if( ($action=='import') && ($etape==4) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 5 - Analyse des items
+// Importer un fichier de saisies SACoche - 5 - Analyse des items
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==5) )
@@ -771,7 +808,7 @@ if( ($action=='import') && ($etape==5) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 6 - Analyse des élèves
+// Importer un fichier de saisies SACoche - 6 - Analyse des élèves
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==6) )
@@ -882,7 +919,7 @@ if( ($action=='import') && ($etape==6) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 7 - Analyse des saisies
+// Importer un fichier de saisies SACoche - 7 - Analyse des saisies
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==7) )
@@ -970,7 +1007,7 @@ if( ($action=='import') && ($etape==7) )
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 8 - Association de numéros de devoirs virtuels
+// Importer un fichier de saisies SACoche - 8 - Association de numéros de devoirs virtuels
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==8) )
@@ -1006,24 +1043,124 @@ if( ($action=='import') && ($etape==8) )
   // On enregistre les infos
   FileSystem::ecrire_fichier( $dossier_temp_import.$fichier_nom.'.txt' , serialize($tab_saisie) );
   // Passage à l'étape suivante
-  Json::end( TRUE , 'Enregistrement des saisies&hellip;' );
+  Json::end( TRUE , 'Analyse des archives&hellip;' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Importer un fichier d'évaluations - 9 - Enregistrement des saisies
+// Importer un fichier de saisies SACoche - 9 - Analyse des archives
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($action=='import') && ($etape==9) )
 {
   // Variables nécessaires
-  $tab_saisie = unserialize( file_get_contents($dossier_temp_import.'saisies.txt') );
+  $tab_image   = array();
+  $tab_archive = array();
+  $tab_user = unserialize( file_get_contents($dossier_temp_import.'users.txt') );
+  // Ouverture du XML des images
+  $fichier_nom = 'images';
+  $fichier_contenu = file_get_contents($dossier_temp_import.$fichier_nom.'.xml');
+  $fichier_contenu = To::deleteBOM(To::utf8($fichier_contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $xml = @simplexml_load_string($fichier_contenu);
+  if($xml===FALSE)
+  {
+    Json::end( FALSE , 'Le fichier extrait "'.$fichier_nom.'.xml" n\'est pas un XML valide !');
+  }
+  // On récupère le contenu du fichier des images
+  foreach($xml->image as $image)
+  {
+    $md5  = Clean::code($image->attributes()->md5);
+    $hexa = Clean::code($image->attributes()->hexa);
+    // A condition que les valeurs soient valides
+    if( $md5 && $hexa )
+    {
+      $tab_image[$md5] = array( 'hexa'=>$hexa , 'used'=>FALSE );
+    }
+  }
+  // Ouverture du XML des archives
+  $fichier_nom = 'archives';
+  $fichier_contenu = file_get_contents($dossier_temp_import.$fichier_nom.'.xml');
+  $fichier_contenu = To::deleteBOM(To::utf8($fichier_contenu)); // Mettre en UTF-8 si besoin et retirer le BOM éventuel
+  $xml = @simplexml_load_string($fichier_contenu);
+  if($xml===FALSE)
+  {
+    Json::end( FALSE , 'Le fichier extrait "'.$fichier_nom.'.xml" n\'est pas un XML valide !');
+  }
+  // On récupère le contenu du fichier des archives
+  foreach($xml->archive as $archive)
+  {
+    $user_id         = Clean::entier(    $archive->attributes()->user_id);
+    $uai             = Clean::uai(       $archive->attributes()->uai);
+    $annee           = Clean::texte(     $archive->attributes()->annee);
+    $type            = Clean::code(      $archive->attributes()->type);
+    $ref             = Clean::code(      $archive->attributes()->ref);
+    $periode_id      = Clean::entier(    $archive->attributes()->periode_id);
+    $periode_nom     = Clean::texte(     $archive->attributes()->periode_nom);
+    $structure       = Clean::texte(     $archive->attributes()->structure);
+    $version         = Clean::date_mysql($archive->attributes()->version);
+    $date_generation = Clean::date_mysql($archive->attributes()->date_generation);
+    $date_eleve      = Clean::date_mysql($archive->attributes()->date_eleve);
+    $date_parent     = Clean::date_mysql($archive->attributes()->date_parent);
+    $contenu         = Clean::texte(     $archive->attributes()->contenu);
+    $image1          = Clean::code(      $archive->attributes()->image1);
+    $image2          = Clean::code(      $archive->attributes()->image2);
+    $image3          = Clean::code(      $archive->attributes()->image3);
+    $image4          = Clean::code(      $archive->attributes()->image4);
+    // A condition que les valeurs soient valides
+    if( in_array($type,array('sacoche','livret')) && $periode_nom && $structure && ($version!='0000-00-00') && ($date_generation!='0000-00-00') && !is_null(json_decode($contenu)) && ( !$image1 || isset($tab_image[$image1]) ) && ( !$image2 || isset($tab_image[$image2]) ) && ( !$image3 || isset($tab_image[$image3]) ) && ( !$image4 || isset($tab_image[$image4]) ) )
+    {
+      // A condition que l'élève soit présent
+      if( isset($tab_user[$user_id]) )
+      {
+        $date_generation = ($date_generation!='0000-00-00') ? $date_generation : NULL ;
+        $date_eleve      = ($date_eleve     !='0000-00-00') ? $date_eleve      : NULL ;
+        $date_parent     = ($date_parent    !='0000-00-00') ? $date_parent     : NULL ;
+        $image1 = ($image1) ? $image1 : NULL ;
+        $image2 = ($image2) ? $image2 : NULL ;
+        $image3 = ($image3) ? $image3 : NULL ;
+        $image4 = ($image4) ? $image4 : NULL ;
+        $tab_archive[] = array( $tab_user[$user_id] , $uai , $annee , $type , $ref , $periode_id , $periode_nom , $structure , $version , $date_generation , $date_eleve , $date_parent , $contenu , $image1 , $image2 , $image3 , $image4 );
+        if($image1) { $tab_image[$image1]['used'] = TRUE; }
+        if($image2) { $tab_image[$image2]['used'] = TRUE; }
+        if($image3) { $tab_image[$image3]['used'] = TRUE; }
+        if($image4) { $tab_image[$image4]['used'] = TRUE; }
+      }
+    }
+  }
+  // On enregistre les infos des archives
+  FileSystem::ecrire_fichier( $dossier_temp_import.$fichier_nom.'.txt' , serialize($tab_archive) );
+  // On repasse aux images pour ne garder que le nécessaire
+  $fichier_nom = 'images';
+  foreach($tab_image as $md5 => $tab)
+  {
+    if(!$tab['used'])
+    {
+      unset($tab_image[$md5]);
+    }
+    else
+    {
+      $tab_image[$md5] = $tab['hexa'];
+    }
+  }
+  // On enregistre les infos des images
+  FileSystem::ecrire_fichier( $dossier_temp_import.$fichier_nom.'.txt' , serialize($tab_image) );
+  // Passage à l'étape suivante
+  Json::end( TRUE , 'Enregistrement des données&hellip;' );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Importer un fichier de saisies SACoche - 10 - Enregistrement des données
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ($action=='import') && ($etape==10) )
+{
   $nb_pb = file_get_contents($dossier_temp_import.'nb_pb.txt');
+  // On commence par les saisies
+  $tab_saisie = unserialize( file_get_contents($dossier_temp_import.'saisies.txt') );
   $nb_ok = count($tab_saisie);
-  // Lancer les requêtes
-  DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_saisies( $tab_saisie , $nb_ok );
-  // Afficher le retour
+  // Lancer les requêtes par lot car potentiellement de nombreuses lignes & résultat
   if($nb_ok)
   {
+    DB_STRUCTURE_ADMINISTRATEUR::DB_ajouter_saisies( $tab_saisie , $nb_ok );
     $sok = ($nb_ok>1) ? 's' : '' ;
     Json::add_str('<li><label class="valide">'.number_format($nb_ok,0,'',' ').' saisie'.$sok.' d\'évaluation'.$sok.' importée'.$sok.'.</label></li>'.NL);
   }
@@ -1031,6 +1168,37 @@ if( ($action=='import') && ($etape==9) )
   {
     Json::add_str('<li><label class="alerte">Aucune saisie d\'évaluation importée !</label></li>'.NL);
   }
+  // On poursuit avec les archives
+  $tab_archive = unserialize( file_get_contents($dossier_temp_import.'archives.txt') );
+  $nb_ok = count($tab_archive);
+  // Lancer les requêtes à l'unité & résultat
+  if($nb_ok)
+  {
+    foreach($tab_archive as $tab)
+    {
+      list( $eleve_id , $uai , $annee , $type , $ref , $periode_id , $periode_nom , $structure , $version , $date_generation , $date_eleve , $date_parent , $contenu , $image1 , $image2 , $image3 , $image4 ) = $tab;
+      $livret_archive_id = DB_STRUCTURE_OFFICIEL::DB_ajouter_officiel_archive( $eleve_id , $uai , $annee , $type , $ref , $periode_id , $periode_nom , $structure , $version , $contenu , array($image1,$image2,$image3,$image4) , array($date_generation,$date_eleve,$date_parent) );
+    }
+    $sok = ($nb_ok>1) ? 's' : '' ;
+    Json::add_str('<li><label class="valide">'.number_format($nb_ok,0,'',' ').' archive'.$sok.' de bilan'.$sok.' officiel'.$sok.' importée'.$sok.'.</label></li>'.NL);
+  }
+  else
+  {
+    Json::add_str('<li><label class="alerte">Aucune archive de bilan officiel importée !</label></li>'.NL);
+  }
+  // On termine avec les images
+  $tab_image = unserialize( file_get_contents($dossier_temp_import.'images.txt') );
+  $nb_ok = count($tab_image);
+  // Lancer les requêtes à l'unité & résultat
+  if($nb_ok)
+  {
+    foreach($tab_image as $image_md5 => $image_hexa)
+    {
+      $image_blob = hex2bin($image_hexa);
+      $livret_archive_id = DB_STRUCTURE_OFFICIEL::DB_ajouter_officiel_archive_image( $image_md5 , $image_blob );
+    }
+  }
+  // Affichage des pbs éventuels
   if($nb_pb)
   {
     $txt_problemes = trim( file_get_contents($dossier_temp_import.'problemes.txt') );
@@ -1041,7 +1209,7 @@ if( ($action=='import') && ($etape==9) )
     Json::add_str($txt_problemes);
   }
   // Supprimer le dossier temporaire
-  FileSystem::supprimer_dossier($dossier_temp_import);
+  // FileSystem::supprimer_dossier($dossier_temp_import);
   Json::end( TRUE );
 }
 

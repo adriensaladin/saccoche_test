@@ -256,9 +256,9 @@ if($ACTION=='initialiser')
 // Récupérer les saisies déjà effectuées pour le bilan officiel concerné, pour la période en cours et les périodes antérieures
 
 $tab_saisie       = array();  // [eleve_id][rubrique_id]][prof_id] => array(prof_info,appreciation,note); avec eleve_id=0 pour note ou appréciation sur la classe
-$tab_saisie_avant = array();  // [eleve_id][rubrique_id][periode_ordre]][prof_id] => array(periode_nom_avant,prof_info,appreciation,note);
+$tab_saisie_avant = array();  // [eleve_id][rubrique_id][periode_id]][prof_id] => array(periode_nom_avant,prof_info,appreciation,note);
 $tab_saisie_groupe = array();  // [groupe_id][prof_id] => array(groupe_info,prof_info,appreciation);
-$tab_saisie_groupe_avant = array();  // [periode_ordre][groupe_id][prof_id] => array(periode_nom_avant,groupe_info,prof_info,appreciation);
+$tab_saisie_groupe_avant = array();  // [periode_id][groupe_id][prof_id] => array(periode_nom_avant,groupe_info,prof_info,appreciation);
 $tab_moyenne_exception_matieres = ( ($BILAN_TYPE!='bulletin') || !$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES'] ) ? array() : explode(',',$_SESSION['OFFICIEL']['BULLETIN_MOYENNE_EXCEPTION_MATIERES']) ;
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_eleves( $BILAN_TYPE , $periode_id , $eleve_id , 0 /*prof_id*/ , FALSE /*with_rubrique_nom*/ , TRUE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
 foreach($DB_TAB as $DB_ROW)
@@ -271,7 +271,7 @@ foreach($DB_TAB as $DB_ROW)
   }
   else
   {
-    $tab_saisie_avant[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['periode_ordre']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+    $tab_saisie_avant[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']][$DB_ROW['periode_id']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
   }
 }
 $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_recuperer_bilan_officiel_saisies_classe( $BILAN_TYPE , $periode_id , $classe_id , 0 /*prof_id*/ , TRUE /*with_periodes_avant*/ , FALSE /*only_synthese_generale*/ );
@@ -287,7 +287,7 @@ foreach($DB_TAB as $DB_ROW)
     }
     else
     {
-      $tab_saisie_avant[0][$DB_ROW['rubrique_id']][$DB_ROW['periode_ordre']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
+      $tab_saisie_avant[0][$DB_ROW['rubrique_id']][$DB_ROW['periode_id']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] , 'note'=>$note );
     }
   }
   else
@@ -300,7 +300,7 @@ foreach($DB_TAB as $DB_ROW)
     }
     else
     {
-      $tab_saisie_groupe_avant[$DB_ROW['periode_ordre']][$DB_ROW['groupe_id']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'groupe_info'=>$DB_ROW['groupe_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] );
+      $tab_saisie_groupe_avant[$DB_ROW['periode_id']][$DB_ROW['groupe_id']][$DB_ROW['prof_id']] = array( 'periode_nom_avant'=>$DB_ROW['periode_nom'] , 'groupe_info'=>$DB_ROW['groupe_nom'] , 'prof_info'=>$prof_info , 'appreciation'=>$DB_ROW['saisie_appreciation'] );
     }
   }
 

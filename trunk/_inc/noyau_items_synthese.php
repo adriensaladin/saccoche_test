@@ -616,7 +616,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             {
               $tab_periode_liens  = array();
               $tab_periode_textes = array();
-              foreach($tab_saisie_avant[$eleve_id][$matiere_id] as $periode_ordre => $tab_prof)
+              foreach($tab_saisie_avant[$eleve_id][$matiere_id] as $periode_id => $tab_prof)
               {
                 $tab_ligne = array(0=>''); // Pour forcer la note à être le 1er indice ; sert aussi à indiquer la période.
                 foreach($tab_prof as $prof_id => $tab)
@@ -635,8 +635,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   }
                 }
                 $tab_ligne[0] = '<b>'.html($periode_nom_avant).'&nbsp;:&nbsp;'.$tab_ligne[0].'</b>';
-                $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'"></a> '.html($periode_nom_avant);
-                $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_ordre.'" class="appreciation bordertop hide">'.implode('<br />',$tab_ligne).'</div>';
+                $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_id.'"></a> '.html($periode_nom_avant);
+                $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.$matiere_id.'_'.$periode_id.'" class="appreciation bordertop hide">'.implode('<br />',$tab_ligne).'</div>';
               }
               $releve_HTML .= '<tr><td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'.NL;
             }
@@ -727,7 +727,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           {
             $tab_periode_liens  = array();
             $tab_periode_textes = array();
-            foreach($tab_saisie_avant[$eleve_id][0] as $periode_ordre => $tab_prof)
+            foreach($tab_saisie_avant[$eleve_id][0] as $periode_id => $tab_prof)
             {
               $tab_ligne = array(0=>''); // Pour forcer la note à être le 1er indice ; sert aussi à indiquer la période.
               foreach($tab_prof as $prof_id => $tab)
@@ -746,8 +746,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                 }
               }
               $tab_ligne[0] = '<b>'.html($periode_nom_avant).'&nbsp;:&nbsp;'.$tab_ligne[0].'</b>';
-              $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'"></a> '.html($periode_nom_avant);
-              $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_ordre.'" class="appreciation bordertop hide">'.implode('<br />',$tab_ligne).'</div>';
+              $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_'.'0'.'_'.$periode_id.'"></a> '.html($periode_nom_avant);
+              $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_'.'0'.'_'.$periode_id.'" class="appreciation bordertop hide">'.implode('<br />',$tab_ligne).'</div>';
             }
             $releve_HTML .= '<tr><td colspan="2" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td></tr>'.NL;
           }

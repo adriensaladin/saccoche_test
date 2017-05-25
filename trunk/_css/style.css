@@ -194,7 +194,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.etabl_identite              {background-position: 6px  -867px}
 #menu a.etabl_login                 {background-position: 6px  -907px}
 #menu a.evaluation_demande          {background-position: 6px  -947px}
-#menu a.evaluation_fichier          {background-position: 6px  -987px}
+#menu a.evaluation_fichier          {background-position: 6px  -987px} /* TODO à supprimer ultérieurement */
 #menu a.evaluation_gestion          {background-position: 6px -1027px}
 #menu a.evaluation_voir             {background-position: 6px -1067px}
 #menu a.fichier_export              {background-position: 6px -1107px}
@@ -248,7 +248,7 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.serveur_proxy               {background-position: 6px -2987px}
 #menu a.serveur_security            {background-position: 6px -3027px}
 #menu a.socle_annuler               {background-position: 6px -3067px}
-#menu a.socle_fichier               {background-position: 6px -3107px}
+#menu a.socle_fichier               {background-position: 6px -3107px} /* TODO à supprimer ultérieurement */
 #menu a.socle_item                  {background-position: 6px -3147px}
 #menu a.socle_langue                {background-position: 6px -3187px}
 #menu a.socle_pilier                {background-position: 6px -3227px}

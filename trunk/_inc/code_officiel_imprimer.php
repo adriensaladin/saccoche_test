@@ -197,7 +197,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
       $archive_contenu = json_encode($tab_contenu);
       if(!isset($DB_TAB[$eleve_id]))
       {
-        $livret_archive_id = DB_STRUCTURE_OFFICIEL::DB_ajouter_officiel_archive( $eleve_id , $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/, $BILAN_TYPE /*archive_ref*/ , $periode_id , $periode_nom , $_SESSION['WEBMESTRE_DENOMINATION'] , VERSION_PROG , $archive_contenu , $tab_image_md5 );
+        $livret_archive_id = DB_STRUCTURE_OFFICIEL::DB_ajouter_officiel_archive( $eleve_id , $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'sacoche' /*archive_type*/ , $BILAN_TYPE /*archive_ref*/ , $periode_id , $periode_nom , $_SESSION['WEBMESTRE_DENOMINATION'] , VERSION_PROG , $archive_contenu , $tab_image_md5 );
         $tab_notif[$eleve_id] = $eleve_id;
       }
       else

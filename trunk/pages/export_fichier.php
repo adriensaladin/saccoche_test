@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Export de données"));
+$TITRE = html(Lang::_("Extraction de données"));
 
 Form::load_choix_memo();
 if($_SESSION['USER_PROFIL_TYPE']=='professeur')
@@ -82,14 +82,26 @@ else
                 .'<option value="infos_parents">informations responsables légaux</option>'
                 .'<option value="infos_professeurs">informations professeurs et personnels</option>';
 }
+if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_PROFIL_TYPE']=='directeur') )
+{
+  $select_type .= '<option value="socle2016_gepi">maîtrise du nouveau socle 2016 pour GEPI</option>';
+}
+
+// Test pour l'export du socle vers GEPI
+$nb_eleves_sans_sconet = DB_STRUCTURE_SOCLE::DB_compter_eleves_actuels_sans_id_sconet();
+$s = ($nb_eleves_sans_sconet>1) ? 's' : '' ;
+$msg_id_sconet = (!$nb_eleves_sans_sconet) ? '<label class="valide">Identifiants Siècle présents.</label>' : '<label class="alerte">'.$nb_eleves_sans_sconet.' élève'.$s.' trouvé'.$s.' sans identifiant Siècle.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_siecle">DOC</a></span>' ;
+
+$support_profil = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? 'professeur' : 'administrateur' ;
 ?>
 
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_professeur__export_listings">DOC : Export de données.</a></span></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_<?php echo $support_profil ?>__export_listings">DOC : Extraction de données.</a></span></div>
 
 <hr />
 
 <form action="#" method="post" id="form_export"><fieldset>
   <p><label class="tab" for="f_type">Type de données :</label><select id="f_type" name="f_type"><option value="">&nbsp;</option><?php echo $select_type ?></select></p>
+  <div id="div_sconet" class="hide"><span class="tab"></span><?php echo $msg_id_sconet ?></div>
   <div id="div_groupe" class="hide"><label class="tab" for="f_groupe">Classe / groupe :</label><?php echo $select_groupe ?><input type="hidden" id="f_groupe_type" name="f_groupe_type" value="" /><input type="hidden" id="f_groupe_nom" name="f_groupe_nom" value="" /><input type="hidden" id="f_groupe_id" name="f_groupe_id" value="" /></div>
   <div id="div_periode" class="hide"><label class="tab" for="f_periode">Période :</label><?php echo $select_periode ?><input type="hidden" id="f_periode_nom" name="f_periode_nom" value="" />
     <span id="dates_perso" class="show">

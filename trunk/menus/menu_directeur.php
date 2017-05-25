@@ -53,7 +53,7 @@ $tab_sous_menu = array
     'consultation_algorithme'          => array( 'texte' => Lang::_("Algorithme de calcul")                    , 'class' => 'algorithme_voir'  , 'href' => 'page=consultation_algorithme'          ),
     'consultation_date_connexion'      => array( 'texte' => Lang::_("Date de dernière connexion")              , 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
     'consultation_groupe_periode'      => array( 'texte' => Lang::_("Dates des périodes")                      , 'class' => 'periode_groupe'   , 'href' => 'page=consultation_groupe_periode'      ),
-    'export_fichier'                   => array( 'texte' => Lang::_("Export de données")                       , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
+    'export_fichier'                   => array( 'texte' => Lang::_("Extraction de données")                   , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
     'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")                    , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
     'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")                   , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
     'consultation_referentiel_externe' => array( 'texte' => Lang::_("Référentiels partagés")                   , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_externe' ),
@@ -81,7 +81,6 @@ $tab_sous_menu = array
     'validation_socle_item'           => array( 'texte' => Lang::_("Valider les items du socle")       , 'class' => 'socle_item'    , 'href' => 'page=validation_socle&amp;section=item'           ),
     'validation_socle_pilier'         => array( 'texte' => Lang::_("Valider les compétences du socle") , 'class' => 'socle_pilier'  , 'href' => 'page=validation_socle&amp;section=pilier'         ),
     'validation_socle_pilier_annuler' => array( 'texte' => Lang::_("Annuler une compétence validée")   , 'class' => 'socle_annuler' , 'href' => 'page=validation_socle&amp;section=pilier_annuler' ),
-    'validation_socle_fichier'        => array( 'texte' => Lang::_("Import / Export des validations")  , 'class' => 'socle_fichier' , 'href' => 'page=validation_socle&amp;section=fichier'        ),
   ),
   'releve' => array
   (
@@ -171,12 +170,6 @@ if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_S
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
   $tab_sous_menu['validation']['validation_socle_pilier_annuler']['class'] .= ' disabled';
-}
-
-// Import / Export des validations (profil [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
-{
-  $tab_sous_menu['validation']['validation_socle_fichier']['class'] .= ' disabled';
 }
 
 // Grille d'items d'un référentiel.

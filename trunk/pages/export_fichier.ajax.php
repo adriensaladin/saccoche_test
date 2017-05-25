@@ -1050,6 +1050,146 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Exporter une estimation des degrés de maîtrise du nouveau socle (administrateur ou directeur)
+// Le code utilisé est extrait de ./_inc/noyau_socle2016.php
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_PROFIL_TYPE']=='directeur') ) && ($type_export=='socle2016_gepi') && $groupe_id && isset($tab_types[$groupe_type]) && $groupe_nom && $cycle_id && $cycle_nom )
+{
+  // Préparation de l'export HTML
+  $export_html = '<table class="p"><thead>'.NL.'<tr>'
+                   .'<th>Élève</th>'
+                   .'<th>1.1</th>'
+                   .'<th>1.2</th>'
+                   .'<th>1.3</th>'
+                   .'<th>1.4</th>'
+                   .'<th>&nbsp;2&nbsp;</th>'
+                   .'<th>&nbsp;3&nbsp;</th>'
+                   .'<th>&nbsp;4&nbsp;</th>'
+                   .'<th>&nbsp;5&nbsp;</th>'
+                 .'</tr>'.NL.'</thead><tbody>'.NL;
+  // Récupérer les données des élèves
+  $tab_eleve = array();
+  $champs = 'user_id';
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
+  if(!empty($DB_TAB))
+  {
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_eleve[] = $DB_ROW['user_id'];
+    }
+  }
+  if(!count($tab_eleve))
+  {
+    Json::end( FALSE , 'Aucun élève trouvé dans ce regroupement !' );
+  }
+  // Codes des domaines et composantes du socle
+  $tab_code_livret = array();
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_socle2016_elements_livret();
+  foreach($DB_TAB as $DB_ROW)
+  {
+    if(!empty($DB_ROW['socle_domaine_code_livret']))
+    {
+      $tab_code_livret[$DB_ROW['socle_domaine_ordre_livret']] = $DB_ROW['socle_domaine_code_livret'];
+    }
+    elseif(!empty($DB_ROW['socle_composante_code_livret']))
+    {
+      $tab_code_livret[$DB_ROW['socle_composante_ordre_livret']] = $DB_ROW['socle_composante_code_livret'];
+    }
+  }
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // INCLUSION DU CODE COMMUN À PLUSIEURS PAGES
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  $tab_matiere              = array();
+  $groupe_nom               = $groupe_nom;
+  $groupe_type              = $groupe_type;
+  $eleves_ordre             = 'alpha';
+  $socle_detail             = 'livret';
+  $cycle_nom                = $cycle_nom;
+  $socle_synthese_format    = '';
+  $socle_synthese_affichage = '';
+  $mode                     = 'auto';
+  $aff_socle_items_acquis   = FALSE;
+  $aff_socle_position       = FALSE;
+  $aff_socle_points_DNB     = FALSE;
+  $only_presence            = TRUE;
+  $type_individuel          = 0;
+  $type_synthese            = 1;
+  $make_officiel = FALSE;
+  $make_livret   = FALSE;
+  $make_action   = '';
+  $make_html     = FALSE;
+  $make_pdf      = FALSE;
+  require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle2016.php');
+  // On construit le fichier json à partir des infos maintenant à disposition
+  $tab_gepi = array(
+    'cycle' => $cycle_id,
+    'eleve' => array(),
+  );
+  $nb_eleves    = 0;
+  $nb_positions = 0;
+  // Pour chaque élève...
+  foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
+  {
+    if( $tab_contenu_presence['eleve'][$eleve_id] && $tab_eleve['eleve_ID_BE'] )
+    {
+      extract($tab_eleve); // $eleve_INE $eleve_ID_BE $eleve_nom $eleve_prenom $eleve_genre $date_naissance
+      $tab_gepi['eleve'][$eleve_id] = array(
+        'id_be'    => $eleve_ID_BE,
+        'nom'      => $eleve_nom,
+        'prenom'   => $eleve_prenom,
+        'position' => array(),
+      );
+      $export_html .= '<tr><td>'.html($eleve_nom.' '.$eleve_prenom).'</td>';
+      $nb_eleves++;
+      // Pour chaque domaine / composante...
+      foreach($tab_socle_domaine as $socle_domaine_id => $socle_domaine_nom)
+      {
+        foreach($tab_socle_composante[$socle_domaine_id] as $socle_composante_id => $socle_composante_nom)
+        {
+          if($tab_contenu_presence['composante'][$socle_composante_id])
+          {
+            $tab_bilan = $tab_bilan_eleve_composante[$eleve_id][$socle_composante_id];
+            if($tab_bilan['indice'])
+            {
+              $tab_gepi['eleve'][$eleve_id]['position'][$tab_code_livret[$socle_composante_id]] = $tab_bilan['indice'];
+              $export_html .= '<td>'.$tab_bilan['indice'].'</td>';
+              $nb_positions++;
+            }
+            else
+            {
+              $export_html .= '<td></td>';
+            }
+          }
+          else
+          {
+            $export_html .= '<td></td>';
+          }
+        }
+      }
+      $export_html .= '</tr>'.NL;
+    }
+  }
+  $export_html .= '</tbody></table>'.NL;
+  // On enregistre le résultat
+  $fichier_contenu = json_encode($tab_gepi);
+  $fichier_extension = 'json';
+  $fichier_nom = 'socle_import_gepi_'.Clean::fichier($_SESSION['WEBMESTRE_UAI']).'_'.FileSystem::generer_fin_nom_fichier__date_et_alea().'.'.$fichier_extension;
+  FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $fichier_contenu );
+  $fichier_lien = './force_download.php?fichier='.$fichier_nom;
+  // Afficher le retour
+  $se = ($nb_eleves>1)    ? 's' : '' ;
+  $sp = ($nb_positions>1) ? 's' : '' ;
+  Json::add_str('<ul class="puce">'.NL);
+  Json::add_str('<li><label class="valide">Fichier d\'export généré : '.$nb_positions.' positionnement'.$sp.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>'.NL);
+  Json::add_str('<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>'.NL);
+  Json::add_str('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>'.NL);
+  Json::add_str('</ul>'.NL);
+  Json::add_str($export_html);
+  Json::end( TRUE );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // On ne devrait pas arriver jusque là.
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -449,14 +449,14 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
     {
       if($DB_ROW['prof_id'])
       {
-        $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['appreciation'][$DB_ROW['periode_id']] = suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']);
+        $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['appreciation'][$DB_ROW['periode_ordre']] = suppression_sauts_de_ligne($DB_ROW['saisie_appreciation']);
         $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['professeur'][$DB_ROW['prof_id']] = To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] );
       }
       else if( ($DB_ROW['saisie_note']!==NULL) && !in_array($DB_ROW['rubrique_id'],$tab_moyenne_exception_matieres) ) // Remarque : un test isset() sur une valeur NULL renverra FALSE !!!
       {
-        $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['note'][$DB_ROW['periode_id']] = (float)$DB_ROW['saisie_note'];
+        $tab_saisie[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]['note'][$DB_ROW['periode_ordre']] = (float)$DB_ROW['saisie_note'];
       }
-      $tab_periode[$DB_ROW['periode_id']] = $DB_ROW['periode_nom'];
+      $tab_periode[$DB_ROW['periode_ordre']] = $DB_ROW['periode_nom'];
       $tab_rubrique[$DB_ROW['rubrique_id']] = $DB_ROW['rubrique_nom'];
     }
   }
@@ -487,16 +487,16 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
     {
       $nb_lignes_premiere_colonne = isset($tab_saisie[$eleve_id][$rubrique_id]['professeur']) ? 1 + count($tab_saisie[$eleve_id][$rubrique_id]['professeur']) : 1 ;
       $nb_lignes_derniere_colonne = 0 ;
-      foreach($tab_periode as $periode_id => $periode_nom)
+      foreach($tab_periode as $periode_ordre => $periode_nom)
       {
-        if(isset($tab_saisie[$eleve_id][$rubrique_id]['note'][$periode_id]))
+        if(isset($tab_saisie[$eleve_id][$rubrique_id]['note'][$periode_ordre]))
         {
-          $tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_id] = isset($tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_id]) ? number_format($tab_saisie[$eleve_id][$rubrique_id]['note'][$periode_id],1,',','').'/20 - '.$tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_id] : $tab_saisie[$eleve_id][$rubrique_id]['note'][$periode_id] ;
+          $tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_ordre] = isset($tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_ordre]) ? number_format($tab_saisie[$eleve_id][$rubrique_id]['note'][$periode_ordre],1,',','').'/20 - '.$tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_ordre] : $tab_saisie[$eleve_id][$rubrique_id]['note'][$periode_ordre] ;
         }
-        if(isset($tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_id]))
+        if(isset($tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_ordre]))
         {
-          $tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_id] = $periode_nom.' - '.$tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_id];
-          $nb_lignes_derniere_colonne += nombre_de_lignes($tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_id]);
+          $tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_ordre] = $periode_nom.' - '.$tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_ordre];
+          $nb_lignes_derniere_colonne += nombre_de_lignes($tab_saisie[$eleve_id][$rubrique_id]['appreciation'][$periode_ordre]);
         }
       }
       $tab_nb_lignes[$eleve_id][$rubrique_id] = max($nb_lignes_premiere_colonne,$nb_lignes_derniere_colonne);

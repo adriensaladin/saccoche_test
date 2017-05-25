@@ -40,7 +40,6 @@ $tab_menu = array
   'param_utilisateurs'       => Lang::_("Paramétrages utilisateurs"),
   'param_personnels'         => Lang::_("Paramétrages personnels"),
   'admin_generale'           => Lang::_("Administration générale"),
-  'import'                   => Lang::_("Import de données"),
   'gestion_groupes_periodes' => Lang::_("Gestion regroupements / périodes"),
   'gestion_utilisateurs'     => Lang::_("Gestion des utilisateurs"),
   'gestion_bilans'           => Lang::_("Gestion des bilans officiels"),
@@ -52,7 +51,7 @@ $tab_sous_menu = array
   (
     'compte_accueil'                   => array( 'texte' => Lang::_("Accueil")                    , 'class' => 'compte_accueil'   , 'href' => 'page=compte_accueil'                   ),
     'consultation_date_connexion'      => array( 'texte' => Lang::_("Date de dernière connexion") , 'class' => 'date_connexion'   , 'href' => 'page=consultation_date_connexion'      ),
-    'export_fichier'                   => array( 'texte' => Lang::_("Extraction de données")      , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
+    'export_fichier'                   => array( 'texte' => Lang::_("Export de données")          , 'class' => 'fichier_export'   , 'href' => 'page=export_fichier'                   ),
     'administrateur_log_actions'       => array( 'texte' => Lang::_("Log des actions sensibles")  , 'class' => 'log_actions'      , 'href' => 'page=administrateur_log_actions'       ),
     'consultation_notifications'       => array( 'texte' => Lang::_("Notifications reçues")       , 'class' => 'newsletter'       , 'href' => 'page=consultation_notifications'       ),
     'consultation_referentiel_interne' => array( 'texte' => Lang::_("Référentiels en place")      , 'class' => 'referentiel_voir' , 'href' => 'page=consultation_referentiel_interne' ),
@@ -84,18 +83,15 @@ $tab_sous_menu = array
   ),
   'admin_generale' => array
   (
-    'administrateur_dump'      => array( 'texte' => Lang::_("Sauvegarder / Restaurer la base") , 'class' => 'dump'            , 'href' => 'page=administrateur_dump'      ),
-    'administrateur_nettoyage' => array( 'texte' => Lang::_("Nettoyer / Initialiser la base")  , 'class' => 'nettoyage'       , 'href' => 'page=administrateur_nettoyage' ),
-    'compte_message'           => array( 'texte' => Lang::_("Messages d'accueil")              , 'class' => 'message_accueil' , 'href' => 'page=compte_message'           ),
-    'administrateur_blocage'   => array( 'texte' => Lang::_("Blocage des connexions")          , 'class' => 'blocage'         , 'href' => 'page=administrateur_blocage'   ),
-    'administrateur_resilier'  => array( 'texte' => Lang::_("Résilier l'inscription")          , 'class' => 'resilier'        , 'href' => 'page=administrateur_resilier'  ),
-  ),
-  'import' => array
-  (
+    'administrateur_dump'                => array( 'texte' => Lang::_("Sauvegarder / Restaurer la base")      , 'class' => 'dump'               , 'href' => 'page=administrateur_dump'                ),
+    'administrateur_nettoyage'           => array( 'texte' => Lang::_("Nettoyer / Initialiser la base")       , 'class' => 'nettoyage'          , 'href' => 'page=administrateur_nettoyage'           ),
     'administrateur_fichier_user'        => array( 'texte' => Lang::_("Importer des fichiers d'utilisateurs") , 'class' => 'fichier_import'     , 'href' => 'page=administrateur_fichier_user'        ),
     'administrateur_fichier_identifiant' => array( 'texte' => Lang::_("Importer / Imposer des identifiants")  , 'class' => 'fichier_import'     , 'href' => 'page=administrateur_fichier_identifiant' ),
-    'administrateur_fichier_sacoche'     => array( 'texte' => Lang::_("Transfert de saisies depuis SACoche")  , 'class' => 'fichier_import'     , 'href' => 'page=administrateur_fichier_sacoche'     ),
-    'officiel_assiduite'                 => array( 'texte' => Lang::_("Absences / Retards")                   , 'class' => 'officiel_assiduite' , 'href' => 'page=officiel&amp;section=assiduite'     ), // Volontairement en doublon
+    'administrateur_evaluation_fichier'  => array( 'texte' => Lang::_("Import / Export des évaluations")      , 'class' => 'evaluation_fichier' , 'href' => 'page=administrateur_evaluation_fichier'  ),
+    'validation_socle_fichier'           => array( 'texte' => Lang::_("Import / Export des validations")      , 'class' => 'socle_fichier'      , 'href' => 'page=validation_socle_fichier'           ),
+    'compte_message'                     => array( 'texte' => Lang::_("Messages d'accueil")                   , 'class' => 'message_accueil'    , 'href' => 'page=compte_message'                     ),
+    'administrateur_blocage'             => array( 'texte' => Lang::_("Blocage des connexions")               , 'class' => 'blocage'            , 'href' => 'page=administrateur_blocage'             ),
+    'administrateur_resilier'            => array( 'texte' => Lang::_("Résilier l'inscription")               , 'class' => 'resilier'           , 'href' => 'page=administrateur_resilier'            ),
   ),
   'gestion_groupes_periodes' => array
   (
@@ -114,12 +110,12 @@ $tab_sous_menu = array
   'gestion_bilans' => array
   (
     'officiel_reglages'         => array( 'texte' => Lang::_("Réglages communs")        , 'class' => 'officiel_reglages'     , 'href' => 'page=officiel&amp;section=reglages'         ),
-    'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")      , 'class' => 'officiel_assiduite'    , 'href' => 'page=officiel&amp;section=assiduite'        ), // Volontairement en doublon
+    'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")      , 'class' => 'officiel_assiduite'    , 'href' => 'page=officiel&amp;section=assiduite'        ),
     'officiel_accueil_releve'   => array( 'texte' => Lang::_("Relevé d'évaluations")    , 'class' => 'officiel_releve'       , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
     'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")       , 'class' => 'officiel_bulletin'     , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
     'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")         , 'class' => 'marianne'              , 'href' => 'page=livret&amp;section=accueil'            ),
     'brevet_accueil'            => array( 'texte' => Lang::_("Notanet & Fiches brevet") , 'class' => 'officiel_brevet'       , 'href' => 'page=brevet&amp;section=accueil'            ),
-    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables")   , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'       ), // Pour élèves et parents c'est "officiel_voir_archive"
+    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables")   , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'     ), // Pour élèves et parents c'est "officiel_voir_archive"
   ),
 );
 

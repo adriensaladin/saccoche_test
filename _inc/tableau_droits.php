@@ -121,8 +121,8 @@ $tab_droits_par_page = array
   'administrateur_etabl_niveau'             => $tab_droits_profil_administrateur,
   'administrateur_etabl_palier'             => $tab_droits_profil_administrateur,
   'administrateur_etabl_profils'            => $tab_droits_profil_administrateur,
+  'administrateur_evaluation_fichier'       => $tab_droits_profil_administrateur,
   'administrateur_fichier_identifiant'      => $tab_droits_profil_administrateur,
-  'administrateur_fichier_sacoche'          => $tab_droits_profil_administrateur,
   'administrateur_fichier_user'             => $tab_droits_profil_administrateur,
   'administrateur_groupe'                   => $tab_droits_profil_administrateur,
   'administrateur_groupe_gestion'           => $tab_droits_profil_administrateur,
@@ -226,6 +226,7 @@ $tab_droits_par_page = array
   'officiel_reglages_ordre_matieres'        => $tab_droits_profil_dir_admin,
   'officiel_reglages_mise_en_page'          => $tab_droits_profil_dir_admin,
   'officiel_reglages_configuration'         => $tab_droits_profil_dir_admin,
+  'validation_socle_fichier'                => $tab_droits_profil_dir_admin,
   // Profil élève | parent | professeur | directeur
   '_maj_select_piliers'                     => $tab_droits_profil_eleve_parent_prof_dir,
   '_maj_select_profs_groupe'                => $tab_droits_profil_eleve_parent_prof_dir,

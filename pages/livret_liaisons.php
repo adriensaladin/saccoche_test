@@ -99,7 +99,7 @@ $TITRE .= ' &rarr; '.html($livret_page_moment);
 <?php echo $livret_vignettes ?>
 <p>
   Les liaisons des items des référentiels au composantes du socle commun sont effectuées par les enseignants (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__referentiel_modifier_contenu">DOC</a></span>).</span><br />
-  Voici un bilan des liaisons actuelles, aussi consultable pour les personnels via le menu <a href="./index.php?page=export_fichier">[Informations] [Extraction de données]</a>.
+  Voici un bilan des liaisons actuelles, aussi consultable via le menu <a href="./index.php?page=export_fichier">[Informations] [Export de données]</a>.
 </p>
 <p id="socle_liaisons">
 </p>

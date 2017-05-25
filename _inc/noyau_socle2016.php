@@ -30,7 +30,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 /**
  * Code inclus commun aux pages
  * [./pages/releve_socle2016.ajax.php]
- * [./pages/export_fichier.ajax.php]
+ * [./pages/validation_socle_fichier.ajax.php]
  * [ livret scolaire en prévision... ]
  */
 

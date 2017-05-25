@@ -580,7 +580,7 @@ public static function DB_rechercher_login_disponible($login_pris)
  */
 public static function DB_ajouter_saisies( $tab_saisies , $nb_saisies )
 {
-  $TAB_SQL = array();
+  $TAB_SQL = '';
   $paquet = 1000;
   foreach($tab_saisies as $key => $tab)
   {
@@ -590,7 +590,7 @@ public static function DB_ajouter_saisies( $tab_saisies , $nb_saisies )
     if( ($num%$paquet==0) || ($num==$nb_saisies) )
     {
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_saisie(prof_id, eleve_id, devoir_id, item_id, saisie_date, saisie_note, saisie_info, saisie_visible_date) VALUES '.implode(',', $TAB_SQL) , NULL);
-      $TAB_SQL = array();
+      $TAB_SQL = '';
     }
   }
 }

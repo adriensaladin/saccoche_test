@@ -96,7 +96,6 @@ $form_menu .= '</ul>'.NL;
 ?>
 
 <div class="astuce">Consulter la documentation (lien ci-dessus) pour toute explication !</div>
-<div class="astuce"><?php echo $info_origine ?></div>
 
 <hr />
 

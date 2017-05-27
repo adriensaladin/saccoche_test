@@ -208,7 +208,7 @@ if( isset($tab_variables[$objet]) )
     // Pour modifier dans la base
     $tab_parametres['officiel_'.$variable_nom] = $variable_valeur;
   }
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   Json::end( TRUE );
 }
 

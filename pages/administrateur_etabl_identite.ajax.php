@@ -117,7 +117,7 @@ if( $sesamath_id && $sesamath_type_nom && $sesamath_key )
   $tab_parametres['sesamath_uai']      = $sesamath_uai;
   $tab_parametres['sesamath_type_nom'] = $sesamath_type_nom;
   $tab_parametres['sesamath_key']      = $sesamath_key;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['SESAMATH_ID']       = $sesamath_id ;
   $_SESSION['SESAMATH_UAI']      = $sesamath_uai ;
@@ -188,7 +188,7 @@ if( $etablissement_denomination )
   $tab_parametres['etablissement_telephone']    = $etablissement_telephone;
   $tab_parametres['etablissement_fax']          = $etablissement_fax;
   $tab_parametres['etablissement_url']          = $etablissement_url;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['ETABLISSEMENT']['DENOMINATION'] = $etablissement_denomination;
   $_SESSION['ETABLISSEMENT']['ADRESSE1']     = $etablissement_adresse1;
@@ -261,7 +261,7 @@ if( !is_null($etablissement_chef_id) )
 {
   $tab_parametres = array();
   $tab_parametres['etablissement_chef_id'] = $etablissement_chef_id;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['ETABLISSEMENT']['CHEF_ID'] = $etablissement_chef_id;
   Json::end( TRUE );
@@ -275,7 +275,7 @@ if( $mois_bascule_annee_scolaire )
 {
   $tab_parametres = array();
   $tab_parametres['mois_bascule_annee_scolaire'] = $mois_bascule_annee_scolaire;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'] = $mois_bascule_annee_scolaire;
   Json::end( TRUE );
@@ -295,7 +295,7 @@ if( $etablissement_langue )
   // C'est ok...
   $tab_parametres = array();
   $tab_parametres['etablissement_langue'] = $etablissement_langue;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['ETABLISSEMENT']['LANGUE'] = $etablissement_langue;
   // sans oublier le menu
@@ -313,7 +313,7 @@ if( !is_null($ip_variable) )
 {
   $tab_parametres = array();
   $tab_parametres['etablissement_ip_variable'] = $ip_variable;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['ETABLISSEMENT']['IP_VARIABLE'] = $ip_variable;
   Json::end( TRUE );

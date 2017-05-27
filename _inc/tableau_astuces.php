@@ -27,6 +27,8 @@
 
 // Tableau avec la liste des astuces "Le saviez-vous ?" affichées après authentification.
 
+$astuce_menus_raccourcis_admin          = 'Vous pouvez <a href="index.php?page=administrateur_etabl_menus_raccourcis"><b>désactiver des menus et choisir des raccourcis favoris</b></a> de menu pour les pages d\'accueil des utilisateurs. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__menus_raccourcis">Documentation</a></span>';
+$astuce_menus_raccourcis                = 'Vous pouvez <a href="index.php?page=compte_menus_raccourcis"><b>désactiver des menus et choisir des raccourcis favoris</b></a> de menu pour votre page d\'accueil. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__menus_raccourcis">Documentation</a></span>';
 $astuce_livret_scolaire_export_2d       = '<span class="important"><em>SACoche</em> est <a href="http://eduscol.education.fr/cid108536/interface-editeurs-avec-les-applications-nationales.html" target="_blank">validée par le ministère pour l\'export LSU 1er + 2nd degré</a>.</span>';
 $astuce_bascule_compte                  = 'Si vous avez plusieurs comptes, vous pouvez <a href="index.php?page=compte_switch"><b>basculer de l\'un à l\'autre</b></a> sans vous ré-identifier. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=environnement_generalites__comptes_multiples">Documentation</a></span>';
 $astuce_partage_regroupements           = 'Vous pouvez <b>partager</b> avec des collègues vos <a href="index.php?page=compte_selection_items"><b>regroupements d\'items</b></a>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_professeur__gestion_regroupements_items#toggle_partage">Documentation</a></span>';
@@ -63,6 +65,7 @@ $astuce_authentification_ent            = 'On peut se connecter à <em>SACoche</
 // Ranger de la plus récente à la plus ancienne (la fréquence d'apparition étant liée à l'actualité de l'astuce)
 $tab_astuces = array(
   'administrateur' => array(
+    $astuce_menus_raccourcis_admin,
     $astuce_livret_scolaire_export_2d,
     $astuce_bascule_compte,
     $astuce_officiel_saisie_mixte,
@@ -82,6 +85,7 @@ $tab_astuces = array(
     $astuce_authentification_ent,
   ),
   'directeur' => array(
+    $astuce_menus_raccourcis,
     $astuce_livret_scolaire_export_2d,
     $astuce_bascule_compte,
     $astuce_officiel_saisie_mixte,
@@ -101,6 +105,7 @@ $tab_astuces = array(
     $astuce_faq_b2i,
   ),
   'professeur' => array(
+    $astuce_menus_raccourcis,
     $astuce_livret_scolaire_export_2d,
     $astuce_bascule_compte,
     $astuce_partage_regroupements,
@@ -126,11 +131,13 @@ $tab_astuces = array(
     $astuce_faq_b2i,
   ),
   'parent' => array(
+    $astuce_menus_raccourcis,
     $astuce_email_notifications,
     $astuce_traductions,
     $astuce_demande_evaluation,
   ),
   'eleve' => array(
+    $astuce_menus_raccourcis,
     $astuce_email_notifications,
     $astuce_traductions,
     $astuce_demande_evaluation,

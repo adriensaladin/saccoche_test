@@ -163,12 +163,12 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 /* #menu li:hover {background:#AAF} */ /* Retiré et maintenant géré en js car les "tunnels forcés invisibles" sont pénibles (http://www.pompage.net/traduction/menu-survol-et-utilisateurs) */
 #menu a {border:1px solid #88F;padding-right:10px;margin:0 -1px -1px 0;color:#FFF}
 #menu a:hover {color:#FFF}
-#menu a.disabled {color:#99F;cursor:default;font-style:italic}
-#menu a.disabled:hover {text-decoration:none;background-color:#66F;color:#99F;cursor:default}
+#menu a.disabled {opacity:0.1;cursor:default}
+#menu a.disabled:hover {text-decoration:none;cursor:default}
 #menu li a    {line-height:43px} /* pour le premier bouton (boussole) */
 #menu li li a {line-height:43px} /* dans le reste du menu déroulant ; si modification, @see memoriser_menu() in ./_inc/class.SessionUser.php */
 
-#menu a {background:transparent url(../_img/sprite_menu_27.png) 0 20px no-repeat;padding-left:25px}
+#menu a {background:transparent url(../_img/sprite_menu_28.png) 0 20px no-repeat;padding-left:25px}
 #menu a.boussole                    {background-position: 6px    13px} /* ( line_height 43 - img_hauteur 16 - 1 ) / 2 */
 #menu a.fleche                      {background-position: 6px   -27px}
 #menu a.administrateur              {background-position: 6px   -67px}
@@ -194,9 +194,9 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.etabl_identite              {background-position: 6px  -867px}
 #menu a.etabl_login                 {background-position: 6px  -907px}
 #menu a.evaluation_demande          {background-position: 6px  -947px}
-#menu a.evaluation_fichier          {background-position: 6px  -987px} /* TODO à supprimer ultérieurement */
-#menu a.evaluation_gestion          {background-position: 6px -1027px}
-#menu a.evaluation_voir             {background-position: 6px -1067px}
+#menu a.evaluation_gestion          {background-position: 6px  -987px}
+#menu a.evaluation_voir             {background-position: 6px -1027px}
+#menu a.favori                      {background-position: 6px -1067px}
 #menu a.fichier_export              {background-position: 6px -1107px}
 #menu a.fichier_import              {background-position: 6px -1147px}
 #menu a.groupe                      {background-position: 6px -1187px}
@@ -232,33 +232,30 @@ h3{display:block;white-space:nowrap;font-size:100%;text-align:left;font-weight:b
 #menu a.releve_items                {background-position: 6px -2387px}
 #menu a.releve_recherche            {background-position: 6px -2427px}
 #menu a.releve_socle2016            {background-position: 6px -2467px}
-#menu a.releve_socle                {background-position: 6px -2467px} /* attention : même décalage ; TODO à supprimer ultérieurement */
 #menu a.releve_synthese             {background-position: 6px -2507px}
-#menu a.releve_synthese_socle       {background-position: 6px -2547px} /* TODO à supprimer ultérieurement */
-#menu a.resilier                    {background-position: 6px -2587px}
-#menu a.rss                         {background-position: 6px -2627px}
-#menu a.serveur_database            {background-position: 6px -2667px}
-#menu a.serveur_debug               {background-position: 6px -2707px}
-#menu a.serveur_erreur              {background-position: 6px -2747px}
-#menu a.serveur_fichiers            {background-position: 6px -2787px}
-#menu a.serveur_geographie          {background-position: 6px -2827px}
-#menu a.serveur_identite            {background-position: 6px -2867px}
-#menu a.serveur_info                {background-position: 6px -2907px}
-#menu a.serveur_maintenance         {background-position: 6px -2947px}
-#menu a.serveur_proxy               {background-position: 6px -2987px}
-#menu a.serveur_security            {background-position: 6px -3027px}
-#menu a.socle_annuler               {background-position: 6px -3067px}
-#menu a.socle_fichier               {background-position: 6px -3107px} /* TODO à supprimer ultérieurement */
-#menu a.socle_item                  {background-position: 6px -3147px}
-#menu a.socle_langue                {background-position: 6px -3187px}
-#menu a.socle_pilier                {background-position: 6px -3227px}
-#menu a.statistiques                {background-position: 6px -3267px}
-#menu a.structure_ajout_csv         {background-position: 6px -3307px}
-#menu a.structure_bdd_repair        {background-position: 6px -3347px}
-#menu a.structure_gestion           {background-position: 6px -3387px}
-#menu a.structure_transfert         {background-position: 6px -3427px}
-#menu a.trombinoscope               {background-position: 6px -3467px}
-#menu a.user_recherche              {background-position: 6px -3507px}
+#menu a.resilier                    {background-position: 6px -2547px}
+#menu a.rss                         {background-position: 6px -2587px}
+#menu a.serveur_database            {background-position: 6px -2627px}
+#menu a.serveur_debug               {background-position: 6px -2667px}
+#menu a.serveur_erreur              {background-position: 6px -2707px}
+#menu a.serveur_fichiers            {background-position: 6px -2747px}
+#menu a.serveur_geographie          {background-position: 6px -2787px}
+#menu a.serveur_identite            {background-position: 6px -2827px}
+#menu a.serveur_info                {background-position: 6px -2867px}
+#menu a.serveur_maintenance         {background-position: 6px -2907px}
+#menu a.serveur_proxy               {background-position: 6px -2947px}
+#menu a.serveur_security            {background-position: 6px -2987px}
+#menu a.socle_annuler               {background-position: 6px -3027px}
+#menu a.socle_item                  {background-position: 6px -3067px}
+#menu a.socle_langue                {background-position: 6px -3107px}
+#menu a.socle_pilier                {background-position: 6px -3147px}
+#menu a.statistiques                {background-position: 6px -3187px}
+#menu a.structure_ajout_csv         {background-position: 6px -3227px}
+#menu a.structure_bdd_repair        {background-position: 6px -3267px}
+#menu a.structure_gestion           {background-position: 6px -3307px}
+#menu a.structure_transfert         {background-position: 6px -3347px}
+#menu a.trombinoscope               {background-position: 6px -3387px}
+#menu a.user_recherche              {background-position: 6px -3427px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Sous-menus (rappel en haut de page)                                                                 */
@@ -268,8 +265,8 @@ div.sousmenu{margin:0.5ex auto 0.5ex 2em}
 *.sousmenu a{display:inline-block;padding:0.5ex 1ex;margin:0.5ex 0.5ex 0.5ex 0.5ex;background:#66F;color:#FFF}
 *.sousmenu a.actif{background:#99F}
 *.sousmenu a:hover {color:#FFF}
-*.sousmenu a.disabled {color:#99F;cursor:default;font-style:italic}
-*.sousmenu a.disabled:hover {text-decoration:none;background-color:#66F;color:#99F;cursor:default}
+*.sousmenu a.disabled {opacity:0.15;cursor:default}
+*.sousmenu a.disabled:hover {text-decoration:none;cursor:default}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Icones des navigateurs                                                                              */
@@ -300,21 +297,22 @@ span.retrecir_largeur     {background-position: 0 -100px}
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 .rien64          {padding-left:70px}
-.accueil64       {background:transparent url(../_img/sprite_accueil64_1.png) 0 300px no-repeat;padding-left:70px;min-height:64px;max-height:500px}
+.accueil64       {background:transparent url(../_img/sprite_accueil64_2.png) 0 300px no-repeat;padding-left:70px;min-height:64px;max-height:500px}
 .alert64         {background-position: 0     0px}
 .ecolo64         {background-position: 0  -300px}
-.help64          {background-position: 0  -600px}
-.resultats64     {background-position: 0  -900px}
-.faiblesses64    {background-position: 0  -900px} /* attention : même décalage */
-.reussites64     {background-position: 0  -900px} /* attention : même décalage */
-.demandes64      {background-position: 0  -900px} /* attention : même décalage */
-.saisies64       {background-position: 0  -900px} /* attention : même décalage */
-.officiel64      {background-position: 0  -900px} /* attention : même décalage */
-.previsions64    {background-position: 0  -900px} /* attention : même décalage */
-.socle64         {background-position: 0  -900px} /* attention : même décalage */
-.messages64      {background-position: 0 -1200px}
-.notifications64 {background-position: 0 -1200px} /* attention : même décalage */
-.user64          {background-position: 0 -1500px}
+.favori64        {background-position: 0  -600px}
+.help64          {background-position: 0  -900px}
+.resultats64     {background-position: 0 -1200px}
+.faiblesses64    {background-position: 0 -1200px} /* attention : même décalage */
+.reussites64     {background-position: 0 -1200px} /* attention : même décalage */
+.demandes64      {background-position: 0 -1200px} /* attention : même décalage */
+.saisies64       {background-position: 0 -1200px} /* attention : même décalage */
+.officiel64      {background-position: 0 -1200px} /* attention : même décalage */
+.previsions64    {background-position: 0 -1200px} /* attention : même décalage */
+.socle64         {background-position: 0 -1200px} /* attention : même décalage */
+.messages64      {background-position: 0 -1500px}
+.notifications64 {background-position: 0 -1500px} /* attention : même décalage */
+.user64          {background-position: 0 -1800px}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 /* Liens vers un fichier à récupérer ou un document généré                                             */

@@ -67,6 +67,7 @@ $tab_sous_menu = array
     'compte_switch'             => array( 'texte' => Lang::_("Bascule entre comptes")        , 'class' => 'compte_switch'     , 'href' => 'page=compte_switch'             ),
     'compte_daltonisme'         => array( 'texte' => Lang::_("Daltonisme")                   , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme'         ),
     'compte_langue'             => array( 'texte' => Lang::_("Langue")                       , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'             ),
+    'compte_menus_raccourcis'   => array( 'texte' => Lang::_("Menus et raccourcis")          , 'class' => 'favori'            , 'href' => 'page=compte_menus_raccourcis'   ),
     'compte_message'            => array( 'texte' => Lang::_("Messages d'accueil")           , 'class' => 'message_accueil'   , 'href' => 'page=compte_message'            ),
     'professeur_groupe_besoin'  => array( 'texte' => Lang::_("Groupes de besoin")            , 'class' => 'groupe'            , 'href' => 'page=professeur_groupe_besoin'  ),
     'compte_selection_items'    => array( 'texte' => Lang::_("Regroupements d'items")        , 'class' => 'item_selection'    , 'href' => 'page=compte_selection_items'    ),
@@ -126,98 +127,98 @@ $tab_sous_menu = array
 // Voir le paramètrage des codes et des états d'acquisition.
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_NOTES_ACQUIS']))
 {
-  $tab_sous_menu['information']['consultation_codes_couleurs']['class'] .= ' disabled';
+  $tab_sous_menu['information']['consultation_codes_couleurs']['disabled'] = TRUE;
 }
 
 // Voir et simuler l'algorithme de calcul.
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
 {
-  $tab_sous_menu['information']['consultation_algorithme']['class'] .= ' disabled';
+  $tab_sous_menu['information']['consultation_algorithme']['disabled'] = TRUE;
 }
 
 // Voir les référentiels en place (dans l'établissement) (pas de restriction pour le profil [administrateur]).
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']))
 {
-  $tab_sous_menu['information']['consultation_referentiel_interne']['class'] .= ' disabled';
+  $tab_sous_menu['information']['consultation_referentiel_interne']['disabled'] = TRUE;
 }
 
 // Consulter les référentiels partagés (serveur communautaire)
 if( !$_SESSION['SESAMATH_ID'] || !$_SESSION['SESAMATH_KEY'] )
 {
-  $tab_sous_menu['information']['consultation_referentiel_externe']['class'] .= ' disabled';
+  $tab_sous_menu['information']['consultation_referentiel_externe']['disabled'] = TRUE;
 }
 
 // Changer son mot de passe (pas de restriction pour les profils [administrateur] et [webmestre]).
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
 {
-  $tab_sous_menu['parametrage']['compte_password']['class'] .= ' disabled';
+  $tab_sous_menu['parametrage']['compte_password']['disabled'] = TRUE;
 }
 
 // Créer / paramétrer les référentiels (profil [professeur] uniquement).
 if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['referentiel']['professeur_referentiel_gestion']['class'] .= ' disabled';
+  $tab_sous_menu['referentiel']['professeur_referentiel_gestion']['disabled'] = TRUE;
 }
 
 // Modifier le contenu des référentiels (profil [professeur] uniquement).
 if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_REFERENTIEL'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['referentiel']['professeur_referentiel_edition']['class'] .= ' disabled';
+  $tab_sous_menu['referentiel']['professeur_referentiel_edition']['disabled'] = TRUE;
 }
 
 // Définir le mode de synthèse pour les bilans (profil [professeur] uniquement).
 if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_MODE_SYNTHESE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['referentiel']['professeur_referentiel_format_synthese']['class'] .= ' disabled';
+  $tab_sous_menu['referentiel']['professeur_referentiel_format_synthese']['disabled'] = TRUE;
 }
 
 // Associer des ressources aux items (profil [professeur] uniquement).
 if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['referentiel']['professeur_referentiel_ressources']['class'] .= ' disabled';
+  $tab_sous_menu['referentiel']['professeur_referentiel_ressources']['disabled'] = TRUE;
 }
 
 // Choisir la langue étrangère pour le socle commun (profils [professeur] et [directeur] uniquement).
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['validation']['administrateur_eleve_langue']['class'] .= ' disabled';
+  $tab_sous_menu['validation']['administrateur_eleve_langue']['disabled'] = TRUE;
 }
 
 // Valider les items du socle (profils [professeur] et [directeur] uniquement).
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['validation']['validation_socle_item']['class'] .= ' disabled';
+  $tab_sous_menu['validation']['validation_socle_item']['disabled'] = TRUE;
 }
 
 // Valider les piliers du socle (profils [professeur] et [directeur] uniquement).
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['validation']['validation_socle_pilier']['class'] .= ' disabled';
+  $tab_sous_menu['validation']['validation_socle_pilier']['disabled'] = TRUE;
 }
 
 // Annuler une compétence validée du socle (profils [professeur] et [directeur] uniquement).
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['validation']['validation_socle_pilier_annuler']['class'] .= ' disabled';
+  $tab_sous_menu['validation']['validation_socle_pilier_annuler']['disabled'] = TRUE;
 }
 
 // Grille d'items d'un référentiel.
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 {
-  $tab_sous_menu['releve']['releve_grille_referentiel']['class'] .= ' disabled';
+  $tab_sous_menu['releve']['releve_grille_referentiel']['disabled'] = TRUE;
 }
 
 // Relevé de maîtrise du socle & Synthèse de maîtrise du socle
 if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
 {
-  // $tab_sous_menu['releve']['releve_socle']['class'] .= ' disabled';
-  // $tab_sous_menu['releve']['releve_synthese_socle']['class'] .= ' disabled';
+  // $tab_sous_menu['releve']['releve_socle']['disabled'] = TRUE;
+  // $tab_sous_menu['releve']['releve_synthese_socle']['disabled'] = TRUE;
 }
 
 // Import des absences / retards sur les bilans officiels (profils [professeur] et [directeur] uniquement).
 if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUITE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
 {
-  $tab_sous_menu['officiel']['officiel_assiduite']['class'] .= ' disabled';
+  $tab_sous_menu['officiel']['officiel_assiduite']['disabled'] = TRUE;
 }
 
 // Archives consultables des bilans officiels.
@@ -229,7 +230,7 @@ foreach($tab_droits as $droit)
 }
 if(!$droit_voir_archives_pdf)
 {
-    $tab_sous_menu['officiel']['officiel_voir_archive']['class'] .= ' disabled';
+    $tab_sous_menu['officiel']['officiel_voir_archive']['disabled'] = TRUE;
 }
 
 // Bilans officiels relatifs aux paliers du socle restreint aux paliers en vigueur dans l'établissement
@@ -239,7 +240,7 @@ for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
 {
   if(!in_array($palier_id,$tab_paliers_actifs))
   {
-    $tab_sous_menu['officiel']['officiel_accueil_palier'.$palier_id]['class'] .= ' disabled';
+    $tab_sous_menu['officiel']['officiel_accueil_palier'.$palier_id]['disabled'] = TRUE;
   }
 }
 */

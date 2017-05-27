@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS sacoche_user;
 
 -- Attention : pas d`apostrophes dans les lignes commentées sinon on peut obtenir un bug d`analyse dans la classe pdo de SebR : "SQLSTATE[HY093]: Invalid parameter number: no parameters were bound ..."
+-- Attention : pas de valeur par défaut possible pour les champs TEXT et BLOB
 -- Attention : pour un champ DATE ou DATETIME, DEFAULT NOW() ne fonctionne qu`à partir de MySQL 5.6.5
 -- Attention : pour un champ DATE ou DATETIME, la configuration NO_ZERO_DATE (incluse dans le mode strict de MySQL 5.7.4 à 5.7.7), interdit les valeurs en dehors de 1000-01-01 00:00:00 à 9999-12-31 23:59:59
 
@@ -30,7 +31,9 @@ CREATE TABLE sacoche_user (
   eleve_brevet_serie  VARCHAR(6)              COLLATE utf8_unicode_ci NOT NULL DEFAULT "X" COMMENT "Série du brevet pour Notanet.",
   user_id_ent         VARCHAR(63)             COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",
   user_id_gepi        VARCHAR(63)             COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Login de l'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin.",
-  user_param_accueil  VARCHAR(127)            COLLATE utf8_unicode_ci NOT NULL DEFAULT "user,alert,messages,previsions,resultats,faiblesses,reussites,demandes,saisies,officiel,socle,help,ecolo",
+  user_param_accueil  VARCHAR(127)            COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Ce qui est masqué (et non ce qui est affiché).",
+  user_param_menu     TEXT                    COLLATE utf8_unicode_ci                      COMMENT "Ce qui est masqué (et non ce qui est affiché).",
+  user_param_favori   TINYTEXT                COLLATE utf8_unicode_ci,
   user_pass_key       CHAR(32)                COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY (user_id),
   UNIQUE KEY user_login (user_login),

@@ -74,6 +74,7 @@ $tab_sous_menu = array
     'administrateur_etabl_autorisations'    => array( 'texte' => Lang::_("Réglage des autorisations")            , 'class' => 'etabl_autorisations' , 'href' => 'page=administrateur_etabl_autorisations'    ),
     'administrateur_etabl_login'            => array( 'texte' => Lang::_("Format des identifiants de connexion") , 'class' => 'etabl_login'         , 'href' => 'page=administrateur_etabl_login'            ),
     'administrateur_etabl_duree_inactivite' => array( 'texte' => Lang::_("Délai avant déconnexion")              , 'class' => 'etabl_duree'         , 'href' => 'page=administrateur_etabl_duree_inactivite' ),
+    'administrateur_etabl_menus_raccourcis' => array( 'texte' => Lang::_("Menus et raccourcis")                  , 'class' => 'favori'              , 'href' => 'page=administrateur_etabl_menus_raccourcis' ),
   ),
   'param_personnels' => array
   (

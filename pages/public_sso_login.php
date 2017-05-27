@@ -110,7 +110,7 @@ $tab_parametres = array(
   '"gepi_rne"',
   '"gepi_certificat_empreinte"',
 );
-$DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres( implode(',',$tab_parametres) );
+$DB_TAB = DB_STRUCTURE_PARAMETRE::DB_lister_parametres( implode(',',$tab_parametres) );
 foreach($DB_TAB as $DB_ROW)
 {
   ${$DB_ROW['parametre_nom']} = $DB_ROW['parametre_valeur'];

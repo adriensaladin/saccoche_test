@@ -38,7 +38,7 @@ if( $url_deconnexion!==NULL )
 {
   $tab_parametres = array();
   $tab_parametres['deconnexion_adresse_redirection'] = $url_deconnexion;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['DECONNEXION_ADRESSE_REDIRECTION'] = $url_deconnexion ;
   Json::end( TRUE );

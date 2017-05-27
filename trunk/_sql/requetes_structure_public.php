@@ -117,65 +117,6 @@ public static function DB_recuperer_user_for_new_mdp($champ_nom,$champ_val)
 }
 
 /**
- * Retourner la version de la base de l'établissement
- *
- * @param void
- * @return string
- */
-public static function DB_version_base()
-{
-  $DB_SQL = 'SELECT parametre_valeur ';
-  $DB_SQL.= 'FROM sacoche_parametre ';
-  $DB_SQL.= 'WHERE parametre_nom=:parametre_nom ';
-  $DB_VAR = array(':parametre_nom'=>'version_base');
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Lister des paramètres d'une structure (contenu de la table 'sacoche_parametre')
- *
- * @param string   $listing_param   nom des paramètres entourés de guillemets et séparés par des virgules (tout si rien de transmis)
- * @return array
- */
-public static function DB_lister_parametres($listing_param='')
-{
-  $DB_SQL = 'SELECT parametre_nom, parametre_valeur ';
-  $DB_SQL.= 'FROM sacoche_parametre ';
-  $DB_SQL.= ($listing_param) ? 'WHERE parametre_nom IN('.$listing_param.') ' : '' ;
-  // Pas de queryRow prévu car toujours au moins 2 paramètres demandés jusqu'à maintenant.
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * Lister des paramètres d'une structure liés aux codes de notation (contenu de la table 'sacoche_parametre_note')
- *
- * @param bool   $priority_actifs   prioritairement ceux actifs
- * @return array
- */
-public static function DB_lister_parametres_note($priority_actifs)
-{
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_parametre_note ';
-  $DB_SQL.= ($priority_actifs) ? 'ORDER BY note_actif DESC, note_ordre ASC ' : 'ORDER BY note_ordre ASC ' ;
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * Lister des paramètres d'une structure liés aux états d'acquisition (contenu de la table 'sacoche_parametre_acquis')
- *
- * @param bool   $only_actifs   seuls ceux actifs
- * @return array
- */
-public static function DB_lister_parametres_acquis($only_actifs)
-{
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_parametre_acquis ';
-  $DB_SQL.= ($only_actifs) ? 'WHERE acquis_actif=1 ' : '' ;
-  $DB_SQL.= 'ORDER BY acquis_ordre ';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * Modifier la date de connexion
  *
  * @param int     $user_id

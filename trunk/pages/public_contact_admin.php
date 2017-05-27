@@ -47,7 +47,7 @@ if(HEBERGEUR_INSTALLATION=='multi-structures')
 }
 else
 {
-  $DB_TAB = DB_STRUCTURE_PUBLIC::DB_lister_parametres('"webmestre_denomination"');
+  $DB_TAB = DB_STRUCTURE_PARAMETRE::DB_lister_parametres('"webmestre_denomination"');
   if(!empty($DB_TAB))
   {
     $structure_denomination = $DB_TAB[0]['parametre_valeur'];

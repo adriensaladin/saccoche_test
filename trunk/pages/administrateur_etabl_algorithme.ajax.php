@@ -83,14 +83,14 @@ if($action=='enregistrer')
   // Valeur d'un code (sur 100)
   foreach( $_SESSION['NOTE_ACTIF'] as $note_id )
   {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_parametre_note_valeur( $note_id , $note_valeur[$note_id] );
+    DB_STRUCTURE_PARAMETRE::DB_modifier_parametre_note_valeur( $note_id , $note_valeur[$note_id] );
     $_SESSION['NOTE'][$note_id]['VALEUR'] = $note_valeur[$note_id];
     Json::add_str('tab_valeur["N'.$note_id.'"] = '.$note_valeur[$note_id].';');
   }
   // Seuils d'acquisition (de 0 à 100)
   foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
   {
-    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_parametre_acquis_seuils( $acquis_id , $acquis_seuil[$acquis_id]['SEUIL_MIN'] , $acquis_seuil[$acquis_id]['SEUIL_MAX'] );
+    DB_STRUCTURE_PARAMETRE::DB_modifier_parametre_acquis_seuils( $acquis_id , $acquis_seuil[$acquis_id]['SEUIL_MIN'] , $acquis_seuil[$acquis_id]['SEUIL_MAX'] );
     $_SESSION['ACQUIS'][$acquis_id]['SEUIL_MIN'] = $acquis_seuil[$acquis_id]['SEUIL_MIN'];
     $_SESSION['ACQUIS'][$acquis_id]['SEUIL_MAX'] = $acquis_seuil[$acquis_id]['SEUIL_MAX'];
     Json::add_str('tab_seuil["A'.$acquis_id.'min"] = '.$acquis_seuil[$acquis_id]['SEUIL_MIN'].';');
@@ -102,7 +102,7 @@ if($action=='enregistrer')
     'calcul_limite'     => $limite,
     'calcul_retroactif' => $retroactif,
   );
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_param);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_param);
   $_SESSION['CALCUL_METHODE']    = $methode;
   $_SESSION['CALCUL_LIMITE']     = $limite;
   $_SESSION['CALCUL_RETROACTIF'] = $retroactif;

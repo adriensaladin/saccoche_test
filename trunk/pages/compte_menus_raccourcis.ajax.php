@@ -28,34 +28,61 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$profil = isset($_POST['f_profil']) ? Clean::code($_POST['f_profil']) : '';
 
-$tab_id = (isset($_POST['tab_id']))   ? Clean::map('entier',explode(',',$_POST['tab_id'])) : array() ;
-$tab_id = array_filter($tab_id,'positif');
-sort($tab_id);
+$tab_profil = array(
+  'eleve'      => 'élèves',
+  'parent'     => 'parents',
+  'professeur' => 'professeurs',
+  'directeur'  => 'directeurs',
+);
 
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Choix de paliers du socle
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-if($action=='Choix_paliers')
+if( $profil != $_SESSION['USER_PROFIL_TYPE'] )
 {
-  // Il n'y a que 3 paliers : on ne s'embête pas à comparer pour voir ce qui a changé, on effectue 3 update.
-  for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
-  {
-    $palier_actif = (in_array($palier_id,$tab_id)) ? 1 : 0 ;
-    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_palier($palier_id,$palier_actif);
-  }
-  // On mémorise aussi la liste des piliers actifs (base + session)
-  $liste_paliers_actifs = implode(',',$tab_id);
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres( array('liste_paliers_actifs'=>$liste_paliers_actifs) );
-  $_SESSION['LISTE_PALIERS_ACTIFS'] = $liste_paliers_actifs;
-  Json::end( TRUE );
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// On ne devrait pas en arriver là...
+// Enregistrer les menu et favori pour cet utilisateur (si tout est décoché alors rien n'est transmis)
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-Json::end( FALSE , 'Erreur avec les données transmises !' );
+$tab_memo_menu   = array() ;
+$tab_memo_favori = array() ;
+
+// récupère $tab_menu & $tab_sous_menu
+require(CHEMIN_DOSSIER_MENUS.'menu_'.$profil.'.php');
+
+foreach($tab_menu as $menu_id => $menu_titre)
+{
+  if( !isset($_POST['menu_'.$menu_id]) )
+  {
+     $tab_memo_menu[] = $menu_id;
+  }
+  else
+  {
+    foreach($tab_sous_menu[$menu_id] as $sous_menu_id => $tab)
+    {
+      if( !isset($_POST['sousmenu_'.$sous_menu_id]) )
+      {
+         $tab_memo_menu[] = $sous_menu_id;
+      }
+      if( isset($_POST['favori_'.$sous_menu_id]) )
+      {
+         $tab_memo_favori[] = $sous_menu_id;
+      }
+    }
+  }
+}
+
+// Mettre à jour la session
+$_SESSION['USER_PARAM_MENU']   = implode(',',$tab_memo_menu);
+$_SESSION['USER_PARAM_FAVORI'] = implode(',',$tab_memo_favori);
+SessionUser::memoriser_menu();
+
+DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_param_menu'   , $_SESSION['USER_PARAM_MENU']   );
+DB_STRUCTURE_COMMUN::DB_modifier_user_parametre( $_SESSION['USER_ID'] , 'user_param_favori' , $_SESSION['USER_PARAM_FAVORI'] );
+
+// Retour
+Json::end( TRUE );
 
 ?>

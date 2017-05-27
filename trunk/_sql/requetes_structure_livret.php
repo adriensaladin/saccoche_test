@@ -270,7 +270,7 @@ public static function DB_recuperer_chef_etabl_infos( $etablissement_chef_id )
     {
       $etablissement_chef_id = current($DB_COL);
       $tab_parametres['etablissement_chef_id'] = $etablissement_chef_id;
-      DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+      DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
       $_SESSION['ETABLISSEMENT']['CHEF_ID'] = $etablissement_chef_id;
     }
     else

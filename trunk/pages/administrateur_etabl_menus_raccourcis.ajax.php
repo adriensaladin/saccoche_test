@@ -26,44 +26,57 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Référentiels (gestion)"));
+if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-// Par défaut, faire arriver sur la page de gestion des référentiels
-$SECTION = ($SECTION) ? $SECTION : 'gestion' ;
+$profil = isset($_POST['f_profil']) ? Clean::code($_POST['f_profil']) : '';
 
-// Sous-Menu d'en-tête, selon les droits
-$SOUS_MENU = '';
-$tab_sous_menu = array(
-  'gestion'         => Lang::_("Créer / paramétrer les référentiels"),
-  'edition'         => Lang::_("Modifier le contenu des référentiels"),
-  'format_synthese' => Lang::_("Définir le format de synthèse par référentiel"),
-  'ressources'      => Lang::_("Associer des ressources aux items"),
+$tab_profil = array(
+  'eleve'      => 'élèves',
+  'parent'     => 'parents',
+  'professeur' => 'professeurs',
+  'directeur'  => 'directeurs',
 );
-foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
+
+if( !isset($tab_profil[$profil]) )
 {
-  // Pour ne pas avoir à faire une requête sur la base à chaque fois pour chaque sous-menu, on se sert de la chaîne du menu mis en session
-  $sous_menu_class = 'referentiel_'.$sous_menu_section;
-  // Certains menus peuvent être interdits d'accès ou d'aspect désactivés
-  if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class.'"' ) )
+  Json::end( FALSE , 'Erreur avec les données transmises !' );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Enregistrer les menu et favori pour ce profil (si tout est décoché alors rien n'est transmis)
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+$tab_memo_menu   = array() ;
+$tab_memo_favori = array() ;
+
+// récupère $tab_menu & $tab_sous_menu
+require(CHEMIN_DOSSIER_MENUS.'menu_'.$profil.'.php');
+
+foreach($tab_menu as $menu_id => $menu_titre)
+{
+  if( !isset($_POST['menu_'.$menu_id]) )
   {
-    $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+     $tab_memo_menu[] = $menu_id;
   }
   else
   {
-    $class = ' class="disabled"';
+    foreach($tab_sous_menu[$menu_id] as $sous_menu_id => $tab)
+    {
+      if( !isset($_POST['sousmenu_'.$sous_menu_id]) )
+      {
+         $tab_memo_menu[] = $sous_menu_id;
+      }
+      if( isset($_POST['favori_'.$sous_menu_id]) )
+      {
+         $tab_memo_favori[] = $sous_menu_id;
+      }
+    }
   }
-  $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
 }
 
-// Afficher la bonne page et appeler le bon js / ajax par la suite
-$fichier_section = CHEMIN_DOSSIER_PAGES.$PAGE.'_'.$SECTION.'.php';
-if(is_file($fichier_section))
-{
-  $PAGE = $PAGE.'_'.$SECTION ;
-  require($fichier_section);
-}
-else
-{
-  echo'<p class="astuce">Choisir une rubrique ci-dessus&hellip;</p>'.NL;
-}
+DB_STRUCTURE_PARAMETRE::DB_modifier_parametre_profil( $profil , implode(',',$tab_memo_menu) , implode(',',$tab_memo_favori) );
+
+// Retour
+Json::end( TRUE );
+
 ?>

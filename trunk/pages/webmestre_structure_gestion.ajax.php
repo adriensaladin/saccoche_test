@@ -114,7 +114,7 @@ if( ($action=='ajouter') && isset($tab_geo[$geo_id]) && $localisation && $denomi
   $tab_parametres['webmestre_uai']              = $uai;
   $tab_parametres['webmestre_denomination']     = $denomination;
   $tab_parametres['etablissement_denomination'] = $denomination;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // Insérer le compte administrateur dans la base de cette structure
   $password = Outil::fabriquer_mdp();
   $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , $contact_nom , $contact_prenom , NULL /*user_naissance_date*/ , $contact_courriel , 'user' /*user_email_origine*/ , 'admin' /*login*/ , Outil::crypter_mdp($password) );
@@ -179,7 +179,7 @@ if( ($action=='modifier') && $base_id && isset($tab_geo[$geo_id]) && $localisati
   $tab_parametres = array();
   $tab_parametres['webmestre_uai']          = $uai;
   $tab_parametres['webmestre_denomination'] = $denomination;
-  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
   // On affiche le retour
   $img_acces = ($acces=='bloquer') ? '<img class="bloquer" src="./_img/etat/acces_oui.png" title="Bloquer cet établissement." />' : '<img class="debloquer" src="./_img/etat/acces_non.png" title="Débloquer cet établissement." />' ;
   $checked = ($check) ? ' checked' : '' ;

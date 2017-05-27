@@ -48,12 +48,13 @@ if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
   }
   foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
   {
-    // Pour ne pas avoir à faire une requête sur la base à chaque fois pour chaque sous-menu, on se sert de la chaîne du menu mis en session
+  // Pour ne pas avoir à faire une requête sur la base à chaque fois pour chaque sous-menu, on se sert de la chaîne du menu mis en session
     $sous_menu_class = isset($tab_class_differente[$sous_menu_section]) ? $tab_class_differente[$sous_menu_section] : 'socle_'.$sous_menu_section ;
     // Les élèves et les parents n'ont pas accès à tous les sous-menus
     if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class ) )
     {
-      if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class.'"' ) )
+     // Certains menus peuvent être interdits d'accès ou d'aspect désactivés
+     if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class.'"' ) )
       {
         $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
       }

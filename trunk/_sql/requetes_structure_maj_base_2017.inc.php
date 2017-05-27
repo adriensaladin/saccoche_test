@@ -493,6 +493,39 @@ if($version_base_structure_actuelle=='2017-05-15')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-05-18 => 2017-05-27
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-05-18')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-05-27';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // nouvelle table [sacoche_parametre_profil]
+    $reload_sacoche_parametre_profil = TRUE;
+    $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_parametre_profil.sql');
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
+    DB::close(SACOCHE_STRUCTURE_BD_NAME);
+    // ajout de champs à la table [sacoche_user]
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_param_menu TEXT COLLATE utf8_unicode_ci COMMENT "Ce qui est masqué (et non ce qui est affiché)." AFTER user_param_accueil' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user ADD user_param_favori TINYTEXT COLLATE utf8_unicode_ci AFTER user_param_menu' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_param_menu = NULL' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_param_favori = NULL' );
+    // Modification de la façon dont on gère user_param_accueil
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user CHANGE user_param_accueil user_param_accueil VARCHAR(127) COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Ce qui est masqué (et non ce qui est affiché)." ' );
+    $tab_liste = array('user','messages','previsions','resultats','faiblesses','reussites','demandes','saisies','officiel','socle','help','ecolo');
+    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SELECT user_id, user_param_accueil FROM sacoche_user');
+    foreach($DB_TAB as $DB_ROW)
+    {
+      $tab_base_actif = explode(',',$DB_ROW['user_param_accueil']);
+      $tab_base_inactif = array_diff($tab_liste,$tab_base_actif);
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_user SET user_param_accueil = "'.implode(',',$tab_base_inactif).'" WHERE user_id = '.$DB_ROW['user_id'] );
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

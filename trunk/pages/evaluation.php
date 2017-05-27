@@ -59,7 +59,15 @@ if( ($_SESSION['USER_PROFIL_TYPE']!='parent') && ($_SESSION['USER_PROFIL_TYPE']!
   foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
   {
     $sous_menu_class = isset($tab_class_differente[$sous_menu_section]) ? $tab_class_differente[$sous_menu_section] : 'evaluation_'.$sous_menu_section ;
-    $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+    // Certains menus peuvent être interdits d'accès ou d'aspect désactivés
+    if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class.'"' ) )
+    {
+      $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;
+    }
+    else
+    {
+      $class = ' class="disabled"';
+    }
     $SOUS_MENU .= '<a'.$class.' href="./index.php?page='.$PAGE.'&amp;section='.$sous_menu_section.'">'.html($sous_menu_titre).'</a>'.NL;
   }
 }

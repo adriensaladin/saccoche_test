@@ -324,7 +324,6 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_NIVEAU'         => '_sql'.DS.'requetes_structure_niveau.php' ,
     'DB_STRUCTURE_NOTIFICATION'   => '_sql'.DS.'requetes_structure_notification.php' ,
     'DB_STRUCTURE_OFFICIEL'       => '_sql'.DS.'requetes_structure_officiel.php' ,
-    'DB_STRUCTURE_PARAMETRE'      => '_sql'.DS.'requetes_structure_parametre.php' ,
     'DB_STRUCTURE_PERIODE'        => '_sql'.DS.'requetes_structure_periode.php' ,
     'DB_STRUCTURE_REFERENTIEL'    => '_sql'.DS.'requetes_structure_referentiel.php' ,
     'DB_STRUCTURE_REGROUPEMENT'   => '_sql'.DS.'requetes_structure_regroupement.php' ,

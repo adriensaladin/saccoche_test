@@ -40,7 +40,6 @@ $masque_officiel   = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? html(Lang::
 
 $tab_accueil = array(
  'user'          => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Informations d'accueil")) ) ,
- 'favori'        => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>html(Lang::_("Raccourcis vers les menus favoris")) ) ,
  'alert'         => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
  'notifications' => array( 'contenu'=>''      , 'nombre'=>0, 'masque'=>NULL ) ,
  'messages'      => array( 'contenu'=>array() , 'nombre'=>0, 'masque'=>"" ) ,
@@ -231,15 +230,6 @@ else
     $get_base = ($_SESSION['BASE']) ? '='.$_SESSION['BASE'] : '' ;
     $tab_accueil['user']['contenu'] .= '<div>'.html(Lang::_("Adresse à utiliser pour une connexion automatique avec l'authentification externe")).'&nbsp;: <b>'.URL_DIR_SACOCHE.'?sso'.$get_base.'</b></div>';
   }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// [favori] - Raccourcis vers les menus favoris
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($_SESSION['FAVORI'])
-{
-  $tab_accueil['favori']['contenu'] .= '<p class="b"><TG> '.html(Lang::_("Raccourcis favoris")).'</p>'.$_SESSION['FAVORI'];
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -575,8 +565,8 @@ foreach($tab_accueil as $type => $tab_type_infos)
     if($masque!==NULL)
     {
       $info_nombre = ($nombre) ? ' <span class="fluo g">('.$nombre.')</span>' : '' ;
-      $class_moins = (strpos($_SESSION['USER_PARAM_ACCUEIL'],$type)===FALSE) ? '' : ' hide' ;
-      $class_plus  = (strpos($_SESSION['USER_PARAM_ACCUEIL'],$type)!==FALSE) ? '' : ' hide' ;
+      $class_moins = (strpos($_SESSION['USER_PARAM_ACCUEIL'],$type)!==FALSE) ? '' : ' hide' ;
+      $class_plus  = (strpos($_SESSION['USER_PARAM_ACCUEIL'],$type)===FALSE) ? '' : ' hide' ;
       $toggle_moins = '<a href="#toggle_'.$type.'" class="toggle_moins" title="Masquer"></a>';
       $toggle_plus  = '<div id="'.$type.'_plus" class="rien64'.$class_plus.'"><a href="#toggle_'.$type.'" class="toggle_plus" title="Voir"></a> '.$masque.''.$info_nombre.'</div>';
     }

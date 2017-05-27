@@ -44,21 +44,19 @@ if(substr($f_type,0,8)=='messages')
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_types = array(
- 'user'          => 'modifiable' ,
- 'favori'        => 'modifiable' ,
- 'alert'         => 'imposé' ,
- 'notifications' => 'imposé' ,
- 'messages'      => 'modifiable' ,
- 'previsions'    => 'modifiable' ,
- 'resultats'     => 'modifiable' ,
- 'faiblesses'    => 'modifiable' ,
- 'reussites'     => 'modifiable' ,
- 'demandes'      => 'modifiable' ,
- 'saisies'       => 'modifiable' ,
- 'officiel'      => 'modifiable' ,
- 'socle'         => 'modifiable' ,
- 'help'          => 'modifiable' ,
- 'ecolo'         => 'modifiable' ,
+ 'user'       => 'modifiable' ,
+ 'alert'      => 'imposé' ,
+ 'messages'   => 'modifiable' ,
+ 'previsions' => 'modifiable' ,
+ 'resultats'  => 'modifiable' ,
+ 'faiblesses' => 'modifiable' ,
+ 'reussites'  => 'modifiable' ,
+ 'demandes'   => 'modifiable' ,
+ 'saisies'    => 'modifiable' ,
+ 'officiel'   => 'modifiable' ,
+ 'socle'      => 'modifiable' ,
+ 'help'       => 'modifiable' ,
+ 'ecolo'      => 'modifiable' ,
 );
 
 if( (!isset($tab_types[$f_type])) || ($tab_types[$f_type]=='imposé') || ($f_etat==-1) )
@@ -74,7 +72,7 @@ if($f_type!='messages')
 {
   foreach($tab_types as $key => $kill)
   {
-    $val = ($key==$f_type) ? !$f_etat : ( (strpos($_SESSION['USER_PARAM_ACCUEIL'],$key)===FALSE) ? FALSE : TRUE ) ;
+    $val = ($key==$f_type) ? $f_etat : ( (strpos($_SESSION['USER_PARAM_ACCUEIL'],$key)===FALSE) ? 0 : 1 ) ;
     $tab_types[$key] = $val ;
   }
   $_SESSION['USER_PARAM_ACCUEIL'] = implode( ',' , array_keys( array_filter($tab_types) ) );

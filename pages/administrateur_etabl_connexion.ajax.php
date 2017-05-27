@@ -76,7 +76,7 @@ if($f_action=='enregistrer_mode_identification')
 
   if( ($f_connexion_mode=='normal') || ($f_connexion_mode=='shibboleth') )
   {
-    DB_STRUCTURE_PARAMETRE::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement) );
+    DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement) );
     // ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
     $_SESSION['CONNEXION_MODE']        = $f_connexion_mode;
     $_SESSION['CONNEXION_NOM']         = $f_connexion_nom;
@@ -167,7 +167,7 @@ if($f_action=='enregistrer_mode_identification')
       'cas_serveur_url_validate'     => $cas_serveur_url_validate,
       'cas_serveur_verif_certif_ssl' => $cas_serveur_verif_certif_ssl,
     );
-    DB_STRUCTURE_PARAMETRE::DB_modifier_parametres( $tab_parametres );
+    DB_STRUCTURE_COMMUN::DB_modifier_parametres( $tab_parametres );
     // ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
     $_SESSION['CONNEXION_MODE']                  = $f_connexion_mode;
     $_SESSION['CONNEXION_NOM']                   = $f_connexion_nom;
@@ -203,7 +203,7 @@ if($f_action=='enregistrer_mode_identification')
       Json::end( FALSE , 'Adresse de Gepi incorrecte [ '.$fichier_distant.' ] !' );
     }
     // C'est ok
-    DB_STRUCTURE_PARAMETRE::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement,'gepi_url'=>$gepi_saml_url,'gepi_rne'=>$gepi_saml_rne,'gepi_certificat_empreinte'=>$gepi_saml_certif) );
+    DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('connexion_mode'=>$f_connexion_mode,'connexion_nom'=>$f_connexion_nom,'connexion_departement'=>$f_connexion_departement,'gepi_url'=>$gepi_saml_url,'gepi_rne'=>$gepi_saml_rne,'gepi_certificat_empreinte'=>$gepi_saml_certif) );
     // ne pas oublier de mettre aussi à jour la session (normalement faudrait pas car connecté avec l'ancien mode, mais sinon pb d'initalisation du formulaire)
     $_SESSION['CONNEXION_MODE']        = $f_connexion_mode;
     $_SESSION['CONNEXION_NOM']         = $f_connexion_nom;

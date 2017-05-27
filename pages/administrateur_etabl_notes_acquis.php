@@ -30,7 +30,7 @@ $TITRE = html(Lang::_("Codes de notation / États d'acquisition"));
 
 // codes de notation
 
-$DB_TAB_NOTE = DB_STRUCTURE_PARAMETRE::DB_lister_parametres_note( FALSE /*priority_actifs*/ );
+$DB_TAB_NOTE = DB_STRUCTURE_PUBLIC::DB_lister_parametres_note( FALSE /*priority_actifs*/ );
 
 $tab_notes = array();
 foreach($DB_TAB_NOTE as $DB_ROW_NOTE)
@@ -52,7 +52,7 @@ foreach($DB_TAB_NOTE as $DB_ROW_NOTE)
 
 // états d'acquisition
 
-$DB_TAB_ACQUIS = DB_STRUCTURE_PARAMETRE::DB_lister_parametres_acquis( FALSE /*only_actifs*/ );
+$DB_TAB_ACQUIS = DB_STRUCTURE_PUBLIC::DB_lister_parametres_acquis( FALSE /*only_actifs*/ );
 
 $tab_acquis = array();
 foreach($DB_TAB_ACQUIS as $DB_ROW_ACQUIS)

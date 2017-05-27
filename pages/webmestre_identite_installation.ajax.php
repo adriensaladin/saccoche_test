@@ -168,7 +168,7 @@ if( ($action=='enregistrer') && ( !$uai || Outil::tester_UAI($uai) ) && $denomin
     $tab_parametres = array();
     $tab_parametres['webmestre_uai']          = $uai;
     $tab_parametres['webmestre_denomination'] = $denomination;
-    DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
+    DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   }
   // On modifie aussi la session
   $_SESSION['USER_NOM']    = $nom ;

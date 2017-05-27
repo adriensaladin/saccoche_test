@@ -43,7 +43,6 @@ foreach($tab_sous_menu as $sous_menu_section => $sous_menu_titre)
 {
   // Pour ne pas avoir à faire une requête sur la base à chaque fois pour chaque sous-menu, on se sert de la chaîne du menu mis en session
   $sous_menu_class = 'referentiel_'.$sous_menu_section;
-  // Certains menus peuvent être interdits d'accès ou d'aspect désactivés
   if( strpos( $_SESSION['MENU'] , 'class="'.$sous_menu_class.'"' ) )
   {
     $class = ($sous_menu_section==$SECTION) ? ' class="actif"' : '' ;

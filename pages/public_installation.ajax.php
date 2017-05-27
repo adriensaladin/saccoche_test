@@ -526,7 +526,7 @@ if( $step==7 )
       $tab_parametres['webmestre_uai']              = HEBERGEUR_UAI;
       $tab_parametres['webmestre_denomination']     = HEBERGEUR_DENOMINATION;
       $tab_parametres['etablissement_denomination'] = HEBERGEUR_DENOMINATION;
-      DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
+      DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
       // Insérer un compte administrateur dans la base de la structure
       $password = Outil::fabriquer_mdp();
       $user_id = DB_STRUCTURE_COMMUN::DB_ajouter_utilisateur( 0 /*user_sconet_id*/ , 0 /*user_sconet_elenoet*/ , '' /*reference*/ , 'ADM' , 'I' /*user_genre*/ , WEBMESTRE_NOM , WEBMESTRE_PRENOM , NULL /*user_naissance_date*/ , WEBMESTRE_COURRIEL , 'user' /*user_email_origine*/ , 'admin' /*login*/ , Outil::crypter_mdp($password) );

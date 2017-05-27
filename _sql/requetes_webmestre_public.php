@@ -186,7 +186,7 @@ public static function DB_creer_remplir_tables_webmestre()
       DB::close(SACOCHE_WEBMESTRE_BD_NAME);
     }
   }
-  // Il est arrivé que la fonction DB_modifier_parametre() retourne une erreur disant que la table n'existe pas.
+  // Il est arrivé que la fonction DB_modifier_parametres() retourne une erreur disant que la table n'existe pas.
   // Comme si les requêtes précédentes étaient en cache, et pas encore toutes passées (parce qu'au final, quand on va voir la base, toutes les tables sont bien là).
   // Est-ce que c'est possible au vu du fonctionnement de la classe de connexion ? Et, bien sûr, y a-t-il quelque chose à faire pour éviter ce problème ?
   // En attendant une réponse de SebR, j'ai mis ce sleep(1)... sans trop savoir si cela pouvait aider...

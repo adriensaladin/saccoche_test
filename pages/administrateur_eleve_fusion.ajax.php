@@ -96,8 +96,6 @@ if( ($action=='fusionner') && $id_actuel && $id_ancien )
     $tab_donnees[':password']       = $DB_ROW[0]['user_password'];
     $tab_donnees[':connexion_date'] = $DB_ROW[0]['user_connexion_date'];
     $tab_donnees[':param_accueil']  = $DB_ROW[0]['user_param_accueil'];
-    $tab_donnees[':param_menu']     = $DB_ROW[0]['user_param_menu'];
-    $tab_donnees[':param_favori']   = $DB_ROW[0]['user_param_favori'];
   }
   $tab_presence = array(
     ':sconet_id'     => 'user_sconet_id',

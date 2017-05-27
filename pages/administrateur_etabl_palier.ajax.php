@@ -47,7 +47,7 @@ if($action=='Choix_paliers')
   }
   // On mémorise aussi la liste des piliers actifs (base + session)
   $liste_paliers_actifs = implode(',',$tab_id);
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres( array('liste_paliers_actifs'=>$liste_paliers_actifs) );
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('liste_paliers_actifs'=>$liste_paliers_actifs) );
   $_SESSION['LISTE_PALIERS_ACTIFS'] = $liste_paliers_actifs;
   Json::end( TRUE );
 }

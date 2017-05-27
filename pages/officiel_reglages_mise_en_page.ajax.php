@@ -57,7 +57,7 @@ if($action=='coordonnees')
 {
   $tab_parametres = array();
   $tab_parametres['officiel_infos_etablissement'] = implode(',',$tab_coordonnees);
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'] = implode(',',$tab_coordonnees) ;
   Json::end( TRUE );
@@ -72,7 +72,7 @@ if( ($action=='responsables') && $infos_responsables && $nombre_exemplaires )
   $tab_parametres = array();
   $tab_parametres['officiel_infos_responsables'] = $infos_responsables;
   $tab_parametres['officiel_nombre_exemplaires'] = $nombre_exemplaires;
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['OFFICIEL']['INFOS_RESPONSABLES'] = $infos_responsables ;
   $_SESSION['OFFICIEL']['NOMBRE_EXEMPLAIRES'] = $nombre_exemplaires ;
@@ -99,7 +99,7 @@ if( ($action=='positionnement') && $infos_responsables && $horizontal_gauche && 
     $tab_parametres['enveloppe_vertical_milieu']   = $vertical_milieu;
     $tab_parametres['enveloppe_vertical_bas']      = $vertical_bas;
   }
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['OFFICIEL']['MARGE_GAUCHE']                     = $marge_gauche ;
   $_SESSION['OFFICIEL']['MARGE_DROITE']                     = $marge_droite ;
@@ -125,7 +125,7 @@ if( ($action=='signature') && $tampon_signature )
 {
   $tab_parametres = array();
   $tab_parametres['officiel_tampon_signature'] = $tampon_signature;
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres($tab_parametres);
   // On modifie aussi la session
   $_SESSION['OFFICIEL']['TAMPON_SIGNATURE'] = $tampon_signature ;
   Json::end( TRUE );

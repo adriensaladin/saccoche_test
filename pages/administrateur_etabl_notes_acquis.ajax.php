@@ -72,10 +72,10 @@ if( ($action=='save_notes') && isset($_POST['notes_actif']) && isset($_POST['not
     }
   }
   // Mettre à jour la base
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres( array('nombre_codes_notation'=>$nombre_codes_notation) );
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('nombre_codes_notation'=>$nombre_codes_notation) );
   foreach($TAB_NOTE as $note_id => $TAB)
   {
-    DB_STRUCTURE_PARAMETRE::DB_modifier_parametre_note( $note_id , $TAB['ACTIF'] , $TAB['ORDRE'] , $TAB['VALEUR'] , $TAB['IMAGE'] , $TAB['SIGLE'] , $TAB['LEGENDE'] , $TAB['CLAVIER'] );
+    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_parametre_note( $note_id , $TAB['ACTIF'] , $TAB['ORDRE'] , $TAB['VALEUR'] , $TAB['IMAGE'] , $TAB['SIGLE'] , $TAB['LEGENDE'] , $TAB['CLAVIER'] );
     // On prépare pour la session ensuite
     unset($TAB_NOTE[$note_id]['ORDRE']);
   }
@@ -139,10 +139,10 @@ if( ($action=='save_acquis') && isset($_POST['acquis_actif']) && isset($_POST['a
     }
   }
   // Mettre à jour la base
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres( array('nombre_etats_acquisition'=>$nombre_etats_acquisition) );
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array('nombre_etats_acquisition'=>$nombre_etats_acquisition) );
   foreach($TAB_ACQUIS as $acquis_id => $TAB)
   {
-    DB_STRUCTURE_PARAMETRE::DB_modifier_parametre_acquis( $acquis_id , $TAB['ACTIF'] , $TAB['ORDRE'] , $TAB['SEUIL_MIN'] , $TAB['SEUIL_MAX'] , $TAB['VALEUR'] , $TAB['COULEUR'] , $TAB['SIGLE'] , $TAB['LEGENDE'] );
+    DB_STRUCTURE_ADMINISTRATEUR::DB_modifier_parametre_acquis( $acquis_id , $TAB['ACTIF'] , $TAB['ORDRE'] , $TAB['SEUIL_MIN'] , $TAB['SEUIL_MAX'] , $TAB['VALEUR'] , $TAB['COULEUR'] , $TAB['SIGLE'] , $TAB['LEGENDE'] );
     // On prépare pour la session ensuite
     if(!$TAB['ACTIF'])
     {
@@ -241,7 +241,7 @@ if( ($action=='delete_symbole') && $image_id )
 {
   // dans la base
   DB_STRUCTURE_IMAGE::DB_supprimer_image_note( $image_id );
-  DB_STRUCTURE_PARAMETRE::DB_remplacer_parametre_note_image( 'upload_'.$image_id );
+  DB_STRUCTURE_ADMINISTRATEUR::DB_remplacer_parametre_note_image( 'upload_'.$image_id );
   // sur le disque
   FileSystem::supprimer_fichier( FileSystem::chemin_fichier_symbole('upload_'.$image_id,'h','perso') );
   FileSystem::supprimer_fichier( FileSystem::chemin_fichier_symbole('upload_'.$image_id,'v','perso') );

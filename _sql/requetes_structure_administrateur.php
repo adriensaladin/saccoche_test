@@ -708,7 +708,7 @@ public static function DB_modifier_adresse_parent($parent_id,$tab_adresse)
 /**
  * Modifier un ou plusieurs paramètres d'un utilisateur
  *
- * - Certains champ ("user_langue", "user_daltonisme", "user_connexion_date", "eleve_langue", "eleve_brevet_serie", "user_param_accueil", "user_param_menu", "user_param_favori") ne sont ici forcés que via la fusion de comptes élèves.
+ * - Certains champ ("user_langue", "user_daltonisme", "user_connexion_date", "eleve_langue", "eleve_brevet_serie" , "user_param_accueil") ne sont ici forcés que via la fusion de comptes élèves.
  * - On peut envisager une modification de "profil_sigle" entre personnels.
  * - La mise à jour de la table [sacoche_user_switch] s'effectue lors de l'initialisation annuelle.
  *
@@ -749,8 +749,6 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':id_ent'        : $tab_set[] = 'user_id_ent='        .$key; break;
       case ':id_gepi'       : $tab_set[] = 'user_id_gepi='       .$key; break;
       case ':param_accueil' : $tab_set[] = 'user_param_accueil=' .$key; break;
-      case ':param_menu'    : $tab_set[] = 'user_param_menu='    .$key; break;
-      case ':param_favori'  : $tab_set[] = 'user_param_favori='  .$key; break;
     }
   }
   if(count($tab_set))
@@ -860,6 +858,127 @@ public static function DB_modifier_profil_parametre( $profil_sigle , $champ , $v
   $DB_VAR = array(
     ':profil_sigle' => $profil_sigle,
     ':valeur'       => $valeur,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_parametre_note
+ *
+ * @param int    $note_id
+ * @param int    $note_actif
+ * @param int    $note_ordre
+ * @param int    $note_valeur
+ * @param string $note_image
+ * @param string $note_sigle
+ * @param string $note_legende
+ * @param int    $note_clavier
+ * @return void
+ */
+public static function DB_modifier_parametre_note( $note_id , $note_actif , $note_ordre , $note_valeur , $note_image , $note_sigle , $note_legende , $note_clavier )
+{
+  $DB_SQL = 'UPDATE sacoche_parametre_note ';
+  $DB_SQL.= 'SET note_actif=:note_actif, note_ordre=:note_ordre, note_valeur=:note_valeur, note_image=:note_image, note_sigle=:note_sigle, note_legende=:note_legende, note_clavier=:note_clavier ';
+  $DB_SQL.= 'WHERE note_id=:note_id ';
+  $DB_VAR = array(
+    ':note_id'      => $note_id,
+    ':note_actif'   => $note_actif,
+    ':note_ordre'   => $note_ordre,
+    ':note_valeur'  => $note_valeur,
+    ':note_image'   => $note_image,
+    ':note_sigle'   => $note_sigle,
+    ':note_legende' => $note_legende,
+    ':note_clavier' => $note_clavier,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * remplacer_parametre_note_image
+ *
+ * @param string $note_image
+ * @return void
+ */
+public static function DB_remplacer_parametre_note_image( $note_image )
+{
+  $DB_SQL = 'UPDATE sacoche_parametre_note ';
+  $DB_SQL.= 'SET note_image="X" ';
+  $DB_SQL.= 'WHERE note_image=:note_image ';
+  $DB_VAR = array(
+    ':note_image' => $note_image,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_parametre_acquis
+ *
+ * @param int    $acquis_id
+ * @param int    $acquis_actif
+ * @param int    $acquis_ordre
+ * @param int    $acquis_seuil_min
+ * @param int    $acquis_seuil_max
+ * @param int    $acquis_valeur
+ * @param string $acquis_couleur
+ * @param string $acquis_sigle
+ * @param string $acquis_legende
+ * @return void
+ */
+public static function DB_modifier_parametre_acquis( $acquis_id , $acquis_actif , $acquis_ordre , $acquis_seuil_min , $acquis_seuil_max , $acquis_valeur , $acquis_couleur , $acquis_sigle , $acquis_legende )
+{
+  $DB_SQL = 'UPDATE sacoche_parametre_acquis ';
+  $DB_SQL.= 'SET acquis_actif=:acquis_actif, acquis_ordre=:acquis_ordre, acquis_seuil_min=:acquis_seuil_min, acquis_seuil_max=:acquis_seuil_max, acquis_valeur=:acquis_valeur, acquis_couleur=:acquis_couleur, acquis_sigle=:acquis_sigle, acquis_legende=:acquis_legende ';
+  $DB_SQL.= 'WHERE acquis_id=:acquis_id ';
+  $DB_VAR = array(
+    ':acquis_id'        => $acquis_id,
+    ':acquis_actif'     => $acquis_actif,
+    ':acquis_ordre'     => $acquis_ordre,
+    ':acquis_seuil_min' => $acquis_seuil_min,
+    ':acquis_seuil_max' => $acquis_seuil_max,
+    ':acquis_valeur'    => $acquis_valeur,
+    ':acquis_couleur'   => $acquis_couleur,
+    ':acquis_sigle'     => $acquis_sigle,
+    ':acquis_legende'   => $acquis_legende,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_parametre_note_valeur
+ *
+ * @param int $note_id
+ * @param int $note_valeur
+ * @return void
+ */
+public static function DB_modifier_parametre_note_valeur( $note_id , $note_valeur )
+{
+  $DB_SQL = 'UPDATE sacoche_parametre_note ';
+  $DB_SQL.= 'SET note_valeur=:note_valeur ';
+  $DB_SQL.= 'WHERE note_id=:note_id ';
+  $DB_VAR = array(
+    ':note_id'     => $note_id,
+    ':note_valeur' => $note_valeur,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * modifier_parametre_acquis_seuils
+ *
+ * @param int $acquis_id
+ * @param int $acquis_seuil_min
+ * @param int $acquis_seuil_max
+ * @return void
+ */
+public static function DB_modifier_parametre_acquis_seuils( $acquis_id , $acquis_seuil_min , $acquis_seuil_max )
+{
+  $DB_SQL = 'UPDATE sacoche_parametre_acquis ';
+  $DB_SQL.= 'SET acquis_seuil_min=:acquis_seuil_min , acquis_seuil_max=:acquis_seuil_max ';
+  $DB_SQL.= 'WHERE acquis_id=:acquis_id ';
+  $DB_VAR = array(
+    ':acquis_id'     => $acquis_id,
+    ':acquis_seuil_min' => $acquis_seuil_min,
+    ':acquis_seuil_max' => $acquis_seuil_max,
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }

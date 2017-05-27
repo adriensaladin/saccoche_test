@@ -165,7 +165,7 @@ class SessionUser
   public static function initialiser_utilisateur($BASE,$DB_ROW)
   {
     // Récupérer et Enregistrer en session les données associées à l'établissement (indices du tableau de session en majuscules).
-    $DB_TAB_PARAM = DB_STRUCTURE_PARAMETRE::DB_lister_parametres();
+    $DB_TAB_PARAM = DB_STRUCTURE_PUBLIC::DB_lister_parametres();
     $tab_type_entier = array(
       'SESAMATH_ID',
       'MOIS_BASCULE_ANNEE_SCOLAIRE',
@@ -288,8 +288,6 @@ class SessionUser
     $_SESSION['USER_ID_ENT']            = $DB_ROW['user_id_ent'];
     $_SESSION['USER_ID_GEPI']           = $DB_ROW['user_id_gepi'];
     $_SESSION['USER_PARAM_ACCUEIL']     = $DB_ROW['user_param_accueil'];
-    $_SESSION['USER_PARAM_MENU']        = $DB_ROW['user_param_menu'];
-    $_SESSION['USER_PARAM_FAVORI']      = $DB_ROW['user_param_favori'];
     $_SESSION['ELEVE_CLASSE_ID']        = (int) $DB_ROW['eleve_classe_id'];
     $_SESSION['ELEVE_CLASSE_NOM']       = $DB_ROW['groupe_nom'];
     $_SESSION['ELEVE_LANGUE']           = (int) $DB_ROW['eleve_langue'];
@@ -487,7 +485,7 @@ class SessionUser
     // Codes de notation - On récupère aussi les inactifs au cas où ils auraient été utilisés puis retirés.
     $_SESSION['NOTE'] = array();
     $_SESSION['NOTE_ACTIF'] = array();
-    $DB_TAB_NOTE = DB_STRUCTURE_PARAMETRE::DB_lister_parametres_note( TRUE /*priority_actifs*/ );
+    $DB_TAB_NOTE = DB_STRUCTURE_PUBLIC::DB_lister_parametres_note( TRUE /*priority_actifs*/ );
     foreach($DB_TAB_NOTE as $DB_ROW_NOTE)
     {
       $_SESSION['NOTE'][(int)$DB_ROW_NOTE['note_id']] = array(
@@ -505,7 +503,7 @@ class SessionUser
     }
     // États d'acquisition - Les couleurs pour les daltoniens servent aussi pour les impressions PDF en niveau de gris
     $_SESSION['ACQUIS'] = array();
-    $DB_TAB_ACQUIS = DB_STRUCTURE_PARAMETRE::DB_lister_parametres_acquis( TRUE /*only_actifs*/ );
+    $DB_TAB_ACQUIS = DB_STRUCTURE_PUBLIC::DB_lister_parametres_acquis( TRUE /*only_actifs*/ );
     foreach($DB_TAB_ACQUIS as $key => $DB_ROW_ACQUIS)
     {
       $_SESSION['ACQUIS'][(int)$DB_ROW_ACQUIS['acquis_id']] = array(
@@ -609,70 +607,34 @@ class SessionUser
   }
 
   /**
-   * Enregistrer en session le menu selon le profil et éventuellement les droits de l'utilisateur ou les paramétrages de l'administrateur.
+   * Enregistrer en session le menu selon le profil et éventuellement les droits de l'utilisateur.
    * 
    * @param void
    * @return void
    */
   public static function memoriser_menu()
   {
-    if( in_array($_SESSION['USER_PROFIL_TYPE'],array('eleve','parent','professeur','directeur')) )
-    {
-      if( is_null($_SESSION['USER_PARAM_MENU']) )
-      {
-        // L'utilisateur n'a pas enregistré de préférences : on surcharge par celles éventuelles de l'admin
-        $DB_ROW = DB_STRUCTURE_PARAMETRE::DB_recuperer_parametres_profil($_SESSION['USER_PROFIL_TYPE']);
-        $_SESSION['USER_PARAM_MENU']    = $DB_ROW['profil_param_menu'];
-        $_SESSION['USER_PARAM_FAVORI']  = $DB_ROW['profil_param_favori'];
-        $_SESSION['USER_PARAM_ORIGINE'] = is_null($_SESSION['USER_PARAM_MENU']) ? 'aucun' : 'admin' ;
-      }
-      else
-      {
-        $_SESSION['USER_PARAM_ORIGINE'] = 'prof';
-      }
-    }
     $line_height = 43+1; // @see ./_css/style.css --> #menu li li a {line-height:43px}
     $numero_menu = 0;
     require(CHEMIN_DOSSIER_MENUS.'menu_'.$_SESSION['USER_PROFIL_TYPE'].'.php'); // récupère $tab_menu & $tab_sous_menu
     $_SESSION['MENU'] = '<ul id="menu"><li><a class="boussole" href="#">'.html(Lang::_("MENU")).'</a><ul>'.NL;
     $nombre_menu = count($tab_menu);
-    $tab_param_menu = explode(',',$_SESSION['USER_PARAM_MENU']);
     foreach($tab_menu as $menu_id => $menu_titre)
     {
-      $disabled_menu = in_array($menu_id,$tab_param_menu) ? ' disabled' : '' ;
-      $_SESSION['MENU'] .= '<li><a class="fleche'.$disabled_menu.'" href="#">'.html($menu_titre).'</a><ul>'.NL;
+      $_SESSION['MENU'] .= '<li><a class="fleche" href="#">'.html($menu_titre).'</a><ul>'.NL;
       $nombre_sous_menu = count($tab_sous_menu[$menu_id]);
       $premier_sous_menu = TRUE;
       foreach($tab_sous_menu[$menu_id] as $sous_menu_id => $tab)
       {
-        $disabled_sousmenu = ( $disabled_menu || in_array($sous_menu_id,$tab_param_menu) || isset($tab['disabled']) ) ? ' disabled' : '' ;
         $nombre_cases_decalage = min( $numero_menu , $numero_menu-($nombre_menu-$nombre_sous_menu) );
         $style = ($premier_sous_menu && $nombre_cases_decalage) ? ' style="margin-top:-'.($nombre_cases_decalage*$line_height).'px"' : '' ;
-        $_SESSION['MENU'] .= '<li><a class="'.$tab['class'].$disabled_sousmenu.'"'.$style.' href="./index.php?'.$tab['href'].'">'.html($tab['texte']).'</a></li>'.NL;
+        $_SESSION['MENU'] .= '<li><a class="'.$tab['class'].'"'.$style.' href="./index.php?'.$tab['href'].'">'.html($tab['texte']).'</a></li>'.NL;
         $premier_sous_menu = FALSE;
       }
       $_SESSION['MENU'] .= '</ul></li>'.NL;
       $numero_menu++;
     }
     $_SESSION['MENU'] .= '</ul></li></ul>'.NL;
-    // On profite d'avoir le fichier du menu dispo pour s'occuper aussi des favoris en page d'accueil.
-    $_SESSION['FAVORI'] = '';
-    if( in_array($_SESSION['USER_PROFIL_TYPE'],array('eleve','parent','professeur','directeur')) && $_SESSION['USER_PARAM_FAVORI'] )
-    {
-      $tab_param_favori = explode(',',$_SESSION['USER_PARAM_FAVORI']);
-      $_SESSION['FAVORI'] .= '<div class="sousmenu">';
-      foreach($tab_menu as $menu_id => $menu_titre)
-      {
-        foreach($tab_sous_menu[$menu_id] as $sous_menu_id => $tab)
-        {
-          if(in_array($sous_menu_id,$tab_param_favori))
-          {
-            $_SESSION['FAVORI'] .= '<a href="./index.php?'.$tab['href'].'">'.html($tab['texte']).'</a>';
-          }
-        }
-      }
-      $_SESSION['FAVORI'] .= '</div>'.NL;
-    }
   }
 
   /**

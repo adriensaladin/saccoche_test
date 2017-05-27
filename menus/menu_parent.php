@@ -56,12 +56,11 @@ $tab_sous_menu = array
   ),
   'parametrage' => array
   (
-    'compte_password'         => array( 'texte' => Lang::_("Mot de passe")                 , 'class' => 'compte_password'   , 'href' => 'page=compte_password'         ),
-    'compte_email'            => array( 'texte' => Lang::_("Adresse e-mail & Abonnements") , 'class' => 'mail'              , 'href' => 'page=compte_email'            ),
-    'compte_switch'           => array( 'texte' => Lang::_("Bascule entre comptes")        , 'class' => 'compte_switch'     , 'href' => 'page=compte_switch'           ),
-    'compte_daltonisme'       => array( 'texte' => Lang::_("Daltonisme")                   , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme'       ),
-    'compte_langue'           => array( 'texte' => Lang::_("Langue")                       , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'           ),
-    'compte_menus_raccourcis' => array( 'texte' => Lang::_("Menus et raccourcis")          , 'class' => 'favori'            , 'href' => 'page=compte_menus_raccourcis' ),
+    'compte_password'   => array( 'texte' => Lang::_("Mot de passe")                 , 'class' => 'compte_password'   , 'href' => 'page=compte_password'   ),
+    'compte_email'      => array( 'texte' => Lang::_("Adresse e-mail & Abonnements") , 'class' => 'mail'              , 'href' => 'page=compte_email'      ),
+    'compte_switch'     => array( 'texte' => Lang::_("Bascule entre comptes")        , 'class' => 'compte_switch'     , 'href' => 'page=compte_switch'     ),
+    'compte_daltonisme' => array( 'texte' => Lang::_("Daltonisme")                   , 'class' => 'compte_daltonisme' , 'href' => 'page=compte_daltonisme' ),
+    'compte_langue'     => array( 'texte' => Lang::_("Langue")                       , 'class' => 'compte_langue'     , 'href' => 'page=compte_langue'     ),
   ),
   'evaluation' => array
   (
@@ -89,37 +88,37 @@ $tab_sous_menu = array
 // Voir le paramètrage des codes et des états d'acquisition.
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_NOTES_ACQUIS']))
 {
-  $tab_sous_menu['information']['consultation_codes_couleurs']['disabled'] = TRUE;
+  $tab_sous_menu['information']['consultation_codes_couleurs']['class'] .= ' disabled';
 }
 
 // Voir et simuler l'algorithme de calcul.
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_PARAM_ALGORITHME']))
 {
-  $tab_sous_menu['information']['consultation_algorithme']['disabled'] = TRUE;
+  $tab_sous_menu['information']['consultation_algorithme']['class'] .= ' disabled';
 }
 
 // Voir les référentiels en place (dans l'établissement) (pas de restriction pour le profil [administrateur]).
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_REFERENTIELS']))
 {
-  $tab_sous_menu['information']['consultation_referentiel_interne']['disabled'] = TRUE;
+  $tab_sous_menu['information']['consultation_referentiel_interne']['class'] .= ' disabled';
 }
 
 // Changer son mot de passe (pas de restriction pour les profils [administrateur] et [webmestre]).
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_MODIFIER_MDP']))
 {
-  $tab_sous_menu['parametrage']['compte_password']['disabled'] = TRUE;
+  $tab_sous_menu['parametrage']['compte_password']['class'] .= ' disabled';
 }
 
 // Grille d'items d'un référentiel.
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 {
-  $tab_sous_menu['releve']['releve_grille_referentiel']['disabled'] = TRUE;
+  $tab_sous_menu['releve']['releve_grille_referentiel']['class'] .= ' disabled';
 }
 
 // Relevé de maîtrise du socle (profils [parent] et [eleve] uniquement).
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_ACCES']))
 {
-  $tab_sous_menu['releve']['releve_socle2016']['disabled'] = TRUE;
+  $tab_sous_menu['releve']['releve_socle2016']['class'] .= ' disabled';
 }
 
 // Archives consultables des bilans officiels.
@@ -131,7 +130,7 @@ foreach($tab_droits as $droit)
 }
 if(!$droit_voir_archives_pdf)
 {
-    $tab_sous_menu['officiel']['officiel_voir_archive']['disabled'] = TRUE;
+    $tab_sous_menu['officiel']['officiel_voir_archive']['class'] .= ' disabled';
 }
 
 ?>

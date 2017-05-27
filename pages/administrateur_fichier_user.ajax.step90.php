@@ -44,7 +44,7 @@ if($import_profil!='nomenclature')
   FileSystem::supprimer_fichier( CHEMIN_DOSSIER_IMPORT.$fichier_nom_debut.'date_sortie.txt'   , TRUE /*verif_exist*/ );
   // Retenir qu'un import a été effectué
   $nom_variable = 'date_last_import_'.$import_profil.'s';
-  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres( array( $nom_variable => TODAY_MYSQL ) );
+  DB_STRUCTURE_COMMUN::DB_modifier_parametres( array( $nom_variable => TODAY_MYSQL ) );
   $_SESSION[Clean::upper($nom_variable)] = TODAY_MYSQL;
 }
 // Game over

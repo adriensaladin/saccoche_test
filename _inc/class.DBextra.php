@@ -83,7 +83,7 @@ class DBextra
    */
   public static function maj_base_structure_si_besoin($BASE)
   {
-    $version_base_structure = DB_STRUCTURE_MAJ_BASE::DB_version_base();
+    $version_base_structure = DB_STRUCTURE_PUBLIC::DB_version_base();
     if($version_base_structure != VERSION_BASE_STRUCTURE)
     {
       // On ne met pas à jour la base tant que le webmestre bloque l'accès à l'application, car sinon cela pourrait se produire avant le transfert de tous les fichiers.

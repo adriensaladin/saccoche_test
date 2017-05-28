@@ -706,8 +706,8 @@ public static function DB_lister_dates_saisies_items($liste_item_id)
  */
 public static function DB_ajouter_utilisateur( $user_sconet_id , $user_sconet_elenoet , $user_reference , $user_profil_sigle , $user_genre , $user_nom , $user_prenom , $user_naissance_date , $user_email , $user_email_origine , $user_login , $password_crypte , $user_id_ent='' , $user_id_gepi='' , $eleve_classe_id=0 , $eleve_uai_origine='' , $eleve_lv1=100 , $eleve_lv2=100 )
 {
-  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_email_origine, user_login, user_password,   eleve_classe_id, eleve_lv1, eleve_lv2, eleve_uai_origine, user_id_ent, user_id_gepi, profil_param_menu, profil_param_favori) ';
-  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_genre,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_email_origine,:user_login,:password_crypte,:eleve_classe_id,:eleve_lv1,:eleve_lv2,:eleve_uai_origine,:user_id_ent,:user_id_gepi,:profil_param_menu,:profil_param_favori)';
+  $DB_SQL = 'INSERT INTO sacoche_user(user_sconet_id, user_sconet_elenoet, user_reference, user_profil_sigle, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_email_origine, user_login, user_password,   eleve_classe_id, eleve_lv1, eleve_lv2, eleve_uai_origine, user_id_ent, user_id_gepi, user_param_menu, user_param_favori) ';
+  $DB_SQL.= 'VALUES(                 :user_sconet_id,:user_sconet_elenoet,:user_reference,:user_profil_sigle,:user_genre,:user_nom,:user_prenom,:user_naissance_date,:user_email,:user_email_origine,:user_login,:password_crypte,:eleve_classe_id,:eleve_lv1,:eleve_lv2,:eleve_uai_origine,:user_id_ent,:user_id_gepi,:user_param_menu,:user_param_favori)';
   $DB_VAR = array(
     ':user_sconet_id'      => $user_sconet_id,
     ':user_sconet_elenoet' => $user_sconet_elenoet,
@@ -727,8 +727,8 @@ public static function DB_ajouter_utilisateur( $user_sconet_id , $user_sconet_el
     ':eleve_uai_origine'   => $eleve_uai_origine,
     ':user_id_ent'         => $user_id_ent,
     ':user_id_gepi'        => $user_id_gepi,
-    ':profil_param_menu'   => NULL, // pas de valeur par défaut possible
-    ':profil_param_favori' => NULL, // pas de valeur par défaut possible
+    ':user_param_menu'     => NULL, // pas de valeur par défaut possible
+    ':user_param_favori'   => NULL, // pas de valeur par défaut possible
   );
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   return DB::getLastOid(SACOCHE_STRUCTURE_BD_NAME);

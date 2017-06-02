@@ -100,6 +100,11 @@ $(document).ready
         changer_groupe();
       }
     );
+    // Cas où il n'y aurait qu'une entrée déjà préselectionnée (délégation aux profs principaux par exemple...)
+    if( $("#select_groupe").val() )
+    {
+      changer_groupe();
+    }
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Soumission du formulaire

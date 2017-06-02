@@ -811,13 +811,15 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
   <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__imprimer_saisies">DOC : Tableaux de positionnements / d'appréciations.</a></span></p>
   <p class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</p>
   <ul class="puce">
-    <li><button id="imprimer_donnees_eleves_prof" type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève et le groupe classe.</li>
-    <li><button id="imprimer_donnees_eleves_collegues" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues pour chaque élève.</li>
-    <li><button id="imprimer_donnees_classe_collegues" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues sur le groupe classe.</li>
-    <li><button id="imprimer_donnees_eleves_syntheses" type="button" class="imprimer">Archiver / Imprimer</button> les appréciations de synthèse générale pour chaque élève.</li>
-    <li><button id="imprimer_donnees_eleves_positionnements" type="button" class="imprimer">Archiver / Imprimer</button> le tableau des positionnements pour chaque élève.</li>
-    <li><button id="imprimer_donnees_eleves_recapitulatif" type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif annuel des positionnements et appréciations par élève.</li>
-    <li><button id="imprimer_donnees_eleves_affelnet" type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif des points calculés pour saisie dans <em>Affelnet</em> si hors <em>LSU</em>.</li>
+    <li data-periodicite="periode"><button id="imprimer_donnees_eleves_prof"             type="button" class="imprimer">Archiver / Imprimer</button> mes appréciations pour chaque élève et le groupe classe.</li>
+    <li data-periodicite="periode"><button id="imprimer_donnees_eleves_collegues"        type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues pour chaque élève.</li>
+    <li data-periodicite="periode"><button id="imprimer_donnees_classe_collegues"        type="button" class="imprimer">Archiver / Imprimer</button> les appréciations des collègues sur le groupe classe.</li>
+    <li data-periodicite="periode"><button id="imprimer_donnees_eleves_syntheses"        type="button" class="imprimer">Archiver / Imprimer</button> les appréciations de synthèse générale pour chaque élève.</li>
+    <li data-periodicite="periode"><button id="imprimer_donnees_eleves_positionnements"  type="button" class="imprimer">Archiver / Imprimer</button> le tableau des positionnements pour chaque élève.</li>
+    <li data-periodicite="periode"><button id="imprimer_donnees_eleves_recapitulatif"    type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif annuel des positionnements et appréciations par élève.</li>
+    <li data-periodicite="periode"><button id="imprimer_donnees_eleves_affelnet"         type="button" class="imprimer">Archiver / Imprimer</button> un récapitulatif des points calculés pour saisie dans <em>Affelnet</em> si hors <em>LSU</em>.</li>
+    <li data-periodicite="cycle"  ><button id="imprimer_donnees_eleves_socle_maitrise"   type="button" class="imprimer">Archiver / Imprimer</button> le tableau des positionnements sur le socle pour chaque élève.</li>
+    <li data-periodicite="cycle"  ><button id="imprimer_donnees_eleves_socle_points_dnb" type="button" class="imprimer">Archiver / Imprimer</button> le tableau des points du brevet pour chaque élève.</li>
   </ul>
   <hr />
   <p><label id="ajax_msg_archiver_imprimer">&nbsp;</label></p>

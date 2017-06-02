@@ -101,7 +101,7 @@ class Layout
       Layout::$is_opengraph       = TRUE;
       Layout::$is_favicon         = TRUE;
       Layout::$is_rss             = TRUE;
-      Layout::$is_server_xss_head = (IS_HEBERGEMENT_SESAMATH) ? TRUE : FALSE ;;
+      Layout::$is_server_xss_head = (IS_HEBERGEMENT_SESAMATH) ? TRUE : FALSE ;
       Layout::$is_add_noscript    = ($config=='portail') ? TRUE : FALSE ; // Pour l'appli la ligne est déjà incluse à un endroit plus approprié
       Layout::$body_class         = ($config=='portail') ? '' : ' class="'.substr($config,5).'"' ;
     }

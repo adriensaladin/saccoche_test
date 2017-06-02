@@ -63,20 +63,9 @@ $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matie
 // Récupérer et mettre en session les infos sur les seuils enregistrés
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($PAGE_PERIODICITE=='periode') && !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
+if( !in_array($PAGE_COLONNE,array('moyenne','pourcentage')) )
 {
   $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos( $PAGE_REF , $PAGE_COLONNE );
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $id = $DB_ROW['livret_colonne_id'] % 10 ; // 1 2 3 4
-    $_SESSION['LIVRET'][$id]['SEUIL_MIN'] = $DB_ROW['livret_seuil_min'];
-    $_SESSION['LIVRET'][$id]['SEUIL_MAX'] = $DB_ROW['livret_seuil_max'];
-    $_SESSION['LIVRET'][$id]['LEGENDE']   = $DB_ROW['livret_colonne_legende'];
-  }
-}
-elseif($PAGE_PERIODICITE=='cycle')
-{
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_page_seuils_infos($PAGE_REF);
   foreach($DB_TAB as $DB_ROW)
   {
     $id = $DB_ROW['livret_colonne_id'] % 10 ; // 1 2 3 4
@@ -198,7 +187,7 @@ $prof_nom = ($action=='imprimer_donnees_eleves_prof') ? $_SESSION['USER_NOM'].' 
 $tab_moyenne_exception_matieres = array();
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 1/9 imprimer_donnees_eleves_prof : Mes appréciations pour chaque élève et le groupe classe
+// Cas 1/7 imprimer_donnees_eleves_prof : Mes appréciations pour chaque élève et le groupe classe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_prof')
@@ -290,7 +279,7 @@ if($action=='imprimer_donnees_eleves_prof')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 2/9 imprimer_donnees_eleves_collegues : Appréciations des collègues pour chaque élève
+// Cas 2/7 imprimer_donnees_eleves_collegues : Appréciations des collègues pour chaque élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_collegues')
@@ -391,7 +380,7 @@ if($action=='imprimer_donnees_eleves_collegues')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 3/9 imprimer_donnees_classe_collegues : Appréciations des collègues sur le groupe classe
+// Cas 3/7 imprimer_donnees_classe_collegues : Appréciations des collègues sur le groupe classe
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_classe_collegues')
@@ -474,7 +463,7 @@ if($action=='imprimer_donnees_classe_collegues')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 4/9 imprimer_donnees_eleves_syntheses : Appréciations de synthèse générale pour chaque élève
+// Cas 4/7 imprimer_donnees_eleves_syntheses : Appréciations de synthèse générale pour chaque élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_syntheses')
@@ -525,12 +514,12 @@ if($action=='imprimer_donnees_eleves_syntheses')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 5/9 imprimer_donnees_eleves_positionnements : Tableau des positionnements pour chaque élève
+// Cas 5/7 imprimer_donnees_eleves_positionnements : Tableau des positionnements pour chaque élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_positionnements')
 {
-  // Rechercher les positionnements enregistrés pour les élèves
+  // Rechercher les notes enregistrées pour les élèves
   $DB_TAB = array_merge
   (
     DB_STRUCTURE_LIVRET::DB_recuperer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , '"eval"' /*liste_rubrique_type*/ , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ ) ,
@@ -587,7 +576,7 @@ if($action=='imprimer_donnees_eleves_positionnements')
     $archivage_tableau_CSV .= $separateur.'"'.$rubrique_nom.'"';
   }
   $archivage_tableau_CSV .= "\r\n";
-  // ligne suivantes : élèves, positionnements
+  // ligne suivantes : élèves, notes
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
   $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->marge_haut+$archivage_tableau_PDF->etiquette_hauteur );
   foreach($tab_eleve_id as $eleve_id => $tab_eleve)
@@ -607,7 +596,7 @@ if($action=='imprimer_donnees_eleves_positionnements')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 6/9 imprimer_donnees_eleves_recapitulatif : Récapitulatif annuel des positionnements et appréciations par élève
+// Cas 6/7 imprimer_donnees_eleves_recapitulatif : Récapitulatif annuel des positionnements et appréciations par élève
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_recapitulatif')
@@ -752,7 +741,7 @@ if($action=='imprimer_donnees_eleves_recapitulatif')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 7/9 imprimer_donnees_eleves_affelnet : Récapitulatif des points calculés pour saisie dans Affelnet si hors LSU
+// Cas 7/7 imprimer_donnees_eleves_affelnet : Récapitulatif des points calculés pour saisie dans Affelnet si hors LSU
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='imprimer_donnees_eleves_affelnet')
@@ -883,133 +872,6 @@ if($action=='imprimer_donnees_eleves_affelnet')
     }
   }
   $periode_nom = 'Année Scolaire';
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cas 8/9 imprimer_donnees_eleves_socle_maitrise : Tableau des positionnements sur le socle pour chaque élève
-// Cas 9/9 imprimer_donnees_eleves_socle_points_dnb : Tableau des points du brevet pour chaque élève
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if( ($action=='imprimer_donnees_eleves_socle_maitrise') || ($action=='imprimer_donnees_eleves_socle_points_dnb') )
-{
-  $tab_points_valeur   = array( 0=>0 , 1=>10 , 2=>25 , 3=>40 , 4=>50 );
-  $tab_points_enscompl = array( 0=>0                 , 3=>10 , 4=>20 );
-  // Récupération de la liste des domaines et composantes du socle (indépendant du cycle sélectionné)
-  $tab_rubrique = array();
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_socle2016_arborescence();
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $rubrique_id = ($DB_ROW['socle_domaine_id']==1) ? $DB_ROW['socle_composante_id'] : $DB_ROW['socle_domaine_id']*10 ;
-    $txt_abrev_domaine = 'Domaine '.$DB_ROW['socle_domaine_id'];
-    $txt_abrev_composante = ($DB_ROW['socle_domaine_id']==1) ? ' - Composante '.($DB_ROW['socle_composante_id']%10) : '' ;
-    $txt_abrev = $txt_abrev_domaine.$txt_abrev_composante;
-    $tab_rubrique[$rubrique_id] = $txt_abrev;
-  }
-  if($PAGE_REF=='cycle4')
-  {
-    $tab_rubrique['enscompl'] = 'Enseignement de complément' ;
-  }
-  if($action=='imprimer_donnees_eleves_socle_points_dnb')
-  {
-    $tab_rubrique[0] = 'Nombre de points (sur 400)' ;
-  }
-  $nb_rubriques = count($tab_rubrique);
-  // Récupérer les enseignements complémentaires suivi pour les élèves concernés
-  if($PAGE_REF=='cycle4')
-  {
-    $tab_enscompl_eleve = array();
-    $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_eleve_enscompl( $liste_eleve_id );
-    foreach($DB_TAB as $DB_ROW)
-    {
-      // 1 enseignement complémentaire au maximum par élève
-      $tab_enscompl_eleve[$DB_ROW['eleve_id']][$DB_ROW['livret_enscompl_id']] = TRUE;
-    }
-  }
-  // Rechercher les positionnements enregistrés pour les élèves
-  $liste_rubrique_type = ($PAGE_REF=='cycle4') ? '"socle","enscompl"' : '"socle"' ;
-  $DB_TAB = DB_STRUCTURE_LIVRET::DB_recuperer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE , $JOINTURE_PERIODE , $liste_rubrique_type , $liste_eleve_id , 0 /*prof_id*/ , FALSE /*with_periodes_avant*/ );
-  // Répertorier les saisies dans le tableau $tab_saisie
-  $tab_saisie   = array();  // [eleve_id][rubrique_id] => positionnement
-  foreach($DB_TAB as $DB_ROW)
-  {
-    // Test pour vérifier, en cas d'enseignement de complément, que c'est bien celui suivi par l'élève
-    if( ($PAGE_REF!='cycle4') || ($DB_ROW['rubrique_type']!='enscompl') || isset($tab_enscompl_eleve[$DB_ROW['eleve_id']][$DB_ROW['rubrique_id']]) )
-    {
-      $pourcentage = !is_null($DB_ROW['saisie_valeur']) ? $DB_ROW['saisie_valeur'] : FALSE ;
-      $indice = OutilBilan::determiner_degre_maitrise($pourcentage);
-      if($DB_ROW['rubrique_type']=='socle')
-      {
-        $rubrique_id = $DB_ROW['rubrique_id'] ;
-        $tab_saisie[$DB_ROW['eleve_id']][$rubrique_id]['indice'] = $indice;
-        $tab_saisie[$DB_ROW['eleve_id']][$rubrique_id]['points'] = ($indice!==FALSE) ? $tab_points_valeur[$indice] : FALSE ;
-      }
-      elseif($DB_ROW['rubrique_type']=='enscompl')
-      {
-        $rubrique_id = 'enscompl' ;
-        $tab_saisie[$DB_ROW['eleve_id']][$rubrique_id]['indice'] = $indice;
-        $tab_saisie[$DB_ROW['eleve_id']][$rubrique_id]['points'] = ($indice!==FALSE) ? $tab_points_enscompl[$indice] : FALSE ;
-      }
-      if($action=='imprimer_donnees_eleves_socle_points_dnb')
-      {
-        if(!isset($tab_saisie[$DB_ROW['eleve_id']][0]))
-        {
-          $tab_saisie[$DB_ROW['eleve_id']][0]['points'] = 0;
-        }
-        $tab_saisie[$DB_ROW['eleve_id']][0]['points'] += $tab_saisie[$DB_ROW['eleve_id']][$rubrique_id]['points'] ;
-      }
-    }
-  }
-  // Fabrication du PDF ; on a besoin de tourner du texte à 90°
-  $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'oui' /*couleur*/ );
-  $archivage_tableau_PDF->moyennes_initialiser( $nb_eleves , $nb_rubriques );
-  $separateur = ';';
-  // 1ère ligne : intitulés, noms rubriques
-  $periode_nom .= ' '.substr($PAGE_REF,-1);
-  $objet_document = ($action=='imprimer_donnees_eleves_socle_points_dnb') ? 'points_dnb' : 'livret' ;
-  $archivage_tableau_PDF->moyennes_intitule( $classe_nom , $periode_nom , $objet_document );
-  foreach($tab_rubrique as $rubrique_id => $rubrique_nom)
-  {
-    $archivage_tableau_PDF->moyennes_reference_rubrique( $rubrique_id , $rubrique_nom );
-  }
-  // ligne suivantes : élèves, positionnements
-  // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
-  $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->marge_haut+$archivage_tableau_PDF->etiquette_hauteur );
-  unset($tab_eleve_id[0]);
-  foreach($tab_eleve_id as $eleve_id => $tab_eleve)
-  {
-    extract($tab_eleve);  // $eleve_nom $eleve_prenom
-    $archivage_tableau_PDF->moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
-    foreach($tab_rubrique as $rubrique_id => $rubrique_nom)
-    {
-      if($rubrique_id)
-      {
-        $indice = !empty($tab_saisie[$eleve_id][$rubrique_id]) ? $tab_saisie[$eleve_id][$rubrique_id]['indice'] : FALSE ;
-        if($action=='imprimer_donnees_eleves_socle_maitrise')
-        {
-          if($rubrique_id!='enscompl')
-          {
-            $archivage_tableau_PDF->afficher_degre_maitrise( $indice , $indice /*valeur*/ , ' / 4' /*unit*/ , FALSE /*all_columns*/ );
-          }
-          else
-          {
-            $valeur = ($indice!==FALSE) ? $indice-2 : FALSE ;
-            $archivage_tableau_PDF->afficher_degre_maitrise( $indice , $valeur , ' / 2' /*unit*/ , FALSE /*all_columns*/ );
-          }
-        }
-        else
-        {
-          $points = !empty($tab_saisie[$eleve_id][$rubrique_id]) ? $tab_saisie[$eleve_id][$rubrique_id]['points'] : FALSE ;
-          $archivage_tableau_PDF->afficher_degre_maitrise( $indice , $points /*valeur*/ , ' pts' /*unit*/ , FALSE /*all_columns*/ );
-        }
-      }
-      else
-      {
-        $points = !empty($tab_saisie[$eleve_id][$rubrique_id]) ? $tab_saisie[$eleve_id][$rubrique_id]['points'] : '-' ;
-        $archivage_tableau_PDF-> moyennes_note( $eleve_id , $rubrique_id , $points , $objet_document );
-      }
-    }
-    $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->GetY()+$archivage_tableau_PDF->cases_hauteur );
-  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

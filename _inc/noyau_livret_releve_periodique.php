@@ -456,10 +456,10 @@ $tab_deja_affiche = array();
 if( ($make_html) || ($make_graph) )
 {
   $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;
-  $bouton_archivage  = (!$make_graph && ($BILAN_TYPE_ETABL=='college'))     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>' : '' ;
+  $bouton_print_appr = (!$make_graph && ($BILAN_TYPE_ETABL=='college'))     ? ' <button id="archiver_imprimer" type="button" class="imprimer">Archiver / Imprimer des données</button>' : '' ;
   $bouton_import_csv = (in_array($make_action,array('modifier','tamponner')) && ($BILAN_TYPE_ETABL=='college')) ? ' <button id="saisir_deport" type="button" class="fichier_export">Saisie déportée</button>' : '' ;
   $info_details      = (!$make_graph && !empty($tab_saisie_avant))          ? 'Cliquer sur <span class="toggle_plus"></span> / <span class="toggle_moins"></span> pour afficher / masquer le détail (<a href="#" id="montrer_details">tout montrer</a>).' : '' ;
-  $releve_HTML = (!$make_graph) ? '<div class="ti">'.$info_details.$bouton_archivage.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
+  $releve_HTML = (!$make_graph) ? '<div>'.$info_details.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
   // légende
   if( ($PAGE_COLONNE=='objectif') || ($PAGE_COLONNE=='position') )
   {

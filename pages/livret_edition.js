@@ -711,31 +711,13 @@ $(document).ready
       '#archiver_imprimer',
       function()
       {
-        if(memo_periode=='cycle')
+        if(memo_page_ref=='3e')
         {
-          $('#zone_archiver_imprimer').find('li[data-periodicite="periode"]').hide();
-          $('#zone_archiver_imprimer').find('li[data-periodicite="cycle"]').show();
-          if(memo_page_ref=='cycle4')
-          {
-            $('#imprimer_donnees_eleves_socle_points_dnb').prop('disabled',false);
-          }
-          else
-          {
-            $('#imprimer_donnees_eleves_socle_points_dnb').prop('disabled',true);
-          }
+          $('#imprimer_donnees_eleves_affelnet').prop('disabled',false);
         }
         else
         {
-          $('#zone_archiver_imprimer').find('li[data-periodicite="periode"]').show();
-          $('#zone_archiver_imprimer').find('li[data-periodicite="cycle"]').hide();
-          if(memo_page_ref=='3e')
-          {
-            $('#imprimer_donnees_eleves_affelnet').prop('disabled',false);
-          }
-          else
-          {
-            $('#imprimer_donnees_eleves_affelnet').prop('disabled',true);
-          }
+          $('#imprimer_donnees_eleves_affelnet').prop('disabled',true);
         }
         $('#ajax_msg_archiver_imprimer').removeAttr('class').html("");
         $.fancybox( { 'href':'#zone_archiver_imprimer' , onStart:function(){$('#zone_archiver_imprimer').css("display","block");} , onClosed:function(){$('#zone_archiver_imprimer').css("display","none");} , 'minHeight':300 , 'centerOnScroll':true } );
@@ -750,7 +732,7 @@ $(document).ready
     (
       function()
       {
-        // On ne désactive pas tous les boutons pour ne pas perdre l'état déjà désactivé de certains lors de la réactivation de tous...
+        $('#zone_archiver_imprimer button').prop('disabled',true);
         $('#ajax_msg_archiver_imprimer').attr('class','loader').html("En cours&hellip;");
         var f_action = $(this).attr('id');
         $.ajax
@@ -762,11 +744,13 @@ $(document).ready
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {
+              $('#zone_archiver_imprimer button').prop('disabled',false);
               $('#ajax_msg_archiver_imprimer').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
             },
             success : function(responseJSON)
             {
               initialiser_compteur();
+              $('#zone_archiver_imprimer button').prop('disabled',false);
               if(responseJSON['statut']==false)
               {
                 $('#ajax_msg_archiver_imprimer').attr('class','alerte').html(responseJSON['value']);
@@ -880,15 +864,15 @@ $(document).ready
           }
           else if(memo_rubrique_type=='epi')
           {
-            var texte = (memo_eleve) ? 'Implication de l&#8217;élève' : 'Projet réalisé' ; // ’ remplacé par &#8217; car ne s'affiche pas correctement sur le serveur de Bordeaux ; corresponce trouvée avec http://hapax.qc.ca/conversion.fr.html
+            var texte = (memo_eleve) ? 'Implication de l’élève' : 'Projet réalisé' ;
           }
           else if(memo_rubrique_type=='ap')
           {
-            var texte = (memo_eleve) ? 'Implication de l&#8217;élève' : 'Action réalisée' ; // ’ remplacé par &#8217; car ne s'affiche pas correctement sur le serveur de Bordeaux ; corresponce trouvée avec http://hapax.qc.ca/conversion.fr.html
+            var texte = (memo_eleve) ? 'Implication de l’élève' : 'Action réalisée' ;
           }
           else if(memo_rubrique_type=='parcours')
           {
-            var texte = (memo_eleve) ? 'Implication de l&#8217;élève' : 'Projet mis en oeuvre' ; // ’ remplacé par &#8217; car ne s'affiche pas correctement sur le serveur de Bordeaux ; corresponce trouvée avec http://hapax.qc.ca/conversion.fr.html
+            var texte = (memo_eleve) ? 'Implication de l’élève' : 'Projet mis en oeuvre' ;
           }
           else if(memo_rubrique_type=='bilan')
           {

@@ -243,11 +243,6 @@ class PDF_archivage_tableau extends PDF
       $ligne1 = 'Livret scolaire';
       $ligne2 = 'Tableau des positionnements';
     }
-    if($objet_document=='points_dnb')
-    {
-      $ligne1 = 'Livret scolaire';
-      $ligne2 = 'Tableau des points pour le brevet';
-    }
     if($objet_document=='brevet')
     {
       $ligne1 = 'Fiche Brevet';

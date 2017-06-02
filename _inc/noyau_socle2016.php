@@ -87,7 +87,7 @@ foreach($DB_TAB as $DB_ROW)
     $socle_domaine_id  = $DB_ROW['socle_domaine_id'];
     $tab_socle_domaine[$socle_domaine_id] = $DB_ROW['socle_domaine_nom_simple'];
   }
-  $DB_ROW['socle_composante_id']         = ( ($socle_detail=='detail') || ($socle_domaine_id==1) ) ? $DB_ROW['socle_composante_id']         : $socle_domaine_id*10 ;
+  $DB_ROW['socle_composante_id' ]        = ( ($socle_detail=='detail') || ($socle_domaine_id==1) ) ? $DB_ROW['socle_composante_id' ]        : $socle_domaine_id*10 ;
   $DB_ROW['socle_composante_nom_simple'] = ( ($socle_detail=='detail') || ($socle_domaine_id==1) ) ? $DB_ROW['socle_composante_nom_simple'] : 'Toutes composantes confondues' ;
   $socle_composante_id = $DB_ROW['socle_composante_id'];
   $tab_socle_composante[$socle_domaine_id][$socle_composante_id] = $DB_ROW['socle_composante_nom_simple'];

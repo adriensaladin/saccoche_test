@@ -133,7 +133,6 @@ foreach($DB_TAB as $DB_ROW)
   $_SESSION['LIVRET'][$id]['LEGENDE']   = $DB_ROW['livret_colonne_legende'];
 }
 $_SESSION['LIVRET'][4]['USED'] = FALSE;
-$tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // on maj du coup
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 /* 
@@ -165,9 +164,9 @@ $tab_graph_data = array();
 if( ($make_html) || ($make_graph) )
 {
   $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;
-  $bouton_archivage  = ''; // Bilans hors maternelle uniquement
+  $bouton_print_appr = ''; // Bilans périodiques uniquement
   $bouton_import_csv = ''; // Bilans périodiques du collège uniquement
-  $releve_HTML = (!$make_graph) ? '<div>'.$bouton_archivage.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
+  $releve_HTML = (!$make_graph) ? '<div>'.$bouton_print_appr.$bouton_print_test.$bouton_import_csv.'</div>'.NL : '<div id="div_graphique_synthese"></div>'.NL ;
   // légende
   $positionnement_texte = 'Réussite' ;
   $positionnement_title = array();

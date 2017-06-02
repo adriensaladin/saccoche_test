@@ -439,7 +439,7 @@ if( mb_strpos(URL_BASE,'localhost') || mb_strpos(URL_BASE,'127.0.0.1') || mb_str
 {
   $serveur_type = 'LOCAL';
 }
-elseif( mb_strpos(URL_BASE,'.devsesamath.net') )
+elseif( mb_strpos(URL_BASE,'.sesamath.net:8080') || mb_strpos(URL_BASE,'.sesamath.net:8443') )
 {
   $serveur_type = 'DEV';
 }
@@ -524,7 +524,7 @@ define('SERVEUR_BLOG_CONVENTION',SERVEUR_ASSO.'/blog/index.php/aM4');    // URL 
 // ============================================================================
 
 // test si c'est l'hébergement Sésamath qui est utilisé
-$is_hebergement_sesamath = ( mb_strpos(URL_BASE,'.sesamath.net') || mb_strpos(URL_BASE,'.devsesamath.net') ) ? TRUE : FALSE ;
+$is_hebergement_sesamath = (mb_strpos(URL_BASE,SERVEUR_PROJET)!==FALSE) ? TRUE : FALSE ;
 define('IS_HEBERGEMENT_SESAMATH', $is_hebergement_sesamath);
 // define('IS_HEBERGEMENT_SESAMATH', TRUE);
 

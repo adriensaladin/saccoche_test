@@ -678,11 +678,11 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     }
     if( !$delete_saisie && ($PAGE_COLONNE!='maitrise') )
     {
-      $tab_prof_classe = array();
       if(!empty($tab_prof[$rubrique_id]))
       {
         foreach($tab_prof[$rubrique_id] as $eleve_id => $tab)
         {
+          $tab_prof_classe = array();
           foreach($tab as $prof_id)
           {
             $tab_prof_classe[$prof_id] = $prof_id;

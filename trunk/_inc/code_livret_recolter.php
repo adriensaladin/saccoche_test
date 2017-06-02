@@ -350,7 +350,7 @@ if($BILAN_TYPE_ETABL=='ecole')
   $numero_colonne_classe_nom = -1;
   // Données de la ligne d'en-tête
   $tab_elements = $tab_ONDE[0];
-  foreach ($tab_elements as $numero=>$element)
+  foreach ($tab_elements as $numero => $element)
   {
     $numero_colonne_classe_id  = ($element=='Identifiant classe') ? $numero : $numero_colonne_classe_id ;
     $numero_colonne_classe_nom = ($element=='Libellé classe')     ? $numero : $numero_colonne_classe_nom ;

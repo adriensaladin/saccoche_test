@@ -847,9 +847,9 @@ class PDF extends FPDF
   // Méthode pour afficher un degré de maîtrise (valeur sur 100 et couleur de fond suivant l'indice du degré atteint)
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  public function afficher_degre_maitrise( $indice , $pourcentage , $pourcent='' , $all_columns=TRUE )
+  public function afficher_degre_maitrise( $indice , $valeur , $unite='' , $all_columns=TRUE )
   {
-    if($pourcentage===FALSE)
+    if($valeur===FALSE)
     {
       $largeur = ($all_columns) ? $this->cases_largeur * 4 : $this->cases_largeur ;
       $this->choisir_couleur_fond('blanc');
@@ -862,7 +862,7 @@ class PDF extends FPDF
         $this->choisir_couleur_fond('M'.$i.$this->couleur);
         if($i==$indice)
         {
-          $affichage = ($this->afficher_degre) ? $pourcentage.$pourcent : 'X' ;
+          $affichage = ($this->afficher_degre) ? $valeur.$unite : 'X' ;
         }
         else
         {
@@ -874,10 +874,8 @@ class PDF extends FPDF
     else
     {
       $this->choisir_couleur_fond('M'.$indice.$this->couleur);
-      $affichage = ($this->afficher_degre) ? $pourcentage.$pourcent : '' ;
-      $this->SetFont('Arial' , '' , $this->taille_police-2);
-      $this->Cell( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
-      $this->SetFont('Arial' , '' , $this->taille_police);
+      $affichage = ($this->afficher_degre) ? $valeur.$unite : '' ;
+      $this->CellFit( $this->cases_largeur , $this->cases_hauteur , $affichage , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
   }
 

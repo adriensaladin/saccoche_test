@@ -726,7 +726,7 @@ $tab_archive = array(
 // 'OFFICIEL'  => $_SESSION['OFFICIEL'],  // Pas besoin car pas de bloc adresse sur la version archivée
 if( in_array($PAGE_COLONNE,array('objectif','position')) )
 {
-  $tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // Besoin pour OutilBilan::determiner_degre_maitrise(), en cas de positionnement sans note ni pourcentage ou en cas de maitrise du socle
+  $tab_archive['session']['LIVRET'] = $_SESSION['LIVRET']; // Besoin pour OutilBilan::determiner_degre_maitrise() et la légende, en cas de positionnement sans note ni pourcentage ou en cas de maitrise du socle
 }
 
 $orientation  = ($PAGE_REF!='cycle1') ? 'portrait' : 'landscape' ;

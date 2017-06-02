@@ -88,9 +88,9 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && isset($_SESSION['ENFANT_NUM_RES
   if( strpos( $DB_ROW['archive_contenu'] , $find_me ) )
   {
     $replace_by = '"resp'.$num_resp.'":'.json_encode('Pris connaissance le '.TODAY_FR.' : '.To::texte_identite($_SESSION['USER_NOM'],FALSE,$_SESSION['USER_PRENOM'],FALSE,$_SESSION['USER_GENRE']));
+    $DB_ROW['archive_contenu'] = str_replace( $find_me , $replace_by , $DB_ROW['archive_contenu'] );
+    DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_archive_consultation( $officiel_archive_id , $DB_ROW['archive_contenu'] );
   }
-  $DB_ROW['archive_contenu'] = str_replace( $find_me , $replace_by , $DB_ROW['archive_contenu'] );
-  DB_STRUCTURE_OFFICIEL::DB_modifier_officiel_archive_consultation( $officiel_archive_id , $DB_ROW['archive_contenu'] );
 }
 
 // Enregistrement de la date d'accès

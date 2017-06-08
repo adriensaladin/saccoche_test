@@ -56,7 +56,7 @@ $tab_bon = array( "Bilan des acquisitions" );
 $tab_option = array(
   'periode'  => '<option value="">Non concerné</option>' ,
   'cycle'    => '<option value="">Non concerné</option>' ,
-  'jointure' => '<option value="S">Semestriel (2 périodes)</option><option value="T">Trimestriel (3 périodes)</option><option value="B">Bimestriel (4 périodes)</option>' ,
+  'jointure' => '<option value="T">Trimestriel</option><option value="S">Semestriel</option>' ,
 );
 $DB_TAB = DB_STRUCTURE_LIVRET::DB_lister_pages( FALSE /*with_info_classe*/ );
 foreach($DB_TAB as $DB_ROW)
@@ -118,9 +118,9 @@ Layout::add( 'js_inline_before' , 'var SERVEUR_LSU_PDF = "'.SERVEUR_LSU_PDF.'";'
       echo'<tr>';
       echo  '<td class="'.$td_class.'">'.html($classe_nom).'</td>';
       echo  '<td data-id="'.$classe_id.'">';
-      echo    '<label class="tab mini" for="f_periode_'.$classe_id.'">Périodique :</label><select id="f_periode_'.$classe_id.'" name="f_periode">'.$tab_option_classe['periode'].'</select> <select id="f_jointure_'.$classe_id.'" name="f_jointure" class="'.$class_jointure.'">'.$tab_option_classe['jointure'].'</select><br />';
-      echo    '<label class="tab mini" for="f_cycle_'.$classe_id.'">Fin de cycle :</label><select id="f_cycle_'.$classe_id.'" name="f_cycle">'.$tab_option_classe['cycle'].'</select><br />';
-      echo    '<label class="tab mini"></label><span></span>';
+      echo    '<label class="tab" for="f_periode_'.$classe_id.'">Périodique :</label><select id="f_periode_'.$classe_id.'" name="f_periode">'.$tab_option_classe['periode'].'</select> <select id="f_jointure_'.$classe_id.'" name="f_jointure" class="'.$class_jointure.'">'.$tab_option_classe['jointure'].'</select><br />';
+      echo    '<label class="tab" for="f_cycle_'.$classe_id.'">Fin de cycle :</label><select id="f_cycle_'.$classe_id.'" name="f_cycle">'.$tab_option_classe['cycle'].'</select><br />';
+      echo    '<label class="tab"></label><span></span>';
       echo  '</td>';
       echo  '<td class="nu">'.implode('',$tab_image_classe).'</td>';
       echo'</tr>'.NL;

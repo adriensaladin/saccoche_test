@@ -643,9 +643,7 @@ class PDF_livret_scolaire extends PDF
     // Pour le prochain tirage (autre responsable légal...)
     $this->legende_deja_affichee = FALSE;
     // On calcule la hauteur de la ligne et la taille de la police pour faire rentrer les blocs suivants sur le verso (ou ce qu'il en reste)
-    $hauteur_disponible = max( $this->page_hauteur - $this->GetY() - $this->marge_bas , 10 );
-// echo __LINE__.';';
-// echo $hauteur_disponible.';';
+    $hauteur_disponible = $this->page_hauteur - $this->GetY() - $this->marge_bas ;
     // $hauteur_ligne_minimale = 4; // pas de hauteur minimale, on impose seulement 2 pages !
     $hauteur_ligne_maximale = ($this->lignes_hauteur>5) ? $this->lignes_hauteur : 6 ; // on continue autant que possible avec la taille précédente, sauf si elle est petite
     $this->lignes_hauteur = round( $hauteur_disponible / $nb_lignes_eleve_autre_total , 1 , PHP_ROUND_HALF_DOWN ) ; // valeur approchée au dixième près par défaut

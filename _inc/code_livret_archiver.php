@@ -882,30 +882,7 @@ if($action=='imprimer_donnees_eleves_affelnet')
       $archivage_tableau_PDF->recapitulatif_rubrique_affelnet( $tab_nb_lignes[$eleve_id][$rubrique_id] , $rubrique_nom , $tab_prof , $tab_notes , $tab_points , $moyenne_eleve );
     }
   }
-  // On ajoute un tableau récapitulatif ; on a besoin de tourner du texte à 90°
   $periode_nom = 'Année Scolaire';
-  $archivage_tableau_PDF->moyennes_initialiser( $nb_eleves , $nb_rubriques );
-  $separateur = ';';
-  // 1ère ligne : intitulés, noms rubriques
-  $archivage_tableau_PDF->moyennes_intitule( $classe_nom , $periode_nom , 'affelnet' /*objet_document*/ );
-  foreach($tab_rubrique['eval'] as $rubrique_id => $rubrique_nom)
-  {
-    $archivage_tableau_PDF->moyennes_reference_rubrique( $rubrique_id , $rubrique_nom );
-  }
-  // ligne suivantes : élèves, positionnements
-  // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
-  $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->marge_haut+$archivage_tableau_PDF->etiquette_hauteur );
-  foreach($tab_eleve_id as $eleve_id => $tab_eleve)
-  {
-    extract($tab_eleve);  // $eleve_nom $eleve_prenom
-    $archivage_tableau_PDF->moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
-    foreach($tab_rubrique['eval'] as $rubrique_id => $rubrique_nom)
-    {
-      $moyenne_eleve = !is_null($tab_moyennes[$rubrique_id][$eleve_id]) ? str_replace('.',',',$tab_moyennes[$rubrique_id][$eleve_id]) : '-' ;
-      $archivage_tableau_PDF->moyennes_note( $eleve_id , $rubrique_id , $moyenne_eleve , 'affelnet' /*objet_document*/ );
-    }
-    $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->GetY()+$archivage_tableau_PDF->cases_hauteur );
-  }
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -983,41 +960,17 @@ if( ($action=='imprimer_donnees_eleves_socle_maitrise') || ($action=='imprimer_d
     }
   }
   // Fabrication du PDF ; on a besoin de tourner du texte à 90°
-  // Fabrication d'un CSV en parallèle
   $archivage_tableau_PDF = new PDF_archivage_tableau( FALSE /*officiel*/ , 'portrait' /*orientation*/ , 10 /*marge_gauche*/ , 10 /*marge_droite*/ , 5 /*marge_haut*/ , 12 /*marge_bas*/ , 'oui' /*couleur*/ );
   $archivage_tableau_PDF->moyennes_initialiser( $nb_eleves , $nb_rubriques );
-  $archivage_tableau_CSV = '';
   $separateur = ';';
-  if($action=='imprimer_donnees_eleves_socle_maitrise')
-  {
-    $archivage_tableau_CSV .= '"I = Maîtrise insuffisante"'.$separateur.'"F = Maîtrise fragile"'.$separateur.'"S = Maîtrise satisfaisante"'.$separateur.'"T = Très bonne maîtrise"'.$separateur.'"A = Atteint"'.$separateur.'"D = Dépassé"'."\r\n"."\r\n";
-    $tab_codes = array(
-      'socle' => array(
-        FALSE => '',
-        1 => 'I',
-        2 => 'F',
-        3 => 'S',
-        4 => 'T',
-      ),
-      'enscompl' => array(
-        FALSE => '',
-        1 => 'A',
-        2 => 'D',
-      ),
-    );
-  }
   // 1ère ligne : intitulés, noms rubriques
   $periode_nom .= ' '.substr($PAGE_REF,-1);
   $objet_document = ($action=='imprimer_donnees_eleves_socle_points_dnb') ? 'points_dnb' : 'livret' ;
-  $objet_csv = ($action=='imprimer_donnees_eleves_socle_points_dnb') ? 'Points pour le brevet' : 'Positionnements sur le socle' ;
   $archivage_tableau_PDF->moyennes_intitule( $classe_nom , $periode_nom , $objet_document );
-  $archivage_tableau_CSV .= '"'.$classe_nom.' | '.$periode_nom.'"'.' | '.$objet_document.'"';
   foreach($tab_rubrique as $rubrique_id => $rubrique_nom)
   {
     $archivage_tableau_PDF->moyennes_reference_rubrique( $rubrique_id , $rubrique_nom );
-    $archivage_tableau_CSV .= $separateur.'"'.$rubrique_nom.'"';
   }
-  $archivage_tableau_CSV .= "\r\n";
   // ligne suivantes : élèves, positionnements
   // Pour avoir les élèves dans l'ordre alphabétique, il faut utiliser $tab_eleve_id.
   $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->marge_haut+$archivage_tableau_PDF->etiquette_hauteur );
@@ -1026,7 +979,6 @@ if( ($action=='imprimer_donnees_eleves_socle_maitrise') || ($action=='imprimer_d
   {
     extract($tab_eleve);  // $eleve_nom $eleve_prenom
     $archivage_tableau_PDF->moyennes_reference_eleve( $eleve_id , $eleve_nom.' '.$eleve_prenom );
-    $archivage_tableau_CSV .= '"'.$eleve_nom.' '.$eleve_prenom.'"';
     foreach($tab_rubrique as $rubrique_id => $rubrique_nom)
     {
       if($rubrique_id)
@@ -1037,31 +989,26 @@ if( ($action=='imprimer_donnees_eleves_socle_maitrise') || ($action=='imprimer_d
           if($rubrique_id!='enscompl')
           {
             $archivage_tableau_PDF->afficher_degre_maitrise( $indice , $indice /*valeur*/ , ' / 4' /*unit*/ , FALSE /*all_columns*/ );
-            $archivage_tableau_CSV .= $separateur.'"'.$tab_codes['socle'][$indice].'"'; // Remplacer le point décimal par une virgule pour le tableur.
           }
           else
           {
             $valeur = ($indice!==FALSE) ? $indice-2 : FALSE ;
             $archivage_tableau_PDF->afficher_degre_maitrise( $indice , $valeur , ' / 2' /*unit*/ , FALSE /*all_columns*/ );
-            $archivage_tableau_CSV .= $separateur.'"'.$tab_codes['enscompl'][$valeur].'"'; // Remplacer le point décimal par une virgule pour le tableur.
           }
         }
         else
         {
           $points = !empty($tab_saisie[$eleve_id][$rubrique_id]) ? $tab_saisie[$eleve_id][$rubrique_id]['points'] : FALSE ;
           $archivage_tableau_PDF->afficher_degre_maitrise( $indice , $points /*valeur*/ , ' pts' /*unit*/ , FALSE /*all_columns*/ );
-          $archivage_tableau_CSV .= $separateur.'"'.$points.'"'; // Remplacer le point décimal par une virgule pour le tableur.
         }
       }
       else
       {
         $points = !empty($tab_saisie[$eleve_id][$rubrique_id]) ? $tab_saisie[$eleve_id][$rubrique_id]['points'] : '-' ;
         $archivage_tableau_PDF-> moyennes_note( $eleve_id , $rubrique_id , $points , $objet_document );
-        $archivage_tableau_CSV .= $separateur.'"'.$points.'"'; // Remplacer le point décimal par une virgule pour le tableur.
       }
     }
     $archivage_tableau_PDF->SetXY( $archivage_tableau_PDF->marge_gauche , $archivage_tableau_PDF->GetY()+$archivage_tableau_PDF->cases_hauteur );
-    $archivage_tableau_CSV .= "\r\n";
   }
 }
 
@@ -1073,7 +1020,7 @@ $fichier_export = Clean::fichier('livret_'.$PAGE_REF.'_'.$JOINTURE_PERIODE.'_'.$
 FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.pdf' , $archivage_tableau_PDF );
 Json::add_str('<a target="_blank" href="'.URL_DIR_EXPORT.$fichier_export.'.pdf"><span class="file file_pdf">'.$tab_actions[$action].' (format <em>pdf</em>).</span></a>');
 // Et le csv éventuel
-if( ($action=='imprimer_donnees_eleves_positionnements') || ($action=='imprimer_donnees_eleves_socle_maitrise') || ($action=='imprimer_donnees_eleves_socle_points_dnb') )
+if($action=='imprimer_donnees_eleves_positionnements')
 {
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export.'.csv' , To::csv($archivage_tableau_CSV) );
   Json::add_str('<br />'.NL.'<a target="_blank" href="./force_download.php?fichier='.$fichier_export.'.csv"><span class="file file_txt">'.$tab_actions[$action].' (format <em>csv</em>).</span></a>');

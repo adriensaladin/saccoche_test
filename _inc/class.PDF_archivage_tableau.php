@@ -253,11 +253,6 @@ class PDF_archivage_tableau extends PDF
       $ligne1 = 'Fiche Brevet';
       $ligne2 = 'Notes et total des points';
     }
-    if($objet_document=='affelnet')
-    {
-      $ligne1 = 'Moyenne Affelnet';
-      $ligne2 = 'Tableau des points calculés par matière';
-    }
     $hauteur_quart = $this->etiquette_hauteur / 4 ;
     $this->SetXY($this->marge_gauche , $this->marge_haut);
     $this->SetFont('Arial' , 'B' , $this->taille_police);

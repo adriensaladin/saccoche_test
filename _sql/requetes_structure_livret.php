@@ -71,14 +71,10 @@ public static function DB_initialiser_jointures_livret_classes()
     { return array('T1','T2','T3'); }
     if( substr_count( $listing_periodes , 'S' ) )
     { return array('S1','S2'); }
-    if( substr_count( $listing_periodes , 'B' ) )
-    { return array('B1','B2','B3','B4'); }
     if( $periode_nb == 3 )
     { return array('T1','T2','T3'); }
     if( $periode_nb == 2 )
     { return array('S1','S2'); }
-    if( $periode_nb == 4 )
-    { return array('B1','B2','B3','B4'); }
     return array('T1','T2','T3');
   }
   // Initialiser les jointures livret / classes
@@ -139,7 +135,7 @@ public static function DB_initialiser_jointures_livret_classes()
       case 103 : // Troisièmes
         DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , '3e' , 'periode' , $jointure_periode );
         DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle4' , 'cycle' , array('') );
-        $nb_associations += 2;
+        $nb_associations += 3;
         break;
     }
   }

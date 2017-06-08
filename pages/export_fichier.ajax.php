@@ -686,6 +686,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Export CSV des liens des matières rattachés aux liens du socle 2016
+// Code dupliqué dans 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if( ($type_export=='jointure_socle2016_matiere') && $cycle_id && $cycle_nom )
@@ -782,7 +783,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
     .$separateur.'NOM'
     .$separateur.'PRENOM'
     .$separateur.'DATE_NAISSANCE'
-    .$separateur.'COURRIEL'
     .$separateur.'CLASSE_REF'
     .$separateur.'CLASSE_NOM'
     ."\r\n\r\n";
@@ -799,7 +799,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
                    .'<th>Nom</th>'
                    .'<th>Prénom</th>'
                    .'<th>Date Naiss.</th>'
-                   .'<th>Courriel</th>'
                    .'<th>Classe Ref.</th>'
                    .'<th>Classe Nom</th>'
                  .'</tr>'.NL.'</thead><tbody>'.NL;
@@ -812,7 +811,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
     $tab_groupe[$DB_ROW['groupe_id']] = array( 'ref'=>$DB_ROW['groupe_ref'] , 'nom'=>$DB_ROW['groupe_nom'] );
   }
   // Récupérer les données des élèves
-  $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_email, user_login, eleve_classe_id';
+  $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_naissance_date, user_login, eleve_classe_id';
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'eleve' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
   if(!empty($DB_TAB))
   {
@@ -830,7 +829,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
         .$separateur.$DB_ROW['user_nom']
         .$separateur.$DB_ROW['user_prenom']
         .$separateur.$date_fr
-        .$separateur.$DB_ROW['user_email']
         .$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['ref']
         .$separateur.$tab_groupe[$DB_ROW['eleve_classe_id']]['nom']
         ."\r\n";
@@ -846,7 +844,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
                        .'<td>'.html($DB_ROW['user_nom']).'</td>'
                        .'<td>'.html($DB_ROW['user_prenom']).'</td>'
                        .'<td>'.$date_fr.'</td>'
-                       .'<td>'.html($DB_ROW['user_email']).'</td>'
                        .'<td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['ref']).'</td>'
                        .'<td>'.html($tab_groupe[$DB_ROW['eleve_classe_id']]['nom']).'</td>'
                      .'</tr>'.NL;
@@ -881,7 +878,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
     .$separateur.'CIVILITE'
     .$separateur.'NOM'
     .$separateur.'PRENOM'
-    .$separateur.'COURRIEL'
     .$separateur.'ENFANT_ID'
     .$separateur.'ENFANT_NOM'
     .$separateur.'ENFANT_PRENOM'
@@ -900,7 +896,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
                    .'<th>Civilité</th>'
                    .'<th>Nom</th>'
                    .'<th>Prénom</th>'
-                   .'<th>Courriel</th>'
                    .'<th>Enfant Id.</th>'
                    .'<th>Enfant Nom</th>'
                    .'<th>Enfant Prénom</th>'
@@ -918,7 +913,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   // Récupérer les données des responsables
   $champs = 'parent.user_id AS parent_id, parent.user_id_ent AS parent_id_ent, parent.user_id_gepi AS parent_id_gepi,
              parent.user_sconet_id AS parent_sconet_id, parent.user_sconet_elenoet AS parent_sconet_elenoet, parent.user_reference AS parent_reference,
-             parent.user_genre AS parent_genre, parent.user_nom AS parent_nom, parent.user_prenom AS parent_prenom, parent.user_email AS parent_email, parent.user_login AS parent_login,
+             parent.user_genre AS parent_genre, parent.user_nom AS parent_nom, parent.user_prenom AS parent_prenom, parent.user_login AS parent_login,
              enfant.user_id AS enfant_id,enfant.user_nom AS enfant_nom,enfant.user_prenom AS enfant_prenom,enfant.eleve_classe_id AS enfant_classe_id' ;
   $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( 'parent' /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
   if(!empty($DB_TAB))
@@ -935,7 +930,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
         .$separateur.Html::$tab_genre['adulte'][$DB_ROW['parent_genre']]
         .$separateur.$DB_ROW['parent_nom']
         .$separateur.$DB_ROW['parent_prenom']
-        .$separateur.$DB_ROW['parent_email']
         .$separateur.$DB_ROW['enfant_id']
         .$separateur.$DB_ROW['enfant_nom']
         .$separateur.$DB_ROW['enfant_prenom']
@@ -953,7 +947,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
                        .'<td>'.Html::$tab_genre['adulte'][$DB_ROW['parent_genre']].'</td>'
                        .'<td>'.html($DB_ROW['parent_nom']).'</td>'
                        .'<td>'.html($DB_ROW['parent_prenom']).'</td>'
-                       .'<td>'.html($DB_ROW['parent_email']).'</td>'
                        .'<td>'.$DB_ROW['enfant_id'].'</td>'
                        .'<td>'.html($DB_ROW['enfant_nom']).'</td>'
                        .'<td>'.html($DB_ROW['enfant_prenom']).'</td>'
@@ -991,7 +984,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
     .$separateur.'CIVILITE'
     .$separateur.'NOM'
     .$separateur.'PRENOM'
-    .$separateur.'COURRIEL'
     .$separateur.'PROFIL'
     ."\r\n\r\n";
   // Préparation de l'export HTML
@@ -1006,13 +998,12 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
                    .'<th>Civilité</th>'
                    .'<th>Nom</th>'
                    .'<th>Prénom</th>'
-                   .'<th>Courriel</th>'
                    .'<th>Profil</th>'
                  .'</tr>'.NL.'</thead><tbody>'.NL;
 
   // Récupérer les données des professeurs et des personnels
   $tab_profil = array('professeur','personnel');
-  $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_email, user_login, user_profil_sigle' ;
+  $champs = 'user_id, user_id_ent, user_id_gepi, user_sconet_id, user_sconet_elenoet, user_reference, user_genre, user_nom, user_prenom, user_login, user_profil_sigle' ;
   foreach($tab_profil as $profil)
   {
     $DB_TAB = DB_STRUCTURE_COMMUN::DB_lister_users_regroupement( $profil /*profil_type*/ , 1 /*statut*/ , $tab_types[$groupe_type] , $groupe_id , 'alpha' /*eleves_ordre*/ , $champs );
@@ -1030,7 +1021,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
           .$separateur.Html::$tab_genre['adulte'][$DB_ROW['user_genre']]
           .$separateur.$DB_ROW['user_nom']
           .$separateur.$DB_ROW['user_prenom']
-          .$separateur.$DB_ROW['user_email']
           .$separateur.$DB_ROW['user_profil_sigle']
           ."\r\n";
         $export_html .= '<tr>'
@@ -1044,7 +1034,6 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
                          .'<td>'.Html::$tab_genre['adulte'][$DB_ROW['user_genre']].'</td>'
                          .'<td>'.html($DB_ROW['user_nom']).'</td>'
                          .'<td>'.html($DB_ROW['user_prenom']).'</td>'
-                         .'<td>'.html($DB_ROW['user_email']).'</td>'
                          .'<td>'.$DB_ROW['user_profil_sigle'].'</td>'
                        .'</tr>'.NL;
       }

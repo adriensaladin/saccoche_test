@@ -64,12 +64,6 @@ foreach($DB_TAB as $DB_ROW)
 // Maintenant on compare et on modifie en fonction
 // C'est plus simple de DELETE / INSERT que UPDATE, en particulier pour les périodes ou la fréquence peut être différente.
 // On n'efface pas les saisies éventuelles, mais l'état revient sur "1vide".
-$tab_jointure_periode = array(
-  'S' => array('S1','S2'),
-  'T' => array('T1','T2','T3'),
-  'B' => array('B1','B2','B3','B4'),
-);
-
 foreach($tab_jointures_old as $periodicite => $page_ref_old)
 {
   $page_ref_new = ${$periodicite};
@@ -83,7 +77,7 @@ foreach($tab_jointures_old as $periodicite => $page_ref_old)
   }
   if( $test_insert || $test_update )
   {
-    $jointure_periode = ( $periodicite != 'periode') ? array('') : $tab_jointure_periode[$jointure] ;
+    $jointure_periode = ( $periodicite != 'periode') ? array('') : ( ($jointure=='T') ? array('T1','T2','T3') : array('S1','S2') ) ;
     DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $groupe_id , $page_ref_new , $periodicite , $jointure_periode );
   }
 }

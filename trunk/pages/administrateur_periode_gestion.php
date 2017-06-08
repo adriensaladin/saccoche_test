@@ -30,11 +30,15 @@ $TITRE = html(Lang::_("Gérer les périodes"));
 
 $tab_periode_livret = array(
   ''   => '-',
+  'S1' => 'Semestre 1/2',
+  'S2' => 'Semestre 2/2',
   'T1' => 'Trimestre 1/3',
   'T2' => 'Trimestre 2/3',
   'T3' => 'Trimestre 3/3',
-  'S1' => 'Semestre 1/2',
-  'S2' => 'Semestre 2/2',
+  'B1' => 'Bimestre 1/4',
+  'B2' => 'Bimestre 2/4',
+  'B3' => 'Bimestre 3/4',
+  'B4' => 'Bimestre 4/4',
 );
 
 $select_livret = '';

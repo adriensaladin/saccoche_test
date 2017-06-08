@@ -526,6 +526,39 @@ if($version_base_structure_actuelle=='2017-05-18')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-05-27 => 2017-06-08
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-05-27')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-06-08';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // modif colonne de la table [sacoche_livret_export]
+    if(empty($reload_sacoche_livret_export))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_export CHANGE jointure_periode jointure_periode ENUM("","T1","T2","T3","S1","S2","B1","B2","B3","B4") COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Renseigné si livret_page_periodicite = periode ; @see sacoche_periode.periode_livret" ' );
+    }
+    // modif colonne de la table [sacoche_livret_jointure_groupe]
+    if(empty($reload_sacoche_livret_jointure_groupe))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_jointure_groupe CHANGE jointure_periode jointure_periode ENUM("","T1","T2","T3","S1","S2","B1","B2","B3","B4") COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Renseigné si livret_page_periodicite = periode ; @see sacoche_periode.periode_livret" ' );
+    }
+    // modif colonne de la table [sacoche_livret_saisie]
+    if(empty($reload_sacoche_livret_saisie))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_livret_saisie CHANGE jointure_periode jointure_periode ENUM("","T1","T2","T3","S1","S2","B1","B2","B3","B4") COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Renseigné si livret_page_periodicite = periode ; @see sacoche_periode.periode_livret" ' );
+    }
+    // modif colonne de la table [sacoche_periode]
+    if(empty($reload_sacoche_periode))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_periode CHANGE periode_livret periode_livret ENUM("","T1","T2","T3","S1","S2","B1","B2","B3","B4") COLLATE utf8_unicode_ci NOT NULL DEFAULT "" COMMENT "Période officielle utilisable pour le livret scolaire." ' );
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

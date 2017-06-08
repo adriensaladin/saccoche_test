@@ -91,11 +91,15 @@ if($step==1)
   $tab_puce_info = array();
 
   $tab_periode_livret = array(
+    'periodeS1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2'  ),
+    'periodeS2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2'  ),
     'periodeT1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 1/3' ),
     'periodeT2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 2/3' ),
     'periodeT3' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 3/3' ),
-    'periodeS1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2'  ),
-    'periodeS2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2'  ),
+    'periodeB1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 1/4'  ),
+    'periodeB2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 2/4'  ),
+    'periodeB3' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 3/4'  ),
+    'periodeB4' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 4/4'  ),
     'cycle'     => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin de cycle'  ),
   );
 
@@ -175,7 +179,18 @@ if($step==1)
   }
   // On compte aussi le nb de bilans déjà imprimé pour l'année scolaire en cours (PDF) pour limiter ceux qui tente d'exporter sans édition donc même parfois sans aucune tentative de remplissage automatique
   $annee_scolaire = To::annee_scolaire('code');
-  $tab_periode_livret_key = array( 'T1' => 'periodeT1' , 'T2' => 'periodeT2' , 'T3' => 'periodeT3' , 'S1' => 'periodeS1' , 'S2' => 'periodeS2' , '' => 'cycle' );
+  $tab_periode_livret_key = array(
+    'S1' => 'periodeS1',
+    'S2' => 'periodeS2',
+    'T1' => 'periodeT1',
+    'T2' => 'periodeT2',
+    'T3' => 'periodeT3',
+    'B1' => 'periodeB1',
+    'B2' => 'periodeB2',
+    'B3' => 'periodeB3',
+    'B4' => 'periodeB4',
+    '' => 'cycle' ,
+  );
   $DB_TAB = DB_STRUCTURE_LIVRET::DB_compter_impression_archives($annee_scolaire);
   foreach($DB_TAB as $DB_ROW)
   {

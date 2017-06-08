@@ -99,11 +99,15 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 // Tableaux communs utiles
 
 $tab_periode_livret = array(
+  'periodeS1' => 'Semestre 1/2'  ,
+  'periodeS2' => 'Semestre 2/2'  ,
   'periodeT1' => 'Trimestre 1/3' ,
   'periodeT2' => 'Trimestre 2/3' ,
   'periodeT3' => 'Trimestre 3/3' ,
-  'periodeS1' => 'Semestre 1/2'  ,
-  'periodeS2' => 'Semestre 2/2'  ,
+  'periodeB1' => 'Bimestre 1/4'  ,
+  'periodeB2' => 'Bimestre 2/4'  ,
+  'periodeB3' => 'Bimestre 3/4'  ,
+  'periodeB4' => 'Bimestre 4/4'  ,
   'cycle'     => 'Fin de cycle'  ,
 );
 

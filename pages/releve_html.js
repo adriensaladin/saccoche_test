@@ -59,6 +59,34 @@ $(document).ready
     }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Voir / masquer tous les détails
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('div.astuce').on
+    (
+      'click',
+      '#montrer_details',
+      function()
+      {
+        $('body').find('a.toggle_plus').click();
+        $(this).replaceWith('<a href="#" id="masquer_details">tout masquer</a>');
+        return false;
+      }
+    );
+
+    $('div.astuce').on
+    (
+      'click',
+      '#masquer_details',
+      function()
+      {
+        $('body').find('a.toggle_moins').click();
+        $(this).replaceWith('<a href="#" id="montrer_details">tout montrer</a>');
+        return false;
+      }
+    );
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Afficher / masquer checkbox au changement d'un choix d'action
 // 
 // .css('display','...') utilisé en remplacement de hide() et show() car plus rapide quand il y a bcp d'éléments.

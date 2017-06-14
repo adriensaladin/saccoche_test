@@ -463,10 +463,10 @@ $(document).ready
       {
         rules :
         {
-          f_page       : { required:true },
-          f_groupe     : { required:true },
-          f_theme      : { required:true },
-          f_nombre     : { required:true, min:2, max:15 },
+          f_page      : { required:true },
+          f_groupe    : { required:true },
+          f_theme     : { required:true },
+          f_nombre    : { required:true, min:2, max:15 },
           f_matiere_1  : { required:true },
           f_matiere_2  : { required:true },
           f_matiere_3  : { required:function(){return memo_nombre>=3;} },
@@ -497,7 +497,7 @@ $(document).ready
           f_prof_13    : { required:function(){return memo_nombre>=13;} },
           f_prof_14    : { required:function(){return memo_nombre>=14;} },
           f_prof_15    : { required:function(){return memo_nombre>=15;} },
-          f_titre      : { required:true , maxlength:125 }
+          f_titre     : { required:true , maxlength:125 }
         },
         messages :
         {

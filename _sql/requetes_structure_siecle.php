@@ -34,14 +34,14 @@ class DB_STRUCTURE_SIECLE extends DB
 
 /**
  * ajouter_import
- * Enregistre en JSON le XML ou le ARRAY transmis.
+ * Enregistre en JSON le XML transmis.
  * Convertir le XML en JSON permet un gain de place (par exemple 1,5 Mo -> 0,8 Mo ou encore 5,3 Mo -> 1,1 Mo).
  * Il y aurait aussi la possibilité d'utiliser COMPRESS() et UNCOMPRESS() avec un champ de type MEDIUMBLOB :
  * cela réduit bien davantage mais c'est moins lisible en BDD et la manipulation de champs BLOB est peu rassurante.
  *
  * @param string   $import_objet
  * @param string   $import_annee
- * @param mixed    $import_data   xml pour SIECLE, array pour ONDE
+ * @param array    $import_data   xml pour SIECLE, array pour ONDE
  * @return void
  */
 public static function DB_ajouter_import( $import_objet , $import_annee , $import_data )

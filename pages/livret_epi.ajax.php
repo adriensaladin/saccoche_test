@@ -38,15 +38,13 @@ $nombre     = (isset($_POST['f_nombre'])) ? Clean::entier($_POST['f_nombre']) : 
 $titre      = (isset($_POST['f_titre']))  ? Clean::texte( $_POST['f_titre'])  : '';
 
 $test_matiere_prof = TRUE;
-$tab_matiere_prof  = array();
-$tab_matiere       = array();
+$tab_matiere_prof = array();
 for( $num=1 ; $num<=$nombre ; $num++)
 {
   ${'matiere_id_'.$num} = (isset($_POST['f_matiere_'.$num])) ? Clean::entier($_POST['f_matiere_'.$num]) : 0;
   ${'prof_id_'.$num}    = (isset($_POST['f_prof_'.$num]))    ? Clean::entier($_POST['f_prof_'.$num])    : 0;
   $test_matiere_prof = $test_matiere_prof && ${'matiere_id_'.$num} && ${'prof_id_'.$num} ;
   $tab_matiere_prof[] = ${'matiere_id_'.$num}.'~'.${'prof_id_'.$num};
-  $tab_matiere[${'matiere_id_'.$num}] = TRUE;
 }
 
 if( !$page_ref || !$titre || !DB_STRUCTURE_LIVRET::DB_tester_epi_theme( $theme_code ) || !DB_STRUCTURE_LIVRET::DB_tester_page_avec_dispositif( $page_ref , 'epi' ) )
@@ -63,10 +61,6 @@ if( in_array($action,array('ajouter','dupliquer')) && $groupe_id && $test_matier
   if( count(array_unique($tab_matiere_prof)) != $nombre )
   {
     Json::end( FALSE , 'Couples { matière / enseignant } identiques !' );
-  }
-  if( count($tab_matiere) < 2 )
-  {
-    Json::end( FALSE , 'Il faut au moins 2 matières distinctes !' );
   }
   // Vérifier que l'enseignement pratique interdisciplinaire est disponible
   // Clef unique UNIQUE KEY livret_epi (livret_epi_theme_code, livret_page_ref, groupe_id) retirée : on tolère plusieurs EPI avec la même thématique pour un élève.
@@ -109,10 +103,6 @@ if( ($action=='modifier') && $epi_id && $groupe_id && $test_matiere_prof && ($no
   if( count(array_unique($tab_matiere_prof)) != $nombre )
   {
     Json::end( FALSE , 'Couples { matière / enseignant } identiques !' );
-  }
-  if( count($tab_matiere) < 2 )
-  {
-    Json::end( FALSE , 'Il faut au moins 2 matières distinctes !' );
   }
   // Vérifier que l'enseignement pratique interdisciplinaire est disponible
   // Clef unique UNIQUE KEY livret_epi (livret_epi_theme_code, livret_page_ref, groupe_id) retirée : on tolère plusieurs EPI avec la même thématique pour un élève.

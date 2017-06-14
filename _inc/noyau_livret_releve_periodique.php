@@ -542,7 +542,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         else
         {
           $temp_HTML = '';
-          $avant_td_avant = ($BILAN_TYPE_ETABL=='college') ? '<td class="nu"></td>' : '<td class="nu"></td><td class="nu"></td>' ;
           $avant_colspan  = ( !$eleve_id && !$PAGE_MOYENNE_CLASSE ) ? 2 : ( in_array($PAGE_COLONNE,array('objectif','position')) ? 6 : 7 ) ;
           $avant_td_apres = ( ( $eleve_id || $PAGE_MOYENNE_CLASSE ) && in_array($PAGE_COLONNE,array('objectif','position')) ) ? '<td class="nu"></td>' : '' ;
           // On passe en revue les rubriques...
@@ -587,7 +586,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               $id_premiere_sous_rubrique = $tab_rubriques['eval'][$livret_rubrique_id]['appreciation'];
               if($make_html)
               {
-                $tab_temp_HTML = array( 'avant'=>'' , 'domaine'=>'' , 'elements'=>'' , 'appreciation'=>'' , 'position'=>'' );
                 // Info saisies périodes antérieures
                 if( isset($tab_saisie_avant[$eleve_id]['eval'][$id_rubrique_appreciation]['appreciation']) || isset($tab_saisie_avant[$eleve_id]['eval'][$id_rubrique_position]['position']) )
                 {
@@ -625,12 +623,9 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                     $tab_periode_liens[]  = '<a href="#toggle" class="toggle_plus" title="Voir / masquer les informations de cette période." id="to_avant_'.$eleve_id.'_eval_'.$livret_rubrique_id.'_'.$jointure_periode.'"></a> '.$tab_periode_livret['periode'.$jointure_periode];
                     $tab_periode_textes[] = '<div id="avant_'.$eleve_id.'_eval_'.$livret_rubrique_id.'_'.$jointure_periode.'" class="appreciation bordertop hide"><b>'.$tab_periode_livret['periode'.$jointure_periode].'&nbsp;:&nbsp;</b>'.$note.' | '.$appreciation.'</div>';
                   }
-                  // Il est trop compliqué de faire apparaitre les infos sur les saisies antérieures au 1D à cause des rowspan sur les domaines avec plusieurs sous-domaines
-                  if($BILAN_TYPE_ETABL=='college')
-                  {
-                    $tab_temp_HTML['avant'] .= '<tr>'.$avant_td_avant.'<td colspan="'.$avant_colspan.'" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$avant_td_apres.'</tr>'.NL;
-                  }
+                  $temp_HTML .= '<tr><td class="nu"></td><td colspan="'.$avant_colspan.'" class="avant">'.implode('&nbsp;&nbsp;&nbsp;',$tab_periode_liens).implode('',$tab_periode_textes).'</td>'.$avant_td_apres.'</tr>'.NL;
                 }
+                $tab_temp_HTML = array( 'domaine'=>'' , 'elements'=>'' , 'appreciation'=>'' , 'position'=>'' );
                 // Domaine d’enseignement
                 $details = ( $eleve_id && $elements_info['acquis_detail'] ) ? '<div><a href="#" class="voir_detail" data-id="'.$id_rubrique_elements.'">[ détail travaillé ]</a></div><div id="detail_'.$id_rubrique_elements.'" class="hide">'.$elements_info['acquis_detail'].'</div>' : '' ;
                 if($BILAN_TYPE_ETABL=='college')
@@ -663,8 +658,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   }
                   else
                   {
-                    $nb_rowspan = empty($tab_temp_HTML['avant']) ? $nombre_sous_rubriques : 2*$nombre_sous_rubriques - 1 ;
-                    $rowspan = ($nombre_sous_rubriques>1) ? ' rowspan="'.$nb_rowspan.'"' : '' ;
+                    $rowspan = ($nombre_sous_rubriques>1) ? ' rowspan="'.$nombre_sous_rubriques.'"' : '' ;
                     $tab_temp_HTML['domaine'] .= isset($tab_deja_affiche[$eleve_id][$id_premiere_sous_rubrique]) ? '<td><b>'.html($tab_rubrique['sous_partie']).'</b>'.$details.'</td>' : '<td'.$rowspan.'><b>'.html($tab_rubrique['partie']).'</b></td><td><b>'.html($tab_rubrique['sous_partie']).'</b>'.$details.'</td>' ;
                   }
                 }

@@ -400,6 +400,10 @@ if( $test_college || $test_ecole )
       {
         echo'<li id="etat_'.$fichier_id.'"><span class="danger">Dernier fichier connu antérieur à cette année scolaire !</span></li>'.NL;
       }
+      else if( ($tab['opt']=='onde_eleves') && ($DB_ROW['siecle_import_date']<'2017-05-22') )
+      {
+        echo'<li id="etat_'.$fichier_id.'"><span class="danger">Protocole modifié depuis votre dernier import ONDE ! Merci de renouveller l\'import de ce ficher.</span></li>'.NL;
+      }
       else
       {
         echo'<li id="etat_'.$fichier_id.'"><span class="astuce">Dernier import en date du <b>'.To::date_mysql_to_french($DB_ROW['siecle_import_date']).'</b>.</span></li>'.NL;

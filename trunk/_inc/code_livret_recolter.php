@@ -350,6 +350,10 @@ if($BILAN_TYPE_ETABL=='ecole')
   $numero_colonne_classe_nom = -1;
   // Données de la ligne d'en-tête
   $tab_elements = $tab_ONDE[0];
+  if(!is_array($tab_elements))
+  {
+    Json::end( FALSE , 'Fichier CSVExtraction à ré-importer ! Voir page précédente pour les consignes.' );
+  }
   foreach ($tab_elements as $numero => $element)
   {
     $numero_colonne_classe_id  = ($element=='Identifiant classe') ? $numero : $numero_colonne_classe_id ;
@@ -604,6 +608,33 @@ else if($PAGE_PERIODICITE=='cycle')
   $nb_positionnements_socle = count($tab_rubrique['socle']);
 }
 
+$tab_rubrique_a_eviter = array();
+if($BILAN_TYPE_ETABL=='college')
+{
+  // Si on connait les langues associées aux élèves, alors on essaye de limiter les confusions LV1 / LV2 en cas de modification des liaisons aux rubriques en cours de route.
+  $tab_id_lv1 = array_fill ( 315 , 12 , TRUE ); // de 315 à 326
+  $tab_id_lv2 = array_fill ( 327 , 12 , TRUE ); // de 327 à 338
+  // Attention : l'identifiant de langue enregistré est le code du pays, pas l'identifiant matière de SACoche...
+  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
+  $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users_cibles( $liste_eleve_id , 'user_id,eleve_lv1,eleve_lv2' );
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $tab_rubrique_a_eviter[$DB_ROW['user_id']] = array();
+    $matiere_id_lv1 = ($DB_ROW['eleve_lv1']!=100) ? $tab_langues[$DB_ROW['eleve_lv1']]['tab_matiere_id'][2] : 0 ;
+    if(isset($tab_id_lv1[$matiere_id_lv1]))
+    {
+      $tab_rubrique_a_eviter[$DB_ROW['user_id']] += $tab_id_lv1;
+      unset($tab_rubrique_a_eviter[$DB_ROW['user_id']][$matiere_id_lv1]);
+    }
+    $matiere_id_lv2 = ($DB_ROW['eleve_lv2']!=100) ? $tab_langues[$DB_ROW['eleve_lv2']]['tab_matiere_id'][3] : 0 ;
+    if( isset($tab_id_lv2[$matiere_id_lv2]) || ( $matiere_id_lv1 && !$matiere_id_lv2 ) )
+    {
+      $tab_rubrique_a_eviter[$DB_ROW['user_id']] += $tab_id_lv2;
+      unset($tab_rubrique_a_eviter[$DB_ROW['user_id']][$matiere_id_lv2]);
+    }
+  }
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer les saisies déjà effectuées ou enregistrées pour la page de livret concernée
 // Pas besoin de 'saisie_id' ni 'prof_id' ni 'saisie_origine' ni 'acquis_detail'
@@ -842,7 +873,7 @@ foreach($tab_saisie as $eleve_id => $tab_tmp_eleve)
       foreach($tab_tmp_rubrique as $rubrique_id => $tab_tmp_saisie)
       {
         // AQUIS SCOLAIRES
-        if( ($rubrique_type=='eval') && isset($tab_rubrique['MAT'.$rubrique_id]) )
+        if( ($rubrique_type=='eval') && isset($tab_rubrique['MAT'.$rubrique_id]) && !isset($tab_rubrique_a_eviter[$eleve_id][$rubrique_id]) )
         {
           if($BILAN_TYPE_ETABL=='college')
           {

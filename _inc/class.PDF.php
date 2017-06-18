@@ -550,10 +550,9 @@ class PDF extends FPDF
       $this->SESSION[$CLEF] = ( $officiel && isset($session_archive[$CLEF]) ) ? $session_archive[$CLEF] : ( isset($_SESSION[$CLEF]) ? $_SESSION[$CLEF] : $default_value ) ;
     }
     // Pour un bilan officiel on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-    $forcer_profil_sigle  = ($this->officiel) ? 'TUT'    : NULL ;
-    $forcer_profil_type   = ($this->officiel) ? 'parent' : NULL ;
-    $this->afficher_score = Outil::test_user_droit_specifique( $this->SESSION['DROIT_VOIR_SCORE_BILAN']    , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
-    $this->afficher_degre = Outil::test_user_droit_specifique( $this->SESSION['DROIT_VOIR_SCORE_MAITRISE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
+    $forcer_profil = ($this->officiel) ? 'TUT' : NULL ;
+    $this->afficher_score = Outil::test_user_droit_specifique( $this->SESSION['DROIT_VOIR_SCORE_BILAN']    , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil );
+    $this->afficher_degre = Outil::test_user_droit_specifique( $this->SESSION['DROIT_VOIR_SCORE_MAITRISE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil );
     // Déclaration de la police pour la rendre disponible même si non présente sur le serveur
     $this->AddFont('Arial','' ,'arial.php');
     $this->AddFont('Arial','B','arialbd.php');

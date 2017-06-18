@@ -423,24 +423,17 @@ foreach($DB_TAB as $DB_ROW)
     $icone_verification = '<q class="detailler_non" title="La recherche de saisies manquantes est sans objet lorsque l\'accès en saisie est fermé."></q>';
   }
   // images action : consultation contenu en cours d'élaboration (bilans HTML)
-  if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
+  if($etat=='1vide')
   {
-    if($etat=='1vide')
-    {
-      $icone_voir_html = '<q class="voir_non" title="Consultation du contenu sans objet (bilan déclaré vide)."></q>';
-    }
-    elseif( ($etat=='5complet') && ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') )
-    {
-      $icone_voir_html = '<q class="voir_non" title="Consultation du contenu inopportun (bilan finalisé : utiliser les archives PDF)."></q>';
-    }
-    else
-    {
-      $icone_voir_html = '<q class="voir" title="Consulter le contenu (format HTML)."></q>';
-    }
+    $icone_voir_html = '<q class="voir_non" title="Consultation du contenu sans objet (bilan déclaré vide)."></q>';
+  }
+  elseif($etat=='5complet')
+  {
+    $icone_voir_html = '<q class="voir_non" title="Consultation du contenu inopportun (bilan finalisé : utiliser les archives PDF)."></q>';
   }
   else
   {
-    $icone_voir_html = '';
+    $icone_voir_html = '<q class="voir" title="Consulter le contenu (format HTML)."></q>';
   }
   // images action : consultation contenu finalisé (bilans PDF)
   if(!$droit_voir_archives_pdf)

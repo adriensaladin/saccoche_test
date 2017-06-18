@@ -795,8 +795,10 @@ class PDF_livret_scolaire extends PDF
     }
   }
 
-  public function bloc_socle( $tab_rubriques , $tab_saisie_eleve_socle )
+  public function bloc_socle( $tab_rubriques , $tab_saisie_eleve_socle , $is_memo_points=FALSE )
   {
+    $tab_points_valeur = array( 0=>0 , 1=>10 , 2=>25 , 3=>40 , 4=>50 );
+    $tab_page_decompte_points = array();
     // Largeur des rubriques ; total = 200 = 210 - 5*2 (marges)
     $largeur_position = 20 ;
     $largeur_intitule = 200 - ( 4 * $largeur_position ) ;
@@ -858,11 +860,19 @@ class PDF_livret_scolaire extends PDF
         // Codage dispensé
         $this->Cell( 4*$largeur_position , $hauteur_case , To::pdf('Dispensé') , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
       }
+      if($is_memo_points)
+      {
+        $points = ($indice!==FALSE) ? $tab_points_valeur[$indice] : FALSE ;
+        $tab_page_decompte_points[(int)$livret_rubrique_id] = array( $tab_rubrique['nom_simple'] , $points , '50' );
+      }
     }
+    return  $tab_page_decompte_points;
   }
 
-  public function bloc_enscompl( $enscompl_nom , $position_info )
+  public function bloc_enscompl( $enscompl_nom , $position_info , $is_memo_points=FALSE )
   {
+    $tab_points_enscompl = array( 0=>0 , 3=>10 , 4=>20 );
+    $tab_page_decompte_points = array();
     // espacement
     $this->SetXY( $this->GetX() , $this->GetY() + $this->lignes_hauteur );
     // Largeur des rubriques ; total = 200 = 210 - 5*2 (marges)
@@ -909,7 +919,110 @@ class PDF_livret_scolaire extends PDF
       $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M'.$id.$this->couleur : 'blanc' ;
       $this->choisir_couleur_fond($couleur_fond);
       $this->Cell( $largeur_position , $hauteur_case , To::pdf($texte) , 1 /*bordure*/ , $br , 'C' /*alignement*/ , TRUE /*fond*/ );
+      if($is_memo_points)
+      {
+        $points = ($indice!==FALSE) ? $tab_points_enscompl[$indice] : FALSE ;
+        $tab_page_decompte_points = array( 'Enseignement de complément - '.$enscompl_nom , $points , '(20)' );
+      }
     }
+    return  $tab_page_decompte_points;
+  }
+
+  public function page_decompte_points( $tab_page_decompte_points )
+  {
+    $this->rappel_eleve_page( TRUE /*$anticipe*/ );
+    $largeur_intitule = 120;
+    $largeur_point    =  20;
+    $largeur_bareme   =  20;
+    $hauteur_case = 1.5 * $this->lignes_hauteur ;
+    $this->SetXY( $this->marge_gauche , $this->marge_haut + $hauteur_case );
+    // titre
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf('Décompte des points pour l\'attribution du brevet') , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($tab_page_decompte_points['titre']) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    // tag
+    $this->SetFont('Arial' , '' , 5);
+    $this->Cell( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($tab_page_decompte_points['tag']) , 0 /*bordure*/ , 2 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    // Contrôle continu, ligne entête
+    $this->SetXY( $this->marge_gauche , $this->GetY() + $this->lignes_hauteur );
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M2'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Contrôle continu') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('Points')           , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('Barème')           , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    // Contrôle continu, lignes données
+    $sous_total = 0;
+    $this->SetFont('Arial' , '' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M1'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    foreach($tab_page_decompte_points['controle_continu'] as $tab_ligne)
+    {
+      $this->CellFit( $largeur_intitule , $hauteur_case , To::pdf($tab_ligne[0]) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+      $this->Cell(    $largeur_point    , $hauteur_case , To::pdf($tab_ligne[1]) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $this->Cell(    $largeur_bareme   , $hauteur_case , To::pdf($tab_ligne[2]) , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      $sous_total += $tab_ligne[1];
+    }
+    // Contrôle continu, ligne sous-total
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M2'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Sous-total') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf($sous_total)  , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('400')        , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    // Épreuves terminales, ligne entête
+    $this->SetXY( $this->marge_gauche , $this->GetY() + $this->lignes_hauteur );
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M2'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Épreuves terminales') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('Points')              , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('Barème')              , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    // Épreuves terminales, lignes données
+    $this->SetFont('Arial' , '' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M1'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Épreuve orale : soutenance d\'un projet') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('')                                        , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('100')                                     , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Épreuve écrite : mathématiques / sciences') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('')                                          , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('100')                                       , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Épreuve écrite : français / histoire-géographie EMC ') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('')                                                     , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('100')                                                  , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    // Épreuves terminales, sous-total
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M2'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Sous-total') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('')           , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('300')        , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    // Bilan DNB, ligne entête
+    $this->SetXY( $this->marge_gauche , $this->GetY() + $this->lignes_hauteur );
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M3'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Brevet') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('Points') , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('Barème') , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    // Bilan DNB, lignes données
+    $this->SetFont('Arial' , '' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M1'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Contrôle continu')     , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf($sous_total)            , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('400')                  , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Épreuves terminales ') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('')                     , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('300')                  , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    // Bilan DNB, total
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $couleur_fond = ( ($this->couleur=='oui') || ($this->fond) ) ? 'M3'.$this->couleur : 'blanc' ;
+    $this->choisir_couleur_fond($couleur_fond);
+    $this->Cell( $largeur_intitule , $hauteur_case , To::pdf('Total') , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_point    , $hauteur_case , To::pdf('')      , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+    $this->Cell( $largeur_bareme   , $hauteur_case , To::pdf('700')   , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
   }
 
   public function bloc_epi( $tab_rubriques_epi , $tab_saisie_eleve , $tab_saisie_classe )

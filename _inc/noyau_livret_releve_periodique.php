@@ -883,7 +883,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   $origine = ($epi_saisie['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$epi_saisie['prof_id']]) : '' ;
                   $actions = ( ($make_action=='modifier') && $is_epi_prof ) ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
                 }
-                $temp_HTML .= '<div id="epi_'.$livret_epi_id.'_appreciation_'.$epi_saisie['prof_id'].'">';
+                $temp_HTML .= '<div id="epi_'.$livret_epi_id.'_appreciation">';
                 $temp_HTML .=   '<span class="notnow">'.rubrique_texte_intro('epi',$eleve_id).'</span>';
                 $temp_HTML .=   '<span class="appreciation">'.$appreciation.'</span>';
                 $temp_HTML .=   '<div class="notnow" data-id="'.$epi_saisie['saisie_id'].'">'.echo_origine($origine).$actions.'</div>';
@@ -967,7 +967,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                   $origine = ($ap_saisie['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$ap_saisie['prof_id']]) : '' ;
                   $actions = ( ($make_action=='modifier') && $is_ap_prof ) ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
                 }
-                $temp_HTML .= '<div id="ap_'.$livret_ap_id.'_appreciation_'.$ap_saisie['prof_id'].'">';
+                $temp_HTML .= '<div id="ap_'.$livret_ap_id.'_appreciation">';
                 $temp_HTML .=   '<span class="notnow">'.rubrique_texte_intro('ap',$eleve_id).'</span>';
                 $temp_HTML .=   '<span class="appreciation">'.$appreciation.'</span>';
                 $temp_HTML .=   '<div class="notnow" data-id="'.$ap_saisie['saisie_id'].'">'.echo_origine($origine).$actions.'</div>';
@@ -1057,7 +1057,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
                     $origine = ($parcours_saisie['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$parcours_saisie['prof_id']]) : '' ;
                     $actions = ( ($make_action=='modifier') && $is_parcours_prof ) ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
                   }
-                  $temp_HTML .= '<div id="parcours_'.$livret_parcours_id.'_appreciation_'.$parcours_saisie['prof_id'].'">';
+                  $temp_HTML .= '<div id="parcours_'.$livret_parcours_id.'_appreciation">';
                   $temp_HTML .=   '<span class="notnow">'.rubrique_texte_intro('parcours',$eleve_id).'</span>';
                   $temp_HTML .=   '<span class="appreciation">'.$appreciation.'</span>';
                   $temp_HTML .=   '<div class="notnow" data-id="'.$parcours_saisie['saisie_id'].'">'.echo_origine($origine).$actions.'</div>';
@@ -1154,7 +1154,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
             $actions = ($make_action=='tamponner') ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
             $actions.= ( ($make_action=='tamponner') && ($bilan_info['saisie_origine']=='saisie') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
           }
-          $releve_HTML .= '<div id="bilan_0_appreciation_'.$bilan_info['prof_id'].'">';
+          $releve_HTML .= '<div id="bilan_0_appreciation">';
           $releve_HTML .=   '<span class="notnow">'.rubrique_texte_intro('bilan',$eleve_id,$BILAN_TYPE_ETABL).'</span>'.$br;
           $releve_HTML .=   '<span class="appreciation">'.$appreciation.'</span>';
           $releve_HTML .=   '<div class="notnow" data-id="'.$bilan_info['saisie_id'].'">'.echo_origine($origine).$actions.'</div>';
@@ -1241,7 +1241,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
               $actions.= ( $is_acces_viesco && in_array($make_action,array('modifier','tamponner')) && ($bilan_info['saisie_origine']=='saisie') && ($BILAN_TYPE_ETABL=='college') && ($PAGE_RUBRIQUE_JOIN=='matiere') ) ? ' <button type="button" class="eclair">Re-générer</button>' : '' ;
             }
             $texte_assiduite = ($affichage_assiduite) ? '<div id="div_assiduite" class="notnow i">'.texte_ligne_assiduite($tab_assiduite[$eleve_id]).'</div>' : '' ;
-            $releve_HTML .= '<div id="viesco_0_appreciation_'.$viesco_info['prof_id'].'">';
+            $releve_HTML .= '<div id="viesco_0_appreciation">';
             $releve_HTML .=   '<span class="notnow">'.rubrique_texte_intro('viesco').'</span>'.$br;
             $releve_HTML .=   '<span class="appreciation">'.$appreciation.'</span>';
             $releve_HTML .=   '<div class="notnow" data-id="'.$viesco_info['saisie_id'].'">'.echo_origine($origine).$actions.'</div>';

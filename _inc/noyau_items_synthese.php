@@ -261,8 +261,9 @@ $nb_syntheses_total = 0 ;
 if(empty($is_appreciation_groupe))
 {
   // Pour un relevé officiel on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-  $forcer_profil = ($make_officiel) ? 'TUT' : NULL ;
-  $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil );
+  $forcer_profil_sigle = ($make_officiel) ? 'TUT'    : NULL ;
+  $forcer_profil_type  = ($make_officiel) ? 'parent' : NULL ;
+  $afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
   foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   {
     // Si cet élève a été évalué...

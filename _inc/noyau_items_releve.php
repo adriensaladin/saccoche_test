@@ -641,8 +641,9 @@ if($type_individuel)
 {
   $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
   // Pour un relevé officiel on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
-  $forcer_profil = ($make_officiel) ? 'TUT' : NULL ;
-  Html::$afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil );
+  $forcer_profil_sigle = ($make_officiel) ? 'TUT'    : NULL ;
+  $forcer_profil_type  = ($make_officiel) ? 'parent' : NULL ;
+  Html::$afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil_sigle , $forcer_profil_type );
   if($make_html)
   {
     $bouton_print_test = (isset($is_bouton_test_impression))                  ? ( ($is_bouton_test_impression) ? ' <button id="simuler_impression" type="button" class="imprimer">Simuler l\'impression finale de ce bilan</button>' : ' <button id="simuler_disabled" type="button" class="imprimer" disabled>Pour simuler l\'impression, sélectionner un élève</button>' ) : '' ;

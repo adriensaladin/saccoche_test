@@ -196,7 +196,6 @@ elseif($BILAN_TYPE=='bulletin')
   $groupe_type     = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
   $date_debut      = '';
   $date_fin        = '';
-  $aff_socle       = 0;
   $retroactif      = $_SESSION['OFFICIEL']['BULLETIN_RETROACTIF'];
   $fusion_niveaux  = $_SESSION['OFFICIEL']['BULLETIN_FUSION_NIVEAUX'];
   $niveau_id       = 0; // Niveau transmis uniquement si on restreint sur un niveau : pas jugé utile de le mettre en option...

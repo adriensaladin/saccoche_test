@@ -219,7 +219,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
   foreach($tab_destinataires[$eleve_id] as $numero_tirage => $tab_adresse)
   {
     $is_archive = ( ($numero_tirage==0) && empty($is_test_impression) ) ? TRUE : FALSE ;
-    $is_memo_points = ($cycle_id==4) ? TRUE : FALSE ;
     // Intitulé
     if($make_pdf)
     {
@@ -259,22 +258,14 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
         $tab_infos_entete['tab_menesr_logo']['contenu'] = $image_md5;
         $tab_archive['user'][$eleve_id][] = array( 'entete' , array( $tab_infos_entete , $eleve_nom , $eleve_prenom , $eleve_INE , 0 /*nb_lignes_eleve_eval_total*/ ) );
       }
-      if($is_memo_points)
-      {
-        $tab_page_decompte_points = array(
-          'titre' => $tab_eleve['eleve_nom'].' '.$tab_eleve['eleve_prenom'].' ('.$tab_bloc_titres[3].')',
-          'tag'   => $tag_date_heure_initiales ,
-        );
-      }
     }
 
     // Maîtrise des composantes du socle
     if($make_pdf)
     {
       $tab_saisie_eleve_socle = isset($tab_saisie[$eleve_id]['socle']) ? $tab_saisie[$eleve_id]['socle'] : array();
-      $tab_page_decompte_points['controle_continu'] = $releve_PDF->bloc_socle( $tab_rubriques['socle'] , $tab_saisie_eleve_socle , $is_memo_points )
-                                                    +  array( 99 => array( 'Enseignement de complément' , FALSE , '(20)' ) );
-      if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'bloc_socle' , array( $tab_rubriques['socle'] , $tab_saisie_eleve_socle , FALSE ) ); }
+      $releve_PDF->bloc_socle( $tab_rubriques['socle'] , $tab_saisie_eleve_socle );
+      if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'bloc_socle' , array( $tab_rubriques['socle'] , $tab_saisie_eleve_socle ) ); }
     }
     if($make_html)
     {
@@ -349,8 +340,8 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
       // Sorties PDF & HTML
       if($make_pdf)
       {
-        $tab_page_decompte_points['controle_continu'][99] = $releve_PDF->bloc_enscompl( $tab_rubrique['nom'] , $position_info , $is_memo_points );
-        if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'bloc_enscompl' , array( $tab_rubrique['nom'] , $position_info, FALSE ) ); }
+        $releve_PDF->bloc_enscompl( $tab_rubrique['nom'] , $position_info );
+        if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'bloc_enscompl' , array( $tab_rubrique['nom'] , $position_info ) ); }
       }
       if($make_html)
       {
@@ -426,7 +417,7 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           $origine = ($bilan_info['saisie_origine']=='saisie') ? ' Supprimé par '.html($tab_profs[$bilan_info['prof_id']]) : '' ;
           $actions = ($make_action=='tamponner') ? ' <button type="button" class="ajouter">Ajouter</button>' : '' ;
         }
-        $releve_HTML .= '<div id="bilan_0_appreciation_'.$bilan_info['prof_id'].'">';
+        $releve_HTML .= '<div id="bilan_0_appreciation">';
         $releve_HTML .=   '<span class="appreciation">'.$appreciation.'</span>';
         $releve_HTML .=   '<div class="notnow" data-id="'.$bilan_info['saisie_id'].'">'.echo_origine($origine).$actions.'</div>';
         $releve_HTML .= '</div>';
@@ -471,13 +462,6 @@ foreach($tab_eleve_infos as $eleve_id => $tab_eleve)
           $tab_signature['chef']['contenu'] = $image_contenu_chef;
         }
       }
-    }
-
-    // Indication en 2ème page du nombre de points
-    if( $make_pdf && $is_memo_points )
-    {
-      $releve_PDF->page_decompte_points( $tab_page_decompte_points );
-      if($is_archive){ $tab_archive['user'][$eleve_id][] = array( 'page_decompte_points' , array( $tab_page_decompte_points ) ); }
     }
 
     if( $make_html )

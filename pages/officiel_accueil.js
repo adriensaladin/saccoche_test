@@ -297,7 +297,7 @@ $(document).ready
                     $('#zone_action_eleve').html(responseJSON['html']);
                     if( typeof(responseJSON['script']) !== 'undefined' )
                     {
-                      // A priori on ne passe jamais là car ce n'est que pour les bulletins et on commence toujours par l'éppréciation sur la classe
+                      // A priori on ne passe jamais là car ce n'est que poru les bulletins et on commence toujours par l'éppréciation sur la classe
                       eval( responseJSON['script'] );
                     }
                     memo_eleve       = $('#go_selection_eleve option:selected').val();
@@ -323,7 +323,7 @@ $(document).ready
           }
           else if(memo_section=='officiel_imprimer')
           {
-            // Masquer le tableau ; Afficher la zone de choix des élèves, avec info si les bulletins sont déjà imprimés
+            // Masquer le tableau ; Afficher la zone de choix des élèves, et si les bulletins sont déjà imprimés
             var titre = (memo_objet=='imprimer') ? 'Imprimer le bilan (PDF)' : 'Consulter un bilan imprimé (PDF)' ;
             configurer_form_choix_classe();
             $('#cadre_statut , #table_accueil').hide(0);
@@ -1274,7 +1274,7 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // [officiel_imprimer] Charger la liste de choix des élèves, avec info si les bulletins sont déjà imprimés
+    // [officiel_imprimer] Charger la liste de choix des élèves, et si les bulletins sont déjà imprimés
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     function charger_formulaire_imprimer()

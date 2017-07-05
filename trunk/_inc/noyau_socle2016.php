@@ -602,6 +602,12 @@ if($type_synthese)
     $clef = '%';
     $unit = '%';
   }
+  elseif($socle_synthese_affichage=='position')
+  {
+    $objet = 'Synthèse des pré-positionnements';
+    $clef = 'indice';
+    $unit = ' / 4';
+  }
   else
   {
     $objet = 'Synthèse de la prévision du nombre de points pour le brevet';

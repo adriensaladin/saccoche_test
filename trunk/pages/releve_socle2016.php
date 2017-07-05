@@ -63,6 +63,7 @@ $check_socle_items_acquis   = (Form::$tab_choix['aff_socle_items_acquis']) ? ' c
 $check_socle_position       = (Form::$tab_choix['aff_socle_position'])     ? ' checked' : '' ;
 $check_socle_points_DNB     = (Form::$tab_choix['aff_socle_points_DNB'])   ? ' checked' : '' ;
 $check_synthese_pourcentage = (Form::$tab_choix['socle_synthese_affichage']=='pourcentage') ? ' checked' : '' ;
+$check_synthese_position    = (Form::$tab_choix['socle_synthese_affichage']=='position')    ? ' checked' : '' ;
 $check_synthese_points      = (Form::$tab_choix['socle_synthese_affichage']=='points')      ? ' checked' : '' ;
 $check_mode_auto            = (Form::$tab_choix['mode']=='auto')           ? ' checked' : '' ;
 $check_mode_manuel          = (Form::$tab_choix['mode']=='manuel')         ? ' checked' : '' ;
@@ -180,7 +181,8 @@ Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' )
     </p>
     <p id="options_synthese" class="<?php echo $class_form_synthese ?>">
       <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Paramétrage du tableau de synthèse." /> Opt. synthèse :</label><?php echo $select_socle_synthese_format ?> <?php echo $select_tri_maitrise_mode ?><br />
-      <label class="tab">Indication synthèse :</label><label for="f_socle_synthese_affichage_pourcentage"><input type="radio" id="f_socle_synthese_affichage_pourcentage" name="f_socle_synthese_affichage" value="pourcentage"<?php echo $check_synthese_pourcentage ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_synthese_affichage_points" id="label_points_DNB" class="<?php echo $class_socle_points_DNB ?>"><input type="radio" id="f_socle_synthese_affichage_points" name="f_socle_synthese_affichage" value="points"<?php echo $check_synthese_points ?> /> Prévision du nombre de points pour le brevet</label>
+      <label class="tab">Indication synthèse :</label>
+      <label for="f_socle_synthese_affichage_pourcentage"><input type="radio" id="f_socle_synthese_affichage_pourcentage" name="f_socle_synthese_affichage" value="pourcentage"<?php echo $check_synthese_pourcentage ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_synthese_affichage_position" id="label_affichage_position" class="<?php echo $class_socle_points_DNB ?>"><input type="radio" id="f_socle_synthese_affichage_position" name="f_socle_synthese_affichage" value="position"<?php echo $check_synthese_position ?> />Proposition de positionnement</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_synthese_affichage_points" id="label_affichage_points" class="<?php echo $class_socle_points_DNB ?>"><input type="radio" id="f_socle_synthese_affichage_points" name="f_socle_synthese_affichage" value="points"<?php echo $check_synthese_points ?> /> Prévision du nombre de points pour le brevet</label>
     </p>
   </div>
 

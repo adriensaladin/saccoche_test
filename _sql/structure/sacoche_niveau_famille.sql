@@ -17,6 +17,7 @@ INSERT INTO sacoche_niveau_famille VALUES
 (  1, 2,  1, "Cycles (regroupements de niveaux)"),
 (  2, 2,  2, "CECRL (Cadre Européen Commun de Référence pour les Langues)"),
 (  3, 2,  3, "APSA (Activités Physiques, Sportives et Artistiques)"),
+(  4, 2,  4, "Niveaux adaptés (pour élèves à besoins particuliers)"),
 ( 60, 3,  1, "Premier degré"),                                           -- dispositif de formation 0~4 & 60~62
 (100, 3,  2, "Collège"),                                                 -- dispositif de formation 100~106
 (160, 3,  3, "SEGPA / Pré-apprentissage"),                               -- dispositif de formation 110~167

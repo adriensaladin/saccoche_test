@@ -95,11 +95,11 @@ $(document).ready
       {
         if( ($("#f_cycle option:selected").val()==4) && ($("#f_socle_detail option:selected").val()=='livret') )
         {
-          $("#span_points_DNB, #label_points_DNB").show();
+          $("#span_points_DNB, #label_affichage_points, #label_affichage_position").show();
         }
         else
         {
-          $("#span_points_DNB, #label_points_DNB").hide();
+          $("#span_points_DNB, #label_affichage_points, #label_affichage_position").hide();
         }
       }
     );

@@ -46,6 +46,7 @@ $date_debut              = (isset($_POST['f_date_debut']))      ? Clean::date_fr
 $date_fin                = (isset($_POST['f_date_fin']))        ? Clean::date_fr($_POST['f_date_fin'])             : '';
 $retroactif              = (isset($_POST['f_retroactif']))      ? Clean::calcul_retroactif($_POST['f_retroactif']) : '';
 $only_etat               = (isset($_POST['f_only_etat']))       ? Clean::texte($_POST['f_only_etat'])              : '';
+$only_arbo               = (isset($_POST['f_only_arbo']))       ? Clean::texte($_POST['f_only_arbo'])              : '';
 $only_socle              = (isset($_POST['f_only_socle']))      ? 1                                                : 0;
 $aff_reference           = (isset($_POST['f_reference']))       ? 1                                                : 0;
 $aff_coef                = (isset($_POST['f_coef']))            ? 1                                                : 0;
@@ -136,7 +137,7 @@ if(in_array($_SESSION['USER_PROFIL_TYPE'],array('parent','eleve')))
 // Si pas grille générique et si notes demandées ou besoin pour colonne bilan ou besoin pour synthèse
 $besoin_notes = ( !$type_generique && ( ($remplissage=='plein') || ($colonne_bilan=='oui') || $type_synthese ) ) ? TRUE : FALSE ;
 
-if( !$matiere_id || ( !$type_generique && ( !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve_id) ) ) || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && ( !$retroactif || !$only_etat ) ) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || !count($tab_type) || !$eleves_ordre )
+if( !$matiere_id || ( !$type_generique && ( !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve_id) ) ) || !$niveau_id || !$matiere_nom || !$niveau_nom || !$remplissage || !$colonne_bilan || ( $besoin_notes && !$periode_id && (!$date_debut || !$date_fin) ) || ( $besoin_notes && ( !$retroactif || !$only_etat || !$only_arbo ) ) || !$orientation || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || ($cases_nb<0) || !$cases_largeur || !count($tab_type) || !$eleves_ordre )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
@@ -157,13 +158,15 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 // Initialisation de tableaux
 
-$tab_domaine        = array();  // [domaine_id] => array(domaine_ref,domaine_nom,domaine_nb_lignes);
-$tab_theme          = array();  // [domaine_id][theme_id] => array(theme_ref,theme_nom,theme_nb_lignes);
-$tab_item           = array();  // [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien);
-$tab_item_synthese  = array();  // [item_id] => array(item_ref,item_nom);
-$tab_liste_item     = array();  // [i] => item_id
-$tab_eleve_infos    = array();  // [eleve_id] => array(eleve_nom,eleve_prenom)
-$tab_eval           = array();  // [eleve_id][item_id] => array(note,date,info)
+$tab_domaine           = array();  // [domaine_id] => array(domaine_ref,domaine_nom,domaine_nb_lignes,used);
+$tab_theme             = array();  // [domaine_id][theme_id] => array(theme_ref,theme_nom,theme_nb_lignes,used);
+$tab_item              = array();  // [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,used);
+$tab_item_synthese     = array();  // [item_id] => array(item_ref,item_nom);
+$tab_liste_item        = array();  // [i] => item_id
+$tab_eleve_infos       = array();  // [eleve_id] => array(eleve_nom,eleve_prenom)
+$tab_eval              = array();  // [eleve_id][item_id] => array(note,date,info)
+$tab_theme_for_item    = array();  // [item_id] => theme_id
+$tab_domaine_for_theme = array();  // [theme_id] => domaine_id
 
 $tab_titre_etat = array(
   'tous'       => 'évalués' ,
@@ -233,6 +236,7 @@ if(!empty($DB_TAB))
         'domaine_ref'       => $domaine_ref,
         'domaine_nom'       => $DB_ROW['domaine_nom'],
         'domaine_nb_lignes' => 2,
+        'domaine_used'      => FALSE,
       );
       $longueur_ref_max = max( $longueur_ref_max , strlen($domaine_ref) );
       $lignes_nb++;
@@ -246,7 +250,9 @@ if(!empty($DB_TAB))
         'theme_ref'       => $theme_ref,
         'theme_nom'       => $DB_ROW['theme_nom'],
         'theme_nb_lignes' => 1,
+        'theme_used'      => FALSE,
       );
+      $tab_domaine_for_theme[$theme_id] = $domaine_id;
       $longueur_ref_max = max( $longueur_ref_max , strlen($theme_ref) );
       $lignes_nb++;
     }
@@ -263,7 +269,9 @@ if(!empty($DB_TAB))
         'item_s2016' => $DB_ROW['s2016_nb'],
         'item_comm'  => $DB_ROW['item_comm'],
         'item_lien'  => $DB_ROW['item_lien'],
+        'item_used'  => FALSE,
       );
+      $tab_theme_for_item[$item_id] = $theme_id;
       $tab_item_synthese[$item_id] = array(
         'item_ref'  => $DB_ROW['matiere_ref'].'.'.$item_ref,
         'item_nom'  => $DB_ROW['item_nom'],
@@ -334,16 +342,74 @@ if($besoin_notes)
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // forcément 'oui' puisque le cas 'auto' a déjà été écarté (possible car un unique référentiel est considéré ici)
   $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ ) ;
-  if(!empty($DB_TAB))
+  if(empty($DB_TAB))
   {
-    foreach($DB_TAB as $DB_ROW)
+    Json::end( FALSE , 'Aucune note trouvée alors que votre paramétrage requiert la présence de résultats !' );
+  }
+  foreach($DB_TAB as $DB_ROW)
+  {
+    $user_id = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? $_SESSION['USER_ID'] : $DB_ROW['eleve_id'] ;
+    $item_id = $DB_ROW['item_id'];
+    $tab_eval[$user_id][$item_id][] = array(
+      'note' => $DB_ROW['note'],
+      'date' => $DB_ROW['date'],
+      'info' => $DB_ROW['info'],
+    );
+    $theme_id = $tab_theme_for_item[$item_id];
+    $domaine_id = $tab_domaine_for_theme[$theme_id];
+    $tab_item[$theme_id][$item_id]['item_used'] = TRUE;
+    $tab_theme[$domaine_id][$theme_id]['theme_used'] = TRUE;
+    $tab_domaine[$domaine_id]['domaine_used'] = TRUE;
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Restriction de la grille si demandé
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( $besoin_notes && ($only_arbo!='tous') )
+{
+  // Pour chaque domaine...
+  if(count($tab_domaine))
+  {
+    foreach($tab_domaine as $domaine_id => $tab)
     {
-      $user_id = ($_SESSION['USER_PROFIL_TYPE']=='eleve') ? $_SESSION['USER_ID'] : $DB_ROW['eleve_id'] ;
-      $tab_eval[$user_id][$DB_ROW['item_id']][] = array(
-        'note' => $DB_ROW['note'],
-        'date' => $DB_ROW['date'],
-        'info' => $DB_ROW['info'],
-      );
+      $delete_theme = FALSE;
+      extract($tab);  // $domaine_ref $domaine_nom $domaine_nb_lignes $domaine_used
+      if( !$domaine_used && ( ($only_arbo=='domaine') || ($only_arbo=='theme') || ($only_arbo=='item') ) )
+      {
+        $delete_theme = TRUE;
+        unset($tab_domaine[$domaine_id]);
+        $lignes_nb--;
+      }
+      // Pour chaque thème...
+      if(isset($tab_theme[$domaine_id]))
+      {
+        foreach($tab_theme[$domaine_id] as $theme_id => $tab)
+        {
+          $delete_item = FALSE;
+          extract($tab);  // $theme_ref $theme_nom $theme_nb_lignes $theme_used
+          if( $delete_theme || ( !$theme_used && ( ($only_arbo=='theme') || ($only_arbo=='item') ) ) )
+          {
+            $delete_item = TRUE;
+            unset($tab_theme[$domaine_id][$theme_id]);
+            $lignes_nb--;
+          }
+          // Pour chaque item...
+          if(isset($tab_item[$theme_id]))
+          {
+            foreach($tab_item[$theme_id] as $item_id => $tab)
+            {
+              extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_lien $item_used
+              if( $delete_item || ( !$item_used && ($only_arbo=='item') ) )
+              {
+                unset($tab_item[$theme_id][$item_id]);
+                $lignes_nb--;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -576,7 +642,7 @@ if( $type_generique || $type_individuel )
     {
       foreach($tab_domaine as $domaine_id => $tab)
       {
-        extract($tab);  // $domaine_ref $domaine_nom $domaine_nb_lignes
+        extract($tab);  // $domaine_ref $domaine_nom $domaine_nb_lignes $domaine_used
         $releve_HTML_individuel .= '<tr><th'.$colspan_th_avant.' class="domaine">'.html($domaine_nom).'</th>'.$colspan_th_apres.'</tr>'.NL;
         $releve_PDF->domaine( $domaine_nom , $domaine_nb_lignes );
         // Pour chaque thème...
@@ -584,7 +650,7 @@ if( $type_generique || $type_individuel )
         {
           foreach($tab_theme[$domaine_id] as $theme_id => $tab)
           {
-            extract($tab);  // $theme_ref $theme_nom $theme_nb_lignes
+            extract($tab);  // $theme_ref $theme_nom $theme_nb_lignes $theme_used
             $th_ref = ($longueur_ref_max) ? '<th>'.$theme_ref.'</th>' : '' ;
             $releve_HTML_individuel .= '<tr>'.$th_ref.'<th>'.html($theme_nom).'</th>'.$colspan_th_apres.'</tr>'.NL;
             $releve_PDF->theme( $theme_ref , $theme_nom , $theme_nb_lignes );
@@ -593,7 +659,7 @@ if( $type_generique || $type_individuel )
             {
               foreach($tab_item[$theme_id] as $item_id => $tab)
               {
-                extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_lien
+                extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_lien $item_used
                 if($aff_coef)
                 {
                   $texte_coef = '['.$item_coef.'] ';

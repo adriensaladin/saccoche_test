@@ -104,7 +104,7 @@ $(document).ready
     (
       function()
       {
-        $('#generique_non_1 , #generique_non_2 , #generique_non_3 , #generique_non_4').toggle();
+        $('#generique_non_1 , #generique_non_2 , #generique_non_3').toggle();
         view_periode();
       }
     );
@@ -440,7 +440,6 @@ $(document).ready
           f_date_debut     : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
           f_date_fin       : { required:function(){return periode_requise && $("#f_periode").val()==0;} , dateITA:true },
           f_only_etat      : { required:true },
-          f_only_arbo      : { required:true },
           f_only_socle     : { required:false },
           f_reference      : { required:false },
           f_coef           : { required:false },
@@ -475,7 +474,6 @@ $(document).ready
           f_date_debut     : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_date_fin       : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
           f_only_etat      : { required:"choix manquant" },
-          f_only_arbo      : { required:"choix manquant" },
           f_only_socle     : { },
           f_reference      : { },
           f_coef           : { },

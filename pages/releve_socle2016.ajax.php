@@ -110,7 +110,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='professeur') && ($_SESSION['USER_JOIN_GROUP
 $type_individuel = (in_array('individuel',$tab_type)) ? 1 : 0 ;
 $type_synthese   = (in_array('synthese',$tab_type))   ? 1 : 0 ;
 
-if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$tableau_tri_maitrise_mode || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || !$eleves_ordre || ( $type_synthese && !in_array($socle_synthese_affichage,array('pourcentage','position','points')) ) )
+if( !$cycle_id || !$cycle_nom || !$groupe_id || !$groupe_nom || !$groupe_type || !count($tab_eleve) || !count($tab_type) || !$tableau_tri_maitrise_mode || !in_array($mode,array('auto','manuel')) || !$couleur || !$fond || !$legende || !$marge_min || !$pages_nb || !$eleves_ordre || ( $type_synthese && !in_array($socle_synthese_affichage,array('pourcentage','points')) ) )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }

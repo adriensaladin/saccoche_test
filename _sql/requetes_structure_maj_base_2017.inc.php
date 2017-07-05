@@ -406,6 +406,8 @@ if($version_base_structure_actuelle=='2017-04-18')
     if(empty($reload_sacoche_niveau_famille))
     {
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT sacoche_niveau_famille VALUES (900, 3,  7, "LMD (Diplôme d\'enseignement supérieur)") ');
+      // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_niveau)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau_famille ORDER BY niveau_famille_id' );
     }
     // Ajout de niveaux
     if(empty($reload_sacoche_niveau))
@@ -418,6 +420,8 @@ if($version_base_structure_actuelle=='2017-04-18')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900021, 0, 0, 900, 900, "D1", "", "Doctorat, 1ère année") ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900022, 0, 0, 900, 900, "D2", "", "Doctorat, 2ème année") ' );
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 900023, 0, 0, 900, 900, "D3", "", "Doctorat, 3ème année") ' );
+      // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_niveau)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau ORDER BY niveau_id' );
     }
   }
 }
@@ -555,63 +559,7 @@ if($version_base_structure_actuelle=='2017-05-27')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2017-06-08 => 2017-07-05
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2017-06-08')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2017-07-05';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // modification sacoche_parametre (paramètres CAS pour ENT)
-    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
-    if($connexion_nom=='lea_hautenormandie')
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="nero.l-educdenormandie.fr" WHERE parametre_nom="cas_serveur_host" ' );
-    }
-    // Ajout de familles de niveaux
-    if(empty($reload_sacoche_niveau_famille))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT sacoche_niveau_famille VALUES (  4, 2,  4, "Niveaux adaptés (pour élèves à besoins particuliers)") ');
-      // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_niveau)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau_famille ORDER BY niveau_famille_id' );
-    }
-    // Ajout de niveaux
-    if(empty($reload_sacoche_niveau))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 401, 0, 0, 4,   0, "TPSADA", "", "TPS adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 402, 0, 0, 4,   1,  "PSADA", "", "PS adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 403, 0, 0, 4,   2,  "MSADA", "", "MS adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 404, 0, 0, 4,   3,  "GSADA", "", "GS adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 405, 0, 1, 4,   5,  "P1ADA", "", "Cycle 1 adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 406, 0, 0, 4,  11,  "CPADA", "", "CP adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 407, 0, 0, 4,  21, "CE1ADA", "", "CE1 adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 408, 0, 0, 4,  22, "CE2ADA", "", "CE2 adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 409, 0, 1, 4,  30,  "P2ADA", "", "Cycle 2 adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 410, 0, 0, 4,  31, "CM1ADA", "", "CM1 adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 411, 0, 0, 4,  32, "CM2ADA", "", "CM2 adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 412, 0, 1, 4,  90,  "P3ADA", "", "Cycle 3 adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 413, 0, 0, 4, 100,   "6ADA", "", "Sixième adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 414, 0, 0, 4, 101,   "5ADA", "", "Cinquième adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 415, 0, 0, 4, 102,   "4ADA", "", "Quatrième adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 416, 0, 0, 4, 103,   "3ADA", "", "Troisième adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 417, 0, 1, 4, 150,  "P4ADA", "", "Cycle 4 adapté") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 418, 0, 0, 4, 200,   "2ADA", "", "Seconde adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 419, 0, 0, 4, 201,   "1ADA", "", "Première adaptée") ' );
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_niveau VALUES ( 420, 0, 0, 4, 202,   "TADA", "", "Terminale adaptée") ' );
-      // réordonner la table sacoche_niveau (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_niveau)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_niveau ORDER BY niveau_id' );
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////
-// NE PAS OUBLIER de maj les 2 tables de la base sacoche_projet en cas modif de matières ou de niveaux !!!
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ?>

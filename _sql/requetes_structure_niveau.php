@@ -79,7 +79,6 @@ public static function DB_lister_niveaux_famille($niveau_famille_id)
       1 => '',
       2 => '',
       3 => '',
-      4 => '',
      60 => 'OR niveau_id IN(1,2,3,201) ',
     100 => 'OR niveau_id IN(3,4,10,202,203) ',
     160 => 'OR niveau_id IN(16,202,203) ',

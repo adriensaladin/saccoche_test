@@ -61,29 +61,6 @@ INSERT INTO sacoche_niveau VALUES
 (    304, 0, 0,   3,  84,     "N4",            "", "Niveau 4"),
 (    305, 0, 0,   3,  85,     "N5",            "", "Niveau 5"),
 
--- 4 Niveaux adaptés (pour élèves à besoins particuliers)
-
-(    401, 0, 0,   4,   0, "TPSADA",            "", "TPS adaptée"),
-(    402, 0, 0,   4,   1,  "PSADA",            "", "PS adaptée"),
-(    403, 0, 0,   4,   2,  "MSADA",            "", "MS adaptée"),
-(    404, 0, 0,   4,   3,  "GSADA",            "", "GS adaptée"),
-(    405, 0, 1,   4,   5,  "P1ADA",            "", "Cycle 1 adapté"),
-(    406, 0, 0,   4,  11,  "CPADA",            "", "CP adapté"),
-(    407, 0, 0,   4,  21, "CE1ADA",            "", "CE1 adapté"),
-(    408, 0, 0,   4,  22, "CE2ADA",            "", "CE2 adapté"),
-(    409, 0, 1,   4,  30,  "P2ADA",            "", "Cycle 2 adapté"),
-(    410, 0, 0,   4,  31, "CM1ADA",            "", "CM1 adapté"),
-(    411, 0, 0,   4,  32, "CM2ADA",            "", "CM2 adapté"),
-(    412, 0, 1,   4,  90,  "P3ADA",            "", "Cycle 3 adapté"),
-(    413, 0, 0,   4, 100,   "6ADA",            "", "Sixième adaptée"),
-(    414, 0, 0,   4, 101,   "5ADA",            "", "Cinquième adaptée"),
-(    415, 0, 0,   4, 102,   "4ADA",            "", "Quatrième adaptée"),
-(    416, 0, 0,   4, 103,   "3ADA",            "", "Troisième adaptée"),
-(    417, 0, 1,   4, 150,  "P4ADA",            "", "Cycle 4 adapté"),
-(    418, 0, 0,   4, 200,   "2ADA",            "", "Seconde adaptée"),
-(    419, 0, 0,   4, 201,   "1ADA",            "", "Première adaptée"),
-(    420, 0, 0,   4, 202,   "TADA",            "", "Terminale adaptée"),
-
 -- 60 Premier degré -- dispositif de formation 0~4 & 60~62
 
 (   1011, 0, 1,  60,   0,    "TPS", "0041000111.", "TPS (maternelle, toute petite section)"),

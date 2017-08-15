@@ -393,6 +393,26 @@ public static function DB_ajouter_groupe_par_prof( $prof_id , $groupe_type , $gr
 }
 
 /**
+ * modifier_chef ; pour une classe donnée ou toutes les classes
+ *
+ * @param int $chef_id
+ * @param int $groupe_id   facultatif (toutes les classes sinon)
+ * @return void
+ */
+public static function DB_modifier_chef( $chef_id , $groupe_id = NULL )
+{
+  $where = ($groupe_id) ? 'groupe_id=:groupe_id' : 'groupe_type="classe"' ;
+  $DB_SQL = 'UPDATE sacoche_groupe ';
+  $DB_SQL.= 'SET groupe_chef_id=:chef_id ';
+  $DB_SQL.= 'WHERE '.$where;
+  $DB_VAR = array(
+    ':chef_id'   => $chef_id,
+    ':groupe_id' => $groupe_id,
+  );
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * modifier_groupe_par_admin ; on ne touche pas à 'groupe_type'
  *
  * @param int    $groupe_id

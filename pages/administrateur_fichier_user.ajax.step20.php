@@ -1653,7 +1653,7 @@ if(!empty($is_first_import_onde))
   SACoche fait au mieux pour établir une correspondance, mais cela peut ne pas fonctionner si vous avez renommé des éléments.<br />
   À l\'étape suivante, il se peut donc qu\'une liste de classes soit proposée à la suppression, et une autre à l\'ajout.<br />
   Si vous êtes en cours d\'année scolaire, surtout ne validez pas une telle proposition !<br />
-  <a href="./index.php?page=administrateur_classe" target="_blank">Ouvrez le menu de gestion des classes dans un nouvel onglet</a> et modifiez manuellement les références de vos classes actuelles en y indiquant celles issues de ONDE.<br />
+  <a href="./index.php?page=administrateur_classe" target="_blank" rel="noopener">Ouvrez le menu de gestion des classes dans un nouvel onglet</a> et modifiez manuellement les références de vos classes actuelles en y indiquant celles issues de ONDE.<br />
   Ensuite, reprenez la procédure d\'import au début.</p>'.NL);
 }
 // On affiche le bilan des utilisateurs trouvés

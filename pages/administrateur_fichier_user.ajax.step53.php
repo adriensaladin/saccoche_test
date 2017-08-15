@@ -39,8 +39,8 @@ if(!$archive)
 }
 Json::add_str('<p><label class="alerte">Voici les identifiants des nouveaux inscrits :</label></p>'.NL);
 Json::add_str('<ul class="puce">'.NL);
-Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$archive.'.pdf"><span class="file file_pdf">Archiver / Imprimer (étiquettes <em>pdf</em>).</span></a></li>'.NL);
-Json::add_str(  '<li><a target="_blank" href="./force_download.php?auth&amp;fichier='.$archive.'.csv"><span class="file file_txt">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL);
+Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_LOGINPASS.$archive.'.pdf"><span class="file file_pdf">Archiver / Imprimer (étiquettes <em>pdf</em>).</span></a></li>'.NL);
+Json::add_str(  '<li><a target="_blank" rel="noopener" href="./force_download.php?auth&amp;fichier='.$archive.'.csv"><span class="file file_txt">Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL);
 Json::add_str('</ul>'.NL);
 Json::add_str('<p class="danger">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</p>'.NL);
 switch($import_origine.'+'.$import_profil)

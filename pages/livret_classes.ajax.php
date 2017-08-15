@@ -28,19 +28,33 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$groupe_id = (isset($_POST['f_groupe']))   ? Clean::entier($_POST['f_groupe']) : NULL ;
-$periode   = (isset($_POST['f_periode']))  ? Clean::id($_POST['f_periode'])    : NULL ;
-$jointure  = (isset($_POST['f_jointure'])) ? Clean::ref($_POST['f_jointure'])  : NULL ;
-$cycle     = (isset($_POST['f_cycle']))    ? Clean::id($_POST['f_cycle'])      : NULL ;
+$groupe_id     = (isset($_POST['f_groupe']))    ? Clean::entier($_POST['f_groupe'])    : NULL ;
+$periode       = (isset($_POST['f_periode']))   ? Clean::id($_POST['f_periode'])       : NULL ;
+$jointure      = (isset($_POST['f_jointure']))  ? Clean::entier($_POST['f_jointure'])  : NULL ;
+$cycle         = (isset($_POST['f_cycle']))     ? Clean::id($_POST['f_cycle'])         : NULL ;
+$chef_id       = (isset($_POST['f_chef']))      ? Clean::entier($_POST['f_chef'])      : NULL;
+$etabl_chef_id = (isset($_POST['f_chefetabl'])) ? Clean::entier($_POST['f_chefetabl']) : NULL;
 
-if( !$groupe_id || is_null($periode) || is_null($jointure) || is_null($cycle) || ( $periode && !$jointure ) )
+if( !$etabl_chef_id && ( !$groupe_id || is_null($periode) || is_null($cycle) || is_null($chef_id) || ( $periode && !$jointure ) || ( !$chef_id && ( $periode || $cycle ) ) ) )
 {
   Json::end( FALSE , 'Erreur avec les données transmises !' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Modifier les jointures au livret pour une classe donnée
+// Imposer le chef d'établ à toutes les classes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( $etabl_chef_id )
+{
+  DB_STRUCTURE_REGROUPEMENT::DB_modifier_chef( $etabl_chef_id );
+  Json::end( TRUE );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Modifier les jointures au livret pour une classe donnée, ainsi que le chef responsable
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+DB_STRUCTURE_REGROUPEMENT::DB_modifier_chef( $chef_id , $groupe_id );
 
 // On récupère déjà l'existant
 $tab_jointures_old = array(
@@ -65,9 +79,10 @@ foreach($DB_TAB as $DB_ROW)
 // C'est plus simple de DELETE / INSERT que UPDATE, en particulier pour les périodes ou la fréquence peut être différente.
 // On n'efface pas les saisies éventuelles, mais l'état revient sur "1vide".
 $tab_jointure_periode = array(
-  'S' => array('S1','S2'),
-  'T' => array('T1','T2','T3'),
-  'B' => array('B1','B2','B3','B4'),
+  2 => array(21,22),
+  3 => array(31,32,33),
+  4 => array(41,42,43,44),
+  5 => array(51,52,53,54,55),
 );
 
 foreach($tab_jointures_old as $periodicite => $page_ref_old)
@@ -83,7 +98,7 @@ foreach($tab_jointures_old as $periodicite => $page_ref_old)
   }
   if( $test_insert || $test_update )
   {
-    $jointure_periode = ( $periodicite != 'periode') ? array('') : $tab_jointure_periode[$jointure] ;
+    $jointure_periode = ( $periodicite != 'periode') ? array(NULL) : $tab_jointure_periode[$jointure] ;
     DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $groupe_id , $page_ref_new , $periodicite , $jointure_periode );
   }
 }

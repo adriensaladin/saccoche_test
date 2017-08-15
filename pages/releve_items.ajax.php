@@ -197,7 +197,7 @@ if($affichage_direct)
 {
   $retour .= '<hr />'.NL;
   $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
   $retour .= '</ul>'.NL;
   $retour .= $releve_HTML_individuel;
 }
@@ -207,11 +207,11 @@ else
   {
     $retour .= '<h2>Relevé individuel</h2>'.NL;
     $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="./releve_html.php?fichier='.str_replace('<REPLACE>','individuel',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     if($make_csv)
     {
-      $retour .= '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.csv"><span class="file file_txt">Exploitation tableur (format <em>csv</em>).</span></a></li>'.NL;
+      $retour .= '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','individuel',$fichier_nom).'.csv"><span class="file file_txt">Exploitation tableur (format <em>csv</em>).</span></a></li>'.NL;
     }
     $retour .= '</ul>'.NL;
   }
@@ -219,16 +219,16 @@ else
   {
     $retour .= '<h2>Synthèse collective</h2>'.NL;
     $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','synthese',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="./releve_html.php?fichier='.str_replace('<REPLACE>','synthese',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     $retour .= '</ul>'.NL;
   }
   if($type_bulletin)
   {
     $retour .= '<h2>Moyenne sur 20 - Élément d\'appréciation</h2>'.NL;
     $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.str_replace('<REPLACE>','bulletin',$fichier_nom).'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="./releve_html.php?fichier='.str_replace('<REPLACE>','bulletin',$fichier_nom).'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     $retour .= '</ul>'.NL;
     if($_SESSION['USER_PROFIL_TYPE']=='professeur')
     {
@@ -239,10 +239,10 @@ else
       $retour .= $bulletin_alerte;
       $retour .= '<h2>Bulletin Gepi</h2>'.NL;
       $retour .= '<ul class="puce">'.NL;
-      $retour .=   '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes (moyennes scores) et appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      $retour .=   '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note'             ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      $retour .=   '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_PA'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
-      $retour .=   '<li><a target="_blank" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_MS'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      $retour .=   '<li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note_appreciation',$fichier_nom).'.csv"><span class="file file_txt">Récupérer notes (moyennes scores) et appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      $retour .=   '<li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_note'             ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les notes (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      $retour .=   '<li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_PA'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (% items acquis) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
+      $retour .=   '<li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.str_replace('<REPLACE>','bulletin_appreciation_MS'  ,$fichier_nom).'.csv"><span class="file file_txt">Récupérer les appréciations (moyennes scores) à importer dans GEPI (format <em>csv</em>).</span></a></li>'.NL;
       $retour .= '</ul>'.NL;
     }
   }

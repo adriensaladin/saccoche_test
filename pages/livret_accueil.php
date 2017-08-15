@@ -50,6 +50,15 @@ if( is_int($result) )
   echo'<p class="danger">Des associations de classe au livret scolaire n\'était pas enregistrées.<br />'.$compte_rendu.'Vérifiez et ajustez si besoin (étape n°1 "Classes / Périodicité" ci-dessus).</p>'.NL;
 }
 
+// Vérifier qu'il y a un chef associé à chaque classe, et sinon essayer de faire le boulot automatiquement
+$result = DB_STRUCTURE_LIVRET::DB_initialiser_jointures_classe_chef();
+if( is_int($result) )
+{
+  $s = ($result>1) ? 's' : '' ;
+  $compte_rendu = ($result) ? '<em>SACoche</em> les a initialisées : '.$result.' association'.$s.' effectuée'.$s.'<br />' : 'Mais <em>SACoche</em> n\'a pas su les initialiser automatiquement.<br />' ;
+  echo'<p class="danger">Des associations de chef / directeur aux classes n\'était pas enregistrées.<br />'.$compte_rendu.'Vérifiez et ajustez si besoin (étape n°1 "Classes / Périodicité" ci-dessus).</p>'.NL;
+}
+
 // Supprimer les liaisons du livret aux divers éléments de référentiels supprimés, car ce n'est pas fait automatiquement au fur et à mesure
 DB_STRUCTURE_LIVRET::DB_supprimer_jointure_referentiel_obsolete();
 

@@ -419,7 +419,7 @@ $(document).ready
         {
           var lien_url = escapeHtml( $(this).parent().children('input[name=lien_url_old]').val() );
           var lien_nom = escapeHtml( $(this).parent().children('input[name=lien_nom_old]').val() );
-          $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]);
+          $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" target="_blank" rel="noopener">'+lien_nom+'</a>'+images[2]);
         }
         return false;
       }
@@ -477,7 +477,7 @@ $(document).ready
           }
           else
           {
-            $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</q>');
+            $(this).parent().html('<a href="'+lien_url+'" title="'+lien_url+'" target="_blank" rel="noopener">'+lien_nom+'</a>'+images[2]+'</q>');
           }
         }
         initialiser_compteur();
@@ -545,7 +545,7 @@ $(document).ready
         $('label[for=lien_nom]').removeAttr('class').html('');
         // ok
         initialiser_compteur();
-        $('#sortable_v').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
+        $('#sortable_v').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank" rel="noopener">'+lien_nom+'</a>'+images[2]+'</li>');
         $('#sortable_v li.i').remove();
         $('#lien_url').val('');
         $('#lien_nom').val('');
@@ -708,7 +708,7 @@ $(document).ready
         var lien_nom = $(this).prev().html();
         $(this).parent().remove();
         initialiser_compteur();
-        $('#sortable_v').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank">'+lien_nom+'</a>'+images[2]+'</li>');
+        $('#sortable_v').append('<li><a href="'+lien_url+'" title="'+lien_url+'" target="_blank" rel="noopener">'+lien_nom+'</a>'+images[2]+'</li>');
         $('#sortable_v li.i').remove();
       }
     );

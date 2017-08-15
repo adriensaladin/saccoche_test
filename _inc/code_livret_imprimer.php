@@ -72,6 +72,7 @@ $PAGE_AP             = $DB_ROW['livret_page_ap'];
 $PAGE_PARCOURS       = $DB_ROW['livret_page_parcours'];
 $PAGE_VIE_SCOLAIRE   = $DB_ROW['livret_page_vie_scolaire'];
 $classe_nom          = $DB_ROW['groupe_nom'];
+$classe_chef_id      = $DB_ROW['groupe_chef_id'];
 $DATE_VERROU         = is_null($DB_ROW['jointure_date_verrou']) ? TODAY_FR : To::datetime_mysql_to_french( $DB_ROW['jointure_date_verrou'] , FALSE /*return_time*/ ) ;
 $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere','c3_socle','c4_socle')) ? 'college' : 'ecole' ;
 
@@ -84,7 +85,8 @@ if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrate
   Json::end( FALSE , 'Droits insuffisants pour cette action !' );
 }
 
-$annee_scolaire = To::annee_scolaire('code');
+$annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
+$annee_scolaire = To::annee_scolaire('code',$annee_decalage);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et mettre en session les infos sur les seuils enregistrés
@@ -119,10 +121,10 @@ if($ACTION=='initialiser')
   // Besoin de connaitre le chef d'établissement
   if( ($PAGE_PERIODICITE=='cycle') || ($BILAN_TYPE_ETABL=='college') )
   {
-    $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_chef_etabl_infos($_SESSION['ETABLISSEMENT']['CHEF_ID']);
+    $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_chef_infos($classe_chef_id);
     if(empty($DB_ROW))
     {
-      Json::end( FALSE , 'Absence de désignation du chef d\'établissement ou directeur d\'école !' );
+      Json::end( FALSE , "Absence de désignation du chef d'établissement ou directeur d'école pour cette classe !" );
     }
     // Besoin de connaitre au moins un prof principal
     if($BILAN_TYPE_ETABL=='college')
@@ -194,7 +196,7 @@ if($ACTION=='initialiser')
       {
         $clef = $DB_TAB[$eleve_id][0]['officiel_archive_id'];
         $_SESSION['tmp_droit_voir_archive'][$clef] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-        $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
+        $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank" rel="noopener">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
         $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
         $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
       }
@@ -225,7 +227,6 @@ if( ($ACTION=='imprimer') && ($etape==2) )
   }
   unset($tab_memo['tab_archive']['image']);
   // Récupérer les bilans déjà existants pour savoir s'il faut faire un INSERT ou un UPDATE (sinon, un REPLACE efface les dates de consultation)
-  $annee_scolaire = To::annee_scolaire('code');
   $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_archive( $_SESSION['WEBMESTRE_UAI'] , $annee_scolaire , 'livret' /*archive_type*/ , $PAGE_REF /*archive_ref*/ , $periode_id , array_keys($tab_memo['tab_pages_decoupe_pdf']) /*tab_eleve_id*/ , FALSE /*with_infos*/ );
   $tab_notif = array();
   foreach($tab_memo['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
@@ -339,8 +340,8 @@ if( ($ACTION=='imprimer') && ($etape==4) )
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' , $tab_memo['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' );
   }
   Json::add_str('<ul class="puce">');
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>');
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>');
   Json::add_str('</ul>');
   Json::add_str('<p class="astuce"><b>[x]</b> Nombre de pages par bilan (y prêter attention avant de lancer une impression recto-verso en série) :<br />'.$tab_memo['pages_nombre_par_bilan'].'</p>');
   unset( $tab_memo['fichier_nom'] , $tab_memo['pages_non_anonymes'] , $tab_memo['pages_nombre_par_bilan'] );
@@ -365,10 +366,10 @@ $texte_chef_etabl = '';
 
 if($affichage_chef_etabl)
 {
-  $tab_chef_etabl = DB_STRUCTURE_LIVRET::DB_recuperer_chef_etabl_infos($_SESSION['ETABLISSEMENT']['CHEF_ID']);
+  $tab_chef_etabl = DB_STRUCTURE_LIVRET::DB_recuperer_chef_infos($classe_chef_id);
   if(empty($tab_chef_etabl))
   {
-    Json::end( FALSE , 'Absence de désignation du chef d\'établissement ou directeur d\'école !' );
+    Json::end( FALSE , "Absence de désignation du chef d'établissement ou directeur d'école pour cette classe !" );
   }
   $texte_chef_etabl = To::texte_identite($tab_chef_etabl['user_nom'],FALSE,$tab_chef_etabl['user_prenom'],TRUE,$tab_chef_etabl['user_genre']);
 }
@@ -522,7 +523,7 @@ if($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']!='sans')
     // chef
     if($affichage_chef_etabl)
     {
-      $tab_id[] = $_SESSION['ETABLISSEMENT']['CHEF_ID'];
+      $tab_id[] = $classe_chef_id;
     }
     // P.P.
     if( $affichage_prof_principal && ($PAGE_PERIODICITE=='cycle') )
@@ -557,9 +558,9 @@ if($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']!='sans')
   }
   if( ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature') || ($_SESSION['OFFICIEL']['TAMPON_SIGNATURE']=='signature_ou_tampon') )
   {
-    if( $affichage_chef_etabl && !empty($tab_signature['tmp'][$_SESSION['ETABLISSEMENT']['CHEF_ID']]) )
+    if( $affichage_chef_etabl && !empty($tab_signature['tmp'][$classe_chef_id]) )
     {
-      $tab_signature['chef'] = $tab_signature['tmp'][$_SESSION['ETABLISSEMENT']['CHEF_ID']];
+      $tab_signature['chef'] = $tab_signature['tmp'][$classe_chef_id];
     }
     if( $affichage_prof_principal && ($PAGE_PERIODICITE=='cycle') )
     {
@@ -692,7 +693,7 @@ if(mb_substr_count($_SESSION['OFFICIEL']['INFOS_ETABLISSEMENT'],'url'))
 
 // Bloc des titres du document
 $titre_moment  = ($PAGE_PERIODICITE=='cycle') ? $PAGE_MOMENT : 'Cycle '.substr($PAGE_RUBRIQUE_TYPE,1,1).' - '.$PAGE_TITRE_CLASSE ;
-$titre_periode = ($PAGE_PERIODICITE=='cycle') ? To::annee_scolaire('texte') : To::annee_scolaire('texte').' - '.$periode_nom ;
+$titre_periode = ($PAGE_PERIODICITE=='cycle') ? To::annee_scolaire('texte',$annee_decalage) : To::annee_scolaire('texte',$annee_decalage).' - '.$periode_nom ;
 $tab_bloc_titres = array( 0 => 'LIVRET SCOLAIRE' , 1 => $titre_moment , 2 => $titre_periode , 3 =>$classe_nom );
 
 // Tag date heure initiales

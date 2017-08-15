@@ -57,7 +57,7 @@ $_SESSION['tmp']['partenaire_logo_actuel_filename'] = $partenaire_logo_actuel_fi
 // Balises de lien (ou pas)
 if($partenaire_adresse_web)
 {
-  $partenaire_lien_ouvrant = '<a href="'.html($partenaire_adresse_web).'" target="_blank">';
+  $partenaire_lien_ouvrant = '<a href="'.html($partenaire_adresse_web).'" target="_blank" rel="noopener">';
   $partenaire_lien_fermant = '</a>';
 }
 else

@@ -158,8 +158,8 @@ if( (($action=='generer_login')||($action=='generer_mdp')||($action=='forcer_mdp
   // Affichage du résultat
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   Json::add_str('<ul class="puce">'.NL);
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>'.NL);
-  Json::add_str(  '<li><a target="_blank" href="./force_download.php?auth&amp;fichier='.$fnom.'.csv"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL);
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Nouveaux identifiants &rarr; Archiver / Imprimer (étiquettes <em>pdf</em>)</span></a></li>'.NL);
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="./force_download.php?auth&amp;fichier='.$fnom.'.csv"><span class="file file_txt">Nouveaux identifiants &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a></li>'.NL);
   if($action=='generer_mdp')
   {
     Json::add_str('<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL);
@@ -188,7 +188,7 @@ if($action=='user_export')
   $fnom = 'export_'.$_SESSION['BASE'].'_mdp_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($fcontenu_csv) );
   // Retour
-  Json::end( TRUE , '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer le fichier exporté de la base SACoche (format <em>csv</em>).</span></a></li></ul>' );
+  Json::end( TRUE , '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer le fichier exporté de la base SACoche (format <em>csv</em>).</span></a></li></ul>' );
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -386,7 +386,7 @@ if($action=='import_loginmdp')
       $pdf -> Add_Label(To::pdf($text));
     }
     FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_LOGINPASS.$fnom.'.pdf' , $pdf );
-    Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL);
+    Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_LOGINPASS.$fnom.'.pdf"><span class="file file_pdf">Archiver / Imprimer les identifiants modifiés (étiquettes <em>pdf</em>).</span></a></li>'.NL);
     Json::add_str(  '<li><label class="alerte">Les mots de passe, cryptés, ne seront plus accessibles ultérieurement !</label></li>'.NL);
   }
   // On complète le bilan et on affiche le retour

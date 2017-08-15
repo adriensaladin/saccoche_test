@@ -677,7 +677,7 @@ if( $type_generique || $type_individuel )
                 }
                 if($aff_lien)
                 {
-                  $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
+                  $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener" href="'.html($item_lien).'">' : '';
                   $texte_lien_apres = ($item_lien) ? '</a>' : '';
                 }
                 $score = (isset($tab_score_eleve_item[$eleve_id][$item_id])) ? $tab_score_eleve_item[$eleve_id][$item_id] : FALSE ;
@@ -915,7 +915,7 @@ if($affichage_direct)
 {
   $retour .= '<hr />'.NL;
   $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
   $retour .= '</ul>'.NL;
   $retour .= $releve_HTML_individuel;
 }
@@ -925,8 +925,8 @@ else
   {
     $retour .= '<h2>Synthèse collective</h2>'.NL;
     $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_nom_type2.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="./releve_html.php?fichier='.$fichier_nom_type2.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     $retour .= '</ul>'.NL;
   }
   if( $type_generique || $type_individuel )
@@ -934,8 +934,8 @@ else
     $h2 = ($type_individuel) ? 'Relevé individuel' : 'Relevé générique' ;
     $retour .= '<h2>'.$h2.'</h2>'.NL;
     $retour .= '<ul class="puce">'.NL;
-    $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-    $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_nom_type1.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+    $retour .=   '<li><a target="_blank" rel="noopener" href="./releve_html.php?fichier='.$fichier_nom_type1.'"><span class="file file_htm">Explorer / Manipuler (format <em>html</em>).</span></a></li>'.NL;
     $retour .= '</ul>'.NL;
   }
 }

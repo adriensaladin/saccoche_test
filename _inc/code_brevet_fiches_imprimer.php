@@ -138,7 +138,7 @@ if($ACTION=='initialiser')
       elseif(is_file(CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $eleve_id , $bilan_type , $annee_session_brevet )))
       {
         $_SESSION['tmp_droit_voir_archive'][$eleve_id.$bilan_type] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-        $archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" target="_blank">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
+        $archive_td = '<a href="releve_pdf.php?fichier='.$eleve_id.'_'.$bilan_type.'_'.$annee_session_brevet.'" target="_blank" rel="noopener">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['fichier_date']).'</a>' ;
       }
       else
       {
@@ -225,8 +225,8 @@ if( ($ACTION=='imprimer') && ($etape==4) )
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' , $tab_memo['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' );
   }
   Json::add_str('<ul class="puce">');
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des fiches brevet en un seul document.</span></a></li>');
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les fiches brevet dans des documents individuels.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des fiches brevet en un seul document.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les fiches brevet dans des documents individuels.</span></a></li>');
   Json::add_str('</ul>');
   unset( $tab_memo['fichier_nom'] , $tab_memo['pages_non_anonymes'] );
   // Supprimer les informations provisoires

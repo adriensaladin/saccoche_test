@@ -1097,7 +1097,7 @@ function ajout_alerte(texte)
  */
 if(top.frames.length!=0)
 {
-  ajout_alerte('L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> est inapproprié et peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" target="_blank">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a>');
+  ajout_alerte('L\'usage de cadres (frame/iframe) pour afficher <em>SACoche</em> est inapproprié et peut entrainer des dysfonctionnements.<br /><a href="'+location.href+'" target="_blank" rel="noopener">Ouvrir <em>SACoche</em> dans un nouvel onglet.</a>');
 }
 
 /**
@@ -1866,7 +1866,7 @@ $(document).ready
                     var doc_url = responseJSON['url'];
                     var doc_ext = doc_url.split('.').pop().toLowerCase();
                     $('#f_doc_nom').val(doc_nom);
-                    $('#ajax_demande_evaluation_document').attr('class','valide').html('<a href="'+doc_url+'" target="_blank">'+doc_nom+'</a>');
+                    $('#ajax_demande_evaluation_document').attr('class','valide').html('<a href="'+doc_url+'" target="_blank" rel="noopener">'+doc_nom+'</a>');
                   }
                 }
               }

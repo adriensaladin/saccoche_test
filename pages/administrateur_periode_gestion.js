@@ -222,7 +222,7 @@ $(document).ready
     var prompt_etapes_confirmer_suppression = {
       etape_2: {
         title   : 'Demande de confirmation (2/3)',
-        html    : "Les éventuels bilans officiels associés (bulletins...) seront supprimés !<br />Pour modifier les dates, il faut utiliser le menu [Périodes&nbsp;&amp;&nbsp;classes&nbsp;/&nbsp;groupes]&hellip;<br />Souhaitez-vous vraiment supprimer cette période ?",
+        html    : "Les éventuels bilans officiels associés (bulletins, livrets...) seront supprimés !<br />Pour modifier les dates, il faut utiliser le menu [Périodes&nbsp;&amp;&nbsp;classes&nbsp;/&nbsp;groupes]&hellip;<br />Souhaitez-vous vraiment supprimer cette période ?",
         buttons : {
           "Non, c'est une erreur !" : false ,
           "Oui, je confirme !" : true

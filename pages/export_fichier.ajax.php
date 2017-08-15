@@ -141,7 +141,7 @@ if( ($type_export=='devoirs_commentaires') && $groupe_id && isset($tab_types[$gr
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -190,7 +190,7 @@ if( ($type_export=='listing_eleves') && $groupe_id && isset($tab_types[$groupe_t
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -281,7 +281,7 @@ if( ($type_export=='listing_matiere') && $matiere_id && $matiere_nom )
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -388,7 +388,7 @@ if( ($type_export=='item_matiere_usage') && $matiere_id && $matiere_nom )
   // Finalisation de l'export HTML
   $export_html = $export_html_entete.NL.'</thead><tbody>'.NL.implode( NL , $tab_export_html ).NL.'</tbody></table>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -492,7 +492,7 @@ if( ($type_export=='arbre_matiere') && $matiere_id && $matiere_nom )
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -573,7 +573,7 @@ if( ($type_export=='arbre_socle') && $palier_id && $palier_nom )
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer l\'arborescence (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -680,7 +680,7 @@ if( ($type_export=='jointure_socle_matiere') && $palier_id && $palier_nom )
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -758,7 +758,7 @@ if( ($type_export=='jointure_socle2016_matiere') && $cycle_id && $cycle_nom )
   // Finalisation de l'export HTML
   $export_html.= '</div>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les associations (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -858,7 +858,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_e
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -968,7 +968,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -1056,7 +1056,7 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') && ($type_export=='infos_p
   // Finalisation de l'export HTML
   $export_html .= '</tbody></table>'.NL;
   // Affichage
-  $puce_download = '<ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
+  $puce_download = '<ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données (fichier <em>csv</em></span>).</a></li></ul>'.NL;
   Json::end( TRUE , $puce_download.$export_html );
 }
 
@@ -1193,7 +1193,7 @@ if( ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_PROF
   $sp = ($nb_positions>1) ? 's' : '' ;
   Json::add_str('<ul class="puce">'.NL);
   Json::add_str('<li><label class="valide">Fichier d\'export généré : '.$nb_positions.' positionnement'.$sp.' concernant '.$nb_eleves.' élève'.$se.'.</label></li>'.NL);
-  Json::add_str('<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>'.NL);
+  Json::add_str('<li><a target="_blank" rel="noopener" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></li>'.NL);
   Json::add_str('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>'.NL);
   Json::add_str('</ul>'.NL);
   Json::add_str($export_html);

@@ -446,57 +446,6 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Traitement du formulaire form_chefetabl
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Alerter sur la nécessité de valider
-    $("#f_chefetabl").change
-    (
-      function()
-      {
-        $('#ajax_msg_chefetabl').attr('class','alerte').html("Enregistrer pour confirmer.");
-      }
-    );
-
-    $('#bouton_valider_chefetabl').click
-    (
-      function()
-      {
-        $("#bouton_valider_chefetabl").prop('disabled',true);
-        $('#ajax_msg_chefetabl').attr('class','loader').html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_chefetabl='+$('#f_chefetabl option:selected').val(),
-            dataType : 'json',
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $("#bouton_valider_chefetabl").prop('disabled',false);
-              $('#ajax_msg_chefetabl').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-              return false;
-            },
-            success : function(responseJSON)
-            {
-              initialiser_compteur();
-              $("#bouton_valider_chefetabl").prop('disabled',false);
-              if(responseJSON['statut']==true)
-              {
-                $('#ajax_msg_chefetabl').attr('class','valide').html("Choix enregistré !");
-              }
-              else
-              {
-                $('#ajax_msg_chefetabl').attr('class','alerte').html(responseJSON['value']);
-              }
-              return false;
-            }
-          }
-        );
-      }
-    );
-
-    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Traitement du formulaire form_langue
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -68,13 +68,13 @@ Layout::add( 'js_inline_before' , 'var input_autoeval = "'.$date_autoeval.'";' )
 // Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
 if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
 {
-  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
+  echo'<p class="probleme">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
 }
 ?>
 
 <ul class="puce">
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=environnement_generalites__demandes_evaluations">DOC : Demandes d'évaluations.</a></span></li>
-  <li><span class="astuce">Tenez-vous au courant des demandes <a href="index.php?page=compte_email">en vous abonnant aux notifications</a> ou grace à <a target="_blank" href="<?php echo RSS::url_prof($_SESSION['USER_ID']); ?>"><span class="rss">un flux RSS dédié</span></a> !</span></li>
+  <li><span class="astuce">Tenez-vous au courant des demandes <a href="index.php?page=compte_email">en vous abonnant aux notifications</a> ou grace à <a target="_blank" rel="noopener" href="<?php echo RSS::url_prof($_SESSION['USER_ID']); ?>"><span class="rss">un flux RSS dédié</span></a> !</span></li>
   <li><span class="astuce"><a title="<?php echo $infobulle ?>" href="#">Nombre de demandes autorisées par matière.</a></span></li>
 </ul>
 

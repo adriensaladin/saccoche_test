@@ -287,7 +287,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
 // Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
 if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
 {
-  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
+  echo'<p class="probleme">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
 }
 ?>
 
@@ -477,7 +477,7 @@ $select_repart_ref_pourcentage = HtmlForm::afficher_select(Form::$tab_select_rep
   <div class="toggle hide">
     <span class="tab"></span><a href="#" class="puce_moins toggle">Afficher moins d'options</a><br />
     <label class="tab">Impression :</label><?php echo $select_orientation ?> <?php echo $select_couleur ?> <?php echo $select_fond ?> <?php echo $select_marge_min ?><br />
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement pour un choix de détail complet." /> Indications :</label><label for="f_reference"><input type="checkbox" id="f_reference" name="f_reference" value="1"<?php echo $check_aff_reference ?> /> Références</label>&nbsp;&nbsp;&nbsp;<label for="f_coef"><input type="checkbox" id="f_coef" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle"><input type="checkbox" id="f_socle" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label><br />
+    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement pour un choix de détail complet." /> Indications :</label><label for="f_reference_cart"><input type="checkbox" id="f_reference_cart" name="f_reference" value="1"<?php echo $check_aff_reference ?> /> Références</label>&nbsp;&nbsp;&nbsp;<label for="f_coef_cart"><input type="checkbox" id="f_coef_cart" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_cart"><input type="checkbox" id="f_socle_cart" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label><br />
     <label class="tab">Restriction :</label><input type="checkbox" id="f_restriction_item" name="f_restriction_item" value="1"<?php echo $check_cart_restriction_item ?> /> <label for="f_restriction_item">Uniquement les items dont une note est saisie ou faisant l'objet d'une demande d'évaluation.</label><br />
     <span class="tab"></span><input type="checkbox" id="f_restriction_eleve" name="f_restriction_eleve" value="1"<?php echo $check_cart_restriction_eleve ?> /> <label for="f_restriction_eleve">Uniquement les élèves ayant fait l'objet d'une saisie de code couleur (pas ABS etc.).</label><br />
     <label class="tab" for="f_detail">Hauteur des blocs :</label><?php echo $select_cart_hauteur ?><br />
@@ -508,7 +508,7 @@ $select_repart_ref_pourcentage = HtmlForm::afficher_select(Form::$tab_select_rep
   </table>
   <hr />
   <h3>Exploitation</h3>
-  <p><a id="lien_repart_nominative" target="_blank" href=""><span class="file file_htm">Préparer une évaluation / Constituer un groupe de besoin (format <em>html</em>).</span></a></p>
+  <p><a id="lien_repart_nominative" target="_blank" rel="noopener" href=""><span class="file file_htm">Préparer une évaluation / Constituer un groupe de besoin (format <em>html</em>).</span></a></p>
   <hr />
   <h3>Archivage PDF</h3>
   <input id="repart_ref"         name="f_ref"         type="hidden" value="" />
@@ -554,25 +554,30 @@ $select_repart_ref_pourcentage = HtmlForm::afficher_select(Form::$tab_select_rep
   <input id="saisir_voir_eleves_ordre" name="f_eleves_ordre" type="hidden" value="" />
   <input id="saisir_voir_description"  name="f_description"  type="hidden" value="" />
   <input id="saisir_voir_fini"         name="f_fini"         type="hidden" value="" />
-  <ul class="puce">
+  <ul class="puce p">
     <li><button id="generer_tableau_scores_vierge_csv" type="button" class="fichier_export">Récupérer un fichier vierge pour une saisie déportée (format <em>csv</em>).</button>
     <li><button id="generer_tableau_scores_rempli_csv" type="button" class="fichier_export">Récupérer un fichier complété avec les scores <b>enregistrés</b> (format <em>csv</em>).</button>
     <li class="saisir"><input id="f_importer_scores" type="file" name="userfile" /><button id="bouton_importer_scores" type="button" class="fichier_import">Envoyer un fichier de notes complété (format <em>csv</em>).</button></li>
     <li class="voir"><span class="astuce">Pour importer un fichier <em>csv</em> de notes complété, choisir "<em>Saisir les acquisitions</em>".</span></li>
   </ul>
-  <p class="ti">
-    <span class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</span><br />
-    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format PDF." /> Impression :</label> <?php echo str_replace( 'id="f_couleur"' , 'id="f_deport_archivage_couleur"' , $select_couleur); ?> <?php echo str_replace( 'id="f_fond"'    , 'id="f_deport_archivage_fond"'    , $select_fond); ?>
-  </p>
-  <ul class="puce">
+  <ul class="puce p">
     <li><button id="generer_tableau_scores_vierge_pdf" type="button" class="imprimer">Imprimer un tableau vierge utilisable pour un report manuel des notes (format <em>pdf</em>).</button>
     <li><button id="generer_tableau_scores_rempli_pdf" type="button" class="imprimer">Archiver / Imprimer le tableau complété avec les scores <b>enregistrés</b> (format <em>pdf</em>).</button>
   </ul>
+  <div>
+    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Pour le format PDF." /> Impression :</label> <?php echo str_replace( 'id="f_couleur"' , 'id="f_deport_archivage_couleur"' , $select_couleur); ?> <?php echo str_replace( 'id="f_fond"'    , 'id="f_deport_archivage_fond"'    , $select_fond); ?><br />
+    <label class="tab" for="f_detail">Détail :</label><?php echo $select_cart_detail ?><br />
+    <label class="tab"><img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Uniquement pour un choix de détail complet." /> Indications :</label><label for="f_reference_deport"><input type="checkbox" id="f_reference_deport" name="f_reference" value="1"<?php echo $check_aff_reference ?> /> Références</label>&nbsp;&nbsp;&nbsp;<label for="f_coef_deport"><input type="checkbox" id="f_coef_deport" name="f_coef" value="1"<?php echo $check_aff_coef ?> /> Coefficients</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_deport"><input type="checkbox" id="f_socle_deport" name="f_socle" value="1"<?php echo $check_aff_socle ?> /> Appartenance au socle</label>
+  </div>
+  <p class="ti">
+    <span class="noprint">Afin de préserver l'environnement, n'imprimer que si nécessaire !</span><br />
+  </p>
+
   <hr />
   <p><label id="ajax_msg_deport_archivage">&nbsp;</label><input type="hidden" id="f_archivage_action" name="f_action" value="" /></p>
 <!--
-<a target="_blank" href=""><span class="file file_txt"></span></a></li>
-<a id="" target="_blank" href=""><span class="file file_pdf">.</span></a></li>
+<a target="_blank" rel="noopener" href=""><span class="file file_txt"></span></a></li>
+<a id="" target="_blank" rel="noopener" href=""><span class="file file_pdf">.</span></a></li>
 -->
 </fieldset></form>
 

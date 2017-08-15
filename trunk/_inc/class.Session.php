@@ -418,7 +418,7 @@ class Session
         FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $fichier_contenu );
         // Game over
         Session::close__open_new__init( TRUE /*memo_GET*/ );
-        Session::exit_sauf_SSO('Appel anormal : '.$msg_pb.' (<a href="'.URL_DIR_EXPORT.$fichier_nom.'" target="_blank">détail</a>).');
+        Session::exit_sauf_SSO('Appel anormal : '.$msg_pb.' (<a href="'.URL_DIR_EXPORT.$fichier_nom.'" target="_blank" rel="noopener">détail</a>).');
       }
       else
       {

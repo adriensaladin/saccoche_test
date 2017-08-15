@@ -117,7 +117,7 @@ $(document).ready
       },
       etape_2: {
         title   : 'Demande de confirmation (2/2)',
-        html    : "Attention : dernière demande de confirmation !!!<br />Les éventuels bilans officiels associés (bulletins...) seront supprimés !<br />Avez-bien coché ce que vous souhaitiez, en connaissance de cause ?<br />Est-ce définitivement votre dernier mot ???",
+        html    : "Attention : dernière demande de confirmation !!!<br />Les éventuels bilans officiels associés (bulletins, livrets...) seront supprimés !<br />Avez-bien coché ce que vous souhaitiez, en connaissance de cause ?<br />Est-ce définitivement votre dernier mot ???",
         buttons : {
           "Oui, j'insiste !" : true ,
           "Non, surtout pas !" : false

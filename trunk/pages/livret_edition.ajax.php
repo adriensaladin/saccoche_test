@@ -99,16 +99,21 @@ $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 // Tableaux communs utiles
 
 $tab_periode_livret = array(
-  'periodeS1' => 'Semestre 1/2'  ,
-  'periodeS2' => 'Semestre 2/2'  ,
-  'periodeT1' => 'Trimestre 1/3' ,
-  'periodeT2' => 'Trimestre 2/3' ,
-  'periodeT3' => 'Trimestre 3/3' ,
-  'periodeB1' => 'Bimestre 1/4'  ,
-  'periodeB2' => 'Bimestre 2/4'  ,
-  'periodeB3' => 'Bimestre 3/4'  ,
-  'periodeB4' => 'Bimestre 4/4'  ,
-  'cycle'     => 'Fin de cycle'  ,
+  'periode21' => 'Semestre 1/2' ,
+  'periode22' => 'Semestre 2/2' ,
+  'periode31' => 'Trimestre 1/3',
+  'periode32' => 'Trimestre 2/3',
+  'periode33' => 'Trimestre 3/3',
+  'periode41' => 'Bimestre 1/4' ,
+  'periode42' => 'Bimestre 2/4' ,
+  'periode43' => 'Bimestre 3/4' ,
+  'periode44' => 'Bimestre 4/4' ,
+  'periode51' => 'Période 1/5'  ,
+  'periode52' => 'Période 2/5'  ,
+  'periode53' => 'Période 3/5'  ,
+  'periode54' => 'Période 4/5'  ,
+  'periode55' => 'Période 5/5'  ,
+  'cycle'     => 'Fin de cycle' ,
 );
 
 // Vérification période + extraction des infos sur la période
@@ -135,7 +140,7 @@ if(substr($periode,0,7)=='periode')
 else
 {
   $PAGE_PERIODICITE = $periode;
-  $JOINTURE_PERIODE = '';
+  $JOINTURE_PERIODE = NULL;
   $periode_id       = 0;
   $date_mysql_debut = NULL;
   $date_mysql_fin   = NULL;

@@ -584,7 +584,7 @@ $(document).ready
               }
               else
               {
-                $.fancybox( '<h3>Test impression PDF finale</h3><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a target="_blank" href="'+responseJSON['value'].substring(3)+'"><span class="file file_pdf">Récupérer le test d\'impression de la fiche brevet demandée.</span></a></li></ul></div>' , {'centerOnScroll':true} );
+                $.fancybox( '<h3>Test impression PDF finale</h3><p class="astuce">Ce fichier comprend l\'exemplaire archivé ainsi que le ou les exemplaires pour les responsables légaux.</p><div id="imprimer_liens"><ul class="puce"><li><a target="_blank" rel="noopener" href="'+responseJSON['value'].substring(3)+'"><span class="file file_pdf">Récupérer le test d\'impression de la fiche brevet demandée.</span></a></li></ul></div>' , {'centerOnScroll':true} );
               }
             }
           }

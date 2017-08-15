@@ -33,6 +33,21 @@ class DB_STRUCTURE_LIVRET extends DB
 {
 
 /**
+ * lister_classes_livret_sans_chef
+ *
+ * @param void
+ * @return string
+ */
+public static function DB_lister_classes_livret_sans_chef()
+{
+  $DB_SQL = 'SELECT GROUP_CONCAT(DISTINCT groupe_id) ';
+  $DB_SQL.= 'FROM sacoche_groupe ';
+  $DB_SQL.= 'INNER JOIN sacoche_livret_jointure_groupe USING(groupe_id) ';
+  $DB_SQL.= 'WHERE groupe_type="classe" AND groupe_chef_id=0 ';
+  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+}
+
+/**
  * Vérifier qu'il y a au moins une classe dans l'établissement
  * Vérifier qu'il y a au moins une classe associée au livret, et sinon essayer de faire le boulot automatiquement
  *
@@ -67,31 +82,38 @@ public static function DB_initialiser_jointures_livret_classes()
   // Fonction pour essayer de déterminer le bon type de période associé à une classe
   function determiner_periode_probable( $listing_periodes , $periode_nb )
   {
-    if( substr_count( $listing_periodes , 'T' ) )
-    { return array('T1','T2','T3'); }
-    if( substr_count( $listing_periodes , 'S' ) )
-    { return array('S1','S2'); }
-    if( substr_count( $listing_periodes , 'B' ) )
-    { return array('B1','B2','B3','B4'); }
+    if( substr_count( $listing_periodes , '3' ) )
+    { return array('31','32','33'); }
+    if( substr_count( $listing_periodes , '2' ) )
+    { return array('21','22'); }
+    if( substr_count( $listing_periodes , '4' ) )
+    { return array('41','42','43','44'); }
+    if( substr_count( $listing_periodes , '5' ) )
+    { return array('51','52','53','54','55'); }
     if( $periode_nb == 3 )
-    { return array('T1','T2','T3'); }
+    { return array('31','32','33'); }
     if( $periode_nb == 2 )
-    { return array('S1','S2'); }
+    { return array('21','22'); }
     if( $periode_nb == 4 )
-    { return array('B1','B2','B3','B4'); }
-    return array('T1','T2','T3');
+    { return array('41','42','43','44'); }
+    if( $periode_nb == 5 )
+    { return array('51','52','53','54','55'); }
+    return array('31','32','33');
   }
   // Initialiser les jointures livret / classes
   $nb_associations = 0;
   $DB_SQL = 'SELECT groupe_id, niveau_ordre, ';
-  $DB_SQL.= 'COUNT( periode_id ) AS periode_nb, GROUP_CONCAT(periode_livret) AS listing_periodes ';
+  $DB_SQL.= 'COUNT( periode_id ) AS periode_nb, ';
+  $DB_SQL.= 'GROUP_CONCAT(SUBSTRING(periode_livret,1,1)) AS listing_periodes, ';
+  $DB_SQL.= 'GROUP_CONCAT(jointure_periode) AS listing_jointures ';
   $DB_SQL.= 'FROM sacoche_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_jointure_groupe_periode USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_groupe USING(groupe_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_periode USING(periode_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING(niveau_id) ';
-  $DB_SQL.= 'WHERE groupe_type="classe" AND jointure_periode IS NULL ';
+  $DB_SQL.= 'WHERE groupe_type="classe" ';
   $DB_SQL.= 'GROUP BY groupe_id ';
+  $DB_SQL.= 'HAVING listing_jointures IS NULL ';
   $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   foreach($DB_TAB as $DB_ROW)
   {
@@ -99,7 +121,7 @@ public static function DB_initialiser_jointures_livret_classes()
     switch($DB_ROW['niveau_ordre'])
     {
       case 3 : // GS
-        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle1' , 'cycle' , array('') );
+        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle1' , 'cycle' , array(NULL) );
         $nb_associations += 1;
         break;
       case 11 : // CP
@@ -112,7 +134,7 @@ public static function DB_initialiser_jointures_livret_classes()
         break;
       case 22 : // CE2
         DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'ce2' , 'periode' , $jointure_periode );
-        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle2' , 'cycle' , array('') );
+        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle2' , 'cycle' , array(NULL) );
         $nb_associations += 2;
         break;
       case 31 : // CM1
@@ -125,7 +147,7 @@ public static function DB_initialiser_jointures_livret_classes()
         break;
       case 100 : // Sixièmes
         DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , '6e' , 'periode' , $jointure_periode );
-        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle3' , 'cycle' , array('') );
+        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle3' , 'cycle' , array(NULL) );
         $nb_associations += 2;
         break;
       case 101 : // Cinquièmes
@@ -138,12 +160,65 @@ public static function DB_initialiser_jointures_livret_classes()
         break;
       case 103 : // Troisièmes
         DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , '3e' , 'periode' , $jointure_periode );
-        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle4' , 'cycle' , array('') );
+        DB_STRUCTURE_LIVRET::DB_ajouter_jointure_groupe( $DB_ROW['groupe_id'] , 'cycle4' , 'cycle' , array(NULL) );
         $nb_associations += 2;
         break;
     }
   }
   return $nb_associations;
+}
+
+/**
+ * Vérifier qu'il y a un chef associé à chaque classe, et sinon essayer de faire le boulot automatiquement
+ *
+ * @param void
+ * @return bool | int
+ */
+public static function DB_initialiser_jointures_classe_chef()
+{
+  // Nettoyer des classes avec un chef supprimé ou au compte inactif
+  $DB_SQL = 'UPDATE sacoche_groupe ';
+  $DB_SQL.= 'LEFT JOIN sacoche_user ON sacoche_groupe.groupe_chef_id=sacoche_user.user_id ';
+  $DB_SQL.= 'SET groupe_chef_id=0 ';
+  $DB_SQL.= 'WHERE groupe_type="classe" AND groupe_chef_id!=0 AND ( user_id IS NULL OR user_sortie_date<=NOW() ) ';
+  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  // Chercher si des classes associées au livret sont sans chef
+  $listing_groupe = DB_STRUCTURE_LIVRET::DB_lister_classes_livret_sans_chef();
+  if( empty($listing_groupe) )
+  {
+    return TRUE;
+  }
+  $nb_classes_concernees = substr_count($listing_groupe,',')+1;
+  // On essaye de trouver le chef d'établissement / directeur d'école tout seul, s'il n'y en a qu'un.
+  $DB_SQL = 'SELECT user_id FROM sacoche_user WHERE user_profil_sigle="DIR" AND user_sortie_date>NOW() ';
+  $DB_COL = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  if( !empty($DB_COL) && (count($DB_COL)==1) )
+  {
+    $chef_id = current($DB_COL);
+    $DB_SQL = 'UPDATE sacoche_groupe ';
+    $DB_SQL.= 'SET groupe_chef_id='.$chef_id.' ';
+    $DB_SQL.= 'WHERE groupe_id IN('.$listing_groupe.') ';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+    return $nb_classes_concernees;
+  }
+  // Sinon on prend celui qui est déjà le plus rattaché aux classes, si tel est le cas.
+  $DB_SQL = 'SELECT groupe_chef_id, COUNT(*) AS nombre ';
+  $DB_SQL.= 'FROM sacoche_groupe ';
+  $DB_SQL.= 'WHERE groupe_type="classe" AND groupe_chef_id!=0 ';
+  $DB_SQL.= 'GROUP BY groupe_chef_id ';
+  $DB_SQL.= 'ORDER BY nombre DESC ';
+  $DB_SQL.= 'LIMIT 1 ';
+  $DB_ROW = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+  if(!empty($DB_ROW))
+  {
+    $chef_id = $DB_ROW['groupe_chef_id'];
+    $DB_SQL = 'UPDATE sacoche_groupe ';
+    $DB_SQL.= 'SET groupe_chef_id='.$chef_id.' ';
+    $DB_SQL.= 'WHERE groupe_id IN('.$listing_groupe.') ';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
+    return $nb_classes_concernees;
+  }
+  return 0;
 }
 
 /**
@@ -177,6 +252,23 @@ public static function DB_lister_pages( $with_info_classe )
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Informations diverses
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * recuperer_chef_infos
+ *
+ * @param int    $classe_chef_id
+ * @return array
+ */
+public static function DB_recuperer_chef_infos( $classe_chef_id )
+{
+  $DB_SQL = 'SELECT user_id, user_sconet_id, user_genre, user_nom, user_prenom ';
+  $DB_SQL.= 'FROM sacoche_user ';
+  $DB_SQL.= 'WHERE user_id=:user_id AND user_profil_sigle="DIR" AND user_sortie_date>NOW() ';
+  $DB_VAR = array(
+    ':user_id' => $classe_chef_id,
+  );
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
 
 /**
  * recuperer_page_info
@@ -216,16 +308,20 @@ public static function DB_recuperer_periode_info( $periode_livret , $classe_id )
 /**
  * recuperer_page_groupe_info
  *
+ * @param int      $groupe_id
  * @param string   $page_ref
+ * @param string   $page_periodicite
+ * @param int      $jointure_periode
  * @return array
  */
 public static function DB_recuperer_page_groupe_info( $groupe_id , $page_ref , $page_periodicite , $jointure_periode )
 {
-  $DB_SQL = 'SELECT jointure_etat, jointure_date_verrou, sacoche_livret_page.*, groupe_ref, groupe_nom ';
+  $where_periode = ($jointure_periode) ? 'AND jointure_periode=:jointure_periode ' : '' ; // sinon il faut le test "AND jointure_periode IS NULL"
+  $DB_SQL = 'SELECT jointure_etat, jointure_date_verrou, sacoche_livret_page.*, groupe_ref, groupe_nom, groupe_chef_id ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_page USING (livret_page_ref) ';
   $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
-  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND sacoche_livret_page.livret_page_periodicite=:page_periodicite AND jointure_periode=:jointure_periode ';
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND sacoche_livret_page.livret_page_periodicite=:page_periodicite '.$where_periode;
   $DB_VAR = array(
     ':groupe_id'        => $groupe_id,
     ':page_ref'         => $page_ref,
@@ -253,40 +349,6 @@ public static function DB_recuperer_bilan_officiel_infos( $classe_id , $periode_
   $DB_VAR = array(
     ':classe_id'  => $classe_id,
     ':periode_id' => $periode_id,
-  );
-  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * recuperer_bilan_officiel_infos
- *
- * @param int    $etablissement_chef_id
- * @return array
- */
-public static function DB_recuperer_chef_etabl_infos( $etablissement_chef_id )
-{
-  if(!$etablissement_chef_id)
-  {
-    // On essaye de trouver le chef d'établissement / directeur d'école tout seul, s'il n'y en a qu'un.
-    $DB_SQL = 'SELECT user_id FROM sacoche_user WHERE user_profil_sigle="DIR" AND user_sortie_date>NOW() ';
-    $DB_COL = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-    if( !empty($DB_COL) && (count($DB_COL)==1) )
-    {
-      $etablissement_chef_id = current($DB_COL);
-      $tab_parametres['etablissement_chef_id'] = $etablissement_chef_id;
-      DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
-      $_SESSION['ETABLISSEMENT']['CHEF_ID'] = $etablissement_chef_id;
-    }
-    else
-    {
-      return array();
-    }
-  }
-  $DB_SQL = 'SELECT user_id, user_sconet_id, user_genre, user_nom, user_prenom ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'WHERE user_id=:user_id AND user_profil_sigle="DIR" AND user_sortie_date>NOW() ';
-  $DB_VAR = array(
-    ':user_id' => $etablissement_chef_id,
   );
   return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
@@ -941,7 +1003,7 @@ public static function DB_lister_classes_avec_jointures_livret( $groupe_id = NUL
     $sql_engine  = stripos( $sql_version , 'MariaDB' ) ? 'MariaDB' : 'MySQL' ;
     $_SESSION['sql_any_value'] = ( ($sql_engine=='MySQL') && version_compare($sql_version,'5.7','>=') ) ? 'ANY_VALUE' : 'MAX' ;
   }
-  $DB_SQL = 'SELECT groupe_id, groupe_nom, livret_page_ref, livret_page_moment, livret_page_titre_classe, livret_page_resume, '.$_SESSION['sql_any_value'].'(sacoche_livret_jointure_groupe.livret_page_periodicite) AS periodicite, GROUP_CONCAT(jointure_periode) AS listing_periodes ';
+  $DB_SQL = 'SELECT groupe_id, groupe_nom, groupe_chef_id, livret_page_ref, livret_page_moment, livret_page_titre_classe, livret_page_resume, '.$_SESSION['sql_any_value'].'(sacoche_livret_jointure_groupe.livret_page_periodicite) AS periodicite, GROUP_CONCAT(jointure_periode) AS listing_periodes ';
   $DB_SQL.= 'FROM sacoche_groupe ';
   $DB_SQL.= 'LEFT JOIN sacoche_niveau USING(niveau_id) ';
   $DB_SQL.= 'LEFT JOIN sacoche_livret_jointure_groupe USING(groupe_id) ';
@@ -985,16 +1047,17 @@ public static function DB_ajouter_jointure_groupe( $groupe_id , $page_ref , $pag
  * @param int      $groupe_id    id du groupe (en fait, obligatoirement une classe)
  * @param string   $page_ref
  * @param string   $page_periodicite
- * @param string   $jointure_periode
+ * @param int      $jointure_periode
  * @param string   $etat         nouvel état
  * @return int     0 ou 1 si modifié
  */
 public static function DB_modifier_jointure_groupe( $groupe_id , $page_ref , $page_periodicite , $jointure_periode , $etat )
 {
+  $where_periode = ($jointure_periode) ? 'AND jointure_periode=:jointure_periode ' : '' ; // sinon il faut le test "AND jointure_periode IS NULL"
   $update_date = ($etat=='5complet') ? ', jointure_date_verrou=NOW() ' : '' ;
   $DB_SQL = 'UPDATE sacoche_livret_jointure_groupe ';
   $DB_SQL.= 'SET jointure_etat=:etat '.$update_date;
-  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND livret_page_periodicite=:page_periodicite AND jointure_periode=:jointure_periode ';
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND livret_page_periodicite=:page_periodicite '.$where_periode;
   $DB_VAR = array(
     ':groupe_id'        => $groupe_id,
     ':page_ref'         => $page_ref,
@@ -1012,14 +1075,15 @@ public static function DB_modifier_jointure_groupe( $groupe_id , $page_ref , $pa
  * @param int      $groupe_id    id du groupe (en fait, obligatoirement une classe)
  * @param string   $page_ref
  * @param string   $page_periodicite
- * @param string   $jointure_periode
+ * @param int      $jointure_periode
  * @return void
  */
 public static function DB_modifier_jointure_date_export( $groupe_id , $page_ref , $page_periodicite , $jointure_periode )
 {
+  $where_periode = ($jointure_periode) ? 'AND jointure_periode=:jointure_periode ' : '' ; // sinon il faut le test "AND jointure_periode IS NULL"
   $DB_SQL = 'UPDATE sacoche_livret_jointure_groupe ';
   $DB_SQL.= 'SET jointure_date_export=NOW() ';
-  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND livret_page_periodicite=:page_periodicite AND jointure_periode=:jointure_periode ';
+  $DB_SQL.= 'WHERE groupe_id=:groupe_id AND livret_page_ref=:page_ref AND livret_page_periodicite=:page_periodicite '.$where_periode;
   $DB_VAR = array(
     ':groupe_id'        => $groupe_id,
     ':page_ref'         => $page_ref,
@@ -2011,7 +2075,7 @@ public static function DB_vider_livret()
  *
  * @param string $livret_page_ref
  * @param string $livret_page_periodicite
- * @param string $jointure_periode
+ * @param int    $jointure_periode
  * @param string $liste_rubrique_type   Vide pour toutes les rubriques
  * @param string $liste_eleve_id
  * @param int    $prof_id               Pour restreindre aux saisies d'un prof.
@@ -2021,7 +2085,7 @@ public static function DB_vider_livret()
 public static function DB_recuperer_donnees_eleves( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $liste_rubrique_type , $liste_eleve_id , $prof_id , $with_periodes_avant )
 {
   $select_periode = ($with_periodes_avant) ? ', jointure_periode ' : '' ;
-  $where_periode  = ($with_periodes_avant) ? '' : 'AND jointure_periode=:jointure_periode ' ;
+  $where_periode  = ($with_periodes_avant || !$jointure_periode) ? '' : 'AND jointure_periode=:jointure_periode ' ;
   $where_rubrique = ($liste_rubrique_type) ? 'AND rubrique_type IN('.$liste_rubrique_type.') ' : '' ;
   $where_prof     = ($prof_id) ? 'AND ( sacoche_livret_saisie.prof_id IN('.$prof_id.',0) OR sacoche_livret_saisie_jointure_prof.prof_id='.$prof_id.' ) ' : '' ;
   $order_periode  = ($with_periodes_avant) ? 'ORDER BY jointure_periode ASC ' : '' ;
@@ -2050,7 +2114,7 @@ public static function DB_recuperer_donnees_eleves( $livret_page_ref , $livret_p
  *
  * @param string $livret_page_ref
  * @param string $livret_page_periodicite
- * @param string $jointure_periode
+ * @param int    $jointure_periode
  * @param string $liste_rubrique_type   Vide pour toutes les rubriques
  * @param int    $classe_id
  * @param int    $prof_id               Pour restreindre aux saisies d'un prof.
@@ -2060,7 +2124,7 @@ public static function DB_recuperer_donnees_eleves( $livret_page_ref , $livret_p
 public static function DB_recuperer_donnees_classe( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $liste_rubrique_type , $classe_id , $prof_id , $with_periodes_avant )
 {
   $select_periode = ($with_periodes_avant) ? ', jointure_periode ' : '' ;
-  $where_periode  = ($with_periodes_avant) ? '' : 'AND jointure_periode=:jointure_periode ' ;
+  $where_periode  = ($with_periodes_avant || !$jointure_periode) ? '' : 'AND jointure_periode=:jointure_periode ' ;
   $where_rubrique = ($liste_rubrique_type) ? 'AND rubrique_type IN('.$liste_rubrique_type.') ' : '' ;
   $where_prof     = ($prof_id) ? 'AND ( sacoche_livret_saisie.prof_id='.$prof_id.' OR sacoche_livret_saisie_jointure_prof.prof_id='.$prof_id.' ) ' : '' ;
   $order_periode  = ($with_periodes_avant) ? 'ORDER BY jointure_periode ASC ' : '' ;
@@ -2082,41 +2146,11 @@ public static function DB_recuperer_donnees_classe( $livret_page_ref , $livret_p
 }
 
 /**
- * DB_recuperer_classe_moyennes
- *
- * @param string $livret_page_ref
- * @param string $livret_page_periodicite
- * @param string $jointure_periode
- * @param string $rubrique_type
- * @param int    $classe_id
- * @return array
- */
-/*
-public static function DB_recuperer_classe_moyennes( $livret_page_ref , $livret_page_periodicite , $jointure_periode , $rubrique_type , $classe_id )
-{
-  $DB_SQL = 'SELECT rubrique_id, saisie_valeur ';
-  $DB_SQL.= 'FROM sacoche_livret_saisie ';
-  $DB_SQL.= 'WHERE livret_page_ref=:livret_page_ref AND livret_page_periodicite=:livret_page_periodicite AND jointure_periode=:jointure_periode AND rubrique_type=:rubrique_type AND cible_nature=:cible_nature AND cible_id=cible_id AND saisie_objet=:saisie_objet ';
-  $DB_SQL.= ($tri_matiere) ? 'ORDER BY matiere_ordre ASC ' : '' ;
-  $DB_VAR = array(
-    ':livret_page_ref'         => $livret_page_ref,
-    ':livret_page_periodicite' => $livret_page_periodicite,
-    ':jointure_periode'        => $jointure_periode,
-    ':rubrique_type'           => $rubrique_type,
-    ':cible_nature'            => 'classe',
-    ':cible_id'                => $classe_id,
-    ':saisie_objet'            => 'position',
-  );
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-*/
-
-/**
  * DB_ajouter_saisie
  *
  * @param string  $livret_page_ref
  * @param string  $livret_page_periodicite
- * @param string  $jointure_periode
+ * @param int     $jointure_periode
  * @param string  $rubrique_type
  * @param int     $rubrique_id
  * @param string  $cible_nature
@@ -2330,7 +2364,7 @@ public static function DB_recuperer_elements_programme( $liste_eleve_id , $liste
  * @param int     $user_id
  * @param string  $livret_page_ref
  * @param string  $livret_page_periodicite
- * @param string  $jointure_periode
+ * @param int     $jointure_periode
  * @param string  $sacoche_version
  * @param string  $export_contenu
  * @return int
@@ -2356,9 +2390,9 @@ public static function DB_ajouter_livret_export_eleve( $user_id , $livret_page_r
 /**
  * DB_lister_livret_export_eleves
  *
- * @param string $liste_eleve
+ * @param string  $liste_eleve
  * @param string  $livret_page_periodicite   facultatif, chaine vide pour toutes périodes
- * @param string  $jointure_periode   facultatif, chaine vide pour toutes périodes
+ * @param int     $jointure_periode   facultatif, chaine vide pour toutes périodes
  * @return array
  */
 public static function DB_lister_livret_export_eleves( $liste_eleve , $livret_page_periodicite , $jointure_periode )

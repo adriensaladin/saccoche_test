@@ -63,7 +63,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_professeurs">DOC : Gestion des professeurs et personnels</a></span></p>
-<p><span class="danger">Si votre établissement dépend d'une base administrative <em>Siècle</em> (2D), alors évitez au maximum les ajouts manuels : utilisez <a href="./index.php?page=administrateur_fichier_user" target="_blank">des imports de fichiers</a>.</span></p>
+<p><span class="danger">Si votre établissement dépend d'une base administrative <em>Siècle</em> (2D), alors évitez au maximum les ajouts manuels : utilisez <a href="./index.php?page=administrateur_fichier_user" target="_blank" rel="noopener">des imports de fichiers</a>.</span></p>
 
 <form action="./index.php?page=administrateur_professeur&amp;section=gestion" method="post" id="form_prechoix">
   <div><label class="tab" for="f_statut">Statut :</label><?php echo $select_f_statuts ?></div>

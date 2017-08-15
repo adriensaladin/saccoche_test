@@ -119,7 +119,7 @@ if($action=='enregistrer')
   FileSystem::fabriquer_fichier_partenaire_message( $_SESSION['USER_ID'] , $_SESSION['tmp']['partenaire_logo_actuel_filename'] , $adresse_web , $message );
   // Retour
   $partenaire_logo_url = ($_SESSION['tmp']['partenaire_logo_actuel_filename']) ? URL_DIR_PARTENARIAT.$_SESSION['tmp']['partenaire_logo_actuel_filename'] : URL_DIR_IMG.'auto.gif' ;
-  $partenaire_lien_ouvrant = ($adresse_web) ? '<a href="'.html($adresse_web).'" target="_blank">' : '' ;
+  $partenaire_lien_ouvrant = ($adresse_web) ? '<a href="'.html($adresse_web).'" target="_blank" rel="noopener">' : '' ;
   $partenaire_lien_fermant = ($adresse_web) ? '</a>' : '' ;
   $partenaire_logo    = '<span id="partenaire_logo"><img src="'.html($partenaire_logo_url).'" /></span>';
   $partenaire_message = '<span id="partenaire_message">'.nl2br(html($message)).'</span>';

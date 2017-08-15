@@ -29,16 +29,21 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
 $TITRE = html(Lang::_("Gérer les périodes"));
 
 $tab_periode_livret = array(
-  ''   => '-',
-  'S1' => 'Semestre 1/2',
-  'S2' => 'Semestre 2/2',
-  'T1' => 'Trimestre 1/3',
-  'T2' => 'Trimestre 2/3',
-  'T3' => 'Trimestre 3/3',
-  'B1' => 'Bimestre 1/4',
-  'B2' => 'Bimestre 2/4',
-  'B3' => 'Bimestre 3/4',
-  'B4' => 'Bimestre 4/4',
+  NULL => '-',
+  21 => 'Semestre 1/2',
+  22 => 'Semestre 2/2',
+  31 => 'Trimestre 1/3',
+  32 => 'Trimestre 2/3',
+  33 => 'Trimestre 3/3',
+  41 => 'Bimestre 1/4',
+  42 => 'Bimestre 2/4',
+  43 => 'Bimestre 3/4',
+  44 => 'Bimestre 4/4',
+  51 => 'Période 1/5',
+  52 => 'Période 2/5',
+  53 => 'Période 3/5',
+  54 => 'Période 4/5',
+  55 => 'Période 5/5',
 );
 
 $select_livret = '';

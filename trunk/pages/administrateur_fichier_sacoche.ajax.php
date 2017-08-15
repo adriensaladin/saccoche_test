@@ -224,7 +224,7 @@ if( ($action=='export') && ($etape==5) )
   $si = ($nb_items>1)    ? 's' : '' ;
   $sa = ($nb_archives>1) ? 's' : '' ;
   Json::add_str('<li><label class="valide">Fichier d\'export généré avec '.number_format($nb_saisies,0,'',' ').' saisie'.$ss.' d\'évaluation'.$ss.' trouvée'.$ss.' concernant '.number_format($nb_eleves,0,'',' ').' élève'.$se.' et '.number_format($nb_items,0,'',' ').' item'.$si.', ainsi que '.number_format($nb_archives,0,'',' ').' archive'.$sa.'.</label></li>'.NL);
-  Json::add_str('<li><a target="_blank" href="'.$fichier_lien.'"><span class="file file_zip">Récupérer le fichier au format <em>zip</em>.</span></a></li>'.NL);
+  Json::add_str('<li><a target="_blank" rel="noopener" href="'.$fichier_lien.'"><span class="file file_zip">Récupérer le fichier au format <em>zip</em>.</span></a></li>'.NL);
   Json::add_str('<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>'.NL);
   Json::end( TRUE );
 }

@@ -126,7 +126,7 @@ if( ($action=='voir') && $fichier_logs )
   {
     Json::end( FALSE , $result );
   }
-  Json::end( TRUE , '<ul class="puce"><li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>' );
+  Json::end( TRUE , '<ul class="puce"><li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_logs.'.zip'.'"><span class="file file_zip">Fichier de logs au format <em>zip</em>.</li></ul>' );
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -69,7 +69,7 @@ $(document).ready
               {
                 $("button").prop('disabled',false);
                 $('#ajax_msg_sauvegarde').removeAttr('class').html('');
-                $('#ajax_info').append('<li><a target="_blank" href="'+responseJSON['href']+'"><span class="file file_zip">Récupérer le fichier de sauvegarde au format ZIP.</span></a></li>'+'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>');
+                $('#ajax_info').append('<li><a target="_blank" rel="noopener" href="'+responseJSON['href']+'"><span class="file file_zip">Récupérer le fichier de sauvegarde au format ZIP.</span></a></li>'+'<li><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></li>');
               }
             }
           }

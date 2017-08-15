@@ -127,8 +127,8 @@ public static function DB_tester_periode_nom( $periode_nom , $periode_id=FALSE )
 /**
  * tester_periode_livret
  *
- * @param string $periode_livret
- * @param int    $periode_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
+ * @param int $periode_livret
+ * @param int $periode_id    inutile si recherche pour un ajout, mais id à éviter si recherche pour une modification
  * @return int
  */
 public static function DB_tester_periode_livret( $periode_livret , $periode_id=FALSE )
@@ -150,7 +150,7 @@ public static function DB_tester_periode_livret( $periode_livret , $periode_id=F
  *
  * @param int    $periode_ordre
  * @param string $periode_nom
- * @param string $periode_livret
+ * @param int    $periode_livret
  * @return int
  */
 public static function DB_ajouter_periode( $periode_ordre , $periode_nom , $periode_livret )
@@ -172,7 +172,7 @@ public static function DB_ajouter_periode( $periode_ordre , $periode_nom , $peri
  * @param int    $periode_id
  * @param int    $periode_ordre
  * @param string $periode_nom
- * @param string $periode_livret
+ * @param int    $periode_livret
  * @return void
  */
 public static function DB_modifier_periode( $periode_id , $periode_ordre , $periode_nom , $periode_livret )

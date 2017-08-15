@@ -87,7 +87,8 @@ if( !empty($is_test_impression) && ($_SESSION['USER_PROFIL_TYPE']!='administrate
   Json::end( FALSE , 'Droits insuffisants pour cette action !' );
 }
 
-$annee_scolaire = To::annee_scolaire('code');
+$annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
+$annee_scolaire = To::annee_scolaire('code',$annee_decalage);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Affichage de la liste des élèves + recalcul des moyennes dans le cas d'impression d'un bulletin (sans incidence tant qu'on n'imprime pas, sauf pour la visualisation graphique)
@@ -154,7 +155,7 @@ if($ACTION=='initialiser')
       {
         $clef = $DB_TAB[$eleve_id][0]['officiel_archive_id'];
         $_SESSION['tmp_droit_voir_archive'][$clef] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-        $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
+        $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank" rel="noopener">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
         $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
         $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_'.$tab_types[$BILAN_TYPE]['droit'].'_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
       }
@@ -321,8 +322,8 @@ if( ($ACTION=='imprimer') && ($etape==4) )
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' , $tab_memo['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' );
   }
   Json::add_str('<ul class="puce">');
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>');
-  Json::add_str(  '<li><a target="_blank" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>');
   Json::add_str('</ul>');
   Json::add_str('<p class="astuce"><b>[x]</b> Nombre de pages par bilan (y prêter attention avant de lancer une impression recto-verso en série) :<br />'.$tab_memo['pages_nombre_par_bilan'].'</p>');
   unset( $tab_memo['fichier_nom'] , $tab_memo['pages_non_anonymes'] , $tab_memo['pages_nombre_par_bilan'] );
@@ -522,7 +523,7 @@ $etabl_coords_bloc_hauteur = 0.75 + ( max( count($tab_etabl_coords) , $logo_haut
 
 // Bloc des titres du document
 
-$tab_bloc_titres = array( 0 => $tab_types[$BILAN_TYPE]['titre'] , 1 => To::annee_scolaire('texte').' - '.$periode_nom , 2 =>$classe_nom );
+$tab_bloc_titres = array( 0 => $tab_types[$BILAN_TYPE]['titre'] , 1 => To::annee_scolaire('texte',$annee_decalage).' - '.$periode_nom , 2 =>$classe_nom );
 
 // Tag date heure initiales
 

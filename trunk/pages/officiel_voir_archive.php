@@ -95,7 +95,7 @@ foreach($DB_TAB as $DB_ROW)
     $class_td = is_null($DB_ROW['archive_date_consultation_'.$_SESSION['USER_PROFIL_TYPE']])  ? ' class="b"'   : '' ;
     $clef = $DB_ROW['officiel_archive_id'];
     $_SESSION['tmp_droit_voir_archive'][$clef] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-    $tab_tr[] = '<tr'.$class_tr.'><td>'.html($DB_ROW['annee_scolaire']).'</td><td>'.html($DB_ROW['periode_nom']).'</td><td>'.html($DB_ROW['structure_uai'].' - '.$DB_ROW['structure_denomination']).'</td><td>'.$objet.'</td><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td><td'.$class_td.'><a href="acces_archive.php?id='.$clef.'" target="_blank">accès au document</a></td></tr>';
+    $tab_tr[] = '<tr'.$class_tr.'><td>'.html($DB_ROW['annee_scolaire']).'</td><td>'.html($DB_ROW['periode_nom']).'</td><td>'.html($DB_ROW['structure_uai'].' - '.$DB_ROW['structure_denomination']).'</td><td>'.$objet.'</td><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td><td'.$class_td.'><a href="acces_archive.php?id='.$clef.'" target="_blank" rel="noopener">accès au document</a></td></tr>';
   }
 }
 ?>

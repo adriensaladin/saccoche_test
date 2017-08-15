@@ -251,7 +251,8 @@ if( DB_STRUCTURE_LIVRET::DB_tester_jointure_classe_livret('"6e","5e","4e","3e"')
     else
     {
       $tab_info_rubriques[] = "<span class=\"astuce\">Dernier import des matières de <em>siecle</em> en date du <b>".To::date_mysql_to_french($DB_ROW['siecle_import_date'])."</b>.</span>";
-      $annee_scolaire = To::annee_scolaire('siecle');
+      $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
+      $annee_scolaire = To::annee_scolaire('siecle',$annee_decalage);
       if( $annee_scolaire != $DB_ROW['siecle_import_annee'] )
       {
         $tab_info_rubriques[] = "<span class=\"probleme\">Attention : aucun import trouvé pour cette année scolaire &rarr; vous devez mettre à jour en important le fichier issu de <em>STS-Web</em> !</span>";

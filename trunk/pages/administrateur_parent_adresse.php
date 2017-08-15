@@ -162,7 +162,7 @@ if( $levenshtein && !empty($DB_TAB) )
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'extraction_ressemblances_adresses_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
-  echo'<p><ul class="puce"><li><a target="_blank" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
+  echo'<p><ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
 }
 ?>
 

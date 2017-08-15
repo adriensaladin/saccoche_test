@@ -31,7 +31,7 @@ $TITRE = html(Lang::_("Log des actions sensibles"));
 
 <p class="astuce">Les actions sensibles sont enregistrées, ce qui permet aux administrateurs de rechercher quel compte est fautif en cas de problème...</p>
 <p class="astuce">Ces logs sont enregistrés dans un fichier (pas dans la base) ; ils sont donc propres à un serveur et ne sont pas transférés lors d'une sauvegarde / restauration de base.</p>
-<p class="astuce">Concernant la suppression d'un référentiel, suivez ces liens pour savoir à quoi correspondent les identifiants <a target="_blank" rel="noopener" href="http://redmine.sesamath.net/projects/sacoche/repository/entry/_sql/structure/sacoche_matiere.sql">de matières</a> et <a target="_blank" rel="noopener" href="http://redmine.sesamath.net/projects/sacoche/repository/entry/_sql/structure/sacoche_niveau.sql">de niveaux</a>.</p>
+<p class="astuce">Concernant la suppression d'un référentiel, suivez ces liens pour savoir à quoi correspondent les identifiants <a target="_blank" href="http://redmine.sesamath.net/projects/sacoche/repository/entry/_sql/structure/sacoche_matiere.sql">de matières</a> et <a target="_blank" href="http://redmine.sesamath.net/projects/sacoche/repository/entry/_sql/structure/sacoche_niveau.sql">de niveaux</a>.</p>
 
 <?php
 $fichier_log_contenu = SACocheLog::lire($_SESSION['BASE']);
@@ -61,7 +61,7 @@ else
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.csv' , To::csv($fichier_log_contenu) );
   // Afficher tout ça
   echo'<ul class="puce">'.NL;
-  echo  '<li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>'.NL;
+  echo  '<li><a target="_blank" href="./force_download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>'.NL;
   echo  '<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>'.NL;
   echo'</ul>'.NL;
   echo $table_log_extrait;

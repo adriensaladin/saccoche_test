@@ -55,6 +55,8 @@ $etablissement_langue        = (isset($_POST['f_etablissement_langue']))        
 
 $mois_bascule_annee_scolaire = (isset($_POST['f_mois_bascule_annee_scolaire'])) ? Clean::entier($_POST['f_mois_bascule_annee_scolaire']) : 0;
 
+$etablissement_chef_id       = (isset($_POST['f_chefetabl']))                   ? Clean::entier($_POST['f_chefetabl'])                   : NULL;
+
 $ip_variable                 = (isset($_POST['f_ip_variable']))                 ? Clean::entier($_POST['f_ip_variable'])                 : NULL;
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -248,6 +250,20 @@ if($action=='upload_logo')
 if($action=='delete_logo')
 {
   DB_STRUCTURE_IMAGE::DB_supprimer_image( 0 /*user_id*/ , 'logo' );
+  Json::end( TRUE );
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mettre à jour etablissement_chef_id
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if( !is_null($etablissement_chef_id) )
+{
+  $tab_parametres = array();
+  $tab_parametres['etablissement_chef_id'] = $etablissement_chef_id;
+  DB_STRUCTURE_PARAMETRE::DB_modifier_parametres($tab_parametres);
+  // On modifie aussi la session
+  $_SESSION['ETABLISSEMENT']['CHEF_ID'] = $etablissement_chef_id;
   Json::end( TRUE );
 }
 

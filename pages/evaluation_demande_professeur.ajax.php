@@ -159,7 +159,7 @@ if( ($action=='Afficher_demandes') && ( $matiere_nom || !$selection_matiere ) &&
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
     $matiere_nom = ($selection_matiere) ? $matiere_nom : $DB_ROW['matiere_nom'] ;
     $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.convertCRtoBR(html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-    $document    = ($DB_ROW['demande_doc'])      ? '<a href="'.html($DB_ROW['demande_doc']).'" target="_blank" rel="noopener">oui</a>' : 'non' ;
+    $document    = ($DB_ROW['demande_doc'])      ? '<a href="'.html($DB_ROW['demande_doc']).'" target="_blank">oui</a>' : 'non' ;
     $messages_html .= '<tr><td>'.html($matiere_nom).'<br />'.html($item_ref).'</td><td>'.html($tab_groupes[$DB_ROW['eleve_id']]).'<br />'.html($tab_eleves[$DB_ROW['eleve_id']]).'</td><td>'.convertCRtoBR(html($DB_ROW['demande_messages'])).'</td></tr>';
     $fichier_csv .= '"'.$matiere_nom.'"'.$separateur.'"'.$item_ref.'"'.$separateur.'"'.$DB_ROW['item_nom'].'"'.$separateur.'"'.$tab_groupes[$DB_ROW['eleve_id']].'"'.$separateur.'"'.$tab_eleves[$DB_ROW['eleve_id']].'"'.$separateur.'"'.$score.'"'.$separateur.'"'.$date.'"'.$separateur.'"'.$DB_ROW['demande_messages'].'"'."\r\n";
     // Afficher une ligne du tableau 

@@ -58,7 +58,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
 ?>
 
 <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_classes">DOC : Gestion des classes</a></span></p>
-<p><span class="danger">Si votre établissement dépend d'une base administrative <em>Siècle</em> (2D) ou <em>Onde</em> (1D), alors évitez au maximum les ajouts manuels : utilisez <a href="./index.php?page=administrateur_fichier_user" target="_blank" rel="noopener">des imports de fichiers</a>.</span></p>
+<p><span class="danger">Si votre établissement dépend d'une base administrative <em>Siècle</em> (2D) ou <em>Onde</em> (1D), alors évitez au maximum les ajouts manuels : utilisez <a href="./index.php?page=administrateur_fichier_user" target="_blank">des imports de fichiers</a>.</span></p>
 
 <hr />
 

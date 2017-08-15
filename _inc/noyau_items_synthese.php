@@ -205,8 +205,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
   {
     $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
   }
-  $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage);
+  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -294,7 +293,7 @@ if(empty($is_appreciation_groupe))
             }
             if($aff_lien)
             {
-              $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener" href="'.html($item_lien).'">' : '';
+              $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
               $texte_lien_apres = ($item_lien) ? '</a>' : '';
             }
             if($_SESSION['USER_PROFIL_TYPE']=='parent')    { $texte_demande_eval = '<q class="demander_non" title="Les demandes d\'évaluations s\'effectuent depuis un compte élève."></q>'; }

@@ -64,69 +64,10 @@ $(document).ready
     );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement du formulaire form_chefetabl
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Alerter sur la nécessité de valider
-    $("#f_chefetabl").change
-    (
-      function()
-      {
-        $('#ajax_msg_chefetabl').attr('class','alerte').html("Valider pour confirmer.");
-      }
-    );
-
-    $('#bouton_valider_chefetabl').click
-    (
-      function()
-      {
-        var f_chefetabl = $('#f_chefetabl option:selected').val();
-        if(f_chefetabl==0)
-        {
-          $('#ajax_msg_chefetabl').attr('class','erreur').html("Responsable manquant !");
-          $('#f_chefetabl').focus();
-          return false;
-        }
-        $("#bouton_valider_chefetabl").prop('disabled',true);
-        $('#ajax_msg_chefetabl').attr('class','loader').html("En cours&hellip;");
-        $.ajax
-        (
-          {
-            type : 'POST',
-            url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_chefetabl='+f_chefetabl,
-            dataType : 'json',
-            error : function(jqXHR, textStatus, errorThrown)
-            {
-              $("#bouton_valider_chefetabl").prop('disabled',false);
-              $('#ajax_msg_chefetabl').attr('class','alerte').html(afficher_json_message_erreur(jqXHR,textStatus));
-              return false;
-            },
-            success : function(responseJSON)
-            {
-              initialiser_compteur();
-              $("#bouton_valider_chefetabl").prop('disabled',false);
-              if(responseJSON['statut']==true)
-              {
-                $('#ajax_msg_chefetabl').attr('class','valide').html("Choix appliqué.");
-                $('select[name=f_chef]').each( function(){$(this).find('option[value='+f_chefetabl+']').prop('selected',true);} );
-              }
-              else
-              {
-                $('#ajax_msg_chefetabl').attr('class','alerte').html(responseJSON['value']);
-              }
-              return false;
-            }
-          }
-        );
-      }
-    );
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alerter sur la nécessité de valider
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#table_action').find('select').change
+    $('select').change
     (
       function()
       {
@@ -153,13 +94,6 @@ $(document).ready
         var f_periode  = $('#f_periode_' +groupe_id).val();
         var f_jointure = $('#f_jointure_'+groupe_id).val();
         var f_cycle    = $('#f_cycle_'   +groupe_id).val();
-        var f_chef     = $('#f_chef_'    +groupe_id).val();
-        if( (f_chef==0) && (f_periode || f_cycle) )
-        {
-          obj_label.attr('class','erreur').html("Responsable manquant !");
-          $('#f_chef_'+groupe_id).focus();
-          return false;
-        }
         obj_bouton.prop('disabled',true);
         obj_label.attr('class','loader').html("En cours&hellip;");
         $.ajax
@@ -167,7 +101,7 @@ $(document).ready
           {
             type : 'POST',
             url : 'ajax.php?page='+PAGE,
-            data : 'csrf='+CSRF+'&f_groupe='+groupe_id+'&f_periode='+f_periode+'&f_jointure='+f_jointure+'&f_cycle='+f_cycle+'&f_chef='+f_chef,
+            data : 'csrf='+CSRF+'&f_groupe='+groupe_id+'&f_periode='+f_periode+'&f_jointure='+f_jointure+'&f_cycle='+f_cycle,
             dataType : 'json',
             error : function(jqXHR, textStatus, errorThrown)
             {

@@ -33,7 +33,7 @@ if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');
  * 
  * @param string $PAGE_REF
  * @param string $PAGE_PERIODICITE
- * @param int    $JOINTURE_PERIODE
+ * @param string $JOINTURE_PERIODE
  * @param string $PAGE_RUBRIQUE_TYPE
  * @param string $PAGE_RUBRIQUE_JOIN
  * @param string $PAGE_COLONNE
@@ -380,8 +380,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       {
         $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
       }
-      $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-      $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage);
+      $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
           if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
       elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
       else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -458,8 +457,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       {
         $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
       }
-      $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-      $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage);
+      $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
           if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
       elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
       else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -819,7 +817,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
  * @param int    $livret_saisie_id
  * @param string $PAGE_REF
  * @param string $PAGE_PERIODICITE
- * @param int    $JOINTURE_PERIODE
+ * @param string $JOINTURE_PERIODE
  * @param string $PAGE_RUBRIQUE_TYPE
  * @param string $PAGE_RUBRIQUE_JOIN
  * @param string $PAGE_COLONNE
@@ -1010,8 +1008,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
             'calcul_retroactif' => $DB_ROW['calcul_retroactif'],
           );
         }
-        $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-        $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage);
+        $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
             if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
         elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
         else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -1059,8 +1056,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
       $liste_item_id = implode(',',array_keys($tab_item_infos));
       if($saisie_objet=='position')
       {
-        $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-        $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage);
+        $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
             if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
         elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
         else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après

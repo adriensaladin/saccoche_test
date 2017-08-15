@@ -49,21 +49,16 @@ $tab_eleve  = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
 // Tableaux communs utiles
 
 $tab_periode_livret = array(
-  'periode21' => 'Semestre 1/2' ,
-  'periode22' => 'Semestre 2/2' ,
-  'periode31' => 'Trimestre 1/3',
-  'periode32' => 'Trimestre 2/3',
-  'periode33' => 'Trimestre 3/3',
-  'periode41' => 'Bimestre 1/4' ,
-  'periode42' => 'Bimestre 2/4' ,
-  'periode43' => 'Bimestre 3/4' ,
-  'periode44' => 'Bimestre 4/4' ,
-  'periode51' => 'Période 1/5'  ,
-  'periode52' => 'Période 2/5'  ,
-  'periode53' => 'Période 3/5'  ,
-  'periode54' => 'Période 4/5'  ,
-  'periode55' => 'Période 5/5'  ,
-  'cycle'     => 'Fin de cycle' ,
+  'periodeS1' => 'Semestre 1/2'  ,
+  'periodeS2' => 'Semestre 2/2'  ,
+  'periodeT1' => 'Trimestre 1/3' ,
+  'periodeT2' => 'Trimestre 2/3' ,
+  'periodeT3' => 'Trimestre 3/3' ,
+  'periodeB1' => 'Bimestre 1/4'  ,
+  'periodeB2' => 'Bimestre 2/4'  ,
+  'periodeB3' => 'Bimestre 3/4'  ,
+  'periodeB4' => 'Bimestre 4/4'  ,
+  'cycle'     => 'Fin de cycle'  ,
 );
 
 $tab_export_type = array(
@@ -134,7 +129,7 @@ if(substr($periode,0,7)=='periode')
 else
 {
   $PAGE_PERIODICITE = ($periode!=='') ? $periode : '' ;
-  $JOINTURE_PERIODE = NULL;
+  $JOINTURE_PERIODE = '';
 }
 
 // Au cas où...
@@ -780,7 +775,7 @@ $fichier_lien = './force_download.php?fichier='.$fichier_nom;
 $sb = ($nb_bilans>1) ? 's' : '' ;
 $se = ($nb_eleves>1) ? 's' : '' ;
 Json::add_str('<p><label class="valide">Fichier d\'export généré : '.$nb_bilans.' bilan'.$sb.' concernant '.$nb_eleves.' élève'.$se.'.</label></p>'.NL);
-Json::add_str('<p><a target="_blank" rel="noopener" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></p>'.NL);
+Json::add_str('<p><a target="_blank" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></p>'.NL);
 Json::add_str('<p><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></p>'.NL);
 Json::end( TRUE );
 

@@ -116,7 +116,7 @@ $is_etablissement_virtuel = IS_HEBERGEMENT_SESAMATH && ( ($BASE==ID_DEMO) || ($B
     <h2>Étape 2/2 - Confirmation</h2>
     <p class="astuce">Veuillez saisir le code qui vient d'être envoyé à l'adresse <b id="report_courriel"></b>.</p>
     <label class="tab" for="f_code">Code :</label><input id="f_code" name="f_code" type="text" value="" size="10" maxlength="8" /><input id="f_md5" name="f_md5" type="hidden" value="" /><br />
-    <span class="tab"></span><button id="f_bouton_confirmer" type="submit" class="valider">Valider.</button><label id="ajax_msg_confirmer" class="astuce">Votre message sera ensuite transmis aux administrateurs.</label>
+    <span class="tab"></span><button id="f_bouton_confirmer" type="submit" class="valider">Valider.</button><label id="ajax_msg_confirmer" class="astuce">Votre message sera ensuite transmis aux administrateur.</label>
   </div>
   <div id="step3" class="hide">
     <p><label class="valide">Votre message a été transmis <span id="span_admin_nb"></span> (établissement <em><?php echo html($structure_denomination) ?></em>).</label></p>
@@ -128,7 +128,7 @@ $is_etablissement_virtuel = IS_HEBERGEMENT_SESAMATH && ( ($BASE==ID_DEMO) || ($B
 <p class="danger">Vous vous êtes visiblement égaré&nbsp;!</p>
 <p class="astuce">Il n'y a aucune raison de contacter les administrateurs de l'établissement <em>"<?php echo html($structure_denomination) ?>"</em> car il s'agit d'une structure virtuelle&hellip;</p>
 <ul class="puce">
-  <li class="p">Consulter <a class="b" href="<?php echo SERVEUR_PROJET ?>" target="_blank" rel="noopener">le site officiel du projet <em>SACoche</em></a> pour tout renseignement ou besoin de contact.</li>
+  <li class="p">Consulter <a class="b" href="<?php echo SERVEUR_PROJET ?>" target="_blank">le site officiel du projet <em>SACoche</em></a> pour tout renseignement ou besoin de contact.</li>
 </ul>
 
 <?php endif; ?>

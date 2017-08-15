@@ -250,7 +250,7 @@ foreach($tab_eval as $eleve_id => $tab_eval_eleve)
       {
         if($aff_lien)
         {
-          $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener" href="'.html($item_lien).'">' : '';
+          $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
           $texte_lien_apres = ($item_lien) ? '</a>' : '';
         }
         if($_SESSION['USER_PROFIL_TYPE']=='parent')    { $texte_demande_eval = '<q class="demander_non" title="Les demandes d\'évaluations s\'effectuent depuis un compte élève."></q>'; }

@@ -235,7 +235,7 @@ Layout::add( 'js_inline_before' , '// ]]>' );
 // Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
 if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
 {
-  echo'<p class="probleme">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
+  echo'<p class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</p><hr />';
 }
 ?>
 
@@ -706,7 +706,7 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
   <h2>Saisie déportée</h2>
   <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__saisies_deportees">DOC : Saisie déportée.</a></span></p>
   <ul class="puce">
-    <li><a id="export_file_saisie_deportee" target="_blank" rel="noopener" href=""><span class="file file_txt">Récupérer un fichier vierge à compléter pour une saisie déportée (format <em>csv</em>).</span></a></li>
+    <li><a id="export_file_saisie_deportee" target="_blank" href=""><span class="file file_txt">Récupérer un fichier vierge à compléter pour une saisie déportée (format <em>csv</em>).</span></a></li>
     <li><input id="f_saisie_deportee" type="file" name="userfile" /><button id="bouton_choisir_saisie_deportee" type="button" class="fichier_import">Envoyer un fichier d'appréciations complété (format <em>csv</em>).</button></li>
   </ul>
   <p class="ti">

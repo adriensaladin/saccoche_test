@@ -99,7 +99,6 @@ $PAGE_PARCOURS       = $DB_ROW['livret_page_parcours'];
 $PAGE_VIE_SCOLAIRE   = $DB_ROW['livret_page_vie_scolaire'];
 $classe_nom          = $DB_ROW['groupe_nom'];
 $classe_ref          = $DB_ROW['groupe_ref'];
-$classe_chef_id      = $DB_ROW['groupe_chef_id'];
 $DATE_VERROU         = $DB_ROW['jointure_date_verrou'];
 $BILAN_TYPE_ETABL    = in_array($PAGE_RUBRIQUE_TYPE,array('c3_matiere','c4_matiere','c3_socle','c4_socle')) ? 'college' : 'ecole' ;
 
@@ -117,8 +116,7 @@ else
 }
 $tab_classe = array();
 
-$annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-$millesime = To::annee_scolaire('siecle',$annee_decalage);
+$millesime = To::annee_scolaire('siecle');
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Récupérer et mettre en session les infos sur les seuils enregistrés
@@ -166,12 +164,12 @@ $affichage_chef_etabl = TRUE ; // besoin 1D + 2D ; période + cycle
 
 if($affichage_chef_etabl)
 {
-  $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_chef_infos($classe_chef_id);
+  $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_chef_etabl_infos($_SESSION['ETABLISSEMENT']['CHEF_ID']);
   if(empty($DB_ROW))
   {
-    Json::end( FALSE , "Absence de désignation du chef d'établissement ou directeur d'école pour cette classe !" );
+    Json::end( FALSE , "Absence de désignation du chef d'établissement ou directeur d'école !" );
   }
-  $key_chef_etabl = 'DIR'.$classe_chef_id;
+  $key_chef_etabl = 'DIR'.$DB_ROW['user_id'];
   if($BILAN_TYPE_ETABL=='college')
   {
     $tab_chef_etabl[$key_chef_etabl] = array(

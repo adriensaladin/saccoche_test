@@ -93,6 +93,7 @@ INSERT INTO sacoche_parametre VALUES
 ( "etablissement_adresse1"                           , "" ),
 ( "etablissement_adresse2"                           , "" ),
 ( "etablissement_adresse3"                           , "" ),
+( "etablissement_chef_id"                            , "0" ),
 ( "etablissement_courriel"                           , "" ),
 ( "etablissement_denomination"                       , "" ),
 ( "etablissement_fax"                                , "" ),

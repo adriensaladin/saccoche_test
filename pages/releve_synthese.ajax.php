@@ -140,15 +140,15 @@ if($affichage_direct)
 {
   $retour .= '<hr />'.NL;
   $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
   $retour .= '</ul>'.NL;
   $retour .= $releve_HTML;
 }
 else
 {
   $retour .= '<ul class="puce">'.NL;
-  $retour .=   '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
-  $retour .=   '<li><a target="_blank" rel="noopener" href="./releve_html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
+  $retour .=   '<li><a target="_blank" href="'.URL_DIR_EXPORT.$fichier_nom.'.pdf"><span class="file file_pdf">Archiver / Imprimer (format <em>pdf</em>).</span></a></li>'.NL;
+  $retour .=   '<li><a target="_blank" href="./releve_html.php?fichier='.$fichier_nom.'"><span class="file file_htm">Explorer / Détailler (format <em>html</em>).</span></a></li>'.NL;
   $retour .= '</ul>'.NL;
 }
 

@@ -274,8 +274,7 @@ if($item_nb) // Peut valoir 0 dans le cas d'un bilan officiel où l'on regarde l
     {
       $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
     }
-    $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-    $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage);
+    $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
         if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
     elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
     else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -640,8 +639,7 @@ $affichage_checkbox = ( $type_synthese && ($_SESSION['USER_PROFIL_TYPE']=='profe
 
 if($type_individuel)
 {
-  $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage); // Date de fin de l'année scolaire précédente
+  $jour_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql'); // Date de fin de l'année scolaire précédente
   // Pour un relevé officiel on prend les droits du profil parent, surtout qu'il peut être imprimé par un administrateur (pas de droit paramétré pour lui).
   $forcer_profil = ($make_officiel) ? 'TUT' : NULL ;
   Html::$afficher_score = Outil::test_user_droit_specifique( $_SESSION['DROIT_VOIR_SCORE_BILAN'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ , $forcer_profil );
@@ -835,7 +833,7 @@ if($type_individuel)
                     {
                       if($aff_lien)
                       {
-                        $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener" href="'.html($item_lien).'">' : '';
+                        $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
                         $texte_lien_apres = ($item_lien) ? '</a>' : '';
                       }
                       if($highlight_id)
@@ -1257,7 +1255,7 @@ if($type_individuel)
           {
             if($aff_lien)
             {
-              $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener" href="'.html($item_lien).'">' : '';
+              $texte_lien_avant = ($item_lien) ? '<a target="_blank" href="'.html($item_lien).'">' : '';
               $texte_lien_apres = ($item_lien) ? '</a>' : '';
             }
             if($highlight_id)

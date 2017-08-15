@@ -205,7 +205,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
 <div id="info_conv_etabl" class="hide">
   <p class="astuce">
     La signature d'un contrat et son règlement est requis à compter du <?php echo CONVENTION_ENT_START_DATE_FR ?> pour bénéficier de ce service sur le serveur <em>Sésamath</em>.<br />
-    Veuillez consulter <a href="<?php echo SERVEUR_GUIDE_ENT ?>#toggle_partenariats" target="_blank" rel="noopener">la documentation</a> pour davantage d'explications.
+    Veuillez consulter <a href="<?php echo SERVEUR_GUIDE_ENT ?>#toggle_partenariats" target="_blank">la documentation</a> pour davantage d'explications.
   </p>
   <?php echo $info_moratoire ?>
   <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_mode_identification#toggle_gestion_convention">DOC : Gestion d'une convention ENT-SACoche par un établissement</a></span></p>
@@ -305,7 +305,7 @@ $url_sso = URL_DIR_SACOCHE.'?sso'.$get_base;
   <h2>Récupérer / Imprimer les documents associés</h2>
   <p class="astuce">Les coordonnées de votre établissement et du contact référent sont définies dans le menu <a href="./index.php?page=administrateur_etabl_identite">[Identité de l'établissement]</a>.</p>
   <ul class="puce">
-    <li><a id="fichier_contrat" target="_blank" rel="noopener" href=""><span class="file file_pdf">Récupérer / Imprimer votre contrat (format <em>pdf</em>).</span></a></li>
-    <li><a id="fichier_facture" target="_blank" rel="noopener" href=""><span class="file file_pdf">Récupérer / Imprimer votre facture (format <em>pdf</em>).</span></a></li>
+    <li><a id="fichier_contrat" target="_blank" href=""><span class="file file_pdf">Récupérer / Imprimer votre contrat (format <em>pdf</em>).</span></a></li>
+    <li><a id="fichier_facture" target="_blank" href=""><span class="file file_pdf">Récupérer / Imprimer votre facture (format <em>pdf</em>).</span></a></li>
   </ul>
 </form>

@@ -146,7 +146,7 @@ if($action=='tester_version')
     Json::add_tab( array(
       'class' => 'alerte' ,
       'texte' => '<span'.$class.'>Dernière version disponible <em>'.$version_last.'</em>.</span>' ,
-      'after' => ' &rarr; <a target="_blank" rel="noopener" href="'.SERVEUR_NEWS.'">Nouveautés.</a>' ,
+      'after' => ' &rarr; <a target="_blank" href="'.SERVEUR_NEWS.'">Nouveautés.</a>' ,
     ) );
   }
   Json::end( TRUE );

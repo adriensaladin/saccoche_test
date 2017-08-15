@@ -28,28 +28,23 @@
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
 if($_SESSION['SESAMATH_ID']==ID_DEMO) {Json::end( FALSE , 'Action désactivée pour la démo.' );}
 
-$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action'])  : '';
-$id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])     : 0;
-$ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre'])  : 0;
-$nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])     : '';
-$livret = !empty($_POST['f_livret'])  ? Clean::entier($_POST['f_livret']) : NULL;
+$action = (isset($_POST['f_action'])) ? Clean::texte($_POST['f_action']) : '';
+$id     = (isset($_POST['f_id']))     ? Clean::entier($_POST['f_id'])    : 0;
+$ordre  = (isset($_POST['f_ordre']))  ? Clean::entier($_POST['f_ordre']) : 0;
+$nom    = (isset($_POST['f_nom']))    ? Clean::texte($_POST['f_nom'])    : '';
+$livret = (isset($_POST['f_livret'])) ? Clean::texte($_POST['f_livret']) : NULL;
 
 $tab_periode_livret = array(
-  NULL => '-',
-  21 => 'Semestre 1/2',
-  22 => 'Semestre 2/2',
-  31 => 'Trimestre 1/3',
-  32 => 'Trimestre 2/3',
-  33 => 'Trimestre 3/3',
-  41 => 'Bimestre 1/4',
-  42 => 'Bimestre 2/4',
-  43 => 'Bimestre 3/4',
-  44 => 'Bimestre 4/4',
-  51 => 'Période 1/5',
-  52 => 'Période 2/5',
-  53 => 'Période 3/5',
-  54 => 'Période 4/5',
-  55 => 'Période 5/5',
+  ''   => '-',
+  'S1' => 'Semestre 1/2',
+  'S2' => 'Semestre 2/2',
+  'T1' => 'Trimestre 1/3',
+  'T2' => 'Trimestre 2/3',
+  'T3' => 'Trimestre 3/3',
+  'B1' => 'Bimestre 1/4',
+  'B2' => 'Bimestre 2/4',
+  'B3' => 'Bimestre 3/4',
+  'B4' => 'Bimestre 4/4',
 );
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

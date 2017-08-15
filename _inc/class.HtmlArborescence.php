@@ -130,7 +130,7 @@ class HtmlArborescence
         switch($aff_lien)
         {
           case 'click' :
-            $lien_texte_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener" href="'.html($DB_ROW['item_lien']).'">' : '';
+            $lien_texte_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" href="'.html($DB_ROW['item_lien']).'">' : '';
             $lien_texte_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
           case 'image' :
             $lien_image = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;

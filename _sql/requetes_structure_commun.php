@@ -563,9 +563,8 @@ public static function DB_lister_users_regroupement( $profil_type , $statut , $g
     if( ($statut==2) && ($profil_type=='eleve') && in_array($groupe_type,array('classe','groupe')) && !is_null($periode_id) )
     {
       // On restreint aux élèves ayant été évalués ! Pour un bilan de fin de cycle on considère comme période l'année scolaire.
-      $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
       $DB_ROW = ($periode_id) ? DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id)
-                              : array( 'jointure_date_debut' => To::jour_debut_annee_scolaire('mysql',$annee_decalage) , 'jointure_date_fin' => To::jour_fin_annee_scolaire('mysql') ) ;
+                              : array( 'jointure_date_debut' => To::jour_debut_annee_scolaire('mysql') , 'jointure_date_fin' => To::jour_fin_annee_scolaire('mysql') ) ;
       if(!empty($DB_ROW))
       {
         $date_mysql_debut = $DB_ROW['jointure_date_debut'];
@@ -618,9 +617,8 @@ public static function DB_lister_eleves_classe_et_groupe( $classe_id , $groupe_i
   else if( ($statut==2) && !is_null($periode_id) )
   {
     // On restreint aux élèves ayant été évalués ! Pour un bilan de fin de cycle on considère comme période l'année scolaire.
-    $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
     $DB_ROW = ($periode_id) ? DB_STRUCTURE_COMMUN::DB_recuperer_dates_periode($groupe_id,$periode_id)
-                            : array( 'jointure_date_debut' => To::jour_debut_annee_scolaire('mysql',$annee_decalage) , 'jointure_date_fin' => To::jour_fin_annee_scolaire('mysql') ) ;
+                            : array( 'jointure_date_debut' => To::jour_debut_annee_scolaire('mysql') , 'jointure_date_fin' => To::jour_fin_annee_scolaire('mysql') ) ;
     if(!empty($DB_ROW))
     {
       $date_mysql_debut = $DB_ROW['jointure_date_debut'];

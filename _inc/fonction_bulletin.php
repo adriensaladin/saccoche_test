@@ -62,8 +62,7 @@ function calculer_et_enregistrer_moyennes_eleves_bulletin( $periode_id , $classe
   {
     $tab_score_a_garder[$DB_ROW['eleve_id']][$DB_ROW['item_id']] = ($DB_ROW['date_last']<$date_mysql_debut) ? FALSE : TRUE ;
   }
-  $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage);
+  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après
@@ -263,8 +262,7 @@ function calculer_et_enregistrer_moyenne_precise_bulletin( $periode_id , $classe
   $tab_liste_item = array_keys($tab_item);
   $liste_item_id = implode(',',$tab_liste_item);
   // Récupération de la liste des résultats des évaluations associées à ces items donnés d'une ou plusieurs matieres, pour les élèves selectionnés, sur la période sélectionnée
-  $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql',$annee_decalage);
+  $date_mysql_debut_annee_scolaire = To::jour_debut_annee_scolaire('mysql');
       if($retroactif=='non')    { $date_mysql_start = $date_mysql_debut; }
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // 'oui' | 'auto' ; en 'auto' il faut faire le tri après

@@ -31,21 +31,16 @@ $TITRE = html(Lang::_("Livret Scolaire")).' &rarr; '.html(Lang::_("Édition du l
 $tab_puce_info = array();
 
 $tab_periode_livret = array(
-  'periode21' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2' ),
-  'periode22' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2' ),
-  'periode31' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 1/3'),
-  'periode32' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 2/3'),
-  'periode33' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 3/3'),
-  'periode41' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 1/4' ),
-  'periode42' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 2/4' ),
-  'periode43' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 3/4' ),
-  'periode44' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 4/4' ),
-  'periode51' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 1/5'  ),
-  'periode52' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 2/5'  ),
-  'periode53' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 3/5'  ),
-  'periode54' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 4/5'  ),
-  'periode55' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 5/5'  ),
-  'cycle'     => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin de cycle' ),
+  'periodeS1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2'  ),
+  'periodeS2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2'  ),
+  'periodeT1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 1/3' ),
+  'periodeT2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 2/3' ),
+  'periodeT3' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 3/3' ),
+  'periodeB1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 1/4'  ),
+  'periodeB2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 2/4'  ),
+  'periodeB3' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 3/4'  ),
+  'periodeB4' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 4/4'  ),
+  'cycle'     => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin de cycle'  ),
 );
 
 $tab_etats = array
@@ -152,7 +147,7 @@ if( ($affichage_formulaire_statut) && ($_SESSION['SESAMATH_ID']!=ID_DEMO) )
         else
         {
           $page_periodicite = $periode;
-          $jointure_periode = NULL;
+          $jointure_periode = '';
         }
         $is_modif = DB_STRUCTURE_LIVRET::DB_modifier_jointure_groupe( $classe_id , $page_ref , $page_periodicite , $jointure_periode , $new_etat );
         if( $is_modif && $abonnes_nb && isset($tab_profs_par_classe[$classe_id]) )
@@ -203,7 +198,7 @@ Layout::add( 'js_inline_before' , 'var APP_GENERALE_LONGUEUR = '.$_SESSION['OFFI
 // Alerte initialisation annuelle non effectuée (test !empty() car un passage par la page d'accueil n'est pas obligatoire)
 if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
 {
-  $tab_puce_info[] = '<li><span class="probleme">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</span></li>';
+  $tab_puce_info[] = '<li><span class="danger b">Année scolaire précédente non archivée&nbsp;!<br />Au changement d\'année scolaire un administrateur doit <a href="./index.php?page=administrateur_nettoyage">lancer l\'initialisation annuelle des données</a>.</span></li>';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,14 +272,16 @@ if($tab_periode_pb['pbdates'])
 // Besoin de connaitre le chef d'établissement
 if( count( array_intersect( $tab_page_ref , array('6e','5e','4e','3e','cycle1','cycle2','cycle3','cycle4') ) ) )
 {
-  $listing_groupe = DB_STRUCTURE_LIVRET::DB_lister_classes_livret_sans_chef();
-  if(!empty($listing_groupe))
+  $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_chef_etabl_infos($_SESSION['ETABLISSEMENT']['CHEF_ID']);
+  if(empty($DB_ROW))
   {
-    $nb_classes_concernees = substr_count($listing_groupe,',')+1;
-    $s = ($nb_classes_concernees>1) ? 's' : '' ;
-    $consigne = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_PROFIL_TYPE']=='directeur') ) ? ' <a href="./index.php?page=livret&amp;section=classes">Renseigner cette information.</a>' : '<br />Un administrateur ou un directeur doit <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=officiel__livret_scolaire_administration#toggle_classes">configurer un responsable par classe</a></span>.' ;
-    echo'<p><label class="erreur">Chef d\'établissement ou directeur d\'école non désigné pour '.$nb_classes_concernees.' classe'.$s.' !'.$consigne.'</label></p>'.NL;
+    $consigne = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? ' <a href="./index.php?page=administrateur_etabl_identite">Identité de l\'établissement.</a>' : '<br />Un administrateur doit <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure#toggle_chef_etablissement">désigner cette personne</a></span>.' ;
+    echo'<p><label class="erreur">Chef d\'établissement ou directeur d\'école non désigné !'.$consigne.'</label></p>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
+  }
+  else
+  {
+    $tab_puce_info[] = '<li><span class="astuce">Le chef d\'établissement ou directeur d\'école désigné est '.To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure#toggle_chef_etablissement">DOC</a></span>).</span></li>';
   }
 }
 ?>
@@ -745,7 +742,7 @@ Layout::add( 'css_inline' , '.insert{color:green}.update{color:red}.idem{color:g
   <h2>Saisie déportée</h2>
   <p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=officiel__saisies_deportees">DOC : Saisie déportée.</a></span></p>
   <ul class="puce">
-    <li><a id="export_file_saisie_deportee" target="_blank" rel="noopener" href=""><span class="file file_txt">Récupérer un fichier vierge à compléter pour une saisie déportée (format <em>csv</em>).</span></a></li>
+    <li><a id="export_file_saisie_deportee" target="_blank" href=""><span class="file file_txt">Récupérer un fichier vierge à compléter pour une saisie déportée (format <em>csv</em>).</span></a></li>
     <li><input id="f_saisie_deportee" type="file" name="userfile" /><button id="bouton_choisir_saisie_deportee" type="button" class="fichier_import">Envoyer un fichier d'appréciations complété (format <em>csv</em>).</button></li>
   </ul>
   <p class="ti">

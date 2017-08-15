@@ -81,44 +81,28 @@ class PDF_evaluation_tableau extends PDF
     $this->SetXY( $this->marge_gauche , $this->marge_haut+$this->etiquette_hauteur );
   }
 
-  // public function saisie_reference_item( $item_intro , $item_nom )
-  // {
-    // $memo_x = $this->GetX();
-    // $memo_y = $this->GetY();
-    // $this->choisir_couleur_fond('gris_clair');
-    // $this->Cell( $this->reference_largeur , $this->cases_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , $this->fond );
-    // $this->SetXY( $memo_x , $memo_y+1 );
-    // $this->SetFont('Arial' , 'B' , $this->taille_police);
-    // $this->CellFit( $this->reference_largeur , $this->cases_hauteur/3 , To::pdf($item_intro) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    // $this->SetFont('Arial' , '' , $this->taille_police);
-    // $this->CellFit( $this->reference_largeur , $this->cases_hauteur*2/3 , To::pdf($item_nom) , 0 /*bordure*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
-    // $this->SetXY( $memo_x+$this->reference_largeur , $memo_y );
-  // }
-
-  public function saisie_reference_item( $item_intro , $item_nom , $fusion_lignes )
+  public function saisie_reference_item( $item_intro , $item_nom )
   {
     $memo_x = $this->GetX();
     $memo_y = $this->GetY();
     $this->choisir_couleur_fond('gris_clair');
     $this->Cell( $this->reference_largeur , $this->cases_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , $this->fond );
-    $this->SetXY($memo_x , $memo_y);
-    $separateur = ($fusion_lignes) ? ' ' : "\r\n" ;
-    $this->afficher_appreciation( $this->reference_largeur , $this->cases_hauteur , $this->taille_police /*taille_police*/ , $this->taille_police/2 /*taille_interligne*/ , $item_intro.$separateur.$item_nom );
-    $this->SetXY($memo_x + $this->reference_largeur , $memo_y);
-    // $this->CellFit( $this->reference_largeur , $this->cases_hauteur , To::pdf($item_intro.' '.$item_nom) , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , $this->fond );
+    $this->SetXY( $memo_x , $memo_y+1 );
+    $this->SetFont('Arial' , 'B' , $this->taille_police);
+    $this->CellFit( $this->reference_largeur , 3 , To::pdf($item_intro) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->MultiCell( $this->reference_largeur , 3 , To::pdf($item_nom) , 0 /*bordure*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->SetXY( $memo_x+$this->reference_largeur , $memo_y );
   }
 
-  public function saisie_cases_eleves( $DB_TAB_COMP , $DB_TAB_USER , $eleve_nb , $tab_scores , $cart_detail , $with_ref , $with_coef , $with_socle )
+  public function saisie_cases_eleves( $DB_TAB_COMP , $DB_TAB_USER , $eleve_nb , $tab_scores )
   {
-    $fusion_lignes = ( ($cart_detail=='minimal') || (!$with_ref) || ($this->cases_hauteur<15) ) ? TRUE : FALSE ;
     foreach($DB_TAB_COMP as $DB_ROW_COMP)
     {
-      $item_ref    = (!$with_ref  ) ? '' : $DB_ROW_COMP['matiere_ref'].'.'.$DB_ROW_COMP['item_ref'];
-      $texte_socle = (!$with_socle) ? '' : ( ($DB_ROW_COMP['entree_id']) ? ' [S]' : ' [–]' );
-      $texte_s2016 = (!$with_socle) ? '' : ( ($DB_ROW_COMP['s2016_nb'])  ? ' [S]' : ' [–]' );
-      $texte_coef  = (!$with_coef ) ? '' : ' ['.$DB_ROW_COMP['item_coef'].']' ;
-      $item_nom    = ($cart_detail=='minimal') ? '' : $DB_ROW_COMP['item_nom'];
-      $this->saisie_reference_item( $item_ref.$texte_socle.$texte_s2016.$texte_coef , $item_nom , $fusion_lignes );
+      $item_ref    =  $DB_ROW_COMP['matiere_ref'].'.'.$DB_ROW_COMP['item_ref'];
+      $texte_socle = ($DB_ROW_COMP['entree_id']) ? ' [S]' : ' [–]';
+      $texte_s2016 = ($DB_ROW_COMP['s2016_nb'])  ? ' [S]' : ' [–]' ;
+      $this->saisie_reference_item( $item_ref.$texte_socle.$texte_s2016 , $DB_ROW_COMP['item_nom'] );
       if($tab_scores)
       {
         foreach($DB_TAB_USER as $DB_ROW_USER)

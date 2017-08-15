@@ -283,14 +283,13 @@ class To
    * format 'code'   : 2016-2017
    * format 'siecle' : 2016
    *
-   * @param string   $format           'texte' | 'code' | 'siecle'
-   * @param int      $annee_decalage   facultatif, pour les années scolaires précédentes ou suivantes
+   * @param string   $format   'texte' | 'code' | 'siecle'
    * @return string
    */
-  public static function annee_scolaire( $format , $annee_decalage=0 )
+  public static function annee_scolaire($format)
   {
     $mois_actuel    = date('n');
-    $annee_actuelle = date('Y')+$annee_decalage;
+    $annee_actuelle = date('Y');
     $mois_bascule   = $_SESSION['MOIS_BASCULE_ANNEE_SCOLAIRE'];
     if($format=='siecle')
     {

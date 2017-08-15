@@ -164,7 +164,7 @@ class Browser
     $tab_chaine = array();
     foreach(Browser::$tab_navigo as $navigo_ref => $navigo_name)
     {
-      $tab_chaine[$navigo_ref] = '<a target="_blank" rel="noopener" href="'.constant(strtoupper($navigo_ref).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo_ref.'">'.ucfirst($navigo_ref).' '.constant(strtoupper($navigo_ref).'_VERSION_LAST').'</span></a>'; // Pas Clean::upper() car appelé depuis ./_js/video.js.php
+      $tab_chaine[$navigo_ref] = '<a target="_blank" href="'.constant(strtoupper($navigo_ref).'_URL_DOWNLOAD').'"><span class="navigo navigo_'.$navigo_ref.'">'.ucfirst($navigo_ref).' '.constant(strtoupper($navigo_ref).'_VERSION_LAST').'</span></a>'; // Pas Clean::upper() car appelé depuis ./_js/video.js.php
     }
     // Affichage
     return $tab_chaine;

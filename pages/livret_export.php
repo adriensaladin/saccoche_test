@@ -91,21 +91,16 @@ if($step==1)
   $tab_puce_info = array();
 
   $tab_periode_livret = array(
-    'periode21' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2' ),
-    'periode22' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2' ),
-    'periode31' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 1/3'),
-    'periode32' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 2/3'),
-    'periode33' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 3/3'),
-    'periode41' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 1/4' ),
-    'periode42' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 2/4' ),
-    'periode43' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 3/4' ),
-    'periode44' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 4/4' ),
-    'periode51' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 1/5'  ),
-    'periode52' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 2/5'  ),
-    'periode53' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 3/5'  ),
-    'periode54' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 4/5'  ),
-    'periode55' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Période 5/5'  ),
-    'cycle'     => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin de cycle' ),
+    'periodeS1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 1/2'  ),
+    'periodeS2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Semestre 2/2'  ),
+    'periodeT1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 1/3' ),
+    'periodeT2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 2/3' ),
+    'periodeT3' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Trimestre 3/3' ),
+    'periodeB1' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 1/4'  ),
+    'periodeB2' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 2/4'  ),
+    'periodeB3' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 3/4'  ),
+    'periodeB4' => array( 'used' => FALSE , 'defined' => FALSE , 'dates' => FALSE , 'nom' => 'Bimestre 4/4'  ),
+    'cycle'     => array( 'used' => FALSE , 'defined' => TRUE  , 'dates' => TRUE  , 'nom' => 'Fin de cycle'  ),
   );
 
   $tab_etats = array
@@ -183,24 +178,18 @@ if($step==1)
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }
   // On compte aussi le nb de bilans déjà imprimé pour l'année scolaire en cours (PDF) pour limiter ceux qui tente d'exporter sans édition donc même parfois sans aucune tentative de remplissage automatique
-  $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-  $annee_scolaire = To::annee_scolaire('code',$annee_decalage);
+  $annee_scolaire = To::annee_scolaire('code');
   $tab_periode_livret_key = array(
-    21 => 'periode21',
-    22 => 'periode22',
-    31 => 'periode31',
-    32 => 'periode32',
-    33 => 'periode33',
-    41 => 'periode41',
-    42 => 'periode42',
-    43 => 'periode43',
-    44 => 'periode44',
-    51 => 'periode51',
-    52 => 'periode52',
-    53 => 'periode53',
-    54 => 'periode54',
-    55 => 'periode55',
-    NULL => 'cycle' ,
+    'S1' => 'periodeS1',
+    'S2' => 'periodeS2',
+    'T1' => 'periodeT1',
+    'T2' => 'periodeT2',
+    'T3' => 'periodeT3',
+    'B1' => 'periodeB1',
+    'B2' => 'periodeB2',
+    'B3' => 'periodeB3',
+    'B4' => 'periodeB4',
+    '' => 'cycle' ,
   );
   $DB_TAB = DB_STRUCTURE_LIVRET::DB_compter_impression_archives($annee_scolaire);
   foreach($DB_TAB as $DB_ROW)
@@ -212,14 +201,16 @@ if($step==1)
   // Besoin de connaitre le chef d'établissement
   if( count( array_intersect( $tab_page_ref , array('6e','5e','4e','3e','cycle1','cycle2','cycle3','cycle4') ) ) )
   {
-    $listing_groupe = DB_STRUCTURE_LIVRET::DB_lister_classes_livret_sans_chef();
-    if(!empty($listing_groupe))
+    $DB_ROW = DB_STRUCTURE_LIVRET::DB_recuperer_chef_etabl_infos($_SESSION['ETABLISSEMENT']['CHEF_ID']);
+    if(empty($DB_ROW))
     {
-      $nb_classes_concernees = substr_count($listing_groupe,',')+1;
-      $s = ($nb_classes_concernees>1) ? 's' : '' ;
-      $consigne = ( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_PROFIL_TYPE']=='directeur') ) ? ' <a href="./index.php?page=livret&amp;section=classes">Renseigner cette information.</a>' : '<br />Un administrateur ou un directeur doit <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=officiel__livret_scolaire_administration#toggle_classes">configurer un responsable par classe</a></span>.' ;
-      echo'<p><label class="erreur">Chef d\'établissement ou directeur d\'école non désigné pour '.$nb_classes_concernees.' classe'.$s.' !'.$consigne.'</label></p>'.NL;
+      $consigne = ($_SESSION['USER_PROFIL_TYPE']=='administrateur') ? ' <a href="./index.php?page=administrateur_etabl_identite">Identité de l\'établissement.</a>' : '<br />Un administrateur doit <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure#toggle_chef_etablissement">désigner cette personne</a></span>.' ;
+      echo'<p><label class="erreur">Chef d\'établissement ou directeur d\'école non désigné !'.$consigne.'</label></p>'.NL;
       return; // Ne pas exécuter la suite de ce fichier inclus.
+    }
+    else
+    {
+      $tab_puce_info[] = '<li><span class="astuce">Le chef d\'établissement ou directeur d\'école désigné est '.To::texte_identite( $DB_ROW['user_nom'] , FALSE , $DB_ROW['user_prenom'] , TRUE , $DB_ROW['user_genre'] ).' (<span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_informations_structure#toggle_chef_etablissement">DOC</a></span>).</span></li>';
     }
   }
 
@@ -303,7 +294,7 @@ if($step==1)
 
   afficher_entete_puce_doc_et_info($tab_puce_info);
 
-  echo'<table id="table_accueil" class="p">'.NL;
+  echo'<table id="table_accueil">'.NL;
   echo'<thead><tr><td class="nu"></td>';
   foreach($tab_periode_livret as $periode => $tab)
   {
@@ -365,8 +356,7 @@ $test_college = DB_STRUCTURE_LIVRET::DB_tester_jointure_classe_livret('"6e","5e"
 $test_ecole   = DB_STRUCTURE_LIVRET::DB_tester_jointure_classe_livret('"cp","ce1","ce2","cm1","cm2","cycle2"');
 if( $test_college || $test_ecole )
 {
-  $annee_decalage = empty($_SESSION['NB_DEVOIRS_ANTERIEURS']) ? 0 : -1 ;
-  $annee_scolaire = To::annee_scolaire('siecle',$annee_decalage);
+  $annee_scolaire = To::annee_scolaire('siecle');
   echo'<h2>Avertissement</h2>'.NL;
   echo'<p>Pour la transmission des informations à LSU, la connaissance d\'informations issues de <em>Siècle</em> (2D) ou de <em>ONDE</em> (1D) pour l\'année scolaire en cours est nécessaire.</p>'.NL;
   $tab_fichier = array(

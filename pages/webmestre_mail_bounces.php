@@ -38,7 +38,7 @@ $TITRE = "Adresse de rebond &amp; Test mail"; // Pas de traduction car pas de ch
   Elles ne devraient donc pas comporter son courriel comme adresse d'expéditeur ou de réponse.
 </p>
 <p>
-  Pour ces raisons, il est recommander d'indiquer ci-dessous <a href="http://fr.wikipedia.org/wiki/Bounce_address" target="_blank" rel="noopener">une adresse de rebond</a>.<br />
+  Pour ces raisons, il est recommander d'indiquer ci-dessous <a href="http://fr.wikipedia.org/wiki/Bounce_address" target="_blank">une adresse de rebond</a>.<br />
   Si vous ignorez celle de votre serveur, vous pouvez faire envoyer un courriel puis regarder le code source du message et y chercher l'en-tête <em>Return-Path</em>.
 </p>
 <p>

@@ -185,7 +185,6 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
   {
     $DB_ROW = $DB_TAB_COMP[$item_id][0];
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_perso'] : $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_auto'] ;
-    $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
     $texte_s2016 = ($DB_ROW['s2016_nb'])  ? '[S] ' : '[–] ';
     $texte_comm  = ($DB_ROW['item_comm']) ? ' <img src="./_img/etat/comm_oui.png" title="'.convertCRtoBR(html(html($DB_ROW['item_comm']))).'" />' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener" href="'.html($DB_ROW['item_lien']).'">' : '';
@@ -196,7 +195,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     elseif(!$DB_ROW['matiere_nb_demandes'])        { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour les items de cette matière."></q>'; }
     elseif(!$DB_ROW['item_cart'])                  { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
     else                                           { $texte_demande_eval = '<q class="demander_add" id="demande_'.$DB_ROW['matiere_id'].'_'.$item_id.'_'.$tab_scores[$item_id].'" title="Ajouter aux demandes d\'évaluations."></q>'; }
-    $tab_affich[$item_id] = '<td>'.html($item_ref).'</td><td>'.$texte_socle.$texte_s2016.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_comm.$texte_demande_eval.'</td>';
+    $tab_affich[$item_id] = '<td>'.html($item_ref).'</td><td>'.$texte_s2016.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_comm.$texte_demande_eval.'</td>';
   }
   // récupérer les saisies et les ajouter
   $tab_notes = array();
@@ -327,14 +326,13 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
   {
     $DB_ROW = $DB_TAB_COMP[$item_id][0];
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_perso'] : $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_auto'] ;
-    $texte_socle = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
     $texte_s2016 = ($DB_ROW['s2016_nb'])  ? '[S] ' : '[–] ';
     $texte_comm  = ($DB_ROW['item_comm']) ? ' <img src="./_img/etat/comm_oui.png" title="'.convertCRtoBR(html(html($DB_ROW['item_comm']))).'" />' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
     $boutons = (isset($tab_radio[$item_id])) ? $tab_radio[$item_id] : str_replace( 'value="X"' , 'value="X" checked' , $radio_boutons ) ;
     $boutons = str_replace( 'item_X' , 'item_'.$item_id , $boutons );
-    $lignes .= '<tr>'.$boutons.'<td>'.html($item_ref).'<br />'.$texte_socle.$texte_s2016.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_comm.'</td></tr>';
+    $lignes .= '<tr>'.$boutons.'<td>'.html($item_ref).'<br />'.$texte_s2016.$texte_lien_avant.html($DB_ROW['item_nom']).$texte_lien_apres.$texte_comm.'</td></tr>';
   }
   // Retour
   Json::add_tab( array(

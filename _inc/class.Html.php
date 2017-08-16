@@ -252,7 +252,7 @@ class Html
    * "force_nb" pour "etat_acquisition" seulement
    * "force_nb" si un item a été surligné
    *
-   * @param array $tab_legende   tableau de clefs parmi "codes_notation" ; "anciennete_notation" ; "score_bilan" ; "etat_acquisition" ; "pourcentage_acquis" ; "etat_validation" ; "degre_maitrise" ; "socle_points" ; "force_nb" ; "highlight"
+   * @param array $tab_legende   tableau de clefs parmi "codes_notation" ; "anciennete_notation" ; "score_bilan" ; "etat_acquisition" ; "degre_maitrise" ; "socle_points" ; "force_nb" ; "highlight"
    * @return string
    */
   public static function legende( $tab_legende )
@@ -314,18 +314,6 @@ class Html
       }
       $retour .= '</div>'.NL;
     }
-    // légende pourcentage_acquis
-    if(!empty($tab_legende['pourcentage_acquis']))
-    {
-      $endroit = !empty($tab_legende['etat_validation']) ? ' (à gauche)' : '' ;
-      $retour .= '<div><b>Pourcentages d\'items acquis'.$endroit.' :</b>';
-      foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
-      {
-        $texte = $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'];
-        $retour .= '<span class="cadre A'.$acquis_id.'">'.$texte.'</span>';
-      }
-      $retour .= '</div>'.NL;
-    }
     // légende degrés de maîtrise du socle
     if(!empty($tab_legende['degre_maitrise']))
     {
@@ -342,17 +330,6 @@ class Html
         $texte_legende = empty($tab_legende['socle_points']) ? $tab_maitrise_info['LEGENDE'] : $tab_maitrise_info['LEGENDE'].' ('.$tab_maitrise_info['POINTS'].' pts)' ;
         $texte_legende = ucfirst( str_replace( array('Maîtrise ','maîtrise ') , '' , $texte_legende ) ); // Peut sinon ne pas rentrer sur une ligne
         $retour .= '<span class="cadre maitrise M'.$maitrise_id.'">'.$texte_seuil.'</span>'.html($texte_legende);
-      }
-      $retour .= '</div>'.NL;
-    }
-    // légende etat_validation
-    if(!empty($tab_legende['etat_validation']))
-    {
-      $endroit = !empty($tab_legende['pourcentage_acquis']) ? ' (à droite)' : '' ;
-      $retour .= '<div><b>États de validation'.$endroit.' :</b>';
-      foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
-      {
-        $retour .= '<span class="cadre V'.$valid_etat.'">'.$tab_valid_info['LEGENDE'].'</span>';
       }
       $retour .= '</div>'.NL;
     }
@@ -410,26 +387,6 @@ class Html
     $style = ($largeur) ? ' style="width:'.$largeur.'px"' : '' ;
     $texte = html($tab_infos['%'].'% acquis ('.$detail_acquisition.')');
     return ($detail) ? '<'.$type_cellule.' class="hc '.$class.'"'.$style.'>'.$texte.'</'.$type_cellule.'>' : '<'.$type_cellule.' class="'.$class.'" title="'.$texte.'"></'.$type_cellule.'>';
-  }
-
-  /**
-   * Afficher un état de validation pour une sortie socle HTML.
-   *
-   * @param string   $type_cellule   'td' | 'th'
-   * @param array    $tab_infos      array( 'etat' , 'date' , 'info' )
-   * @param bool     $detail
-   * @param int      $etat_pilier    0 | 1
-   * @param bool     $colspan
-   * @return string
-   */
-  public static function td_validation( $type_cellule , $tab_infos , $detail , $etat_pilier=FALSE , $colspan=FALSE )
-  {
-    $etat    = ($tab_infos['etat']==1) ? 'Validé' : 'Invalidé' ;
-    $bulle   = ($tab_infos['etat']==2) ? '' : ' title="'.$etat.' le '.$tab_infos['date'].' par '.html($tab_infos['info']).'"' ;
-    $colspan = ($colspan) ? ' colspan="'.$colspan.'"' : '' ; // État de validation d'un pilier dans un colspan
-    $class   = ($detail) ? ' class="hc V'.$tab_infos['etat'].'"' : ( ( ($etat_pilier==1) && ($tab_infos['etat']==2) && (!$_SESSION['USER_DALTONISME']) ) ? '' : ' class="V'.$tab_infos['etat'].'"' ) ; // État de validation d'un item à indiquer comme inutile si le pilier est validé
-    $texte   = ($detail) ? ( ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ) : '' ;
-    return '<'.$type_cellule.$colspan.$class.$bulle.'>'.$texte.'</'.$type_cellule.'>';
   }
 
 }

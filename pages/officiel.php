@@ -89,18 +89,7 @@ else
     echo'<p class="danger">Page introuvable (paramètre manquant ou incorrect) !</p>'.NL;
     return; // Ne pas exécuter la suite de ce fichier inclus.
   }
-  if( isset($BILAN_TYPE) && in_array($BILAN_TYPE,array('palier1','palier2','palier3')) )
-  {
-    $tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
-    $palier = mb_substr($BILAN_TYPE,-1);
-    if(!in_array($palier,$tab_paliers_actifs))
-    {
-      $liste_paliers_actifs = ($_SESSION['LISTE_PALIERS_ACTIFS']) ? ( (count($tab_paliers_actifs)==1) ? 'palier '.$_SESSION['LISTE_PALIERS_ACTIFS'].' activé' : 'paliers '.str_replace(',',' et ',$_SESSION['LISTE_PALIERS_ACTIFS']).' activés' ) : 'aucun' ;
-      echo'<p class="danger">Le palier '.$palier.' n\'a pas été activé par les administrateurs ('.$liste_paliers_actifs.').</p>'.NL;
-      return; // Ne pas exécuter la suite de ce fichier inclus.
-    }
-  }
-  if( !isset($BILAN_TYPE) || in_array($BILAN_TYPE,array('releve','bulletin','palier1','palier2','palier3')) )
+  if( !isset($BILAN_TYPE) || in_array($BILAN_TYPE,array('releve','bulletin')) )
   {
     $PAGE = $PAGE.'_'.$SECTION ;
     require($fichier_section);

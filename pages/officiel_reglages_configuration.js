@@ -52,15 +52,6 @@ $(document).ready
       }
     );
 
-    $('#f_socle_check_supplementaire').click
-    (
-      function()
-      {
-        $('#f_socle_ligne_factice , #f_socle_ligne_supplementaire').toggle();
-        $('#f_socle_ligne_supplementaire').focus();
-      }
-    );
-
     $('#f_releve_etat_acquisition').click
     (
       function()
@@ -242,70 +233,6 @@ $(document).ready
       }
     );
 
-    // socle report
-
-    $('#f_socle_appreciation_rubrique_longueur').change
-    (
-      function()
-      {
-        if(parseInt($('#f_socle_appreciation_rubrique_longueur').val(),10)>0)
-        {
-          $('#span_socle_appreciation_rubrique_report').show();
-        }
-        else
-        {
-          $('#span_socle_appreciation_rubrique_report').hide();
-        }
-      }
-    );
-
-    $('#f_socle_appreciation_generale_longueur').change
-    (
-      function()
-      {
-        if(parseInt($('#f_socle_appreciation_generale_longueur').val(),10)>0)
-        {
-          $('#span_socle_appreciation_generale_report').show();
-        }
-        else
-        {
-          $('#span_socle_appreciation_generale_report').hide();
-        }
-      }
-    );
-
-    // socle modèle
-
-    $('#f_socle_appreciation_rubrique_report').click
-    (
-      function()
-      {
-        if($('#f_socle_appreciation_rubrique_report').is(':checked'))
-        {
-          $('#span_socle_appreciation_rubrique_modele').show();
-        }
-        else
-        {
-          $('#span_socle_appreciation_rubrique_modele').hide();
-        }
-      }
-    );
-
-    $('#f_socle_appreciation_generale_report').click
-    (
-      function()
-      {
-        if($('#f_socle_appreciation_generale_report').is(':checked'))
-        {
-          $('#span_socle_appreciation_generale_modele').show();
-        }
-        else
-        {
-          $('#span_socle_appreciation_generale_modele').hide();
-        }
-      }
-    );
-
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Alerter sur la nécessité de valider
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -331,14 +258,6 @@ $(document).ready
       function()
       {
         $('#ajax_msg_livret').attr('class','alerte').html("Enregistrer pour confirmer.");
-      }
-    );
-
-    $("#form_socle input , #form_socle select , #form_socle textarea").change
-    (
-      function()
-      {
-        $('#ajax_msg_socle').attr('class','alerte').html("Enregistrer pour confirmer.");
       }
     );
 
@@ -400,20 +319,14 @@ $(document).ready
     // Traitement du formulaire "Relevé d'évaluations"
     // Traitement du formulaire "Bulletin scolaire"
     // Traitement du formulaire "Livret Scolaire"
-    // Traitement du formulaire "État de maîtrise du socle"
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#bouton_valider_releve , #bouton_valider_bulletin , #bouton_valider_livret , #bouton_valider_socle').click
+    $('#bouton_valider_releve , #bouton_valider_bulletin , #bouton_valider_livret').click
     (
       function()
       {
         var objet = $(this).attr('id').substring(15);
         if( (objet=='releve') && (!$('#f_'+objet+'_etat_acquisition').is(':checked')) && ($('#f_'+objet+'_cases_nb option:selected').val()==0) )
-        {
-          $('#ajax_msg_'+objet).attr('class','erreur').html("Choisir au moins une indication à faire figurer sur le bilan !");
-          return false;
-        }
-        if( (objet=='socle') && (!$('#f_'+objet+'_pourcentage_acquis').is(':checked')) && (!$('#f_'+objet+'_etat_validation').is(':checked')) )
         {
           $('#ajax_msg_'+objet).attr('class','erreur').html("Choisir au moins une indication à faire figurer sur le bilan !");
           return false;

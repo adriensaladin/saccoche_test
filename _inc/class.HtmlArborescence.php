@@ -55,7 +55,6 @@ class HtmlArborescence
     $comm_texte  = '';
     $coef_texte  = '';
     $cart_texte  = '';
-    $socle_texte = '';
     $s2016_texte = '';
     $lien_texte  = '';
     $lien_texte_avant = '';
@@ -116,13 +115,9 @@ class HtmlArborescence
         switch($aff_socle)
         {
           case 'texte' :
-            $socle_texte = ($DB_ROW['entree_id']) ? '[S] ' : '[–] ';
             $s2016_texte = ($DB_ROW['s2016_nb'])  ? '[S] ' : '[–] ';
             break;
           case 'image' :
-            $socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
-            $socle_title = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
-            $socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" title="'.$socle_title.'" /> ';
             $s2016_image = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? 'oui' : 'non' ;
             $s2016_title = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? implode('<br />',$DB_TAB_socle2016[$DB_ROW['item_id']]['nom']) : 'Hors-socle 2016.' ;
             $s2016_texte = '<img src="./_img/etat/socle_'.$s2016_image.'.png" title="'.$s2016_title.'" /> ';
@@ -151,7 +146,7 @@ class HtmlArborescence
         }
         $reference = ($DB_ROW['domaine_ref'] || $DB_ROW['theme_ref'] || $DB_ROW['item_ref']) ? $DB_ROW['domaine_ref'].$DB_ROW['theme_ref'].$DB_ROW['item_ref'] : $DB_ROW['domaine_code'].$DB_ROW['theme_ordre'].$DB_ROW['item_ordre'] ;
         $prefixe   = ($aff_ref) ? $reference.' - ' : '' ;
-        $tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $label_texte_avant.$input_texte.$coef_texte.$cart_texte.$socle_texte.$s2016_texte.$lien_texte.$comm_texte.$lien_texte_avant.html($prefixe.$DB_ROW['item_nom']).$lien_texte_apres.$label_texte_apres;
+        $tab_item[$matiere_id][$niveau_id][$domaine_id][$theme_id][$item_id] = $label_texte_avant.$input_texte.$coef_texte.$cart_texte.$s2016_texte.$lien_texte.$comm_texte.$lien_texte_avant.html($prefixe.$DB_ROW['item_nom']).$lien_texte_apres.$label_texte_apres;
       }
     }
     // Affichage de l'arborescence
@@ -192,109 +187,6 @@ class HtmlArborescence
                     }
                     $retour .= '</ul>'.NL;
                     $retour .= '</li>'.NL;
-                  }
-                }
-                $retour .= '</ul>'.NL;
-                $retour .= '</li>'.NL;
-              }
-            }
-            $retour .= '</ul>'.NL;
-            $retour .= '</li>'.NL;
-          }
-        }
-        $retour .= '</ul>'.NL;
-        $retour .= '</li>'.NL;
-      }
-    }
-    $retour .= '</ul>'.NL;
-    return $retour;
-  }
-
-  /**
-   * Retourner une liste HTML ordonnée de l'arborescence d'un référentiel socle à partir d'une requête SQL transmise.
-   * 
-   * @param array $DB_TAB
-   * @param bool  $dynamique   arborescence cliquable ou pas (plier/replier)
-   * @param bool  $reference   afficher ou pas les références
-   * @param bool  $aff_input   affichage ou pas des input radio avec label
-   * @param bool  $ids         indiquer ou pas les identifiants des éléments (Pxxx / Sxxx / Exxx)
-   * @return string
-   */
-  public static function afficher_socle_from_SQL( $DB_TAB , $dynamique , $reference , $aff_input , $ids )
-  {
-    $input_texte = '';
-    $label_texte_avant = '';
-    $label_texte_apres = '';
-    // Traiter le retour SQL : on remplit les tableaux suivants.
-    $tab_palier  = array();
-    $tab_pilier  = array();
-    $tab_section = array();
-    $tab_entree  = array();
-    $palier_id = 0;
-    foreach($DB_TAB as $DB_ROW)
-    {
-      if($DB_ROW['palier_id']!=$palier_id)
-      {
-        $palier_id = $DB_ROW['palier_id'];
-        $tab_palier[$palier_id] = $DB_ROW['palier_nom'];
-        $pilier_id  = 0;
-        $section_id = 0;
-        $entree_id   = 0;
-      }
-      if( (!is_null($DB_ROW['pilier_id'])) && ($DB_ROW['pilier_id']!=$pilier_id) )
-      {
-        $pilier_id = $DB_ROW['pilier_id'];
-        $tab_pilier[$palier_id][$pilier_id] = ($reference) ? $DB_ROW['pilier_ref'].' - '.$DB_ROW['pilier_nom'] : $DB_ROW['pilier_nom'];
-      }
-      if( (!is_null($DB_ROW['section_id'])) && ($DB_ROW['section_id']!=$section_id) )
-      {
-        $section_id = $DB_ROW['section_id'];
-        $tab_section[$palier_id][$pilier_id][$section_id] = ($reference) ? $DB_ROW['pilier_ref'].'.'.$DB_ROW['section_ordre'].' - '.$DB_ROW['section_nom'] : $DB_ROW['section_nom'];
-      }
-      if( (!is_null($DB_ROW['entree_id'])) && ($DB_ROW['entree_id']!=$entree_id) )
-      {
-        $entree_id = $DB_ROW['entree_id'];
-        if($aff_input)
-        {
-          $input_texte = '<input id="socle_'.$entree_id.'" name="f_socle" type="radio" value="'.$entree_id.'" /> ';
-          $label_texte_avant = '<label for="socle_'.$entree_id.'">';
-          $label_texte_apres = '</label>';
-        }
-        $entree_texte = ($reference) ? $DB_ROW['pilier_ref'].'.'.$DB_ROW['section_ordre'].'.'.$DB_ROW['entree_ordre'].' - '.$DB_ROW['entree_nom'] : $DB_ROW['entree_nom'] ;
-        $tab_entree[$palier_id][$pilier_id][$section_id][$entree_id] = $label_texte_avant.$input_texte.html($entree_texte).$label_texte_apres;
-      }
-    }
-    // Affichage de l'arborescence
-    $span_avant = ($dynamique) ? '<span>' : '' ;
-    $span_apres = ($dynamique) ? '</span>' : '' ;
-    $retour = '<ul class="ul_m1">'.NL;
-    if(count($tab_palier))
-    {
-      foreach($tab_palier as $palier_id => $palier_texte)
-      {
-        $retour .= '<li class="li_m1" id="palier_'.$palier_id.'">'.$span_avant.html($palier_texte).$span_apres.NL;
-        $retour .= '<ul class="ul_n1">'.NL;
-        if(isset($tab_pilier[$palier_id]))
-        {
-          foreach($tab_pilier[$palier_id] as $pilier_id => $pilier_texte)
-          {
-            $aff_id = ($ids) ? ' id="P'.$pilier_id.'"' : '' ;
-            $retour .= '<li class="li_n1"'.$aff_id.'>'.$span_avant.html($pilier_texte).$span_apres.NL;
-            $retour .= '<ul class="ul_n2">'.NL;
-            if(isset($tab_section[$palier_id][$pilier_id]))
-            {
-              foreach($tab_section[$palier_id][$pilier_id] as $section_id => $section_texte)
-              {
-                $aff_id = ($ids) ? ' id="S'.$section_id.'"' : '' ;
-                $retour .= '<li class="li_n2"'.$aff_id.'>'.$span_avant.html($section_texte).$span_apres.NL;
-                $retour .= '<ul class="ul_n3">'.NL;
-                if(isset($tab_entree[$palier_id][$pilier_id][$section_id]))
-                {
-                  foreach($tab_entree[$palier_id][$pilier_id][$section_id] as $entree_id => $entree_texte)
-                  {
-                    $aff_id = ($ids) ? ' id="E'.$entree_id.'"' : '' ;
-                    $retour .= '<li class="li_n3"'.$aff_id.'>'.$entree_texte.'</li>'.NL;
-                    
                   }
                 }
                 $retour .= '</ul>'.NL;

@@ -270,7 +270,7 @@ public static function DB_supprimer_liaisons_groupe_periode()
  */
 public static function DB_supprimer_periode($periode_id)
 {
-  $tab_tables = array( 'sacoche_periode' , 'sacoche_jointure_groupe_periode', 'sacoche_officiel_saisie' , 'sacoche_officiel_fichier' , 'sacoche_officiel_assiduite' );
+  $tab_tables = array( 'sacoche_periode' , 'sacoche_jointure_groupe_periode', 'sacoche_officiel_saisie' , 'sacoche_officiel_assiduite' );
   $DB_VAR = array(':periode_id'=>$periode_id);
   foreach( $tab_tables as $table )
   {

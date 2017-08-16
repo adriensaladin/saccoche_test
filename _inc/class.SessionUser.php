@@ -220,14 +220,6 @@ class SessionUser
       'OFFICIEL_RELEVE_AFF_SOCLE',
       'OFFICIEL_RELEVE_AFF_DOMAINE',
       'OFFICIEL_RELEVE_AFF_THEME',
-      'OFFICIEL_SOCLE_APPRECIATION_RUBRIQUE_LONGUEUR',
-      'OFFICIEL_SOCLE_APPRECIATION_RUBRIQUE_REPORT',
-      'OFFICIEL_SOCLE_APPRECIATION_GENERALE_LONGUEUR',
-      'OFFICIEL_SOCLE_APPRECIATION_GENERALE_REPORT',
-      'OFFICIEL_SOCLE_ASSIDUITE',
-      'OFFICIEL_SOCLE_ONLY_PRESENCE',
-      'OFFICIEL_SOCLE_POURCENTAGE_ACQUIS',
-      'OFFICIEL_SOCLE_ETAT_VALIDATION',
       'USER_DALTONISME',
     );
     $tab_type_tableau = array(
@@ -292,7 +284,6 @@ class SessionUser
     $_SESSION['USER_PARAM_FAVORI']      = $DB_ROW['user_param_favori'];
     $_SESSION['ELEVE_CLASSE_ID']        = (int) $DB_ROW['eleve_classe_id'];
     $_SESSION['ELEVE_CLASSE_NOM']       = $DB_ROW['groupe_nom'];
-    $_SESSION['ELEVE_LANGUE']           = (int) $DB_ROW['eleve_langue'];
     $_SESSION['DELAI_CONNEXION']        = (int) $DB_ROW['delai_connexion_secondes']; // Vaut (int)NULL = 0 à la 1e connexion, mais dans ce cas $_SESSION['FIRST_CONNEXION'] est testé avant.
     $_SESSION['FIRST_CONNEXION']        = ($DB_ROW['user_connexion_date']===NULL) ? TRUE : FALSE ;
     if( ($DB_ROW['user_connexion_date']===NULL) && ($DB_ROW['user_profil_type']!='administrateur') )
@@ -361,7 +352,7 @@ class SessionUser
         $_SESSION['TAB_PROFILS_DROIT']['NOM_LONG_PLURIEL'][$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_long_pluriel'];
       }
     }
-    // Enregistrer en session les couleurs et paramètres pour les codes de notation, les états d'acquisition, les validations
+    // Enregistrer en session les couleurs et paramètres pour les codes de notation, les états d'acquisition, les degrés de maîtrise
     SessionUser::memoriser_couleurs();
     // Fabriquer $_SESSION['NOTE'][i]['FICHIER'] en fonction de $_SESSION['USER_DALTONISME']
     // remarque : $_SESSION['USER_DALTONISME'] ne peut être utilisé que pour les profils élèves/parents/profs/directeurs, pas les admins ni le webmestre
@@ -477,7 +468,7 @@ class SessionUser
   }
 
   /**
-   * Compléter la session avec les couleurs et paramètres pour les codes de notation, les états d'acquisition, les états de validation
+   * Compléter la session avec les couleurs et paramètres pour les codes de notation, les états d'acquisition, les degrés de maîtrise
    * 
    * @param void
    * @return void
@@ -526,11 +517,6 @@ class SessionUser
       3 => array( 'COULEUR' => '#44A7E5' , 'GRIS' => SessionUser::$tab_dalton_css[4][1] , 'POINTS' => 40 ), // TSV =(204; 70; 90)
       4 => array( 'COULEUR' => '#0082D8' , 'GRIS' => SessionUser::$tab_dalton_css[4][0] , 'POINTS' => 50 ), // TSV =(204;100; 85)
     );
-    // États de validation - Les couleurs pour les daltoniens servent aussi pour les impressions PDF en niveau de gris
-    $_SESSION['VALID'] = array();
-    $_SESSION['VALID'][0] = array( 'COULEUR'=>'#FF9999' , 'GRIS'=>'#909090' , 'TEXTE'=>"négative",   'LEGENDE'=>"Invalidé" );
-    $_SESSION['VALID'][1] = array( 'COULEUR'=>'#99FF99' , 'GRIS'=>'#EAEAEA' , 'TEXTE'=>"positive",   'LEGENDE'=>"Validé" );
-    $_SESSION['VALID'][2] = array( 'COULEUR'=>'#BBBBFF' , 'GRIS'=>'#BEBEBE' , 'TEXTE'=>"en attente", 'LEGENDE'=>"Non renseigné" );
   }
 
   /**
@@ -555,8 +541,6 @@ class SessionUser
         $_SESSION['NOTE'][$note_id]['FICHIER'] = Html::note_src_couleur($tab_note_info['IMAGE']);
       }
     }
-    // pour les états de validation
-    $_SESSION['OPACITY']  = $_SESSION['USER_DALTONISME'] ? 1 : 0.3 ;
   }
 
   /**
@@ -585,27 +569,6 @@ class SessionUser
     {
       $_SESSION['CSS'] .= 'table th.M'.$maitrise_id.' , table td.M'.$maitrise_id.' , div.M'.$maitrise_id.' ,span.M'.$maitrise_id.' ,label.M'.$maitrise_id.' {background-color:'.$tab_maitrise_info['COULEUR'].'}'.NL;
     }
-    // couleurs des états de validation
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.down0 {background:'.$_SESSION['VALID'][0][$key_couleur].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.down1 {background:'.$_SESSION['VALID'][1][$key_couleur].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.down2 {background:'.$_SESSION['VALID'][2][$key_couleur].' url(./_img/socle/arrow_down.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.left0 {background:'.$_SESSION['VALID'][0][$key_couleur].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.left1 {background:'.$_SESSION['VALID'][1][$key_couleur].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.left2 {background:'.$_SESSION['VALID'][2][$key_couleur].' url(./_img/socle/arrow_left.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag0 {background:'.$_SESSION['VALID'][0][$key_couleur].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag1 {background:'.$_SESSION['VALID'][1][$key_couleur].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody th.diag2 {background:'.$_SESSION['VALID'][2][$key_couleur].' url(./_img/socle/arrow_diag.gif) no-repeat center center;opacity:'.$_SESSION['OPACITY'].'}'.NL;
-    $_SESSION['CSS'] .= 'th.V0 , td.V0 , span.V0 {background:'.$_SESSION['VALID'][0][$key_couleur].'}'.NL;
-    $_SESSION['CSS'] .= 'th.V1 , td.V1 , span.V1 {background:'.$_SESSION['VALID'][1][$key_couleur].'}'.NL;
-    $_SESSION['CSS'] .= 'th.V2 , td.V2 , span.V2 {background:'.$_SESSION['VALID'][2][$key_couleur].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation td.V0 {color:'.$_SESSION['VALID'][0][$key_couleur].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation td.V1 {color:'.$_SESSION['VALID'][1][$key_couleur].'}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation td.V2 {color:'.$_SESSION['VALID'][2][$key_couleur].'}'.NL;
-    $_SESSION['CSS'] .= '#zone_information .V0 {background:'.$_SESSION['VALID'][0][$key_couleur].';padding:0 1em;margin-right:1ex}'.NL;
-    $_SESSION['CSS'] .= '#zone_information .V1 {background:'.$_SESSION['VALID'][1][$key_couleur].';padding:0 1em;margin-right:1ex}'.NL;
-    $_SESSION['CSS'] .= '#zone_information .V2 {background:'.$_SESSION['VALID'][2][$key_couleur].';padding:0 1em;margin-right:1ex}'.NL;
-    $_SESSION['CSS'] .= '#tableau_validation tbody td[data-etat=lock] {background:'.$_SESSION['VALID'][1][$key_couleur].' url(./_img/socle/lock.gif) no-repeat center center;}'.NL; // /* surclasse une classe V0 ou V1 ou V2 car défini après */
-    $_SESSION['CSS'] .= '#tableau_validation tbody td[data-etat=done] {background-image:url(./_img/socle/done.gif);background-repeat:no-repeat;background-position:center center;}'.NL; // /* pas background pour ne pas écraser background-color défini avant */
   }
 
   /**

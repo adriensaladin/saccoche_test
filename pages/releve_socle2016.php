@@ -26,7 +26,7 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Maîtrise du socle").' (2016)');
+$TITRE = html(Lang::_("Maîtrise du socle"));
 
 if( ($_SESSION['USER_PROFIL_TYPE']=='parent') && (!$_SESSION['NB_ENFANTS']) )
 {
@@ -135,9 +135,7 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='eleve')
   $socle_points_DNB = Outil::test_user_droit_specifique($_SESSION['DROIT_SOCLE_PREVISION_POINTS_BREVET'])    ? $socle_points_DNB : '<del>Prévision du nombre de points pour le brevet</del>' ;
 }
 
-$tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
 $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
-$of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 
 $select_cycle                   = HtmlForm::afficher_select($tab_cycles                               , 'f_cycle'                   /*select_nom*/ ,    '' /*option_first*/ , Form::$tab_choix['cycle_id']                  /*selection*/ ,              '' /*optgroup*/ );
 $select_socle_individuel_format = HtmlForm::afficher_select(Form::$tab_select_socle_individuel_format , 'f_socle_individuel_format' /*select_nom*/ , FALSE /*option_first*/ , Form::$tab_choix['socle_individuel_format']   /*selection*/ ,              '' /*optgroup*/ );
@@ -157,12 +155,7 @@ $select_legende                 = HtmlForm::afficher_select(Form::$tab_select_le
 Layout::add( 'js_inline_before' , 'var is_multiple = '.$is_select_multiple.';' );
 ?>
 
-<p class="probleme">
-  Ce menu concerne le socle commun associé à la réforme 2016.<br />
-  Pour les établissements à l'étranger n'ayant pas encore appliqué la réforme, les menus pour l'ancien socle restent disponibles : <a href="./index.php?page=releve&amp;section=socle">relevé</a> et <a href="./index.php?page=releve&amp;section=synthese_socle">synthèse</a>.
-</p>
-
-<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__maitrise_socle2016">DOC : Maîtrise du socle (2016).</a></span></div>
+<div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__maitrise_socle2016">DOC : Maîtrise du socle.</a></span></div>
 <hr />
 
 <form action="#" method="post" id="form_select"><fieldset>

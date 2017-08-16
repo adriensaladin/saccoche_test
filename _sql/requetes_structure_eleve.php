@@ -298,7 +298,7 @@ public static function DB_lister_derniers_resultats_eleve( $eleve_id , $nb_jours
  */
 public static function DB_lister_items_devoir_avec_infos_pour_eleves($devoir_id)
 {
-  $DB_SQL = 'SELECT item_id, item_nom, entree_id, COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ';
+  $DB_SQL = 'SELECT item_id, item_nom, COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ';
   $DB_SQL.= 'item_cart, item_comm, item_lien, ';
   $DB_SQL.= 'matiere_id, matiere_nb_demandes, matiere_ref , ';
   $DB_SQL.= 'CONCAT(niveau_ref,".",domaine_code,theme_ordre,item_ordre) AS ref_auto , ';

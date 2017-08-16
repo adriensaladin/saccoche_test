@@ -64,7 +64,6 @@ $tab_sous_menu = array
     'administrateur_etabl_deconnexion'  => array( 'texte' => Lang::_("Redirection après déconnexion")            , 'class' => 'etabl_deconnexion'  , 'href' => 'page=administrateur_etabl_deconnexion'  ),
     'administrateur_etabl_niveau'       => array( 'texte' => Lang::_("Niveaux")                                  , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_niveau'       ),
     'administrateur_etabl_matiere'      => array( 'texte' => Lang::_("Matières")                                 , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_matiere'      ),
-    'administrateur_etabl_palier'       => array( 'texte' => Lang::_("Paliers du socle")                         , 'class' => 'etabl_choix'        , 'href' => 'page=administrateur_etabl_palier'       ),
     'administrateur_etabl_notes_acquis' => array( 'texte' => Lang::_("Codes de notation / États d'acquisition")  , 'class' => 'etabl_couleurs'     , 'href' => 'page=administrateur_etabl_notes_acquis' ),
     'administrateur_etabl_algorithme'   => array( 'texte' => Lang::_("Algorithme de calcul")                     , 'class' => 'algorithme_edition' , 'href' => 'page=administrateur_etabl_algorithme'   ),
   ),

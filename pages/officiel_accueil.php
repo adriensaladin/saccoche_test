@@ -32,9 +32,6 @@ $tab_types = array
 (
   'releve'   => array( 'droit'=>'RELEVE'   , 'doc'=>'officiel_releve_evaluations' , 'titre_page'=>html(Lang::_("Relevé d'évaluations")) , 'titre'=>"Relevé d'évaluations" , 'modif_rubrique'=>'les appréciations par matière' ) ,
   'bulletin' => array( 'droit'=>'BULLETIN' , 'doc'=>'officiel_bulletin_scolaire'  , 'titre_page'=>html(Lang::_("Bulletin scolaire"))    , 'titre'=>"Bulletin scolaire"    , 'modif_rubrique'=>'les notes et appréciations par matière' ) ,
-  'palier1'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>html(Lang::_("Maîtrise du palier 1")) , 'titre'=>"Maîtrise du palier 1" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
-  'palier2'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>html(Lang::_("Maîtrise du palier 2")) , 'titre'=>"Maîtrise du palier 2" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
-  'palier3'  => array( 'droit'=>'SOCLE'    , 'doc'=>'officiel_maitrise_palier'    , 'titre_page'=>html(Lang::_("Maîtrise du palier 3")) , 'titre'=>"Maîtrise du palier 3" , 'modif_rubrique'=>'les appréciations par compétence' ) ,
 );
 
 $TITRE = $tab_types[$BILAN_TYPE]['titre_page'];
@@ -240,13 +237,7 @@ if(!empty($_SESSION['NB_DEVOIRS_ANTERIEURS']))
 ?>
 
 <ul class="puce">
-  <?php
-  if($tab_types[$BILAN_TYPE]['droit']=='SOCLE')
-  {
-    echo'<li><span class="probleme">Cette section ne concerne le socle commun que sur la période 2006-2015 ; elle ne doit plus être utilisée par les établissements ayant appliqué la réforme.<br />Concernant le nouveau socle, utiliser les modules "Maîtrise du socle (2016)" et/ou "Livret Scolaire" de <em>SACoche</em>.</span></li>';
-  }
-  ?>
-  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=releves_bilans__<?php echo $tab_types[$BILAN_TYPE]['doc'] ?>">DOC : Bilan officiel &rarr; <?php echo $tab_types[$BILAN_TYPE]['titre'] ?></a></span></li>
+  <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=<?php echo $tab_types[$BILAN_TYPE]['doc'] ?>">DOC : Bilan officiel &rarr; <?php echo $tab_types[$BILAN_TYPE]['titre'] ?></a></span></li>
   <li><span class="astuce"><?php echo($affichage_formulaire_statut) ? 'Vous pouvez utiliser l\'outil d\'<a href="./index.php?page=compte_message">affichage de messages en page d\'accueil</a> pour informer les professeurs de l\'ouverture à la saisie.' : '<a title="'.$profils_modifier_statut.'" href="#">Profils pouvant modifier le statut d\'un bilan.</a>' ; ?></span></li>
   <?php echo $li ?>
 </ul>
@@ -568,41 +559,25 @@ if($affichage_formulaire_statut)
 $form_hidden = '';
 $tab_checkbox_rubriques = array();
 $disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_RUBRIQUE_LONGUEUR']) ? '' : ' disabled' ;
-if($tab_types[$BILAN_TYPE]['droit']=='SOCLE')
+// Lister les matières rattachées au prof
+$listing_matieres_id = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? DB_STRUCTURE_COMMUN::DB_recuperer_matieres_professeur($_SESSION['USER_ID']) : '' ;
+$form_hidden .= '<input type="hidden" id="f_listing_matieres" name="f_listing_matieres" value="'.$listing_matieres_id.'" />';
+$tab_matieres_id = explode(',',$listing_matieres_id);
+// Lister les matières de l'établissement
+$DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
+foreach($DB_TAB as $DB_ROW)
 {
-  // Lister les piliers du palier concerné
-  $palier_id = (int)substr($BILAN_TYPE,-1);
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_OPT_piliers($palier_id);
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $tab_checkbox_rubriques[$DB_ROW['valeur']] = '<input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['valeur'].'" value="'.$DB_ROW['valeur'].'" checked'.$disabled.' /><label for="rubrique_'.$DB_ROW['valeur'].'"> '.html($DB_ROW['texte']).'</label><br />';
-  }
-  $listing_piliers_id = implode(',',array_keys($tab_checkbox_rubriques));
-  $form_hidden .= '<input type="hidden" id="f_listing_piliers" name="f_listing_piliers" value="'.$listing_piliers_id.'" />';
-  $commentaire_selection = ($_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE']) ? '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux seules compétences matières ayant fait l\'objet d\'une évaluation ou d\'une validation.</div>' : '' ;
+  $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;
+  $tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<label for="rubrique_'.$DB_ROW['matiere_id'].'"><input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.$disabled.' /> '.html($DB_ROW['matiere_nom']).'</label><br />';
 }
-elseif(($BILAN_TYPE=='releve')||($BILAN_TYPE=='bulletin'))
-{
-  // Lister les matières rattachées au prof
-  $listing_matieres_id = ($_SESSION['USER_PROFIL_TYPE']=='professeur') ? DB_STRUCTURE_COMMUN::DB_recuperer_matieres_professeur($_SESSION['USER_ID']) : '' ;
-  $form_hidden .= '<input type="hidden" id="f_listing_matieres" name="f_listing_matieres" value="'.$listing_matieres_id.'" />';
-  $tab_matieres_id = explode(',',$listing_matieres_id);
-  // Lister les matières de l'établissement
-  $DB_TAB = DB_STRUCTURE_MATIERE::DB_lister_matieres_etablissement( TRUE /*order_by_name*/ );
-  foreach($DB_TAB as $DB_ROW)
-  {
-    $checked = ( ($_SESSION['USER_PROFIL_TYPE']!='professeur') || in_array($DB_ROW['matiere_id'],$tab_matieres_id) ) ? ' checked' : '' ;
-    $tab_checkbox_rubriques[$DB_ROW['matiere_id']] = '<label for="rubrique_'.$DB_ROW['matiere_id'].'"><input type="checkbox" name="f_rubrique[]" id="rubrique_'.$DB_ROW['matiere_id'].'" value="'.$DB_ROW['matiere_id'].'"'.$checked.$disabled.' /> '.html($DB_ROW['matiere_nom']).'</label><br />';
-  }
-  $commentaire_selection = '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
-}
+$commentaire_selection = '<div class="astuce">La recherche sera dans tous les cas aussi restreinte aux matières evaluées au cours de la période.</div>';
 // Choix de vérifier ou pas l'appréciation générale ; le test (in_array($etat,array('3mixte','4synthese'))) dépend de chaque classe...
 $disabled = ($_SESSION['OFFICIEL'][$tab_types[$BILAN_TYPE]['droit'].'_APPRECIATION_GENERALE_LONGUEUR']) ? '' : ' disabled' ;
 $tab_checkbox_rubriques[0] = '<label for="rubrique_0"><input type="checkbox" name="f_rubrique[]" id="rubrique_0"'.$disabled.' value="0" /> <i>Appréciation de synthèse générale</i></label><br />';
 // Présenter les rubriques en colonnes de hauteur raisonnables
 $tab_checkbox_rubriques    = array_values($tab_checkbox_rubriques);
 $nb_rubriques              = count($tab_checkbox_rubriques);
-$nb_rubriques_maxi_par_col = ($tab_types[$BILAN_TYPE]['droit']=='SOCLE') ? $nb_rubriques : 10 ;
+$nb_rubriques_maxi_par_col = 10;
 $nb_cols                   = floor(($nb_rubriques-1)/$nb_rubriques_maxi_par_col)+1;
 $nb_rubriques_par_col      = ceil($nb_rubriques/$nb_cols);
 $tab_div = array_fill(0,$nb_cols,'');

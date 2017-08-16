@@ -115,7 +115,6 @@ $tab_classname = array(
   'livret'   => 'PDF_livret_scolaire',
   'bulletin' => 'PDF_item_synthese',
   'releve'   => 'PDF_item_releve',
-  'palier'   => 'PDF_socle_releve', // non implémenté en attente de la mise en place de la refonte du socle -> à virer
 );
 $key = ($DB_ROW['archive_type']=='sacoche') ? $DB_ROW['archive_ref'] : 'livret' ;
 $classname = $tab_classname[$key];

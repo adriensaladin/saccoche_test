@@ -27,8 +27,6 @@
 
 // Tableau avec la liste des langues vivantes qu'il est possible d'affecter à l'élève
 
-// TODO : Doit remplacer progressivement ./_inc/tableau_langues_socle.php
-
 $tab_code_bcn_to_pays = array(
   301 => 109, // Allemand
   302 => 132, // Anglais

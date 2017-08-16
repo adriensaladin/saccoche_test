@@ -24,11 +24,9 @@ CREATE TABLE sacoche_user (
   user_connexion_date DATETIME                                                 DEFAULT NULL,
   user_sortie_date    DATE                                            NOT NULL DEFAULT "9999-12-31" COMMENT "Une valeur NULL par défaut compliquerait les requêtes (il faudrait tester NULL || > NOW ).",
   eleve_classe_id     MEDIUMINT(8)            UNSIGNED                NOT NULL DEFAULT 0,
-  eleve_langue        TINYINT(3)              UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue choisie pour le socle.",
   eleve_lv1           TINYINT(3)              UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue vivante 1 pour le livret scolaire.",
   eleve_lv2           TINYINT(3)              UNSIGNED                NOT NULL DEFAULT 100 COMMENT "Langue vivante 2 pour le livret scolaire.",
   eleve_uai_origine   CHAR(8)                 COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Pour un envoi de documents officiels à l'établissement d'origine.",
-  eleve_brevet_serie  VARCHAR(6)              COLLATE utf8_unicode_ci NOT NULL DEFAULT "X" COMMENT "Série du brevet pour Notanet.",
   user_id_ent         VARCHAR(63)             COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Paramètre renvoyé après une identification CAS depuis un ENT (ça peut être le login, mais ça peut aussi être un numéro interne à l'ENT...).",
   user_id_gepi        VARCHAR(63)             COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Login de l'utilisateur dans Gepi utilisé pour un transfert note/moyenne vers un bulletin.",
   user_param_accueil  VARCHAR(127)            COLLATE utf8_unicode_ci NOT NULL DEFAULT ""  COMMENT "Ce qui est masqué (et non ce qui est affiché).",
@@ -40,7 +38,6 @@ CREATE TABLE sacoche_user (
   KEY profil_sigle (user_profil_sigle),
   KEY user_sortie_date (user_sortie_date),
   KEY eleve_classe_id (eleve_classe_id),
-  KEY eleve_brevet_serie (eleve_brevet_serie),
   KEY user_id_ent (user_id_ent),
   KEY user_id_gepi (user_id_gepi)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

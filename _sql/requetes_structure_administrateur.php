@@ -34,23 +34,6 @@ class DB_STRUCTURE_ADMINISTRATEUR extends DB
 {
 
 /**
- * recuperer_arborescence_paliers
- *
- * @param void
- * @return array
- */
-public static function DB_recuperer_arborescence_paliers()
-{
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_socle_palier ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-  $DB_SQL.= 'ORDER BY palier_ordre ASC, pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
  * rechercher_users
  *
  * @param string   champ_nom
@@ -87,20 +70,6 @@ public static function DB_rechercher_user_for_fusion( $user_nom_like , $user_pro
   $DB_SQL.= 'ORDER BY user_nom ASC, user_prenom ASC ';
   $DB_VAR = array( ':user_nom_like' => $user_nom_like );
   return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * lister_paliers_SACoche
- *
- * @param void
- * @return array
- */
-public static function DB_lister_paliers_SACoche()
-{
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_socle_palier ';
-  $DB_SQL.= 'ORDER BY palier_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -708,7 +677,7 @@ public static function DB_modifier_adresse_parent($parent_id,$tab_adresse)
 /**
  * Modifier un ou plusieurs paramètres d'un utilisateur
  *
- * - Certains champ ("user_langue", "user_daltonisme", "user_connexion_date", "eleve_langue", "eleve_brevet_serie", "user_param_accueil", "user_param_menu", "user_param_favori") ne sont ici forcés que via la fusion de comptes élèves.
+ * - Certains champ ("user_langue", "user_daltonisme", "user_connexion_date", "user_param_accueil", "user_param_menu", "user_param_favori") ne sont ici forcés que via la fusion de comptes élèves.
  * - On peut envisager une modification de "profil_sigle" entre personnels.
  * - La mise à jour de la table [sacoche_user_switch] s'effectue lors de l'initialisation annuelle.
  *
@@ -741,11 +710,9 @@ public static function DB_modifier_user($user_id,$DB_VAR)
       case ':sortie_date'   : $tab_set[] = 'user_sortie_date='   .$key; break;
       case ':classe'        : $tab_set[] = 'eleve_classe_id='    .$key; break;
       case ':elv_classe'    : $tab_set[] = 'eleve_classe_id='    .$key; break;
-      case ':elv_langue'    : $tab_set[] = 'eleve_langue='       .$key; break;
       case ':lv1'           : $tab_set[] = 'eleve_lv1='          .$key; break;
       case ':lv2'           : $tab_set[] = 'eleve_lv2='          .$key; break;
       case ':uai_origine'   : $tab_set[] = 'eleve_uai_origine='  .$key; break;
-      case ':elv_brevet'    : $tab_set[] = 'eleve_brevet_serie=' .$key; break;
       case ':id_ent'        : $tab_set[] = 'user_id_ent='        .$key; break;
       case ':id_gepi'       : $tab_set[] = 'user_id_gepi='       .$key; break;
       case ':param_accueil' : $tab_set[] = 'user_param_accueil=' .$key; break;
@@ -788,7 +755,7 @@ public static function DB_modifier_users_statut( $tab_user_id , $statut )
 /**
  * Modifier une langue pour une liste d'élèves
  *
- * @param string $objet   langue | lv1 | lv2
+ * @param string $objet   lv1 | lv2
  * @param string $listing_user_id
  * @param int    $langue
  * @return void
@@ -803,30 +770,11 @@ public static function DB_modifier_user_langue( $objet , $listing_user_id , $lan
 }
 
 /**
- * modifier_palier
- *
- * @param int    $palier_id
- * @param int    $palier_actif   (0/1)
- * @return void
- */
-public static function DB_modifier_palier( $palier_id , $palier_actif )
-{
-  $DB_SQL = 'UPDATE sacoche_socle_palier ';
-  $DB_SQL.= 'SET palier_actif=:palier_actif ';
-  $DB_SQL.= 'WHERE palier_id=:palier_id ';
-  $DB_VAR = array(
-    ':palier_id'    => $palier_id,
-    ':palier_actif' => $palier_actif,
-  );
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
  * modifier_bilan_officiel
  *
  * @param int      $groupe_id    id du groupe (en fait, obligatoirement une classe)
  * @param int      $periode_id   id de la période
- * @param string   $champ        officiel_releve | officiel_bulletin | officiel_palier1 | officiel_palier2 | officiel_palier3
+ * @param string   $champ        officiel_releve | officiel_bulletin
  * @param string   $etat         nouvel état
  * @return int     0 ou 1 si modifié
  */
@@ -944,12 +892,7 @@ public static function DB_supprimer_user_saisies_absences_apres_sortie( $user_id
 public static function DB_supprimer_bilans_officiels()
 {
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_officiel_saisie'    , NULL);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_officiel_fichier'   , NULL);
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_officiel_assiduite' , NULL);
-  // Sans oublier le champ pour les classes
-  $DB_SQL = 'UPDATE sacoche_groupe ';
-  $DB_SQL.= 'SET fiche_brevet="" ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -968,18 +911,6 @@ public static function DB_supprimer_officiel_archive_image()
   $DB_SQL.= 'LEFT JOIN sacoche_officiel_archive AS t4 ON sacoche_officiel_archive_image.archive_image_md5=t4.archive_md5_image4 ';
   $DB_SQL.= 'WHERE t1.archive_md5_image1 IS NULL AND t2.archive_md5_image2 IS NULL AND t3.archive_md5_image3 IS NULL AND t4.archive_md5_image4 IS NULL ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-}
-
-/**
- * supprimer_brevet_saisies
- *
- * @param void
- * @return void
- */
-public static function DB_supprimer_bilans_brevet()
-{
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_brevet_saisie'  , NULL);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_brevet_fichier' , NULL);
 }
 
 /**
@@ -1002,18 +933,6 @@ public static function DB_supprimer_saisies()
 public static function DB_supprimer_demandes_evaluation()
 {
   DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_demande' , NULL);
-}
-
-/**
- * supprimer_validations
- *
- * @param void
- * @return void
- */
-public static function DB_supprimer_validations()
-{
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_jointure_user_entree' , NULL);
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , 'TRUNCATE sacoche_jointure_user_pilier' , NULL);
 }
 
 /**
@@ -1089,19 +1008,10 @@ public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
     $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
     $DB_SQL.= 'WHERE eleve_ou_classe_id=:user_id AND saisie_type="eleve" ';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_officiel_fichier ';
-    $DB_SQL.= 'WHERE user_id=:user_id';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_officiel_archive ';
     $DB_SQL.= 'WHERE user_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
     $DB_SQL = 'DELETE FROM sacoche_officiel_assiduite ';
-    $DB_SQL.= 'WHERE user_id=:user_id';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_brevet_saisie ';
-    $DB_SQL.= 'WHERE eleve_ou_classe_id=:user_id AND saisie_type="eleve" ';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_brevet_fichier ';
     $DB_SQL.= 'WHERE user_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
@@ -1191,9 +1101,6 @@ public static function DB_supprimer_utilisateur( $user_id , $user_profil_sigle )
     $DB_SQL = 'DELETE FROM sacoche_officiel_saisie ';
     $DB_SQL.= 'WHERE prof_id=:user_id';
     DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-    $DB_SQL = 'DELETE FROM sacoche_brevet_saisie ';
-    $DB_SQL.= 'WHERE prof_id=:user_id';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
   }
   if( ($user_profil_type=='eleve') || ($user_profil_type=='professeur') || ($user_profil_type=='directeur') )
   {
@@ -1245,16 +1152,11 @@ public static function DB_fusionner_donnees_comptes_eleves( $user_id_ancien , $u
     'sacoche_livret_jointure_enscompl_eleve'  => 'eleve_id' ,
     'sacoche_livret_jointure_modaccomp_eleve' => 'eleve_id' ,
     'sacoche_saisie'                          => 'eleve_id' ,
-    'sacoche_brevet_fichier'                  => 'user_id' ,
     'sacoche_jointure_user_abonnement'        => 'user_id' ,
-    'sacoche_jointure_user_entree'            => 'user_id' ,
-    'sacoche_jointure_user_pilier'            => 'user_id' ,
     'sacoche_livret_export'                   => 'user_id' ,
     'sacoche_notification'                    => 'user_id' ,
     'sacoche_officiel_archive'                => 'user_id' ,
     'sacoche_officiel_assiduite'              => 'user_id' ,
-    'sacoche_officiel_fichier'                => 'user_id' ,
-    'sacoche_brevet_saisie'                   => 'eleve_ou_classe_id' ,
     'sacoche_officiel_saisie'                 => 'eleve_ou_classe_id' ,
     'sacoche_livret_saisie'                   => 'cible_id' ,
   );
@@ -1536,12 +1438,11 @@ public static function DB_corriger_anomalies()
   $DB_SQL.= 'WHERE sacoche_periode.periode_id IS NULL ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Jointures période/saisie bilan officiel' );
-  // Jointures période/fichier bilan officiel associées à un user ou une période supprimé...
-  $DB_SQL = 'DELETE sacoche_officiel_fichier ';
-  $DB_SQL.= 'FROM sacoche_officiel_fichier ';
-  $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
+  // Jointures période/fichier bilan officiel associées à un user supprimé...
+  $DB_SQL = 'DELETE sacoche_officiel_archive ';
+  $DB_SQL.= 'FROM sacoche_officiel_archive ';
   $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-  $DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_periode.periode_id IS NULL) ) ';
+  $DB_SQL.= 'WHERE sacoche_user.user_id IS NULL ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Jointures période/fichier bilan officiel' );
   // Jointures période/assiduité bilan officiel associées à un user ou une période supprimée...
@@ -1552,13 +1453,6 @@ public static function DB_corriger_anomalies()
   $DB_SQL.= 'WHERE ( (sacoche_user.user_id IS NULL) OR (sacoche_periode.periode_id IS NULL) ) ';
   DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Jointures période/assiduité bilan officiel' );
-  // Fiche brevet associée à un user supprimé...
-  $DB_SQL = 'DELETE sacoche_brevet_fichier ';
-  $DB_SQL.= 'FROM sacoche_brevet_fichier ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user USING (user_id) ';
-  $DB_SQL.= 'WHERE user_id IS NULL ';
-  DB::query(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $tab_bilan[] = compte_rendu( DB::rowCount(SACOCHE_STRUCTURE_BD_NAME) , 'Jointures élève/fichier fiche brevet' );
   // Jointures user/groupe associées à un user ou un groupe supprimé...
   $DB_SQL = 'DELETE sacoche_jointure_user_groupe ';
   $DB_SQL.= 'FROM sacoche_jointure_user_groupe ';

@@ -202,12 +202,11 @@ public static function DB_recuperer_dates_periode( $groupe_id , $periode_id )
  * @param int  $niveau_id    passer 0 pour une recherche sur tous les niveaux
  * @param bool $only_socle   "TRUE" pour ne retourner que les items reliés au socle (TODO : ne tester à terme que le socle 2016)
  * @param bool $only_item    "TRUE" pour ne retourner que les lignes d'items, "FALSE" pour l'arborescence complète, sans forcément descendre jusqu'à l'items (valeurs NULL retournées)
- * @param bool $socle_nom    avec ou pas le nom des items du socle associés
  * @param bool $s2016_count  avec ou pas le nb de liaisons au socle 2016
  * @param bool $item_comm    avec ou pas les commentaires associés aux items
  * @return array
  */
-public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $niveau_id , $only_socle , $only_item , $socle_nom , $s2016_count , $item_comm )
+public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $niveau_id , $only_socle , $only_item , $s2016_count , $item_comm )
 {
   // Depuis MySQL 5.7.5 la directive ONLY_FULL_GROUP_BY est activée ce qui plantait la requête ci-dessous
   // (SELECT list is not in GROUP BY clause and contains nonaggregated column 'sacoche.sacoche_referentiel.matiere_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by)
@@ -217,15 +216,13 @@ public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $nive
   $type_join         = ($s2016_count) ? 'INNER JOIN' : 'LEFT JOIN' ;
   $select_item_comm  = ($item_comm)   ? 'item_comm, ' : '' ;
   $select_s2016_nb   = ($s2016_count) ? 'COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ' : '' ;
-  $select_socle_nom  = ($socle_nom)   ? 'entree_id, entree_nom ' : 'entree_id ' ;
   $join_user_matiere = ($prof_id)     ? 'LEFT JOIN sacoche_jointure_user_matiere USING (matiere_id) ' : '' ;
-  $join_socle_item   = ($socle_nom)   ? 'LEFT JOIN sacoche_socle_entree USING (entree_id) ' : '' ;
   $join_s2016        = ($s2016_count) ? 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
   $where_user        = ($prof_id)     ? 'AND user_id=:user_id ' : '' ;
   $where_matiere     = ($matiere_id)  ? 'AND matiere_id=:matiere_id ' : '' ;
   $where_niveau      = ($niveau_id)   ? 'AND niveau_id=:niveau_id ' : 'AND niveau_actif=1 ' ;
   $where_item        = ($only_item)   ? 'AND item_id IS NOT NULL ' : '' ;
-  $where_socle       = ($only_socle)  ? 'AND ( entree_id !=0 OR socle_composante_id IS NOT NULL ) ' : '' ;
+  $where_socle       = ($only_socle)  ? 'AND socle_composante_id IS NOT NULL ' : '' ;
   $group_s2016       = ($s2016_count) ? 'GROUP BY sacoche_referentiel_item.item_id ' : '' ;
   $order_matiere     = (!$matiere_id) ? 'matiere_nom ASC, '  : '' ;
   $order_niveau      = (!$niveau_id)  ? 'niveau_ordre ASC, ' : '' ;
@@ -234,8 +231,8 @@ public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $nive
   $DB_SQL.= 'niveau_id, niveau_ref, niveau_nom, ';
   $DB_SQL.= 'domaine_id, domaine_ordre, domaine_code, domaine_ref, domaine_nom, ';
   $DB_SQL.= 'theme_id, theme_ordre, theme_ref, theme_nom, ';
-  $DB_SQL.= 'item_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien, ';
-  $DB_SQL.= $select_item_comm.$select_s2016_nb.$select_socle_nom;
+  $DB_SQL.= $select_item_comm.$select_s2016_nb;
+  $DB_SQL.= 'item_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien ';
   $DB_SQL.= 'FROM sacoche_referentiel ';
   $DB_SQL.= $join_user_matiere;
   $DB_SQL.= 'LEFT JOIN sacoche_matiere USING (matiere_id) ';
@@ -243,7 +240,7 @@ public static function DB_recuperer_arborescence( $prof_id , $matiere_id , $nive
   $DB_SQL.= $type_join.' sacoche_referentiel_domaine USING (matiere_id,niveau_id) ';
   $DB_SQL.= $type_join.' sacoche_referentiel_theme USING (domaine_id) ';
   $DB_SQL.= $type_join.' sacoche_referentiel_item USING (theme_id) ';
-  $DB_SQL.= $join_socle_item.$join_s2016;
+  $DB_SQL.= $join_s2016;
   $DB_SQL.= 'WHERE matiere_active=1 '.$where_user.$where_matiere.$where_niveau.$where_item.$where_socle;
   $DB_SQL.= $group_s2016;
   $DB_SQL.= 'ORDER BY '.$order_matiere.$order_niveau.'domaine_ordre ASC, theme_ordre ASC, item_ordre ASC';
@@ -293,24 +290,6 @@ public static function DB_OPT_arborescence( $matiere_id , $niveau_id )
   }
   Form::$tab_select_optgroup['referentiel'] = $tab_optgroup;
   return !empty($DB_TAB) ? $DB_TAB : 'Ce référentiel ne comporte aucun item !' ;
-}
-
-/**
- * recuperer_arborescence_palier
- *
- * @param int   $palier_id (facultatif ; les paliers de l'établissement sinon)
- * @return array
- */
-public static function DB_recuperer_arborescence_palier($palier_id=FALSE)
-{
-  $DB_SQL = 'SELECT * ';
-  $DB_SQL.= 'FROM sacoche_socle_palier ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_section USING (pilier_id) ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_entree USING (section_id) ';
-  $DB_SQL.= ($palier_id) ? 'WHERE palier_id='.$palier_id.' ' : 'WHERE palier_actif=1 ' ;
-  $DB_SQL.= 'ORDER BY pilier_ordre ASC, section_ordre ASC, entree_ordre ASC';
-  return DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
 }
 
 /**
@@ -1159,80 +1138,6 @@ public static function DB_OPT_socle2016_composantes()
   }
   Form::$tab_select_optgroup['domaines'] = $tab_optgroup;
   return !empty($DB_TAB) ? $DB_TAB : 'Aucun item de référentiel n\'est rattaché au socle 2016.' ;
-}
-
-/**
- * Retourner un tableau [valeur texte] des paliers du socle de l'établissement
- *
- * @param void
- * @return array|string
- */
-public static function DB_OPT_paliers_etabl()
-{
-  $DB_SQL = 'SELECT palier_id AS valeur, palier_nom AS texte ';
-  $DB_SQL.= 'FROM sacoche_socle_palier ';
-  $DB_SQL.= 'WHERE palier_actif=1 ';
-  $DB_SQL.= 'ORDER BY palier_ordre ASC';
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucun palier du socle commun n\'est rattaché à l\'établissement.' ;
-}
-
-/**
- * Retourner un tableau [valeur texte optgroup] des piliers du socle de tous les paliers de l'établissement
- *
- * @param void
- * @return array|string
- */
-public static function DB_OPT_paliers_piliers()
-{
-  $DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte, palier_id AS optgroup, palier_nom AS optgroup_info ';
-  $DB_SQL.= 'FROM sacoche_socle_palier ';
-  $DB_SQL.= 'LEFT JOIN sacoche_socle_pilier USING (palier_id) ';
-  $DB_SQL.= 'WHERE palier_actif=1 ';
-  $DB_SQL.= 'ORDER BY palier_ordre ASC, pilier_ordre ASC';
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
-  $tab_optgroup = array();
-  foreach($DB_TAB as $key => $DB_ROW)
-  {
-    $tab_optgroup[$DB_ROW['optgroup']] = $DB_ROW['optgroup_info'];
-    unset($DB_TAB[$key]['optgroup_info']);
-  }
-  Form::$tab_select_optgroup['paliers'] = $tab_optgroup;
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucun palier du socle commun n\'est rattaché à l\'établissement.' ;
-}
-
-/**
- * Retourner un tableau [valeur texte] des piliers du socle d'un palier donné
- *
- * @param int $palier_id   id du palier
- * @return array|string
- */
-public static function DB_OPT_piliers($palier_id)
-{
-  $DB_SQL = 'SELECT pilier_id AS valeur, pilier_nom AS texte ';
-  $DB_SQL.= 'FROM sacoche_socle_pilier ';
-  $DB_SQL.= 'WHERE palier_id=:palier_id ';
-  $DB_SQL.= 'ORDER BY pilier_ordre ASC';
-  $DB_VAR = array(':palier_id'=>$palier_id);
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucune compétence trouvée pour ce palier.' ;
-}
-
-/**
- * Retourner un tableau [valeur texte] des domaines du socle d'un pilier donné
- *
- * @param int $pilier_id   id du pilier
- * @return array|string
- */
-public static function DB_OPT_domaines($pilier_id)
-{
-  $DB_SQL = 'SELECT section_id AS valeur, section_nom AS texte ';
-  $DB_SQL.= 'FROM sacoche_socle_section ';
-  $DB_SQL.= 'WHERE pilier_id=:pilier_id ';
-  $DB_SQL.= 'ORDER BY section_ordre ASC';
-  $DB_VAR = array(':pilier_id'=>$pilier_id);
-  $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-  return !empty($DB_TAB) ? $DB_TAB : 'Aucun domaine trouvé pour ce pilier.' ;
 }
 
 /**

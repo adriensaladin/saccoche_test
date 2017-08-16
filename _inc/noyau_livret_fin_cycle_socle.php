@@ -64,7 +64,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 elseif(empty($is_appreciation_groupe))
 {
   $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
-  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre );
   if(!is_array($tab_eleve_infos))
   {
     Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );

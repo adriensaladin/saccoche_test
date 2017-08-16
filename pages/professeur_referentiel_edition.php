@@ -175,41 +175,8 @@ else
 <form action="#" method="post" id="zone_elaboration_referentiel" onsubmit="return false;" class="arbre_dynamique p">
 </form>
 
-<div id="zone_socle_item" class="arbre_dynamique hide">
-  <h2>Relation au socle commun</h2>
-  <form action="#" method="post">
-    <p>
-      <label class="tab">Item disciplinaire :</label><span class="f_nom i"></span><br />
-      <label class="tab">Socle commun :</label>Cocher ci-dessous (<span class="astuce">cliquer sur un intitulé pour déployer son contenu</span>).<br />
-      <span class="tab"></span><button id="choisir_socle_valider" type="button" class="valider">Valider le choix effectué.</button> <button id="choisir_socle_annuler" type="button" class="annuler">Annuler.</button>
-    </p>
-    <ul class="ul_n1 p"><li class="li_n3"><label for="socle_0"><input id="socle_0" name="f_socle" type="radio" value="0" /> Hors-socle.</label></li></ul>
-    <?php
-    // Affichage de la liste des items du socle pour chaque palier
-    $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence_palier();
-    if(!empty($DB_TAB))
-    {
-      echo HtmlArborescence::afficher_socle_from_SQL( $DB_TAB , TRUE /*dynamique*/ , FALSE /*reference*/ , TRUE /*aff_input*/ , FALSE /*ids*/ );
-    }
-    else
-    {
-      echo'<span class="danger"> Aucun palier du socle n\'est associé à l\'établissement ! L\'administrateur doit préalablement choisir les paliers évalués...</span>'.NL;
-    }
-    ?>
-  </form>
-</div>
-
 <div id="zone_socle2016_composante" class="arbre_dynamique hide">
-  <h2>Relation au socle 2016</h2>
-  <div class="travaux">Interface en prévision de la réforme entrant en vigueur en septembre 2016.</div>
-  <div class="astuce">
-    <div class="fluo">
-      On peut ici relier ses items aux composantes du nouveau socle.<br />
-      Nouveauté : on peut relier un même item disciplinaire à plusieurs composantes du socle.<br />
-      Ces affectations sont d'ores et déjà conservées lors du partage ou de la récupération d'un référentiel.<br />
-      Les liaisons à l'ancien socle seront supprimées lors d'une mise à jour au courant de l'été 2016.
-    </div>
-  </div>
+  <h2>Relation au socle</h2>
   <form action="#" method="post">
     <p>
       <label class="tab">Item disciplinaire :</label><span class="f_nom i"></span><br />

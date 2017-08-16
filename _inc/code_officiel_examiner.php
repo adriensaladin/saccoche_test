@@ -37,13 +37,10 @@ $classe_id    = (isset($_POST['f_classe']))       ? Clean::entier($_POST['f_clas
 $groupe_id    = (isset($_POST['f_groupe']))       ? Clean::entier($_POST['f_groupe'])      : 0;
 // Autres chaines spécifiques...
 $listing_matieres  = (isset($_POST['f_listing_matieres']))  ? $_POST['f_listing_matieres']  : '' ;
-$listing_piliers   = (isset($_POST['f_listing_piliers']))   ? $_POST['f_listing_piliers']   : '' ;
 $listing_rubriques = (isset($_POST['f_listing_rubriques'])) ? $_POST['f_listing_rubriques'] : '' ;
 $tab_matiere_id  = array_filter( Clean::map('entier', explode(',',$listing_matieres) ) , 'positif' );
-$tab_pilier_id   = array_filter( Clean::map('entier', explode(',',$listing_piliers) )  , 'positif' );
 $tab_rubrique_id = Clean::map('entier',explode(',',$listing_rubriques) ); // Pas de array_filter(...,'positif') car la valeur 0 est autorisée
 $liste_matiere_id  = implode(',',$tab_matiere_id);
-$liste_pilier_id   = implode(',',$tab_pilier_id);
 $liste_rubrique_id = implode(',',$tab_rubrique_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
@@ -208,24 +205,6 @@ elseif($BILAN_TYPE=='bulletin')
   $liste_eleve     = $liste_eleve_id;
   $tab_matiere_id  = $tab_rubrique_id; // N'est pas utilisé pour la récupération des résultats mais juste pour tester si on doit vérifier cette partie (ce serait un double souci sinon : il faut tester les bilans élèves qui ont des résultats ailleurs + ce tableau peut contenir la valeur 0).
   require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_synthese.php');
-}
-elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
-{
-  $palier_id      = (int)substr($BILAN_TYPE,-1);
-  $palier_nom     = 'Palier '.$palier_id;
-  $only_presence  = $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'];
-  $aff_socle_PA   = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
-  $aff_socle_EV   = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
-  $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
-  $groupe_type    = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
-  $mode           = 'auto';
-  $legende        = 0;
-  $eleves_ordre   = 'alpha';
-  $tab_pilier_id  = $tab_pilier_id; // Pas $tab_rubrique_id car il ne faut pas juste restreindre à la liste des rubriques dont on souhaite vérifier l'appréciation afin de récupérer les bilans de tous les élèves concernés.
-  $tab_eleve_id   = $tab_eleve_id;
-  $tab_matiere_id = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

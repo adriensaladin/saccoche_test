@@ -45,6 +45,7 @@ $abrev       = (isset($_POST['abrev']))       ? Clean::texte($_POST['abrev'])   
 $coef        = (isset($_POST['coef']))        ? Clean::entier($_POST['coef'])        : -1;
 $cart        = (isset($_POST['cart']))        ? Clean::entier($_POST['cart'])        : -1;
 $comm        = (isset($_POST['comm']))        ? Clean::texte($_POST['comm'])         : NULL;
+$socle_id    = (isset($_POST['socle']))       ? Clean::entier($_POST['socle'])       : -1;
 
 $tab_id = (isset($_POST['tab_id'])) ? Clean::map('entier',explode(',',$_POST['tab_id'])) : array() ;
 $tab_id = array_filter($tab_id,'positif');
@@ -93,7 +94,7 @@ if( ($action=='Voir') && $matiere_id )
   // Une 1ère requête pour les liaisons au socle commun
   $DB_TAB_socle2016 = DB_STRUCTURE_REFERENTIEL::DB_recuperer_socle2016_for_referentiels_matiere($matiere_id);
   // On passe aux réféentiels
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*s2016_count*/ , TRUE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , TRUE /*socle_nom*/ , FALSE /*s2016_count*/ , TRUE /*item_comm*/ );
   $tab_niveau  = array();
   $tab_domaine = array();
   $tab_theme   = array();
@@ -129,6 +130,9 @@ if( ($action=='Voir') && $matiere_id )
       $cart_title  = ($DB_ROW['item_cart']) ? 'Demande possible.' : 'Demande interdite.' ;
       $cart_image  = ($DB_ROW['item_cart']) ? 'oui' : 'non' ;
       $cart_texte  = '<img src="./_img/etat/cart_'.$cart_image.'.png" title="'.$cart_title.'" />';
+      $socle_image = ($DB_ROW['entree_id']) ? 'oui' : 'non' ;
+      $socle_title = ($DB_ROW['entree_id']) ? html($DB_ROW['entree_nom']) : 'Hors-socle.' ;
+      $socle_texte = '<img src="./_img/etat/socle_'.$socle_image.'.png" title="'.$socle_title.'" data-id="'.$DB_ROW['entree_id'].'" />';
       $s2016_image = isset($DB_TAB_socle2016[$item_id]) ? 'oui' : 'non' ;
       $s2016_id    = isset($DB_TAB_socle2016[$item_id]) ? implode(',',$DB_TAB_socle2016[$item_id]['id']) : '' ;
       $s2016_title = isset($DB_TAB_socle2016[$item_id]) ? implode('<br />',$DB_TAB_socle2016[$item_id]['nom']) : 'Hors-socle 2016.' ;
@@ -141,7 +145,7 @@ if( ($action=='Voir') && $matiere_id )
       $comm_texte  = '<img src="./_img/etat/comm_'.$comm_image.'.png" width="16" height="16" title="'.convertCRtoBR(html(html($comm_title))).'" />'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
       $sep_ref     = ($DB_ROW['item_ref'])   ? $separateur : '' ;
       $sep_abrev   = ($DB_ROW['item_abrev']) ? $separateur : '' ;
-      $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$s2016_texte.$lien_texte.$comm_texte.'<b>'.html($DB_ROW['item_ref']).'</b>'.'<b>'.$sep_ref.'</b>'.'<b>'.html($DB_ROW['item_abrev']).'</b>'.'<b>'.$sep_abrev.'</b>'.'<b>'.html($DB_ROW['item_nom']).'</b>';
+      $tab_item[$niveau_id][$domaine_id][$theme_id][$item_id] = $coef_texte.$cart_texte.$socle_texte.$s2016_texte.$lien_texte.$comm_texte.'<b>'.html($DB_ROW['item_ref']).'</b>'.'<b>'.$sep_ref.'</b>'.'<b>'.html($DB_ROW['item_abrev']).'</b>'.'<b>'.$sep_abrev.'</b>'.'<b>'.html($DB_ROW['item_nom']).'</b>';
       Json::add_row( 'script' , 'tab_lien['.$item_id.']="'.$DB_ROW['item_lien'].'";' );
       Json::add_row( 'script' , 'tab_comm['.$item_id.']="'.convertCRtoJS(html($DB_ROW['item_comm'])).'";' );
     }
@@ -213,13 +217,13 @@ if( ($action=='Voir') && $matiere_id )
 // Ajouter un domaine / un thème / un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matiere_nom && $parent_id && ($code || ($contexte!='n1')) && ($ref!==NULL) && $nom && ( ($abrev!==NULL) || ($contexte!='n3') ) && ( ($comm!==NULL) || ($contexte!='n3') ) && ($ordre!=-1) && ($coef!=-1) && ($cart!=-1) )
+if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matiere_nom && $parent_id && ($code || ($contexte!='n1')) && ($ref!==NULL) && $nom && ( ($abrev!==NULL) || ($contexte!='n3') ) && ( ($comm!==NULL) || ($contexte!='n3') ) && ($ordre!=-1) && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
   switch($contexte)
   {
     case 'n1' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_domaine( $matiere_id , $parent_id /*niveau*/ , $ordre , $code , $ref , $nom ); break;
     case 'n2' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_theme( $parent_id /*domaine*/ , $ordre ,  $ref , $nom ); break;
-    case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item( $parent_id /*theme*/ , $ordre ,  $ref , $nom , $abrev , $coef , $cart , $comm , $tab_socle2016 ); break;
+    case 'n3' : $element_id = DB_STRUCTURE_REFERENTIEL::DB_ajouter_referentiel_item( $parent_id /*theme*/ , $socle_id , $ordre ,  $ref , $nom , $abrev , $coef , $cart , $comm , $tab_socle2016 ); break;
   }
   // id des éléments suivants à renuméroter
   if(count($tab_id)) // id des éléments suivants à renuméroter
@@ -237,13 +241,13 @@ if( ($action=='add') && isset($tab_contexte[$contexte]) && $matiere_id && $matie
 // Modifier un domaine / un thème / un item
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-if( ($action=='edit') && isset($tab_contexte[$contexte]) && $matiere_id && $element_id && ( $code || ($contexte!='n1') ) && ($ref!==NULL) && $nom && ( ($abrev!==NULL) || ($contexte!='n3') ) && ( ($comm!==NULL) || ($contexte!='n3') ) && $matiere_nom && ($coef!=-1) && ($cart!=-1) )
+if( ($action=='edit') && isset($tab_contexte[$contexte]) && $matiere_id && $element_id && ( $code || ($contexte!='n1') ) && ($ref!==NULL) && $nom && ( ($abrev!==NULL) || ($contexte!='n3') ) && ( ($comm!==NULL) || ($contexte!='n3') ) && $matiere_nom && ($socle_id!=-1) && ($coef!=-1) && ($cart!=-1) )
 {
   switch($contexte)
   {
     case 'n1' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_domaine( $element_id /*domaine*/ , $code , $ref , $nom ); break;
     case 'n2' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_theme( $element_id /*theme*/ , $ref , $nom ); break;
-    case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item( $element_id /*item*/ , $ref , $nom , $abrev , $coef , $cart , $comm , $tab_socle2016 ); break;
+    case 'n3' : $test_modif = DB_STRUCTURE_REFERENTIEL::DB_modifier_referentiel_item( $element_id /*item*/ , $socle_id , $ref , $nom , $abrev , $coef , $cart , $comm , $tab_socle2016 ); break;
   }
   if(!$test_modif)
   {

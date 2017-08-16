@@ -88,6 +88,22 @@ $livret_only_socle                     = (isset($_POST['f_livret_only_socle'])) 
 $livret_couleur                        = (isset($_POST['f_livret_couleur']))                        ? Clean::texte($_POST['f_livret_couleur'])                         : '';
 $livret_fond                           = (isset($_POST['f_livret_fond']))                           ? Clean::texte($_POST['f_livret_fond'])                            : '';
 
+$socle_appreciation_rubrique_longueur = (isset($_POST['f_socle_appreciation_rubrique_longueur'])) ? Clean::entier($_POST['f_socle_appreciation_rubrique_longueur']) : 0;
+$socle_appreciation_rubrique_report   = (isset($_POST['f_socle_appreciation_rubrique_report']))   ? 1                                                               : 0;
+$socle_appreciation_rubrique_modele   = (isset($_POST['f_socle_appreciation_rubrique_modele']))   ? Clean::texte($_POST['f_socle_appreciation_rubrique_modele'])    : '';
+$socle_appreciation_generale_longueur = (isset($_POST['f_socle_appreciation_generale_longueur'])) ? Clean::entier($_POST['f_socle_appreciation_generale_longueur']) : 0;
+$socle_appreciation_generale_report   = (isset($_POST['f_socle_appreciation_generale_report']))   ? 1                                                               : 0;
+$socle_appreciation_generale_modele   = (isset($_POST['f_socle_appreciation_generale_modele']))   ? Clean::texte($_POST['f_socle_appreciation_generale_modele'])    : '';
+$socle_ligne_supplementaire           = (isset($_POST['f_socle_check_supplementaire']))           ? Clean::texte($_POST['f_socle_ligne_supplementaire'])            : '';
+$socle_assiduite                      = (isset($_POST['f_socle_assiduite']))                      ? 1                                                               : 0;
+$socle_prof_principal                 = (isset($_POST['f_socle_prof_principal']))                 ? 1                                                               : 0;
+$socle_only_presence                  = (isset($_POST['f_socle_only_presence']))                  ? 1                                                               : 0;
+$socle_pourcentage_acquis             = (isset($_POST['f_socle_pourcentage_acquis']))             ? 1                                                               : 0;
+$socle_etat_validation                = (isset($_POST['f_socle_etat_validation']))                ? 1                                                               : 0;
+$socle_couleur                        = (isset($_POST['f_socle_couleur']))                        ? Clean::texte($_POST['f_socle_couleur'])                         : '';
+$socle_fond                           = (isset($_POST['f_socle_fond']))                           ? Clean::texte($_POST['f_socle_fond'])                            : '';
+$socle_legende                        = (isset($_POST['f_socle_legende']))                        ? Clean::texte($_POST['f_socle_legende'])                         : '';
+
 // Liste de matières transmises
 $tab_matieres = (isset($_POST['f_matiere_liste']))  ? explode('_',$_POST['f_matiere_liste'])  : array() ;
 $tab_matieres = Clean::map('entier',$tab_matieres);
@@ -95,7 +111,7 @@ $tab_matieres = array_filter($tab_matieres,'positif');
 $bulletin_moyenne_exception_matieres = implode(',',$tab_matieres);
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Traitement des formulaires "Relevé d'évaluations" + "Bulletin scolaire" + "Livret Scolaire"
+// Traitement des formulaires "Relevé d'évaluations" + "Bulletin scolaire" + "Livret Scolaire" + "État de maîtrise du socle"
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 $tab_variables = array(
@@ -160,6 +176,23 @@ $tab_variables = array(
     'only_socle',
     'couleur',
     'fond',
+  ),
+  'socle' => array(
+    'appreciation_rubrique_longueur',
+    'appreciation_rubrique_report',
+    'appreciation_rubrique_modele',
+    'appreciation_generale_longueur',
+    'appreciation_generale_report',
+    'appreciation_generale_modele',
+    'ligne_supplementaire',
+    'assiduite',
+    'prof_principal',
+    'only_presence',
+    'pourcentage_acquis',
+    'etat_validation',
+    'couleur',
+    'fond',
+    'legende',
   ),
 );
 

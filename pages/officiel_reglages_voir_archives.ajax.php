@@ -131,11 +131,13 @@ if( ($action=='generer_pdf') && !empty($tab_eleve) && !empty($tab_type) && !empt
     'livret'   => 'Livret scolaire',
     'bulletin' => 'Bulletin scolaire',
     'releve'   => 'Relevé d\'évaluations',
+    'palier'   => 'Relevé de maîtrise du socle', // non implémenté en attente de la mise en place de la refonte du socle -> à virer
   );
   $tab_classname = array(
     'livret'   => 'PDF_livret_scolaire',
     'bulletin' => 'PDF_item_synthese',
     'releve'   => 'PDF_item_releve',
+    'palier'   => 'PDF_socle_releve', // non implémenté en attente de la mise en place de la refonte du socle -> à virer
   );
   // Génération des documents
   $tab_tr = array();

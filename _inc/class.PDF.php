@@ -535,6 +535,7 @@ class PDF extends FPDF
     $tab_clefs = array(
       'OFFICIEL'                   => array(),
       'ACQUIS'                     => array(),
+      'VALID'                      => array(),
       'LIVRET'                     => array(),
       'NOTE'                       => array(),
       'NOTE_ACTIF'                 => array(),
@@ -596,6 +597,18 @@ class PDF extends FPDF
       $v = hexdec(substr($tab_acquis_info['GRIS'],3,2));
       $b = hexdec(substr($tab_acquis_info['GRIS'],5,2));
       $this->tab_couleur['A'.$acquis_id.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
+    }
+    // Couleurs des états de validation ; il faut convertir l'hexadécimal en RVB décimal
+    foreach( $this->SESSION['VALID'] as $valid_etat => $tab_valid_info )
+    {
+      $r = hexdec(substr($tab_valid_info['COULEUR'],1,2));
+      $v = hexdec(substr($tab_valid_info['COULEUR'],3,2));
+      $b = hexdec(substr($tab_valid_info['COULEUR'],5,2));
+      $this->tab_couleur['V'.$valid_etat.'oui'] = array('r'=>$r,'v'=>$v,'b'=>$b);
+      $r = hexdec(substr($tab_valid_info['GRIS'],1,2));
+      $v = hexdec(substr($tab_valid_info['GRIS'],3,2));
+      $b = hexdec(substr($tab_valid_info['GRIS'],5,2));
+      $this->tab_couleur['V'.$valid_etat.'non'] = array('r'=>$r,'v'=>$v,'b'=>$b);
     }
     // Couleurs des degrés de maîtrise du socle ; il faut convertir l'hexadécimal en RVB décimal
     foreach( $this->SESSION['LIVRET'] as $maitrise_id => $tab_maitrise_info )
@@ -759,6 +772,19 @@ class PDF extends FPDF
         $this->Cell( $this->lomer_espace_largeur , $this->lomer_espace_hauteur , '' , $border /*bordure*/ , $br /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
     }
   }
+
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Méthode pour afficher un état de validation (date sur fond coloré)
+  // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  public function afficher_etat_validation( $gras , $tab_infos )
+{
+  // $tab_infos contient 'etat' / 'date' / 'info'
+  $this->SetFont('Arial' , $gras , $this->taille_police);
+  $texte = ($tab_infos['etat']==2) ? '---' : $tab_infos['date'] ;
+  $this->choisir_couleur_fond('V'.$tab_infos['etat'].$this->couleur);
+  $this->Cell( $this->validation_largeur , $this->cases_hauteur , To::pdf($texte) , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+}
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
   // Méthode pour afficher un pourcentage d'items acquis (texte par état d'acquisition et couleur de fond suivant le seuil)
@@ -982,7 +1008,7 @@ class PDF extends FPDF
   }
 
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
-  // Méthode pour afficher la légende ( $type_legende = 'codes_notation' | 'anciennete_notation' | 'score_bilan' | 'degre_maitrise' | 'etat_acquisition' )
+  // Méthode pour afficher la légende ( $type_legende = 'codes_notation' | 'anciennete_notation' | 'score_bilan' | 'degre_maitrise' | 'etat_acquisition' | 'pourcentage_acquis' | 'etat_validation' )
   // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
   public function afficher_legende( $type_legende , $ordonnee , $force_nb = FALSE )
@@ -1127,6 +1153,38 @@ class PDF extends FPDF
       }
     }
     //
+    // Afficher la légende des pourcentages d'items acquis
+    //
+    if($type_legende=='pourcentage_acquis')
+    {
+      $this->SetFont('Arial' , 'B' , $size);
+      $indication_position = ($this->orientation=='portrait') ? ' (à gauche)' : '' ;
+      $this->Write($hauteur , To::pdf('Pourcentages d\'items acquis'.$indication_position.' :') , '');
+      $this->SetFont('Arial' , '' , $size);
+      foreach( $this->SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
+      {
+        $texte = $tab_acquis_info['SEUIL_MIN'].' à '.$tab_acquis_info['SEUIL_MAX'];
+        $this->Write($hauteur , $espace , '');
+        $this->choisir_couleur_fond('A'.$acquis_id.$this->couleur);
+        $this->Cell(3*$case_largeur , $case_hauteur , To::pdf($texte) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      }
+    }
+    //
+    // Afficher la légende des états de validation
+    //
+    if($type_legende=='etat_validation')
+    {
+      $this->SetFont('Arial' , 'B' , $size);
+      $indication_position = ($this->orientation=='portrait') ? ' (à droite)' : '' ;
+      $this->Write($hauteur , To::pdf('États de validation'.$indication_position.' :') , '');
+      $this->SetFont('Arial' , '' , $size);
+      foreach($this->SESSION['VALID'] as $valid_etat => $tab_valid_info)
+      {
+        $this->Write($hauteur , $espace , '');
+        $this->choisir_couleur_fond('V'.$valid_etat.$this->couleur);
+        $this->Cell(3.5*$case_largeur , $case_hauteur , To::pdf($tab_valid_info['LEGENDE']) , 1 /*bordure*/ , 0 /*br*/ , 'C' /*alignement*/ , TRUE /*fond*/ );
+      }
+    }
     $this->SetXY($this->marge_gauche , $ordonnee+$hauteur);
   }
 

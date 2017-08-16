@@ -33,11 +33,15 @@ $(document).ready
     var matiere_items_requis       = false;
     var domaine_maitrise_requis    = false;
     var composante_maitrise_requis = false;
+    var socle_item_requis          = false;
+    var socle_pilier_requis        = false;
 
     var acquisition_requis         = false;
     var maitrise_requis            = false;
+    var validation_requis          = false;
 
     var coef_requis                = false;
+    var mode_requis                = false;
     var mode_manuel                = false;
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,11 +57,15 @@ $(document).ready
         if(objet.indexOf('matiere_items')!=-1)       {$('#span_matiere_items').show();matiere_items_requis = true;}             else {$('#span_matiere_items').hide();matiere_items_requis = false;}
         if(objet.indexOf('domaine_maitrise')!=-1)    {$('#span_domaine_maitrise').show();domaine_maitrise_requis = true;}       else {$('#span_domaine_maitrise').hide();domaine_maitrise_requis = false;}
         if(objet.indexOf('composante_maitrise')!=-1) {$('#span_composante_maitrise').show();composante_maitrise_requis = true;} else {$('#span_composante_maitrise').hide();composante_maitrise_requis = false;}
-        // état (acquisition / maîtrise)
-        if(objet.indexOf('socle2016_')!=-1) {$('#span_maitrise').show();maitrise_requis = true;}       else {$('#span_maitrise').hide();maitrise_requis = false;}
-        if(objet.indexOf('matiere')!=-1)    {$('#span_acquisition').show();acquisition_requis = true;} else {$('#span_acquisition').hide();acquisition_requis = false;}
+        if(objet.indexOf('socle_item')!=-1)          {$('#span_socle_item').show();socle_item_requis = true;}                   else {$('#span_socle_item').hide();socle_item_requis = false;}
+        if(objet.indexOf('socle_pilier')!=-1)        {$('#span_socle_pilier').show();socle_pilier_requis = true;}               else {$('#span_socle_pilier').hide();socle_pilier_requis = false;}
+        // état (acquisition / validation)
+        if(objet.indexOf('validation')!=-1)    {$('#span_validation').show();validation_requis = true;} else {$('#span_validation').hide();validation_requis = false;}
+        if(objet.indexOf('socle2016_')!=-1)    {$('#span_maitrise').show();maitrise_requis = true;}     else {$('#span_maitrise').hide();maitrise_requis = false;}
+        if( (objet.indexOf('matiere')!=-1) || (objet.indexOf('pourcentage')!=-1) ) {$('#span_acquisition').show();acquisition_requis = true;} else {$('#span_acquisition').hide();acquisition_requis = false;}
         // mélange des deux
         if(objet=='matiere_items_bilanMS')  {$('#div_matiere_items_bilanMS').show();coef_requis = true;}  else {$('#div_matiere_items_bilanMS').hide();coef_requis = false;}
+        if(objet=='socle_item_pourcentage') {$('#div_socle_item_pourcentage').show();mode_requis = true;} else {$('#div_socle_item_pourcentage').hide();mode_requis = false;}
         // initialisation
         $('#ajax_msg').removeAttr('class').html("");
         $('#bilan').html("");
@@ -120,10 +128,23 @@ $(document).ready
     $('#span_matiere_items q').click( choisir_matieres_items );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clic sur le bouton pour fermer le cadre des items matière (annuler / retour)
+    // Choisir un item du socle : mise en place du formulaire
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    $('#annuler_matieres_items').click
+    var choisir_socle_item = function()
+    {
+      cocher_socle_item( $('#f_socle_item_id').val() );
+      $.fancybox( { 'href':'#zone_socle_item' , onStart:function(){$('#zone_socle_item').css("display","block");} , onClosed:function(){$('#zone_socle_item').css("display","none");} , 'modal':true , 'centerOnScroll':true } );
+    };
+
+    $('#span_socle_item q').click( choisir_socle_item );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur le bouton pour fermer le cadre des items matière (annuler / retour)
+    // Clic sur le bouton pour fermer le cadre des items du socle (annuler / retour)
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#annuler_matieres_items , #annuler_socle_item').click
     (
       function()
       {
@@ -159,6 +180,30 @@ $(document).ready
     );
 
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Clic sur le bouton pour valider le choix d'un item du socle
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    $('#valider_socle_item').click
+    (
+      function()
+      {
+        var socle_id = $("#zone_socle_item input[type=radio]:checked").val();
+        if(isNaN(socle_id))  // normalement impossible, sauf si par exemple on triche avec la barre d'outils Web Developer...
+        {
+          socle_id = 0;
+          var socle_nom = '';
+        }
+        else
+        {
+          var socle_nom = $("#zone_socle_item input[type=radio]:checked").parent().text();
+        }
+        $('#f_socle_item_nom').val(socle_nom);
+        $('#f_socle_item_id').val(socle_id);
+        $('#annuler_socle_item').click();
+      }
+    );
+
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////
     // Tout cocher ou tout décocher
     // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -189,20 +234,30 @@ $(document).ready
           f_groupe                     : { required:true },
           f_critere_objet              : { required:true },
           f_matiere_items_liste        : { required:function(){return matiere_items_requis;} },
+          f_socle_item_id              : { required:function(){return socle_item_requis;} , min:1 },
           f_select_domaine             : { required:function(){return domaine_maitrise_requis;} },
           f_select_composante          : { required:function(){return composante_maitrise_requis;} },
+          f_select_pilier              : { required:function(){return socle_pilier_requis;} },
+          f_mode                       : { required:function(){return mode_requis;} },
+          'f_matiere[]'                : { required:function(){return mode_manuel;} },
           'f_critere_seuil_acquis[]'   : { required:function(){return acquisition_requis;} , maxlength:max_etats_acquis },
-          'f_critere_seuil_maitrise[]' : { required:function(){return maitrise_requis;} , maxlength:3 }
+          'f_critere_seuil_maitrise[]' : { required:function(){return maitrise_requis;} , maxlength:3 },
+          'f_critere_seuil_valide[]'   : { required:function(){return validation_requis;} , maxlength:2 }
         },
         messages :
         {
           f_groupe                     : { required:"groupe manquant" },
           f_critere_objet              : { required:"objet manquant" },
           f_matiere_items_liste        : { required:"item(s) manquant(s)" },
+          f_socle_item_id              : { required:"item manquant" , min:"item manquant" },
           f_select_domaine             : { required:"domaine manquant" },
           f_select_composante          : { required:"composante manquante" },
+          f_select_pilier              : { required:"compétence manquante" },
+          f_mode                       : { required:"choix manquant" },
+          'f_matiere[]'                : { required:"matière(s) manquante(s)" },
           'f_critere_seuil_acquis[]'   : { required:"états(s) manquant(s)" , maxlength:"trop d'états sélectionnés" },
-          'f_critere_seuil_maitrise[]' : { required:"degré(s) manquant(s)" , maxlength:"trop de degrés sélectionnés" }
+          'f_critere_seuil_maitrise[]' : { required:"degré(s) manquant(s)" , maxlength:"trop de degrés sélectionnés" },
+          'f_critere_seuil_valide[]'   : { required:"états(s) manquant(s)" , maxlength:"trop d'états sélectionnés" }
         },
         errorElement : "label",
         errorClass : "erreur",

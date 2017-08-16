@@ -11,6 +11,9 @@ CREATE TABLE sacoche_jointure_groupe_periode (
   jointure_date_fin   DATE                                                                                          DEFAULT NULL COMMENT "Ne vaut normalement jamais NULL.",
   officiel_releve     ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   officiel_bulletin   ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  officiel_palier1    ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  officiel_palier2    ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
+  officiel_palier3    ENUM("","1vide","2rubrique","3mixte","4synthese","5complet") COLLATE utf8_unicode_ci NOT NULL DEFAULT "",
   PRIMARY KEY ( groupe_id , periode_id ),
   KEY periode_id (periode_id)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

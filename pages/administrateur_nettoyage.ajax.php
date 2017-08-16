@@ -98,6 +98,8 @@ if($action=='purger')
   DB_STRUCTURE_PERIODE::DB_supprimer_liaisons_groupe_periode();
   // Supprimer les données des bilans officiels (sauf archives)
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_officiels();
+  // Supprimer les saisies brevet & les archives (Notanet & fiches brevet)
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_bilans_brevet();
   // Vider les saisies & configurations du livret scolaire
   DB_STRUCTURE_LIVRET::DB_vider_livret();
   // Supprimer les comptes utilisateurs désactivés depuis plus de 3 ans
@@ -145,25 +147,28 @@ if($action=='purger')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Suppression des notes
+// Suppression des notes et des validations
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 if($action=='supprimer')
 {
   // Bloquer l'application
-  LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Suppression des notes en cours.');
+  LockAcces::bloquer_application('automate',$_SESSION['BASE'],'Suppression des notes et des validations en cours.');
   // Supprimer toutes les saisies aux évaluations
   DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_saisies();
+  // Supprimer toutes les validations du socle
+  DB_STRUCTURE_ADMINISTRATEUR::DB_supprimer_validations();
   // Débloquer l'application
   LockAcces::debloquer_application('automate',$_SESSION['BASE']);
   // Notifications (rendues visibles ultérieurement)
-  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé toutes les notes enregistrées.'."\r\n";
+  $notification_contenu = date('d-m-Y H:i:s').' '.$_SESSION['USER_PRENOM'].' '.$_SESSION['USER_NOM'].' a supprimé toutes les notes et les validations enregistrées.'."\r\n";
   DB_STRUCTURE_NOTIFICATION::enregistrer_action_admin( $notification_contenu , $_SESSION['USER_ID'] );
   // Afficher le retour
   Json::add_str('<li><label class="valide">Notes saisies aux évaluations supprimées.</label></li>'.NL);
+  Json::add_str('<li><label class="valide">Validations des items et des compétences du socle supprimées.</label></li>'.NL);
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
-  Json::add_str('<li><label class="valide">Suppression des notes réalisée en '.$duree.'s.</label></li>'.NL);
+  Json::add_str('<li><label class="valide">Suppression des notes et des validations réalisée en '.$duree.'s.</label></li>'.NL);
   Json::end( TRUE );
 }
 

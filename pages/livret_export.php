@@ -226,7 +226,7 @@ if($step==1)
   // Vérif présence Id SIECLE | INE
   if( count( array_intersect( $tab_page_ref , array('6e','5e','4e','3e','cycle3','cycle4') ) ) )
   {
-    $nb_eleves_sans_sconet = DB_STRUCTURE_LIVRET::DB_compter_eleves_actuels_sans_id_sconet();
+    $nb_eleves_sans_sconet = DB_STRUCTURE_SOCLE::DB_compter_eleves_actuels_sans_id_sconet();
     if($nb_eleves_sans_sconet)
     {
       $s = ($nb_eleves_sans_sconet>1) ? 's' : '' ;
@@ -235,7 +235,7 @@ if($step==1)
   }
   if( count( array_intersect( $tab_page_ref , array('cp','ce1','ce2','cm1','cm2','cycle2') ) ) )
   {
-    $nb_eleves_sans_INE = DB_STRUCTURE_LIVRET::DB_compter_eleves_actuels_sans_INE();
+    $nb_eleves_sans_INE = DB_STRUCTURE_BREVET::DB_compter_eleves_actuels_sans_INE();
     if($nb_eleves_sans_INE)
     {
       $s = ($nb_eleves_sans_INE>1) ? 's' : '' ;

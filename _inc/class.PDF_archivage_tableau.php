@@ -27,7 +27,7 @@
  
 // Extension de classe qui étend PDF
 
-// Ces méthodes ne concernent que l'archivage de tableaux de données issues de bilans officiels
+// Ces méthodes ne concernent que l'archivage de tableaux de données issues de bilans officiels ou de fiches brevet
 
 class PDF_archivage_tableau extends PDF
 {
@@ -248,6 +248,11 @@ class PDF_archivage_tableau extends PDF
       $ligne1 = 'Livret scolaire';
       $ligne2 = 'Tableau des points pour le brevet';
     }
+    if($objet_document=='brevet')
+    {
+      $ligne1 = 'Fiche Brevet';
+      $ligne2 = 'Notes et total des points';
+    }
     if($objet_document=='affelnet')
     {
       $ligne1 = 'Moyenne Affelnet';
@@ -281,7 +286,7 @@ class PDF_archivage_tableau extends PDF
 
   public function moyennes_note( $eleve_id , $rubrique_id , $note , $objet_document )
   {
-    $couleur = ($eleve_id && $rubrique_id ) ? 'blanc' : 'gris_fonce' ;
+    $couleur = ($eleve_id && ( (($objet_document!='brevet')&&($rubrique_id)) || (($objet_document=='brevet')&&($rubrique_id!=CODE_BREVET_EPREUVE_TOTAL)) ) ) ? 'blanc' : 'gris_fonce' ;
     $this->choisir_couleur_fond($couleur);
     if($objet_document=='bulletin')
     {
@@ -511,6 +516,38 @@ class PDF_archivage_tableau extends PDF
     $moyenne_eleve = ($moyenne_eleve!==NULL) ? number_format($moyenne_eleve,1,',','').' points' : '-' ;
     $this->SetFont('Arial' , 'B' , $taille_police_minimum+1);
     $this->CellFit( $this->cases_largeur , $bloc_hauteur , To::pdf($moyenne_eleve) , 1 /*bordure*/ , 1 /*br*/ , 'C' /*alignement*/ , FALSE /*fond*/ );
+  }
+
+  public function appreciation_epreuve_eleves_collegues_thead(  $eleve_nom , $eleve_prenom , $serie_nom )
+  {
+    // On prend une nouvelle page PDF si besoin
+    $this->appreciation_page_break();
+    $this->choisir_couleur_fond('gris_moyen');
+    // nom-prénom-série
+    $this->SetXY($this->marge_gauche , $this->GetY() + 0.5*$this->lignes_hauteur);
+    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->CellFit( $this->page_largeur_moins_marges , $this->lignes_hauteur , To::pdf($eleve_nom.' '.$eleve_prenom.' - '.$serie_nom) , 1 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , TRUE /*fond*/ );
+  }
+
+  public function appreciation_epreuve_eleves_collegues_tbody( $epreuve_nom , $note , $appreciation )
+  {
+    $nb_lignes = max( 1 , ceil(mb_strlen($appreciation)/125) );
+    // On prend une nouvelle page PDF si besoin
+    $this->appreciation_page_break();
+    $this->choisir_couleur_fond('gris_moyen');
+    // cadre
+    $memo_x = $this->GetX();
+    $memo_y = $this->GetY();
+    $this->Cell( $this->page_largeur_moins_marges , $nb_lignes*$this->lignes_hauteur , '' , 1 /*bordure*/ , 0 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    // épreuve, moyenne, appréciation
+    $this->SetXY($memo_x , $memo_y);
+    $this->SetFont('Arial' , '' , $this->taille_police);
+    $this->CellFit( $this->reference_largeur , $this->lignes_hauteur , To::pdf($epreuve_nom) , 0 /*bordure*/ , 1 /*br*/ , 'L' /*alignement*/ , FALSE /*fond*/ );
+    $this->Line( $memo_x+$this->reference_largeur , $memo_y , $memo_x+$this->reference_largeur , $memo_y+$nb_lignes*$this->lignes_hauteur );
+    // appréciations
+    $this->SetXY($memo_x+$this->reference_largeur , $memo_y);
+    $this->afficher_appreciation( $this->cases_largeur , $nb_lignes*$this->lignes_hauteur , $this->taille_police , $this->lignes_hauteur , $note.' - '.$appreciation );
+    $this->SetXY($memo_x , $memo_y+$nb_lignes*$this->lignes_hauteur);
   }
 
 }

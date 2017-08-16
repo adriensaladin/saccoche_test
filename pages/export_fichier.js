@@ -48,6 +48,7 @@ $(document).ready
         choix = $(this).val();
         if( (choix=='listing_eleves') || (choix=='devoirs_commentaires') || (choix.substring(0,6)=='infos_') || (choix=='socle2016_gepi') ) {requis='groupe';  $('#div_groupe' ).slideDown();} else {$('#div_groupe' ).slideUp();}
         if( (choix=='listing_matiere') || (choix=='item_matiere_usage') || (choix=='arbre_matiere') )                                       {requis='matiere'; $('#div_matiere').slideDown();} else {$('#div_matiere').slideUp();}
+        if( (choix=='arbre_socle') || (choix=='jointure_socle_matiere') )                                                                   {requis='palier';  $('#div_palier' ).slideDown();} else {$('#div_palier' ).slideUp();}
         if( (choix=='jointure_socle2016_matiere') || (choix=='socle2016_gepi') )                                                            {requis='cycle';   $('#div_cycle'  ).slideDown();} else {$('#div_cycle'  ).slideUp();}
         if(choix=='socle2016_gepi')                                                                                                         {                  $('#div_sconet' ).slideDown();} else {$('#div_sconet' ).slideUp();}
         if(choix=='devoirs_commentaires')                                                                                                   {                  $('#div_periode').slideDown();} else {$('#div_periode').slideUp();}
@@ -170,6 +171,7 @@ $(document).ready
           f_type       : { required:true },
           f_groupe     : { required:function(){return (requis=='groupe') || (choix=='socle2016_gepi');} },
           f_matiere    : { required:function(){return requis=='matiere';} },
+          f_palier     : { required:function(){return requis=='palier';} },
           f_cycle      : { required:function(){return requis=='cycle';} },
           f_periode    : { required:function(){return choix=='devoirs_commentaires';} },
           f_date_debut : { required:function(){return choix=='devoirs_commentaires' && $("#f_periode").val()==0;} , dateITA:true },
@@ -180,6 +182,7 @@ $(document).ready
           f_type       : { required:"type manquant" },
           f_groupe     : { required:"regroupement manquant" },
           f_matiere    : { required:"matière manquante" },
+          f_palier     : { required:"palier manquant" },
           f_cycle      : { required:"cycle manquant" },
           f_periode    : { required:"période manquante" },
           f_date_debut : { required:"date manquante" , dateITA:"format JJ/MM/AAAA non respecté" },
@@ -241,6 +244,13 @@ $(document).ready
         {
           var nom = $("#f_matiere option:selected").text();
           $('#f_matiere_nom').val( nom );
+        }
+        // récupération du nom du palier
+        var palier_val = $("#f_palier").val();
+        if(palier_val)
+        {
+          var nom = $("#f_palier option:selected").text();
+          $('#f_palier_nom').val( nom );
         }
         // récupération du nom du cycle
         var cycle_val = $("#f_cycle").val();

@@ -71,11 +71,11 @@ Layout::add( 'js_inline_before' , 'var nb_devoirs_annee_scolaire_precedente = '.
 
 <hr />
 
-<h2>Suppression des notes</h2>
+<h2>Suppression des notes et des validations</h2>
 
-<div class="danger">Cette fonctionnalité ne doit être utilisée qu'exceptionnellement, pour repartir à zéro après une année de test (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_suppression_notes">DOC</a></span>) !</div>
+<div class="danger">Cette fonctionnalité ne doit être utilisée qu'exceptionnellement, pour repartir à zéro après une année de test (<span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_nettoyage#toggle_suppression_notes_validations">DOC</a></span>) !</div>
 <form action="#" method="post" id="form_supprimer"><fieldset>
-  <span class="tab"></span><button id="bouton_supprimer" type="button" class="nettoyer">Supprimer tous les scores aux évaluations.</button><label id="ajax_msg_supprimer">&nbsp;</label>
+  <span class="tab"></span><button id="bouton_supprimer" type="button" class="nettoyer">Supprimer les scores d'évaluations et les validations.</button><label id="ajax_msg_supprimer">&nbsp;</label>
 </fieldset></form>
 
 <hr />

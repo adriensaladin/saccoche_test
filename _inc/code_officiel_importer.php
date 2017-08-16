@@ -101,7 +101,7 @@ if($ACTION!='enregistrer_saisie_csv')
   $tab_rubriques = array() ;
   if($OBJET=='modifier')
   {
-    $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin , FALSE /*only_if_synthese*/ , $_SESSION['USER_ID'] );
+    $DB_TAB = (in_array($BILAN_TYPE,array('releve','bulletin'))) ? DB_STRUCTURE_BILAN::DB_recuperer_matieres_travaillees( $classe_id , $liste_matiere_id , $date_mysql_debut , $date_mysql_fin , FALSE /*only_if_synthese*/ , $_SESSION['USER_ID'] ) : DB_STRUCTURE_SOCLE::DB_recuperer_piliers( (int)substr($BILAN_TYPE,-1) );
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_rubriques[$DB_ROW['rubrique_id']] = $DB_ROW['rubrique_nom'];

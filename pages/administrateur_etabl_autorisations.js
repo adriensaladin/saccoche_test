@@ -33,6 +33,7 @@ $(document).ready
     var tab_restriction_type_to_tab = new Array();
     tab_restriction_type_to_tab['ONLY_PP']    = tab_profil_join_groupes;
     tab_restriction_type_to_tab['ONLY_COORD'] = tab_profil_join_matieres;
+    tab_restriction_type_to_tab['ONLY_LV']    = tab_profil_join_matieres;
 
     /*
      * Afficher ou masquer des éléments de formulaire
@@ -64,8 +65,14 @@ $(document).ready
       var opacite_parent = $('#form_autorisations input[name="droit_socle_acces"][value="TUT"]').is(':checked') ? 1 : 0 ;
       var opacite_eleve  = $('#form_autorisations input[name="droit_socle_acces"][value="ELV"]').is(':checked') ? 1 : 0 ;
       var opacite_ligne  = ( opacite_parent || opacite_eleve ) ? 1 : 0 ;
+      $('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="TUT"]').parent().fadeTo(0,opacite_parent);
+      $('#form_autorisations input[name="droit_socle_pourcentage_acquis"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
+      $('#form_autorisations input[name="droit_socle_etat_validation"][value="TUT"]').parent().fadeTo(0,opacite_parent);
+      $('#form_autorisations input[name="droit_socle_etat_validation"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
       $('#form_autorisations input[name="droit_socle_proposition_positionnement"][value="TUT"]').parent().fadeTo(0,opacite_parent);
       $('#form_autorisations input[name="droit_socle_proposition_positionnement"][value="ELV"]').parent().fadeTo(0,opacite_eleve);
+      $('#tr_droit_socle_pourcentage_acquis').fadeTo(0,opacite_ligne);
+      $('#tr_droit_socle_etat_validation').fadeTo(0,opacite_ligne);
       $('#tr_droit_socle_proposition_positionnement').fadeTo(0,opacite_ligne);
     }
     view_socle();
@@ -73,7 +80,7 @@ $(document).ready
     /*
      * Initialisation au chargement de l'opacité des cases dépendant d'un type de restriction, pour tout le document
      */
-    function view_all_pp_coord()
+    function view_all_pp_coord_lv()
     {
       for(var restriction_type in tab_restriction_type_to_tab) // Parcourir un tableau associatif...
       {
@@ -96,12 +103,12 @@ $(document).ready
         );
       }
     }
-    view_all_pp_coord();
+    view_all_pp_coord_lv();
 
     /*
      * Mise à jour de l'opacité des cases dépendant d'un type de restriction, pour un droit donné
      */
-    function view_pp_coord(objet)
+    function view_pp_coord_lv(objet)
     {
       for(var restriction_type in tab_restriction_type_to_tab) // Parcourir un tableau associatif...
       {
@@ -128,12 +135,13 @@ $(document).ready
     {
       var check_pp    = $('#form_autorisations input[name="'+objet+'"][value="ONLY_PP"]'   ).is(':checked') ? true : false ;
       var check_coord = $('#form_autorisations input[name="'+objet+'"][value="ONLY_COORD"]').is(':checked') ? true : false ;
+      var check_lv    = $('#form_autorisations input[name="'+objet+'"][value="ONLY_LV"]'   ).is(':checked') ? true : false ;
       $('#form_autorisations input[name="'+objet+'"]').each
       (
         function()
         {
           var valeur = $(this).val();
-          var color = ($(this).is(':checked')) ? ( ( (check_pp && tab_profil_join_groupes[valeur]) || (check_coord && tab_profil_join_matieres[valeur]) ) ? 'bj' : 'bv' ) : 'br' ;
+          var color = ($(this).is(':checked')) ? ( ( (check_pp && tab_profil_join_groupes[valeur]) || (check_coord && tab_profil_join_matieres[valeur]) || (check_lv && tab_profil_join_matieres[valeur]) ) ? 'bj' : 'bv' ) : 'br' ;
           $(this).parent().attr('class','hc '+color);
         }
       );
@@ -152,7 +160,7 @@ $(document).ready
       {
         view_socle();
       }
-      view_pp_coord(objet);
+      view_pp_coord_lv(objet);
       coloriser_cellules_ligne(objet);
     }
 

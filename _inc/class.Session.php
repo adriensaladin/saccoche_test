@@ -467,6 +467,7 @@ class Session
     // appel depuis plusieurs pages + pas de vérif utile
     '_load_arborescence',
     '_maj_select_directeurs',
+    '_maj_select_domaines',
     '_maj_select_eleves',
     '_maj_select_eval',
     '_maj_select_items',
@@ -478,6 +479,7 @@ class Session
     '_maj_select_niveaux_famille',
     '_maj_select_officiel_periode',
     '_maj_select_parents',
+    '_maj_select_piliers',
     '_maj_select_professeurs',
     '_maj_select_professeurs_directeurs',
     '_maj_select_profs_groupe',
@@ -499,6 +501,7 @@ class Session
     'public_sso_login', 
     'public_sso_logout',
     'releve_html',
+    'releve_pdf',
     'webservices',
   );
 

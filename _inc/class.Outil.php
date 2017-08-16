@@ -245,7 +245,7 @@ class Outil
    * Tester si un droit d'accès spécifique comporte une restriction aux PP ou aux coordonnateurs
    *
    * @param string $listing_droits_sigles
-   * @param string $restriction   'ONLY_PP' | 'ONLY_COORD'
+   * @param string $restriction   'ONLY_PP' | 'ONLY_COORD' | 'ONLY_LV'
    * @return bool
    */
   public static function test_droit_specifique_restreint( $listing_droits_sigles , $restriction )
@@ -291,6 +291,10 @@ class Outil
     {
       return ($matiere_coord_or_groupe_pp_connu!==NULL) ? (bool)$matiere_coord_or_groupe_pp_connu : DB_STRUCTURE_PROFESSEUR::tester_prof_coordonnateur($_SESSION['USER_ID'],$matiere_id_or_groupe_id_a_tester) ;
     }
+    if( $test_droit && ($user_profil_type=='professeur') && ($_SESSION['USER_JOIN_MATIERES']=='config') && Outil::test_droit_specifique_restreint($listing_droits_sigles,'ONLY_LV') )
+    {
+      return DB_STRUCTURE_PROFESSEUR::tester_prof_langue_vivante($_SESSION['USER_ID']) ;
+    }
     return $test_droit;
   }
 
@@ -306,6 +310,7 @@ class Outil
     $tab_profils = array();
     $texte_testriction_pp    = Outil::test_droit_specifique_restreint($listing_droits_sigles,'ONLY_PP')    ? ' restreint aux professeurs principaux'  : '' ;
     $texte_testriction_coord = Outil::test_droit_specifique_restreint($listing_droits_sigles,'ONLY_COORD') ? ' restreint aux coordonnateurs matières' : '' ;
+    $texte_testriction_lv    = Outil::test_droit_specifique_restreint($listing_droits_sigles,'ONLY_LV')    ? ' restreint aux professeurs de LV'       : '' ;
     $tableau_droits_sigles = explode(',',$listing_droits_sigles);
     foreach($tableau_droits_sigles as $droit_sigle)
     {
@@ -314,6 +319,7 @@ class Outil
         $profil_nom  = $_SESSION['TAB_PROFILS_DROIT']['NOM_LONG_PLURIEL'][$droit_sigle];
         $profil_nom .= ( ($_SESSION['TAB_PROFILS_DROIT']['TYPE'][$droit_sigle]=='professeur') && ($_SESSION['TAB_PROFILS_DROIT']['JOIN_GROUPES'][$droit_sigle]=='config')  ) ? $texte_testriction_pp    : '' ;
         $profil_nom .= ( ($_SESSION['TAB_PROFILS_DROIT']['TYPE'][$droit_sigle]=='professeur') && ($_SESSION['TAB_PROFILS_DROIT']['JOIN_MATIERES'][$droit_sigle]=='config') ) ? $texte_testriction_coord : '' ;
+        $profil_nom .= ( ($_SESSION['TAB_PROFILS_DROIT']['TYPE'][$droit_sigle]=='professeur') && ($_SESSION['TAB_PROFILS_DROIT']['JOIN_MATIERES'][$droit_sigle]=='config') ) ? $texte_testriction_lv    : '' ;
         $tab_profils[] = $profil_nom;
       }
     }

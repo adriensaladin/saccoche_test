@@ -40,12 +40,17 @@ $f_profils = (isset($_POST['f_profils'])) ? Clean::texte($_POST['f_profils']) : 
 // Tableau avec les sigles des profils pouvant être proposés
 $tab_profils_possibles = array();
 $tab_profils_possibles['dir_pers_pp']    = array(                  'DIR','ENS','IEX','ONLY_PP','DOC','EDU','AED','SUR','ORI','MDS','ADF');
+$tab_profils_possibles['dir_pers_lv']    = array(                  'DIR','ENS','IEX','ONLY_LV','DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['pers_coord']     = array(                        'ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF','ONLY_COORD');
 $tab_profils_possibles['pers_pp']        = array(                        'ENS','IEX','ONLY_PP','DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['tous']           = array('ELV','TUT','AVS','DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['parent_eleve']   = array('ELV','TUT','AVS');
 
 $tab_objet_profils = array();
+$tab_objet_profils['droit_affecter_langue']     = $tab_profils_possibles['dir_pers_lv'];
+$tab_objet_profils['droit_validation_entree']   = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_validation_pilier']   = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_annulation_pilier']   = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_gerer_referentiel']      = $tab_profils_possibles['pers_coord'];
 $tab_objet_profils['droit_gerer_mode_synthese']    = $tab_profils_possibles['pers_coord'];
 $tab_objet_profils['droit_gerer_ressource']        = $tab_profils_possibles['pers_coord'];
@@ -69,6 +74,8 @@ $tab_objet_profils['droit_releve_moyenne_score']             = $tab_profils_poss
 $tab_objet_profils['droit_releve_pourcentage_acquis']        = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_releve_conversion_sur_20']         = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_socle_acces']                      = $tab_profils_possibles['parent_eleve'];
+$tab_objet_profils['droit_socle_pourcentage_acquis']         = $tab_profils_possibles['parent_eleve'];
+$tab_objet_profils['droit_socle_etat_validation']            = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_socle_proposition_positionnement'] = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_socle_prevision_points_brevet']    = $tab_profils_possibles['parent_eleve'];
 $tab_objet_profils['droit_officiel_saisir_assiduite']               = $tab_profils_possibles['dir_pers_pp'];
@@ -85,9 +92,19 @@ $tab_objet_profils['droit_officiel_livret_corriger_appreciation']   = $tab_profi
 $tab_objet_profils['droit_officiel_livret_positionner_socle']       = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_livret_appreciation_generale']   = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_livret_impression_pdf']          = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_officiel_socle_modifier_statut']          = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_officiel_socle_corriger_appreciation']    = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_officiel_socle_appreciation_generale']    = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_officiel_socle_impression_pdf']           = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_fiche_brevet_modifier_statut']            = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_fiche_brevet_corriger_appreciation']      = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_fiche_brevet_appreciation_generale']      = $tab_profils_possibles['dir_pers_pp'];
+$tab_objet_profils['droit_fiche_brevet_impression_pdf']             = $tab_profils_possibles['dir_pers_pp'];
 $tab_objet_profils['droit_officiel_releve_voir_archive']   = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_officiel_bulletin_voir_archive'] = $tab_profils_possibles['tous'];
 $tab_objet_profils['droit_officiel_livret_voir_archive']   = $tab_profils_possibles['tous'];
+$tab_objet_profils['droit_officiel_socle_voir_archive']    = $tab_profils_possibles['tous'];
+$tab_objet_profils['droit_fiche_brevet_voir_archive']      = $tab_profils_possibles['tous'];
 
 if(!isset($tab_objet_profils[$f_objet]))
 {

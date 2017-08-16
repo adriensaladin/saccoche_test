@@ -1128,7 +1128,7 @@ class FileSystem
     }
     else
     {
-      // Dézipper le fichier (on considère alors que c'est un zip venant de SACoche)
+      // Dézipper le fichier (on considère alors que c'est un zip venant de SACoche et contenant import_validations.xml)
       if(extension_loaded('zip')!==TRUE)
       {
         return 'Le serveur ne gère pas les fichiers ZIP ! Renvoyez votre fichier sans compression.';

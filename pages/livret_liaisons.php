@@ -140,7 +140,7 @@ $tab_element = array();
 $ordre = 0;
 if( $liaison_rubrique_join != 'user' )
 {
-  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*s2016_count*/ , FALSE /*item_comm*/ );
+  $DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , 0 /*matiere_id*/ , 0 /*niveau_id*/ , FALSE /*only_socle*/ , FALSE /*only_item*/ , FALSE /*socle_nom*/ , FALSE /*s2016_count*/ , FALSE /*item_comm*/ );
   foreach($DB_TAB as $DB_ROW)
   {
     $element_id = $DB_ROW[$liaison_rubrique_join.'_id'];

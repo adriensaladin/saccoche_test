@@ -49,6 +49,12 @@ $select_livret_couleur                        = HtmlForm::afficher_select(Form::
 $select_livret_fond                           = HtmlForm::afficher_select(Form::$tab_select_fond         , 'f_livret_fond'                           /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_FOND']                           /*selection*/ , '' /*optgroup*/ );
 $select_livret_import_bulletin_notes          = HtmlForm::afficher_select(Form::$tab_select_import_notes , 'f_livret_import_bulletin_notes'          /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['LIVRET_IMPORT_BULLETIN_NOTES']          /*selection*/ , '' /*optgroup*/ );
 
+$select_socle_appreciation_rubrique_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_socle_appreciation_rubrique_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_LONGUEUR'] /*selection*/ , '' /*optgroup*/ );
+$select_socle_appreciation_generale_longueur = HtmlForm::afficher_select(Form::$tab_select_appreciation , 'f_socle_appreciation_generale_longueur' /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_LONGUEUR'] /*selection*/ , '' /*optgroup*/ );
+$select_socle_couleur                        = HtmlForm::afficher_select(Form::$tab_select_couleur      , 'f_socle_couleur'                        /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_COULEUR']                        /*selection*/ , '' /*optgroup*/ );
+$select_socle_fond                           = HtmlForm::afficher_select(Form::$tab_select_fond         , 'f_socle_fond'                           /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_FOND']                           /*selection*/ , '' /*optgroup*/ );
+$select_socle_legende                        = HtmlForm::afficher_select(Form::$tab_select_legende      , 'f_socle_legende'                        /*select_nom*/ , FALSE /*option_first*/ , $_SESSION['OFFICIEL']['SOCLE_LEGENDE']                        /*selection*/ , '' /*optgroup*/ );
+
 $check_releve_appreciation_rubrique_report =  $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_REPORT'] ? ' checked' : '' ;
 $check_releve_appreciation_generale_report =  $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_REPORT'] ? ' checked' : '' ;
 $check_releve_ligne_supplementaire         =  $_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE']         ? ' checked' : '' ;
@@ -95,6 +101,15 @@ $check_livret_retroactif_oui               = ($_SESSION['OFFICIEL']['LIVRET_RETR
 $check_livret_retroactif_annuel            = ($_SESSION['OFFICIEL']['LIVRET_RETROACTIF']=='annuel')        ? ' checked' : '' ;
 $check_livret_only_socle                   =  $_SESSION['OFFICIEL']['LIVRET_ONLY_SOCLE']                   ? ' checked' : '' ;
 
+$check_socle_appreciation_rubrique_report =  $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_REPORT'] ? ' checked' : '' ;
+$check_socle_appreciation_generale_report =  $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_REPORT'] ? ' checked' : '' ;
+$check_socle_ligne_supplementaire         =  $_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE']         ? ' checked' : '' ;
+$check_socle_assiduite                    =  $_SESSION['OFFICIEL']['SOCLE_ASSIDUITE']                    ? ' checked' : '' ;
+$check_socle_prof_principal               =  $_SESSION['OFFICIEL']['SOCLE_PROF_PRINCIPAL']               ? ' checked' : '' ;
+$check_socle_only_presence                =  $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE']                ? ' checked' : '' ;
+$check_socle_pourcentage_acquis           =  $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS']           ? ' checked' : '' ;
+$check_socle_etat_validation              =  $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION']              ? ' checked' : '' ;
+
 $class_span_releve_appreciation_rubrique_report   = $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_LONGUEUR']   ? 'show' : 'hide' ;
 $class_span_releve_appreciation_rubrique_modele   = $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_RUBRIQUE_REPORT']     ? 'show' : 'hide' ;
 $class_span_releve_appreciation_generale_report   = $_SESSION['OFFICIEL']['RELEVE_APPRECIATION_GENERALE_LONGUEUR']   ? 'show' : 'hide' ;
@@ -103,11 +118,17 @@ $class_span_bulletin_appreciation_rubrique_report = $_SESSION['OFFICIEL']['BULLE
 $class_span_bulletin_appreciation_rubrique_modele = $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_RUBRIQUE_REPORT']   ? 'show' : 'hide' ;
 $class_span_bulletin_appreciation_generale_report = $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR'] ? 'show' : 'hide' ;
 $class_span_bulletin_appreciation_generale_modele = $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_REPORT']   ? 'show' : 'hide' ;
+$class_span_socle_appreciation_rubrique_report    = $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_LONGUEUR']    ? 'show' : 'hide' ;
+$class_span_socle_appreciation_rubrique_modele    = $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_REPORT']      ? 'show' : 'hide' ;
+$class_span_socle_appreciation_generale_report    = $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_LONGUEUR']    ? 'show' : 'hide' ;
+$class_span_socle_appreciation_generale_modele    = $_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_REPORT']      ? 'show' : 'hide' ;
 
 $class_input_releve_ligne_factice          = !$_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE']   ? 'show' : 'hide' ;
 $class_input_releve_ligne_supplementaire   =  $_SESSION['OFFICIEL']['RELEVE_LIGNE_SUPPLEMENTAIRE']   ? 'show' : 'hide' ;
 $class_input_bulletin_ligne_factice        = !$_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE'] ? 'show' : 'hide' ;
 $class_input_bulletin_ligne_supplementaire =  $_SESSION['OFFICIEL']['BULLETIN_LIGNE_SUPPLEMENTAIRE'] ? 'show' : 'hide' ;
+$class_input_socle_ligne_factice           = !$_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE']    ? 'show' : 'hide' ;
+$class_input_socle_ligne_supplementaire    =  $_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE']    ? 'show' : 'hide' ;
 
 $class_span_bulletin_moyennes              =  $_SESSION['OFFICIEL']['BULLETIN_MOYENNE_SCORES']                  ? 'show' : 'hide' ;
 $class_span_bulletin_moyenne_generale      =  $_SESSION['OFFICIEL']['BULLETIN_APPRECIATION_GENERALE_LONGUEUR']  ? 'show' : 'hide' ;
@@ -250,6 +271,40 @@ $select_livret_appreciation_generale_longueur = str_replace( $tab_bad , $tab_bon
 </form>
 
 <hr />
+
+<?php /* TODO A RETIRER
+<h2>État de maîtrise du socle</h2>
+
+<form action="#" method="post" id="form_socle">
+  <p>
+    <label class="tab">Appr. compétence :</label><?php echo $select_socle_appreciation_rubrique_longueur ?>
+    <span id="span_socle_appreciation_rubrique_report" class="<?php echo $class_span_socle_appreciation_rubrique_report ?>">
+      <label for="f_socle_appreciation_rubrique_report"><input type="checkbox" id="f_socle_appreciation_rubrique_report" name="f_socle_appreciation_rubrique_report" value="1"<?php echo $check_socle_appreciation_rubrique_report ?> /> à préremplir avec &hellip;</label>
+      <span id="span_socle_appreciation_rubrique_modele" class="<?php echo $class_span_socle_appreciation_rubrique_modele ?>">
+        <textarea id="f_socle_appreciation_rubrique_modele" name="f_socle_appreciation_rubrique_modele" rows="3" cols="50" maxlength="255"><?php echo html($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_RUBRIQUE_MODELE']); ?></textarea>
+      </span>
+    </span><br />
+    <label class="tab">Appr. générale :</label><?php echo $select_socle_appreciation_generale_longueur ?>
+    <span id="span_socle_appreciation_generale_report" class="<?php echo $class_span_socle_appreciation_generale_report ?>">
+      <label for="f_socle_appreciation_generale_report"><input type="checkbox" id="f_socle_appreciation_generale_report" name="f_socle_appreciation_generale_report" value="1"<?php echo $check_socle_appreciation_generale_report ?> /> à préremplir avec &hellip;</label>
+      <span id="span_socle_appreciation_generale_modele" class="<?php echo $class_span_socle_appreciation_generale_modele ?>">
+        <textarea id="f_socle_appreciation_generale_modele" name="f_socle_appreciation_generale_modele" rows="3" cols="50" maxlength="255"><?php echo html($_SESSION['OFFICIEL']['SOCLE_APPRECIATION_GENERALE_MODELE']); ?></textarea>
+      </span>
+    </span><br />
+    <label class="tab">Ligne additionnelle :</label><input type="checkbox" id="f_socle_check_supplementaire" name="f_socle_check_supplementaire" value="1"<?php echo $check_socle_ligne_supplementaire ?> /> <input id="f_socle_ligne_factice" name="f_socle_ligne_factice" type="text" size="10" value="Sans objet." class="<?php echo $class_input_socle_ligne_factice ?>" disabled /><input id="f_socle_ligne_supplementaire" name="f_socle_ligne_supplementaire" type="text" size="120" maxlength="255" value="<?php echo html($_SESSION['OFFICIEL']['SOCLE_LIGNE_SUPPLEMENTAIRE']) ?>" class="<?php echo $class_input_socle_ligne_supplementaire ?>" /><br />
+    <label class="tab">Assiduité :</label><label for="f_socle_assiduite"><input type="checkbox" id="f_socle_assiduite" name="f_socle_assiduite" value="1"<?php echo $check_socle_assiduite ?> /> Reporter le nombre d'absences et de retards</label><br />
+    <label class="tab">Prof. Principal :</label><label for="f_socle_prof_principal"><input type="checkbox" id="f_socle_prof_principal" name="f_socle_prof_principal" value="1"<?php echo $check_socle_prof_principal ?> /> Indiquer le ou les professeurs principaux de la classe</label><br />
+    <label class="tab">Restriction :</label><label for="f_socle_only_presence"><input type="checkbox" id="f_socle_only_presence" name="f_socle_only_presence" value="1"<?php echo $check_socle_only_presence ?> /> Uniquement les éléments ayant fait l'objet d'une évaluation ou d'une validation</label><br />
+    <label class="tab">Indications :</label><label for="f_socle_pourcentage_acquis"><input type="checkbox" id="f_socle_pourcentage_acquis" name="f_socle_pourcentage_acquis" value="1"<?php echo $check_socle_pourcentage_acquis ?> /> Pourcentage d'items acquis</label>&nbsp;&nbsp;&nbsp;<label for="f_socle_etat_validation"><input type="checkbox" id="f_socle_etat_validation" name="f_socle_etat_validation" value="1"<?php echo $check_socle_etat_validation ?> /> État de validation</label><br />
+    <label class="tab">Impression :</label><?php echo $select_socle_couleur ?> <?php echo $select_socle_fond ?> <?php echo $select_socle_legende ?>
+  </p>
+  <p>
+    <span class="tab"></span><button id="bouton_valider_socle" type="button" class="parametre">Enregistrer.</button><label id="ajax_msg_socle">&nbsp;</label>
+  </p>
+</form>
+
+<hr />
+*/ ?>
 
 <form action="#" method="post" id="zone_matieres" class="hide">
   <h3>Matieres sans moyennes</h3>

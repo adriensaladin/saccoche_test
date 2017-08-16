@@ -126,7 +126,7 @@ $select_structure = HtmlForm::afficher_select( DB_WEBMESTRE_SELECT::DB_OPT_struc
   </p>
   <div class="astuce">Les anciens utilisateurs encore dans la base ne sont pas comptés parmi les <b>utilisateurs enregistrés</b>.</div>
   <div class="astuce">Les <b>utilisateurs connectés</b> sont ceux s'étant identifiés au cours du dernier semestre.</div>
-  <div class="astuce">Les évaluations ou bilans <b>récents</b> sont ceux effectués au cours du dernier semestre.</div>
+  <div class="astuce">Les évaluations ou validations <b>récentes</b> sont celles effectuées au cours du dernier semestre.</div>
 </form>
 
 <?php endif /* * * * * * MULTI-STRUCTURES FIN * * * * * */ ?>

@@ -38,6 +38,7 @@ Layout::add( 'js_inline_before' , 'var tab_profil_join_matieres = new Array();' 
 $DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_profils_parametres( 'user_profil_type,user_profil_join_groupes,user_profil_join_matieres,user_profil_nom_court_pluriel' /*listing_champs*/ , TRUE /*only_actif*/ );
 $DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_COORD' , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />coordonnateurs<br />matières' );
 $DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_PP'    , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />professeurs<br />principaux' );
+$DB_TAB[] = array( 'user_profil_sigle' => 'ONLY_LV'    , 'user_profil_type' => '' , 'user_profil_join_groupes' => 0 , 'user_profil_join_matieres' => 0 , 'user_profil_nom_court_pluriel' => 'restriction aux<br />professeurs<br />de LV' );
 foreach($DB_TAB as $DB_ROW)
 {
   $tab_profils_libelles[$DB_ROW['user_profil_sigle']] = $DB_ROW['user_profil_nom_court_pluriel'];
@@ -54,7 +55,9 @@ foreach($DB_TAB as $DB_ROW)
 // Tableau avec les sigles des profils pouvant être proposés, ou à cocher par défaut
 $tab_profils_possibles = array();
 $tab_profils_possibles['dir_pers_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP','DOC','EDU','AED','SUR','ORI','MDS','ADF');
+$tab_profils_possibles['dir_pers_lv']  = array(                  'DIR','ENS','IEX','ONLY_LV','DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['dir_prof_pp']  = array(                  'DIR','ENS','IEX','ONLY_PP');
+$tab_profils_possibles['dir_prof_lv']  = array(                  'DIR','ENS','IEX','ONLY_LV');
 $tab_profils_possibles['dir_prof']     = array(                  'DIR','ENS');
 $tab_profils_possibles['dir_pers']     = array(                  'DIR','ENS','IEX',          'DOC','EDU','AED','SUR','ORI','MDS','ADF');
 $tab_profils_possibles['dir_cpe']      = array(                  'DIR',                            'EDU');
@@ -67,6 +70,7 @@ $tab_profils_possibles['parent_eleve'] = array('ELV','TUT','AVS');
 $tab_profils_possibles['personne']     = array();
 
 // Tableau avec les infos (titres, profils, options par défaut)
+$bulle_fiche_brevet = ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="Avis du conseil de classe (“doit faire ses preuves” ou “favorable”).<br />Avis circonstancié du chef d’établissement." />';
 $tab_droits  = array
 (
   "Mot de passe" => array
@@ -98,8 +102,20 @@ $tab_droits  = array
     array( 'droit_voir_param_notes_acquis'               , "voir le paramètrage des codes et des états d'acquisition"        , 'tous' ),
     array( 'droit_voir_param_algorithme'                 , "voir et simuler l'algorithme de calcul"                          , 'tous' ),
     array( 'droit_voir_score_bilan'                      , "voir les scores des items (bilans)"                              , 'tous' ),
-    array( 'droit_voir_score_maitrise'                   , "voir les scores des degrés de maîtrise"                          , 'tous' ),
+    array( 'droit_voir_score_maitrise'                   , "voir les scores des degrés de maîtrise (socle 2016)"             , 'tous' ),
     array( 'droit_voir_etat_acquisition_avec_evaluation' , "afficher l'état d'acquisition avec le résultat d'une évaluation" , 'personne' ),
+  ),
+  "Socle &rarr; Choix de la langue (socle 2006-2015)" => array
+  ( // TODO : DROIT A SUPPRIMER
+    'dir_pers_lv',
+    array( 'droit_affecter_langue' , "affecter la langue vivante (socle 2006-2015)" , 'dir_prof_lv' ),
+  ),
+  "Socle &rarr; Validations (socle 2006-2015)" => array
+  ( // TODO : DROITS A SUPPRIMER
+    'dir_pers_pp',
+    array( 'droit_validation_entree' , "valider des items du socle (socle 2006-2015)"             , 'dir_pers' ),
+    array( 'droit_validation_pilier' , "valider des compétences du socle (socle 2006-2015)"       , 'dir_prof_pp' ),
+    array( 'droit_annulation_pilier' , "annuler des validations de compétences (socle 2006-2015)" , 'dir' ),
   ),
   "Relevé d'items (matière ou pluridisciplinaire) & Bilan chronologique" => array
   (
@@ -113,8 +129,10 @@ $tab_droits  = array
   (
     'parent_eleve',
     array( 'droit_socle_acces'                      , "accéder au relevé avec les items évalués par élément du socle" , 'parent_eleve' ),
-    array( 'droit_socle_proposition_positionnement' , "afficher les propositions de positionnement"                   , 'parent_eleve' ),
-    array( 'droit_socle_prevision_points_brevet'    , "afficher les prévisions de points pour le brevet"              , 'parent_eleve' ),
+    array( 'droit_socle_pourcentage_acquis'         , "afficher les pourcentages d'items acquis (socle 2006-2015)"    , 'parent_eleve' ),
+    array( 'droit_socle_etat_validation'            , "afficher les états de validation saisis (socle 2006-2015)"     , 'personne' ),
+    array( 'droit_socle_proposition_positionnement' , "afficher les propositions de positionnement (socle 2016)"      , 'parent_eleve' ),
+    array( 'droit_socle_prevision_points_brevet'    , "afficher les prévisions de points pour le brevet (socle 2016)" , 'parent_eleve' ),
   ),
   "Bilans officiels &rarr; Absences" => array
   (
@@ -137,12 +155,12 @@ $tab_droits  = array
     array( 'droit_officiel_bulletin_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_bulletin_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
   ),
-  "Bilans officiels &rarr; Livret Scolaire Unique &rarr; Paramétrage référentiels" => array
+  "Bilans officiels &rarr; Livret Scolaire Unique (2016) &rarr; Paramétrage référentiels" => array
   (
     'pers_coord',
     array( 'droit_gerer_livret_elements'   , "configurer les Éléments de programme"       , 'pers_coord' ),
   ),
-  "Bilans officiels &rarr; Livret Scolaire Unique &rarr; Paramétrage enseignements" => array
+  "Bilans officiels &rarr; Livret Scolaire Unique (2016) &rarr; Paramétrage enseignements" => array
   (
     'pers_pp',
     array( 'droit_gerer_livret_epi'        , "configurer les E.P.I."                      , 'pers_pp' ),
@@ -151,14 +169,30 @@ $tab_droits  = array
     array( 'droit_gerer_livret_modaccomp'  , "configurer les Modalités d'accompagnement"  , 'pers_pp' ),
     array( 'droit_gerer_livret_enscompl'   , "configurer les Enseignements de complément" , 'personne' ),
   ),
-  "Bilans officiels &rarr; Livret Scolaire Unique &rarr; Édition" => array
+  "Bilans officiels &rarr; Livret Scolaire Unique (2016) &rarr; Édition" => array
   (
     'dir_pers_pp',
     array( 'droit_officiel_livret_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
     array( 'droit_officiel_livret_corriger_appreciation' , "corriger l'appréciation d'un collègue"      , 'dir' ),
-    array( 'droit_officiel_livret_positionner_socle'     , "positionner la maîtrise du socle"           , 'dir_prof' ),
+    array( 'droit_officiel_livret_positionner_socle'     , "positionner la maîtrise du socle (2016)"    , 'dir_prof' ),
     array( 'droit_officiel_livret_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
     array( 'droit_officiel_livret_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
+  ),
+  "Bilans officiels &rarr; État de maîtrise du socle (socle 2006-2015)" => array
+  ( // TODO : DROITS A SUPPRIMER
+    'dir_pers_pp',
+    array( 'droit_officiel_socle_modifier_statut'       , "modifier le statut (accès saisies&hellip;)" , 'dir' ),
+    array( 'droit_officiel_socle_corriger_appreciation' , "corriger l'appréciation d'un collègue"      , 'dir' ),
+    array( 'droit_officiel_socle_appreciation_generale' , "éditer l'appréciation générale"             , 'dir_prof_pp' ),
+    array( 'droit_officiel_socle_impression_pdf'        , "générer la version PDF imprimable"          , 'dir' ),
+  ),
+  "Fiches brevet (fiches scolaires pour le jury du DNB 2016 &amp; antérieur)" => array
+  ( // TODO : DROITS A SUPPRIMER
+    'dir_pers_pp',
+    array( 'droit_fiche_brevet_modifier_statut'       , "modifier le statut (accès saisies&hellip;)"    , 'dir' ),
+    array( 'droit_fiche_brevet_corriger_appreciation' , "corriger l'appréciation d'un collègue"         , 'dir' ),
+    array( 'droit_fiche_brevet_appreciation_generale' , "éditer l'avis de synthèse".$bulle_fiche_brevet , 'dir' ),
+    array( 'droit_fiche_brevet_impression_pdf'        , "générer la version PDF imprimable"             , 'dir' ),
   ),
   "Consultation des documents officiels finalisés" => array
   (
@@ -166,6 +200,8 @@ $tab_droits  = array
     array( 'droit_officiel_releve_voir_archive'   , "accéder aux archives des relevés d'évaluations"      , 'dir_pers' ),
     array( 'droit_officiel_bulletin_voir_archive' , "accéder aux archives des bulletins scolaires"        , 'dir_pers' ),
     array( 'droit_officiel_livret_voir_archive'   , "accéder aux archives du Livret Scolaire Unique"      , 'dir_pers' ),
+    array( 'droit_officiel_socle_voir_archive'    , "accéder aux archives des états de maîtrise du socle" , 'dir_pers' ), // TODO : DROIT A SUPPRIMER
+    array( 'droit_fiche_brevet_voir_archive'      , "accéder aux archives des fiches brevet pour le jury" , 'dir_pers' ), // TODO : DROIT A SUPPRIMER
   ),
 );
 
@@ -197,6 +233,7 @@ foreach($tab_droits as $titre => $tab_infos_paragraphe)
     $tab_check = explode(',',$_SESSION[Clean::upper($droit_key)]);
     $check_pp    = (in_array('ONLY_PP'   ,$tab_check)) ? TRUE : FALSE ;
     $check_coord = (in_array('ONLY_COORD',$tab_check)) ? TRUE : FALSE ;
+    $check_lv    = (in_array('ONLY_LV'   ,$tab_check)) ? TRUE : FALSE ;
     foreach($tab_profils_possibles[$i_profils_possibles] as $profil_sigle)
     {
       if(isset($tab_profils_libelles[$profil_sigle]))
@@ -204,7 +241,7 @@ foreach($tab_droits as $titre => $tab_infos_paragraphe)
         $init = in_array($profil_sigle,$tab_profils_possibles[$i_profils_defaut]) ? 'true' : 'false' ;
         Layout::add( 'js_inline_before' , 'tab_init["'.$droit_key.'"]["'.$profil_sigle.'"] = '.$init.';' );
         $checked = (in_array($profil_sigle,$tab_check)) ? ' checked' : '' ;
-        $color   = ($checked) ? ( ( ($check_pp && $tab_profil_join_groupes[$profil_sigle]) || ($check_coord && $tab_profil_join_matieres[$profil_sigle]) ) ? 'bj' : 'bv' ) : 'br' ;
+        $color   = ($checked) ? ( ( ($check_pp && $tab_profil_join_groupes[$profil_sigle]) || ($check_coord && $tab_profil_join_matieres[$profil_sigle]) || ($check_lv && $tab_profil_join_matieres[$profil_sigle]) ) ? 'bj' : 'bv' ) : 'br' ;
         $affichage .= '<td class="hc '.$color.'"><input type="checkbox" name="'.$droit_key.'" value="'.$profil_sigle.'"'.$checked.' /></td>';
       }
     }

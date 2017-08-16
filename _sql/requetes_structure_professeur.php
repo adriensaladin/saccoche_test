@@ -607,7 +607,7 @@ public static function DB_lister_devoir_items( $devoir_id , $with_socle , $with_
   // (SELECT list is not in GROUP BY clause and contains nonaggregated column 'sacoche_jointure_devoir_item.item_id' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by)
   // d'où le remplacement d'un LEFT JOIN par un INNER JOIN
   $DB_SQL = 'SELECT item_id, ';
-  $DB_SQL.= ($with_socle) ? 'COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ' : '' ;
+  $DB_SQL.= ($with_socle) ? 'entree_id, COUNT(sacoche_jointure_referentiel_socle.item_id) AS s2016_nb, ' : '' ;
   $DB_SQL.= ($with_coef)  ? 'item_coef, '   : '' ;
   $DB_SQL.= ($with_lien)  ? 'item_lien, '   : '' ;
   $DB_SQL.= ($with_ref)   ? 'matiere_ref, ' : '' ;
@@ -768,6 +768,23 @@ public static function tester_prof_coordonnateur($prof_id,$matiere_id)
     ':coord'      => 1,
     ':matiere_id' => $matiere_id,
   );
+  return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
+ * tester_prof_langue_vivante
+ *
+ * @param int $user_id
+ * @return bool
+ */
+public static function tester_prof_langue_vivante($prof_id)
+{
+  require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
+  $DB_SQL = 'SELECT 1 ';
+  $DB_SQL.= 'FROM sacoche_jointure_user_matiere ';
+  $DB_SQL.= 'WHERE user_id=:user_id AND matiere_id IN('.implode(',',$tab_langues[100]['tab_matiere_id']).') ';
+  $DB_SQL.= 'LIMIT 1'; // utile
+  $DB_VAR = array( ':user_id' => $prof_id );
   return (bool)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
 }
 

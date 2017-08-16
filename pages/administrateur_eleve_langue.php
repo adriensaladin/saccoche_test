@@ -26,8 +26,18 @@
  */
 
 if(!defined('SACoche')) {exit('Ce fichier ne peut être appelé directement !');}
-$TITRE = html(Lang::_("Renseigner les langues étrangères pour le Livret Scolaire"));
+$TITRE = html(Lang::_("Choisir la langue étrangère pour le socle commun").' / '.Lang::_("Affecter les LV pour le Livret Scolaire"));
 
+if( ($_SESSION['USER_PROFIL_TYPE']!='administrateur') && !Outil::test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ) )
+{
+  echo'<p class="danger">'.html(Lang::_("Vous n'êtes pas habilité à accéder à cette fonctionnalité !")).'</p>'.NL;
+  echo'<div class="astuce">Profils autorisés (par les administrateurs) :</div>'.NL;
+  echo Outil::afficher_profils_droit_specifique($_SESSION['DROIT_AFFECTER_LANGUE'],'li');
+  return; // Ne pas exécuter la suite de ce fichier inclus.
+}
+
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
+// TODO : A REMPLACER À TERME PAR
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
 // Fonction adaptant le tableau pour un affichage dans un formulaire de type select avec des groupes d'options suivant que ces langues soient ou non enseignées dans l'établissement
 function OPT_langues($tab_langues)
@@ -61,7 +71,9 @@ $select_eleve  = HtmlForm::afficher_select($tab_groupes              , 'select_g
 $select_langue = HtmlForm::afficher_select(OPT_langues($tab_langues) , 'f_langue'      /*select_nom*/ , '' /*option_first*/ , FALSE /*selection*/ ,       'langues' /*optgroup*/ );
 ?>
 
-<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=gestion_eleves#toggle_renseigner_langue">DOC : Gestion des langues étrangères</a></span></p>
+<p><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=referentiels_socle__socle_choisir_langue">DOC : Choisir la langue étrangère pour le socle commun</a></span></p>
+
+<div class="travaux">Affectations LV1 / LV2 ajoutées en prévision de la réforme entrant en vigueur en septembre 2016.</div>
 
 <hr />
 
@@ -76,6 +88,7 @@ $select_langue = HtmlForm::afficher_select(OPT_langues($tab_langues) , 'f_langue
       <b>Objet :</b><br />
       <select id="f_objet" name="f_objet">
         <option value=""></option>
+        <option value="langue">socle</option>
         <option value="lv1">LV1</option>
         <option value="lv2">LV2</option>
       </select><p />

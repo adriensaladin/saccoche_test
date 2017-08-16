@@ -41,6 +41,9 @@ $groupe_id   = (isset($_POST['f_groupe']))      ? Clean::entier($_POST['f_groupe
 $etape       = (isset($_POST['f_etape']))       ? Clean::entier($_POST['f_etape'])      : 0;
 $page_parite = (isset($_POST['f_parite']))      ? Clean::entier($_POST['f_parite'])     : 0;
 // Autres chaines spécifiques...
+$listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
+$tab_pilier_id  = array_filter( Clean::map('entier', explode(',',$listing_piliers) ) , 'positif' );
+$liste_pilier_id  = implode(',',$tab_pilier_id);
 $listing_eleves = (isset($_POST['f_listing_eleves']))  ? $_POST['f_listing_eleves']  : '' ;
 $tab_eleve_id   = array_filter( Clean::map('entier', explode(',',$listing_eleves) )  , 'positif' );
 $liste_eleve_id = implode(',',$tab_eleve_id);
@@ -175,6 +178,7 @@ if( ($ACTION=='imprimer') && ($etape==2) )
 {
   // Récupérer les informations
   $tab_memo = FileSystem::recuperer_fichier_infos_serializees( $file_memo );
+  /* NOUVELLE METHODE */
   if(in_array($BILAN_TYPE,array('releve','bulletin')))
   {
     // Enregistrement des images nécessaires
@@ -205,6 +209,28 @@ if( ($ACTION=='imprimer') && ($etape==2) )
     }
   }
   unset($tab_memo['tab_archive']);
+  /* FIN NOUVELLE METHODE */
+  Erreur500::prevention_et_gestion_erreurs_fatales( FALSE /*memory*/ , TRUE /*time*/ );
+  // Récupérer les bilans déjà existants pour savoir s'il faut faire un INSERT ou un UPDATE (sinon, un REPLACE efface les dates de consultation)
+  $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_bilan_officiel_fichiers( $BILAN_TYPE , $periode_id , array_keys($tab_memo['tab_pages_decoupe_pdf']) );
+  $tab_notif = array();
+  foreach($tab_memo['tab_pages_decoupe_pdf'] as $eleve_id => $tab_tirages)
+  {
+    list( $eleve_identite , $page_plage ) = $tab_tirages[0];
+    if(!isset($DB_TAB[$eleve_id]))
+    {
+      DB_STRUCTURE_OFFICIEL::DB_ajouter_bilan_officiel_fichier( $eleve_id , $BILAN_TYPE , $periode_id );
+      $tab_notif[$eleve_id] = $eleve_id;
+    }
+    else
+    {
+      // On ne met plus à jour la date de génération pour conserver la date supposée du conseil de classe et éviter des malentendus ; la date de dernière impression reste archivée en petit sous le bloc titre.
+    }
+    $fichier_extraction_chemin = CHEMIN_DOSSIER_OFFICIEL.$_SESSION['BASE'].DS.FileSystem::generer_nom_fichier_bilan_officiel( $eleve_id , $BILAN_TYPE , $periode_id );
+    unset($tab_memo['tab_pages_decoupe_pdf'][$eleve_id][0]);
+    $releve_pdf = new PDFMerger;
+    $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' , $page_plage ) -> merge( 'file' , $fichier_extraction_chemin );
+  }
   // Notifications (rendues visibles ultérieurement parce que plus simple comme cela)
   if(!empty($tab_notif))
   {
@@ -523,6 +549,7 @@ $tab_archive = array(
   'session' => array(
     'OFFICIEL'               => $_SESSION['OFFICIEL'],
     'ACQUIS'                 => $_SESSION['ACQUIS'],
+    'VALID'                  => $_SESSION['VALID'],
     'NOTE'                   => $_SESSION['NOTE'],
     'NOTE_ACTIF'             => $_SESSION['NOTE_ACTIF'],
     'NOMBRE_CODES_NOTATION'  => $_SESSION['NOMBRE_CODES_NOTATION'],
@@ -610,6 +637,35 @@ elseif($BILAN_TYPE=='bulletin')
   $tab_matiere_id  = array();
   require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_synthese.php');
   $nom_bilan_html  = 'releve_HTML';
+}
+elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
+{
+  $palier_id      = (int)substr($BILAN_TYPE,-1);
+  $palier_nom     = 'Palier '.$palier_id;
+  $only_presence  = $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'];
+  $aff_socle_PA   = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
+  $aff_socle_EV   = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
+  $groupe_id      = (!$is_sous_groupe) ? $classe_id  : $groupe_id ; // Le groupe = la classe (par défaut) ou le groupe transmis
+  $groupe_nom     = (!$is_sous_groupe) ? $classe_nom : $classe_nom.' - '.DB_STRUCTURE_COMMUN::DB_recuperer_groupe_nom($groupe_id) ;
+  $groupe_type    = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
+  $mode           = 'auto';
+  $aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+  $aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+  $aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+  $aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
+  $couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
+  $fond           = $_SESSION['OFFICIEL']['SOCLE_FOND'];
+  $legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
+  $marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
+  $marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
+  $marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
+  $marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
+  $eleves_ordre   = 'alpha';
+  $tab_pilier_id  = $tab_pilier_id;
+  $tab_eleve_id   = $tab_eleve_id;
+  $tab_matiere_id = array();
+  require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
+  $nom_bilan_html = 'releve_HTML';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

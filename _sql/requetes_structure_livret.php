@@ -332,6 +332,28 @@ public static function DB_recuperer_page_groupe_info( $groupe_id , $page_ref , $
 }
 
 /**
+ * recuperer_bilan_officiel_infos
+ *
+ * @param int    $classe_id
+ * @param int    $periode_id
+ * @param string $bilan_type
+ * @return array
+ */
+public static function DB_recuperer_bilan_officiel_infos( $classe_id , $periode_id , $bilan_type )
+{
+  $DB_SQL = 'SELECT jointure_date_debut, jointure_date_fin, officiel_'.$bilan_type.', periode_nom, groupe_nom ';
+  $DB_SQL.= 'FROM sacoche_jointure_groupe_periode ';
+  $DB_SQL.= 'LEFT JOIN sacoche_groupe USING (groupe_id) ';
+  $DB_SQL.= 'LEFT JOIN sacoche_periode USING (periode_id) ';
+  $DB_SQL.= 'WHERE groupe_id=:classe_id AND periode_id=:periode_id ';
+  $DB_VAR = array(
+    ':classe_id'  => $classe_id,
+    ':periode_id' => $periode_id,
+  );
+  return DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
+}
+
+/**
  * recuperer_dgesco_elements_arborescence
  *
  * @param void
@@ -506,7 +528,7 @@ public static function DB_recuperer_items_profs( $liste_eleve_id , $liste_prof_i
   $join_s2016       = ($only_socle)   ? 'LEFT JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
   $where_eleve      = (strpos($liste_eleve_id,',')) ? 'eleve_id IN('.$liste_eleve_id.') '    : 'eleve_id='.$liste_eleve_id.' ' ; // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
   $where_prof       = (strpos($liste_prof_id,','))  ? 'prof_id IN('.$liste_prof_id.') '      : 'prof_id='.$liste_prof_id.' ' ;   // Pour IN(...) NE PAS passer la liste dans $DB_VAR sinon elle est convertie en nb entier
-  $where_socle      = ($only_socle)                 ? 'AND socle_composante_id IS NOT NULL ' : '' ;
+  $where_socle      = ($only_socle)                 ? 'AND ( entree_id !=0 OR socle_composante_id IS NOT NULL ) ' : '' ;
   $where_date_debut = ($date_mysql_debut)           ? 'AND saisie_date>=:date_debut '        : '';
   $where_date_fin   = ($date_mysql_fin)             ? 'AND saisie_date<=:date_fin '          : '';
   $DB_SQL = 'SELECT item_id , prof_id , item_nom , ';
@@ -543,7 +565,7 @@ public static function DB_recuperer_items_jointures_rubriques( $rubrique_type , 
   $champ_elements = (substr($rubrique_type,3)=='domaine') ? 'livret_rubrique_id_elements' : 'livret_rubrique_ou_matiere_id' ;
   $join_rubrique  = (substr($rubrique_type,3)=='domaine') ? 'INNER JOIN sacoche_livret_rubrique ON sacoche_livret_jointure_referentiel.livret_rubrique_ou_matiere_id = sacoche_livret_rubrique.livret_rubrique_id ' : '' ;
   $join_s2016     = ($only_socle)  ? 'INNER JOIN sacoche_jointure_referentiel_socle USING (item_id) ' : '' ;
-  $where_socle    = ($only_socle)  ? 'AND socle_composante_id IS NOT NULL '  : '' ;
+  $where_socle    = ($only_socle)  ? 'AND ( entree_id !=0 OR socle_composante_id IS NOT NULL ) ' : '' ;
   $where_rubrique = ($rubrique_id) ? 'AND '.$champ_position.'=:rubrique_id ' : '' ;
   $DB_SQL = 'SELECT '.$champ_position.' AS rubrique_id_position , '.$champ_elements.' AS rubrique_id_elements , item_id ';
   $DB_SQL.= 'FROM sacoche_livret_jointure_referentiel ';
@@ -2335,41 +2357,6 @@ public static function DB_recuperer_elements_programme( $liste_eleve_id , $liste
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Export LSU
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Compter les élèves n'ayant pas d'identifiant Sconet renseigné
- *
- * @param void
- * @return int
- */
-public static function DB_compter_eleves_actuels_sans_id_sconet()
-{
-  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() AND user_sconet_id=:sconet_id ';
-  $DB_VAR = array(
-    ':profil_type' => 'eleve',
-    ':sconet_id'   => 0,
-  );
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
-
-/**
- * Compter les élèves n'ayant pas d'identifiant national renseigné
- *
- * @param void
- * @return int
- */
-public static function DB_compter_eleves_actuels_sans_INE()
-{
-  $DB_SQL = 'SELECT COUNT(*) AS nombre ';
-  $DB_SQL.= 'FROM sacoche_user ';
-  $DB_SQL.= 'LEFT JOIN sacoche_user_profil USING (user_profil_sigle) ';
-  $DB_SQL.= 'WHERE user_profil_type=:profil_type AND user_sortie_date>NOW() AND (user_reference NOT REGEXP "^[0-9]{9}[0-9A-Z]{1}[A-Z]{1}$") '; // au 2D c'est 10 chiffres et 1 lettre mais au 1D c'est 9 chiffres et 2 lettres
-  $DB_VAR = array(':profil_type'=>'eleve');
-  return DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , $DB_VAR);
-}
 
 /**
  * DB_ajouter_livret_export_eleve

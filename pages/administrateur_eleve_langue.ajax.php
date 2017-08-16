@@ -35,9 +35,12 @@ $langue = (isset($_POST['f_langue'])) ? Clean::entier($_POST['f_langue']) : 0 ;
 $tab_eleve = (isset($_POST['f_eleve'])) ? ( (is_array($_POST['f_eleve'])) ? $_POST['f_eleve'] : explode(',',$_POST['f_eleve']) ) : array() ;
 $tab_eleve = array_filter( Clean::map('entier',$tab_eleve) , 'positif' );
 
+require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_socle.php');
+// TODO : A REMPLACER À TERME PAR
 require(CHEMIN_DOSSIER_INCLUDE.'tableau_langues_vivantes.php');
 
 $tab_objet = array(
+  'langue' => 'choix socle',
   'lv1' => 'affectation LV1',
   'lv2' => 'affectation LV2',
 );
@@ -84,10 +87,11 @@ foreach($DB_TAB as $DB_ROW)
   $tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_lv1,eleve_lv2,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_langue,eleve_lv1,eleve_lv2,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
-  $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/drapeau/'.$DB_ROW['eleve_lv1'].'.gif" alt="" title="'.$tab_objet['lv1'].'<br />'.$tab_langues[$DB_ROW['eleve_lv1']]['texte'].'" /> '
+  $tab_user[$DB_ROW['eleve_classe_id']] .= '<img src="./_img/drapeau/'.$DB_ROW['eleve_langue'].'.gif" alt="" title="'.$tab_objet['langue'].'<br />'.$tab_langues[$DB_ROW['eleve_langue']]['texte'].'" /> '
+                                         . '<img src="./_img/drapeau/'.$DB_ROW['eleve_lv1'].'.gif" alt="" title="'.$tab_objet['lv1'].'<br />'.$tab_langues[$DB_ROW['eleve_lv1']]['texte'].'" /> '
                                          . '<img src="./_img/drapeau/'.$DB_ROW['eleve_lv2'].'.gif" alt="" title="'.$tab_objet['lv2'].'<br />'.$tab_langues[$DB_ROW['eleve_lv2']]['texte'].'" /> '
                                          . html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'<br />';
 }
@@ -95,7 +99,7 @@ foreach($DB_TAB as $DB_ROW)
 $TH = array();
 $TB = array();
 $TF = array();
-$nb_tag_br_par_eleve = 2+1;
+$nb_tag_br_par_eleve = 3+1; // TODO : A MODIFIER LORS DE LA MAJ
 foreach($tab_niveau_groupe as $niveau_id => $tab_groupe)
 {
   $TH[$niveau_id] = '';

@@ -465,6 +465,7 @@ public static function DB_ajouter_referentiel_theme( $domaine_id , $theme_ordre 
  * Ajouter un item dans un référentiel (les liaisons au socle 2016 sont gérées ici ; le lien de ressources est géré ultérieurement ; le numéro d'ordre des autres items impactés est modifié ailleurs)
  *
  * @param int    $theme_id
+ * @param int    $socle_id
  * @param int    $item_ordre
  * @param string $item_ref
  * @param string $item_nom
@@ -475,12 +476,13 @@ public static function DB_ajouter_referentiel_theme( $domaine_id , $theme_ordre 
  * @param array  $tab_socle2016
  * @return int
  */
-public static function DB_ajouter_referentiel_item( $theme_id , $item_ordre , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $item_comm , $tab_socle2016 )
+public static function DB_ajouter_referentiel_item( $theme_id , $socle_id , $item_ordre , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $item_comm , $tab_socle2016 )
 {
-  $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_comm) ';
-  $DB_SQL.= 'VALUES                              (:theme_id,:item_ordre,:item_ref,:item_nom,:item_abrev,:item_coef,:item_cart,:item_comm)';
+  $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_comm) ';
+  $DB_SQL.= 'VALUES                              (:theme_id,:socle_id ,:item_ordre,:item_ref,:item_nom,:item_abrev,:item_coef,:item_cart,:item_comm)';
   $DB_VAR = array(
     ':theme_id'   => $theme_id,
+    ':socle_id'   => $socle_id,
     ':item_ordre' => $item_ordre,
     ':item_ref'   => $item_ref,
     ':item_nom'   => $item_nom,
@@ -626,6 +628,7 @@ public static function DB_importer_arborescence_from_XML( $arbreXML , $matiere_i
       for($item_ordre=0; $item_ordre<$item_nb; $item_ordre++)
       {
         $item_xml   = $item_liste -> item($item_ordre);
+        $item_socle = $item_xml -> getAttribute('socle');
         $item_ref   = $item_xml -> getAttribute('ref');
         $item_nom   = $item_xml -> getAttribute('nom');
         $item_abrev = $item_xml -> getAttribute('abrev');
@@ -633,10 +636,11 @@ public static function DB_importer_arborescence_from_XML( $arbreXML , $matiere_i
         $item_cart  = $item_xml -> getAttribute('cart');
         $item_lien  = $item_xml -> getAttribute('lien');
         $item_comm  = $item_xml -> getAttribute('comm');
-        $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien, item_comm) ';
-        $DB_SQL.= 'VALUES                              (:theme   ,     :ordre,     :ref,     :nom,     :abrev,     :coef,     :cart,     :lien,     :comm)';
+        $DB_SQL = 'INSERT INTO sacoche_referentiel_item( theme_id, entree_id, item_ordre, item_ref, item_nom, item_abrev, item_coef, item_cart, item_lien, item_comm) ';
+        $DB_SQL.= 'VALUES                              (:theme   ,:socle    ,     :ordre,     :ref,     :nom,     :abrev,     :coef,     :cart,     :lien,     :comm)';
         $DB_VAR = array(
           ':theme' => $theme_id,
+          ':socle' => $item_socle,
           ':ordre' => $item_ordre,
           ':ref'   => $item_ref,
           ':nom'   => $item_nom,
@@ -745,6 +749,7 @@ public static function DB_modifier_referentiel_theme( $theme_id , $theme_ref , $
  * Modifier les caractéristiques d'un item d'un référentiel (hors déplacement ; le lien de ressources est modifié ailleurs)
  *
  * @param int    $item_id
+ * @param int    $socle_id
  * @param string $item_ref
  * @param string $item_nom
  * @param string $item_abrev
@@ -754,14 +759,15 @@ public static function DB_modifier_referentiel_theme( $theme_id , $theme_ref , $
  * @param array  $tab_socle2016
  * @return bool  si ligne(s) modifiée(s)
  */
-public static function DB_modifier_referentiel_item( $item_id , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $item_comm , $tab_socle2016 )
+public static function DB_modifier_referentiel_item( $item_id , $socle_id , $item_ref , $item_nom , $item_abrev , $item_coef , $item_cart , $item_comm , $tab_socle2016 )
 {
   // On récupère les liaisons au socle pour comparer
   $DB_SQL = 'UPDATE sacoche_referentiel_item ';
-  $DB_SQL.= 'SET item_ref=:item_ref, item_nom=:item_nom, item_abrev=:item_abrev, item_coef=:item_coef, item_cart=:item_cart, item_comm=:item_comm ';
+  $DB_SQL.= 'SET entree_id=:socle_id, item_ref=:item_ref, item_nom=:item_nom, item_abrev=:item_abrev, item_coef=:item_coef, item_cart=:item_cart, item_comm=:item_comm ';
   $DB_SQL.= 'WHERE item_id=:item_id ';
   $DB_VAR = array(
     ':item_id'    => $item_id,
+    ':socle_id'   => $socle_id,
     ':item_ref'   => $item_ref,
     ':item_nom'   => $item_nom,
     ':item_abrev' => $item_abrev,

@@ -137,6 +137,7 @@ define('CHEMIN_DOSSIER_TMP'           , CHEMIN_DOSSIER_SACOCHE.'__tmp'.DS);
 define('CHEMIN_DOSSIER_IMG'           , CHEMIN_DOSSIER_SACOCHE.'_img'.DS);
 define('CHEMIN_DOSSIER_INCLUDE'       , CHEMIN_DOSSIER_SACOCHE.'_inc'.DS);
 define('CHEMIN_DOSSIER_FPDF_FONT'     , CHEMIN_DOSSIER_SACOCHE.'_lib'.DS.'FPDF'.DS.'font'.DS);
+define('CHEMIN_DOSSIER_PDF'           , CHEMIN_DOSSIER_SACOCHE.'_pdf'.DS); // TODO : supprimer ce dossier et con contenu qui alourdit inutilement l'application (les fiches brevet seront obsolètes et le LSU peut être mis sur le serveur communautaire)
 define('CHEMIN_DOSSIER_SQL'           , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS);
 define('CHEMIN_DOSSIER_SQL_STRUCTURE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'structure'.DS);
 define('CHEMIN_DOSSIER_SQL_WEBMESTRE' , CHEMIN_DOSSIER_SACOCHE.'_sql'.DS.'webmestre'.DS);
@@ -282,12 +283,15 @@ function SACoche_autoload($class_name)
     'PDF_archivage_tableau'       => '_inc'.DS.'class.PDF_archivage_tableau.php' ,
     'PDF_evaluation_cartouche'    => '_inc'.DS.'class.PDF_evaluation_cartouche.php' ,
     'PDF_evaluation_tableau'      => '_inc'.DS.'class.PDF_evaluation_tableau.php' ,
+    'PDF_fiche_brevet'            => '_inc'.DS.'class.PDF_fiche_brevet.php' ,
     'PDF_grille_referentiel'      => '_inc'.DS.'class.PDF_grille_referentiel.php' ,
     'PDF_item_bulletin'           => '_inc'.DS.'class.PDF_item_bulletin.php' ,
     'PDF_item_releve'             => '_inc'.DS.'class.PDF_item_releve.php' ,
     'PDF_item_synthese'           => '_inc'.DS.'class.PDF_item_synthese.php' ,
     'PDF_item_tableau'            => '_inc'.DS.'class.PDF_item_tableau.php' ,
     'PDF_livret_scolaire'         => '_inc'.DS.'class.PDF_livret_scolaire.php' ,
+    'PDF_socle_releve'            => '_inc'.DS.'class.PDF_socle_releve.php' ,
+    'PDF_socle_synthese'          => '_inc'.DS.'class.PDF_socle_synthese.php' ,
     'PDF_socle2016_releve'        => '_inc'.DS.'class.PDF_socle2016_releve.php' ,
     'PDF_socle2016_synthese'      => '_inc'.DS.'class.PDF_socle2016_synthese.php' ,
     'PDF_trombinoscope'           => '_inc'.DS.'class.PDF_trombinoscope.php' ,
@@ -308,6 +312,7 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_WEBMESTRE'      => '_sql'.DS.'requetes_structure_webmestre.php' ,
 
     'DB_STRUCTURE_BILAN'          => '_sql'.DS.'requetes_structure_bilan.php' ,
+    'DB_STRUCTURE_BREVET'         => '_sql'.DS.'requetes_structure_brevet.php' ,
     'DB_STRUCTURE_COMMENTAIRE'    => '_sql'.DS.'requetes_structure_commentaire.php' ,
     'DB_STRUCTURE_COMMUN'         => '_sql'.DS.'requetes_structure_commun.php' ,
     'DB_STRUCTURE_DEMANDE'        => '_sql'.DS.'requetes_structure_demande.php' ,
@@ -325,6 +330,7 @@ function SACoche_autoload($class_name)
     'DB_STRUCTURE_REGROUPEMENT'   => '_sql'.DS.'requetes_structure_regroupement.php' ,
     'DB_STRUCTURE_SELECTION_ITEM' => '_sql'.DS.'requetes_structure_selection_item.php' ,
     'DB_STRUCTURE_SIECLE'         => '_sql'.DS.'requetes_structure_siecle.php' ,
+    'DB_STRUCTURE_SOCLE'          => '_sql'.DS.'requetes_structure_socle.php' ,
     'DB_STRUCTURE_SWITCH'         => '_sql'.DS.'requetes_structure_switch.php' ,
 
     'DB_WEBMESTRE_ADMINISTRATEUR' => '_sql'.DS.'requetes_webmestre_administrateur.php' ,
@@ -486,6 +492,7 @@ define('URL_DIR_LOGINPASS'   , chemin_to_url(CHEMIN_DOSSIER_LOGINPASS  ) );
 define('URL_DIR_LOGO'        , chemin_to_url(CHEMIN_DOSSIER_LOGO       ) );
 define('URL_DIR_OFFICIEL'    , chemin_to_url(CHEMIN_DOSSIER_OFFICIEL   ) );
 define('URL_DIR_PARTENARIAT' , chemin_to_url(CHEMIN_DOSSIER_PARTENARIAT) );
+define('URL_DIR_PDF'         , chemin_to_url(CHEMIN_DOSSIER_PDF        ) );
 define('URL_DIR_RSS'         , chemin_to_url(CHEMIN_DOSSIER_RSS        ) );
 define('URL_DIR_WEBSERVICES' , chemin_to_url(CHEMIN_DOSSIER_WEBSERVICES) );
 
@@ -540,6 +547,7 @@ define('ID_MATIERE_PARTAGEE_MAX'   ,   9999); // id maximal des matières partag
 define('ID_NIVEAU_PARTAGE_MAX'     , 999999); // id maximal des niveaux partagés (les id des niveaux spécifiques sont supérieurs)
 define('ID_FAMILLE_MATIERE_USUELLE',     99);
 define('ID_FAMILLE_NIVEAU_USUEL'   ,    999);
+define('CODE_BREVET_EPREUVE_TOTAL' ,    255);
 
 // longueur maxi d'un login et d'un mdp (à NE PAS modifier : doit être en cohérence avec la BDD)
 define(   'LOGIN_LONGUEUR_MAX', 30);

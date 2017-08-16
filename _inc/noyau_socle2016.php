@@ -111,7 +111,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 else
 {
   $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
-  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , $eleves_ordre );
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve_id , $eleves_ordre , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
     Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
@@ -122,7 +122,7 @@ else
 // Récupération de la liste des items et des liaisons items / composantes
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-$DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_associations_items_composantes($cycle_id);
+$DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes($cycle_id);
 foreach($DB_TAB as $DB_ROW)
 {
   $socle_composante_id = ( ($socle_detail=='detail') || ($DB_ROW['socle_domaine_id']==1) ) ? $DB_ROW['socle_composante_id'] : $DB_ROW['socle_domaine_id']*10 ;
@@ -148,7 +148,7 @@ if($liste_item_id)
   if(count($tab_item_infos))
   {
     $liste_item_id = implode(',',array_keys($tab_item_infos));
-    $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
+    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
     foreach($DB_TAB as $DB_ROW)
     {
       $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
@@ -157,6 +157,7 @@ if($liste_item_id)
         'item_nom'            => $DB_ROW['item_nom'],
         'item_coef'           => $DB_ROW['item_coef'],
         'item_cart'           => $DB_ROW['item_cart'],
+        'item_socle'          => $DB_ROW['socle_id'],
         'item_lien'           => $DB_ROW['item_lien'],
         'matiere_id'          => $DB_ROW['matiere_id'],
         'matiere_nb_demandes' => $DB_ROW['matiere_nb_demandes'],
@@ -237,7 +238,7 @@ foreach($tab_eval as $eleve_id => $tab_eval_eleve)
   // Pour chaque item évalué...
   foreach($tab_eval_eleve as $item_id => $tab_devoirs)
   {
-    extract($tab_item_infos[$item_id]);  // $item_ref $item_nom $item_coef $item_cart $item_lien $matiere_id $matiere_nb_demandes $calcul_methode $calcul_limite
+    extract($tab_item_infos[$item_id]);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_lien $matiere_id $matiere_nb_demandes $calcul_methode $calcul_limite
     // calcul du bilan de l'item
     $score = OutilBilan::calculer_score( $tab_devoirs , $calcul_methode , $calcul_limite , NULL /*date_mysql_debut*/ );
     if($score!==FALSE)

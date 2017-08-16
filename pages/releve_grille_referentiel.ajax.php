@@ -160,7 +160,7 @@ Erreur500::prevention_et_gestion_erreurs_fatales( TRUE /*memory*/ , FALSE /*time
 
 $tab_domaine           = array();  // [domaine_id] => array(domaine_ref,domaine_nom,domaine_nb_lignes,used);
 $tab_theme             = array();  // [domaine_id][theme_id] => array(theme_ref,theme_nom,theme_nb_lignes,used);
-$tab_item              = array();  // [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_cart,item_s2016,item_lien,used);
+$tab_item              = array();  // [theme_id][item_id] => array(item_ref,item_nom,item_coef,item_cart,item_socle,item_lien,used);
 $tab_item_synthese     = array();  // [item_id] => array(item_ref,item_nom);
 $tab_liste_item        = array();  // [i] => item_id
 $tab_eleve_infos       = array();  // [eleve_id] => array(eleve_nom,eleve_prenom)
@@ -220,7 +220,7 @@ if($besoin_notes)
 
 $lignes_nb = 0;
 $longueur_ref_max = 0;
-$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , $only_socle , FALSE /*only_item*/ , TRUE /*s2016_count*/ , TRUE /*item_comm*/ );
+$DB_TAB = DB_STRUCTURE_COMMUN::DB_recuperer_arborescence( 0 /*prof_id*/ , $matiere_id , $niveau_id , $only_socle , FALSE /*only_item*/ , FALSE /*socle_nom*/ , TRUE /*s2016_count*/ , TRUE /*item_comm*/ );
 if(!empty($DB_TAB))
 {
   $domaine_id = 0;
@@ -265,6 +265,7 @@ if(!empty($DB_TAB))
         'item_nom'   => $DB_ROW['item_nom'],
         'item_coef'  => $DB_ROW['item_coef'],
         'item_cart'  => $DB_ROW['item_cart'],
+        'item_socle' => $DB_ROW['entree_id'],
         'item_s2016' => $DB_ROW['s2016_nb'],
         'item_comm'  => $DB_ROW['item_comm'],
         'item_lien'  => $DB_ROW['item_lien'],
@@ -308,7 +309,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='eleve')
 elseif(count($tab_eleve_id))
 {
   $eleves_ordre = ($groupe_type=='Classes') ? 'alpha' : $eleves_ordre ;
-  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre );
+  $tab_eleve_infos = DB_STRUCTURE_BILAN::DB_lister_eleves_cibles( $liste_eleve , $eleves_ordre , FALSE /*with_gepi*/ , FALSE /*with_langue*/ , FALSE /*with_brevet_serie*/ );
   if(!is_array($tab_eleve_infos))
   {
     Json::end( FALSE , 'Aucun élève trouvé correspondant aux identifiants transmis !' );
@@ -399,7 +400,7 @@ if( $besoin_notes && ($only_arbo!='tous') )
           {
             foreach($tab_item[$theme_id] as $item_id => $tab)
             {
-              extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_s2016 $item_lien $item_used
+              extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_lien $item_used
               if( $delete_item || ( !$item_used && ($only_arbo=='item') ) )
               {
                 unset($tab_item[$theme_id][$item_id]);
@@ -658,13 +659,14 @@ if( $type_generique || $type_individuel )
             {
               foreach($tab_item[$theme_id] as $item_id => $tab)
               {
-                extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_s2016 $item_lien $item_used
+                extract($tab);  // $item_ref $item_nom $item_coef $item_cart $item_socle $item_s2016 $item_lien $item_used
                 if($aff_coef)
                 {
                   $texte_coef = '['.$item_coef.'] ';
                 }
                 if($aff_socle)
                 {
+                  $texte_socle = ($item_socle) ? '[S] ' : '[–] ';
                   $texte_s2016 = ($item_s2016) ? '[S] ' : '[–] ';
                 }
                 if($aff_comm)
@@ -685,8 +687,8 @@ if( $type_generique || $type_individuel )
                 elseif(!$item_cart)                            { $texte_demande_eval = '<q class="demander_non" title="Pas de demande autorisée pour cet item précis."></q>'; }
                 else                                           { $texte_demande_eval = '<q class="demander_add" id="demande_'.$matiere_id.'_'.$item_id.'_'.$score.'" title="Ajouter aux demandes d\'évaluations."></q>'; }
                 $td_ref = ($longueur_ref_max) ? '<td>'.$item_ref.'</td>' : '' ;
-                $releve_HTML_individuel .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_s2016.$texte_comm.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
-                $releve_PDF->item( $item_ref , $texte_coef.$texte_s2016.$item_nom , $colspan_nb_apres );
+                $releve_HTML_individuel .= '<tr>'.$td_ref.'<td>'.$texte_coef.$texte_socle.$texte_s2016.$texte_comm.$texte_lien_avant.html($item_nom).$texte_lien_apres.$texte_demande_eval.'</td>';
+                $releve_PDF->item( $item_ref , $texte_coef.$texte_socle.$texte_s2016.$item_nom , $colspan_nb_apres );
                 // Pour chaque case...
                 if($colspan_nb_apres)
                 {

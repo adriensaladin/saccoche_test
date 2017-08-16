@@ -494,18 +494,13 @@ if( ($_SESSION['USER_PROFIL_TYPE']=='eleve') || ( ($_SESSION['USER_PROFIL_TYPE']
   $tab_types = array
   (
     'livret'   => array( 'droit'=>'OFFICIEL_LIVRET'   , 'titre'=>'Livret Scolaire'  ) ,
-    'brevet'   => array( 'droit'=>'FICHE_BREVET'      , 'titre'=>'Fiche brevet'          ) ,
     'releve'   => array( 'droit'=>'OFFICIEL_RELEVE'   , 'titre'=>'Relevé d\'évaluations' ) ,
     'bulletin' => array( 'droit'=>'OFFICIEL_BULLETIN' , 'titre'=>'Bulletin scolaire'     ) ,
-    'palier1'  => array( 'droit'=>'OFFICIEL_SOCLE'    , 'titre'=>'Maîtrise du palier 1'  ) ,
-    'palier2'  => array( 'droit'=>'OFFICIEL_SOCLE'    , 'titre'=>'Maîtrise du palier 2'  ) ,
-    'palier3'  => array( 'droit'=>'OFFICIEL_SOCLE'    , 'titre'=>'Maîtrise du palier 3'  ) ,
   );
   $droit_voir_archives_pdf = FALSE;
   foreach($tab_types as $BILAN_TYPE => $tab)
   {
     $droit_voir_archives_pdf = $droit_voir_archives_pdf || Outil::test_user_droit_specifique($_SESSION['DROIT_'.$tab['droit'].'_VOIR_ARCHIVE']) ;
-    if($BILAN_TYPE=='palier1') break; // car droit commun pour tous les paliers
   }
   if($droit_voir_archives_pdf)
   {

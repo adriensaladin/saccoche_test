@@ -59,7 +59,6 @@ $astuce_referentiel_uploader_ressources = 'Vous pouvez <b>mettre en ligne des re
 $astuce_socle_choisir_langue            = 'Vous pouvez <b>indiquer la langue étrangère</b> des élèves pour le socle commun. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=referentiels_socle__socle_choisir_langue">Documentation</a></span>';
 $astuce_dates_periodes                  = 'Vous pouvez <a href="./index.php?page=consultation_groupe_periode"><b>consulter les dates des périodes</b></a> associées aux classes et aux groupes.';
 $astuce_date_connexion                  = 'Vous pouvez <a href="./index.php?page=consultation_date_connexion"><b>consulter la date de dernière connexion</b></a> des élèves.';
-$astuce_faq_b2i                         = '<em>SACoche</em> peut être utilisé pour <b>l\'évaluation du B2i</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=faq_documentation__evaluer_b2i">Documentation</a></span>';
 $astuce_authentification_ent            = 'On peut se connecter à <em>SACoche</em> en utilisant <b>l\'authentification de plusieurs ENT</b>. <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__gestion_mode_identification">Documentation</a></span>';
 
 // Ranger de la plus récente à la plus ancienne (la fréquence d'apparition étant liée à l'actualité de l'astuce)
@@ -81,7 +80,6 @@ $tab_astuces = array(
     $astuce_bulletin_scolaire,
     $astuce_panneau_affichage,
     $astuce_socle_choisir_langue,
-    $astuce_faq_b2i,
     $astuce_authentification_ent,
   ),
   'directeur' => array(
@@ -102,7 +100,6 @@ $tab_astuces = array(
     $astuce_memorisation_selection_items,
     $astuce_dates_periodes,
     $astuce_date_connexion,
-    $astuce_faq_b2i,
   ),
   'professeur' => array(
     $astuce_menus_raccourcis,
@@ -128,7 +125,6 @@ $tab_astuces = array(
     $astuce_dates_periodes,
     $astuce_date_connexion,
     $astuce_devoir_ordonner_items,
-    $astuce_faq_b2i,
   ),
   'parent' => array(
     $astuce_menus_raccourcis,

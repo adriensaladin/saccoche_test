@@ -662,10 +662,10 @@ if($version_base_structure_actuelle=='2017-07-05')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_periode SET periode_livret = NULL WHERE periode_livret=0 ' );
     }
     // suppression d'un paramètre pour le déplacer vers sacoche_groupe
-    $etablissement_chef_id = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="etablissement_chef_id"' );
+    $etablissement_chef_id = (int)DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="etablissement_chef_id"' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom="etablissement_chef_id"' );
     DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe ADD groupe_chef_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 AFTER fiche_brevet' );
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_groupe SET groupe_chef_id = '.$etablissement_chef_id );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_groupe SET groupe_chef_id = '.$etablissement_chef_id.' WHERE groupe_type="classe" ' );
     // modification sacoche_parametre (paramètres CAS pour ENT)
     $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
     if($connexion_nom=='itslearning_corse')
@@ -680,6 +680,58 @@ if($version_base_structure_actuelle=='2017-07-05')
     {
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="cas" WHERE parametre_nom="cas_serveur_root" ' );
     }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-08-09 => 2017-08-16
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-08-09')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-08-16';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    // correction d'une requête précédente initialement trop large
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_groupe SET groupe_chef_id = 0 WHERE groupe_type!="classe" ' );
+    // suppression de tables et d'entrées en lien avec l'ancien socle commun et l'ancien DNB
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_brevet_epreuve ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_brevet_fichier ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_brevet_saisie ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_brevet_serie ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_jointure_user_entree ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_jointure_user_pilier ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_socle_palier ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_socle_pilier ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_socle_section ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_socle_entree ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DROP TABLE IF EXISTS sacoche_officiel_fichier ' );
+    // L'index suivant n'existait que sur des installations récentes...
+    $Row_index = DB::queryRow(SACOCHE_STRUCTURE_BD_NAME , 'SHOW INDEX FROM sacoche_user WHERE Key_name="eleve_brevet_serie" ' );
+    if(!empty($Row_index))
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user DROP INDEX eleve_brevet_serie ' );
+    }
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user DROP eleve_brevet_serie ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_user DROP eleve_langue ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item DROP INDEX entree_id ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_referentiel_item DROP entree_id ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe DROP fiche_brevet ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode DROP officiel_palier1 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode DROP officiel_palier2 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_jointure_groupe_periode DROP officiel_palier3 ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN("droit_affecter_langue","droit_validation_entree","droit_validation_pilier","droit_annulation_pilier","droit_socle_pourcentage_acquis","droit_socle_etat_validation")' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN("droit_officiel_socle_modifier_statut","droit_officiel_socle_corriger_appreciation","droit_officiel_socle_appreciation_generale","droit_officiel_socle_impression_pdf","droit_officiel_socle_voir_archive")' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN("droit_fiche_brevet_modifier_statut","droit_fiche_brevet_corriger_appreciation","droit_fiche_brevet_appreciation_generale","droit_fiche_brevet_impression_pdf","droit_fiche_brevet_voir_archive")' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN("officiel_socle_etat_validation","officiel_socle_pourcentage_acquis","officiel_socle_only_presence","officiel_socle_prof_principal")' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN("officiel_socle_appreciation_generale_longueur","officiel_socle_appreciation_generale_report","officiel_socle_appreciation_generale_modele")' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN("officiel_socle_appreciation_rubrique_longueur","officiel_socle_appreciation_rubrique_report","officiel_socle_appreciation_rubrique_modele")' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom IN("officiel_socle_assiduite","officiel_socle_couleur","officiel_socle_fond","officiel_socle_legende","officiel_socle_ligne_supplementaire")' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_parametre WHERE parametre_nom = "liste_paliers_actifs" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_abonnement WHERE abonnement_ref = "fiche_brevet_statut" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_notification WHERE abonnement_ref = "fiche_brevet_statut" ' );
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'DELETE FROM sacoche_jointure_user_abonnement WHERE abonnement_ref = "fiche_brevet_statut" ' );
   }
 }
 

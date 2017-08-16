@@ -253,6 +253,7 @@ class To
 
   /**
    * Renvoyer l'année de session du DNB.
+   * N'EST PLUS UTILISÉ AU 08/2017
    *
    * @param void
    * @return string

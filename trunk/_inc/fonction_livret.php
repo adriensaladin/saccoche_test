@@ -263,7 +263,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     $cycle_id = $PAGE_RUBRIQUE_TYPE{1};
     // Récupération de la liste des items et des liaisons items / composantes
     $tab_join_item_socle = array();
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes( $cycle_id );
+    $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_associations_items_composantes( $cycle_id );
     if(!$DB_TAB) return FALSE;
     foreach($DB_TAB as $DB_ROW)
     {
@@ -273,7 +273,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
     $liste_item_id = implode(',',array_keys($tab_join_item_socle));
     // Il faut au moins connaître le mode de calcul associé à chaque item
     $tab_item_infos = array();
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
+    $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
     foreach($DB_TAB as $DB_ROW)
     {
       $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
@@ -362,7 +362,7 @@ function calculer_et_enregistrer_donnees_eleves( $PAGE_REF , $PAGE_PERIODICITE ,
       $liste_item_id = implode(',',array_keys($tab_join_item_rubrique_position));
       // Il faut au moins connaître le coefficient et le mode de calcul associé à chaque item
       $tab_item_infos = array();
-      $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
+      $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
       foreach($DB_TAB as $DB_ROW)
       {
         $tab_item_infos[$DB_ROW['item_id']] = array(
@@ -933,7 +933,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
     $tab_join_item_socle = array();
     $domaine_id    = ($rubrique_id<15) ? NULL : $rubrique_id/10 ;
     $composante_id = ($rubrique_id<15) ? $rubrique_id : NULL ;
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_recuperer_associations_items_composantes( $cycle_id , FALSE /*with_detail*/ , $domaine_id , $composante_id );
+    $DB_TAB = DB_STRUCTURE_BILAN::DB_recuperer_associations_items_composantes( $cycle_id , FALSE /*with_detail*/ , $domaine_id , $composante_id );
     if(!$DB_TAB) return array( FALSE , NULL , "Pas de données trouvées pour estimer ce positionnement." );
     foreach($DB_TAB as $DB_ROW)
     {
@@ -942,7 +942,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
     $liste_item_id = implode(',',array_keys($tab_join_item_socle));
     // Il faut au moins connaître le mode de calcul associé à chaque item
     $tab_item_infos = array();
-    $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , FALSE /*detail*/ );
+    $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_infos_items( $liste_item_id , FALSE /*detail*/ );
     foreach($DB_TAB as $DB_ROW)
     {
       $tab_item_infos[$DB_ROW['item_id']] = array(
@@ -1000,7 +1000,7 @@ function calculer_et_enregistrer_donnee_eleve_rubrique_objet( $livret_saisie_id 
       {
         // Il faut au moins connaître le coefficient et le mode de calcul associé à chaque item
         $tab_item_infos = array();
-        $DB_TAB = DB_STRUCTURE_SOCLE::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
+        $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_infos_items( $liste_item_id , TRUE /*detail*/ );
         foreach($DB_TAB as $DB_ROW)
         {
           $tab_item_infos[$DB_ROW['item_id']] = array(

@@ -108,11 +108,9 @@ if( ($action=='fusionner') && $id_actuel && $id_ancien )
     ':email_origine' => 'user_email_origine',
     ':langue'        => 'user_langue',
     ':daltonisme'    => 'user_daltonisme',
-    ':elv_langue'    => 'eleve_langue',
     ':lv1'           => 'eleve_lv1',
     ':lv2'           => 'eleve_lv2',
     ':uai_origine'   => 'eleve_uai_origine',
-    ':elv_brevet'    => 'eleve_brevet_serie',
     ':id_ent'        => 'user_id_ent',
     ':id_gepi'       => 'user_id_gepi',
   );

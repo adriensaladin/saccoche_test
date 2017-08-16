@@ -98,7 +98,7 @@ foreach($DB_TAB as $DB_ROW)
   $tab_user[$DB_ROW['groupe_id']] = '';
 }
 // Récupérer la liste des élèves / classes
-$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,eleve_langue,eleve_lv1,eleve_lv2,user_id,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
+$DB_TAB = DB_STRUCTURE_ADMINISTRATEUR::DB_lister_users( 'eleve' , 1 /*only_actuels*/ , 'eleve_classe_id,user_id,user_nom,user_prenom' /*liste_champs*/ , FALSE /*with_classe*/ );
 foreach($DB_TAB as $DB_ROW)
 {
   if( empty($only_groupes_id) || isset($tab_user[$DB_ROW['eleve_classe_id']]) )

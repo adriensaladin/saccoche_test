@@ -33,8 +33,6 @@ if($_SESSION['USER_PROFIL_TYPE']=='professeur')
 {
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_professeur($_SESSION['USER_ID']);
   $tab_groupes  = ($_SESSION['USER_JOIN_GROUPES']=='config') ? DB_STRUCTURE_COMMUN::DB_OPT_groupes_professeur($_SESSION['USER_ID']) : DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl() ;
-  $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
-  $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
   // Javascript
   Layout::add( 'js_inline_before' , 'var date_mysql  = "'.TODAY_MYSQL.'";' );
   // Fabrication du tableau javascript "tab_groupe_periode" pour les jointures groupes/périodes
@@ -44,22 +42,17 @@ if($_SESSION['USER_PROFIL_TYPE']=='directeur')
 {
   $tab_matieres = DB_STRUCTURE_COMMUN::DB_OPT_matieres_etabl();
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_classes_groupes_etabl();
-  $tab_paliers  = DB_STRUCTURE_COMMUN::DB_OPT_paliers_etabl();
-  $of_p = (count($tab_paliers)<2) ? FALSE : '' ;
 }
 if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
 {
   $tab_matieres = array();
   $tab_groupes  = DB_STRUCTURE_COMMUN::DB_OPT_regroupements_etabl( FALSE /*sans*/ );
-  $tab_paliers  = array();
-  $of_p = FALSE;
 }
 $tab_cycles   = DB_STRUCTURE_COMMUN::DB_OPT_socle2016_cycles( FALSE /*only_used*/ );
 $tab_periodes = DB_STRUCTURE_COMMUN::DB_OPT_periodes_etabl();
 
 $select_matiere = HtmlForm::afficher_select($tab_matieres , 'f_matiere' /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['matiere_id'] /*selection*/ ,              '' /*optgroup*/ );
 $select_groupe  = HtmlForm::afficher_select($tab_groupes  , 'f_groupe'  /*select_nom*/ ,                      '' /*option_first*/ , FALSE                          /*selection*/ , 'regroupements' /*optgroup*/ );
-$select_palier  = HtmlForm::afficher_select($tab_paliers  , 'f_palier'  /*select_nom*/ ,                   $of_p /*option_first*/ , Form::$tab_choix['palier_id']  /*selection*/ ,              '' /*optgroup*/ );
 $select_cycle   = HtmlForm::afficher_select($tab_cycles   , 'f_cycle'   /*select_nom*/ ,                      '' /*option_first*/ , Form::$tab_choix['cycle_id']   /*selection*/ ,              '' /*optgroup*/ );
 $select_periode = HtmlForm::afficher_select($tab_periodes , 'f_periode' /*select_nom*/ , 'periode_personnalisee' /*option_first*/ , FALSE                          /*selection*/ ,              '' /*optgroup*/ );
 
@@ -72,9 +65,7 @@ if($_SESSION['USER_PROFIL_TYPE']!='administrateur')
                 .'<option value="listing_matiere">liste des items par matière</option>'
                 .'<option value="item_matiere_usage">utilisation des items par matière</option>'
                 .'<option value="arbre_matiere">arborescence des items par matière</option>'
-                .'<option value="arbre_socle">arborescence des items du socle</option>'
-                .'<option value="jointure_socle_matiere">liens socle &amp; matières</option>'
-                .'<option value="jointure_socle2016_matiere">liens socle 2016 &amp; matières</option>';
+                .'<option value="jointure_socle2016_matiere">liens socle &amp; matières</option>';
 }
 else
 {
@@ -84,11 +75,11 @@ else
 }
 if( ($_SESSION['USER_PROFIL_TYPE']=='administrateur') || ($_SESSION['USER_PROFIL_TYPE']=='directeur') )
 {
-  $select_type .= '<option value="socle2016_gepi">maîtrise du nouveau socle 2016 pour GEPI</option>';
+  $select_type .= '<option value="socle2016_gepi">maîtrise du socle pour GEPI</option>';
 }
 
 // Test pour l'export du socle vers GEPI
-$nb_eleves_sans_sconet = DB_STRUCTURE_SOCLE::DB_compter_eleves_actuels_sans_id_sconet();
+$nb_eleves_sans_sconet = DB_STRUCTURE_LIVRET::DB_compter_eleves_actuels_sans_id_sconet();
 $s = ($nb_eleves_sans_sconet>1) ? 's' : '' ;
 $msg_id_sconet = (!$nb_eleves_sans_sconet) ? '<label class="valide">Identifiants Siècle présents.</label>' : '<label class="alerte">'.$nb_eleves_sans_sconet.' élève'.$s.' trouvé'.$s.' sans identifiant Siècle.</label> <span class="manuel"><a class="pop_up" href="'.SERVEUR_DOCUMENTAIRE.'?fichier=support_administrateur__import_users_siecle">DOC</a></span>' ;
 
@@ -110,7 +101,6 @@ $support_profil = ($_SESSION['USER_PROFIL_TYPE']!='administrateur') ? 'professeu
     </span>
   </div>
   <div id="div_matiere" class="hide"><label class="tab" for="f_matiere">Matière :</label><?php echo $select_matiere ?><input type="hidden" id="f_matiere_nom" name="f_matiere_nom" value="" /></div>
-  <div id="div_palier" class="hide"><label class="tab" for="f_palier">Palier :</label><?php echo $select_palier ?><input type="hidden" id="f_palier_nom" name="f_palier_nom" value="" /></div>
   <div id="div_cycle" class="hide"><label class="tab" for="f_cycle">Cycle :</label><?php echo $select_cycle ?><input type="hidden" id="f_cycle_nom" name="f_cycle_nom" value="" /></div>
   <p id="p_submit" class="hide"><span class="tab"></span><button id="bouton_exporter" type="submit" class="fichier_export">Générer le listing de données</button><label id="ajax_msg">&nbsp;</label></p>
 </fieldset></form>

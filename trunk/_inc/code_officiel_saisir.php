@@ -47,11 +47,8 @@ $moyenne      = (isset($_POST['f_moyenne']))      ? Clean::decimal($_POST['f_moy
 $import_info  = (isset($_POST['f_import_info']))  ? Clean::texte($_POST['f_import_info'])         : '';
 // Autres chaines spécifiques...
 $listing_matieres = (isset($_POST['f_listing_matieres'])) ? $_POST['f_listing_matieres'] : '' ;
-$listing_piliers  = (isset($_POST['f_listing_piliers']))  ? $_POST['f_listing_piliers']  : '' ;
 $tab_matiere_id = array_filter( Clean::map('entier', explode(',',$listing_matieres) ) , 'positif' );
-$tab_pilier_id  = array_filter( Clean::map('entier', explode(',',$listing_piliers) )  , 'positif' );
 $liste_matiere_id = implode(',',$tab_matiere_id);
-$liste_pilier_id  = implode(',',$tab_pilier_id);
 
 $is_sous_groupe = ($groupe_id) ? TRUE : FALSE ;
 $groupe_id      = ($groupe_id) ? $groupe_id : $classe_id ; // Le groupe = le groupe transmis ou sinon la classe (cas le plus fréquent).
@@ -436,35 +433,6 @@ elseif($BILAN_TYPE=='bulletin')
   $tab_matiere_id  = $tab_matiere_id;
   require(CHEMIN_DOSSIER_INCLUDE.'noyau_items_synthese.php');
   $nom_bilan_html  = 'releve_HTML';
-}
-elseif(in_array($BILAN_TYPE,array('palier1','palier2','palier3')))
-{
-  $palier_id      = (int)substr($BILAN_TYPE,-1);
-  $palier_nom     = 'Palier '.$palier_id;
-  $only_presence  = $_SESSION['OFFICIEL']['SOCLE_ONLY_PRESENCE'];
-  $aff_socle_PA   = $_SESSION['OFFICIEL']['SOCLE_POURCENTAGE_ACQUIS'];
-  $aff_socle_EV   = $_SESSION['OFFICIEL']['SOCLE_ETAT_VALIDATION'];
-  $groupe_id      = $groupe_id;  // Le groupe = la classe (par défaut) ou le groupe transmis
-  $groupe_nom     = $groupe_nom; // Déjà défini avant car on en avait besoin
-  $groupe_type    = (!$is_sous_groupe) ? 'Classe'  : 'Groupe' ;
-  $mode           = 'auto';
-  $aff_coef       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_socle      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_lien       = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $aff_start      = 0; // Sans objet, l'élève & sa famille n'ayant accès qu'à l'archive pdf
-  $couleur        = $_SESSION['OFFICIEL']['SOCLE_COULEUR'];
-  $fond           = $_SESSION['OFFICIEL']['SOCLE_FOND'];
-  $legende        = $_SESSION['OFFICIEL']['SOCLE_LEGENDE'];
-  $marge_gauche   = $_SESSION['OFFICIEL']['MARGE_GAUCHE'];
-  $marge_droite   = $_SESSION['OFFICIEL']['MARGE_DROITE'];
-  $marge_haut     = $_SESSION['OFFICIEL']['MARGE_HAUT'];
-  $marge_bas      = $_SESSION['OFFICIEL']['MARGE_BAS'];
-  $eleves_ordre   = 'alpha';
-  $tab_pilier_id  = $tab_pilier_id;
-  $tab_eleve_id   = array($eleve_id); // tableau de l'unique élève à considérer
-  $tab_matiere_id = array();
-  require(CHEMIN_DOSSIER_INCLUDE.'noyau_socle_releve.php');
-  $nom_bilan_html = 'releve_HTML';
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////

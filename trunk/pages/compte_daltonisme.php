@@ -50,15 +50,6 @@ foreach( $_SESSION['ACQUIS'] as $acquis_id => $tab_acquis_info )
   $td_normal .= '<td style="background-color:'.$tab_acquis_info['COULEUR'].'">acquisition<br />'.html($tab_acquis_info['SIGLE']).'</td>';
   $td_dalton .= '<td style="background-color:'.$tab_acquis_info['GRIS'   ].'">acquisition<br />'.html($tab_acquis_info['SIGLE']).'</td>';
 }
-
-// couleurs des états de validation
-$td_normal .= '<td class="nu">&nbsp;</td>';
-$td_dalton .= '<td class="nu">&nbsp;</td>';
-foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
-{
-  $td_normal .= '<td style="background-color:'.$tab_valid_info['COULEUR'].'">validation<br />'.$tab_valid_info['TEXTE'].'</td>';
-  $td_dalton .= '<td style="background-color:'.$tab_valid_info['GRIS'   ].'">validation<br />'.$tab_valid_info['TEXTE'].'</td>';
-}
 ?>
 
 <div><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=notes_acquis__daltonisme">DOC : Daltonisme</a></span></div>
@@ -74,13 +65,11 @@ foreach($_SESSION['VALID'] as $valid_etat => $tab_valid_info)
         <th colspan="<?php echo $_SESSION['NOMBRE_CODES_NOTATION'] ?>"><?php echo html(Lang::_("Notes aux évaluations")) ?></th>
         <th class="nu"></th>
         <th colspan="<?php echo $_SESSION['NOMBRE_ETATS_ACQUISITION'] ?>"><?php echo html(Lang::_("Degrés d'acquisitions")) ?></th>
-        <th class="nu"></th>
-        <th colspan="3"><?php echo html(Lang::_("États de validations")) ?></th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td colspan="<?php echo (7+$_SESSION['NOMBRE_CODES_NOTATION']+$_SESSION['NOMBRE_ETATS_ACQUISITION']); ?>" class="nu" style="font-size:50%"></td>
+        <td colspan="<?php echo (3+$_SESSION['NOMBRE_CODES_NOTATION']+$_SESSION['NOMBRE_ETATS_ACQUISITION']); ?>" class="nu" style="font-size:50%"></td>
       </tr>
       <tr>
         <th><label for="note_normal"><?php echo html(Lang::_("Conventions dans l'établissement")) ?></label><br /><input type="radio" id="note_normal" name="daltonisme" value="0"<?php echo $checked_normal ?> /></th>

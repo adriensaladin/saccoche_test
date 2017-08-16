@@ -39,7 +39,6 @@ $tab_menu = array
   'parametrage' => Lang::_("Paramétrages"),
   'referentiel' => Lang::_("Référentiels (gestion)"),
   'evaluation'  => Lang::_("Évaluations"),
-  'validation'  => Lang::_("Validation du socle"),
   'releve'      => Lang::_("Relevés / Synthèses"),
   'officiel'    => Lang::_("Bilans officiels"),
 );
@@ -88,13 +87,6 @@ $tab_sous_menu = array
     'evaluation_ponctuelle'         => array( 'texte' => Lang::_("Évaluer un élève à la volée")      , 'class' => 'evaluation_gestion' , 'href' => 'page=evaluation&amp;section=ponctuelle'         ),
     'evaluation_voir'               => array( 'texte' => Lang::_("Liste des évaluations")            , 'class' => 'evaluation_voir'    , 'href' => 'page=evaluation&amp;section=voir'               ),
   ),
-  'validation' => array
-  (
-    'administrateur_eleve_langue'     => array( 'texte' => Lang::_("Choisir la langue étrangère")      , 'class' => 'socle_langue'  , 'href' => 'page=administrateur_eleve_langue'                 ),
-    'validation_socle_item'           => array( 'texte' => Lang::_("Valider les items du socle")       , 'class' => 'socle_item'    , 'href' => 'page=validation_socle&amp;section=item'           ),
-    'validation_socle_pilier'         => array( 'texte' => Lang::_("Valider les compétences du socle") , 'class' => 'socle_pilier'  , 'href' => 'page=validation_socle&amp;section=pilier'         ),
-    'validation_socle_pilier_annuler' => array( 'texte' => Lang::_("Annuler une compétence validée")   , 'class' => 'socle_annuler' , 'href' => 'page=validation_socle&amp;section=pilier_annuler' ),
-  ),
   'releve' => array
   (
     'releve_recherche'          => array( 'texte' => Lang::_("Recherche ciblée")                , 'class' => 'releve_recherche'      , 'href' => 'page=releve&amp;section=recherche'           ),
@@ -102,21 +94,16 @@ $tab_sous_menu = array
     'releve_items'              => array( 'texte' => Lang::_("Relevé d'items")                  , 'class' => 'releve_items'          , 'href' => 'page=releve&amp;section=items'               ),
     'releve_synthese'           => array( 'texte' => Lang::_("Synthèse d'items")                , 'class' => 'releve_synthese'       , 'href' => 'page=releve&amp;section=synthese'            ),
     'releve_chronologique'      => array( 'texte' => Lang::_("Bilan chronologique")             , 'class' => 'releve_chrono'         , 'href' => 'page=releve&amp;section=bilan_chronologique' ),
-    'releve_socle2016'          => array( 'texte' => Lang::_("Maîtrise du socle").' (2016)'     , 'class' => 'releve_socle2016'      , 'href' => 'page=releve&amp;section=socle2016'           ),
- // 'releve_socle'              => array( 'texte' => Lang::_("Relevé de maîtrise du socle")     , 'class' => 'releve_socle'          , 'href' => 'page=releve&amp;section=socle'               ),
- // 'releve_synthese_socle'     => array( 'texte' => Lang::_("Synthèse de maîtrise du socle")   , 'class' => 'releve_synthese_socle' , 'href' => 'page=releve&amp;section=synthese_socle'      ),
+    'releve_socle2016'          => array( 'texte' => Lang::_("Maîtrise du socle")               , 'class' => 'releve_socle2016'      , 'href' => 'page=releve&amp;section=socle2016'           ),
   ),
   'officiel' => array
   (
-    'officiel_assiduite'        => array( 'texte' => Lang::_("Absences / Retards")    , 'class' => 'officiel_assiduite'    , 'href' => 'page=officiel&amp;section=assiduite'        ),
-    'officiel_accueil_releve'   => array( 'texte' => Lang::_("Relevé d'évaluations")  , 'class' => 'officiel_releve'       , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
-    'officiel_accueil_bulletin' => array( 'texte' => Lang::_("Bulletin scolaire")     , 'class' => 'officiel_bulletin'     , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
- // 'officiel_accueil_palier1'  => array( 'texte' => Lang::_("Maîtrise du palier 1")  , 'class' => 'officiel_palier1'      , 'href' => 'page=officiel&amp;section=accueil_palier1'  ),
- // 'officiel_accueil_palier2'  => array( 'texte' => Lang::_("Maîtrise du palier 2")  , 'class' => 'officiel_palier2'      , 'href' => 'page=officiel&amp;section=accueil_palier2'  ),
- // 'officiel_accueil_palier3'  => array( 'texte' => Lang::_("Maîtrise du palier 3")  , 'class' => 'officiel_palier3'      , 'href' => 'page=officiel&amp;section=accueil_palier3'  ),
-    'livret_accueil'            => array( 'texte' => Lang::_("Livret Scolaire")       , 'class' => 'marianne'              , 'href' => 'page=livret&amp;section=edition'            ),
-    'brevet_fiches'             => array( 'texte' => Lang::_("Fiches brevet")         , 'class' => 'officiel_brevet'       , 'href' => 'page=brevet&amp;section=fiches'             ),
-    'officiel_voir_archive'     => array( 'texte' => Lang::_("Archives consultables") , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'     ), // Pour élèves et parents c'est "officiel_voir_archive"
+    'officiel_assiduite'          => array( 'texte' => Lang::_("Absences / Retards")          , 'class' => 'officiel_assiduite'    , 'href' => 'page=officiel&amp;section=assiduite'        ),
+    'officiel_accueil_releve'     => array( 'texte' => Lang::_("Relevé d'évaluations")        , 'class' => 'officiel_releve'       , 'href' => 'page=officiel&amp;section=accueil_releve'   ),
+    'officiel_accueil_bulletin'   => array( 'texte' => Lang::_("Bulletin scolaire")           , 'class' => 'officiel_bulletin'     , 'href' => 'page=officiel&amp;section=accueil_bulletin' ),
+    'livret_accueil'              => array( 'texte' => Lang::_("Livret Scolaire")             , 'class' => 'marianne'              , 'href' => 'page=livret&amp;section=edition'            ),
+    'brevet_fiches'               => array( 'texte' => Lang::_("Fiches brevet")               , 'class' => 'officiel_brevet'       , 'href' => 'page=brevet&amp;section=fiches'             ),
+    'officiel_voir_archive'       => array( 'texte' => Lang::_("Archives consultables")       , 'class' => 'officiel_voir_archive' , 'href' => 'page=officiel_reglages_voir_archives'       ), // Pour élèves et parents c'est "officiel_voir_archive"
   ),
 );
 
@@ -178,41 +165,10 @@ if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_GERER_RESSOURCE'] , NULL
   $tab_sous_menu['referentiel']['professeur_referentiel_ressources']['disabled'] = TRUE;
 }
 
-// Choisir la langue étrangère pour le socle commun (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_AFFECTER_LANGUE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  $tab_sous_menu['validation']['administrateur_eleve_langue']['disabled'] = TRUE;
-}
-
-// Valider les items du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_ENTREE'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  $tab_sous_menu['validation']['validation_socle_item']['disabled'] = TRUE;
-}
-
-// Valider les piliers du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_VALIDATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  $tab_sous_menu['validation']['validation_socle_pilier']['disabled'] = TRUE;
-}
-
-// Annuler une compétence validée du socle (profils [professeur] et [directeur] uniquement).
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'] || !Outil::test_user_droit_specifique( $_SESSION['DROIT_ANNULATION_PILIER'] , NULL /*matiere_coord_or_groupe_pp_connu*/ , 0 /*matiere_id_or_groupe_id_a_tester*/ ))
-{
-  $tab_sous_menu['validation']['validation_socle_pilier_annuler']['disabled'] = TRUE;
-}
-
 // Grille d'items d'un référentiel.
 if(!Outil::test_user_droit_specifique($_SESSION['DROIT_VOIR_GRILLES_ITEMS']))
 {
   $tab_sous_menu['releve']['releve_grille_referentiel']['disabled'] = TRUE;
-}
-
-// Relevé de maîtrise du socle & Synthèse de maîtrise du socle
-if(!$_SESSION['LISTE_PALIERS_ACTIFS'])
-{
-  // $tab_sous_menu['releve']['releve_socle']['disabled'] = TRUE;
-  // $tab_sous_menu['releve']['releve_synthese_socle']['disabled'] = TRUE;
 }
 
 // Import des absences / retards sur les bilans officiels (profils [professeur] et [directeur] uniquement).
@@ -222,7 +178,7 @@ if(!Outil::test_user_droit_specifique( $_SESSION['DROIT_OFFICIEL_SAISIR_ASSIDUIT
 }
 
 // Archives consultables des bilans officiels.
-$tab_droits = array( 'FICHE_BREVET' , 'OFFICIEL_LIVRET' , 'OFFICIEL_RELEVE' , 'OFFICIEL_BULLETIN' , 'OFFICIEL_SOCLE' ); // TODO : FICHE_BREVET + OFFICIEL_SOCLE à virer
+$tab_droits = array( 'OFFICIEL_LIVRET' , 'OFFICIEL_RELEVE' , 'OFFICIEL_BULLETIN' );
 $droit_voir_archives_pdf = FALSE;
 foreach($tab_droits as $droit)
 {
@@ -233,15 +189,4 @@ if(!$droit_voir_archives_pdf)
     $tab_sous_menu['officiel']['officiel_voir_archive']['disabled'] = TRUE;
 }
 
-// Bilans officiels relatifs aux paliers du socle restreint aux paliers en vigueur dans l'établissement
-/* TODO A RETIRER
-$tab_paliers_actifs = explode(',',$_SESSION['LISTE_PALIERS_ACTIFS']);
-for( $palier_id=1 ; $palier_id<4 ; $palier_id++ )
-{
-  if(!in_array($palier_id,$tab_paliers_actifs))
-  {
-    $tab_sous_menu['officiel']['officiel_accueil_palier'.$palier_id]['disabled'] = TRUE;
-  }
-}
-*/
 ?>

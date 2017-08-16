@@ -16,7 +16,6 @@ ALTER TABLE sacoche_abonnement DISABLE KEYS;
 
 INSERT INTO sacoche_abonnement VALUES 
 ("message_accueil"            , 0, 1, "professeur,directeur,parent,eleve", "Message d'accueil"                  , "Message d'accueil nouveau ou modifié."), -- si la date de visibilité le permet
-("fiche_brevet_statut"        , 0, 0, "professeur,directeur"             , "Fiche brevet, étape de saisie"      , "Ouverture d'étape de saisie d'une fiche brevet."),
 ("bilan_officiel_statut"      , 0, 0, "professeur,directeur"             , "Bilan officiel, étape de saisie"    , "Ouverture d'étape de saisie d'un bilan officiel."),
 ("bilan_officiel_appreciation", 1, 0, "professeur,directeur"             , "Bilan officiel, erreur appréciation", "Signalement d'un souci pour une appréciation d'un bilan officiel."),
 ("referentiel_edition"        , 0, 0, "professeur"                       , "Modification de référentiel"        , "Modification de référentiel (y compris import / suppression)."),

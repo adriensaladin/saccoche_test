@@ -215,9 +215,6 @@ class Form
     array('valeur' => 'matiere_items_bilanPA'         , 'optgroup'=>1 , 'texte' => 'pourcentage d\'items acquis') ,
     array('valeur' => 'socle2016_domaine_maitrise'    , 'optgroup'=>2 , 'texte' => 'degré de maîtrise d\'un domaine') ,
     array('valeur' => 'socle2016_composante_maitrise' , 'optgroup'=>2 , 'texte' => 'degré de maîtrise d\'une composante') ,
-    array('valeur' => 'socle_item_pourcentage'        , 'optgroup'=>3 , 'texte' => 'pourcentage d\'items disciplinaires acquis') ,
-    array('valeur' => 'socle_item_validation'         , 'optgroup'=>3 , 'texte' => 'état de validation') ,
-    array('valeur' => 'socle_pilier_validation'       , 'optgroup'=>4 , 'texte' => 'état de validation') ,
   );
 
   public static $tab_select_statut = array(
@@ -275,9 +272,7 @@ class Form
     ),
     'objet_recherche' => array(
       1 => 'item(s) matière(s)',
-      2 => 'socle 2016',
-      3 => 'item du socle 2006-2015',
-      4 => 'compétence du socle 2006-2015',
+      2 => 'socle',
     ),
     'officiel_type' => array(
       'sacoche' => 'SACoche',
@@ -286,7 +281,6 @@ class Form
     // complété à partir de la base si besoin (contenu dynamique)
     'zones_geo'  => array(), 
     'continents' => array(),
-    'paliers'    => array(),
   );
 
   public static $tab_select_option_first = array(
@@ -350,7 +344,6 @@ class Form
       'eleves_ordre'              => 'alpha' ,
       'matiere_id'                => 0 ,
       'niveau_id'                 => 0 ,
-      'palier_id'                 => 0 ,
       'cycle_id'                  => 0 ,
       'orientation'               => 'portrait' ,
       'couleur'                   => 'oui' ,
@@ -406,8 +399,6 @@ class Form
       'retroactif'                => 'auto' ,
       'mode_synthese'             => 'predefini' ,
       'fusion_niveaux'            => 1 ,
-      'aff_socle_PA'              => 1 ,
-      'aff_socle_EV'              => 1 ,
       'aff_socle_items_acquis'    => 1 ,
       'aff_socle_position'        => 1 ,
       'aff_socle_points_DNB'      => 1 ,
@@ -473,28 +464,9 @@ class Form
         global $eleves_ordre,$cycle_id,$socle_detail,$type_individuel,$type_synthese,$socle_individuel_format,$socle_synthese_format,$socle_synthese_affichage,$tableau_tri_maitrise_mode,$aff_socle_items_acquis,$aff_socle_position,$aff_socle_points_DNB,$only_presence,$aff_lien,$aff_start,$mode,$couleur,$fond,$legende,$marge_min,$pages_nb;
         $tab_choix_new = compact('eleves_ordre','cycle_id','socle_detail','type_individuel','type_synthese','socle_individuel_format','socle_synthese_format','socle_synthese_affichage','tableau_tri_maitrise_mode','aff_socle_items_acquis','aff_socle_position','aff_socle_points_DNB','only_presence','aff_lien','aff_start','mode','couleur','fond','legende','marge_min','pages_nb');
         break;
-      case 'releve_socle' :
-        global $eleves_ordre,$palier_id,$only_presence,$aff_coef,$aff_socle,$aff_lien,$aff_start,$aff_socle_PA,$aff_socle_EV,$mode,$couleur,$fond,$legende,$marge_min;
-        $tab_choix_new = compact('eleves_ordre','palier_id','only_presence','aff_coef','aff_socle','aff_lien','aff_start','aff_socle_PA','aff_socle_EV','mode','couleur','fond','legende','marge_min');
-      case 'releve_synthese_socle' :
-        global $eleves_ordre,$palier_id,$type,$mode,$couleur,$fond,$legende,$marge_min;
-        $tab_choix_new = compact('eleves_ordre','palier_id','type','mode','couleur','fond','legende','marge_min');
-        break;
-      case 'validation_socle_item' :
-        global $eleves_ordre,$palier_id,$mode;
-        $tab_choix_new = compact('eleves_ordre','palier_id','mode');
-        break;
-      case 'validation_socle_pilier' :
-        global $eleves_ordre,$palier_id;
-        $tab_choix_new = compact('eleves_ordre','palier_id');
-        break;
       case 'matiere' :
         global $matiere_id;
         $tab_choix_new = compact('matiere_id');
-        break;
-      case 'palier' :
-        global $palier_id;
-        $tab_choix_new = compact('palier_id');
         break;
       case 'cycle' :
         global $cycle_id;

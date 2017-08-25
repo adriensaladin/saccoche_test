@@ -111,6 +111,10 @@ foreach($tab_indices_fichier as $i_fichier)
     $id_base = array_search($tab_users_fichier['sconet_num'][$i_fichier],$tab_users_base['sconet_num']);
   }
   // Si pas trouvé, recherche sur reference
+  if( (!$id_base) && ($import_profil=='eleve') && isset($tab_users_fichier['old_ine'][$i_fichier]) )
+  {
+    $id_base = array_search($tab_users_fichier['old_ine'][$i_fichier],$tab_users_base['reference']);
+  }
   if( (!$id_base) && ($tab_users_fichier['reference'][$i_fichier]) )
   {
     $id_base = array_search($tab_users_fichier['reference'][$i_fichier],$tab_users_base['reference']);

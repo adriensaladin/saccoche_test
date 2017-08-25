@@ -118,8 +118,8 @@ if( ($action=='Afficher_evaluations') && $eleve_id && $date_debut && $date_fin )
   {
     $nb_saisies_possibles = $DB_ROW['items_nombre'];
     $date_affich = To::date_mysql_to_french($DB_ROW['devoir_date']);
-    $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" rel="noopener" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-    $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" rel="noopener" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+    $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" rel="noopener noreferrer" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+    $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" rel="noopener noreferrer" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
     $remplissage_nombre   = $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']].'/'.$nb_saisies_possibles ;
     $remplissage_class    = (!$tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]) ? 'br' : ( ($tab_nb_saisies_effectuees[$DB_ROW['devoir_id']]<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
     $q_texte       = ($DB_ROW['jointure_texte'])     ? '<q class="texte_consulter" title="Commentaire écrit disponible."></q>' : '<q class="texte_consulter_non" title="Pas de commentaire écrit."></q>' ;
@@ -187,7 +187,7 @@ if( ($action=='Voir_notes') && $eleve_id && $devoir_id )
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_perso'] : $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_auto'] ;
     $texte_s2016 = ($DB_ROW['s2016_nb'])  ? '[S] ' : '[–] ';
     $texte_comm  = ($DB_ROW['item_comm']) ? ' <img src="./_img/etat/comm_oui.png" title="'.convertCRtoBR(html(html($DB_ROW['item_comm']))).'" />' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener" href="'.html($DB_ROW['item_lien']).'">' : '';
+    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
     $tab_scores[$item_id] = (isset($tab_devoirs[$item_id])) ? OutilBilan::calculer_score( $tab_devoirs[$item_id]  ,$DB_ROW['referentiel_calcul_methode'] , $DB_ROW['referentiel_calcul_limite'] , NULL /*date_mysql_debut*/ ) : FALSE ;
     if($_SESSION['USER_PROFIL_TYPE']=='parent')    { $texte_demande_eval = '<q class="demander_non" title="Les demandes d\'évaluations s\'effectuent depuis un compte élève."></q>'; }
@@ -328,7 +328,7 @@ if( ($action=='Saisir_notes') && $eleve_id && $devoir_id )
     $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_perso'] : $DB_ROW['matiere_ref'].'.'.$DB_ROW['ref_auto'] ;
     $texte_s2016 = ($DB_ROW['s2016_nb'])  ? '[S] ' : '[–] ';
     $texte_comm  = ($DB_ROW['item_comm']) ? ' <img src="./_img/etat/comm_oui.png" title="'.convertCRtoBR(html(html($DB_ROW['item_comm']))).'" />' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener" href="'.html($DB_ROW['item_lien']).'">' : '';
+    $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
     $boutons = (isset($tab_radio[$item_id])) ? $tab_radio[$item_id] : str_replace( 'value="X"' , 'value="X" checked' , $radio_boutons ) ;
     $boutons = str_replace( 'item_X' , 'item_'.$item_id , $boutons );

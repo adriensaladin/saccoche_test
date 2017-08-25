@@ -76,11 +76,11 @@ else
         $destinataires = ($DB_ROW['prof_id']) ? html(To::texte_identite($DB_ROW['user_nom'],FALSE,$DB_ROW['user_prenom'],TRUE,$DB_ROW['user_genre'])) : 'enseignants concernés' ;
         $score  = ($DB_ROW['demande_score']!==null) ? $DB_ROW['demande_score'] : FALSE ;
         $statut = ($DB_ROW['demande_statut']=='eleve') ? 'demande non traitée' : 'évaluation en préparation' ;
-        $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener" href="'.html($DB_ROW['item_lien']).'">' : '' ;
+        $texte_lien_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($DB_ROW['item_lien']).'">' : '' ;
         $texte_lien_apres = ($DB_ROW['item_lien']) ? '</a>' : '' ;
         $item_ref = ($DB_ROW['ref_perso']) ? $DB_ROW['ref_perso'] : $DB_ROW['ref_auto'] ;
         $commentaire = ($DB_ROW['demande_messages']) ? 'oui <img alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.convertCRtoBR(html(html($DB_ROW['demande_messages']))).'" />' : 'non' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
-        $document    = ($DB_ROW['demande_doc'])      ? '<a href="'.html($DB_ROW['demande_doc']).'" target="_blank" rel="noopener">oui</a>' : 'non' ;
+        $document    = ($DB_ROW['demande_doc'])      ? '<a href="'.html($DB_ROW['demande_doc']).'" target="_blank" rel="noopener noreferrer">oui</a>' : 'non' ;
         // Afficher une ligne du tableau 
         echo'<tr id="ids_'.$DB_ROW['demande_id'].'_'.$DB_ROW['item_id'].'_'.$DB_ROW['matiere_id'].'_'.$DB_ROW['prof_id'].'">';
         echo  '<td>'.To::date_mysql_to_french($DB_ROW['demande_date']).'</td>';

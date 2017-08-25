@@ -97,7 +97,7 @@ if($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   if($alerte_novice)
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
-    $tab_accueil['alert']['contenu'] .= '<p><span class="manuel"><a target="_blank" rel="noopener" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+    $tab_accueil['alert']['contenu'] .= '<p><span class="manuel"><a target="_blank" rel="noopener noreferrer" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
 }
 
@@ -191,7 +191,7 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
           list($departement,$connexion_nom) = explode('|',$connexion_ref);
           if( isset($tab_connecteurs_convention[$connexion_ref]) && $tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['actif'] )
           {
-            $tab_texte_ent_possibles[$connexion_ref] = '<a target="_blank" rel="noopener" href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats">'.$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'</a>';
+            $tab_texte_ent_possibles[$connexion_ref] = '<a target="_blank" rel="noopener noreferrer" href="'.SERVEUR_GUIDE_ENT.'#toggle_partenariats">'.$tab_ent_convention_infos[$tab_connecteurs_convention[$connexion_ref]]['texte'].'</a>';
           }
         }
       }
@@ -201,12 +201,12 @@ elseif($_SESSION['USER_PROFIL_TYPE']=='administrateur')
   if(!$tab_accueil['alert']['contenu'])
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
-    $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a target="_blank" rel="noopener" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+    $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a target="_blank" rel="noopener noreferrer" href="'.SERVEUR_GUIDE_ADMIN.'">Guide de démarrage d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
   if( $info_rentree || Outil::test_periode_rentree() )
   {
     // volontairement pas en pop-up mais dans un nouvel onglet
-    $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a target="_blank" rel="noopener" href="'.SERVEUR_GUIDE_RENTREE.'">Guide de changement d\'année d\'un administrateur de <em>SACoche</em>.</a></span></p>';
+    $tab_accueil['user']['contenu'] .= '<p><span class="manuel"><a target="_blank" rel="noopener noreferrer" href="'.SERVEUR_GUIDE_RENTREE.'">Guide de changement d\'année d\'un administrateur de <em>SACoche</em>.</a></span></p>';
   }
   if( Outil::test_periode_sortie() )
   {

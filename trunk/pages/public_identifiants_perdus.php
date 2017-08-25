@@ -111,7 +111,7 @@ $is_etablissement_virtuel = IS_HEBERGEMENT_SESAMATH && ( ($BASE==ID_DEMO) || ($B
 <p class="danger">Vous vous êtes visiblement égaré&nbsp;!</p>
 <p class="astuce">Il n'y a aucune raison de demander un nouveau mot de passe pour un utilisateur de l'établissement <em>"<?php echo html($structure_denomination) ?>"</em> car il s'agit d'une structure virtuelle&hellip;</p>
 <ul class="puce">
-  <li class="p">Consulter <a class="b" href="<?php echo SERVEUR_PROJET ?>/index.php?page=utilisation__serveur_sesamath__demo" target="_blank" rel="noopener">le site officiel du projet <em>SACoche</em></a> pour tout renseignement concernant l'établissement de démonstration.</li>
+  <li class="p">Consulter <a class="b" href="<?php echo SERVEUR_PROJET ?>/index.php?page=utilisation__serveur_sesamath__demo" target="_blank" rel="noopener noreferrer">le site officiel du projet <em>SACoche</em></a> pour tout renseignement concernant l'établissement de démonstration.</li>
 </ul>
 
 <?php endif; ?>

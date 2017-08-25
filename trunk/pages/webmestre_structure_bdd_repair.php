@@ -31,7 +31,7 @@ require(CHEMIN_DOSSIER_INCLUDE.'fonction_dump.php');
 ?>
 
 En cas de crash serveur, coupure d'électricité, etc., il peut arriver qu'une base de données soit physiquement corrompue.<br />
-Cet outil <a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.0/fr/check-table.html">analyse</a> et <a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.0/fr/repair-table.html">répare</a> si besoin, <a target="_blank" rel="noopener" href="http://dev.mysql.com/doc/refman/5.0/fr/repair.html">dans la mesure du possible</a>, la ou les bases de données des établissements.
+Cet outil <a target="_blank" rel="noopener noreferrer" href="http://dev.mysql.com/doc/refman/5.0/fr/check-table.html">analyse</a> et <a target="_blank" rel="noopener noreferrer" href="http://dev.mysql.com/doc/refman/5.0/fr/repair-table.html">répare</a> si besoin, <a target="_blank" rel="noopener noreferrer" href="http://dev.mysql.com/doc/refman/5.0/fr/repair.html">dans la mesure du possible</a>, la ou les bases de données des établissements.
 
 <hr />
 

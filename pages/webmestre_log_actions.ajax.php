@@ -62,7 +62,7 @@ if($base_id)
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_export_nom.'.csv' , To::csv($fichier_log_contenu) );
     // Afficher tout ça
     Json::add_str('<ul class="puce">'.NL);
-    Json::add_str(  '<li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>'.NL);
+    Json::add_str(  '<li><a target="_blank" rel="noopener noreferrer" href="./force_download.php?fichier='.$fichier_export_nom.'.csv"><span class="file file_txt">Récupérer le fichier complet (format <em>csv</em>).</span></a></li>'.NL);
     Json::add_str(  '<li>Consulter les derniers logs ('.$nb_lignes.' ligne'.$s.') :</li>'.NL);
     Json::add_str('</ul>'.NL);
     Json::add_str($table_log_extrait);

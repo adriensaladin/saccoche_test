@@ -131,7 +131,7 @@ if( ($action=='Voir') && $matiere_id )
       $cart_texte  = '<img src="./_img/etat/cart_'.$cart_image.'.png" title="'.$cart_title.'" />';
       $s2016_image = isset($DB_TAB_socle2016[$item_id]) ? 'oui' : 'non' ;
       $s2016_id    = isset($DB_TAB_socle2016[$item_id]) ? implode(',',$DB_TAB_socle2016[$item_id]['id']) : '' ;
-      $s2016_title = isset($DB_TAB_socle2016[$item_id]) ? implode('<br />',$DB_TAB_socle2016[$item_id]['nom']) : 'Hors-socle 2016.' ;
+      $s2016_title = isset($DB_TAB_socle2016[$item_id]) ? implode('<br />',$DB_TAB_socle2016[$item_id]['nom']) : 'Hors-socle.' ;
       $s2016_texte = '<img src="./_img/etat/socle_'.$s2016_image.'.png" title="'.$s2016_title.'" data-id="'.$s2016_id.'" />';
       $lien_image  = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;
       $lien_title  = ($DB_ROW['item_lien']) ? html($DB_ROW['item_lien']) : 'Absence de ressource.' ;

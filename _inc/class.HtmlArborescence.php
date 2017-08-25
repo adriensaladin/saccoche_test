@@ -119,13 +119,13 @@ class HtmlArborescence
             break;
           case 'image' :
             $s2016_image = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? 'oui' : 'non' ;
-            $s2016_title = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? implode('<br />',$DB_TAB_socle2016[$DB_ROW['item_id']]['nom']) : 'Hors-socle 2016.' ;
+            $s2016_title = isset($DB_TAB_socle2016[$DB_ROW['item_id']]) ? implode('<br />',$DB_TAB_socle2016[$DB_ROW['item_id']]['nom']) : 'Hors-socle.' ;
             $s2016_texte = '<img src="./_img/etat/socle_'.$s2016_image.'.png" title="'.$s2016_title.'" /> ';
         }
         switch($aff_lien)
         {
           case 'click' :
-            $lien_texte_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener" href="'.html($DB_ROW['item_lien']).'">' : '';
+            $lien_texte_avant = ($DB_ROW['item_lien']) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($DB_ROW['item_lien']).'">' : '';
             $lien_texte_apres = ($DB_ROW['item_lien']) ? '</a>' : '';
           case 'image' :
             $lien_image = ($DB_ROW['item_lien']) ? 'oui' : 'non' ;

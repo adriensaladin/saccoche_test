@@ -129,8 +129,8 @@ $(document).ready
                 var fichier_csv = responseJSON['csv'];
                 var fichier_zip = responseJSON['zip'];
                 $('#ajax_msg_export').attr('class','valide').html('Export terminé.');
-                var li1 = '<li><a target="_blank" rel="noopener" href="'+fichier_csv+'">Récupérer le listing des bases exportées au format <em>CSV</em>.</a></li>';
-                var li2 = '<li><a target="_blank" rel="noopener" href="'+fichier_zip+'">Récupérer le fichier des bases sauvegardées au format <em>ZIP</em>.</a></li>';
+                var li1 = '<li><a target="_blank" rel="noopener noreferrer" href="'+fichier_csv+'">Récupérer le listing des bases exportées au format <em>CSV</em>.</a></li>';
+                var li2 = '<li><a target="_blank" rel="noopener noreferrer" href="'+fichier_zip+'">Récupérer le fichier des bases sauvegardées au format <em>ZIP</em>.</a></li>';
                 $('#puce_info_export').html(li1+li2);
                 $('#zone_actions_export').show('fast');
                 $("button").prop('disabled',false);

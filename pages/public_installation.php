@@ -43,7 +43,7 @@ $TITRE = "Procédure d'installation"; // Pas de traduction car pas de choix de l
 
 <form action="#" method="post" id="zone_consignes"><?php /* on prend un <form> pour avoir le style du <span class="tab"> */ ?>
   <h2>Bienvenue dans la procédure d'installation de <em>SACoche</em> !</h2>
-  <p class="astuce"><em>SACoche</em> est une web-application distribuée gratuitement dans l’espoir qu’elle vous sera utile, mais sans aucune garantie, conformément à la <a target="_blank" rel="noopener" href="https://www.gnu.org/licenses/agpl-3.0.html">licence libre GNU AGPL3</a>.</p>
+  <p class="astuce"><em>SACoche</em> est une web-application distribuée gratuitement dans l’espoir qu’elle vous sera utile, mais sans aucune garantie, conformément à la <a target="_blank" rel="noopener noreferrer" href="https://www.gnu.org/licenses/agpl-3.0.html">licence libre GNU AGPL3</a>.</p>
   <p class="danger">Webmestre et administrateurs sont responsables de toute mauvaise manipulation ou négligence qui entraînerait des pertes de données.</p>
   <p><span class="tab"></span><a href="#" class="step1">Passer à l'étape 1.</a><label id="ajax_msg">&nbsp;</label></p>
 </form>

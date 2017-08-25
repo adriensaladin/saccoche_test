@@ -231,7 +231,7 @@ $(document).ready
             var s2016_id  = obj_conteneur.children('img:eq(2)').data('id');
             if(!s2016_id)
             {
-              var s2016_txt = 'Hors-socle.';
+              var s2016_txt = 'Hors-socle 2016.';
             }
             else
             {
@@ -259,7 +259,7 @@ $(document).ready
             var check1 = ' checked';
             var check0 = '';
             var s2016_id  = '';
-            var s2016_txt = 'Hors-socle.';
+            var s2016_txt = 'Hors-socle 2016.';
             var commentaire = '';
             var ref   = '';
             var abrev = '';
@@ -500,7 +500,7 @@ $(document).ready
         );
         if(!socle_id)
         {
-          socle_nom = 'Hors-socle.';
+          socle_nom = 'Hors-socle 2016.';
         }
         else
         {

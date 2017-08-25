@@ -1258,7 +1258,6 @@ if( $affichage_assiduite && !empty($tab_eleve) )
   $DB_TAB = DB_STRUCTURE_OFFICIEL::DB_lister_officiel_assiduite( $periode_id , $liste_eleve_id );
   foreach($DB_TAB as $DB_ROW)
   {
-     // valeurs 999 maximum : 255 dans SACoche
     $tab_eleve[$DB_ROW['user_id']]['viesco']['nb-retards']          = (int)$DB_ROW['assiduite_retard'];
     $tab_eleve[$DB_ROW['user_id']]['viesco']['nb-abs-justifiees']   = (int)$DB_ROW['assiduite_absence'] - (int)$DB_ROW['assiduite_absence_nj'];
     $tab_eleve[$DB_ROW['user_id']]['viesco']['nb-abs-injustifiees'] = (int)$DB_ROW['assiduite_absence_nj'];

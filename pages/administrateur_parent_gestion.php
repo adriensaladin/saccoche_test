@@ -58,7 +58,7 @@ foreach($_SESSION['TAB_PROFILS_ADMIN']['MDP_LONGUEUR_MINI'] as $profil_sigle => 
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__gestion_parents">DOC : Gestion des parents</a></span></li>
   <li><span class="manuel"><a class="pop_up" href="<?php echo SERVEUR_DOCUMENTAIRE ?>?fichier=support_administrateur__import_users_siecle#toggle_responsables_doublons_comptes">DOC : Import d'utilisateurs depuis Siècle / STS-Web - Doublons de comptes responsables</a></span></li>
 </ul>
-<p><span class="danger">Si votre établissement dépend d'une base administrative <em>Siècle</em> (2D) ou <em>Onde</em> (1D), alors évitez au maximum les ajouts manuels : utilisez <a href="./index.php?page=administrateur_fichier_user" target="_blank" rel="noopener noreferrer">des imports de fichiers</a>.</span></p>
+<p><span class="danger">Si votre établissement dépend d'une base administrative <em>Siècle</em> (2D) ou <em>Onde</em> (1D), alors évitez au maximum les ajouts manuels : utilisez <a href="./index.php?page=administrateur_fichier_user" target="_blank" rel="noopener">des imports de fichiers</a>.</span></p>
 
 <hr />
 
@@ -181,7 +181,7 @@ if( $find_doublon && !empty($DB_TAB) )
   // Finalisation de l'export CSV (archivage dans un fichier)
   $fnom = 'extraction_doublons_responsables_'.FileSystem::generer_fin_nom_fichier__date_et_alea();
   FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fnom.'.csv' , To::csv($export_csv) );
-  echo'<p><ul class="puce"><li><a target="_blank" rel="noopener noreferrer" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
+  echo'<p><ul class="puce"><li><a target="_blank" rel="noopener" href="./force_download.php?fichier='.$fnom.'.csv"><span class="file file_txt">Récupérer les données dans un fichier (format <em>csv</em></span>).</a></li></ul></p>'.NL;
 }
 ?>
 

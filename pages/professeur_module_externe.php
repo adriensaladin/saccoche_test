@@ -37,7 +37,7 @@ $module_url = !empty($_SESSION['MODULE']['GENERER_ENONCE']) ? $_SESSION['MODULE'
 <?php /* http://sesaprof.sesamath.net/forum/viewtopic.php?id=2180 */ ?>
 
 <p>
-  À partir d'une banque d'exercices pour chaque item, certains mettent en place des outils de génération d'énoncés, souvent à composante aléatoire (<a href="http://revue.sesamath.net/spip.php?article535" target="_blank" rel="noopener noreferrer">exemple</a>).<br />
+  À partir d'une banque d'exercices pour chaque item, certains mettent en place des outils de génération d'énoncés, souvent à composante aléatoire (<a href="http://revue.sesamath.net/spip.php?article535" target="_blank" rel="noopener">exemple</a>).<br />
   Renseigner l'adresse d'un tel module ci-dessous permet de l'appeler depuis une page de gestion des évaluations (icône<q class="module_envoyer" title="Générer un énoncé (module externe)."></q>).<br />
   L'adresse d'un fichier de données est alors transmis en <em>GET</em> avec la variable "json" (http://adresse-du-module?json=...).<br />
   Les données peuvent être récupérées par exemple <a href="#code_recuperer_enonce" class="fancybox">comme ceci en langage <em>PHP</em></a>.<br />

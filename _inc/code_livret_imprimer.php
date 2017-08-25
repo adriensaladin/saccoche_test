@@ -196,7 +196,7 @@ if($ACTION=='initialiser')
       {
         $clef = $DB_TAB[$eleve_id][0]['officiel_archive_id'];
         $_SESSION['tmp_droit_voir_archive'][$clef] = TRUE; // marqueur mis en session pour vérifier que c'est bien cet utilisateur qui veut voir (et a donc le droit de voir) le fichier, car il n'y a pas d'autre vérification de droit ensuite
-        $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank" rel="noopener noreferrer">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
+        $td_date_generation = '<a href="acces_archive.php?id='.$clef.'" target="_blank" rel="noopener">Oui, le '.To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_generation']).'</a>' ;
         $td_date_consult_eleve  = in_array( 'ELV' , explode(',',$_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_eleve'])  : '-' ) : 'Non autorisé' ;
         $td_date_consult_parent = in_array( 'TUT' , explode(',',$_SESSION['DROIT_OFFICIEL_LIVRET_VOIR_ARCHIVE']) ) ? ( ($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) ? To::date_mysql_to_french($DB_TAB[$eleve_id][0]['archive_date_consultation_parent']) : '-' ) : 'Non autorisé' ;
       }
@@ -340,8 +340,8 @@ if( ($ACTION=='imprimer') && ($etape==4) )
     $pdf_string = $releve_pdf -> addPDF( CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' , $tab_memo['pages_non_anonymes'] ) -> merge( 'file' , CHEMIN_DOSSIER_EXPORT.$tab_memo['fichier_nom'].'.pdf' );
   }
   Json::add_str('<ul class="puce">');
-  Json::add_str(  '<li><a target="_blank" rel="noopener noreferrer" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>');
-  Json::add_str(  '<li><a target="_blank" rel="noopener noreferrer" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.pdf"><span class="file file_pdf">Récupérer, <span class="u">pour impression</span>, l\'ensemble des bilans officiels en un seul document <b>[x]</b>.</span></a></li>');
+  Json::add_str(  '<li><a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$tab_memo['fichier_nom'].'.zip"><span class="file file_zip">Récupérer, <span class="u">pour archivage</span>, les bilans officiels dans des documents individuels.</span></a></li>');
   Json::add_str('</ul>');
   Json::add_str('<p class="astuce"><b>[x]</b> Nombre de pages par bilan (y prêter attention avant de lancer une impression recto-verso en série) :<br />'.$tab_memo['pages_nombre_par_bilan'].'</p>');
   unset( $tab_memo['fichier_nom'] , $tab_memo['pages_non_anonymes'] , $tab_memo['pages_nombre_par_bilan'] );

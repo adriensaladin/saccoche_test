@@ -508,17 +508,6 @@ if( ($import_origine=='siecle') && ($import_profil=='eleve') )
         $tab_users_fichier['classe'      ][$i_fichier] = '';
         $tab_users_fichier['groupe'      ][$i_fichier] = array();
         $tab_users_fichier['niveau'      ][$i_fichier] = Clean::ref($eleve->CODE_MEF);
-        // Les contrats d'échanges des exports génériques de BEE et de l'import des élèves dans BEE évolueront dans la version 17.4.0.0 de SIECLE prévue le 23/10/2017 et impactera toutes les académies.
-        // Cette version contiendra, entre autres, l'évolution de bascule de l'immatriculation des élèves. Cette information est présente dans SIECLE sous les noms "INE" ou "Identifiant National Élève" ou "ID_NATIONAL".
-        // L'INE courant deviendra celui issu du Répertoire National des Identifiants Elèves (RNIE) à la place de celui issu de la Base Elèves Académique (BEA).
-        // Cette évolution de donnée n'entraine pas de changement de la structure. L'INE courant reste une chaîne de 11 caractères, toujours accessible dans nos interfaces sous l'élément "ID_NATIONAL".
-        // Deux nouveaux éléments sont rajoutés : "INE_BEA" et "INE_RNIE". Ces deux ajouts ont pour simple objectif de vous permettre, si besoin, de travailler spécifiquement avec un identifiant ou l'autre.
-        // A noter qu'à partir de l’année scolaire 2017-2018, les nouveaux élèves de SIECLE n’auront plus d’INE BEA.
-        if( ($eleve->INE_BEA) && ($eleve->INE_RNIE) )
-        {
-          $tab_users_fichier['reference'   ][$i_fichier] = Clean::ref($eleve->INE_RNIE); // nouvel INE
-          $tab_users_fichier['old_ine'     ][$i_fichier] = Clean::ref($eleve->INE_BEA);  // ancien INE
-        }
       }
     }
     // On ajoute les structures d'origine sans attendre davantage.
@@ -1664,7 +1653,7 @@ if(!empty($is_first_import_onde))
   SACoche fait au mieux pour établir une correspondance, mais cela peut ne pas fonctionner si vous avez renommé des éléments.<br />
   À l\'étape suivante, il se peut donc qu\'une liste de classes soit proposée à la suppression, et une autre à l\'ajout.<br />
   Si vous êtes en cours d\'année scolaire, surtout ne validez pas une telle proposition !<br />
-  <a href="./index.php?page=administrateur_classe" target="_blank" rel="noopener noreferrer">Ouvrez le menu de gestion des classes dans un nouvel onglet</a> et modifiez manuellement les références de vos classes actuelles en y indiquant celles issues de ONDE.<br />
+  <a href="./index.php?page=administrateur_classe" target="_blank" rel="noopener">Ouvrez le menu de gestion des classes dans un nouvel onglet</a> et modifiez manuellement les références de vos classes actuelles en y indiquant celles issues de ONDE.<br />
   Ensuite, reprenez la procédure d\'import au début.</p>'.NL);
 }
 // On affiche le bilan des utilisateurs trouvés

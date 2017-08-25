@@ -253,8 +253,8 @@ if( ($action=='lister_evaluations') && $type && ( ($type=='selection') || ($aff_
       $cs = ($DB_ROW['items_nombre']>1) ? 's' : '';
       $us = ($type=='groupe') ? '' : ( ($DB_ROW['users_nombre']>1) ? 's' : '' );
       $eleves_bulle = (($type=='selection') && ($DB_ROW['users_nombre']<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;
-      $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" rel="noopener noreferrer" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-      $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" rel="noopener noreferrer" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+      $image_sujet   = ($DB_ROW['devoir_doc_sujet'])   ? '<a href="'.$DB_ROW['devoir_doc_sujet'].'" target="_blank" rel="noopener" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>' : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+      $image_corrige = ($DB_ROW['devoir_doc_corrige']) ? '<a href="'.$DB_ROW['devoir_doc_corrige'].'" target="_blank" rel="noopener" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
       $effectif_eleve = ($type=='groupe') ? ( isset($tab_effectifs[$DB_ROW['groupe_id']]) ? $tab_effectifs[$DB_ROW['groupe_id']] : 0 ) : $DB_ROW['users_nombre'] ;
       $nb_saisies_possibles = $DB_ROW['items_nombre']*$effectif_eleve;
       $remplissage_nombre   = $tab_nb_saisies_effectuees[$DB_ROW['devoir_id']].'/'.$nb_saisies_possibles ;
@@ -464,8 +464,8 @@ if( (($action=='ajouter')||(($action=='dupliquer')&&($devoir_id))) && $type && $
   $eleves_bulle = (($type=='selection') && ($nb_eleves<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;
   $profs_nombre = ($nb_profs) ? ($nb_profs+1).' profs' : 'non' ;
   $profs_bulle  = ($nb_profs && ($nb_profs<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
-  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank" rel="noopener noreferrer" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-  $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank" rel="noopener noreferrer" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank" rel="noopener" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+  $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank" rel="noopener" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
   $remplissage_nombre   = '0/'.$nb_saisies_possibles ;
   $remplissage_class    = 'br';
@@ -694,8 +694,8 @@ if( ($action=='modifier') && $devoir_id && $groupe_type && $groupe_id && $date &
   $eleves_bulle = (($type=='selection') && ($nb_eleves<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_eleves" />' : '' ;
   $profs_nombre = ($nb_profs) ? ($nb_profs+1).' profs' : 'non' ;
   $profs_bulle  = ($nb_profs && ($nb_profs<10)) ? ' <img alt="" src="./_img/bulle_aide.png" width="16" height="16" class="bulle_profs" />' : '' ;
-  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank" rel="noopener noreferrer" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
-  $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank" rel="noopener noreferrer" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
+  $image_sujet   = ($doc_sujet)   ? '<a href="'.$doc_sujet.'" target="_blank" rel="noopener" class="no_puce"><img alt="sujet" src="./_img/document/sujet_oui.png" title="Sujet disponible." /></a>'         : '<img alt="sujet" src="./_img/document/sujet_non.png" />' ;
+  $image_corrige = ($doc_corrige) ? '<a href="'.$doc_corrige.'" target="_blank" rel="noopener" class="no_puce"><img alt="corrigé" src="./_img/document/corrige_oui.png" title="Corrigé disponible." /></a>' : '<img alt="corrigé" src="./_img/document/corrige_non.png" />' ;
   $nb_saisies_possibles = $nb_items*$effectif_eleve;
   $remplissage_nombre   = $nb_saisies_effectuees.'/'.$nb_saisies_possibles ;
   $remplissage_class    = (!$nb_saisies_effectuees) ? 'br' : ( ($nb_saisies_effectuees<$nb_saisies_possibles) ? 'bj' : 'bv' ) ;
@@ -995,7 +995,7 @@ if( in_array($action,array('saisir','voir')) && $devoir_id && $groupe_id && $dat
     $texte_s2016 = ($DB_ROW['s2016_nb'])  ? ' [S]' : ' [–]' ;
     $texte_comm  = ($DB_ROW['item_comm']) ? ' <img src="./_img/etat/comm_oui.png" title="'.convertCRtoBR(html(html($DB_ROW['item_comm']))).'" />' : '' ; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $texte_coef  = ' ['.$DB_ROW['item_coef'].']';
-    $texte_lien_avant = ( ($action=='voir') && ($DB_ROW['item_lien']) ) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($DB_ROW['item_lien']).'">' : '';
+    $texte_lien_avant = ( ($action=='voir') && ($DB_ROW['item_lien']) ) ? '<a target="_blank" rel="noopener" href="'.html($DB_ROW['item_lien']).'">' : '';
     $texte_lien_apres = ( ($action=='voir') && ($DB_ROW['item_lien']) ) ? '</a>' : '';
     $tab_affich[$DB_ROW['item_id']][0] = '<th><b>'.$texte_lien_avant.html($DB_ROW['matiere_ref'].'.'.$item_ref.$texte_s2016.$texte_coef).$texte_lien_apres.'</b> <img data-mode="bulle" alt="" src="./_img/bulle_aide.png" width="16" height="16" title="'.html(html($DB_ROW['item_nom'])).'" /><div data-mode="complet">'.html($DB_ROW['item_nom']).$texte_comm.'</div></th>'; // Volontairement 2 html() pour le title sinon &lt;* est pris comme une balise html par l'infobulle.
     $tab_comp_id[$DB_ROW['item_id']] = $DB_ROW['matiere_ref'].'.'.$item_ref;
@@ -1321,7 +1321,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
     $fichier_nom = 'tableau_'.$remplissage.'_'.$tab_couleurs[$couleur].'_'.$fnom_export.'.pdf';
     FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $tableau_PDF );
     // Affichage du lien
-    Json::end( TRUE , '<a target="_blank" rel="noopener noreferrer" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_pdf">Tableau '.$remplissage.' (format <em>pdf</em>).</span></a>' );
+    Json::end( TRUE , '<a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_pdf">Tableau '.$remplissage.' (format <em>pdf</em>).</span></a>' );
   }
   //
   // csv contenant un tableau de saisie vide ou plein
@@ -1391,7 +1391,7 @@ if( in_array($action,array('generer_tableau_scores_vierge_csv','generer_tableau_
     $fichier_nom = 'saisie_deportee_'.$remplissage.'_'.$fnom_export.'.csv';
     FileSystem::ecrire_fichier( CHEMIN_DOSSIER_EXPORT.$fichier_nom , To::csv($export_csv) );
     // Affichage du lien
-    Json::end( TRUE , '<a target="_blank" rel="noopener noreferrer" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_txt">Fichier '.$remplissage.' (format <em>csv</em>).</span></a>' );
+    Json::end( TRUE , '<a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_txt">Fichier '.$remplissage.' (format <em>csv</em>).</span></a>' );
   }
 }
 
@@ -1515,7 +1515,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart
     Json::add_row( 'quantitative' , '<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>' );
     foreach($tab_item_id as $item_id => $tab_infos_item)
     {
-      $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($tab_infos_item[2]).'">' : '';
+      $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" rel="noopener" href="'.html($tab_infos_item[2]).'">' : '';
       $texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
       Json::add_row( 'quantitative' , '<tr>' );
       Json::add_row( 'quantitative' , '<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>' );
@@ -1531,7 +1531,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart
     Json::add_row( 'nominative' , '<thead><tr>'.$affichage_repartition_head.'</tr></thead><tbody>' );
     foreach($tab_item_id as $item_id => $tab_infos_item)
     {
-      $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($tab_infos_item[2]).'">' : '';
+      $texte_lien_avant = ($tab_infos_item[2]) ? '<a target="_blank" rel="noopener" href="'.html($tab_infos_item[2]).'">' : '';
       $texte_lien_apres = ($tab_infos_item[2]) ? '</a>' : '';
       Json::add_row( 'nominative' , '<tr>' );
       Json::add_row( 'nominative' , '<th><b>'.$texte_lien_avant.html($tab_infos_item[0]).$texte_lien_apres.'</b><br />'.html($tab_infos_item[1]).'</th>' );
@@ -1617,7 +1617,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart
     $tab_couleurs = array( 'oui'=>'couleur' , 'non'=>'monochrome' );
     $fichier_nom = 'repartition_'.$repartition_type.'_'.$tab_couleurs[$couleur].'_'.$fnom_export.'.pdf';
     FileSystem::ecrire_sortie_PDF( CHEMIN_DOSSIER_EXPORT.$fichier_nom , $tableau_PDF );
-    Json::end( TRUE , '<a target="_blank" rel="noopener noreferrer" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_pdf">Répartition '.$repartition_type.' (format <em>pdf</em>).</span></a>' );
+    Json::end( TRUE , '<a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.$fichier_nom.'"><span class="file file_pdf">Répartition '.$repartition_type.' (format <em>pdf</em>).</span></a>' );
   }
 }
 
@@ -1786,9 +1786,9 @@ if( ($action=='imprimer_cartouche') && $devoir_id && $groupe_id && $date_fr && $
   }
   // On attaque l'élaboration des sorties HTML, CSV, TEX et PDF
   $cartouche_HTM = '<hr />';
-  $cartouche_HTM.= '<a target="_blank" rel="noopener noreferrer" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
-  $cartouche_HTM.= '<a target="_blank" rel="noopener noreferrer" href="./force_download.php?fichier=cartouche_'.$fnom_export.'.csv"><span class="file file_txt">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a><br />';
-  $cartouche_HTM.= '<a target="_blank" rel="noopener noreferrer" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.tex"><span class="file file_tex">Cartouches &rarr; Récupérer / Manipuler (fichier <em>LaTeX</em> pour connaisseurs).</span></a>';
+  $cartouche_HTM.= '<a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.pdf"><span class="file file_pdf">Cartouches &rarr; Archiver / Imprimer (format <em>pdf</em>).</span></a><br />';
+  $cartouche_HTM.= '<a target="_blank" rel="noopener" href="./force_download.php?fichier=cartouche_'.$fnom_export.'.csv"><span class="file file_txt">Cartouches &rarr; Récupérer / Manipuler (fichier <em>csv</em> pour tableur).</span></a><br />';
+  $cartouche_HTM.= '<a target="_blank" rel="noopener" href="'.URL_DIR_EXPORT.'cartouche_'.$fnom_export.'.tex"><span class="file file_tex">Cartouches &rarr; Récupérer / Manipuler (fichier <em>LaTeX</em> pour connaisseurs).</span></a>';
   $cartouche_CSV = '';
   $cartouche_TEX = '';
   $separateur  = ';';

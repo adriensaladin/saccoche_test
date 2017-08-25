@@ -133,11 +133,11 @@ if($action=='purger')
   Json::add_str('<li><label class="valide">Évaluations et dépendances supprimées (saisies associées conservées).</label></li>'.NL);
   Json::add_str('<li><label class="valide">Groupes supprimés (avec leurs associations).</label></li>'.NL);
   Json::add_str('<li><label class="valide">Jointures classes / périodes / bilans officiels supprimées.</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Bilans officiels supprimés (archives PDF conservées).</label></li>'.NL);
+  Json::add_str('<li><label class="valide">Bilans officiels supprimés.</label></li>'.NL);
   Json::add_str('<li><label class="valide">Comptes utilisateurs obsolètes supprimés.</label></li>'.NL);
   Json::add_str('<li><label class="valide">Bascules entres comptes inactifs ou supprimés retirées.</label></li>'.NL);
   Json::add_str('<li><label class="valide">Demandes d\'évaluations résiduelles supprimées.</label></li>'.NL);
-  Json::add_str('<li><label class="valide">Tables de la base de données optimisées (équivalent d\'un défragmentage).</label></li>'.NL);
+  Json::add_str('<li><label class="valide">Tables optimisées par MySQL (équivalent d\'un défragmentage).</label></li>'.NL);
   $top_arrivee = microtime(TRUE);
   $duree = number_format($top_arrivee - $top_depart,2,',','');
   Json::add_str('<li><label class="valide">Initialisation annuelle de la base réalisée en '.$duree.'s.</label></li>'.NL);

@@ -52,7 +52,10 @@ INSERT INTO sacoche_livret_rubrique VALUES
 (101, 101, 101, 101, "c2_domaine",  11, "QLM-VMO", "Questionner le monde", "Vivant, matière, objets"),
 (102, 102, 101, 102, "c2_domaine",  12, "QLM-ETP", "Questionner le monde", "Espace, temps"),
 (111, 111, 111, 111, "c2_domaine",  13, "EMC-RAC", "Enseignement moral et civique", NULL),
-(121, 121, 121, 121, "c2_domaine",  14, "LGV-RAC", "Langue vivante", NULL),
+(121, 121, 121, 121, "c2_domaine",  14, "LGV-CPD", "Langue vivante", "Comprendre l'oral"),
+(122, 122, 121, 122, "c2_domaine",  15, "LGV-EXP", "Langue vivante", "S'exprimer oralement en continu"),
+(123, 123, 121, 123, "c2_domaine",  16, "LGV-CVS", "Langue vivante", "Prendre part à une conversation"),
+(124, 124, 121, 124, "c2_domaine",  17, "LGV-DE1", "Langue vivante", "Découvrir quelques aspects culturels d'une langue"),
 (131, 131, 131, 131, "c3_domaine",   1, "FRA-LGO", "Français", "Langage oral"),
 (132, 132, 131, 132, "c3_domaine",   2, "FRA-LEC", "Français", "Lecture et compréhension de l'écrit"),
 (133, 133, 131, 133, "c3_domaine",   3, "FRA-ECR", "Français", "Écriture"),
@@ -67,6 +70,11 @@ INSERT INTO sacoche_livret_rubrique VALUES
 (171, 171, 171, 171, "c3_domaine",  12, "STC-RAC", "Sciences et technologie", NULL),
 (181, 181, 181, 181, "c3_domaine",  13, "HIG-RAC", "Histoire géographie", NULL),
 (191, 191, 191, 191, "c3_domaine",  14, "EMC-RAC", "Enseignement moral et civique", NULL),
-(201, 201, 201, 201, "c3_domaine",  15, "LGV-RAC", "Langue vivante", NULL);
+(201, 201, 201, 201, "c3_domaine",  15, "LGV-ECO", "Langue vivante", "Écouter et comprendre"),
+(202, 202, 201, 202, "c3_domaine",  16, "LGV-LIR", "Langue vivante", "Lire et comprendre"),
+(203, 203, 201, 203, "c3_domaine",  17, "LGV-PAR", "Langue vivante", "Parler en continu"),
+(204, 204, 201, 204, "c3_domaine",  18, "LGV-ECR", "Langue vivante", "Écrire"),
+(205, 205, 201, 205, "c3_domaine",  19, "LGV-DIA", "Langue vivante", "Réagir et dialoguer"),
+(206, 206, 201, 206, "c3_domaine",  20, "LGV-DE2", "Langue vivante", "Découvrir les aspects culturels d'une langue");
 
 ALTER TABLE sacoche_livret_rubrique ENABLE KEYS;

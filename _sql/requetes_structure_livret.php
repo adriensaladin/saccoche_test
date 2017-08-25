@@ -194,7 +194,7 @@ public static function DB_initialiser_jointures_classe_chef()
   $DB_COL = DB::queryCol(SACOCHE_STRUCTURE_BD_NAME , $DB_SQL , NULL);
   if( !empty($DB_COL) && (count($DB_COL)==1) )
   {
-    $chef_id = (int)current($DB_COL);
+    $chef_id = current($DB_COL);
     $DB_SQL = 'UPDATE sacoche_groupe ';
     $DB_SQL.= 'SET groupe_chef_id='.$chef_id.' ';
     $DB_SQL.= 'WHERE groupe_id IN('.$listing_groupe.') ';

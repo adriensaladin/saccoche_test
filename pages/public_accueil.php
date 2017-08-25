@@ -114,15 +114,15 @@ $_SESSION['FORCEBRUTE'][$PAGE] = array(
 <h1 class="hebergement">Hébergement</h1>
 <ul class="puce">
   <li><em>SACoche</em> peut être téléchargé et installé sur différents serveurs.</li>
-  <li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a target="_blank" rel="noopener noreferrer" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo HtmlMail::to(WEBMESTRE_COURRIEL,'SACoche - Remplacer ce texte par l\'objet de votre message !!!','webmestre','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
-  <li><a target="_blank" rel="noopener noreferrer" href="<?php echo SERVEUR_CNIL ?>">Informations CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
+  <li>Cette installation (<?php echo (HEBERGEUR_INSTALLATION=='mono-structure') ? HEBERGEUR_INSTALLATION : DB_WEBMESTRE_PUBLIC::DB_compter_structure() ; ?>) a été effectuée par : <?php echo (HEBERGEUR_ADRESSE_SITE) ? '<a target="_blank" rel="noopener" href="'.html(HEBERGEUR_ADRESSE_SITE).'">'.html(HEBERGEUR_DENOMINATION).'</a>' : html(HEBERGEUR_DENOMINATION); ?> (<?php echo HtmlMail::to(WEBMESTRE_COURRIEL,'SACoche - Remplacer ce texte par l\'objet de votre message !!!','webmestre','Attention ! Si vous êtes élève, parent, professeur ou directeur, alors il ne faut pas contacter le webmestre du serveur, mais l\'administrateur de votre établissement qui a créé les comptes utilisateurs.'); ?>).</li>
+  <li><a target="_blank" rel="noopener" href="<?php echo SERVEUR_CNIL ?>">Informations CNIL</a>. Déclaration <?php echo intval(CNIL_NUMERO) ? 'n°'.CNIL_NUMERO : 'non renseignée' ; ?>.</li>
 </ul>
 
 <hr />
 
 <h1 class="informations">Informations</h1>
 <ul class="puce">
-  <li><em>SACoche</em> est un logiciel <span class="b">gratuit</span>, <span class="b">libre</span>, développé avec le soutien de <a target="_blank" rel="noopener noreferrer" href="<?php echo SERVEUR_ASSO ?>"><em>Sésamath</em></a>.</li>
-  <li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" target="_blank" rel="noopener noreferrer">le site officiel du projet <em>SACoche</em></a> pour tout renseignement.</li>
+  <li><em>SACoche</em> est un logiciel <span class="b">gratuit</span>, <span class="b">libre</span>, développé avec le soutien de <a target="_blank" rel="noopener" href="<?php echo SERVEUR_ASSO ?>"><em>Sésamath</em></a>.</li>
+  <li class="b">Consulter <a href="<?php echo SERVEUR_PROJET ?>" target="_blank" rel="noopener">le site officiel du projet <em>SACoche</em></a> pour tout renseignement.</li>
   <li>Version installée <em><?php echo VERSION_PROG ?></em>.<label id="ajax_version"></label></li>
 </ul>

@@ -736,49 +736,6 @@ if($version_base_structure_actuelle=='2017-08-09')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2017-08-16 => 2017-08-25
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2017-08-16')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2017-08-25';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // recharger [sacoche_livret_rubrique] (passage à une rubrique unique pour la LV aux cycles 2 et 3)
-    if(empty($reload_sacoche_livret_rubrique))
-    {
-      $reload_sacoche_livret_rubrique = TRUE;
-      $requetes = file_get_contents(CHEMIN_DOSSIER_SQL_STRUCTURE.'sacoche_livret_rubrique.sql');
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , $requetes );
-      DB::close(SACOCHE_STRUCTURE_BD_NAME);
-    }
-    // Adaptations aux nouveaux indices de [sacoche_livret_rubrique]
-    $tab_modifs = array(
-      'c2_domaine' => array(
-         122 => 121,
-         123 => 121,
-         124 => 121,
-      ),
-      'c3_domaine' => array(
-        202 => 201,
-        203 => 201,
-        204 => 201,
-        205 => 201,
-        206 => 201,
-      ),
-    );
-    foreach( $tab_modifs as $rubrique_type => $tab_ids )
-    {
-      foreach( $tab_ids as $id_old => $id_new )
-      {
-        DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_livret_jointure_referentiel SET livret_rubrique_ou_matiere_id='.$id_new.' WHERE livret_rubrique_ou_matiere_id='.$id_old.' AND livret_rubrique_type="'.$rubrique_type.'" ' );
-      }
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

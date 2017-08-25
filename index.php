@@ -273,7 +273,7 @@ if( substr($PAGE,0,7) !== 'public_' )
   $lien_page_switch = (!empty($_SESSION['USER_SWITCH_ID'])) ? '<a href="./index.php?page=compte_switch"><span class="top switch">'.$_SESSION['USER_PROFIL_NOM_COURT'].'</span></a>' : $_SESSION['USER_PROFIL_NOM_COURT'] ;
   // Espace identifié : cadre_haut (avec le menu) et cadre_bas (avec le contenu).
   echo'<div id="cadre_haut">'.NL;
-  echo  '<a target="_blank" rel="noopener noreferrer" href="'.SERVEUR_PROJET.'" class="no_puce"><img id="logo" alt="SACoche" src="./_img/logo_petit_menu.png" width="154" height="39" /></a>'.NL;
+  echo  '<a target="_blank" rel="noopener" href="'.SERVEUR_PROJET.'" class="no_puce"><img id="logo" alt="SACoche" src="./_img/logo_petit_menu.png" width="154" height="39" /></a>'.NL;
   echo  '<div id="top_info">'.NL;
   echo    $_SESSION['MENU'];
   echo    '<div>'.NL;

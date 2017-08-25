@@ -508,7 +508,7 @@ $select_repart_ref_pourcentage = HtmlForm::afficher_select(Form::$tab_select_rep
   </table>
   <hr />
   <h3>Exploitation</h3>
-  <p><a id="lien_repart_nominative" target="_blank" rel="noopener noreferrer" href=""><span class="file file_htm">Préparer une évaluation / Constituer un groupe de besoin (format <em>html</em>).</span></a></p>
+  <p><a id="lien_repart_nominative" target="_blank" rel="noopener" href=""><span class="file file_htm">Préparer une évaluation / Constituer un groupe de besoin (format <em>html</em>).</span></a></p>
   <hr />
   <h3>Archivage PDF</h3>
   <input id="repart_ref"         name="f_ref"         type="hidden" value="" />
@@ -576,8 +576,8 @@ $select_repart_ref_pourcentage = HtmlForm::afficher_select(Form::$tab_select_rep
   <hr />
   <p><label id="ajax_msg_deport_archivage">&nbsp;</label><input type="hidden" id="f_archivage_action" name="f_action" value="" /></p>
 <!--
-<a target="_blank" rel="noopener noreferrer" href=""><span class="file file_txt"></span></a></li>
-<a id="" target="_blank" rel="noopener noreferrer" href=""><span class="file file_pdf">.</span></a></li>
+<a target="_blank" rel="noopener" href=""><span class="file file_txt"></span></a></li>
+<a id="" target="_blank" rel="noopener" href=""><span class="file file_pdf">.</span></a></li>
 -->
 </fieldset></form>
 

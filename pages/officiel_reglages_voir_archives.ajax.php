@@ -157,7 +157,7 @@ if( ($action=='generer_pdf') && !empty($tab_eleve) && !empty($tab_type) && !empt
     FileSystem::ecrire_sortie_PDF( $CHEMIN_PDF.$fichier_nom  , $archive_PDF  );
     // Ligne du tableau à retourner
     $objet = ($DB_ROW['archive_type']=='sacoche') ? $tab_objet[$DB_ROW['archive_ref']] : $tab_objet[$DB_ROW['archive_type']].' '.$DB_ROW['archive_ref'] ;
-    $tab_tr[] = '<tr><td>'.html($DB_ROW['annee_scolaire']).'</td><td>'.html($DB_ROW['periode_nom']).'</td><td>'.html($DB_ROW['structure_uai'].' - '.$DB_ROW['structure_denomination']).'</td><td>'.$objet.'</td><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td><td><a href="'.$URL_PDF.$fichier_nom.'" target="_blank" rel="noopener noreferrer">accès au document</a></td></tr>';
+    $tab_tr[] = '<tr><td>'.html($DB_ROW['annee_scolaire']).'</td><td>'.html($DB_ROW['periode_nom']).'</td><td>'.html($DB_ROW['structure_uai'].' - '.$DB_ROW['structure_denomination']).'</td><td>'.$objet.'</td><td>'.html($DB_ROW['user_nom'].' '.$DB_ROW['user_prenom']).'</td><td><a href="'.$URL_PDF.$fichier_nom.'" target="_blank" rel="noopener">accès au document</a></td></tr>';
   }
   // Retour
   Json::add_row( 'to_zip' , $to_zip );
@@ -182,7 +182,7 @@ if( ($action=='generer_zip') && isset($_SESSION['tmp']['zip_archive']) )
   $s = ($_SESSION['tmp']['zip_archive']['nb_archives']>1) ? 's' : '' ;
   $href = $URL_ZIP.$_SESSION['tmp']['zip_archive']['fichier_nom'];
   $retour = '<ul class="puce">';
-  $retour .= '<li>'.$_SESSION['tmp']['zip_archive']['nb_archives'].' archive'.$s.' générée'.$s.' dans <a href="'.$href.'" target="_blank" rel="noopener noreferrer"><span class="file file_zip">ce fichier <em>zip</em></span></a>.</li>';
+  $retour .= '<li>'.$_SESSION['tmp']['zip_archive']['nb_archives'].' archive'.$s.' générée'.$s.' dans <a href="'.$href.'" target="_blank" rel="noopener"><span class="file file_zip">ce fichier <em>zip</em></span></a>.</li>';
   if($_SESSION['tmp']['zip_archive']['uai_origine'])
   {
     $DB_ROW = DB_STRUCTURE_OFFICIEL::DB_recuperer_officiel_structure_origine( $_SESSION['tmp']['zip_archive']['uai_origine'] );

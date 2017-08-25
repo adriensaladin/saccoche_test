@@ -834,7 +834,7 @@ if($type_individuel)
                     {
                       if($aff_lien)
                       {
-                        $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($item_lien).'">' : '';
+                        $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener" href="'.html($item_lien).'">' : '';
                         $texte_lien_apres = ($item_lien) ? '</a>' : '';
                       }
                       if($highlight_id)
@@ -1256,7 +1256,7 @@ if($type_individuel)
           {
             if($aff_lien)
             {
-              $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener noreferrer" href="'.html($item_lien).'">' : '';
+              $texte_lien_avant = ($item_lien) ? '<a target="_blank" rel="noopener" href="'.html($item_lien).'">' : '';
               $texte_lien_apres = ($item_lien) ? '</a>' : '';
             }
             if($highlight_id)

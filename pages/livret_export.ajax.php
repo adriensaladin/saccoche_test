@@ -780,7 +780,7 @@ $fichier_lien = './force_download.php?fichier='.$fichier_nom;
 $sb = ($nb_bilans>1) ? 's' : '' ;
 $se = ($nb_eleves>1) ? 's' : '' ;
 Json::add_str('<p><label class="valide">Fichier d\'export généré : '.$nb_bilans.' bilan'.$sb.' concernant '.$nb_eleves.' élève'.$se.'.</label></p>'.NL);
-Json::add_str('<p><a target="_blank" rel="noopener noreferrer" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></p>'.NL);
+Json::add_str('<p><a target="_blank" rel="noopener" href="'.$fichier_lien.'"><span class="file file_'.$fichier_extension.'">Récupérer le fichier au format <em>'.$fichier_extension.'</em>.</span></a></p>'.NL);
 Json::add_str('<p><label class="alerte">Pour des raisons de sécurité et de confidentialité, ce fichier sera effacé du serveur dans 1h.</label></p>'.NL);
 Json::end( TRUE );
 

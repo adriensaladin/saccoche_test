@@ -779,31 +779,6 @@ if($version_base_structure_actuelle=='2017-08-16')
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
-// MAJ 2017-08-25 => 2017-09-05
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-if($version_base_structure_actuelle=='2017-08-25')
-{
-  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
-  {
-    $version_base_structure_actuelle = '2017-09-05';
-    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
-    // modification sacoche_parametre (paramètres CAS pour ENT)
-    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
-    if($connexion_nom=='parisclassenumerique')
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="ent.parisclassenumerique.fr" WHERE parametre_nom="cas_serveur_host" ' );
-    }
-    // Pour une raison que j'ignore la colonne [groupe_chef_id] de la table [sacoche_groupe] n'a pas été créée sur toutes les installations...
-    $DB_TAB = DB::queryTab(SACOCHE_STRUCTURE_BD_NAME , 'SHOW COLUMNS FROM sacoche_groupe LIKE "groupe_chef_id" ');
-    if(empty($DB_TAB))
-    {
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe ADD groupe_chef_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 AFTER niveau_id' );
-    }
-  }
-}
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////
 // NE PAS OUBLIER de modifier aussi le nécessaire dans ./_sql/structure/ en fonction des évolutions !!!
 // ////////////////////////////////////////////////////////////////////////////////////////////////////
 

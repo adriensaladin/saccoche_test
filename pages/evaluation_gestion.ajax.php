@@ -1588,7 +1588,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart
       foreach($tab_item_id as $item_id => $tab_infos_item)
       {
         // ligne de répartition pour 1 item : référence item
-        $tableau_PDF->saisie_reference_item( $tab_infos_item[0] , $tab_infos_item[1] );
+        $tableau_PDF->saisie_reference_item( $tab_infos_item[0] , $tab_infos_item[1] , FALSE /*fusion_lignes*/ );
         // ligne de répartition pour 1 item : cases répartition quantitative
         $tableau_PDF->repartition_quantitative_cases_eleves( $tab_repartition_quantitatif[$item_id] , $tab_nombre_eleves[$item_id] );
       }
@@ -1608,7 +1608,7 @@ if( in_array($action,array('voir_repart','archiver_repart')) && in_array($repart
         // 1ère ligne : nouvelle page si besoin + référence du devoir et des codes si besoin
         $tableau_PDF->repartition_nominative_entete( $groupe_nom , $date_fr , $description , $tab_init_quantitatif , $tab_repartition_quantitatif[$item_id] );
         // ligne de répartition pour 1 item : référence item
-        $tableau_PDF->saisie_reference_item( $tab_infos_item[0] , $tab_infos_item[1] );
+        $tableau_PDF->saisie_reference_item( $tab_infos_item[0] , $tab_infos_item[1] , FALSE /*fusion_lignes*/ );
         // ligne de répartition pour 1 item : cases répartition nominative
         $tableau_PDF->repartition_nominative_cases_eleves( $tab_repartition_nominatif[$item_id] );
       }

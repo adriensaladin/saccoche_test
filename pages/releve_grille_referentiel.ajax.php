@@ -341,7 +341,7 @@ if($besoin_notes)
   elseif($retroactif=='annuel') { $date_mysql_start = $date_mysql_debut_annee_scolaire; }
   else                          { $date_mysql_start = FALSE; } // forcément 'oui' puisque le cas 'auto' a déjà été écarté (possible car un unique référentiel est considéré ici)
   $DB_TAB = DB_STRUCTURE_BILAN::DB_lister_result_eleves_items( $liste_eleve , $liste_item , $matiere_id , $date_mysql_start , $date_mysql_fin , $_SESSION['USER_PROFIL_TYPE'] , FALSE /*onlyprof*/ , FALSE /*onlynote*/ ) ;
-  if(empty($DB_TAB))
+  if( empty($DB_TAB) && ($only_arbo!='tous') )
   {
     Json::end( FALSE , 'Aucune note trouvée alors que votre paramétrage requiert la présence de résultats !' );
   }

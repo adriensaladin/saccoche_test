@@ -242,12 +242,12 @@ if( ($import_origine=='siecle') && ($import_profil=='professeur') )
   // On passe les utilisateurs en revue : on mémorise leurs infos, y compris les PP, d'éventuelles matières affectées, d'éventuelles classes présentes
   //
   $date_aujourdhui = date('Y-m-d');
+  $tab_genre = array( 0=>'I' , 1=>'M' , 2=>'F' );
   if( ($xml->DONNEES) && ($xml->DONNEES->INDIVIDUS) && ($xml->DONNEES->INDIVIDUS->INDIVIDU) )
   {
-    $tab_genre = array( 0=>'I' , 1=>'M' , 2=>'F' );
     foreach ($xml->DONNEES->INDIVIDUS->INDIVIDU as $individu)
     {
-      // $type = Clean::login($individu->attributes()->TYPE); // à compter de STS 11.1.2 d'avril 2017, peut valoir epp | local | dir
+      // $type = Clean::id($individu->attributes()->TYPE); // à compter de STS 11.1.2 d'avril 2017, peut valoir epp | local | dir
       $fonction = ($individu->FONCTION) ? Clean::ref($individu->FONCTION) : 'ENS' ; // DIR | EDU | ENS | FIJ (Fonds d'Insertion des Jeunes ?) ; non renseigné pour un type "local"
       if( (isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$fonction])) && (in_array($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$fonction],array('professeur','directeur'))) )
       {
@@ -272,7 +272,7 @@ if( ($import_origine=='siecle') && ($import_profil=='professeur') )
           {
             $classe_ref = Clean::ref($prof_princ->CODE_STRUCTURE);
             $date_fin   = Clean::ref($prof_princ->DATE_FIN);
-            $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+            $i_classe   = 'i'.Clean::id($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
             if($date_fin >= $date_aujourdhui)
             {
               $tab_users_fichier['classe'][$i_fichier][$i_classe] = 'PP';
@@ -308,6 +308,34 @@ if( ($import_origine=='siecle') && ($import_profil=='professeur') )
       }
     }
   }
+  // Rentrée 2017 : découverte d'un autre bloc avec des personnels
+  if( ($xml->DONNEES) && ($xml->DONNEES->SUPPLEANTS) && ($xml->DONNEES->SUPPLEANTS->SUPPLEANT) )
+  {
+    foreach ($xml->DONNEES->SUPPLEANTS->SUPPLEANT as $suppleant)
+    {
+      // $type = Clean::id($suppleant->attributes()->TYPE); // vu à "eppsup" dans le fichier observé
+      $fonction = ($suppleant->FONCTION) ? Clean::ref($suppleant->FONCTION) : 'ENS' ; // DIR | EDU | ENS | FIJ (Fonds d'Insertion des Jeunes ?) ; non renseigné pour un type "local"
+      if( (isset($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$fonction])) && (in_array($_SESSION['TAB_PROFILS_ADMIN']['TYPE'][$fonction],array('professeur','directeur'))) )
+      {
+        $sconet_id = Clean::entier($suppleant->attributes()->ID);
+        $civilite  = Clean::entier($suppleant->SEXE); // L'attribut <CIVILITE> est aussi présent et apparemment identique.
+        $i_fichier  = $sconet_id;
+        $tab_users_fichier['sconet_id'   ][$i_fichier] = $sconet_id;
+        $tab_users_fichier['sconet_num'  ][$i_fichier] = 0;
+        $tab_users_fichier['reference'   ][$i_fichier] = '';
+        $tab_users_fichier['profil_sigle'][$i_fichier] = $fonction;
+        $tab_users_fichier['genre'       ][$i_fichier] = isset($tab_genre[$civilite]) ? $tab_genre[$civilite] : 'I' ;
+        $tab_users_fichier['nom'         ][$i_fichier] = Clean::nom($suppleant->NOM_USAGE);
+        $tab_users_fichier['prenom'      ][$i_fichier] = Clean::prenom($suppleant->PRENOM);
+        $tab_users_fichier['courriel'    ][$i_fichier] = '';
+        $tab_users_fichier['classe'      ][$i_fichier] = array();
+        $tab_users_fichier['groupe'      ][$i_fichier] = array();
+        $tab_users_fichier['matiere'     ][$i_fichier] = array();
+        // Je ne sais pas si on peut trouver des infos de PP ou de matières
+        // Dans le fichier observé il y avait une balise <SERVICES_SUPPLEANTS /> non renseignée...
+      }
+    }
+  }
   //
   // On passe les classes en revue : on mémorise leurs infos, y compris les profs rattachés éventuels, et les matières associées
   //
@@ -317,7 +345,7 @@ if( ($import_origine=='siecle') && ($import_profil=='professeur') )
     {
       $classe_ref = Clean::ref($division->attributes()->CODE);
       $classe_nom = Clean::texte($division->LIBELLE_LONG);
-      $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+      $i_classe   = 'i'.Clean::id($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
       // Au passage on ajoute la classe trouvée
       if(!isset($tab_classes_fichier['ref'][$i_classe]))
       {
@@ -373,7 +401,7 @@ if( ($import_origine=='siecle') && ($import_profil=='professeur') )
     {
       $groupe_ref = Clean::ref($groupe->attributes()->CODE);
       $groupe_nom = Clean::texte($groupe->LIBELLE_LONG);
-      $i_groupe   = 'i'.Clean::login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+      $i_groupe   = 'i'.Clean::id($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
       // Au passage on ajoute le groupe trouvé
       if(!isset($tab_groupes_fichier['ref'][$i_groupe]))
       {
@@ -565,7 +593,7 @@ if( ($import_origine=='siecle') && ($import_profil=='eleve') )
           if($structure->TYPE_STRUCTURE == 'D')
           {
             $classe_ref = Clean::ref($structure->CODE_STRUCTURE);
-            $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+            $i_classe   = 'i'.Clean::id($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
             $tab_users_fichier['classe'][$i_fichier] = $i_classe;
             if(!isset($tab_classes_fichier['ref'][$i_classe]))
             {
@@ -581,7 +609,7 @@ if( ($import_origine=='siecle') && ($import_profil=='eleve') )
           elseif($structure->TYPE_STRUCTURE == 'G')
           {
             $groupe_ref = Clean::ref($structure->CODE_STRUCTURE);
-            $i_groupe   = 'i'.Clean::login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+            $i_groupe   = 'i'.Clean::id($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
             if(!isset($tab_users_fichier['groupe'][$i_fichier][$i_groupe]))
             {
               $tab_users_fichier['groupe'][$i_fichier][$i_groupe] = $groupe_ref;
@@ -785,7 +813,7 @@ if( ($import_origine=='tableur') && ($import_profil=='professeur') )
           foreach ($tab_classes as $classe)
           {
             $classe_ref = mb_substr(Clean::ref($classe),0,8);
-            $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+            $i_classe   = 'i'.Clean::id($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
             if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$i_classe])) )
             {
               $tab_classes_fichier['ref'   ][$i_classe] = $classe_ref;
@@ -807,7 +835,7 @@ if( ($import_origine=='tableur') && ($import_profil=='professeur') )
           foreach ($tab_groupes as $groupe)
           {
             $groupe_ref = mb_substr(Clean::ref($groupe),0,8);
-            $i_groupe   = 'i'.Clean::login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+            $i_groupe   = 'i'.Clean::id($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
             if( ($groupe_ref) && (!isset($tab_groupes_fichier['ref'][$i_groupe])) )
             {
               $tab_groupes_fichier['ref'   ][$i_groupe] = $groupe_ref;
@@ -881,7 +909,7 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
         $tab_users_fichier['lv2'         ][] = 100;
         // classe
         $classe_ref = mb_substr(Clean::ref($classe),0,8);
-        $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+        $i_classe   = 'i'.Clean::id($classe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
         $tab_users_fichier['classe'][]     = $i_classe;
         if( ($classe_ref) && (!isset($tab_classes_fichier['ref'][$i_classe])) )
         {
@@ -897,7 +925,7 @@ if( ($import_origine=='tableur') && ($import_profil=='eleve') )
           foreach ($tab_groupes as $groupe)
           {
             $groupe_ref = mb_substr(Clean::ref($groupe),0,8);
-            $i_groupe   = 'i'.Clean::login($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+            $i_groupe   = 'i'.Clean::id($groupe_ref); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
             if( ($groupe_ref) && (!isset($tab_groupes_fichier['ref'][$i_groupe])) )
             {
               $tab_groupes_fichier['ref'   ][$i_groupe] = $groupe_ref;
@@ -1118,7 +1146,7 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
         $niveau_ref = mb_substr(Clean::ref($niveau),0,8);
         $classe_nom = mb_substr('['.$niveau_ref.'] '.$classe,0,20); // On fait autant de classes que de groupes de niveaux par classes.
         $classe_ref = mb_substr(Clean::ref($classe_id.'_'.$niveau_ref),0,10);
-        $i_classe   = 'i'.Clean::login($classe_ref); // 'i' car si l'identifiant est numérique (ex : 123456) cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+        $i_classe   = 'i'.Clean::id($classe_ref); // 'i' car si l'identifiant est numérique (ex : 123456) cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
         $tab_users_fichier['sconet_id'   ][] = 0;
         $tab_users_fichier['sconet_num'  ][] = 0;
         $tab_users_fichier['reference'   ][] = $reference;
@@ -1320,7 +1348,7 @@ if( ($import_origine=='factos') && ($import_profil=='eleve') )
       $classe     = ($tab_elements[$tab_numero_colonne['classe'    ]]!="Non saisi") ? $tab_elements[$tab_numero_colonne['classe'    ]] : '' ;
       if( ($nom!='') && ($prenom!='') && ($classe!='') )
       {
-        $i_classe   = 'i'.Clean::login($classe); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
+        $i_classe   = 'i'.Clean::id($classe); // 'i' car la référence peut être numérique (ex : 61) et cela pose problème que l'indice du tableau soit un entier (ajouter (string) n'y change rien) lors du array_multisort().
         $tab_users_fichier['sconet_id'   ][] = 0;
         $tab_users_fichier['sconet_num'  ][] = Clean::entier($sconet_num);
         $tab_users_fichier['reference'   ][] = '';

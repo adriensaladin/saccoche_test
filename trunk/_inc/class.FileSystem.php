@@ -1157,19 +1157,11 @@ class FileSystem
     $contenu_csv = file_get_contents($fichier_chemin);
     // Mettre en UTF-8 si besoin et retirer le BOM éventuel
     $contenu_csv = trim( To::deleteBOM( To::utf8($contenu_csv) ) );
-    // Extraire la 1ère ligne (on estime qu'il n'y a pas de retour chariot dans les cellules d'au moins cette ligne...)
-    $pos_max = mb_strlen($contenu_csv);
-    $pos_cr = mb_strpos( $contenu_csv , "\r" );
-    $pos_lf = mb_strpos( $contenu_csv , "\n" );
-    $pos_cr = ($pos_cr!==FALSE) ? $pos_cr : $pos_max ;
-    $pos_lf = ($pos_lf!==FALSE) ? $pos_lf : $pos_max ;
-    $pos_fin_ligne1 = min($pos_cr,$pos_lf);
-    $contenu_ligne1 = mb_substr( $contenu_csv , 0 , $pos_fin_ligne1 );
-    // Déterminer la nature du séparateur à partir de la première ligne
+    // Déterminer la nature du séparateur
     $tab_separateur = array( ';'=>0 , ','=>0 , ':'=>0 , "\t"=>0 );
     foreach($tab_separateur as $separateur => $occurrence)
     {
-      $tab_separateur[$separateur] = mb_substr_count( $contenu_ligne1 , $separateur );
+      $tab_separateur[$separateur] = mb_substr_count( $contenu_csv , $separateur );
     }
     arsort($tab_separateur);
     reset($tab_separateur);

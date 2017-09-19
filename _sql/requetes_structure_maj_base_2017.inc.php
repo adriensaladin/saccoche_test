@@ -346,8 +346,6 @@ if($version_base_structure_actuelle=='2017-03-23')
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_matiere SET matiere_id = '.$id_apres.', matiere_usuelle = 1, matiere_famille_id = 48, matiere_code = "480200" WHERE matiere_id = '.$id_avant.' ' );
       DB_STRUCTURE_MATIERE::DB_deplacer_referentiel_matiere($id_avant,$id_apres);
       SACocheLog::ajouter('Déplacement des référentiels d\'une matière ('.$id_avant.' to '.$id_apres.').');
-      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_matiere)
-      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
     }
   }
 }
@@ -799,6 +797,41 @@ if($version_base_structure_actuelle=='2017-08-25')
     if(empty($DB_TAB))
     {
       DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_groupe ADD groupe_chef_id MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT 0 AFTER niveau_id' );
+    }
+  }
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+// MAJ 2017-09-05 => 2017-09-19
+// ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+if($version_base_structure_actuelle=='2017-09-05')
+{
+  if($version_base_structure_actuelle==DB_STRUCTURE_MAJ_BASE::DB_version_base())
+  {
+    $version_base_structure_actuelle = '2017-09-19';
+    DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="'.$version_base_structure_actuelle.'" WHERE parametre_nom="version_base"' );
+    if(empty($reload_sacoche_matiere))
+    {
+      // Matières visiblement oubliées sur les anciennes installations
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (238, 0, 0, 0, 2, 0, 255, "023800", "FRLET", "Français langue étrangère") ON DUPLICATE KEY UPDATE matiere_id=matiere_id ' );
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'INSERT INTO sacoche_matiere VALUES (239, 0, 0, 0, 2, 0, 255, "023900", "FRLSE", "Français langue seconde") ON DUPLICATE KEY UPDATE matiere_id=matiere_id ' );
+      // réordonner la table sacoche_matiere (ligne à déplacer vers la dernière MAJ lors d'ajout dans sacoche_matiere)
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'ALTER TABLE sacoche_matiere ORDER BY matiere_id' );
+    }
+    // modification sacoche_parametre (nom connecteur CAS pour ENT)
+    $connexion_nom = DB::queryOne(SACOCHE_STRUCTURE_BD_NAME , 'SELECT parametre_valeur FROM sacoche_parametre WHERE parametre_nom="connexion_nom"' );
+    if($connexion_nom=='parisclassenumerique')
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="openent_pcn" WHERE parametre_nom="connexion_nom" ' );
+    }
+    if($connexion_nom=='logica_ent77')
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="openent_ent77" WHERE parametre_nom="connexion_nom" ' );
+    }
+    if($connexion_nom=='logica_lilie')
+    {
+      DB::query(SACOCHE_STRUCTURE_BD_NAME , 'UPDATE sacoche_parametre SET parametre_valeur="openent_monlycee" WHERE parametre_nom="connexion_nom" ' );
     }
   }
 }

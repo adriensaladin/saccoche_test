@@ -1100,7 +1100,7 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
    * Des difficultés se posent.
    * D'une part, les noms des niveaux et des classes ne semblent pas soumis à un format particulier ; on peut facilement dépasser les 20 caractères maxi autorisés par SACoche
    * D'autre part il n'existait pas de référence courte pour une classe, avant la mise en place d'un identifiant dans ONDE (ex-BASE-ÉLEVE).
-   * Enfin, des classes sont sur plusieurs niveaux, donc comportent plusieurs groupes (et dans ONDE c'est l'identifiant est unique pour une classe multi-niveaux) !
+   * Enfin, des classes sont sur plusieurs niveaux, donc comportent plusieurs groupes (et dans ONDE l'identifiant est unique pour une classe multi-niveaux) !
    */
   $tab_bon = array(); $tab_bad = array();
   $tab_bon[] = 'T';   $tab_bad[] = array('Toute ','toute ','TOUTE ');
@@ -1135,7 +1135,12 @@ if( ($import_origine=='onde') && ($import_profil=='eleve') )
       $niveau     = $tab_elements[$tab_numero_colonne['niveau']];
       $classe_id  = $tab_elements[$tab_numero_colonne['classe_id']];
       $classe     = $tab_elements[$tab_numero_colonne['classe_nom']];
-      if( ($nom!='') && ($prenom!='') && ($niveau!='') && ($classe_id!='') ) // Le niveau peut ne pas être renseigné, par exemple pour une classe de CLIS... mais bon imposer un truc unique est embêtant dans ce cas
+      // Le niveau peut ne pas être renseigné, par exemple pour une classe de CLIS ou d'ULIS... il faut l'importer même si imposer un niveau unique est embêtant dans ce cas.
+      if($niveau=='')
+      {
+        $niveau = 'multi';
+      }
+      if( ($nom!='') && ($prenom!='') && ($classe_id!='') )
       {
         // Réduire la longueur du niveau et de la classe
         foreach ($tab_bon as $i=>$bon)
